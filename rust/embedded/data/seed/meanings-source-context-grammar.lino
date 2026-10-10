@@ -1,5 +1,7 @@
 meanings
   source-context-declaration-contract
+    role source-context-declaration-contract
+    example "For context, src/previous.rs contains the old implementation."
     defined-by relation
     precondition "The actually loaded source-context grammar declares this role with nonempty literal forms; every substituted form is regex escaped. A supported ASCII-whitespace clause has exactly one owned unquoted file path and both complete prefix and suffix match one declared pattern. Missing forms, malformed patterns, unsupported languages, extra operations and unconsumed clauses provide no context proof."
     source "data/seed/source-context-grammar.lino::language en::patterns 1 and 2"
@@ -11,6 +13,8 @@ meanings
     effect "Only a fully consumed descriptive atom may be classified as context by sourceContextDeclaration/source_context_declaration. Other declared Goals and immutable Needs remain independently required; no physical read, write, deployment, imported-module initialization, runtime effect or universal safety certificate follows."
     unit "not applicable"
   source-context-prologue
+    role source-context-prologue
+    precondition "This declared literal occupies its documented slot in a completely consumed source-context-declaration-contract pattern with exactly one owned unquoted path. It grants no Read, Write, file-existence or source-content authority."
     defined-by source-context-declaration-contract
     effect "An optional prefix introduces a descriptive source-context atom before its unquoted path in pattern 1. Its literal forms do not request an operation."
     unit "not applicable"
@@ -19,6 +23,8 @@ meanings
     example "For context, src/previous.rs contains the old implementation."
     example "The current code is in src/current.rs."
   source-context-containment
+    role source-context-containment
+    precondition "This declared literal occupies its documented slot in a completely consumed source-context-declaration-contract pattern with exactly one owned unquoted path. It grants no Read, Write, file-existence or source-content authority."
     defined-by source-context-declaration-contract
     effect "A relation after the owned unquoted path connects that path to its source subject in pattern 1; it describes source context rather than requesting a write."
     unit "not applicable"
@@ -27,6 +33,8 @@ meanings
     example "For context, src/previous.rs contains the old implementation."
     example "The current code is in src/current.rs."
   source-context-article
+    role source-context-article
+    precondition "This declared literal occupies its documented slot in a completely consumed source-context-declaration-contract pattern with exactly one owned unquoted path. It grants no Read, Write, file-existence or source-content authority."
     defined-by source-context-declaration-contract
     effect "A determiner precedes the source subject: optional in pattern 1 and required before the optional qualifier in pattern 2. It does not identify another destination."
     unit "not applicable"
@@ -34,6 +42,8 @@ meanings
     example "For context, src/previous.rs contains the old implementation."
     example "The current code is in src/current.rs."
   source-context-qualifier
+    role source-context-qualifier
+    precondition "This declared literal occupies its documented slot in a completely consumed source-context-declaration-contract pattern with exactly one owned unquoted path. It grants no Read, Write, file-existence or source-content authority."
     defined-by source-context-declaration-contract
     effect "An optional modifier describes the source subject in either pattern. A temporal or existence modifier does not prove file freshness, contents or existence."
     unit "not applicable"
@@ -45,6 +55,8 @@ meanings
     example "For context, src/previous.rs contains the old implementation."
     example "The current code is in src/current.rs."
   source-context-subject
+    role source-context-subject
+    precondition "This declared literal occupies its documented slot in a completely consumed source-context-declaration-contract pattern with exactly one owned unquoted path. It grants no Read, Write, file-existence or source-content authority."
     defined-by source-context-declaration-contract
     effect "The source object noun is required by both patterns and describes implementation, source or code associated with the owned unquoted path. It grants no source execution authority."
     unit "not applicable"
@@ -54,6 +66,8 @@ meanings
     example "For context, src/previous.rs contains the old implementation."
     example "The current code is in src/current.rs."
   source-context-location-verb
+    role source-context-location-verb
+    precondition "This declared literal occupies its documented slot in a completely consumed source-context-declaration-contract pattern with exactly one owned unquoted path. It grants no Read, Write, file-existence or source-content authority."
     defined-by source-context-declaration-contract
     effect "The relation verb is required after the source subject and before the location preposition in pattern 2. It describes location and is not an imperative."
     unit "not applicable"
@@ -61,6 +75,8 @@ meanings
     example "For context, src/previous.rs contains the old implementation."
     example "The current code is in src/current.rs."
   source-context-location-preposition
+    role source-context-location-preposition
+    precondition "This declared literal occupies its documented slot in a completely consumed source-context-declaration-contract pattern with exactly one owned unquoted path. It grants no Read, Write, file-existence or source-content authority."
     defined-by source-context-declaration-contract
     effect "The location relation joins the descriptive source subject to the owned unquoted path in pattern 2; it supplies no read or write authorization."
     unit "not applicable"

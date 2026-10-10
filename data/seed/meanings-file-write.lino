@@ -161,6 +161,7 @@ meanings
     lexeme es sobrescribe "reemplaza todo el archivo" "reemplaza el contenido" "pon el contenido de"
 
   file-read-object-noun
+    example "Read the file src/input.txt."
     defined-by concept
     role file-read-object-noun
     precondition "an unquoted file noun immediately follows a source-owned read operation, separated only by seeded function words"
@@ -173,6 +174,7 @@ meanings
     lexeme zh 文件
     lexeme es archivo archivos fichero ficheros
   file-read-negative-operation
+    example "Do not read src/private.txt."
     defined-by action
     role file-read-negative-operation
     precondition "complete unquoted negative read-operation surface owns an adjacent typed file noun or path; only seeded function words may intervene"
@@ -185,6 +187,7 @@ meanings
     lexeme zh 不要读取 不要打开 从不读取 从不打开
     lexeme es "no leas" "no abras" "nunca leas" "nunca abras"
   file-read-independent-effect-operation
+    example "Read src/input.txt and deploy the application: deployment remains independently unbound."
     defined-by action
     role file-read-independent-effect-operation
     precondition "an unquoted independent external effect operation is declared alongside a file-read plan and has no bound execution or receipt contract"
@@ -198,6 +201,7 @@ meanings
     lexeme es despliega publica
 
   file-read-mode-contract
+    example "Show the first line of src/input.txt."
     defined-by action
     role file-read-mode-contract
     precondition "a complete seeded form consumes the existing full-content, selector or bounded audit operation and its typed source list; every source token is locally owned and unmatched prerequisites or independent goals are refused"
@@ -209,6 +213,8 @@ meanings
     lexeme hi "स्रोत स्वामित्व पठन मोड"
     lexeme zh "源所有权读取模式"
     lexeme es "modo de lectura con propiedad fuente"
+    form display-inside
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:me[ \\t]+)?what[ \\t]+is[ \\t]+inside[ \\t]+{source}(?:[ \\t]+at[ \\t]+(?:the[ \\t]+)?top)?[ \\t]*[?.]?$"
     form full-en
       pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:me[ \\t]+)?(?:the[ \\t]+)?(?:(?:exact|precise|complete|full|verbatim|literal)[ \\t]+)?(?:text|contents?|bytes)[ \\t]+(?:stored[ \\t]+)?(?:in|of|from)[ \\t]+{source}[ \\t]*[?.]?$"
     form full-ru
@@ -244,6 +250,8 @@ meanings
       pattern "^[ \\t]*{workspace-inspection-action}[ \\t]+{file-read-mode-joiner}[ \\t]+{file-read-action-cue}[ \\t]+{sources}[ \\t]+para[ \\t]+encontrar[ \\t]+trabajo[ \\t]+pendiente[.]?$"
 
   full-en
+    role full-en
+    example "Show me the exact text stored in src/input.txt."
     defined-by relation
     definition "The complete-content Read form written in English, under file-read-mode-contract."
     precondition "The corresponding full-en form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
@@ -257,6 +265,8 @@ meanings
     lexeme es "forma de lectura del contenido completo de archivo en inglés"
 
   full-ru
+    role full-ru
+    example "Покажи полный текст из src/input.txt."
     defined-by relation
     definition "The complete-content Read form written in Russian, under file-read-mode-contract."
     precondition "The corresponding full-ru form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
@@ -270,6 +280,8 @@ meanings
     lexeme es "forma de lectura del contenido completo de archivo en ruso"
 
   full-hi
+    role full-hi
+    example "src/input.txt का पूरा पाठ दिखाएँ."
     defined-by relation
     definition "The complete-content Read form written in Hindi, under file-read-mode-contract."
     precondition "The corresponding full-hi form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
@@ -283,6 +295,8 @@ meanings
     lexeme es "forma de lectura del contenido completo de archivo en hindi"
 
   full-zh
+    role full-zh
+    example "读取src/input.txt的完整内容。"
     defined-by relation
     definition "The complete-content Read form written in Chinese, under file-read-mode-contract."
     precondition "The corresponding full-zh form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
@@ -296,6 +310,8 @@ meanings
     lexeme es "forma de lectura del contenido completo de archivo en chino"
 
   full-es
+    role full-es
+    example "Muestra el texto completo de src/input.txt."
     defined-by relation
     definition "The complete-content Read form written in Spanish, under file-read-mode-contract."
     precondition "The corresponding full-es form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
@@ -309,11 +325,13 @@ meanings
     lexeme es "forma de lectura del contenido completo de archivo en español"
 
   line-slice-count
+    role line-slice-count
+    example "Show the last 2 lines of src/input.txt."
     defined-by relation
     definition "The complete Read form for a positive count of first or last logical lines."
     precondition "The form consumes the complete source-owned instruction; count has one to nine decimal digits and is positive; leading zeros preserve the existing producer domain."
     effect "Selects the first or last requested logical lines through the existing lineSlice producer; it does not grant complete-content fallback, prove transport, or authorize independent effects."
-    limitation "The existing renderer currently falls back to complete content for some invalid or out-of-file intervals; that defect remains Open, and this definition does not certify refusal."
+    limitation "Earlier source returned complete content for some unavailable slices. The updated producer refuses with a no-selected-lines response; genuine native verification remains separate from source and JavaScript controls."
     unit "logical lines from one source"
     grounding "Authored line-slice-count pattern under file-read-mode-contract; existing lineSlice in js/agentic/workspace_line_operation.mjs and line_slice in rust/src/agentic_coding/workspace_line_operation.rs; FileReadMode line-slice producer."
     lexeme en "positive count of first or last logical lines Read form"
@@ -323,11 +341,13 @@ meanings
     lexeme es "forma de lectura de primeras o últimas líneas por cantidad"
 
   line-slice-range
+    role line-slice-range
+    example "Read lines 2-3 of src/input.txt."
     defined-by relation
     definition "The complete Read form for a inclusive numeric logical-line interval."
     precondition "The form consumes the complete source-owned instruction; both bounds preserve the existing positive one-to-nine-digit domain; ordering and content bounds require separate producer validation."
     effect "Selects the requested inclusive logical-line interval through the existing lineSlice producer; it does not grant complete-content fallback, prove transport, or authorize independent effects."
-    limitation "The existing renderer currently falls back to complete content for some invalid or out-of-file intervals; that defect remains Open, and this definition does not certify refusal."
+    limitation "Earlier source returned complete content for some unavailable slices. The updated producer refuses with a no-selected-lines response; genuine native verification remains separate from source and JavaScript controls."
     unit "logical lines from one source"
     grounding "Authored line-slice-range pattern under file-read-mode-contract; existing lineSlice in js/agentic/workspace_line_operation.mjs and line_slice in rust/src/agentic_coding/workspace_line_operation.rs; FileReadMode line-slice producer."
     lexeme en "inclusive numeric logical-line interval Read form"
@@ -337,11 +357,13 @@ meanings
     lexeme es "forma de lectura de intervalo inclusivo de líneas"
 
   line-slice-ordinal
+    role line-slice-ordinal
+    example "Show the last line of src/input.txt."
     defined-by relation
     definition "The complete Read form for a named first through fifth or last logical line."
     precondition "The form consumes the complete source-owned instruction; an existing seeded ordinal or last-line role binds the selected line."
     effect "Selects the named logical line through the existing lineSlice producer; it does not grant complete-content fallback, prove transport, or authorize independent effects."
-    limitation "The existing renderer currently falls back to complete content for some invalid or out-of-file intervals; that defect remains Open, and this definition does not certify refusal."
+    limitation "Earlier source returned complete content for some unavailable slices. The updated producer refuses with a no-selected-lines response; genuine native verification remains separate from source and JavaScript controls."
     unit "logical lines from one source"
     grounding "Authored line-slice-ordinal pattern under file-read-mode-contract; existing lineSlice in js/agentic/workspace_line_operation.mjs and line_slice in rust/src/agentic_coding/workspace_line_operation.rs; FileReadMode line-slice producer."
     lexeme en "named first through fifth or last logical line Read form"
@@ -350,7 +372,34 @@ meanings
     lexeme zh "按序数名称读取一行的形式"
     lexeme es "forma de lectura de línea por ordinal indicado"
 
+  source-owned-read-form
+    defined-by relation
+    role file-read-mode-contract
+    example "Show me what is inside nested/Example.rs at the top."
+    precondition "a declared complete form binds one typed local source operand, and prerequisite ownership has already been checked"
+    effect "classifies that complete request for the existing Read producer; it does not execute a tool, authorize another clause, or certify positional extraction"
+    unit "one complete source request and its bound path"
+    source "js/agentic/file_read/ownership.mjs and rust/src/agentic_coding/file_read/ownership.rs; display-inside uses the existing Full mode"
+    lexeme en "source-owned read form"
+    lexeme ru "форма чтения с привязанным источником"
+    lexeme hi "स्रोत से बँधा पठन रूप"
+    lexeme zh "绑定源路径的读取形式"
+    lexeme es "forma de lectura vinculada a una fuente"
+  file-read-line-slice-unavailable
+    defined-by response
+    role file-read-mode-contract
+    example "An unavailable range on a three-line file yields a no-selected-lines response and no file content."
+    precondition "the existing LineSlice producer has observed source bytes but its requested selection contains no available lines"
+    effect "renders the shared unavailable-slice response with the source path; it never returns the full source as a fallback"
+    unit "one unavailable selected interval response"
+    source "js/agentic/file_read/audit.mjs keyed message and rust/src/agentic_coding/file_read/audit.rs seed response; line-slice-unavailable.test.mjs retains eight original producer controls"
+    lexeme en "requested file line slice unavailable"
+    lexeme ru "запрошенный диапазон строк файла недоступен"
+    lexeme hi "अनुरोधित फ़ाइल पंक्ति चयन अनुपलब्ध"
+    lexeme zh "请求的文件行范围不可用"
+    lexeme es "intervalo de líneas solicitado no disponible"
   file-read-mode-joiner
+    example "Inspect and read src/input.txt for remaining work."
     defined-by relation
     role file-read-mode-joiner
     precondition "a completely consumed read-mode form joins only its inspection/read operators or its typed source operands"
@@ -364,6 +413,8 @@ meanings
     lexeme es y
 
   file-read-order-contract
+    unit "not applicable"
+    example "Read src/input.txt before authoring."
     defined-by relation
     role file-read-order-contract
     requires-goal observed-callable-authoring
@@ -387,6 +438,9 @@ meanings
       pattern "^[ \\t]*antes[ \\t]+de[ \\t]+escribir[ \\t]+código[ \\t]*[.]?$"
 
   first-line
+    role first-line
+    unit "not applicable"
+    example "Show the first line of src/input.txt."
     defined-by relation
     definition "The read result selector for the first logical line of one selected file."
     precondition "The full seeded first-line form binds one owned local source; actual read transport and content must be observed separately."
@@ -408,6 +462,9 @@ meanings
     lexeme es
       words "primera línea"
   observed-callable-authoring
+    role observed-callable-authoring
+    unit "not applicable"
+    example "Read the observed source before creating its declared function; source authoring remains deferred until its own complete contract binds."
     defined-by relation
     definition "A deferred source authoring goal recognized by the existing observed callable request classifier."
     precondition "The actual classifier binds a declared callable request and destination; a complete order suffix requires Read before that authoring."
@@ -429,6 +486,9 @@ meanings
     lexeme es
       words "autoría de invocable observado"
   deploy
+    role deploy
+    unit "not applicable"
+    example "A request to deploy remains an independent operation after a Read; this meaning grants no deployment authority."
     defined-by relation
     definition "An independent operation that places a program or service into an execution environment."
     precondition "An unquoted deployment operation alongside a file-read request has no bound deployment execution or receipt contract."
@@ -450,6 +510,9 @@ meanings
     lexeme es
       words "desplegar"
   publish
+    role publish
+    unit "not applicable"
+    example "A request to publish remains an independent operation after a Read; this meaning grants no publication authority."
     defined-by relation
     definition "An independent operation that makes an artifact available through an external publication destination."
     precondition "An unquoted publication operation alongside a file-read request has no bound publication execution or receipt contract."
@@ -471,6 +534,9 @@ meanings
     lexeme es
       words "publicar"
   audit-en
+    role audit-en
+    unit "not applicable"
+    example "Inspect and read src/input.txt for remaining work."
     defined-by relation
     definition "The en full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
     precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
@@ -492,6 +558,9 @@ meanings
     lexeme es
       words "auditoría limitada de archivos en inglés"
   audit-ru
+    role audit-ru
+    unit "not applicable"
+    example "Проверь и прочитай src/input.txt, найди оставшуюся работу."
     defined-by relation
     definition "The ru full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
     precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
@@ -513,6 +582,9 @@ meanings
     lexeme es
       words "auditoría limitada de archivos en ruso"
   audit-hi
+    role audit-hi
+    unit "not applicable"
+    example "जाँचें और src/input.txt फ़ाइलें पढ़ें।"
     defined-by relation
     definition "The hi full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
     precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
@@ -534,6 +606,9 @@ meanings
     lexeme es
       words "auditoría limitada de archivos en hindi"
   audit-zh
+    role audit-zh
+    unit "not applicable"
+    example "检查并读取src/input.txt中的剩余工作。"
     defined-by relation
     definition "The zh full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
     precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
@@ -555,6 +630,9 @@ meanings
     lexeme es
       words "auditoría limitada de archivos en chino"
   audit-es
+    role audit-es
+    unit "not applicable"
+    example "Inspecciona y lee src/input.txt para encontrar trabajo pendiente."
     defined-by relation
     definition "The es full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
     precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
@@ -575,3 +653,17 @@ meanings
       words "西班牙语有界文件审计"
     lexeme es
       words "auditoría limitada de archivos en español"
+
+  display-inside
+    defined-by pattern
+    role source-owned-read-form
+    example "Show me what is inside nested/Example.rs at the top."
+    precondition "the complete display-inside form owns one typed local source operand; unbound prerequisites, additional goals and literal payload quotations remain outside this authority"
+    effect "binds the source operand for the existing Full Read producer; positional wording does not certify a first-line-only result or transport completion"
+    unit "one source operand and complete request frame"
+    grounding "existing modePathsForClause, mode_paths_for_clause and modeForPrompt Full producers; original dotted-file capability test"
+    lexeme en "show contents inside a source file"
+    lexeme ru "показать содержимое исходного файла"
+    lexeme hi "स्रोत फ़ाइल की सामग्री दिखाएं"
+    lexeme zh "显示源文件中的内容"
+    lexeme es "mostrar contenido dentro de un archivo fuente"

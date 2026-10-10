@@ -1,5 +1,6 @@
 meanings
   source-authoring-grammar
+    role source-authoring-grammar
     defined-by relation
     definition "Finite source-description forms bind an entire authoring operation and its destination to a generated declaration in the same language grammar."
     precondition "Every byte of the request is consumed by one registered full form; destination, identifier, exact technical type and every string or integer operand bind the complete supported declaration; identifiers and numeric domains are valid; explicit quoted literal ownership is handled before this contract."
@@ -24,6 +25,7 @@ meanings
     lexeme es
       words "gramática de creación de código fuente"
   float-division
+    role float-division
     defined-by relation
     definition "One public Rust function takes one f64 parameter and returns that same parameter divided by an explicitly requested decimal f64 literal."
     precondition "The source declaration returns f64, its division operand is its declared parameter, and the denominator parses as finite and nonzero. The complete source-description form binds the requested name, destination, parameter type and denominator exactly."
@@ -41,6 +43,7 @@ meanings
     lexeme es
       words "división de punto flotante"
   source-registration-composition
+    role source-registration-composition
     defined-by relation
     definition "A registered finite form composes a fully source-qualified declaration operation with an explicit module registration action and its separately owned destination."
     precondition "The entire request must be consumed; the declaration has an existing valid identifier, numeric and exact technical-token contract; the registration destination is a different safe relative Rust path and the derived source basename is a valid Rust module identifier. All independent immutable requirements remain bound before effects."
@@ -87,6 +90,9 @@ meanings
       words "contrato de creación de código fuente ausente"
 
   string-constant
+    role string-constant
+    unit "not applicable"
+    example "A public &str constant with a valid name and identifier-shaped value binds those exact declaration slots; writing and compilation are separate."
     defined-by relation
     definition "A public Rust string constant declaration with an exact identifier, &str type and identifier-shaped literal value."
     precondition "The complete supported declaration and complete request bind the same constant name, type, value and destination."
@@ -106,6 +112,9 @@ meanings
     lexeme es
       words "constante de cadena"
   equality-test
+    role equality-test
+    unit "not applicable"
+    example "A Rust test compares signed integer operands 2 and 2; source correspondence does not certify execution."
     defined-by relation
     definition "A Rust test declaration containing one equality assertion between two signed integer literal operands."
     precondition "The test identifier is valid, each operand is within signed32-bit bounds and the full source/request forms match exactly."
@@ -125,6 +134,9 @@ meanings
     lexeme es
       words "prueba de igualdad"
   addition-test
+    role addition-test
+    unit "not applicable"
+    example "A Rust test compares 2 + 3 with 5; source/request correspondence and actual arithmetic execution remain separate."
     defined-by relation
     definition "A Rust test declaration containing one equality assertion between a sum of two integer literals and an expected integer literal."
     precondition "The test identifier is valid, all three literals fit signed32-bit bounds and every source/request operand matches."

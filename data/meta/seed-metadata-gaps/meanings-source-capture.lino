@@ -1,7 +1,0 @@
-seed-metadata-gaps
-  issue 918
-  source "data/seed/meanings-source-capture.lino"
-  audit-scope "problem-solving concept records under data/seed meanings roots"
-  missing "role"
-  gap seed-metadata-gap-74d8c6723e38fbc4
-    record "source-capture-offline-cache-miss"

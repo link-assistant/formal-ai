@@ -1379,3 +1379,23 @@ multilingual_responses
     intent general-plan-append-action
     language es
     text "anexar el plan compuesto a {plan_path}"
+  response file-read-line-slice-unavailable-en
+    intent file-read-line-slice-unavailable
+    language en
+    text "Cannot read the requested line slice from `{path}`: no selected lines are available."
+  response file-read-line-slice-unavailable-ru
+    intent file-read-line-slice-unavailable
+    language ru
+    text "Не удаётся прочитать запрошенный диапазон строк из `{path}`: выбранные строки недоступны."
+  response file-read-line-slice-unavailable-hi
+    intent file-read-line-slice-unavailable
+    language hi
+    text "`{path}` से अनुरोधित पंक्तियाँ नहीं पढ़ी जा सकतीं: चयनित पंक्तियाँ उपलब्ध नहीं हैं।"
+  response file-read-line-slice-unavailable-zh
+    intent file-read-line-slice-unavailable
+    language zh
+    text "无法从 `{path}` 读取请求的行范围：没有可用的选定行。"
+  response file-read-line-slice-unavailable-es
+    intent file-read-line-slice-unavailable
+    language es
+    text "No se puede leer el intervalo solicitado de `{path}`: no hay líneas seleccionadas disponibles."

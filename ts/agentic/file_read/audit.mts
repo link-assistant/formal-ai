@@ -52,7 +52,7 @@ export function fileReadFinalAnswer(mode, files, request) {
       return files.map(([path, content]) => {
         const sliced = slicedLines(content, mode);
         return sliced === null
-          ? agenticMessage('file_read_contents', { path, content: trimEnd(content) })
+          ? agenticMessage('file-read-line-slice-unavailable', { path })
           : agenticMessage('file_read_lines', { path, first: sliced.first, last: sliced.last, lines: sliced.text });
       }).join('\n\n');
     default:

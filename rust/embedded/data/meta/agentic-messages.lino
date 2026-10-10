@@ -40,6 +40,8 @@ agentic_messages
     text "Read {count} file(s):"
   message file_read_contents
     text "Contents of `{path}`:\n\n```text\n{content}\n```"
+  message file-read-line-slice-unavailable
+    text "Cannot read the requested line slice from `{path}`: no selected lines are available."
   message file_read_lines
     text "Lines {first}-{last} of `{path}`:\n\n```text\n{lines}\n```"
   message file_read_no_files_found

@@ -1,5 +1,6 @@
 meanings
   source-capture-offline-cache-miss
+    role source-capture-offline-cache-miss
     defined-by relation
     precondition "The source fetcher is offline, and neither its cache nor the indexed seed registry supplies a capture for the requested URL."
     effect "Return the typed OfflineCacheMiss refusal for that URL before invoking transport.get; report no cached capture and supply no invented source bytes."

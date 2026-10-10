@@ -47,10 +47,9 @@ pub(super) fn file_read_final_answer(
                 crate::agentic_coding::workspace_line_operation::sliced_lines(content, *slice)
                     .map_or_else(
                         || {
-                            format!(
-                                "Contents of `{path}`:\n\n```text\n{}\n```",
-                                content.trim_end()
-                            )
+                            seed::response_for("file-read-line-slice-unavailable", "en")
+                                .unwrap_or_default()
+                                .replace("{path}", path)
                         },
                         |(first, last, lines)| {
                             format!("Lines {first}-{last} of `{path}`:\n\n```text\n{lines}\n```")
