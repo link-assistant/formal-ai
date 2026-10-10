@@ -14,6 +14,7 @@ pub(super) fn read_observation(
         return Some(tool_result::SourceReadObservation {
             status: read.status,
             complete: read.complete,
+            absent: read.absent,
             source: read.source.clone(),
             error: read.error.clone(),
         });

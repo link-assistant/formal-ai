@@ -138,7 +138,17 @@ impl ToolWorkspace {
                     );
                     message
                 }
-                Err(error) => ChatMessage::tool_result_error(id, &call.tool, error.to_string()),
+                Err(error) => {
+                    let missing = matches!(&error, AgentError::Io(error)
+                        if error.kind() == std::io::ErrorKind::NotFound);
+                    let mut message =
+                        ChatMessage::tool_result_error(id, &call.tool, error.to_string());
+                    message.source_read = Some(json!({
+                        "path": path, "success": false, "complete": false, "format": "raw",
+                        "error_code": if missing { "ENOENT" } else { "UNKNOWN" },
+                    }));
+                    message
+                }
             };
         }
         let result = match capability {

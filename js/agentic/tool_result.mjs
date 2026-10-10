@@ -1,6 +1,7 @@
 // Friendly, lossless presentation of client-owned tool results (issue #750):
 // a port of rust/src/agentic_coding/tool_result.rs.
 
+import { fill as fillWorkItemStep } from './work_item_steps.mjs';
 import { plainText, rustLines } from './content.mjs';
 import { sourceFromAgentReadResult } from './code_artifact.mjs';
 import { agenticMessage } from './messages.mjs';
@@ -142,6 +143,14 @@ export function incompleteReceipt(raw) {
 export const SourceReadStatus = Object.freeze({ Success: 'reported-success', Failure: 'reported-failure', Unknown: 'unknown' });
 
 /** Mirrors fn source_read_observation: caller must bind the current Read and exact path. */
+/** Project only a provider-owned complete value; arbitrary callback strings remain opaque. */
+export function completeOwnedSourceReadFrame(source) {
+  const rows = source.split('\n');
+  const body = rows.map((line, index) => String(index + 1).padStart(5, '0') + '| ' + line).join('\n');
+  // Fill source last so authored placeholder-looking bytes are never substituted.
+  return fillWorkItemStep('agent-file-read-frame', [['{lines}', String(rows.length)], ['{body}', body]]);
+}
+
 export function sourceReadObservation(raw, explicitlyFailed, metadata = null, expectedPath = null) {
   // The file body never establishes its own provider status or metadata.
   const bound = isObject(metadata) && typeof expectedPath === 'string' && metadata.path === expectedPath;
@@ -159,7 +168,13 @@ export function sourceReadObservation(raw, explicitlyFailed, metadata = null, ex
     && numbered.every((line, index) => Number(line.slice(0, line.indexOf('| '))) === index + 1);
   const complete = error === null && (wholeFrame || (bound && status === SourceReadStatus.Success
     && metadata.format === 'raw' && metadata.complete === true && !incompleteReceipt(receipt)));
-  return { status, complete, source: error === null ? framed ?? raw : null, error };
+  const absent = bound && status === SourceReadStatus.Failure && metadata.success === false
+    && metadata.complete === false && metadata.format === 'raw' && metadata.error_code === 'ENOENT'
+    && ['truncated', 'timed_out', 'timedOut', 'interrupted', 'canceled', 'cancelled', 'aborted']
+      .every(key => metadata[key] === undefined || metadata[key] === false)
+    && (metadata.signal === undefined || metadata.signal === null || metadata.signal === '')
+    && (metadata.stream_complete === undefined || metadata.stream_complete === true);
+  return { status, complete, absent, source: error === null ? framed ?? raw : null, error };
 }
 
 const PROSE_FAILURE_PREFIX_CHARS = 512;

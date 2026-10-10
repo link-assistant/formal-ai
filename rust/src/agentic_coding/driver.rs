@@ -255,17 +255,18 @@ fn run_agentic_task_in_with_tools(
             if !tool_names.contains(&call.function.name.as_str()) {
                 return Err(std::io::Error::from(std::io::ErrorKind::InvalidInput).into());
             }
-            let (result, failed) = execute_tool_call(call, &mut workspace);
+            let (result, failed, source_read) = execute_tool_call(call, &mut workspace);
             steps.push(DriverToolStep {
                 tool: call.function.name.clone(),
                 arguments: call.function.arguments.clone(),
                 result: result.clone(),
             });
-            let message = if failed {
+            let mut message = if failed {
                 ChatMessage::tool_result_error(call.id.clone(), call.function.name.clone(), result)
             } else {
                 ChatMessage::tool_result(call.id.clone(), call.function.name.clone(), result)
             };
+            message.source_read = source_read;
             results.push(message);
         }
         messages.push(assistant);
@@ -277,139 +278,142 @@ fn run_agentic_task_in_with_tools(
 /// return the textual result to feed back to the server, plus whether the call
 /// failed to produce its output at all (refused, unsupported, or lost) — the
 /// transport fact a real Agent CLI flags with `is_error`.
-fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> (String, bool) {
-    let arguments: Value = serde_json::from_str(&call.function.arguments).unwrap_or(Value::Null);
-    match call.function.name.as_str() {
-        "web_search" => (corpus::web_search(arg_str(&arguments, "query")), false),
-        "web_fetch" => match corpus::web_fetch_result(arg_str(&arguments, "url")) {
-            Ok(body) => (body, false),
-            Err(detail) => (detail, true),
-        },
-        "read_file" => {
-            let path = arg_str(&arguments, "path");
-            match workspace.read_file(path) {
-                Ok(content) => {
-                    let body = content
-                        .split('\n')
-                        .enumerate()
-                        .map(|(index, line)| format!("{:05}| {line}", index + 1))
-                        .collect::<Vec<_>>()
-                        .join("\n");
-                    (
-                        super::work_item_steps::fill(
-                            "agent-file-read-frame",
-                            &[
-                                (concat!("{", "body", "}"), &body),
-                                ("{lines}", &content.split('\n').count().to_string()),
-                            ],
-                        ),
+fn execute_tool_call(
+    call: &ToolCall,
+    workspace: &mut AgentWorkspace,
+) -> (String, bool, Option<Value>) {
+    let mut source_read = None;
+    let (content, failed) = (|| {
+        let arguments: Value =
+            serde_json::from_str(&call.function.arguments).unwrap_or(Value::Null);
+        match call.function.name.as_str() {
+            "web_search" => (corpus::web_search(arg_str(&arguments, "query")), false),
+            "web_fetch" => match corpus::web_fetch_result(arg_str(&arguments, "url")) {
+                Ok(body) => (body, false),
+                Err(detail) => (detail, true),
+            },
+            "read_file" => {
+                let path = arg_str(&arguments, "path");
+                match workspace.read_file(path) {
+                    Ok(content) => (
+                        super::tool_result::complete_owned_source_read_frame(&content),
                         false,
-                    )
+                    ),
+                    Err(error) => {
+                        let missing = matches!(&error, AgentError::Io(error)
+                        if error.kind() == std::io::ErrorKind::NotFound);
+                        source_read = Some(json!({
+                            "path": path, "success": false, "complete": false, "format": "raw",
+                            "error_code": if missing { "ENOENT" } else { "UNKNOWN" },
+                        }));
+                        (error.to_string(), true)
+                    }
                 }
-                Err(error) => (error.to_string(), true),
             }
-        }
-        "write_file" => {
-            let path = arg_str(&arguments, "path");
-            let content = arg_str(&arguments, "content");
-            workspace.create_file(path, content);
-            (format!("wrote {} byte(s) to {path}", content.len()), false)
-        }
-        "run_command" => {
-            let command = arg_str(&arguments, "command");
-            if let Some(result) = execute_algorithm_command(command, workspace) {
-                let (stdout, error, operation_success) = match result {
-                    Ok(stdout) => (stdout, None, true),
-                    Err(error) => (String::new(), Some(error), false),
-                };
-                return (
-                    json!({
-                        "schema": "algorithm-command-receipt/v1", "command": command,
-                        "operation_success": operation_success, "exit_code": null,
-                        "stdout": stdout, "stderr": "", "error": error,
-                        "complete": true, "truncated": false, "timed_out": false,
-                    })
-                    .to_string(),
-                    !operation_success,
-                );
+            "write_file" => {
+                let path = arg_str(&arguments, "path");
+                let content = arg_str(&arguments, "content");
+                workspace.create_file(path, content);
+                (format!("wrote {} byte(s) to {path}", content.len()), false)
             }
-            if let Some(result) = execute_procedure_conformance(command, workspace) {
-                let (stdout, error, operation_success) = match result {
-                    Ok(stdout) => (stdout, None, true),
-                    Err(error) => (String::new(), Some(error), false),
-                };
-                return (
-                    json!({
-                        "schema": "procedure-command-receipt/v1", "command": command,
-                        "operation_success": operation_success, "exit_code": null,
-                        "stdout": stdout, "stderr": "", "error": error,
-                        "complete": true, "truncated": false, "timed_out": false,
-                    })
-                    .to_string(),
-                    !operation_success,
-                );
-            }
-            workspace.run_command(command);
-            workspace.last_command_result().map_or_else(
-                || {
-                    (
-                        format!("run_command produced no result for {command:?}"),
-                        true,
-                    )
-                },
-                |executed| (format_command_result(executed), false),
-            )
-        }
-        // Plan 16 L2g: the same library the CLI's `--write` runs, executed
-        // against the sandbox workspace — the workspace root plays the
-        // repository root, so `js/…` paths are the ones the plan wrote
-        // there. The report text is rendered from the seed the CLI uses,
-        // and a refusal, wrong root or unreadable source is an error result
-        // so the agent sees the failure instead of a silent no-op.
-        "translate" => {
-            let Some(from) = crate::meta_translate::SourceRoot::parse(arg_str(&arguments, "from"))
-            else {
-                return (
-                    "error: translate needs a known from root (js, ts)".to_owned(),
-                    true,
-                );
-            };
-            let Some(to) = crate::meta_translate::SourceRoot::parse(arg_str(&arguments, "to"))
-            else {
-                return (
-                    "error: translate needs a known to root (js, ts)".to_owned(),
-                    true,
-                );
-            };
-            let path = arg_str(&arguments, "path");
-            let write = arguments
-                .get("write")
-                .and_then(serde_json::Value::as_bool)
-                .unwrap_or(false);
-            let report = if path.is_empty() {
-                if !write {
+            "run_command" => {
+                let command = arg_str(&arguments, "command");
+                if let Some(result) = execute_algorithm_command(command, workspace) {
+                    let (stdout, error, operation_success) = match result {
+                        Ok(stdout) => (stdout, None, true),
+                        Err(error) => (String::new(), Some(error), false),
+                    };
                     return (
-                        "error: a tree translation must set write, or name one path".to_owned(),
-                        true,
+                        json!({
+                            "schema": "algorithm-command-receipt/v1", "command": command,
+                            "operation_success": operation_success, "exit_code": null,
+                            "stdout": stdout, "stderr": "", "error": error,
+                            "complete": true, "truncated": false, "timed_out": false,
+                        })
+                        .to_string(),
+                        !operation_success,
                     );
                 }
-                crate::translate_write::write_tree(from, to, workspace.root())
-            } else if write {
-                crate::translate_write::write_one(from, to, workspace.root(), path)
-            } else {
-                return translate_without_write(from, to, workspace.root(), path);
-            };
-            let (intent, values) = report.intent();
-            let values = values
-                .iter()
-                .map(|(key, value)| (*key, value.as_str()))
-                .collect::<Vec<_>>();
-            let rendered = crate::seed::render_response(intent, "en", &values)
-                .unwrap_or_else(|| intent.to_owned());
-            (rendered, report.is_failure())
+                if let Some(result) = execute_procedure_conformance(command, workspace) {
+                    let (stdout, error, operation_success) = match result {
+                        Ok(stdout) => (stdout, None, true),
+                        Err(error) => (String::new(), Some(error), false),
+                    };
+                    return (
+                        json!({
+                            "schema": "procedure-command-receipt/v1", "command": command,
+                            "operation_success": operation_success, "exit_code": null,
+                            "stdout": stdout, "stderr": "", "error": error,
+                            "complete": true, "truncated": false, "timed_out": false,
+                        })
+                        .to_string(),
+                        !operation_success,
+                    );
+                }
+                workspace.run_command(command);
+                workspace.last_command_result().map_or_else(
+                    || {
+                        (
+                            format!("run_command produced no result for {command:?}"),
+                            true,
+                        )
+                    },
+                    |executed| (format_command_result(executed), false),
+                )
+            }
+            // Plan 16 L2g: the same library the CLI's `--write` runs, executed
+            // against the sandbox workspace — the workspace root plays the
+            // repository root, so `js/…` paths are the ones the plan wrote
+            // there. The report text is rendered from the seed the CLI uses,
+            // and a refusal, wrong root or unreadable source is an error result
+            // so the agent sees the failure instead of a silent no-op.
+            "translate" => {
+                let Some(from) =
+                    crate::meta_translate::SourceRoot::parse(arg_str(&arguments, "from"))
+                else {
+                    return (
+                        "error: translate needs a known from root (js, ts)".to_owned(),
+                        true,
+                    );
+                };
+                let Some(to) = crate::meta_translate::SourceRoot::parse(arg_str(&arguments, "to"))
+                else {
+                    return (
+                        "error: translate needs a known to root (js, ts)".to_owned(),
+                        true,
+                    );
+                };
+                let path = arg_str(&arguments, "path");
+                let write = arguments
+                    .get("write")
+                    .and_then(serde_json::Value::as_bool)
+                    .unwrap_or(false);
+                let report = if path.is_empty() {
+                    if !write {
+                        return (
+                            "error: a tree translation must set write, or name one path".to_owned(),
+                            true,
+                        );
+                    }
+                    crate::translate_write::write_tree(from, to, workspace.root())
+                } else if write {
+                    crate::translate_write::write_one(from, to, workspace.root(), path)
+                } else {
+                    return translate_without_write(from, to, workspace.root(), path);
+                };
+                let (intent, values) = report.intent();
+                let values = values
+                    .iter()
+                    .map(|(key, value)| (*key, value.as_str()))
+                    .collect::<Vec<_>>();
+                let rendered = crate::seed::render_response(intent, "en", &values)
+                    .unwrap_or_else(|| intent.to_owned());
+                (rendered, report.is_failure())
+            }
+            other => (format!("error: unsupported tool {other}"), true),
         }
-        other => (format!("error: unsupported tool {other}"), true),
-    }
+    })();
+    (content, failed, source_read)
 }
 
 /// The read-only half of the translate tool: the result text is the rendered

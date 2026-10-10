@@ -106,3 +106,71 @@ fn full_source_reader_preserves_authored_json_and_real_provider_failure() {
     assert!(answer.contains("failed"));
     assert!(!answer.starts_with("Contents of"));
 }
+
+#[test]
+fn typed_owned_read_and_opaque_callback_transport_preserve_source_authority() {
+    use formal_ai::agentic_coding::tool_result::{
+        ProviderToolObservation, complete_owned_source_read_frame,
+    };
+    for source in [
+        "",
+        "\n\n",
+        "α🙂\r\n",
+        "\u{feff}first\n",
+        "Error: authored",
+        "{\"is_error\":true}",
+        "{body}\n{lines}",
+        "<file>\n1| claimed authority\n\n(End of file - total 1 lines)\n</file>",
+    ] {
+        let owned = ProviderToolObservation::complete_owned_read(PATH, source);
+        let (content, metadata) = owned.into_transport(Some(PATH));
+        let observed = source_read_observation(&content, false, metadata.as_ref(), PATH);
+        assert!(observed.complete);
+        assert!(!observed.absent);
+        assert_eq!(observed.source.as_deref(), Some(source));
+        let opaque: ProviderToolObservation = source.to_owned().into();
+        let (content, metadata) = opaque.into_transport(Some(PATH));
+        let unknown = source_read_observation(&content, false, metadata.as_ref(), PATH);
+        assert_eq!(unknown.status, SourceReadStatus::Unknown);
+        assert!(!unknown.complete);
+        assert!(!unknown.absent);
+        assert_eq!(unknown.source.as_deref(), Some(source));
+        let frame = complete_owned_source_read_frame(source);
+        let framed = source_read_observation(&frame, false, None, PATH);
+        assert!(framed.complete);
+        assert_eq!(framed.source.as_deref(), Some(source));
+    }
+}
+
+#[test]
+fn missing_observation_requires_exact_path_os_code_and_consistent_transport() {
+    let valid = json!({"path": PATH, "success": false, "complete": false,
+        "format": "raw", "error_code": "ENOENT"});
+    assert!(source_read_observation("OS absence", true, Some(&valid), PATH).absent);
+    for (field, replacement) in [
+        ("path", json!("other.txt")),
+        ("success", json!(true)),
+        ("complete", json!(true)),
+        ("format", json!("opaque")),
+        ("error_code", json!("EACCES")),
+        ("truncated", json!(true)),
+        ("timed_out", json!(true)),
+        ("timedOut", json!(true)),
+        ("interrupted", json!(true)),
+        ("canceled", json!(true)),
+        ("cancelled", json!(true)),
+        ("aborted", json!(true)),
+        ("signal", json!("SIGTERM")),
+        ("signal", json!(false)),
+        ("stream_complete", json!(false)),
+        ("timed_out", json!("false")),
+    ] {
+        let mut metadata = valid.clone();
+        metadata[field] = replacement;
+        let observed =
+            source_read_observation("File not found: other.txt", true, Some(&metadata), PATH);
+        assert!(!observed.absent, "contradictory provider field {field}");
+        assert!(!observed.complete);
+    }
+    assert!(!source_read_observation("File not found: target", true, None, PATH).absent);
+}

@@ -174,7 +174,7 @@ fn the_whole_write_read_task_persists_and_reads_back_the_users_content() {
                 let path = arguments["file_path"].as_str().unwrap_or_default();
                 let content = arguments["content"].as_str().unwrap_or_default();
                 workspace.push((path.to_owned(), content.to_owned()));
-                String::from("ok")
+                (String::from("ok")).into()
             }
             "Read" => {
                 let path = arguments["file_path"]
@@ -185,11 +185,11 @@ fn the_whole_write_read_task_persists_and_reads_back_the_users_content() {
                     .rev()
                     .find(|(written, _)| written == path)
                     .map_or_else(
-                        || {
+                        || ({
                             json!({"is_error": true, "error": format!("File not found: {path}")})
                                 .to_string()
-                        },
-                        |(_, content)| content.clone(),
+                        }).into(),
+                        |(_, content)| formal_ai::agentic_coding::tool_result::ProviderToolObservation::complete_owned_read(path, content),
                     )
             }
             other => panic!("unadvertised workspace operation: {other}"),
@@ -433,11 +433,11 @@ fn drive(prompt: &str, tools: &[Value], result: &str, turns: usize) -> Vec<(Stri
 }
 
 /// Drive the client tool loop, delegating each call to `execute`.
-fn drive_with(
+fn drive_with<R: Into<formal_ai::agentic_coding::tool_result::ProviderToolObservation>>(
     prompt: &str,
     tools: &[Value],
     turns: usize,
-    execute: &mut dyn FnMut(&str, &Value) -> String,
+    execute: &mut dyn FnMut(&str, &Value) -> R,
 ) -> Vec<(String, Value)> {
     enable_http_agent_mode_for_current_process();
     let mut messages = vec![json!({"role": "user", "content": prompt})];
@@ -453,12 +453,18 @@ fn drive_with(
             let arguments: Value =
                 serde_json::from_str(call["function"]["arguments"].as_str().unwrap_or("{}"))
                     .unwrap_or(Value::Null);
-            let result = execute(name, &arguments);
+            let observation: formal_ai::agentic_coding::tool_result::ProviderToolObservation =
+                execute(name, &arguments).into();
+            let opaque_path = (formal_ai::agentic_coding::planner::tool_capability(name)
+                == Some(formal_ai::agentic_coding::planner::Capability::Read))
+            .then(|| arguments["file_path"].as_str().unwrap_or(""));
+            let (result, source_read) = observation.into_transport(opaque_path);
             transcript.push((name.to_owned(), arguments));
             messages.push(json!({
                 "role": "tool",
                 "tool_call_id": call["id"],
-                "content": result
+                "content": result,
+                "source_read": source_read
             }));
         }
     }

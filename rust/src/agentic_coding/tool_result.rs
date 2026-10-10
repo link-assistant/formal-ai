@@ -17,14 +17,17 @@ mod result_kind;
 mod source_observation;
 pub use command_keys::{command_argument_key, project_declared_command_keys};
 use result_kind::{is_listing, is_search};
-pub use source_observation::{SourceReadObservation, SourceReadStatus, source_read_observation};
+pub use source_observation::{
+    ProviderToolObservation, SourceReadObservation, SourceReadStatus,
+    complete_owned_source_read_frame, source_read_observation,
+};
 /// The actual process exit code observed by the client harness.
 pub(crate) fn reported_exit_code(raw: &str) -> Option<i64> {
     source_observation::reported_exit_code(raw)
 }
 pub(super) use source_observation::{
-    harness_reported_failure, normalized_payload, observed_bytes_match, observed_digest_matches,
-    observed_payload, shell_step,
+    harness_reported_failure, incomplete_receipt, normalized_payload, observed_bytes_match,
+    observed_digest_matches, observed_payload, shell_step,
 };
 
 struct NormalizedResult {

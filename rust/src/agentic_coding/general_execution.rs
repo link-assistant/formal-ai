@@ -77,7 +77,9 @@ fn general_change_step(
                 .and_then(tool_argument_path)
                 .as_deref()
                 == Some(PLAN_PATH)
-            && absent_plan_event(&failure.detail)
+            && progress
+                .source_read_for(PLAN_PATH)
+                .is_some_and(|read| read.absent)
     });
     if let Some(failure) = progress
         .latest_failure()
@@ -261,13 +263,6 @@ enum PlanEventOutcome {
 
 // Write is an overwrite operation. Preserve observed history and read back the
 // entire expected stream before treating its new event as recorded.
-fn absent_plan_event(detail: &str) -> bool {
-    crate::seed::lexicon().mentions_role_raw(
-        "filesystem-absent-result",
-        &crate::engine::normalize_prompt(detail),
-    )
-}
-
 fn plan_event_append_command(plan: &GeneralChangePlan) -> String {
     let event = plan.links_notation();
     let identity = event.lines().nth(1).unwrap_or_default();
@@ -367,7 +362,9 @@ fn plan_event_step(
                     .and_then(tool_argument_path)
                     .as_deref()
                     == Some(PLAN_PATH)
-                && absent_plan_event(&failure.detail)
+                && progress
+                    .source_read_for(PLAN_PATH)
+                    .is_some_and(|read| read.absent)
         });
         if prior.is_none() && !missing {
             return PlanEventOutcome::Pending(plan_one(read, read_arguments(PLAN_PATH)));

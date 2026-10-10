@@ -145,16 +145,74 @@ pub enum SourceReadStatus {
     Unknown,
 }
 
+/// Provider-owned tool observation. Bare callback strings carry no complete-read authority.
+#[derive(Debug)]
+pub struct ProviderToolObservation {
+    content: String,
+    source_read: Option<Value>,
+}
+
+impl From<String> for ProviderToolObservation {
+    fn from(content: String) -> Self {
+        Self {
+            content,
+            source_read: None,
+        }
+    }
+}
+
+impl ProviderToolObservation {
+    /// Invoke only at a source-qualified successful full-value read, never over arbitrary output.
+    #[must_use]
+    pub fn complete_owned_read(path: &str, content: &str) -> Self {
+        Self {
+            content: content.to_owned(),
+            source_read: Some(serde_json::json!({
+                "path": path, "success": true, "complete": true, "format": "raw",
+            })),
+        }
+    }
+
+    /// Preserve typed provider metadata; explicitly keep generic Read callback strings opaque.
+    #[must_use]
+    pub fn into_transport(self, opaque_read_path: Option<&str>) -> (String, Option<Value>) {
+        let metadata = self.source_read.or_else(|| {
+            opaque_read_path.map(
+                |path| serde_json::json!({"path": path, "complete": false, "format": "opaque"}),
+            )
+        });
+        (self.content, metadata)
+    }
+}
+
 /// Parsed payload metadata; callers still own exact call/window/path binding.
 #[derive(Debug)]
 pub struct SourceReadObservation {
     pub status: SourceReadStatus,
     pub complete: bool,
+    pub absent: bool,
     pub source: Option<String>,
     pub error: Option<String>,
 }
 
-/// A bare payload never declares status or complete-file observation.
+/// Frame the complete source bytes only at an owning successful reader.
+#[must_use]
+pub fn complete_owned_source_read_frame(source: &str) -> String {
+    let rows = source.split('\n').collect::<Vec<_>>();
+    let body = rows
+        .iter()
+        .enumerate()
+        .map(|(index, line)| format!("{:05}| {line}", index + 1))
+        .collect::<Vec<_>>()
+        .join("\n");
+    // Fill source last so authored placeholder-looking bytes remain exact data.
+    super::super::work_item_steps::fill(
+        "agent-file-read-frame",
+        &[("{lines}", &rows.len().to_string()), ("{body}", &body)],
+    )
+}
+
+/// A bare payload never declares provider success; typed metadata owns raw completeness.
 #[must_use]
 pub fn source_read_observation(
     raw: &str,
@@ -223,9 +281,38 @@ pub fn source_read_observation(
     let source = error
         .is_none()
         .then(|| framed.unwrap_or_else(|| raw.to_owned()));
+    let absent = error.is_some()
+        && bound.is_some_and(|metadata| {
+            metadata.get("success").and_then(Value::as_bool) == Some(false)
+                && metadata.get("complete").and_then(Value::as_bool) == Some(false)
+                && metadata.get("format").and_then(Value::as_str) == Some("raw")
+                && metadata.get("error_code").and_then(Value::as_str) == Some("ENOENT")
+                && [
+                    "truncated",
+                    "timed_out",
+                    "timedOut",
+                    "interrupted",
+                    "canceled",
+                    "cancelled",
+                    "aborted",
+                ]
+                .iter()
+                .all(|key| {
+                    metadata
+                        .get(*key)
+                        .is_none_or(|value| value.as_bool() == Some(false))
+                })
+                && metadata
+                    .get("signal")
+                    .is_none_or(|value| value.is_null() || value.as_str() == Some(""))
+                && metadata
+                    .get("stream_complete")
+                    .is_none_or(|value| value.as_bool() == Some(true))
+        });
     SourceReadObservation {
         status,
         complete,
+        absent,
         source,
         error,
     }
