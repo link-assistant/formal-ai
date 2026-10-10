@@ -1,7 +1,7 @@
 //! Source-owned diagnostic rendering; no request or effect authorization.
 use crate::seed::parser::parse_lino;
 const MEANINGS: &str =
-    include_str!("../../embedded/data/seed/meanings-source-authoring-grammar.lino");
+    include_str!("../../../embedded/data/seed/meanings-source-authoring-grammar.lino");
 pub fn source_contract_diagnostic(code: &str, language: &str) -> Option<String> {
     let root = parse_lino(MEANINGS);
     let meanings: Vec<_> = root
