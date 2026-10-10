@@ -21,7 +21,7 @@ export async function runFixture() {
  const trusted=path.resolve('_protocol');
  assert.equal(execFileSync('git',['-C',trusted,'rev-parse','HEAD'],{encoding:'utf8',timeout:5000}).trim(),process.env.GITHUB_SHA);
  const adapter=await import(pathToFileURL(path.join(trusted,'scripts/maintained-staged-authority.mjs')));
- const inventory=adapter.maintainedStagedInventory(adapter.compileMaintainedStagedAuthority());
+ const inventory=adapter.maintainedStagedInventory(adapter.compileDeployedStagedAuthority());
  assert.equal(inventory.operations,52);assert.equal(inventory.bindings,104);
  assert.ok(process.env.RUNNER_TEMP && path.resolve(process.env.RUNNER_TEMP)!==process.cwd(),'actual private runner directory required');
  const states=['auto-release','manual-release'].map(caller=>path.join(process.env.RUNNER_TEMP,'formal-ai-release-freshness-'+process.env.GITHUB_RUN_ID+'-'+process.env.GITHUB_RUN_ATTEMPT+'-'+caller+'.json'));

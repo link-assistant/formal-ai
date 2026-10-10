@@ -40,3 +40,15 @@ test('separate staged probe keeps the original runtime fixture checkout and oper
   if(step.uses==='actions/checkout@v7')assert.deepEqual(step.with,{ref:'${{ github.sha }}','persist-credentials':false});
  }
 });
+
+import {compileDeployedStagedAuthority,compileMaintainedStagedAuthority,maintainedStagedInventory} from '../../../scripts/maintained-staged-authority.mjs';
+test('fixture inventory uses real deployed source proof while ordinary compiler still refuses deployment',()=>{
+ const inventory=maintainedStagedInventory(compileDeployedStagedAuthority());
+ assert.equal(inventory.operations,52);
+ assert.equal(inventory.bindings,104);
+ assert.throws(()=>compileMaintainedStagedAuthority());
+ assert.throws(()=>maintainedStagedInventory({}));
+ const fixture=readFileSync(new URL('../../../scripts/staged-release-authority-fixture.mjs',import.meta.url),'utf8');
+ assert.ok(fixture.includes('adapter.maintainedStagedInventory(adapter.compileDeployedStagedAuthority())'));
+ assert.ok(!fixture.includes('adapter.compileMaintainedStagedAuthority()'));
+});
