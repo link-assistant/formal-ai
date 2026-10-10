@@ -24,6 +24,10 @@ on: # zizmor: ignore[dangerous-triggers]
       - bun.lock
       - .github/workflows/publish-vscode.yml
       - scripts/resolve-package-release.mjs
+      - scripts/release-extension-*.mjs
+      - scripts/github-artifact-by-identifier.mjs
+      - rust/tests/web/release-extension-transfer.test.mjs
+      - rust/tests/web/github-artifact-by-identifier.test.mjs
   workflow_dispatch:
     inputs:
       mode:
