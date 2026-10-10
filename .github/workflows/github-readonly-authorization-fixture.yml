@@ -1,0 +1,95 @@
+name: Observe read-only GitHub authorization profiles
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches-ignore: [e2e/**]
+    paths:
+      - .github/workflows/github-readonly-authorization-fixture.yml
+      - .github/workflows/release-staged.yml
+      - scripts/github-readonly-authorization-fixture.mjs
+      - scripts/governed-github-command-provider.mjs
+      - rust/tests/web/github-readonly-authorization-fixture.test.mjs
+      - package.json
+      - bun.lock
+      - .bun-version
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Observe harmless read-only GitHub authorization profiles
+        type: choice
+        options: [checks]
+        default: checks
+      pull-request:
+        description: Pull request whose harmless checks were dispatched
+        type: string
+        default: ""
+permissions:
+  contents: read
+jobs:
+  actions-omitted:
+    name: Observe actions-omitted authenticated read profile
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    concurrency:
+      group: formal-ai-readonly-profile-actions-omitted-${{ github.run_id }}-${{ github.run_attempt }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install immutable observer dependencies
+        timeout-minutes: 3
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Observe actual authenticated read routes
+        timeout-minutes: 1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/github-readonly-authorization-fixture.mjs
+      - name: Retain full read-only authorization observations
+        uses: actions/upload-artifact@v7
+        with:
+          name: readonly-actions-omitted-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-fixture/readonly-actions-omitted/
+          if-no-files-found: error
+          retention-days: 3
+  actions-readable:
+    name: Observe actions-readable authenticated read profile
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    concurrency:
+      group: formal-ai-readonly-profile-actions-readable-${{ github.run_id }}-${{ github.run_attempt }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install immutable observer dependencies
+        timeout-minutes: 3
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Observe actual authenticated read routes
+        timeout-minutes: 1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/github-readonly-authorization-fixture.mjs
+      - name: Retain full read-only authorization observations
+        uses: actions/upload-artifact@v7
+        with:
+          name: readonly-actions-readable-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-fixture/readonly-actions-readable/
+          if-no-files-found: error
+          retention-days: 3
