@@ -72,11 +72,9 @@ function dedupeFusedEntries(fused, metaByUrl, evidence) {
   const groupsByKey = new Map();
   const allGroups = [];
   const standalone = [];
-
   const alreadyHasProvider = (target, candidate) => target.providers.some(
     (existing) => existing.id === candidate.id && existing.rank === candidate.rank,
   );
-
   fused.forEach((entry, index) => {
     const meta = metaByUrl.get(entry.url) || null;
     const keys = canonicalEntityKeys(meta);
@@ -92,7 +90,6 @@ function dedupeFusedEntries(fused, metaByUrl, evidence) {
         (meta && meta.wikipediaKey ? `WP:${meta.wikipediaKey}` : ""),
       alternateUrls: [], keys: keys.slice(), originalRank: index,
     });
-
     if (keys.length === 0) {
       standalone.push(enriched);
       return;
@@ -229,7 +226,6 @@ async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
   const texts = webSearchTexts(language);
   // Probe providers once per session and cache CORS failures.
   await ensureWebSearchProviderProbes();
-
   const isUnknownResearch = queryKind === "unknown_intent_research";
   const enabledResearchProviders = isUnknownResearch ? UNKNOWN_INTENT_RESEARCH_PROVIDERS
     .filter((provider) => externalServiceEnabled(preferences, provider.settingsKey)) : [];
@@ -238,7 +234,6 @@ async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
     : self.FormalAIWebSearchComponent.orderProviders(WEB_SEARCH_PROVIDERS);
   const optedOutResearchProviders = isUnknownResearch
     ? UNKNOWN_INTENT_RESEARCH_PROVIDERS.filter((provider) => !enabledResearchProviders.includes(provider)) : [];
-
   // Use WASM evidence when available, with an equivalent JS fallback.
   const evidence = [];
   const wasmEvidence = wasmWebSearchRequestEvidence(query, language || "");
@@ -266,7 +261,6 @@ async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
     }
   }
   for (const provider of optedOutResearchProviders) evidence.push(`web_search:service_disabled:${provider.id}`);
-
   // Keep declared provider priority for tied scores and diagnostics.
   const ordered = providerCatalog.slice().sort((a, b) => {
     const pa = typeof a.priority === "number" ? a.priority : 999;
@@ -281,7 +275,6 @@ async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
       evidence.push(`web_search:available:${provider.id}`);
     }
   }
-
   if (active.length === 0) {
     if (queryKind === "unresolved_bare_term") return null;
     return {
@@ -291,14 +284,12 @@ async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
       diagnostics: { providers: [], httpExchanges: consumeWebSearchDiagnostics() },
     };
   }
-
   const tasks = active.map((provider) => async () => {
     const startedAt = Date.now();
     const outcome = await provider.run(query, language, providerLimit);
     return Object.assign({ id: provider.id, label: provider.label, elapsedMs: Date.now() - startedAt }, outcome);
   });
   const perProvider = await runWithConcurrencyLimit(tasks, concurrency);
-
   for (const provider of perProvider) {
     if (!provider.ok) {
       evidence.push(`web_search:provider:${provider.id}:error:${provider.error || "no_results"}`);
@@ -312,7 +303,6 @@ async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
       evidence.push(`web_search:rank:${provider.id}:${index + 1}:${item.url}`);
     });
   }
-
   const fused = reciprocalRankFusion(perProvider, rrfK, evidence);
   const metaByUrl = buildItemMetadataIndex(perProvider);
   const deduped = dedupeFusedEntries(fused, metaByUrl, evidence);
@@ -329,7 +319,6 @@ async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
       evidence.push(`web_search:formal:${index + 1}:${entry.virtualId}`);
     }
   });
-
   const diagnostics = {
     query,
     language: language || "",
@@ -354,14 +343,12 @@ async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
       keys: entry.keys || [],
     })),
   };
-
   if (
     queryKind === "unresolved_bare_term" &&
     !hasGroundedUnresolvedBareTermResult(query, top)
   ) {
     return null;
   }
-
   if (top.length === 0) {
     return {
       intent: "web_search",
