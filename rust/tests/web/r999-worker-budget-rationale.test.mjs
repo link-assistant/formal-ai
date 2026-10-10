@@ -86,3 +86,30 @@ test('R999: a ceiling raised under the amendment names the handler it twins', ()
   }
   assert.ok(invoked > 0, 'at least one shard has used the amendment');
 });
+
+test('generated seed registry preserves every canonical seed within its existing budget', async () => {
+  const { meaningSeeds, registryFileOf } = await import('../../../scripts/generate-worker-crate-modules.mjs');
+  const { runInNewContext } = await import('node:vm');
+  const registry = readFileSync(REPO_ROOT + '/data/meta/seed-registry.lino', 'utf8');
+  const meanings = meaningSeeds(registry);
+  const responses = meaningSeeds(registry, 'response');
+  const actual = readFileSync(WORKER_DIR + '/formal_ai_worker_crate_seed_registry.js', 'utf8');
+  const verify = text => {
+    const context = { self: {} };
+    runInNewContext(text, context, { timeout: 1000 });
+    assert.deepEqual(Array.from(context.self.FORMAL_AI_CRATE_MEANING_SEEDS), meanings);
+    assert.deepEqual(Array.from(context.self.FORMAL_AI_CRATE_RESPONSE_SEEDS), responses);
+  };
+  assert.equal(actual, registryFileOf(meanings, responses));
+  verify(actual);
+  const targetBudget = budgets().get('js/worker/formal_ai_worker_crate_seed_registry.js')
+    ?? budgets().get('formal_ai_worker_crate_seed_registry.js');
+  assert(targetBudget);
+  assert(lineCount(actual) <= targetBudget.ceiling);
+  for (const changed of [
+    registryFileOf(meanings.slice(1), responses),
+    registryFileOf([...meanings, meanings[0]], responses),
+    registryFileOf([...meanings].reverse(), responses),
+    registryFileOf(meanings, responses.slice(1)),
+  ]) assert.throws(() => verify(changed));
+});

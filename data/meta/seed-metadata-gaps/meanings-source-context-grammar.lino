@@ -1,0 +1,22 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-source-context-grammar.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "role,precondition"
+  gap seed-metadata-gap-b25d627b3a386ec3
+    record "source-context-article"
+  gap seed-metadata-gap-fb1ec86e3fb43ed5
+    record "source-context-containment"
+  gap seed-metadata-gap-181bfc07312a3faa
+    record "source-context-declaration-contract"
+    missing "role,example"
+  gap seed-metadata-gap-4436eb864e181557
+    record "source-context-location-preposition"
+  gap seed-metadata-gap-f80c673bc47abb1a
+    record "source-context-location-verb"
+  gap seed-metadata-gap-a9a23011af71d94e
+    record "source-context-prologue"
+  gap seed-metadata-gap-4d0cd92e1e326e51
+    record "source-context-qualifier"
+  gap seed-metadata-gap-4bf09a2970012371
+    record "source-context-subject"
