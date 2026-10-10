@@ -4,8 +4,8 @@ import { boundReadPaths, pendingReadCondition } from '../file_read/ownership.mjs
 import { normalizePrompt } from '../crate/engine.mjs';
 import { unquotedPathTokens } from '../positional_edit.mjs';
 // Source-owned mixed actions share the existing obligation nodes and request replay.
-import { firstRawPrefixLeadEnd, pinnedFirstLine, composeEditClauses, preferredBinding, tokens, firstActionCueStart, bareSurfaces, cleanPathToken, looksLikeFilePath } from '../write_request.mjs';
-import { literalWriteOwnership, instructionView, composeGeneralChangePlan } from '../general_planner.mjs';
+import { firstRawPrefixLeadEnd, pinnedFirstLine, composeEditClauses, preferredBinding, tokens, firstActionCueStart, firstActionCueEnd, bareSurfaces, cleanPathToken, looksLikeFilePath } from '../write_request.mjs';
+import { literalWriteOwnership, instructionView, composeGeneralChangePlan, parseWriteContract } from '../general_planner.mjs';
 import { sentences } from '../shell_command_policy.mjs';
 import { quotedSegmentSpans, quoteFault } from '../crate/normal_markov.mjs';
 import { nestedQuoteFault } from '../quote_nesting.mjs';
@@ -86,10 +86,14 @@ function completeEditFrame(request, spans) {
 }
 
 /** Mirrors owns_complete_edit_request: a fully consumed Edit retains source bytes. */
-export function ownsCompleteEditRequest(request) {
+export function ownsCompleteLiteralRequest(request) {
   const literal = literalWriteOwnership(request);
-  if (literal !== null && literalTail(request, literal) && !attributedActionPrefix(request)
-    && contractActionPrologue(request, literal)) return false;
+  return literal !== null && literalTail(request, literal) && !attributedActionPrefix(request)
+    && contractActionPrologue(request, literal);
+}
+
+export function ownsCompleteEditRequest(request) {
+  if (ownsCompleteLiteralRequest(request)) return false;
   const edit = composeEditClauses(request);
   return edit !== null && edit.spans !== null && completeEditFrame(request, edit.spans);
 }
@@ -114,7 +118,10 @@ export function goalLedger(request) {
     if (need.span[1] === request.length && !attributedActionPrefix(request)
       && contractActionPrologue(request, contract)) return null;
   }
-  let view = closedPayload(request, contract) === null ? instructionView(request, contract) : request;
+  const ownsPayload = contract !== null && !attributedActionPrefix(request)
+    && contractActionPrologue(request, contract);
+  let view = ownsPayload && closedPayload(request, contract) === null
+    ? instructionView(request, contract) : request;
   if (view === null) return null;
   for (const span of quotedSegmentSpans(request)) view = view.slice(0, span.start) + ' '.repeat(span.end - span.start) + view.slice(span.end);
   const goals = sentences(view).map((sentence) => {
@@ -169,7 +176,9 @@ export async function planGoalLedger(request, messages, toolNames, planFor) {
     if (hasContext) return goalGap(missing);
     if (literalWriteOwnership(missing.clause) !== null) return goalGap(missing);
     if (missingIndex === 0) {
-      return goals.some(goal => ['literal_file', 'source_edit'].includes(goal.kind)) ? goalGap(missing) : null;
+      return literalWriteOwnership(request) !== null
+        || goals.some(goal => ['literal_file', 'source_edit'].includes(goal.kind))
+        ? goalGap(missing) : null;
     }
     const plan = await planBoundRequestSteps(goals.slice(0, missingIndex).map((goal) => goal.clause), messages, toolNames, planFor);
     return plan?.kind === 'final' && canDeliverFinal(plan) ? goalGap(missing) : plan;
@@ -212,6 +221,16 @@ function sourceContextWhitespaceSupported(text) {
   return true;
 }
 
+function sourceContextLabel(clause) {
+  if (!sourceContextWhitespaceSupported(clause)) return false;
+  const label = tokens(clause).slice(1).map(token => token.text).join(' ');
+  if (['file_read_action_cue', 'file_write_action_cue', 'source_attribution_marker',
+    'file_edit_joiner_cue', 'file_leading_line_constraint_lead'].some(role =>
+      mentionsRole(role, normalizePrompt(label)))) return false;
+  return contextGrammarPatterns('annotation').some(([prefix, suffix]) =>
+    prefix.test(clause) && suffix.test(''));
+}
+
 function sourceContextAtom(clause) {
   if (!sourceContextWhitespaceSupported(clause)) return false;
   const paths = unquotedPathTokens(clause).filter((token) => looksLikeFilePath(cleanPathToken(token.text)));
@@ -223,7 +242,7 @@ function sourceContextAtom(clause) {
 }
 
 function sourceContextDeclaration(clause) {
-  if (sourceContextAtom(clause)) return true;
+  if (sourceContextLabel(clause) || sourceContextAtom(clause)) return true;
   const joiners = bareSurfaces('file_edit_joiner_cue');
   const boundaries = tokens(clause).filter((token) => joiners.includes(token.text.toLowerCase()));
   if (boundaries.length === 0) return false;
@@ -252,7 +271,30 @@ function contractActionPrologue(clause, contract) {
   if (binding !== null && target !== null && target !== undefined && binding.path === contract.target
     && target.start === contract.targetSpan.start && target.end === contract.targetSpan.end) start = Math.min(start, binding.cue_start);
   const prologue = normalizePrompt(view.slice(0, start));
-  return prologue === '' || sourceContextWhitespaceSupported(view.slice(0, start))
+  return prologue === '' || sourceContextLabel(view.slice(0, start).trim()) || sourceContextWhitespaceSupported(view.slice(0, start))
     && contextGrammarPatterns('action-prologue').some(([prefix, suffix]) => prefix.test(view.slice(0, start)) && suffix.test(''))
     || ['politeness_cue', 'enumeration_cue', 'file-edit-sequence-cue'].some((role) => bareSurfaces(role).some((surface) => normalizePrompt(surface) === prologue));
+}
+
+/** Full owned literal addition frame; null position refuses ambiguous addition. */
+export function ownedAdditiveLiteralFrame(request) {
+  const contract = parseWriteContract(request);
+  if (contract === null || quoteFault(request) !== null || nestedQuoteFault(request) !== null
+    || !literalTail(request, contract) || attributedActionPrefix(request)
+    || !contractActionPrologue(request, contract)) return null;
+  const cues = normalizePrompt(request.slice(0, contract.payload.start));
+  const atEnd = mentionsRole('file_edit_position_end', cues);
+  const atStart = mentionsRole('file_edit_position_start', cues);
+  const words = tokens(request);
+  const actionStart = firstActionCueStart(words), actionEnd = firstActionCueEnd(words);
+  const action = actionStart === null || actionEnd === null ? ''
+    : normalizePrompt(request.slice(actionStart, actionEnd));
+  if (!atEnd && !atStart && !mentionsRole('coding_member_add_action', action)) return null;
+  return { target: contract.target, content: contract.content, atEnd: atEnd === atStart ? null : atEnd };
+}
+
+/** A completed ownership contract includes one unambiguous source-owned position. */
+export function ownedAdditiveLiteral(request) {
+  const frame = ownedAdditiveLiteralFrame(request);
+  return frame === null || frame.atEnd === null ? null : frame;
 }

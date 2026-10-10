@@ -119,6 +119,11 @@ pub(super) fn plan_workspace_change_step(
     // (issue #1138): slicing at the last user message -- the cue itself --
     // restarted the read--write pair on every ping.
     let current_turn = &messages[super::planner::evidence_window_start(messages)..];
+    if let Some(addition) =
+        super::literal_addition::plan_literal_addition_step(task, current_turn, tool_names, result)
+    {
+        return Some(addition);
+    }
     // `Append the contents of a.txt to b.txt`: the source is read, and the
     // request is restated with its lines as the block placed (PR #1188 G50).
     let sourced = match sourced_request(task, current_turn) {

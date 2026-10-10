@@ -1,0 +1,10 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-source-context-grammar.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  gap seed-metadata-gap-a142bcdddf375a0b
+    record "source-context-label-introducer"
+    missing "effect,unit,example"
+  gap seed-metadata-gap-3a83e65caab70ce4
+    record "source-context-opaque-label-contract"
+    missing "unit,example"

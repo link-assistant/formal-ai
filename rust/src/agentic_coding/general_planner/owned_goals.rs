@@ -215,12 +215,15 @@ fn complete_edit_frame(request: &str, spans: [(usize, usize); 2]) -> bool {
     request.get(end..).is_some_and(grammar)
 }
 
-pub(in crate::agentic_coding) fn owns_complete_edit_request(request: &str) -> bool {
+pub(in crate::agentic_coding) fn owns_complete_literal_request(request: &str) -> bool {
     let literal = literal_write_ownership(request);
-    if literal.as_ref().is_some_and(|contract| {
+    literal.as_ref().is_some_and(|contract| {
         literal_tail(request, contract) && contract_action_prologue(request, contract)
     }) && !attributed_action_prefix(request)
-    {
+}
+
+pub(in crate::agentic_coding) fn owns_complete_edit_request(request: &str) -> bool {
+    if owns_complete_literal_request(request) {
         return false;
     }
     compose_edit_clauses(request)
@@ -252,10 +255,14 @@ fn goal_ledger(request: &str) -> Option<Vec<Goal>> {
             return None;
         }
     }
-    let mut view = if contract
-        .as_ref()
-        .and_then(|contract| closed_payload(request, contract))
-        .is_none()
+    let owns_payload = contract.as_ref().is_some_and(|owner| {
+        !attributed_action_prefix(request) && contract_action_prologue(request, owner)
+    });
+    let mut view = if owns_payload
+        && contract
+            .as_ref()
+            .and_then(|contract| closed_payload(request, contract))
+            .is_none()
     {
         instruction_view_for_request(request)
     } else {
@@ -395,10 +402,11 @@ pub(in crate::agentic_coding) fn plan_owned_goal_step(
             return Some(goal_gap(missing, result));
         }
         if index == 0 {
-            return goals
-                .iter()
-                .any(|goal| goal.kind == GoalKind::LiteralFile || goal.kind == GoalKind::SourceEdit)
-                .then(|| goal_gap(missing, result));
+            return (literal_write_ownership(request).is_some()
+                || goals.iter().any(|goal| {
+                    goal.kind == GoalKind::LiteralFile || goal.kind == GoalKind::SourceEdit
+                }))
+            .then(|| goal_gap(missing, result));
         }
         let parts: Vec<_> = goals[..index]
             .iter()
@@ -427,7 +435,11 @@ fn context_grammar_patterns(kind: &'static str) -> &'static Vec<(regex::Regex, r
         std::sync::OnceLock::new();
     static PROLOGUES: std::sync::OnceLock<Vec<(regex::Regex, regex::Regex)>> =
         std::sync::OnceLock::new();
-    let selected = if kind == "action-prologue" {
+    static ANNOTATIONS: std::sync::OnceLock<Vec<(regex::Regex, regex::Regex)>> =
+        std::sync::OnceLock::new();
+    let selected = if kind == "annotation" {
+        &ANNOTATIONS
+    } else if kind == "action-prologue" {
         &PROLOGUES
     } else {
         &PATTERNS
@@ -545,8 +557,36 @@ fn source_context_atom(clause: &str) -> bool {
         })
 }
 
+fn source_context_label(clause: &str) -> bool {
+    if !source_context_whitespace_supported(clause) {
+        return false;
+    }
+    let label = tokens(clause)
+        .into_iter()
+        .skip(1)
+        .map(|token| token.text.to_owned())
+        .collect::<Vec<_>>()
+        .join(" ");
+    if [
+        "file_read_action_cue",
+        "file_write_action_cue",
+        "source_attribution_marker",
+        "file_edit_joiner_cue",
+        "file_leading_line_constraint_lead",
+    ]
+    .iter()
+    .any(|role| {
+        crate::seed::lexicon().mentions_role(role, &crate::engine::normalize_prompt(&label))
+    }) {
+        return false;
+    }
+    context_grammar_patterns("annotation")
+        .iter()
+        .any(|(prefix, suffix)| prefix.is_match(clause) && suffix.is_match(""))
+}
+
 fn source_context_declaration(clause: &str) -> bool {
-    if source_context_atom(clause) {
+    if source_context_label(clause) || source_context_atom(clause) {
         return true;
     }
     let joiners = bare_surfaces("file_edit_joiner_cue");
@@ -608,6 +648,7 @@ fn contract_action_prologue(clause: &str, contract: &LiteralWriteContract) -> bo
     }
     let prologue = crate::engine::normalize_prompt(&view[..start]);
     prologue.is_empty()
+        || source_context_label(view[..start].trim())
         || source_context_whitespace_supported(&view[..start])
             && context_grammar_patterns("action-prologue")
                 .iter()
@@ -623,4 +664,40 @@ fn contract_action_prologue(clause: &str, contract: &LiteralWriteContract) -> bo
                 .iter()
                 .any(|surface| crate::engine::normalize_prompt(surface) == prologue)
         })
+}
+
+/// Full owned literal addition frame; absent position refuses ambiguous addition.
+pub fn owned_additive_literal_frame(request: &str) -> Option<(String, String, Option<bool>)> {
+    let contract = parse_write_contract(request)?;
+    if quote_fault(request).is_some()
+        || crate::agentic_coding::quote_nesting::nested_quote_fault(request).is_some()
+        || !literal_tail(request, &contract)
+        || attributed_action_prefix(request)
+        || !contract_action_prologue(request, &contract)
+    {
+        return None;
+    }
+    let cues = crate::engine::normalize_prompt(&request[..contract.payload.start]);
+    let lexicon = crate::seed::lexicon();
+    let at_end = lexicon.mentions_role("file_edit_position_end", &cues);
+    let at_start = lexicon.mentions_role("file_edit_position_start", &cues);
+    let words = tokens(request);
+    let action = first_action_cue_start(&words)
+        .zip(first_action_cue_end(&words))
+        .map(|(start, end)| crate::engine::normalize_prompt(&request[start..end]))
+        .unwrap_or_default();
+    if !at_end && !at_start && !lexicon.mentions_role("coding_member_add_action", &action) {
+        return None;
+    }
+    Some((
+        contract.target,
+        contract.content,
+        (at_end != at_start).then_some(at_end),
+    ))
+}
+
+/// A completed ownership contract includes one unambiguous source-owned position.
+pub fn owned_additive_literal(request: &str) -> Option<(String, String, bool)> {
+    let (target, content, position) = owned_additive_literal_frame(request)?;
+    Some((target, content, position?))
 }

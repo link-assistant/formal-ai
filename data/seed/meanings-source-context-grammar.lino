@@ -110,3 +110,16 @@ meanings
     source-sha256 "0b03436f35198e7a29383bff79b9ee516985119451d19d4b9693dac2fee874f1"
     source "rust/src/agentic_coding/general_planner/owned_goals.rs"
     source-sha256 "cf0c481450526ef42a3e177fc473d8f7a3667ba4187517c6eb5d9018ca56b58f"
+
+  source-context-opaque-label-contract
+    role source-context-opaque-label-contract
+    precondition "The loaded source-context grammar owns the introducer and completely consumes one Unicode letter, mark, number or other-symbol label plus terminal sentence punctuation. The label contains no path, quoted operand, whitespace-separated prose, operation cue, attribution, conjunction or first-line constraint; missing forms or unsupported whitespace refuse."
+    effect "Only the opaque informational label is context. It supplies no operation, source, safety or publication authority. Every following action and immutable Need retains its independent obligation and original coordinate spans."
+    source "data/seed/source-context-grammar.lino::annotation opaque-label"
+    source "js/agentic/planner/owned_goals.mjs::sourceContextLabel"
+    source "rust/src/agentic_coding/general_planner/owned_goals.rs::source_context_label"
+  source-context-label-introducer
+    role source-context-label-introducer
+    defined-by source-context-opaque-label-contract
+    word "Note"
+    precondition "Only the complete grammar-owned opaque-label annotation may classify context; this word alone or free-form prose never erases a Goal or Need."

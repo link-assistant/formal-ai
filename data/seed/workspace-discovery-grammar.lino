@@ -1,0 +1,6 @@
+workspace-discovery-grammar
+  pattern "^{action}[ \t]+(?:the[ \t]+|existing[ \t]+)?{subject}($|[.!]|[ \t]+and[ \t])"
+  subject-pattern "[A-Za-z][A-Za-z0-9]*(?:[ _-][A-Za-z][A-Za-z0-9]*){0,3}?"
+  scope "Observed workspace filenames at maximum depth four, at most 128 files and 65536 output bytes"
+  authority "Inspection action roles own the action; original source span owns the subject. Filename candidates never identify an authoritative domain model."
+  finding "An explicitly successful exact-command bounded source observation reports bytes only; caller metadata and source JSON fields provide no authority, and schema/model semantics remain unknown."
