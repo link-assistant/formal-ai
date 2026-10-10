@@ -12,6 +12,10 @@ const root=resolve(import.meta.dirname,'../..');
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const ranges=new Map([['u8',255],['u16',65535],['u32',4294967295],['usize',65535]]);
 const derives=new Set(['Debug','Clone','Copy','PartialEq','Eq','Default']);
+function qualifyScalarTokens(tokens) {
+  if(tokens.some(token=>token.kind==='string'||token.kind==='char'||
+    (token.kind==='word'&&token.text.startsWith('r#'))))throw Error('unsupported scalar syntax token kind');
+}
 function scalar(tokens,nativeType) {
   if(tokens.length!==1)throw Error('unknown scalar expression');
   if(nativeType==='bool'&&tokens[0].kind==='word'&&['true','false'].includes(tokens[0].text))return {value:tokens[0].text==='true',type:'boolean'};
@@ -36,7 +40,8 @@ function attributes(tokens,variant=false) {
 }
 function unitEnum(raw) {
   nativeStringContract(raw);
-  const tokens=attributes(tokenize(raw));
+  const rawTokens=tokenize(raw);qualifyScalarTokens(rawTokens);
+  const tokens=attributes(rawTokens);
   if(tokens[0]?.text!=='pub'||tokens[1]?.text!=='enum'||tokens[2]?.kind!=='word'||tokens[3]?.text!=='{'||close(tokens,3)!==tokens.length-1)throw Error('unknown public unit enum shape');
   const defaultVariants=[];
   const variants=split(tokens.slice(4,-1)).map(part=> {
@@ -58,6 +63,7 @@ function unitEnum(raw) {
   return {name:tokens[2].text,variants,defaultVariant:defaultVariants[0]};
 }
 function scalarMethod(tokens,owned) {
+  qualifyScalarTokens(tokens);
   const start=tokens.findIndex(token=>token.text==='pub');
   if(start<0)throw Error('native method is not public');
   if(tokens.slice(0,start).map(t=>t.text).join('')!=='#[must_use]'&&start!==0)throw Error('unknown method attribute');
@@ -105,7 +111,8 @@ export function generateScalars(source,path='rust/src/summarization/mod.rs',name
   const lexical=lex(source,'Rust').filter(t=>t.type!=='comment');
   if(lexical.some(t=>t.text==='trait'))throw Error('unknown native trait environment');
   if(lexical.some(t=>t.text==='use')&&(!existsSync(root+'/'+path)||source!==readFileSync(root+'/'+path,'utf8')))throw Error('unqualified scalar import environment');
-  if(!topLevelItems(lex(publicRoot,'Rust')).some(item=>item.tokens.filter(t=>t.type!=='comment').map(t=>t.text).join('')==='pubmod'+namespace+';'))throw Error('unqualified public scalar module');
+  if(!topLevelItems(lex(publicRoot,'Rust')).some(item=>item.tokens.filter(t=>t.type!=='comment').map(t=>t.text).join('')==='pubmod'+namespace+';'&&
+    tokenize(publicRoot.slice(item.start,item.end)).every(token=>token.kind==='word'||token.kind==='punct')))throw Error('unqualified public scalar module');
   if(lexical.some(token=>['macro_rules','macro_rules!','macro'].includes(token.text)))throw Error('unknown native macro environment');
   const importItems=topLevelItems(lex(source,'Rust')).filter(item=>item.tokens.some(token=>token.text==='use'));
   if(importItems.some(item=>item.tokens.some(token=>['Debug','Clone','Copy','PartialEq','Eq','Default','matches'].includes(token.text))))throw Error('shadowed builtin derive or matches macro');
@@ -131,8 +138,8 @@ export function generateScalars(source,path='rust/src/summarization/mod.rs',name
     }
     if(bare[0]?.text==='pub'&&bare[1]?.text==='const') {
       try {
-        nativeStringContract(item.raw);
-        if(item.tokens[0]?.text!=='pub'||bare.length!==8||bare[2]?.kind!=='word'||bare[3]?.text!==':'||bare[5]?.text!=='='||bare[7]?.text!==';')throw Error('unknown public scalar constant shape');
+        nativeStringContract(item.raw);qualifyScalarTokens(item.tokens);
+        if(item.tokens[0]?.text!=='pub'||bare.length!==8||bare[2]?.kind!=='word'||bare[3]?.text!==':'||bare[4]?.kind!=='word'||bare[5]?.text!=='='||bare[7]?.text!==';')throw Error('unknown public scalar constant shape');
         const nativeType=bare[4].text,result=scalar([bare[6]],nativeType);
         programs.push(binding(item,{path:'formal_ai::'+namespace+'::'+bare[2].text,kind:'nativeConstant',nativeType,value:result.value,returnType:result.type}));
       }catch(error){refusals.push({item:'constant',reason:error.message});}
@@ -143,7 +150,7 @@ export function generateScalars(source,path='rust/src/summarization/mod.rs',name
     if(tokens[0]?.text==='#'&&tokens.some(token=>token.text==='impl')&&tokens.some(token=>enums.has(token.text)))throw Error('unknown owned impl attributes');
     if(tokens[0]?.text!=='impl')continue;
     const open=tokens.findIndex(t=>t.text==='{'),header=tokens.slice(0,open).map(t=>t.text);
-    if(header.includes('for')&&header.some(name=>enums.has(name)))throw Error('custom trait implementation for owned enum');
+    if(header.some(name=>enums.has(name)))qualifyScalarTokens(tokens.slice(0,open)); if(header.includes('for')&&header.some(name=>enums.has(name)))throw Error('custom trait implementation for owned enum');
     if(header.length!==2||!enums.has(header[1]))continue;
     const owned=enums.get(header[1]);owned.methodNames??=new Set();let cursor=open+1;
     while(cursor<tokens.length-1) {
@@ -176,6 +183,7 @@ function exportedNames(source) {
   for(const item of topLevelItems(lex(source,'Rust'))) {
     const tokens=tokenize(source.slice(item.start,item.end)),publicAt=tokens.findIndex(t=>t.text==='pub');
     if(publicAt<0)continue;
+    qualifyScalarTokens(tokens.slice(publicAt,publicAt+3));
     const declaration=tokens.slice(publicAt+1);
     if(declaration[0]?.text==='use'){for(const token of declaration.slice(1))if(token.kind==='word')names.add(token.text);}
     else if(['fn','enum','struct','const','type','mod'].includes(declaration[0]?.text)&&declaration[1]?.kind==='word')names.add(declaration[1].text);
@@ -186,7 +194,7 @@ export function scalarTestImportContract(source,ownerRoot,binding) {
   const importWitnesses=[];
   const namespace=binding.path.split('::')[1],rootExports=exportedNames(readFileSync(ownerRoot+'/rust/src/lib.rs','utf8'));
   const moduleExports=exportedNames(readFileSync(ownerRoot+'/'+binding.sourceWitnesses[0].path,'utf8'));
-  function imported(tokens,prefix='') {
+  function imported(tokens,prefix='') {qualifyScalarTokens(tokens);
     const group=tokens.findIndex(t=>t.text==='{');
     if(group>=0){const base=prefix+tokens.slice(0,group).map(t=>t.text).join('');for(const part of split(tokens.slice(group+1,close(tokens,group))))imported(part,base);return;}
     const alias=tokens.findIndex(t=>t.text==='as'),path=prefix+(alias<0?tokens:tokens.slice(0,alias)).map(t=>t.text).join('');
@@ -216,7 +224,7 @@ export function generateEnumPredicates(ownerRoot=root){
   for(const item of topLevelItems(lex(publicRoot,'Rust'))){
     const tokens=tokenize(publicRoot.slice(item.start,item.end));
     if(tokens.length!==4||tokens[0].text!=='pub'||tokens[1].text!=='mod'||tokens[3].text!==';')continue;
-    const namespace=tokens[2].text;
+    qualifyScalarTokens(tokens);const namespace=tokens[2].text;
     if(namespace==='summarization')continue;
     const alternatives=['rust/src/'+namespace+'.rs','rust/src/'+namespace+'/mod.rs'];
     const paths=alternatives.filter(path=>existsSync(ownerRoot+'/'+path));if(paths.length!==1)continue;

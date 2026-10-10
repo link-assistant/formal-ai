@@ -122,3 +122,26 @@ test('native derive names and boolean literals require identifier tokens',()=>{
  assert.equal(compile('pub const FLAG:bool=false;').programs[0].value,false);
  assert.ok(compile(source).programs.length>0);
 });
+
+
+test('native primitive type names require identifier tokens',()=>{
+ for(const source of ['pub const FLAG: "bool" = true;','pub const N: "u8" = 1;'])
+  assert.equal(compile(source).programs.length,0);
+ assert.equal(compile('pub const FLAG:bool=true;').programs[0].value,true);
+ assert.equal(compile('pub const N:u8=1;').programs[0].value,1);
+});
+
+
+test('owned scalar spans refuse executable strings and raw syntax impersonation',()=>{
+ const source=sourceFor();
+ for(const keyword of ['pub','enum'])assert.equal(compile(source.replace(keyword,JSON.stringify(keyword))).programs.length,0);
+ for(const keyword of ['pub','const','fn','self','bool','matches','Self','Active']){
+  const owner=source.slice(0,source.indexOf(' impl '));
+  const method=source.slice(source.indexOf(' impl ')).replace(keyword,JSON.stringify(keyword));
+  const generated=compile(owner+method);
+  assert.ok(!generated.programs.some(item=>item.kind==='nativeEnumScalarMatch'));
+ }
+ for(const source of ['pub const r#FLAG:bool=true;',"pub const FLAG:bool='t';"] )
+  assert.equal(compile(source).programs.length,0);
+ assert.throws(()=>generateScalars(source,'rust/src/fixture.rs','fixture','"pub" mod fixture;'));
+});
