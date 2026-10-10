@@ -18,14 +18,16 @@ jobs:
       - name: Validate actual producer source pin before checkout
         env:
           SOURCE_COMMIT: ${{ inputs.source-commit }}
+          WORKFLOW_COMMIT: ${{ github.sha }}
         run: |
           set -euo pipefail
           [[ "$SOURCE_COMMIT" =~ ^[a-f0-9]{40}$ ]]
+          test "$SOURCE_COMMIT" = "$WORKFLOW_COMMIT"
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
           fetch-depth: 0
-          ref: ${{ inputs.source-commit }}
+          ref: ${{ github.sha }}
       - name: Require the exact producer commit, never a moving preview or base
         env:
           SOURCE_COMMIT: ${{ inputs.source-commit }}
