@@ -1,0 +1,377 @@
+{
+  "schema": "bounded-root-release-cohort-evidence/v1",
+  "files": [
+    {
+      "source": "/private/tmp/pr1188-root-T2804-request.json",
+      "label": "/private/tmp/pr1188-root-T2804-request.json",
+      "bytes": 1054,
+      "sha256": "959d7f3fbeea6eccd822adb247aaefb90471336173aad82861b94244b1ca51fb"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2804.json",
+      "label": "/private/tmp/pr1188-root-T2804.json",
+      "bytes": 2672,
+      "sha256": "506ddd1d60d4a98d928c1c75b96e3a8521fce5d9052feaac97e5f1ed68479aaf"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2804.log",
+      "label": "/private/tmp/pr1188-root-T2804.log",
+      "bytes": 92,
+      "sha256": "22ffd200990e6cebffe7155986a25aaac9b1154fe95000c233de7a0289e44b2d"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805-request.json",
+      "label": "/private/tmp/pr1188-root-T2805-request.json",
+      "bytes": 165,
+      "sha256": "51db130adf069de12e136e2a102952c34790890af5ab04784aee50a8ff0b4b43"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805.json",
+      "label": "/private/tmp/pr1188-root-T2805.json",
+      "bytes": 1159,
+      "sha256": "ac8a5aeed445def691d1ffd4fc5ec7109cb4e1b79c4e299979f97d2f18414d23"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805.log",
+      "label": "/private/tmp/pr1188-root-T2805.log",
+      "bytes": 91,
+      "sha256": "488f6a4d8ac4941750222cccb86abd86ac8b3f8be66df4abaa8f86df50bdd21e"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805-apply.mjs",
+      "label": "/private/tmp/pr1188-root-T2805-apply.mjs",
+      "bytes": 10343,
+      "sha256": "b293d2db28b416fad7a23a32249e481c98def7569daa640e9ca585311be19eea"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-runner.mjs",
+      "label": "/private/tmp/pr1188-root-runner.mjs",
+      "bytes": 3410,
+      "sha256": "5323bd0d36655fd12a478c6de6a4734fd4f9d97752f4b1d516b47815ec6cf7f2"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/actionlint-process.json",
+      "label": "/private/tmp/pr1188-root-T2805/actionlint-process.json",
+      "bytes": 688,
+      "sha256": "430aa8beac1ec75c6008ff1fa4d65e648b491241818b8cb99269fa52b5e0fcd7"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/actionlint.stderr.log",
+      "label": "/private/tmp/pr1188-root-T2805/actionlint.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/actionlint.stdout.log",
+      "label": "/private/tmp/pr1188-root-T2805/actionlint.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/checked-projection-generator.mjs",
+      "label": "/private/tmp/pr1188-root-T2805/checked-projection-generator.mjs",
+      "bytes": 14133,
+      "sha256": "c0ef74e6c7be32da8a2e4f2bbfcda954e66cafdfbe0a669332697a5cc303a781"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/commit.log",
+      "label": "/private/tmp/pr1188-root-T2805/commit.log",
+      "bytes": 781,
+      "sha256": "a43e85443b79ca473800872726af9bdcd5dbc939d941283e22eb81445af52610"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/finite-source-manifest.json",
+      "label": "/private/tmp/pr1188-root-T2805/finite-source-manifest.json",
+      "bytes": 5693,
+      "sha256": "1409fca621511e0f63996ab1dd87ff086d17650b02e306e64c93ed98a18c72bb"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/generated/candidate-output-bindings.json",
+      "label": "/private/tmp/pr1188-root-T2805/generated/candidate-output-bindings.json",
+      "bytes": 43161,
+      "sha256": "719ee777c38298f05e487b50eb60664dcf35d9450de0d26a5b1e4ea489f91db1"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/generated/candidate-release-caller.yml",
+      "label": "/private/tmp/pr1188-root-T2805/generated/candidate-release-caller.yml",
+      "bytes": 45476,
+      "sha256": "f9ed107a154851b95c5ba18d722743fc73b32c735551ba2c42f1bc685868a8a8"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/generated/candidate-release-staged.yml",
+      "label": "/private/tmp/pr1188-root-T2805/generated/candidate-release-staged.yml",
+      "bytes": 74421,
+      "sha256": "6cdaf5872212a6d9f0322282decae2b4e730f4ec58e942816f5f0f240a243472"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/generated/release-stage-transfer.mjs",
+      "label": "/private/tmp/pr1188-root-T2805/generated/release-stage-transfer.mjs",
+      "bytes": 17495,
+      "sha256": "ec8c781d8293cc4990ac3217e48569a9878ae6556defd9812d0ef91242934bdc"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/generated/stage-source-coverage.json",
+      "label": "/private/tmp/pr1188-root-T2805/generated/stage-source-coverage.json",
+      "bytes": 71335,
+      "sha256": "2adae4ff1037b281969b2b6e44aadf65dbe93247db49fdf0bd25a6309a140a8d"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/generator-process.json",
+      "label": "/private/tmp/pr1188-root-T2805/generator-process.json",
+      "bytes": 629,
+      "sha256": "c92ad9fc748920b5ffbb2c8e5448d6096860e61fe76b02c0e87de06b42d015ef"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/git-diff-check.json",
+      "label": "/private/tmp/pr1188-root-T2805/git-diff-check.json",
+      "bytes": 127,
+      "sha256": "b2b25b76c6a6eee177d8d5f2834f130f01f1775eeee905e0a9c586c98bc9756b"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/installed-controls-process.json",
+      "label": "/private/tmp/pr1188-root-T2805/installed-controls-process.json",
+      "bytes": 24004,
+      "sha256": "685eb1dac5ed7a1a6c8d1dfff1b75a0074ef29ec8716ab3a69a1eb2ac619e1d4"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/installed-controls.stderr.log",
+      "label": "/private/tmp/pr1188-root-T2805/installed-controls.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/installed-controls.stdout.log",
+      "label": "/private/tmp/pr1188-root-T2805/installed-controls.stdout.log",
+      "bytes": 22758,
+      "sha256": "2f47bfc3817e433fd8d917f77f8cec0058b11845e027bea8b957cb253751a088"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/0.after",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/0.after",
+      "bytes": 46716,
+      "sha256": "5bbe4f1d15995c62c58fd3510f32d346991af719de32e6f97de184a5a8c415a0"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/0.before",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/0.before",
+      "bytes": 46628,
+      "sha256": "8371c69c807cbeaae6a72de404eb21cf47f0765cdb22d98274a55ec55fb4b1d8"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/1.after",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/1.after",
+      "bytes": 66847,
+      "sha256": "3638d7eadf7259245797fd8b87fae1840d4a7efff7fb337e191d7d3ac5165a39"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/1.before",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/1.before",
+      "bytes": 66830,
+      "sha256": "3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/2.after",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/2.after",
+      "bytes": 63949,
+      "sha256": "c4b0ea314f2b5b4206404e30dd7af59e3c50f1c709c948fca8582797c13cd8c8"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/2.before",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/2.before",
+      "bytes": 63625,
+      "sha256": "857bf14380e4e5da98a79fb76b646b8feef723e91f640b9844d10fae922f5018"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/3.after",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/3.after",
+      "bytes": 16816,
+      "sha256": "d3b4d038861de25df8b1b08867c36100c42fca52c51d8814058e9921d7970be7"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/3.before",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/3.before",
+      "bytes": 10419,
+      "sha256": "fed219f646a016fe50873aab64dcd38e9dd6084442859e3f027f99f1dd881294"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/4.after",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/4.after",
+      "bytes": 16139,
+      "sha256": "0175a6c24a570368b8e7c28d11f615fbe04a8df4b18a09b79bfe185db92bf7aa"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/4.before",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/4.before",
+      "bytes": 10488,
+      "sha256": "ae296688015c36e5516d13eb90674e22f184bb880e856840d8a0ad4054dd2971"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/5.after",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/5.after",
+      "bytes": 71335,
+      "sha256": "2adae4ff1037b281969b2b6e44aadf65dbe93247db49fdf0bd25a6309a140a8d"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/5.before",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/5.before",
+      "bytes": 71335,
+      "sha256": "e0af47e74cc71ba2dc11a27a4390fffbc1c700f6424e21d0da29a22650c4b237"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/6.after",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/6.after",
+      "bytes": 43161,
+      "sha256": "719ee777c38298f05e487b50eb60664dcf35d9450de0d26a5b1e4ea489f91db1"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/6.before",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/6.before",
+      "bytes": 43161,
+      "sha256": "5972098cdae938d1bfcc2d8498e49c9b9bb45ac0b2b883f2bf624a482279e05c"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/7.after",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/7.after",
+      "bytes": 45476,
+      "sha256": "f9ed107a154851b95c5ba18d722743fc73b32c735551ba2c42f1bc685868a8a8"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/7.before",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/7.before",
+      "bytes": 45459,
+      "sha256": "6788f39405b01029f21c9395db5aba8cf317240e37a9a2970f059edfeffe95b4"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/8.after",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/8.after",
+      "bytes": 66847,
+      "sha256": "3638d7eadf7259245797fd8b87fae1840d4a7efff7fb337e191d7d3ac5165a39"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2805/preimages/8.before",
+      "label": "/private/tmp/pr1188-root-T2805/preimages/8.before",
+      "bytes": 66830,
+      "sha256": "3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8"
+    },
+    {
+      "source": "/private/tmp/pr1188-8ff601-official/job-114072716948.log",
+      "label": "/private/tmp/pr1188-8ff601-official/job-114072716948.log",
+      "bytes": 233327,
+      "sha256": "2a8b6d36cf9dd9614b0029915abc0b134d543837238a7d908e69bce9d2d44329"
+    },
+    {
+      "source": "/private/tmp/pr1188-8ff601-official/job-114072717301.log",
+      "label": "/private/tmp/pr1188-8ff601-official/job-114072717301.log",
+      "bytes": 46917,
+      "sha256": "3a926636199b0fd28518e344a2e96b59e854380d2cecf61bca232b6f74719782"
+    },
+    {
+      "source": "/private/tmp/pr1188-8ff601-official/job-114076289166.log",
+      "label": "/private/tmp/pr1188-8ff601-official/job-114076289166.log",
+      "bytes": 277027,
+      "sha256": "017464c81cc3a4802c6b7b1110a344d46f81f04bcaf88cdec85b12b50b3cedf0"
+    },
+    {
+      "source": "/private/tmp/pr1188-8ff601-official/job-114076289170.log",
+      "label": "/private/tmp/pr1188-8ff601-official/job-114076289170.log",
+      "bytes": 266253,
+      "sha256": "e9e46a90dac47011dcef19de73680093b90945968c4d7d984038a683126149e6"
+    },
+    {
+      "source": "/private/tmp/pr1188-8ff601-official/job-114076289233.log",
+      "label": "/private/tmp/pr1188-8ff601-official/job-114076289233.log",
+      "bytes": 264169,
+      "sha256": "22874ea8e32b9ccbef78c452b5ca8841678b1a78a3a1267992745f045ec3640d"
+    },
+    {
+      "source": "/private/tmp/pr1188-8ff601-official/job-114076289477.log",
+      "label": "/private/tmp/pr1188-8ff601-official/job-114076289477.log",
+      "bytes": 267172,
+      "sha256": "77d2d21670f9f58c0e5ed520611645da4b03e26e5895134488023b0e6cf768f5"
+    },
+    {
+      "source": "/private/tmp/pr1188-8ff601-official/job-114076289662.log",
+      "label": "/private/tmp/pr1188-8ff601-official/job-114076289662.log",
+      "bytes": 266788,
+      "sha256": "a3de7978ee3453e4b9eb266f1b710a8ca8f7c8581337d36f3df0d796f050dba5"
+    },
+    {
+      "source": "/private/tmp/pr1188-8ff601-official/job-114076289671.log",
+      "label": "/private/tmp/pr1188-8ff601-official/job-114076289671.log",
+      "bytes": 262026,
+      "sha256": "b807ad6282ef07f48dde439406074ac1941aece7069ed20bbca50fa58e3d8648"
+    },
+    {
+      "source": "/private/tmp/pr1188-8ff601-official/job-114076289686.log",
+      "label": "/private/tmp/pr1188-8ff601-official/job-114076289686.log",
+      "bytes": 277601,
+      "sha256": "3efe1c8280a2172d0dc4e43f142676545c2a19f4ccfba3cc353689d1725c04eb"
+    },
+    {
+      "source": "/private/tmp/pr1188-8ff601-official/job-114076289793.log",
+      "label": "/private/tmp/pr1188-8ff601-official/job-114076289793.log",
+      "bytes": 269344,
+      "sha256": "1a6ef0df2a6a64bc53423d79c7e1e9d03e7a3c2d83d176657da7606634c39073"
+    },
+    {
+      "source": "/private/tmp/pr1188-8ff601-official/job-114078639891.log",
+      "label": "/private/tmp/pr1188-8ff601-official/job-114078639891.log",
+      "bytes": 438283,
+      "sha256": "45b35d10a3a51b31463665ebbac2bc3b929fcbf8e7a8d588c70b11ec354e0ccc"
+    },
+    {
+      "source": "/private/tmp/pr1188-8ff601-official/compiler-zizmor-selection.json",
+      "label": "/private/tmp/pr1188-8ff601-official/compiler-zizmor-selection.json",
+      "bytes": 1092,
+      "sha256": "debc7cfcf033db09f44cac9077b914241c5d7e18f6d71f75f6318314d7543c4b"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-monitor/8ff601-run-38005341210-jobs-0002.json",
+      "label": "/private/tmp/pr1188-ci-monitor/8ff601-run-38005341210-jobs-0002.json",
+      "bytes": 35534,
+      "sha256": "d7634f6114cba777797bb601fe659ffe7e53db2be74603c89f765b8dc370b3dc"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-monitor/8ff601-run-38005341209-jobs-0017.json",
+      "label": "/private/tmp/pr1188-ci-monitor/8ff601-run-38005341209-jobs-0017.json",
+      "bytes": 37879,
+      "sha256": "8c3cb0414c7d1b5184d2c5a45581ba397825523a68b2bcfb81a5f6aeabb71cde"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/promotion-race/immutable-archive-selection-v2.json",
+      "label": "proposal-selection",
+      "bytes": 41626,
+      "sha256": "6b49e189060c0eeed1086884e379eb9349d8e0588f31dc8e1e51a979fb931535"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/runtime-service-extraction/actual-8ff601-completed/immutable-archive-selection.json",
+      "label": "completed-service-selection",
+      "bytes": 20263,
+      "sha256": "ca94ffb50b02ae74bea18a626e4fe16e6755fa96101eafe3de6632752ab4dcf6"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T2806/ci-summary-frozen.json",
+      "label": "/private/tmp/pr1188-root-T2806/ci-summary-frozen.json",
+      "bytes": 348,
+      "sha256": "13fde9371b69e8095f8554ad0bd089ee5012d6f50bba0a6909c798bd01b73417"
+    },
+    {
+      "source": "/Users/konard/Code/Archive/link-assistant/formal-ai/docs/case-studies/pull-request-1188/handoff.md",
+      "label": "metadata-preimage:docs/case-studies/pull-request-1188/handoff.md",
+      "bytes": 42525,
+      "sha256": "56fbd06cd84bd5fc5f752af85141889725597d98d1603c522b00d2ee86957ada"
+    },
+    {
+      "source": "/Users/konard/Code/Archive/link-assistant/formal-ai/docs/case-studies/pull-request-1188/formal-ai-dogfood.md",
+      "label": "metadata-preimage:docs/case-studies/pull-request-1188/formal-ai-dogfood.md",
+      "bytes": 1233676,
+      "sha256": "cd46ceed82661914a2bc10ed422124f39b987c6a69b678ccada6e0f61320e6b7"
+    },
+    {
+      "source": "/Users/konard/Code/Archive/link-assistant/formal-ai/docs/case-studies/pull-request-1188/formal-ai-tally.md",
+      "label": "metadata-preimage:docs/case-studies/pull-request-1188/formal-ai-tally.md",
+      "bytes": 3210,
+      "sha256": "6092154551d9e47fb394a8773af9a41a70f659f8722b4cf132580e5b81e1a60d"
+    }
+  ]
+}
