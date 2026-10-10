@@ -90,7 +90,11 @@ export function expression(tokens, context) {
   let cursor = 1;
   const first = tokens[0];
   if (first.kind === 'string') value = { kind: 'literal', value: first.text, type: 'string' };
-  else if (first.kind === 'number' && /^\d+$/u.test(first.text)) value = { kind: 'literal', value: Number(first.text), type: 'number' };
+  else if (first.kind === 'number' && /^\d+$/u.test(first.text)) {
+    const integer = Number(first.text);
+    if (!Number.isSafeInteger(integer)) throw new Error('native integer exceeds exact JavaScript range');
+    value = { kind: 'literal', value: integer, type: 'number' };
+  }
   else if (['true', 'false'].includes(first.text)) value = { kind: 'literal', value: first.text === 'true', type: 'boolean' };
   else if (first.text === '(') {
     cursor = close(tokens, 0) + 1;
@@ -171,6 +175,7 @@ export function expression(tokens, context) {
       let signature = methodTypes[value.type]?.[name];
       if (name === 'expect' && /^(result|option):/u.test(value.type)) signature = [value.type.split(':')[1], 'string'];
       if (name === 'iter' && value.type.startsWith('vec:')) signature = ['iter:' + value.type.slice(4)];
+      if (name === 'contains' && value.type === 'vec:string') signature = ['boolean', 'string'];
       if (name === 'len' && value.type.startsWith('vec:')) signature = ['number'];
       if (name === 'is_empty' && value.type.startsWith('vec:')) signature = ['boolean'];
       if (['clone', 'to_owned'].includes(name)) signature = [value.type];

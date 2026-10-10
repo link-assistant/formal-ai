@@ -1069,7 +1069,20 @@ async function tryResponseLanguageFollowup(prompt, normalized, history, preferen
   for (const marker of followupEvidence) {
     if (!merged.includes(marker)) merged.push(marker);
   }
-  return { ...replay, evidence: merged };
+  // The native follow-up records the outer provenance as events as well as
+  // answer evidence, so the symbolic projection retains it when rebuilding
+  // evidence from the event log.
+  const followupEvents = [
+    { kind: "response_language_followup:target", payload: targetLanguage },
+    { kind: "language_to", payload: targetLanguage },
+    { kind: "response_language_followup:prior_user", payload: previousUser },
+    { kind: "response_language_followup:handler", payload: replay.intent },
+  ];
+  return {
+    ...replay,
+    evidence: merged,
+    solverEvents: [...followupEvents, ...(Array.isArray(replay.solverEvents) ? replay.solverEvents : [])],
+  };
 }
 
 function pickPrimaryProviderId(providers, sourceKind) {

@@ -9,6 +9,8 @@ const root = new URL('../../../', import.meta.url).pathname;
 const compileSource = 'rust/tests/unit/specification/natural_language_skill_compilation.rs';
 const countSource = 'rust/tests/unit/specification/behavior_rules.rs';
 const originals = [
+  ['rust/tests/unit/specification/response_language_followup.rs', 'capabilities_follow_up_returns_to_english_on_request', 4, 4],
+  ['rust/tests/unit/specification/response_language_followup.rs', 'identity_follow_up_retargets_between_non_english_languages', 4, 4],
   [compileSource, 'natural_language_skill_compiles_to_reusable_package', 7, 7],
   [compileSource, 'natural_language_skill_compiles_supported_language_shapes', 2, 8],
   [compileSource, 'compiled_package_replays_deterministically_and_exports_links_notation', 5, 5],
@@ -193,4 +195,31 @@ test('diagnostic field chains cannot hide an unexecuted effect', () => {
   }`);
   assert.equal(parsed.program, undefined);
   assert.equal(parsed.reason, 'unsupported diagnostic side effect');
+});
+
+// Add these source-connected entries to originals in rust-specification-programs.test.mjs:
+// ['rust/tests/unit/specification/response_language_followup.rs', 'capabilities_follow_up_returns_to_english_on_request', 4, 4],
+// ['rust/tests/unit/specification/response_language_followup.rs', 'identity_follow_up_retargets_between_non_english_languages', 4, 4],
+
+test('typed string vector membership preserves string substring semantics', async () => {
+  const parsed = inline(`#[test] fn arbitrary_values() {
+    assert!(["alpha", "Ω"].contains(&"Ω"));
+    assert!(!["alpha"].contains(&"beta"));
+    assert!("alphabet".contains("alpha"));
+  }`);
+  assert.ok(parsed.program, parsed.reason);
+  const actual = await executeTypedProgram(new WorkerHost(), parsed.program);
+  assert.equal(actual.status, 'passed', actual.failure);
+  assert.equal(actual.assertions, 3);
+});
+
+test('typed vector membership rejects unknown element types and preserves failure', async () => {
+  for (const body of ['assert!(["alpha"].contains(&true));', 'assert!([].contains(&"alpha"));', 'assert!([true].contains(&true));', 'assert!([("Ω", true)].contains(&("Ω", true)));', 'assert!([9007199254740992].contains(&9007199254740993));', 'assert!(["alpha"].contains(&"alpha")); mutate_repository();']) {
+    assert.equal(inline(`#[test] fn arbitrary_refusal() { ${body} }`).program, undefined);
+  }
+  const parsed = inline('#[test] fn wrong_membership() { assert!(["alpha"].contains(&"beta")); }');
+  assert.ok(parsed.program, parsed.reason);
+  const actual = await executeTypedProgram(new WorkerHost(), parsed.program);
+  assert.equal(actual.status, 'failed');
+  assert.equal(actual.assertions, 1);
 });
