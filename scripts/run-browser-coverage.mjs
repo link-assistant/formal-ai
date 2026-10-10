@@ -6,6 +6,7 @@ import {
   browserInventory, browserSourceInventory, browserPlan, browserDurationModel, browserShardCount, collectBrowserShards,
   completedTestSummary, completeCoverageRecords, contentDigest,
 } from './lib/browser-coverage-shards.mjs';
+import { browserDurationStatus, readBrowserDurationPackets } from './lib/browser-measured-durations.mjs';
 
 const root = process.cwd();
 const childEnvironment = { ...process.env };
@@ -35,6 +36,7 @@ const actualSource = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encodi
 if (actualSource.status !== 0 || actualSource.stdout.trim() !== identity.source) throw new Error('browser coverage checkout differs from workflow source');
 const sourceInventory = browserSourceInventory(root);
 identity.sourceDigest = contentDigest(JSON.stringify(sourceInventory));
+identity.durationReporterDigest = contentDigest(fs.readFileSync(path.join(root, 'scripts/browser-duration-reporter.mjs')));
 const inventory = browserInventory(root);
 const durationModel = browserDurationModel(root);
 const plan = browserPlan(inventory, browserShardCount, durationModel);
@@ -46,13 +48,16 @@ if (mode === 'run') {
   const coveragePath = path.join(directory, 'coverage.info');
   const stdoutPath = path.join(directory, 'stdout.txt');
   const stderrPath = path.join(directory, 'stderr.txt');
-  for (const target of [coveragePath, stdoutPath, stderrPath, path.join(directory, 'receipt.json')]) {
+  const durationsPath = path.join(directory, 'durations.jsonl');
+  for (const target of [coveragePath, stdoutPath, stderrPath, durationsPath, path.join(directory, 'receipt.json')]) {
     if (fs.existsSync(target)) throw new Error('browser shard destination already exists');
   }
   const argumentsList = [
     '--test', '--experimental-test-coverage',
     '--test-reporter=lcov', `--test-reporter-destination=${coveragePath}`,
     '--test-reporter=spec', '--test-reporter-destination=stdout',
+    `--test-reporter=${path.join(root, 'scripts/browser-duration-reporter.mjs')}`,
+    `--test-reporter-destination=${durationsPath}`,
     ...plan.shards[index - 1].map((relative) => path.join(root, relative)),
   ];
   const stdoutDescriptor = fs.openSync(stdoutPath, 'wx');
@@ -70,7 +75,8 @@ if (mode === 'run') {
   const stderr = fs.readFileSync(stderrPath);
   const sourceUnchanged = JSON.stringify(browserInventory(root)) === JSON.stringify(inventory)
     && JSON.stringify(browserSourceInventory(root)) === JSON.stringify(sourceInventory)
-    && browserDurationModel(root).digest === durationModel.digest;
+    && browserDurationModel(root).digest === durationModel.digest
+    && contentDigest(fs.readFileSync(path.join(root, 'scripts/browser-duration-reporter.mjs'))) === identity.durationReporterDigest;
   let summary = null;
   let coverage = null;
   let validationError = null;
@@ -88,28 +94,23 @@ if (mode === 'run') {
     ...status, sourceUnchanged, summary, validationError,
     coverageDigest: coverage ? contentDigest(coverage) : null,
     stdoutDigest: contentDigest(stdout), stderrDigest: contentDigest(stderr),
+    executionRoot: root, durationsDigest: fs.existsSync(durationsPath) ? contentDigest(fs.readFileSync(durationsPath)) : null,
     nodeVersion: process.version, executable: process.execPath, arguments: argumentsList,
   };
   fs.writeFileSync(path.join(directory, 'receipt.json'), `${JSON.stringify(receipt, null, 2)}\n`, { flag: 'wx' });
   if (validationError) { console.error(validationError); process.exitCode = 1; }
 } else if (mode === 'collect') {
-  const packets = fs.readdirSync(directory).map((name) => {
-    const folder = path.join(directory, name);
-    if (!fs.statSync(folder).isDirectory()) throw new Error('unexpected browser shard artifact entry');
-    const names = fs.readdirSync(folder).sort();
-    if (JSON.stringify(names) !== JSON.stringify(['coverage.info', 'receipt.json', 'stderr.txt', 'stdout.txt'])) {
-      throw new Error('browser shard artifact members are missing or extra');
-    }
-    return {
-      receipt: JSON.parse(fs.readFileSync(path.join(folder, 'receipt.json'), 'utf8')),
-      coverage: fs.readFileSync(path.join(folder, 'coverage.info')),
-      stdout: fs.readFileSync(path.join(folder, 'stdout.txt')),
-      stderr: fs.readFileSync(path.join(folder, 'stderr.txt')),
-    };
-  });
+  const packets = readBrowserDurationPackets(directory);
   const merged = collectBrowserShards(plan, identity, packets);
   fs.mkdirSync(path.join(root, 'coverage'), { recursive: true });
   fs.writeFileSync(path.join(root, 'coverage/browser-lcov.info'), merged);
+  const durationStatus = browserDurationStatus(plan, identity, packets);
+  fs.writeFileSync(path.join(root, 'coverage/browser-duration-status.json'), `${JSON.stringify(durationStatus, null, 2)}\n`);
+  if (durationStatus.status === 'Measured') {
+    fs.writeFileSync(path.join(root, 'coverage/browser-measured-durations.lino'), durationStatus.table);
+  } else {
+    fs.rmSync(path.join(root, 'coverage/browser-measured-durations.lino'), { force: true });
+  }
   fs.writeFileSync(path.join(root, 'coverage/browser-shard-manifest.json'), `${JSON.stringify({ ...identity, inventory, planDigest: plan.digest, shards: packets.map((packet) => packet.receipt) }, null, 2)}\n`);
 } else {
   throw new Error('usage: run-browser-coverage.mjs run shard destination | collect artifact-directory');

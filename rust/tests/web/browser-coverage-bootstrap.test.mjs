@@ -17,11 +17,20 @@ function checkBootstrap(source) {
   assert.match(source, /run: rust-script scripts\/check-coverage-ratchet.rs --only browser/u);
 }
 
+function mutateWorkflowJob(source, jobId, before, after) {
+  const matches = workflowJobs(source).filter(job => job.id === jobId);
+  assert.equal(matches.length, 1, 'Mutation requires one selected job');
+  const body = matches[0].body;
+  assert.equal(source.split(body).length, 2, 'Selected job body must be unique');
+  assert.equal(body.split(before).length, 2, 'Mutation requires one exact occurrence');
+  return source.replace(body, body.replace(before, after));
+}
+
 test('every browser shard installs the actual frozen dependencies before its complete test inventory', () => {
   checkBootstrap(workflow);
   for (const modified of [
-    workflow.replace('run: bun install --frozen-lockfile --ignore-scripts', 'run: true'),
-    workflow.replace('bun-version-file: .bun-version', 'bun-version: latest'),
-    workflow.replace('shard: [1, 2, 3, 4, 5, 6]', 'shard: [1, 2, 3, 4, 5]'),
+    mutateWorkflowJob(workflow, 'browser-coverage-shard', 'run: bun install --frozen-lockfile --ignore-scripts', 'run: true'),
+    mutateWorkflowJob(workflow, 'browser-coverage-shard', 'bun-version-file: .bun-version', 'bun-version: latest'),
+    mutateWorkflowJob(workflow, 'browser-coverage-shard', 'shard: [1, 2, 3, 4, 5, 6]', 'shard: [1, 2, 3, 4, 5]'),
   ]) assert.throws(() => checkBootstrap(modified));
 });

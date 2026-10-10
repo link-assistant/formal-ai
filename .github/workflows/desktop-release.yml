@@ -285,6 +285,8 @@ jobs:
       run:
         shell: bash
     env:
+      # Keep the cache daemon alive during long compiler requests; the job remains capped at 30 minutes.
+      SCCACHE_IDLE_TIMEOUT: '0'
       NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
       NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
     steps:

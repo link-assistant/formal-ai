@@ -293,6 +293,12 @@ jobs:
       # uninstrumented for the whole sweep, ~63 minutes instrumented. Its gate
       # is adjudicated uninstrumented in benchmark-corpus-gate.yml; this lane
       # measures lines, and no honest budget holds both.
+      - name: Setup the pinned native fixture dependency installer
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install actual locked native fixture dependencies
+        run: bun install --frozen-lockfile --ignore-scripts
       - name: Run the instrumented coverage shard
         env:
           TEST_BUDGET_SECONDS: 1200
@@ -627,6 +633,8 @@ jobs:
           name: coverage-browser
           path: |
             coverage/browser-lcov.info
+            coverage/browser-measured-durations.lino
+            coverage/browser-duration-status.json
             coverage/summary-browser.md
             coverage/summary-browser.json
           if-no-files-found: warn
