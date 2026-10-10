@@ -126,8 +126,54 @@ test('both exact native platform descriptors are asserted after genuine anonymou
 // Source operation ownership controls; actual registry timing remains independently observed.
 import {readFileSync as readWorkflowSource} from 'node:fs';
 import YAML from 'yaml';
-const workflows=()=>({release:YAML.parse(readWorkflowSource(new URL('../../../.github/workflows/release.yml',import.meta.url),'utf8')),
- images:YAML.parse(readWorkflowSource(new URL('../../../.github/workflows/container-images.yml',import.meta.url),'utf8'))});
+import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-operation-view.mjs';
+// Original operation locators expand only after the complete current physical compiler proof.
+function workflows() {
+ const checked=readCheckedReleaseOperationView();
+ assert.equal(checked.inventory.operations,52);assert.equal(checked.inventory.bindings,104);
+ assert.equal(checked.productionAuthority,false);
+ const release=YAML.parse(checked.originalSource);
+ const outputBindings=JSON.parse(readWorkflowSource(new URL('../../../experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json',import.meta.url),'utf8'));
+ assert.equal(outputBindings.originalOperations,52);assert.equal(outputBindings.bindings.length,104);
+ const writers=Object.entries(release.jobs).filter(([,job])=>job.steps?.some(step=>
+  /node scripts\/release-image-factory\.mjs (?:publish|mirror) /u.test(step.run??'')));
+ assert.equal(writers.length,2,'both checked original publication writers required');
+ const writerNames=new Set(writers.map(([name])=>name));
+ for(const [name,job] of Object.entries(checked.physicalCaller.jobs))
+  if(!writerNames.has(name))release.jobs[name]=job;
+ if(checked.mode==='deployed')for(const [name,original] of writers) {
+  const caller=checked.physicalCaller.jobs[name];
+  assert.equal(caller.uses,'./.github/workflows/release-staged.yml');
+  assert.ok(['auto','manual'].includes(caller.with.mode));
+  assert.deepEqual(caller.permissions,{contents:'write',packages:'write',actions:'read'});
+  const stage=checked.physicalStages.jobs[caller.with.mode+'_publish-verify-images'];
+  assert.equal(stage.concurrency,undefined);
+  assert.deepEqual(stage.permissions,{contents:'read',packages:'write'});
+  assert.equal(stage['timeout-minutes'],30);
+  for(const operation of ['publish','mirror']) {
+   const retained=original.steps.filter(step=>step.run?.startsWith('node scripts/release-image-factory.mjs '+operation+' '));
+   assert.equal(retained.length,1);
+   const physical=stage.steps.filter(step=>step.name===retained[0].name);
+   assert.equal(physical.length,1);
+   const command=retained[0].run.replace('node scripts/','node _protocol/scripts/');
+   const prefix=operation==='publish'
+    ? 'env TEST_BUDGET_ENFORCE=true TEST_BUDGET_GRACE_SECONDS=5 TEST_BUDGET_POLL_SECONDS=1 TEST_WARN_RATIO_PERCENT=70 '+
+      'RUSTC_WRAPPER=' + String.fromCharCode(39,39) + ' bash _protocol/scripts/run-with-budget-warning.sh 1250 "Publish prepared release image" '
+    : '';
+   assert.equal(physical[0].run,prefix+command,'actual original factory operands/order must remain exact');
+   const expectedEnvironment=structuredClone(retained[0].env);
+   for(const binding of outputBindings.bindings.filter(binding=>binding.caller===name &&
+    binding.consumerStage==='publish-verify-images' && binding.consumerOperation===retained[0].name)) {
+    for(const field of Object.keys(expectedEnvironment??{}))if(typeof expectedEnvironment[field]==='string')
+     expectedEnvironment[field]=expectedEnvironment[field].split(binding.original).join(binding.replacement);
+   }
+   assert.deepEqual(physical[0].env,expectedEnvironment,'all environment operands follow exact checked output bindings');
+  }
+  // Keep actual caller permissions visible, including its newly required Actions read.
+  original.permissions=caller.permissions;original.concurrency=caller.concurrency;
+ }
+ return {release,images:YAML.parse(readWorkflowSource(new URL('../../../.github/workflows/container-images.yml',import.meta.url),'utf8'))};
+}
 function mutablePublicationLease(release,images) {
  const common='formal-ai-repository-writes',lease={group:common,queue:'max'};
  const factoryWriters=Object.entries(release.jobs).filter(([,job])=>job.steps?.some(step=>/node scripts\/release-image-factory\.mjs (?:publish|mirror) /u.test(step.run??'')));
