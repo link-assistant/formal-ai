@@ -67,6 +67,7 @@ link-calculator = "0.22.0"
 meta-language = { version = "0.58.2", optional = true }
 nom = "8"
 kamadak-exif = "0.6.1"
+regex = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 sha2 = "0.11"
@@ -100,7 +101,6 @@ meta-language = ["dep:meta-language"]
 # The same codec the library encodes with, so tests can hold published
 # artifacts to the notation they claim to be written in.
 lino-objects-codec = "0.8.0"
-regex = "1"
 temp-env = "0.3.6"
 unicode-normalization = "0.1"
 
