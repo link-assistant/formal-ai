@@ -199,7 +199,21 @@ function concurrencyExpression(source,context){
   if(t.startsWith("'"))return t.slice(1,-1).replace(/\\(['\\])/gu,'$1');
   if(/^\d+$/u.test(t))return Number(t);
   if(t==='true'||t==='false')return t==='true';
-  if(t==='format'&&tokens[i]==='('){i++;const values=[parse(1)];while(tokens[i]===','){i++;values.push(parse(1));}assert.equal(tokens[i++],')');const [pattern,...args]=values;assert.equal(typeof pattern,'string');return pattern.replace(/\{(\d+)\}/gu,(_,n)=>{assert.ok(Number(n)<args.length);return String(args[n]);});}
+  if(t==='format'&&tokens[i]==='('){
+   i++;
+   const values=[parse(1)];
+   while(tokens[i]===','){
+    i++;
+    values.push(parse(1));
+   }
+   assert.equal(tokens[i++],')');
+   const [pattern,...args]=values;
+   assert.equal(typeof pattern,'string');
+   return pattern.replace(/\{(\d+)\}/gu,(_,n)=>{
+    assert.ok(Number(n)<args.length);
+    return String(args[n]);
+   });
+  }
   let value=context;for(const key of t.split('.')){assert.ok(value!==null&&typeof value==='object'&&Object.hasOwn(value,key),'unbound expression field:'+t);value=value[key];}return value;
  }
  function parse(min){let left=primary();while(precedence[tokens[i]]>=min){const op=tokens[i++],right=parse(precedence[op]+1);left=op==='||'?(left||right):op==='&&'?(left&&right):op==='=='?left===right:left!==right;}return left;}
