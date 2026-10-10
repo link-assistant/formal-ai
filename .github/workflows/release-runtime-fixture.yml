@@ -19,8 +19,7 @@ on:
       mode:
         description: Run the harmless read-only fixture checks
         type: choice
-        options:
-          - checks
+        options: [checks]
         default: checks
       pull-request:
         description: Pull request whose harmless checks were dispatched

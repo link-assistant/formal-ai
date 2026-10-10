@@ -153,19 +153,131 @@ fn trigger_block(body: &str) -> Vec<&str> {
         .collect()
 }
 
+fn yaml_mapping_field<'a>(lines: &[&'a str], path: &[&str]) -> Option<(&'a str, Vec<&'a str>)> {
+    let key = path.first()?;
+    let level = lines
+        .iter()
+        .filter(|line| !line.trim().is_empty() && !line.trim_start().starts_with('#'))
+        .map(|line| line.len() - line.trim_start().len())
+        .min()?;
+    let matches: Vec<usize> = lines
+        .iter()
+        .enumerate()
+        .filter_map(|(index, line)| {
+            let indent = line.len() - line.trim_start().len();
+            let (name, _) = line.trim().split_once(':')?;
+            (indent == level && name == *key && !line.trim_start().starts_with('#'))
+                .then_some(index)
+        })
+        .collect();
+    if matches.len() != 1 {
+        return None;
+    }
+    let start = matches[0];
+    let value = lines[start].trim().split_once(':')?.1.trim();
+    let children: Vec<&str> = lines[start + 1..]
+        .iter()
+        .take_while(|line| {
+            line.trim().is_empty()
+                || line.trim_start().starts_with('#')
+                || line.len() - line.trim_start().len() > level
+        })
+        .copied()
+        .collect();
+    if path.len() == 1 {
+        Some((value, children))
+    } else if value.is_empty() {
+        yaml_mapping_field(&children, &path[1..])
+    } else {
+        None
+    }
+}
+
+fn yaml_sequence_at(lines: &[&str], path: &[&str]) -> Option<Vec<String>> {
+    let (value, children) = yaml_mapping_field(lines, path)?;
+    let active: Vec<&str> = children
+        .into_iter()
+        .filter(|line| !line.trim().is_empty() && !line.trim_start().starts_with('#'))
+        .collect();
+    if let Some(inner) = value
+        .strip_prefix('[')
+        .and_then(|value| value.strip_suffix(']'))
+    {
+        if !active.is_empty() {
+            return None;
+        }
+        if inner.trim().is_empty() {
+            return Some(Vec::new());
+        }
+        return inner
+            .split(',')
+            .map(|scalar| yaml_string_scalar(scalar.trim()))
+            .collect();
+    }
+    if !value.is_empty() || active.is_empty() {
+        return None;
+    }
+    let indent = active[0].len() - active[0].trim_start().len();
+    active
+        .into_iter()
+        .map(|line| {
+            if line.len() - line.trim_start().len() != indent {
+                return None;
+            }
+            yaml_string_scalar(line.trim().strip_prefix("- ")?.trim())
+        })
+        .collect()
+}
+
+fn yaml_string_scalar(scalar: &str) -> Option<String> {
+    if let Some(inner) = scalar
+        .strip_prefix('\'')
+        .and_then(|value| value.strip_suffix('\''))
+    {
+        return (!inner.contains('\'')).then(|| inner.to_owned());
+    }
+    if scalar.starts_with('"') {
+        return serde_json::from_str::<String>(scalar).ok();
+    }
+    if scalar.is_empty()
+        || scalar.contains([':', '#', '[', ']', '{', '}', '\\', '\'', '"'])
+        || scalar.starts_with(['*', '&', '!', '|', '>'])
+    {
+        return None;
+    }
+    Some(scalar.to_owned())
+}
+
+fn checks_dispatch_observation(block: &[&str]) -> String {
+    let options = yaml_sequence_at(block, &["workflow_dispatch", "inputs", "mode", "options"]);
+    let kind = yaml_mapping_field(block, &["workflow_dispatch", "inputs", "mode", "type"]);
+    let pull_request = yaml_mapping_field(block, &["workflow_dispatch", "inputs", "pull-request"]);
+    if options == Some(vec!["checks".to_owned()])
+        && kind.is_some_and(|(value, _)| value == "choice")
+        && pull_request.is_some()
+    {
+        "workflow_dispatch:\noptions: [checks]\npull-request:".to_owned()
+    } else {
+        String::new()
+    }
+}
+
 /// The child lines of the `pull_request:` trigger, or `None` when the
 /// workflow has no `pull_request` trigger.
 fn pull_request_trigger<'a>(block: &[&'a str]) -> Option<Vec<&'a str>> {
     let start = block
         .iter()
         .position(|line| line.trim_end() == "  pull_request:")?;
-    Some(
-        block[start + 1..]
-            .iter()
-            .take_while(|line| line.is_empty() || line.starts_with("    "))
-            .copied()
-            .collect(),
-    )
+    let children: Vec<&str> = block[start + 1..]
+        .iter()
+        .take_while(|line| line.is_empty() || line.starts_with("    "))
+        .copied()
+        .collect();
+    if yaml_sequence_at(&children, &["branches-ignore"]) == Some(vec!["e2e/**".to_owned()]) {
+        Some(vec!["branches-ignore: ['e2e/**']"])
+    } else {
+        Some(Vec::new())
+    }
 }
 
 /// The GitHub-credential secret names R1 allows: the resolver's three, plus
@@ -270,7 +382,7 @@ fn the_named_workflows_declare_the_checks_mode_the_dispatcher_passes() {
         "web-ui-boundary.yml",
     ] {
         let body = read(&format!(".github/workflows/{name}"));
-        let block = trigger_block(&body).join("\n");
+        let block = checks_dispatch_observation(&trigger_block(&body));
         assert!(
             block.contains("workflow_dispatch:")
                 && block.contains("options: [checks]")
@@ -311,7 +423,7 @@ fn every_pull_request_workflow_declares_the_checks_mode_or_a_reason_not_to() {
         {
             continue;
         }
-        let joined = block.join("\n");
+        let joined = checks_dispatch_observation(&block);
         if !(joined.contains("options: [checks]") && joined.contains("pull-request:")) {
             missing.push(path);
         }

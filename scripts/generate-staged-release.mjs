@@ -113,11 +113,11 @@ export function runStagedReleaseGenerator(arguments_) {
       if (stage !== 'prepare-source') action('Check out immutable trusted workflow protocol', '        uses: actions/checkout@v7\n        with:\n          ref: ' + expression('github.sha') + '\n          path: _protocol\n          persist-credentials: false\n');
       const activeIf = stage === 'create-release' ? '        if: ' + expression('needs.' + prep + ".outputs.active == 'true'") + '\n' : '';
       if (stage !== 'prepare-source') {
-        action('Download immutable selected source artifact', activeIf + '        uses: actions/download-artifact@v8\n        with:\n          artifact-ids: ' + expression('needs.' + prep + '.outputs.artifact_id') + '\n          path: .release-transfer/source\n          digest-mismatch: error\n');
+        action('Download immutable selected source artifact', activeIf + '        uses: actions/download-artifact@v8\n        env:\n          NODE_OPTIONS: --disable-warning=DEP0005\n        with:\n          artifact-ids: ' + expression('needs.' + prep + '.outputs.artifact_id') + '\n          path: .release-transfer/source\n          digest-mismatch: error\n');
         action('Verify independent source compiler protocol and main tag authority', activeIf + '        run: node _protocol/scripts/release-stage-transfer.mjs verify-source\n');
       }
       const importArtifact = (producer, kind) => {
-        action('Download immutable ' + kind + ' artifact', activeIf + '        uses: actions/download-artifact@v8\n        with:\n          artifact-ids: ' + expression(needsExpr(producer, 'artifact_id')) + '\n          path: .release-transfer/' + kind + '\n          digest-mismatch: error\n');
+        action('Download immutable ' + kind + ' artifact', activeIf + '        uses: actions/download-artifact@v8\n        env:\n          NODE_OPTIONS: --disable-warning=DEP0005\n        with:\n          artifact-ids: ' + expression(needsExpr(producer, 'artifact_id')) + '\n          path: .release-transfer/' + kind + '\n          digest-mismatch: error\n');
         action('Validate physical ' + kind + ' producer transfer', activeIf + '        env:\n          EXPECT_BUNDLE: ' + expression(needsExpr(producer, 'bundle_sha')) + '\n          EXPECT_DESCRIPTOR: ' + expression(needsExpr(producer, 'descriptor_sha')) + '\n          EXPECT_PRODUCER: ' + id(producer) + '\n        run: node _protocol/scripts/release-stage-transfer.mjs import ' + kind + '\n');
       };
       if (['verify-package', 'publish-crate', 'publish-verify-images'].includes(stage)) importArtifact('compile-release', 'binary');

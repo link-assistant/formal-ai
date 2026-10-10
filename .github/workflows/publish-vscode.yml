@@ -38,8 +38,7 @@ on: # zizmor: ignore[dangerous-triggers]
       mode:
         description: Run package checks without publication
         type: choice
-        options:
-          - checks
+        options: [checks]
         default: checks
       pull-request:
         description: Pull request whose package checks were dispatched

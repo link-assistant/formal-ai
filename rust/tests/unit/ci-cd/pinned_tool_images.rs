@@ -40,6 +40,20 @@ mod agent_cli;
 use std::fs;
 use std::path::Path;
 
+fn repository_root() -> std::path::PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("the repository root sits above the crate")
+        .canonicalize()
+        .expect("physical repository root")
+}
+
+fn yaml_step_code(line: &str) -> &str {
+    let line = line.trim();
+    let code = line.strip_prefix("- ").unwrap_or(line);
+    code.strip_prefix("run:").unwrap_or(code).trim()
+}
+
 fn repository_file(path: &str) -> String {
     fs::read_to_string(format!("{}/../{path}", env!("CARGO_MANIFEST_DIR")))
         .unwrap_or_else(|error| panic!("failed to read {path}: {error}"))
@@ -66,10 +80,7 @@ fn code_and_comment(line: &str) -> (&str, &str) {
 /// not an invariant, and every one of these defects was originally introduced
 /// by a file nobody thought to look at.
 fn github_yaml_files() -> Vec<std::path::PathBuf> {
-    let mut stack = vec![std::path::PathBuf::from(format!(
-        "{}/../.github",
-        env!("CARGO_MANIFEST_DIR")
-    ))];
+    let mut stack = vec![repository_root().join(".github")];
     let mut files = Vec::new();
     while let Some(dir) = stack.pop() {
         for entry in fs::read_dir(&dir).expect("readable .github directory") {
@@ -100,11 +111,7 @@ fn image_references() -> Vec<(String, usize, String, String)> {
 
     for path in github_yaml_files() {
         let name = path
-            .strip_prefix(
-                Path::new(env!("CARGO_MANIFEST_DIR"))
-                    .parent()
-                    .expect("the repository root sits one level above the crate"),
-            )
+            .strip_prefix(repository_root())
             .unwrap_or(&path)
             .to_string_lossy()
             .into_owned();
@@ -564,11 +571,7 @@ fn every_checkout_drops_its_credential_unless_it_pushes() {
 
     for path in github_yaml_files() {
         let name = path
-            .strip_prefix(
-                Path::new(env!("CARGO_MANIFEST_DIR"))
-                    .parent()
-                    .expect("the repository root sits one level above the crate"),
-            )
+            .strip_prefix(repository_root())
             .unwrap_or(&path)
             .to_string_lossy()
             .into_owned();
@@ -742,10 +745,7 @@ fn root_push_credential_is_retained(job: &[&str]) -> bool {
             if !root_credential
                 || active.iter().any(|line| {
                     line.trim().starts_with("working-directory:")
-                        || line
-                            .trim()
-                            .strip_prefix("run:")
-                            .unwrap_or(line.trim())
+                        || yaml_step_code(line)
                             .split([';', '&', '|'])
                             .any(|part| part.trim().starts_with("cd "))
                         || line.contains("git -C ")
@@ -765,11 +765,7 @@ fn every_job_that_pushes_still_has_a_credential_to_push_with() {
 
     for path in github_yaml_files() {
         let name = path
-            .strip_prefix(
-                Path::new(env!("CARGO_MANIFEST_DIR"))
-                    .parent()
-                    .expect("the repository root sits one level above the crate"),
-            )
+            .strip_prefix(repository_root())
             .unwrap_or(&path)
             .to_string_lossy()
             .into_owned();
