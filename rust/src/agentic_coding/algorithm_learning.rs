@@ -76,24 +76,34 @@ pub(super) fn plan_step(
     if !progress.has_run(&discovery) {
         return plan_one(run_tool, json!({ "command": discovery }).to_string());
     }
-    let mut capture_selected = false;
-    if command_payload(messages, &discovery, Some("algorithm-command-receipt/v1")).is_none() {
-        if !bare_current_operation(messages, &discovery) {
-            return AgenticPlan::Final(result_document(task, "artifact_verification_failed", ""));
-        }
-        let captured_discovery = capture_command(&discovery, &CaptureOptions::default())
-            .expect("compiled algorithm command satisfies capture policy");
-        if !progress.has_run(&captured_discovery) {
-            return plan_one(
-                run_tool,
-                json!({ "command": captured_discovery }).to_string(),
-            );
-        }
-        if command_payload(messages, &captured_discovery, None).is_none() {
-            return AgenticPlan::Final(result_document(task, "artifact_verification_failed", ""));
-        }
-        capture_selected = true;
-    }
+    let capture_selected =
+        if command_payload(messages, &discovery, Some("algorithm-command-receipt/v1")).is_none() {
+            if !bare_current_operation(messages, &discovery) {
+                return AgenticPlan::Final(result_document(
+                    task,
+                    "artifact_verification_failed",
+                    "",
+                ));
+            }
+            let captured_discovery = capture_command(&discovery, &CaptureOptions::default())
+                .expect("compiled algorithm command satisfies capture policy");
+            if !progress.has_run(&captured_discovery) {
+                return plan_one(
+                    run_tool,
+                    json!({ "command": captured_discovery }).to_string(),
+                );
+            }
+            if command_payload_mode(messages, &captured_discovery, None, true).is_none() {
+                return AgenticPlan::Final(result_document(
+                    task,
+                    "artifact_verification_failed",
+                    "",
+                ));
+            }
+            true
+        } else {
+            false
+        };
     let readback = if capture_selected {
         capture_command(&readback_command(), &CaptureOptions::default())
             .expect("compiled algorithm command satisfies capture policy")
@@ -134,6 +144,15 @@ pub(super) fn command_payload(
     messages: &[ChatMessage],
     command: &str,
     operation_schema: Option<&str>,
+) -> Option<String> {
+    command_payload_mode(messages, command, operation_schema, false)
+}
+
+fn command_payload_mode(
+    messages: &[ChatMessage],
+    command: &str,
+    operation_schema: Option<&str>,
+    process_status: bool,
 ) -> Option<String> {
     let start = messages
         .iter()
@@ -194,6 +213,29 @@ pub(super) fn command_payload(
                     .any(|key| receipt[*key].as_bool() == Some(true))
                 && receipt["stream_complete"].as_bool() != Some(false)
                 && receipt.get("signal").is_none_or(serde_json::Value::is_null))
+            .then(|| receipt["stdout"].as_str().map(str::to_owned))
+            .flatten();
+        }
+        if process_status {
+            let receipt = serde_json::from_str::<serde_json::Value>(&raw).ok()?;
+            return (receipt["schema"] == "command-execution-receipt/v1"
+                && receipt["exit_code"].as_i64() == Some(0)
+                && receipt
+                    .get("signal")
+                    .is_some_and(serde_json::Value::is_null)
+                && receipt["complete"].as_bool() == Some(true)
+                && receipt["truncated"].as_bool() == Some(false)
+                && receipt["timed_out"].as_bool() == Some(false)
+                && receipt["aborted"].as_bool() == Some(false)
+                && receipt.get("error").is_some_and(serde_json::Value::is_null)
+                && receipt["stdout"].as_str().is_some()
+                && receipt["stderr"].as_str().is_some()
+                && !["is_error", "isError"]
+                    .iter()
+                    .any(|key| receipt[*key].as_bool() == Some(true))
+                && !["ok", "success", "stream_complete"]
+                    .iter()
+                    .any(|key| receipt[*key].as_bool() == Some(false)))
             .then(|| receipt["stdout"].as_str().map(str::to_owned))
             .flatten();
         }

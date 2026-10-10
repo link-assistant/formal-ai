@@ -67,7 +67,7 @@ export function planStep(messages, toolNames, task) {
     if (!bareCurrentOperation(messages, discovery)) return finalAnswer(resultDocument(task, 'artifact_verification_failed', ''));
     const capturedDiscovery = captureCommand(discovery);
     if (!progress.hasRun(capturedDiscovery)) return planOne(runTool, jsonText({ command: capturedDiscovery }));
-    if (commandPayload(messages, capturedDiscovery, null) === null) return finalAnswer(resultDocument(task, 'artifact_verification_failed', ''));
+    if (commandPayload(messages, capturedDiscovery, null, true) === null) return finalAnswer(resultDocument(task, 'artifact_verification_failed', ''));
     captureSelected = true;
   }
   const readback = captureSelected ? captureCommand(readbackCommand()) : readbackCommand();
@@ -83,7 +83,7 @@ export function planStep(messages, toolNames, task) {
 }
 
 /** Mirrors `fn command_payload`: exact current-call binding precedes transport decoding. */
-export function commandPayload(messages, command, operationSchema) {
+export function commandPayload(messages, command, operationSchema, processStatus = false) {
   const current = messages.slice(Math.max(0, messages.findLastIndex(message => message.role.toLowerCase() === 'user')));
   for (let index = current.length - 1; index >= 0; index -= 1) {
     const message = current[index];
@@ -100,6 +100,17 @@ export function commandPayload(messages, command, operationSchema) {
         && receipt.stderr === '' && receipt.error === null && typeof receipt.stdout === 'string'
         && receipt.aborted !== true && receipt.is_error !== true && receipt.isError !== true
         && receipt.stream_complete !== false && receipt.signal == null ? receipt.stdout : null;
+    }
+    if (processStatus) {
+      return receipt?.schema === 'command-execution-receipt/v1'
+        && receipt.exit_code === 0 && receipt.signal === null
+        && receipt.complete === true && receipt.truncated === false
+        && receipt.timed_out === false && receipt.aborted === false
+        && receipt.error === null && typeof receipt.stdout === 'string'
+        && typeof receipt.stderr === 'string'
+        && receipt.is_error !== true && receipt.isError !== true
+        && receipt.ok !== false && receipt.success !== false
+        && receipt.stream_complete !== false ? receipt.stdout : null;
     }
     const payload = observedPayload(raw);
     return payload !== null && observedBytesMatch(raw, payload) ? payload : null;
