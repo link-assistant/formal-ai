@@ -97,11 +97,15 @@ function suppliedFileContent(messages, path) {
       const fence = trimEnd(lines[index + 1]);
       if (!trimStart(fence).startsWith('```')) continue;
       const body = [];
+      let closed = false;
       for (const line of lines.slice(index + 2)) {
-        if (trimStart(trimEnd(line)).startsWith('```')) break;
+        if (trimStart(trimEnd(line)).startsWith('```')) {
+          closed = true;
+          break;
+        }
         body.push(line);
       }
-      if (body.length) found = body.join('\n');
+      found = closed ? body.join('\n') : null;
     }
   }
   return found;

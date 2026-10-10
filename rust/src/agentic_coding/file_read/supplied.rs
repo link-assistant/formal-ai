@@ -160,14 +160,11 @@ fn supplied_file_content(messages: &[ChatMessage], path: &str) -> Option<String>
             if !fence.trim_start().starts_with("```") {
                 continue;
             }
-            let body: Vec<&str> = lines[index + 2..]
+            let remaining = &lines[index + 2..];
+            found = remaining
                 .iter()
-                .take_while(|line| !line.trim_end().trim_start().starts_with("```"))
-                .copied()
-                .collect();
-            if !body.is_empty() {
-                found = Some(body.join("\n"));
-            }
+                .position(|line| line.trim_end().trim_start().starts_with("```"))
+                .map(|end| remaining[..end].join("\n"));
         }
     }
     found
