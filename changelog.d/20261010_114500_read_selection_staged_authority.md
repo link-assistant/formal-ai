@@ -1,0 +1,3 @@
+Correct source-owned Read forms, preserve unavailable line selection refusals, and add500 multilingual/renamed/negative controls. Complete new authored seed metadata without raising existing debt or closure ceilings. Retain explicit claimed/no-step planning states and scoped Desktop WASM warning handling.
+
+Add source-bound staged release authority, isolated read-only Actions token observations and stronger conserved WASM build obligations. Canonical release activation and genuine new native, package, Docker and production publication validation remain pending; historical CI evidence is retained without promoting it to current-source proof.

@@ -9,9 +9,9 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 
 | Who | Tasks | Passed | Failed | Partial | Fixed | Open | Not reproduced | Unresolved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All** | 4128 | 2478 | 858 | 136 | 499 | 486 | 9 | 0 |
+| **All** | 4315 | 2605 | 915 | 139 | 499 | 546 | 9 | 0 |
 | CHAT-ROUTES | 13 | 10 | 3 | 0 | 3 | 0 | 0 | 0 |
-| CI-FIXER | 41 | 38 | 3 | 0 | 3 | 0 | 0 | 0 |
+| CI-FIXER | 94 | 77 | 15 | 2 | 3 | 14 | 0 | 0 |
 | CI-SPEED | 6 | 6 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CIFIX | 314 | 309 | 5 | 0 | 5 | 0 | 0 | 0 |
 | CIFIX2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
@@ -21,7 +21,7 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | DISCOVER | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | FINITE-GATE | 15 | 13 | 2 | 0 | 1 | 1 | 0 | 0 |
 | FIX-GAPS | 15 | 15 | 0 | 0 | 0 | 0 | 0 | 0 |
-| FORMAL-AI-ONLY | 336 | 113 | 92 | 19 | 54 | 57 | 0 | 0 |
+| FORMAL-AI-ONLY | 345 | 119 | 94 | 20 | 54 | 60 | 0 | 0 |
 | GENERALIZE | 16 | 16 | 0 | 0 | 0 | 0 | 0 | 0 |
 | LEAD | 18 | 16 | 0 | 1 | 1 | 0 | 0 | 0 |
 | LEXEMES | 4 | 3 | 1 | 0 | 1 | 0 | 0 | 0 |
@@ -34,7 +34,7 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | REPO-RUNNERS | 89 | 78 | 5 | 6 | 11 | 0 | 0 | 0 |
 | REQ-AUDIT | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
 | REQ-ROUTE | 12 | 7 | 5 | 0 | 4 | 0 | 1 | 0 |
-| ROOT | 399 | 284 | 94 | 21 | 76 | 36 | 3 | 0 |
+| ROOT | 491 | 343 | 127 | 21 | 76 | 69 | 3 | 0 |
 | ROUTE2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
 | ROUTE3 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SCRIPTS-A | 5 | 4 | 1 | 0 | 1 | 0 | 0 | 0 |
@@ -42,7 +42,7 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | SPANISH | 3 | 2 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SPEC-DELIVERY | 535 | 386 | 78 | 7 | 44 | 40 | 1 | 0 |
 | SPEC-PARITY | 448 | 210 | 62 | 2 | 32 | 32 | 0 | 0 |
-| SPECIFICATION-DELIVERY | 25 | 13 | 12 | 0 | 0 | 12 | 0 | 0 |
+| SPECIFICATION-DELIVERY | 58 | 36 | 22 | 0 | 0 | 22 | 0 | 0 |
 | TEACH-C | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | TEACH-F | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | TEXT-CAPABILITY | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
