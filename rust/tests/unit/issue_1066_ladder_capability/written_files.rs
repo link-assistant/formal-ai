@@ -118,6 +118,7 @@ fn nested_delivery_carries_the_observation_into_the_outer_effect() {
         first line must be exactly `proof_for=decomposition`.";
     let mut messages = vec![formal_ai::ChatMessage::user(prompt)];
     let mut effect = None;
+    let mut workspace = super::tool_workspace::ToolWorkspace::new(prompt);
 
     for turn in 0..super::LADDER_TURN_CAP {
         let Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(calls)) =
@@ -141,11 +142,15 @@ fn nested_delivery_carries_the_observation_into_the_outer_effect() {
                 formal_ai::protocol::ToolCall::function(&id, &call.tool, call.arguments.clone()),
             ]));
             let result = if call.tool == "grep" {
-                "src/task_decomposition.rs:79: pub children: Vec<Self>"
+                formal_ai::ChatMessage::tool_result(
+                    id,
+                    &call.tool,
+                    "src/task_decomposition.rs:79: pub children: Vec<Self>",
+                )
             } else {
-                "ok"
+                workspace.execute(&id, call)
             };
-            messages.push(formal_ai::ChatMessage::tool_result(id, &call.tool, result));
+            messages.push(result);
         }
     }
 
