@@ -3,9 +3,11 @@ import { readFileSync, writeFileSync, openSync, closeSync, fsyncSync, mkdirSync,
 import { resolve, dirname, relative, isAbsolute, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { reviewClosedOracleSource, oracleReviewerIdentity, oracleProcessEvidence } from './oracle-source-review.mjs';
+export { oracleProcessEvidence } from './oracle-source-review.mjs';
 
 export const digest = value => createHash('sha256').update(value).digest('hex');
-const runnerIdentity = () => digest(readFileSync(fileURLToPath(import.meta.url)));
+const runnerIdentity = () => digest(Buffer.concat([readFileSync(fileURLToPath(import.meta.url)), Buffer.from(oracleReviewerIdentity())]));
 const bound = value => {
   if (!value || typeof value.path !== 'string' || !/^[a-f0-9]{64}$/u.test(value.sha256)) throw new Error('invalid source binding');
   const bytes = readFileSync(value.path);
@@ -60,7 +62,8 @@ export function admitManifest(manifest, journalPath) {
   const manifestBytes = JSON.stringify(manifest);
   if (Buffer.byteLength(manifestBytes) > 1048576) throw new Error('manifest exceeds bound');
   const record = { kind: 'admitted', sequence: 0, previousDigest: null,
-    cohortId: manifest.cohortId, manifestSHA256: digest(manifestBytes), runnerSHA256: runnerIdentity(), manifest };
+    cohortId: manifest.cohortId, manifestSHA256: digest(manifestBytes), runnerSHA256: runnerIdentity(),
+    oracleReviews: manifest.cases.map(item => ({runId:item.runId,review:reviewClosedOracleSource(readFileSync(item.oracle.path,'utf8'),item.oracle.sha256)})), manifest };
   const bytes = JSON.stringify(record) + '\n';
   syncedWrite(journalPath, bytes, 'wx');
   syncDirectory(journalPath);
@@ -113,6 +116,11 @@ export async function executeAdmittedCase(admission, runId, attemptId, actualDri
   const { item } = appendJournal(admission, 'started', runId, attemptId, {});
   let result = { accepted: false, usage: { status: 'Unknown', reason: 'host supplied no usage receipt' } };
   try {
+    const oracleReview=reviewClosedOracleSource(readFileSync(item.oracle.path,'utf8'),item.oracle.sha256);
+    result.oracleReview=oracleReview;result.semanticCompleteness='Unknown';result.qualityRequiresReview=true;
+    const admittedReview=readJournal(admission.journalPath)[0].oracleReviews.find(value=>value.runId===runId)?.review;
+    if(JSON.stringify(admittedReview)!==JSON.stringify(oracleReview))throw new Error('independent oracle review drift');
+    if(!oracleReview.complete)throw new Error('independent oracle structural review refused: '+oracleReview.reason);
     const before = snapshot(item.workspace);
     let execution;
     let executionFailure;
@@ -140,12 +148,15 @@ export async function executeAdmittedCase(admission, runId, attemptId, actualDri
     bound(item.oracle);
     const oracleEnvironment = { ...process.env, COHORT_WORKSPACE: item.workspace };
     delete oracleEnvironment.NODE_TEST_CONTEXT;
-    const check = spawnSync(process.execPath, ['--test', item.oracle.path], {
+    delete oracleEnvironment.NODE_OPTIONS;
+    delete oracleEnvironment.NODE_PATH;
+    const check = spawnSync(process.execPath, ['--test','--test-reporter=tap', item.oracle.path], {
       cwd: dirname(item.oracle.path), timeout: item.timeoutMilliseconds, maxBuffer: 1048576,
       env: oracleEnvironment, encoding: 'utf8',
     });
     verifyBindings(first.manifest);
-    result = { accepted: check.status === 0 && !check.error, effects, sourceEffects: result.sourceEffects,
+    const completeness=oracleProcessEvidence(check,oracleReview.expectedProcessTests);
+    result = { accepted: completeness.complete, oracleReview, oracleCompleteness:completeness, semanticCompleteness:'Unknown', qualityRequiresReview:true, effects, sourceEffects: result.sourceEffects,
       transcript: execution?.transcript ?? null, answer: execution?.answer ?? null, stop: execution?.stop ?? null,
       check: { oracleSHA256: item.oracle.sha256, exitCode: check.status, signal: check.signal,
         stdout: check.stdout, stderr: check.stderr, error: check.error?.message ?? null },
