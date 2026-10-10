@@ -1,0 +1,20 @@
+{
+  "count": 570,
+  "originalBytes": 32197605,
+  "cut": "Completed rootT3182–T3228 and selected completed quoted/diagnostic/compiler drafts; ownT3229 controller outsidecut",
+  "earlierSelection": "selection-initial.json was live preliminary inventory; zero completeness credit, completed originalT3228 selected here",
+  "historicalCIHead": "7852a6270f03fd14de7021ff94af390da19ce47b",
+  "historicalCIMerge": "c71622bf4076174b9b734b25c06351162c90e706",
+  "historicalCITree": "90a8c61d568888ca052b57371099ddee2ddabe59",
+  "CISnapshot": "selected full authenticated failureAPI/logs only; not terminal or completecensus",
+  "nativeCompilation": false,
+  "nativeExecution": false,
+  "autonomousCodingCredit": 0,
+  "records": 570,
+  "uniqueOriginals": 464,
+  "selectedOriginalBytes": 32197605,
+  "manifestFiles": 1,
+  "sourceHead": "b7992cbad0f5d160e9251305f15b3295c70a0982",
+  "finalSourceQualification": "ActualT3228 PASS16 plusT3221 PASS26",
+  "controllerOuter": "CurrentT3229 request/result/log outside cut; no self-prefix completeness credit"
+}
