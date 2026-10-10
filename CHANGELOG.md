@@ -18,15 +18,6 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
-## [Unreleased]
-
-### Changed
-
-- Source-callable discovery now derives conditional plain-data schemas from
-  bounded member/index, fresh map, template, local push and join syntax.
-  Independent request clauses keep source spans; unknown caller and module
-  effects still block unconditional composition and authoring.
-
 ## [0.352.1] - 2026-09-27
 
 ### Fixed
