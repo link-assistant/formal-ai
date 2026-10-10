@@ -259,6 +259,13 @@ function validateProjection(projection, canonicalBytes = readFileSync(new URL('.
         assert.equal(stage['timeout-minutes'], 30);
         assert.ok(1250 + 5 + 1 <= 21 * 60);
       }
+      // Only the retained manual version operation receives explicit hosted GET authentication.
+      if (mode === 'manual' && operation.stage === 'prepare-source' && operation.stepId === 'version') {
+        assert.equal(parsedRaw.id, 'version');
+        assert.equal(parsedRaw.env.GH_TOKEN, undefined, 'canonical original token input must remain absent');
+        assert.equal(rewritten.split('        env:\n').length, 2);
+        rewritten = rewritten.replace('        env:\n', () => '        env:\n          GH_TOKEN: ${{ github.token }}\n');
+      }
       const expected = YAML.parse('steps:\n' + rewritten).steps[0];
       const matches = stage.steps.map((step, index) => ({
         step,
@@ -374,5 +381,25 @@ test('copied image operation deadline cannot inherit extension or exceed job sha
       mutate(p.jobs[mode + '_publish-verify-images'].steps.find(s => s.name === 'Publish Docker image to GHCR'));
       assert.throws(() => validateProjection(p));
     }
+  }
+});
+
+test('manual hosted token projection is limited to the actual retained version operation', () => {
+  const projection = readProjection();
+  const select = candidate => candidate.jobs['manual_prepare-source'].steps.find(step => step.id === 'version');
+  assert.equal(select(projection).env.GH_TOKEN, '${{ github.token }}');
+  for (const mutation of [
+    candidate => { delete select(candidate).env.GH_TOKEN; },
+    candidate => { select(candidate).env.GH_TOKEN = 'untrusted'; },
+    candidate => { select(candidate).id = 'untrusted'; },
+    candidate => {
+      const foreign = candidate.jobs['manual_prepare-source'].steps.find(step => step.uses === 'actions/checkout@v7' && !step.with?.path);
+      assert.ok(foreign);
+      foreign.env = { ...foreign.env, GH_TOKEN: '${{ github.token }}' };
+    }
+  ]) {
+    const candidate = structuredClone(projection);
+    mutation(candidate);
+    assert.throws(() => validateProjection(candidate));
   }
 });

@@ -63,6 +63,17 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Set up immutable protocol dependencies
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: _protocol/.bun-version
+      - name: Install immutable locked protocol dependencies
+        timeout-minutes: 5
+        working-directory: _protocol
+        run: bun install --frozen-lockfile --ignore-scripts
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - name: Install rust-script
@@ -102,12 +113,6 @@ jobs:
           HAS_FRAGMENTS: 'false'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: rust-script scripts/check-release-needed.rs
-      - name: Check out immutable trusted workflow protocol
-        uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
       - name: Record actual selected source and compiler baseline
         id: baseline-source
         run: node _protocol/scripts/release-stage-transfer.mjs baseline
@@ -163,10 +168,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
         env:
@@ -231,10 +233,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
         env:
@@ -307,10 +306,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
         env:
@@ -387,10 +383,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
         env:
@@ -455,10 +448,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
         env:
@@ -518,10 +508,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
         env:
@@ -701,10 +688,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
         uses: actions/download-artifact@v8
@@ -812,6 +796,17 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Set up immutable protocol dependencies
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: _protocol/.bun-version
+      - name: Install immutable locked protocol dependencies
+        timeout-minutes: 5
+        working-directory: _protocol
+        run: bun install --frozen-lockfile --ignore-scripts
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - name: Install rust-script
@@ -821,15 +816,10 @@ jobs:
       - name: Version and commit
         id: version
         env:
+          GH_TOKEN: ${{ github.token }}
           BUMP_TYPE: ${{ github.event.inputs.bump_type }}
           DESCRIPTION: ${{ github.event.inputs.description }}
         run: rust-script scripts/version-and-commit.rs --bump-type "$BUMP_TYPE" --description "$DESCRIPTION"
-      - name: Check out immutable trusted workflow protocol
-        uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
       - name: Record actual selected source and compiler baseline
         id: baseline-source
         run: node _protocol/scripts/release-stage-transfer.mjs baseline
@@ -885,10 +875,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
         env:
@@ -953,10 +940,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
         env:
@@ -1029,10 +1013,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
         env:
@@ -1109,10 +1090,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
         env:
@@ -1176,10 +1154,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
         env:
@@ -1238,10 +1213,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
         env:
@@ -1413,10 +1385,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          path: _protocol
-          persist-credentials: false
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
       - name: Download immutable selected source artifact
         if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
         uses: actions/download-artifact@v8

@@ -18,6 +18,33 @@ export function runStagedReleaseGenerator(arguments_) {
   const sha = value => createHash('sha256').update(value).digest('hex');
   assert.equal(sha(source), packet.workflowSha256, 'canonical source drift requires explicit original operation refresh');
   assert.equal(readFileSync(join(root, evidence, 'original-release-workflow.yml'), 'utf8'), source);
+  const {operations,binding,outputs}=buildStagedReleaseProjection(source,packet);
+  for (const [path, bytes] of outputs) {
+    const destination = outputDirectory ? join(outputDirectory, path.split('/').at(-1)) : join(root, path);
+    if (arguments_.includes('--write')) {
+      mkdirSync(dirname(destination), {
+        recursive: true
+      });
+      writeFileSync(destination, bytes);
+    } else {
+      assert.ok(existsSync(destination), path + ' missing');
+      assert.equal(readFileSync(destination, 'utf8'), bytes, path + ' differs from checked generation');
+    }
+  }
+  console.log(JSON.stringify({
+    operations,
+    bindings: binding.length,
+    outputs: outputs.size,
+    write: arguments_.includes('--write'),
+    callerLeasePreserved: true,
+    coldProof: false
+  }));
+  console.log('STAGED_RELEASE_GENERATOR_PASS');
+}
+export function buildStagedReleaseProjection(source, packet) {
+  const evidence = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
+  const sha = value => createHash('sha256').update(value).digest('hex');
+  assert.equal(sha(source), packet.workflowSha256, 'canonical source drift requires explicit original operation refresh');
   let operations = 0;
   for (const caller of packet.callers) {
     const job = YAML.parse(source).jobs[caller.caller];
@@ -110,7 +137,7 @@ export function runStagedReleaseGenerator(arguments_) {
         action('Install exact selected Rust compiler', '        uses: dtolnay/rust-toolchain@stable\n        with:\n          toolchain: ' + expression('needs.' + prep + '.outputs.rust_version') + '\n');
         action('Install original rust-script runtime', '        run: bash scripts/install-rust-script.sh\n');
       }
-      if (stage !== 'prepare-source') action('Check out immutable trusted workflow protocol', '        uses: actions/checkout@v7\n        with:\n          ref: ' + expression('github.sha') + '\n          path: _protocol\n          persist-credentials: false\n');
+      if (stage !== 'prepare-source') action('Check out immutable trusted workflow protocol', '        uses: actions/checkout@v7\n        with: { ref: ' + JSON.stringify(expression('github.sha')) + ', path: _protocol, persist-credentials: false }\n');
       const activeIf = stage === 'create-release' ? '        if: ' + expression('needs.' + prep + ".outputs.active == 'true'") + '\n' : '';
       if (stage !== 'prepare-source') {
         action('Download immutable selected source artifact', activeIf + '        uses: actions/download-artifact@v8\n        env:\n          NODE_OPTIONS: --disable-warning=DEP0005\n        with:\n          artifact-ids: ' + expression('needs.' + prep + '.outputs.artifact_id') + '\n          path: .release-transfer/source\n          digest-mismatch: error\n');
@@ -144,6 +171,13 @@ export function runStagedReleaseGenerator(arguments_) {
           });
           return replacement;
         });
+        // The source-owned manual version operation needs explicit CLI authentication for guarded GETs.
+        if (mode === 'manual' && stage === 'prepare-source' && operation.stepId === 'version') {
+          const originalOperation=YAML.parse('steps:\n'+operation.raw).steps[0];
+          assert.equal(originalOperation.id,'version');assert.equal(originalOperation.env.GH_TOKEN,undefined);
+          assert.equal(raw.split('        env:\n').length,2);
+          raw=raw.replace('        env:\n',()=> '        env:\n          GH_TOKEN: '+expression('github.token')+'\n');
+        }
         // Runtime caps change at the real execution site; original commands/assertions remain.
         raw = raw.replace(/(^        timeout-minutes:) (\d+)/gm, (_, prefix, value) => prefix + ' ' + Math.min(Number(value), 21));
         // These workflow-owned immutable protocol helpers operate on the checked-out selected source cwd.
@@ -154,9 +188,13 @@ export function runStagedReleaseGenerator(arguments_) {
         }
         if (stage === 'prepare-source' && operation.ordinal === 0) yaml += '      # #1079: persist-credentials is retained for the root version/tag git push.\n';
         yaml += raw.endsWith('\n') ? raw : raw + '\n';
+        if (stage === 'prepare-source' && operation.ordinal === 0) {
+        action('Check out immutable trusted workflow protocol', '        uses: actions/checkout@v7\n        with: { ref: ' + JSON.stringify(expression('github.sha')) + ', path: _protocol, persist-credentials: false }\n');
+        action('Set up immutable protocol dependencies', '        uses: oven-sh/setup-bun@v2\n        with:\n          bun-version-file: _protocol/.bun-version\n');
+        action('Install immutable locked protocol dependencies', '        timeout-minutes: 5\n        working-directory: _protocol\n        run: bun install --frozen-lockfile --ignore-scripts\n');
+        }
       }
       if (stage === 'prepare-source') {
-        action('Check out immutable trusted workflow protocol', '        uses: actions/checkout@v7\n        with:\n          ref: ' + expression('github.sha') + '\n          path: _protocol\n          persist-credentials: false\n');
         action('Record actual selected source and compiler baseline', '        id: baseline-source\n        run: node _protocol/scripts/release-stage-transfer.mjs baseline\n');
         action('Seal actual tagged main source artifact', '        id: capture-source\n        if: ' + expression(active) + '\n        env:\n          RELEASE_VERSION: ' + expression(version) + '\n        run: node _protocol/scripts/release-stage-transfer.mjs capture-source\n');
       }
@@ -208,26 +246,6 @@ export function runStagedReleaseGenerator(arguments_) {
     originalOperations: 52,
     scope: 'Executable candidate declaration; no scheduler/native/publication/cold execution proof'
   }, null, 2) + '\n'], [evidence + 'original-release-workflow.yml', source], [evidence + 'stage-source-coverage.json', format(packet) + '\n']]);
-  for (const [path, bytes] of outputs) {
-    const destination = outputDirectory ? join(outputDirectory, path.split('/').at(-1)) : join(root, path);
-    if (arguments_.includes('--write')) {
-      mkdirSync(dirname(destination), {
-        recursive: true
-      });
-      writeFileSync(destination, bytes);
-    } else {
-      assert.ok(existsSync(destination), path + ' missing');
-      assert.equal(readFileSync(destination, 'utf8'), bytes, path + ' differs from checked generation');
-    }
-  }
-  console.log(JSON.stringify({
-    operations,
-    bindings: binding.length,
-    outputs: outputs.size,
-    write: arguments_.includes('--write'),
-    callerLeasePreserved: true,
-    coldProof: false
-  }));
-  console.log('STAGED_RELEASE_GENERATOR_PASS');
+  return { operations, binding, outputs };
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) runStagedReleaseGenerator(process.argv.slice(2));

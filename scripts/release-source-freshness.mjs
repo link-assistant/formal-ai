@@ -1,7 +1,7 @@
 // Keep guarded release source within the exact main CI run and its own recorded version child.
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
-import {readFileSync,writeFileSync,existsSync} from 'node:fs';
+import {readFileSync,writeFileSync,existsSync,realpathSync} from 'node:fs';
 import {join,resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 const commit = value => assert.match(value, /^[a-f0-9]{40}$/u);
@@ -86,9 +86,26 @@ export function checkReleaseFreshness({cwd,environment,event,phase,stateDirector
   }
   writeFileSync(file,JSON.stringify(record)+'\n',{mode:0o600});return record;
 }
-export function main(environment=process.env) {
+export async function main(environment=process.env) {
   const event=JSON.parse(readFileSync(environment.GITHUB_EVENT_PATH,'utf8'));
-  const record=checkReleaseFreshness({cwd:process.cwd(),environment,event,phase:process.argv[2]});
+  let checkedEnvironment=environment;
+  if(environment.GITHUB_ACTIONS==='true' && !['auto-release','manual-release'].includes(environment.GITHUB_JOB)) {
+    assert.ok(environment===process.env,'staged context requires actual current process host');
+    const trusted=resolve(process.cwd(),'_protocol');
+    assert.equal(execFileSync('git',['-C',trusted,'rev-parse','HEAD'],{encoding:'utf8',timeout:30000}).trim(),environment.GITHUB_SHA,'immutable protocol checkout differs');
+    execFileSync('git',['-C',trusted,'diff','--exit-code','HEAD'],{encoding:'utf8',timeout:30000});
+    for(const file of ['scripts/maintained-staged-authority.mjs','scripts/staged-caller-authority.mjs','scripts/governed-github-command-provider.mjs','scripts/generate-staged-release.mjs','scripts/lib/ci-speed-workflows.mjs','scripts/release-source-freshness.mjs','package.json','bun.lock','.bun-version']) {
+      const entry=execFileSync('git',['-C',trusted,'ls-tree','HEAD','--',file],{encoding:'utf8',timeout:5000}).trim();
+      const [header,declaredPath]=entry.split('\t');assert.match(header,/^100644 blob [a-f0-9]{40}$/u);assert.equal(declaredPath,file);
+      const immutable=execFileSync('git',['-C',trusted,'show','HEAD:'+file],{timeout:5000,maxBuffer:4194304});
+      assert.deepEqual(readFileSync(join(trusted,file)),immutable,'trusted protocol tracked bytes differ');
+    }
+    const adapter=await import(pathToFileURL(join(trusted,'scripts/maintained-staged-authority.mjs')).href);
+    const receipt=adapter.compileDeployedStagedAuthority();
+    const context=await adapter.observeCurrentStepContext(receipt,'version');
+    checkedEnvironment={...environment,GITHUB_JOB:context.job};
+  }
+  const record=checkReleaseFreshness({cwd:process.cwd(),environment:checkedEnvironment,event,phase:process.argv[2]});
   console.log(JSON.stringify({schema:record.schema,context:record.context,originalTree:record.originalTree,expectedTree:record.expectedTree,child:record.child,publication:false}));
 }
-if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href)main();
+if(process.argv[1] && import.meta.url===pathToFileURL(realpathSync(process.argv[1])).href)main().catch(error=>{console.error(error);process.exitCode=1;});
