@@ -25,6 +25,8 @@ import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import {parseRequirementLedger} from './lib/requirement-ledger.mjs';
+
 const LEDGER = 'data/meta/requirement-status-ledger';
 const PLAN = 'docs/progressive-plan.md';
 const RATCHET = 'data/meta/progressive-plan-ratchet.lino';
@@ -43,18 +45,10 @@ const OPEN_LEVELS = LEVELS.filter(([level]) => level > 0 && level < 4);
  * @returns {Array<{id: string, shard: string, verdict: string, test: string}>}
  */
 export function ledgerRecords(text) {
-  const [head, ...records] = text.split(/\n  requirement\n/u);
-  const field = (block, indent, key) => new RegExp(`^${indent}${key} "([^"]*)"`, 'mu').exec(block)?.[1];
-  const shard = field(head, '  ', 'shard') ?? '';
-  const read = (block, key) => field(block, '    ', key) ?? field(head, '  ', key) ?? '';
-  return records.map((block) => ({
-    id: read(block, 'id'),
-    shard,
-    verdict: read(block, 'verdict'),
-    test: read(block, 'automated_test'),
+  return parseRequirementLedger(text, {unknownFields: 'preserve'}).records.map(record => ({
+    id: record.id, shard: record.shard, verdict: record.verdict, test: record.automatedTest,
   }));
 }
-
 /**
  * A requirement's resolution level.
  * @param {{verdict: string, test: string}} record

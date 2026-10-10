@@ -14,6 +14,7 @@ import {
   trim, trimStart, ioErrorDisplay,
 } from './lib/requirements-rust-compat.mjs';
 import { readRegister } from './lib/requirements-register.mjs';
+import {parseRequirementLedger} from './lib/requirement-ledger.mjs';
 
 const LEDGER_DIRECTORY = 'data/meta/requirement-status-ledger';
 const ALLOWED = ['implemented', 'partial', 'not-delivered', 'superseded', 'withdrawn'];
@@ -76,33 +77,11 @@ export function ledgerRows(root, failures) {
     } catch (error) {
       throw new Panic(`${path} readable: ${ioErrorDisplay(error)}`);
     }
-    // A field stated before the first record is the file's value, which a
-    // record inherits unless it states its own (`render_shard`).
-    const defaults = { shard: '', verdict: '', automatedTest: '' };
-    let id = '';
-    let row = defaults;
-    let inRecord = false;
-    const close = () => {
-      if (id === '') return;
-      if (rows.has(id)) failures.push('the status ledger contains a duplicate requirement id');
-      rows.set(id, row);
-      id = '';
-    };
-    for (const line of lines(source)) {
-      const trimmed = trim(line);
-      if (trimmed === 'requirement') {
-        close();
-        row = { ...defaults };
-        inRecord = true;
-        continue;
-      }
-      const target = inRecord ? row : defaults;
-      if (trimmed.startsWith('id ')) id = unquote(trimmed.slice(3));
-      else if (trimmed.startsWith('shard ')) target.shard = unquote(trimmed.slice(6));
-      else if (trimmed.startsWith('verdict ')) target.verdict = unquote(trimmed.slice(8));
-      else if (trimmed.startsWith('automated_test ')) target.automatedTest = unquote(trimmed.slice(15));
+    const parsed = parseRequirementLedger(source, {unknownFields: 'preserve'});
+    for (const record of parsed.records) {
+      if (rows.has(record.id)) failures.push('the status ledger contains a duplicate requirement id');
+      rows.set(record.id, {shard: record.shard, verdict: record.verdict, automatedTest: record.automatedTest});
     }
-    close();
   }
   return new Map(sortedStrings(rows.keys()).map((key) => [key, rows.get(key)]));
 }

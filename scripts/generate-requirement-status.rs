@@ -299,8 +299,7 @@ fn requirement_rows(root: &Path) -> Result<Vec<Requirement>, String> {
             let defined = ids.first().cloned();
             for id in ids {
                 if expected.contains(&id) {
-                    let is_definition =
-                        is_definition_line(line) && defined.as_ref() == Some(&id);
+                    let is_definition = is_definition_line(line) && defined.as_ref() == Some(&id);
                     match ownership.get(&id) {
                         None => {
                             ownership.insert(id, (relative.clone(), line.to_owned()));
@@ -398,6 +397,36 @@ fn shared_value(values: &[&str]) -> String {
 /// The fields a ledger file may state once for its records, in record order.
 const SHARED_FIELDS: [&str; 3] = ["delivered", "automated_test", "manual"];
 
+/// Choose a smaller source default, preserving the original majority rule.
+fn shared_default(values: &[&str], field: &str) -> String {
+    assert!(SHARED_FIELDS.contains(&field), "unowned shared field");
+    let majority = shared_value(values);
+    if !majority.is_empty() {
+        return majority;
+    }
+    let mut counts: BTreeMap<&str, usize> = BTreeMap::new();
+    for value in values {
+        *counts.entry(value).or_default() += 1;
+    }
+    let empty_count = counts.get("").copied().unwrap_or_default();
+    let bytes = |value: &str| format!("    {field} {}\n", quoted(value)).len();
+    let mut selected = String::new();
+    let mut saved = 0;
+    for value in values {
+        let count = counts[value];
+        if value.is_empty() || count < 2 || count - 1 <= empty_count {
+            continue;
+        }
+        let removed = (count - 1) * bytes(value) + 2;
+        let added = empty_count * bytes("");
+        if removed > added && removed - added > saved {
+            selected = (*value).to_owned();
+            saved = removed - added;
+        }
+    }
+    selected
+}
+
 /// The value of one of the `SHARED_FIELDS` of a record.
 fn shared_field<'a>(row: &'a Requirement, name: &str) -> &'a str {
     match name {
@@ -420,11 +449,12 @@ fn render_shard(rows: &[&Requirement]) -> String {
     let shared: Vec<String> = SHARED_FIELDS
         .iter()
         .map(|name| {
-            shared_value(
+            shared_default(
                 &rows
                     .iter()
                     .map(|row| shared_field(row, name))
                     .collect::<Vec<_>>(),
+                name,
             )
         })
         .collect();

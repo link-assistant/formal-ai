@@ -17,6 +17,8 @@ import {
   parseUnsigned, readDirPaths, readOrNull, readToString, stripRoot, trim, trimEnd, trimMatches,
 } from './lib/requirements-rust-compat.mjs';
 
+import {parseRequirementLedger} from './lib/requirement-ledger.mjs';
+
 const STATUS_DOCUMENT = 'docs/status.md';
 const BENCHMARKS_DOCUMENT = 'docs/benchmarks.md';
 const README_DOCUMENT = 'README.md';
@@ -112,12 +114,8 @@ export function requirementCounts(root) {
   const counts = new Map();
   for (const path of paths) {
     if (extension(path) !== 'lino') continue;
-    for (const line of lines(read(path, (error) => error))) {
-      const trimmed = trim(line);
-      if (!trimmed.startsWith('verdict ')) continue;
-      const verdict = unquote(trimmed.slice('verdict '.length));
-      counts.set(verdict, (counts.get(verdict) ?? 0) + 1);
-    }
+    const parsed = parseRequirementLedger(read(path, (error) => error), {unknownFields: 'preserve'});
+    for (const {verdict} of parsed.records) counts.set(verdict, (counts.get(verdict) ?? 0) + 1);
   }
   return [...counts.keys()].sort(compareStrings).map((verdict) => [verdict, counts.get(verdict)]);
 }

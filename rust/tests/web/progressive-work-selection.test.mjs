@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {captureProgressiveInputs, planProgressiveWork} from '../../../scripts/select-progressive-work.mjs';
 const key = record => JSON.stringify([record.shard, record.id]);
-const text = records => 'ledger\n  shard "docs/requirements/fixture.md"\n' + records.map(record =>
+const text = records => 'requirement_status_ledger_shard\n  shard "docs/requirements/fixture.md"\n' + records.map(record =>
   '  requirement\n    id "' + record.id + '"\n    verdict "' + record.verdict + '"\n    automated_test "' + record.test + '"\n').join('');
 function fixture(records, run) {
   const root = fs.mkdtempSync(join(tmpdir(), 'progressive-selection-'));
@@ -64,4 +64,14 @@ test('unknown verdict and duplicate identity refuse rather than hide low work', 
     try {assert.throws(() => captureProgressiveInputs(root), /unknown|duplicate/);}
     finally {fs.rmSync(root, {recursive: true, force: true});}
   }
+});
+
+test('a noncanonical root cannot acquire owned ledger schema semantics', () => {
+  const root = fs.mkdtempSync(join(tmpdir(), 'progressive-schema-refusal-'));
+  const directory = join(root, 'data/meta/requirement-status-ledger');
+  fs.mkdirSync(directory, {recursive: true});
+  const file = join(directory, 'fixture.lino');
+  fs.writeFileSync(file, text(records).replace('requirement_status_ledger_shard', 'ledger'));
+  try {assert.throws(() => captureProgressiveInputs(root), /owned shard root/);}
+  finally {fs.rmSync(root, {recursive: true, force: true});}
 });
