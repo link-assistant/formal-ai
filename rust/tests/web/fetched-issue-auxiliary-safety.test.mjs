@@ -11,7 +11,7 @@ import { finalResult } from '../../../js/agentic/final_result.mjs';
 import { executeResult } from '../../../experiments/js_dogfood/drive.mjs';
 const task = 'Solve https://github.com/link-assistant/formal-ai/issues/1069 in this checkout as one whole task.';
 const prose = 'Produce a legitimate release with no fabricated evidence.\nAdding a bypass flag to check-self-development-release.rs is not acceptable.';
-const tools = ['web_fetch', 'write_file', 'run_command'];
+const tools = ['web_fetch', 'write_file', 'bash'];
 before(async () => { await installNodeHost(new WorkerHost()); });
 function append(messages, call, observation) {
   const id = 'actual-' + messages.length;
@@ -42,10 +42,10 @@ test('original fetched two statements retain Planned not executed after actual a
     const { messages, records } = await fetched(); let pending = records, result;
     for (let turn = 0; turn < 4; turn += 1) {
       for (const call of pending.calls) {
-        assert.equal(call.tool, 'run_command'); const { command } = JSON.parse(call.arguments);
+        assert.equal(call.tool, 'bash'); const { command } = JSON.parse(call.arguments);
         assert.ok(command.startsWith('mkdir -p -- .formal-ai && (lock=') || command === 'cat .formal-ai/general-change-plan.lino');
         assert.ok(command.includes('.formal-ai/general-change-plan.lino'));
-        append(messages, call, executeResult(dir, { ...call, tool: 'bash' }));
+        append(messages, call, executeResult(dir, call));
       }
       result = await planChatStepResolved(messages, tools); if (result.kind === 'final') break; pending = result;
     }
@@ -53,4 +53,17 @@ test('original fetched two statements retain Planned not executed after actual a
     assert.ok(readFileSync(join(dir, '.formal-ai/general-change-plan.lino'), 'utf8').includes(task));
     assert.equal(existsSync(join(dir, 'check-self-development-release.rs')), false);
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('legacy run_command capability does not authorize a shell journal recipe', async () => {
+  const legacyTools = ['web_fetch', 'write_file', 'run_command'];
+  const messages = [{ role: 'user', content: task }];
+  const fetch = await planChatStepResolved(messages, legacyTools);
+  assert.equal(fetch.kind, 'tool_calls');
+  assert.equal(fetch.calls[0].tool, 'web_fetch');
+  append(messages, fetch.calls[0], { content: prose });
+  const journal = await planChatStepResolved(messages, legacyTools);
+  assert.equal(journal.kind, 'final');
+  assert.ok(!journal.answer.includes('Executed'));
+  assert.equal(journal.calls, undefined);
 });
