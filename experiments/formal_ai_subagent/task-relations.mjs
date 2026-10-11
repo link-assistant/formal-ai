@@ -81,7 +81,8 @@ export function summarizeTaskRelations(measurements, declarations) {
     const declaration = declared.get(measurement.runId);
     if (observed.has(measurement.runId)) throw new TypeError('duplicate measured task');
     observed.add(measurement.runId);
-    if (!declaration || measurement.declarationDigest !== declaration.digest || measurement.category !== declaration.category
+    if (!declaration || measurement.declarationDigest !== declaration.digest || measurement.taskKind !== declaration.taskKind
+      || measurement.category !== declaration.category
       || measurement.expectedRelation !== declaration.expectedRelation) throw new TypeError('measurement differs from declared category');
   }
   if (observed.size !== declared.size) throw new TypeError('missing declared task');

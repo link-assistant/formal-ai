@@ -118,3 +118,15 @@ test('independent extractive compression acceptance keeps missing usage Unknown'
  });
  assert.equal(wrong.accepted,false);assert.equal(wrong.matchesExpectation,false);
 });
+
+
+test('cohort summaries refuse changing the source-declared task kind',async()=>{
+  for(const [kind,category] of [['coding','feature-implementation'],['self-coding','test-implementation'],['other','decision'],['mathematics','calculation']]){
+    const declaration=task(category,kind,'Original identity control');
+    const measured=await measureTaskRelation(declaration,run(declaration,{response:'yes'}),async(changes,response)=>proof(changes,response));
+    assert.doesNotThrow(()=>summarizeTaskRelations([measured],[declaration]));
+    for(const different of ['coding','self-coding','other','mathematics'].filter(value=>value!==kind)){
+      assert.throws(()=>summarizeTaskRelations([{...measured,taskKind:different}],[declaration]),/measurement differs from declared category/);
+    }
+  }
+});
