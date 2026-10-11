@@ -30,9 +30,10 @@ import { mentionsRole } from '../../js/agentic/crate/seed_meanings.mjs';
 import { normalizePrompt } from '../../js/agentic/crate/engine.mjs';
 import { collectionSummaryOwns } from '../../js/agentic/planner/collection_summary.mjs';
 import { bareSurfaces } from '../../js/agentic/write_request.mjs';
+import { ownedReadPaths, readPolicyBlocksPlan } from '../../js/agentic/file_read/ownership.mjs';
 import { shellCapture } from './shell-capture.mjs';
 import { grepCapture } from './grep-capture.mjs';
-import { lstatSync, realpathSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync, writeSync } from 'node:fs';
+import { lstatSync, realpathSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
@@ -236,7 +237,8 @@ export async function drive(planChatStep, dir, prompt, {
     }
     allowedCommands = Object.freeze([...allowedCommands]);
   }
-  const sourceSession = hasHost() ? host().sourceSession : null;
+  if (!hasHost()) await installDefaultNodeSourceHost(new WorkerHost());
+  const sourceSession = host().sourceSession;
   if (sourceSession && !sourceSession.active()) {
     return sourceSession.run({ request: prompt, workspace: dir, tools }, () =>
       drive(planChatStep, dir, prompt, {
@@ -319,9 +321,36 @@ export async function drive(planChatStep, dir, prompt, {
     creationInstruction = creationInstruction.slice(0, span.start)
       + ' '.repeat(span.end - span.start) + creationInstruction.slice(span.end);
   }
-  const createIntent = writesWholeFile(creationInstruction) && !explicitOverwrite
+  // An exact adapter operation is the existing low-level callback API, not a semantic creation request.
+  const adapterOperation = AGENT_CLI_TOOLS.includes(prompt) ? prompt : null;
+  const createIntent = adapterOperation === null && writesWholeFile(creationInstruction) && !explicitOverwrite
     && !(explicitAddition !== null && explicitAddition.atEnd !== null);
-  if (createIntent && createContract === null) {
+  let readOnlyOperation = false;
+  if (createIntent && createContract === null && rawCreate === null) {
+    const paths = ownedReadPaths(prompt, 'file_read_action_cue');
+    const current = await maintainedResolvedStep(messages, tools);
+    readOnlyOperation = paths.length > 0 && current?.kind === 'tool_calls'
+      && current.calls.length > 0 && current.calls.every(call => call.tool === 'read')
+      && !readPolicyBlocksPlan(prompt, current);
+  }
+  let sourceEditOperation = false;
+  const firstGoal = Array.isArray(declaredGoals) ? declaredGoals[0] : null;
+  if (createIntent && createContract === null && firstGoal?.kind === 'source_edit'
+      && firstGoal.sourceUnit === 'utf16'
+      && prompt.slice(firstGoal.span.start, firstGoal.span.end) === firstGoal.clause
+      && rawCreate?.target === firstGoal.target) {
+    const current = await maintainedResolvedStep(messages, tools);
+    sourceEditOperation = current?.kind === 'tool_calls' && current.calls.length > 0
+      && current.calls.every(call => {
+        if (call.tool !== 'read') return false;
+        const args = argsOf(call);
+        return args !== null && typeof args === 'object' && !Array.isArray(args)
+          && Object.keys(args).length > 0
+          && Object.keys(args).every(key => ['filePath', 'file_path', 'path'].includes(key))
+          && Object.values(args).every(path => path === firstGoal.target);
+      }) && !readPolicyBlocksPlan(prompt, current);
+  }
+  if (createIntent && createContract === null && !readOnlyOperation && !sourceEditOperation) {
     const refusal = await maintainedPlanChatStep(messages, tools);
     if (refusal?.kind === 'final') {
       return { transcript, answer: refusal.answer, stop: 'final', toolsAdvertised: tools };
@@ -351,10 +380,25 @@ export async function drive(planChatStep, dir, prompt, {
     // the symbolic command reroute may still turn that answer into tool calls
     // (js/server/agentic.mjs commandReroutePlan).
     const contracts = atomicRecordAppend && tools.includes('write') ? [appendDefinition('write')] : [];
-    const scoped = projectAppendContracts(messages, contracts);
-    const plan = (await planChatStep(scoped, tools)) ?? (fallthrough ? await fallthrough(messages, tools) : null);
+    const projectHistory = definitions => projectAppendContracts(messages, definitions).map(message => ({
+      ...message,
+      // Wire records are callback data; opaque provider tokens retain their identity.
+      ...(message.tool_calls ? { tool_calls: message.tool_calls.map(call => ({
+        ...call, function: { ...call.function },
+      })) } : {}),
+      ...(message.source_read ? { source_read: { ...message.source_read } } : {}),
+      ...(message.source_creation ? { source_creation: { ...message.source_creation } } : {}),
+      ...(message.append_receipt ? { append_receipt: { ...message.append_receipt } } : {}),
+    }));
+    const scoped = projectHistory(contracts);
+    const plan = (await planChatStep(scoped, tools)) ?? (fallthrough ? await fallthrough(projectHistory([]), tools) : null);
     if (!plan) return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };
     if (plan.kind === 'final') {
+      if (readOnlyOperation || sourceEditOperation) {
+        const current = await maintainedResolvedStep(messages, tools);
+        if (current?.kind !== 'final') return { transcript, answer: null, stop: 'unbound-read-operation', toolsAdvertised: tools };
+        return { transcript, answer: current.answer, stop: 'final', toolsAdvertised: tools };
+      }
       if (createContract !== null) {
         const ownedFinal = await maintainedResolvedStep(messages, tools);
         if (ownedFinal?.kind !== 'final') return { transcript, answer: null, stop: 'unbound-create-operation', toolsAdvertised: tools };
@@ -386,6 +430,18 @@ export async function drive(planChatStep, dir, prompt, {
       if (deniedCalls.length) {
         return { transcript, answer: null, stop: 'command-policy-denied',
           toolsAdvertised: tools, deniedCalls };
+      }
+    }
+    if (adapterOperation !== null && calls.some(call => call.tool !== adapterOperation)) {
+      return { transcript, answer: null, stop: 'unbound-adapter-operation', toolsAdvertised: tools };
+    }
+    if (readOnlyOperation || sourceEditOperation) {
+      const current = await maintainedResolvedStep(messages, tools);
+      if (current?.kind !== 'tool_calls' || readPolicyBlocksPlan(prompt, current)
+          || calls.length !== current.calls.length || !calls.every((call, index) =>
+            (sourceEditOperation || call.tool === 'read') && call.tool === current.calls[index].tool
+              && call.arguments === current.calls[index].arguments)) {
+        return { transcript, answer: null, stop: 'unbound-read-operation', toolsAdvertised: tools };
       }
     }
     const toolCalls = calls.map((call, index) => ({
@@ -481,9 +537,10 @@ async function main(argv) {
     if (entry.result) out.push(entry.result.split('\n').map((line) => `   ${line}`).join('\n'));
   }
   out.push(`== answer ==\n${answer ?? unanswered(stop, steps, transcript.length)}`);
-  // Written synchronously: process.exit drops what a pipe has not drained yet,
-  // which cut the answer off a long transcript.
-  writeSync(1, `${out.join('\n')}\n`);
+  // Await the complete stdout write before terminating the worker-owned session.
+  await new Promise((resolve, reject) => {
+    process.stdout.write(`${out.join('\n')}\n`, error => error ? reject(error) : resolve());
+  });
   process.exit(0);
 }
 
