@@ -4,7 +4,15 @@ Pull request [#1188](https://github.com/link-assistant/formal-ai/pull/1188), "Bu
 
 This document is for the next agent. It covers the owner's requirements, the working method, observed branch results and remaining work. The current arrangement distinguishes committed work from finite local changes awaiting the coordinated integration push.
 
-## Current committed source batch and pending final acceptance (2026-10-11)
+## Current CI repair cut and pending acceptance (2026-10-11)
+
+Root completed 28 local commits beyond dfe9 at faea678613a3797be9b70117ec176bd2666e3a01. The working tree was observed clean after T7162. T7161 failed before commit effects; T7162 preserves eight full process receipts and completes three commits successfully. Push and fresh final stock remain Pending.
+
+T7156 stock failed with 778 tests, 774 passes and four failures; remaining phases did not run. T7160 qualifies the three source fixture repairs with 39 passing controls and source quality checks. Neither result proves native, hosted CI or production publication acceptance. [Evidence part020](../../../experiments/formal_ai_subagent/evidence/coordinator-1188/f970-ci-repairs/source-host-parity-full-originals/part-020/README.md) preserves this finite cut and its original failures. Future driver union, default factory, cache and Markdown source packets are excluded from this push.
+
+Coverage remains 153 active rows: 123 recorded implemented, 29 partial and one not-delivered; 30 unfinished acceptances remain. KnownLoss6084, the first alias standalone commit original, T7137 ignored-browser preimages and T7148 incomplete commit-process original remain disclosed below. No missing original is reconstructed. Root alone writes and pushes tracked content through maintained Formal AI; at least two Formal AI-only lanes and continuous CI monitoring remain required. Supplied programs have zero autonomous credit and full cost remains Unknown. An earlier disk warning reported 775 MiB free at 100% usage; root subsequently observed 1.8 GiB free at 10:35. Available space fluctuates; avoid new copies, builds and downloads.
+
+## Historical committed source batch before the current CI repair cut (2026-10-11)
 
 The eaaa source cut stock run T7132 failed: phase one reported 807 tests, 772 passes and 35 failures in 213 seconds within the unchanged 360-second bound. Remaining phases did not run; source stability was observed. This is not a green stock result.
 
