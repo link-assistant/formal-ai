@@ -12,7 +12,7 @@ import { executeResult } from '../../../experiments/js_dogfood/drive.mjs';
 before(async () => installNodeHost(new WorkerHost()));
 const PROMPT = 'Create a file hello.txt containing exactly: Hello World';
 const TOOLS = ['read_file', 'write_file', 'run_command'];
-const aliases = { read_file: 'read', write_file: 'write', run_command: 'bash', bash: 'bash' };
+const aliases = { read_file: 'read', write_file: 'write', run_command: 'bash', run_shell_command: 'bash', bash: 'bash' };
 async function run(prompt, { tools = TOOLS, inject = null } = {}) {
   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-observed-contract-'));
   const messages = [{ role: 'user', content: prompt }], calls = [];
@@ -120,11 +120,22 @@ test('write-only actual target error is terminal and never becomes completion', 
   assert.ok(!result.answer.includes('Completed the general change request'));
 });
 test('shell-only event persistence uses actual command stdout before target verification', async () => {
-  for (const tools of [['write_file', 'run_command'], ['write_file', 'bash']]) {
+  for (const tools of [['write_file', 'run_shell_command'], ['write_file', 'bash']]) {
     const result = await run(PROMPT, { tools });
     assertTarget(result, 'hello.txt', 'Hello World');
     assert.ok(result.calls[0].args.command.startsWith('mkdir -p -- .formal-ai && (lock='));
     assert.ok(result.calls[0].result.includes(composeGeneralChangePlan(PROMPT).target));
     assert.match(result.answer, /Completed the general change request/u);
   }
+});
+
+test('a generic command declaration does not grant an atomic shell journal', async () => {
+  const result = await run(PROMPT, { tools: ['write_file', 'run_command'] });
+  assertTarget(result, 'hello.txt', 'Hello World');
+  assert.deepEqual(result.calls.map(call => call.tool), ['write_file', 'run_command']);
+  assert.equal(result.calls[0].args.path, 'hello.txt');
+  assert.equal(result.calls[1].args.command, 'cat hello.txt');
+  assert.ok(!result.calls.some(call => call.args.path === PLAN_PATH));
+  assert.match(result.answer, /not marked the change complete/u);
+  assert.ok(!result.answer.includes('Completed the general change request'));
 });
