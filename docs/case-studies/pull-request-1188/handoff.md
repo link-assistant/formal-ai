@@ -4,7 +4,21 @@ Pull request [#1188](https://github.com/link-assistant/formal-ai/pull/1188), "Bu
 
 This document is for the next agent. It covers the owner's requirements, the working method, observed branch results and remaining work. The current arrangement distinguishes committed work from finite local changes awaiting the coordinated integration push.
 
-## Current 40-commit repair cut; fresh validation pending (2026-10-11)
+## Current 44-commit source cut; fresh stock and push pending (2026-10-11)
+
+The committed source cut is `af4dfa9056e55991ddb5354ce58620ecf070b58f`, 44 local commits beyond the last pushed cut. Actual Formal AI7206 completed the latest commit and clean readback; independent8391 reviewed it. Actual7204 installed three L04 source repairs, preserving the unchanged32-leaf binding assertion and20 nearest tests, with all17 configured checks passing. Source qualification does not replace fresh stock or hosted execution.
+
+The original7201 stock run passed phases1 and2, failed phase3 at L04 and did not run phase4. Retain its full failed receipts. The generic generated-owner agreement/ranking repair is source-qualified, but fresh stock on the next final source/archive/doc head remains Pending. No green push, merge, native run, registry, signing or production publication is claimed.
+
+[Evidence part024](../../../experiments/formal_ai_subagent/evidence/coordinator-1188/f970-ci-repairs/source-host-parity-full-originals/part-024/README.md) is a prospective source-history cut. Approved11352 selects1144 logical members in shards of700 and444, with9,385,885 selected-plus-authority bytes and17,359,415 prospective compressed bytes. Root materialization and the archive/doc commits are Pending; those two future commits are excluded from44. Separate8281 diagnostic transport has262 files and83,817,669 bytes: LocalOnly, NotMaterialized and NotPortableFullraw. These full raw diagnostics are not represented as portable inclusion in this part. All earlier KnownLoss disclosures, failures and original inverses remain in the historical sections.
+
+Acceptance remains153 active rows and30 unfinished:123 recorded implemented claims,29 partial and one not delivered. Evidence existence is not fresh whole delivery. Original40 coding-task acceptance remains zero. Specification inventory remains221 carried and961 unsupported out of1182. Future33 source/profile proposals and conditional native/provider prerequisites stay private, source-only and excluded from this finite cut; helper tests or serialized metadata cannot grant production, namespace or native authority.
+
+Use maintained Formal AI incidentally and scale original tasks gradually: preregister at least20 tasks per class and require95% quality plus refusal checks before growing to cross-file, module and larger self-coding work. Retain failures and independent useful-output oracles. Do not pad cases, equate bytes with tokens or guarantee cost reductions. Supplied source authoring has zero autonomy credit and complete usage/cost remains Unknown. The latest root-reported disk sample is33 GiB free at93% use. The Formal AI task cache is583,056 KiB, up2,144 KiB from14:35; these disk/cache samples are not token usage or cost measurements.
+
+Next: root installs the bounded archive and complete handoff through maintained Formal AI, commits the finite archive/doc cut, then runs fresh13 preflights and all four stock phases on the actual final head before pushing. Native, credential, hosted and publication facts require their own genuine observations.
+
+## Historical 40-commit repair cut before the latest stock failure (2026-10-11)
 
 The committed source cut is `9f3e9087eb4c474336843cd360f8058093db1197`: 40 local commits beyond the last pushed `dfe9` cut. Actual maintained Formal AI root7191 completed the latest five commits; all eight full process receipts returned status 0, Git readback was clean, and the regenerated ignored mirror remained physically present. Archive and handoff commits prepared after this cut are not included in that count.
 
