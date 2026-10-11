@@ -54,7 +54,6 @@ fn safe_path(value: &str) -> bool {
 }
 /// Compile one complete raw request against exactly one supplied grammar root.
 /// Regex/capture offsets are projected from UTF-8 bytes to JS-compatible UTF-16.
-#[must_use]
 pub fn compile_compound_task(request: &str, document: &LinoNode) -> Option<CompoundTask> {
     let roots = if document.name == "compound-task-grammar" {
         vec![document]

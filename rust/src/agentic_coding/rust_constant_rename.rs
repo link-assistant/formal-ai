@@ -16,7 +16,6 @@ pub struct RustConstantRenameCandidate {
 }
 /// Parse the actual supplied bytes through the maintained engine before reasoning.
 /// An unavailable parser refuses; public trees/JSON cannot assert source ownership.
-#[must_use]
 pub fn rust_constant_rename_candidate(
     source: &str,
     previous: &str,
