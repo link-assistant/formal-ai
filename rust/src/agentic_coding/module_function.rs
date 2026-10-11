@@ -27,8 +27,10 @@
 pub mod callable_catalog;
 mod complete_source_preflight;
 mod expression_values;
+mod optional_command_port;
 use expression_values::specified_value;
 pub(super) use expression_values::stated_value;
+pub use optional_command_port::{OptionalCommandPlan, source_owned_optional_command};
 mod conditional_ir;
 mod conditional_schema;
 mod discovery;
@@ -932,7 +934,7 @@ pub(super) fn plan_module_function_step(
             result,
         ));
     };
-    super::command_reroute::plan_symbolic_command_reroute(
+    let plan = super::command_reroute::plan_symbolic_command_reroute(
         messages,
         tool_names,
         &SymbolicAnswer {
@@ -942,9 +944,19 @@ pub(super) fn plan_module_function_step(
             evidence_links: Vec::new(),
             thinking_steps: Vec::new(),
             links_notation: String::new(),
-            execution_recipe: Some(Box::new(recipe)),
+            execution_recipe: Some(Box::new(recipe.clone())),
         },
-    )
+    )?;
+    if let Some(owned) =
+        OptionalCommandPlan::from_source_plan(&plan, task, tool_names, messages, &recipe)
+    {
+        if let Some(verified) =
+            source_owned_optional_command(&owned, &plan, task, tool_names, messages)
+        {
+            return Some(verified.original_plan().clone());
+        }
+    }
+    Some(plan)
 }
 
 mod source_contract_diagnostics;

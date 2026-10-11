@@ -18,6 +18,9 @@
 
 import {createHash} from 'node:crypto';
 import { AsyncLocalStorage } from 'node:async_hooks';
+import { types as nodeTypes } from 'node:util';
+import { queryOwnedInferredCommandPolicy } from '../../js/server/node-source-session-host.mjs';
+import { sourceOwnedOptionalCommand } from '../../js/agentic/module_function.mjs';
 import { appendDefinition, projectAppendContracts } from '../../js/agentic/append_contract.mjs';
 import { atomicRecordAppend } from './atomic-record-append.mjs';
 import { exclusiveCreate } from './exclusive-create.mjs';
@@ -48,12 +51,29 @@ import { hasHost, host } from '../../js/agentic/host.mjs';
 import { installDefaultNodeSourceHost } from '../../js/server/default-node-source-bootstrap.mjs';
 
 const verificationPolicies = new AsyncLocalStorage();
+function sameDeclaredToolList(expected, candidate) {
+  if (!Array.isArray(candidate) || nodeTypes.isProxy(candidate) || Object.getPrototypeOf(candidate) !== Array.prototype) return false;
+  const descriptors = Object.getOwnPropertyDescriptors(candidate);
+  if (!Object.hasOwn(descriptors.length ?? {}, 'value') || descriptors.length.value !== expected.length) return false;
+  const keys = Reflect.ownKeys(descriptors);
+  if (keys.length !== expected.length + 1 || keys.some(key => typeof key !== 'string' || (key !== 'length' && !/^(0|[1-9][0-9]*)$/u.test(key)))) return false;
+  return expected.every((tool, index) => Object.hasOwn(descriptors[index] ?? {}, 'value') && typeof descriptors[index].value === 'string' && descriptors[index].value === tool);
+}
+
 /** Read-only observation of the actual validated live drive invocation. */
 export function declaredVerificationPermission(request, workspace, tools, command) {
   const current = verificationPolicies.getStore();
   if (!current?.active || current.request !== request || current.workspace !== workspace
-      || JSON.stringify(current.tools) !== JSON.stringify(tools) || typeof command !== 'string') return null;
+      || !sameDeclaredToolList(current.tools, tools) || typeof command !== 'string') return null;
   return current.commands === undefined ? null : current.commands.includes(command);
+}
+
+/** Read-only declared Write observation; actual active validated drive owns the store. */
+export function declaredTrackedWritePermission(request, workspace, tools) {
+  const current = verificationPolicies.getStore();
+  if (!current?.active || current.request !== request || current.workspace !== workspace || !Array.isArray(tools)) return null;
+  if (!sameDeclaredToolList(current.tools, tools)) return null;
+  return current.tools.includes('write');
 }
 
 /** How long one bash call may run before the driver kills it. */
@@ -284,7 +304,7 @@ export async function drive(planChatStep, dir, prompt, {
   const activePolicy = verificationPolicies.getStore();
   const policyWorkspace = existsSync(dir) ? realpathSync(dir) : resolve(dir);
   if (!activePolicy?.active || activePolicy.request !== prompt || activePolicy.workspace !== policyWorkspace
-      || JSON.stringify(activePolicy.tools) !== JSON.stringify(tools)
+      || !sameDeclaredToolList(activePolicy.tools, tools)
       || JSON.stringify(activePolicy.commands) !== JSON.stringify(allowedCommands)) {
     const ownedPolicy = { request: prompt, workspace: policyWorkspace, tools,
       commands: allowedCommands, active: true };
@@ -455,7 +475,16 @@ export async function drive(planChatStep, dir, prompt, {
       ...(message.append_receipt ? { append_receipt: { ...message.append_receipt } } : {}),
     }));
     const scoped = projectHistory(contracts);
-    const plan = (await planChatStep(scoped, tools)) ?? (fallthrough ? await fallthrough(projectHistory([]), tools) : null);
+    let plan = (await planChatStep(scoped, tools)) ?? (fallthrough ? await fallthrough(projectHistory([]), tools) : null);
+    try {
+      const optional = sourceOwnedOptionalCommand(plan, prompt, tools, scoped, projectHistory(contracts));
+      if (optional !== null) {
+        if (queryOwnedInferredCommandPolicy(sourceSession, prompt, optional.command, tools) === false) {
+          const alternative = optional.withoutInferredCheck();
+          if (alternative !== null) plan = alternative;
+        }
+      }
+    } catch { /* Unknown provenance or policy retains the actual original check plan. */ }
     if (!plan) return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };
     if (plan.kind === 'final') {
       if (readOnlyOperation || sourceEditOperation) {

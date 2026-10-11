@@ -22,8 +22,8 @@ import { boundReadPaths } from './file_read/ownership.mjs';
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { sourceFromAgentReadResult, sourceFromReadResult } from './code_artifact.mjs';
-import { planSymbolicCommandReroute } from './command_reroute.mjs';
-import { cached, host, readText, realm, solve } from './host.mjs';
+import { planSymbolicCommandReroute, recipeProgressAfterLatestUser } from './command_reroute.mjs';
+import { cached, readText, realm, solve } from './host.mjs';
 import { planOne, resolvedFinalAnswer, FinalDisposition } from './plan.mjs';
 import { renderSeededOutcome } from './code_task.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
@@ -483,13 +483,6 @@ async function moduleFunctionRecipe(request, moduleSource, testSource, task, too
   let inferred = null;
   if (catalog.execution.check_command !== null && catalog.execution.check_command !== undefined) {
     inferred = catalog.execution.check_command.split(catalog.save_as).join(request.module);
-    const session = host().sourceSession;
-    if (session) {
-      try {
-        const { queryOwnedInferredCommandPolicy } = await import('../server/node-source-session-host.mjs');
-        if (queryOwnedInferredCommandPolicy(session, task, inferred, toolNames) === false) inferred = null;
-      } catch { /* Unknown host context preserves the historical seeded check. */ }
-    }
   }
   const commands = inferred === null ? [] : [inferred];
   const supporting = [];
@@ -506,7 +499,9 @@ async function moduleFunctionRecipe(request, moduleSource, testSource, task, too
   }
   const run = request.command ?? (request.test === null ? null : fill(findChildValue(terms, 'run'), [['test', request.test]]));
   if (run !== null) commands.push(run);
-  return { language: request.language, source, path: request.module, supporting_files: supporting, commands };
+  const recipe = { language: request.language, source, path: request.module, supporting_files: supporting, commands };
+  if (inferred !== null) optionalRecipeCommands.set(recipe, inferred);
+  return recipe;
 }
 
 /** The file `path` as the transcript's read returned it; '' for a missing file, null when unread. */
@@ -521,6 +516,51 @@ export function readSource(currentTurn, path) {
  * Plan the next step of a module-function request: read the module and the
  * test module, then hand the computed recipe to the execution-recipe reroute.
  */
+const snapshotObjectIdentities = new WeakMap();
+let snapshotObjectSequence = 0;
+function optionalSnapshot(value, ancestors = new Set()) {
+  if (value === null || typeof value !== 'object') {
+    if (['undefined', 'string', 'boolean', 'number'].includes(typeof value) || value === null) return [typeof value, value];
+    throw new Error();
+  }
+  if (ancestors.has(value)) throw new Error();
+  const prototype = Object.getPrototypeOf(value);
+  if (prototype !== Object.prototype && prototype !== Array.prototype && prototype !== null) throw new Error();
+  const descriptors = Object.getOwnPropertyDescriptors(value);
+  if (Reflect.ownKeys(descriptors).some(key => typeof key !== 'string' || key === 'toJSON' || !Object.hasOwn(descriptors[key], 'value'))) throw new Error();
+  const keys = Object.keys(descriptors);
+  if (!Array.isArray(value) && keys.length === 0) {
+    if (!snapshotObjectIdentities.has(value)) snapshotObjectIdentities.set(value, ++snapshotObjectSequence);
+    return ['opaque', snapshotObjectIdentities.get(value)];
+  }
+  const nested = new Set(ancestors); nested.add(value);
+  return [Array.isArray(value) ? 'array' : 'object', keys.map(key => [key, optionalSnapshot(descriptors[key].value, nested)])];
+}
+function optionalSnapshotText(value) {
+  try { return JSON.stringify(optionalSnapshot(value)); } catch { return null; }
+}
+
+const optionalRecipeCommands = new WeakMap();
+const optionalCommandPlans = new WeakMap();
+/** Mirrors `fn source_owned_optional_command` in rust/src/agentic_coding/module_function/optional_command_port.rs. Read-only source-owner provenance, never policy authority. */
+export function sourceOwnedOptionalCommand(plan, task, toolNames, messages, canonicalMessages = messages) {
+  const owned = optionalCommandPlans.get(plan);
+  if (!owned || owned.messageSnapshot === null || owned.planSnapshot === null || owned.task !== task || owned.tools !== toolNames || owned.messages !== messages
+      || owned.messageSnapshot !== optionalSnapshotText(messages)
+      || owned.messageSnapshot !== optionalSnapshotText(canonicalMessages)
+      || owned.planSnapshot !== optionalSnapshotText(plan)) return null;
+  return Object.freeze({
+    command: owned.command,
+    withoutInferredCheck() {
+      if (owned.messageSnapshot !== optionalSnapshotText(messages)
+          || owned.messageSnapshot !== optionalSnapshotText(canonicalMessages)
+          || owned.planSnapshot !== optionalSnapshotText(plan)) return null;
+      return planSymbolicCommandReroute(canonicalMessages, toolNames,
+        { execution_recipe: { ...owned.recipe, commands: owned.recipe.commands.slice(1) } });
+    },
+  });
+}
+
 export async function planModuleFunctionStep(task, messages, toolNames) {
   const observed = observedCallableRequest(task);
   if (observed !== null) return planObservedCallableStep(observed, messages, toolNames);
@@ -538,7 +578,18 @@ export async function planModuleFunctionStep(task, messages, toolNames) {
     sources.push(source);
   }
   const recipe = await moduleFunctionRecipe(request, sources[0], sources[1] ?? '', task, toolNames);
-  return recipe ? planSymbolicCommandReroute(messages, toolNames, { execution_recipe: recipe })
-    : resolvedFinalAnswer(renderSeededOutcome('coding-source-authoring-contract-missing', task, '') ?? '',
-      FinalDisposition.Gap, 'module-function-recipe-missing');
+  if (!recipe) return resolvedFinalAnswer(renderSeededOutcome('coding-source-authoring-contract-missing', task, '') ?? '',
+    FinalDisposition.Gap, 'module-function-recipe-missing');
+  const plan = planSymbolicCommandReroute(messages, toolNames, { execution_recipe: recipe });
+  const inferred = optionalRecipeCommands.get(recipe);
+  const writeTool = toolFor(toolNames, Capability.Write);
+  const progress = writeTool ? recipeProgressAfterLatestUser(messages, writeTool, recipe, recipe.commands) : null;
+  if (inferred !== undefined && progress?.files_written === 1 + recipe.supporting_files.length
+      && progress.commands_done === 0 && plan?.kind === 'tool_calls' && plan.calls.length === 1
+      && plan.calls[0].tool === toolFor(toolNames, Capability.Run)
+      && plan.calls[0].arguments === JSON.stringify({ command: inferred })) {
+    optionalCommandPlans.set(plan, { task, tools: toolNames, messages, recipe, command: inferred,
+      messageSnapshot: optionalSnapshotText(messages), planSnapshot: optionalSnapshotText(plan) });
+  }
+  return plan;
 }

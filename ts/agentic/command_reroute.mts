@@ -157,7 +157,7 @@ function failureReport(failure, messages, path, step) {
 }
 
 /** Mirrors `RecipeProgress::after_latest_user`. */
-function recipeProgressAfterLatestUser(messages, writeTool, recipe, expectedCommands) {
+export function recipeProgressAfterLatestUser(messages, writeTool, recipe, expectedCommands) {
   const start = evidenceWindowStart(messages);
   const progress = { files_written: 0, commands_done: 0, command_outputs: [], failure: null, repair_rung: 0 };
   const files = [[recipe.path, recipe.source], ...recipe.supporting_files.map((file) => [file.path, file.source])];

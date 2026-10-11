@@ -241,6 +241,25 @@ impl ExecutionRecipe {
     }
 }
 
+/// Whether the actual history is at the first inferred check after all source writes.
+pub(crate) fn optional_check_stage(
+    messages: &[ChatMessage],
+    tools: &[&str],
+    recipe: &ExecutionRecipe,
+) -> bool {
+    let Some(write_tool) = tool_for(tools, Capability::Write).or_else(|| {
+        tools
+            .iter()
+            .copied()
+            .find(|name| is_workspace_creation_tool(name))
+    }) else {
+        return false;
+    };
+    let progress =
+        RecipeProgress::after_latest_user(messages, write_tool, recipe, &recipe.commands);
+    progress.files_written == 1 + recipe.supporting_files.len() && progress.commands_done == 0
+}
+
 #[derive(Default)]
 struct RecipeProgress {
     files_written: usize,
