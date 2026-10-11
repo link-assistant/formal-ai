@@ -5,7 +5,6 @@
 
 use crate::first_workspace_call;
 /// The first planned call: its tool and parsed arguments.
-use crate::observed_plan_tools;
 fn first_call(prompt: &str, tools: &[&str]) -> (String, serde_json::Value) {
     first_workspace_call::first_workspace_call(prompt, tools)
 }

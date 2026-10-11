@@ -402,3 +402,12 @@ javascript-test-durations
     runtime-source-closure Unknown
     execution-source-authentication Unknown
     definition-binding import-time-only
+  test "rust/tests/web/pull-request-1188-adversarial-quoting.test.mjs"
+    seconds 60.774206832999994
+    receipt-sha256 d2c316a880ccb632f3aefbddcbc90f41acff782c061fd415d32384fb4fd6c1ce
+    request-sha256 54a4e9f952d786cd98bb8773c4b6cb4133e7d9b99061aef788de40fc32907eb9
+    source-sha256 61ce99e69514e6b41884912495a16385110e0ba23055a8c183ac09ddc2fc92cc
+    measurement-kind local-single-file
+    runtime-source-closure Unknown
+    execution-source-authentication Unknown
+    definition-binding import-time-only

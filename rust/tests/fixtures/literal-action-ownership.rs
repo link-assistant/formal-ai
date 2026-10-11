@@ -9,7 +9,7 @@ struct Observation {
     answer: Option<String>,
 }
 fn observe(task: &str, initial: &[(&str, &str)], tools: &[&str], turns: usize) -> Observation {
-    let mut workspace = ToolWorkspace::new(task);
+    let workspace = ToolWorkspace::new(task);
     for (path, bytes) in initial {
         workspace
             .write_initial(path, bytes)
