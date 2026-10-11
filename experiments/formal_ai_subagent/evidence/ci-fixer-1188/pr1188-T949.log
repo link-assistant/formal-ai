@@ -1,0 +1,124 @@
+>> read {"filePath":"rust/tests/web/pages-artifact-trust.test.mjs","file_path":"rust/tests/web/pages-artifact-trust.test.mjs","path":"rust/tests/web/pages-artifact-trust.test.mjs"}
+   <file>
+   00001| // R1188-U1: generalize, don't specialize. scripts/check-prompt-specialization.mjs
+   00002| // notices a prompt that a test sends to Formal AI held verbatim in code, which
+   00003| // is a branch, cue or canned answer keyed to that one prompt, and holds their
+   00004| // count to data/meta/prompt-specialization-ratchet.lino.
+   00005| 
+   00006| import assert from 'node:assert/strict';
+   00007| import { execFileSync } from 'node:child_process';
+   00008| import test from 'node:test';
+   00009| 
+   00010| import { codeLines, promptsOf, specializations } from '../../../scripts/check-prompt-specialization.mjs';
+   00011| import { REPO_ROOT } from './support/browser-runtime.mjs';
+   00012| 
+   00013| test('prompts are the natural-language literals a test sends', () => {
+   00014|   const source = [
+   00015|     'const run = await drive("Append the line x to notes.txt", files);',
+   00016|     "assert.equal(solve('What is your name?'), 'Formal AI');",
+   00017|     'let answer = chat("ok");',
+   00018|     'const prompt = "read ${path} and fix it now";',
+   00019|     "const label = 'a label that is no prompt at all';",
+   00020|   ].join('\n');
+   00021|   assert.deepEqual(promptsOf(source), ['Append the line x to notes.txt', 'What is your name?']);
+   00022| });
+   00023| 
+   00024| test('only code lines count, never comments', () => {
+   00025|   const code = codeLines('// What is your name? is answered from seed\nif (text === "What is your name?") {}');
+   00026|   assert.equal(code, 'if (text === "What is your name?") {}');
+   00027|   const found = specializations(['What is your name?', 'Never in code at all'], [{ path: 'js/a.js', code }]);
+   00028|   assert.deepEqual(found, [{ path: 'js/a.js', prompt: 'What is your name?' }]);
+   00029| });
+   00030| 
+   00031| test('the repository holds the specialization ratchet', () => {
+   00032|   const output = execFileSync('node', ['scripts/check-prompt-specialization.mjs'], { cwd: REPO_ROOT, encoding: 'utf8' });
+   00033|   assert.match(output, /test prompts held verbatim in code: (\d+) \(ceiling \1\)/u);
+   00034| });
+   00035| 
+   00036| test('the scan reads the app JSX too, and rust/src and the worker hold no pair', () => {
+   00037|   const output = execFileSync('node', ['scripts/check-prompt-specialization.mjs', '--list'], { cwd: REPO_ROOT, encoding: 'utf8' });
+   00038|   const listed = output.split('\n').filter((line) => line.startsWith('  '));
+   00039|   assert.ok(listed.every((line) => /^ {2}js\/app\/[\w-]+\.jsx: /u.test(line)), output);
+   00040| });
+   00041| 
+   
+   (End of file - total 41 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/pages-artifact-trust.test.mjs","file_path":"rust/tests/web/pages-artifact-trust.test.mjs","new":"// PR #1188 T937-T938: Pages inputs verify the artifact, never select executable code.\nimport assert from 'node:assert/strict';\nimport { spawnSync } from 'node:child_process';\nimport { readFileSync } from 'node:fs';\nimport test from 'node:test';\nconst workflow = readFileSync(new URL('../../../.github/workflows/pages-artifact.yml', import.meta.url), 'utf8');\nfunction shellFor(name) {\n  const step = workflow.split('      - name: ' + name + '\\n')[1].split('\\n      - ')[0];\n  return step.split('        run: |\\n')[1].split('\\n').map((line) => line.slice(10)).join('\\n');\n}\ntest('checkout uses the trusted triggering ref before verification or execution', () => {\n  assert.match(workflow, /ref: \\$\\{\\{ github\\.ref \\}\\}/u);\n  assert.doesNotMatch(workflow, /ref: \\$\\{\\{ (?:inputs\\.|steps\\.pages_ref)/u);\n  assert.ok(workflow.indexOf('Verify trusted release branch') < workflow.indexOf('Install web bundle dependencies'));\n});\ntest('ref validation rejects missing values and shell payloads; accepts a full SHA', () => {\n  for (const [sha, valid] of [['', false], ['main', false], ['a'.repeat(40), true], ['$(echo injected)', false], ['a'.repeat(40) + '\\nother', false]]) {\n    const result = spawnSync('bash', ['-c', shellFor('Select Pages deployment ref')], {\n      encoding: 'utf8', env: { ...process.env, PAGES_DEPLOY_SHA: sha, GITHUB_OUTPUT: '/dev/null' },\n    });\n    assert.equal(result.status === 0, valid, sha);\n  }\n});\ntest('a changed branch or arbitrary input fails before build; matching release commit passes', () => {\n  const script = 'git() { printf \"%s\\\\n\" \"$CHECKOUT_SHA\"; }\\n' + shellFor('Verify trusted release branch matches the requested artifact commit');\n  for (const [requested, expected] of [['a'.repeat(40), 0], ['b'.repeat(40), 1]]) {\n    const result = spawnSync('bash', ['-c', script], {\n      encoding: 'utf8', env: { ...process.env, CHECKOUT_SHA: 'a'.repeat(40), PAGES_DEPLOY_SHA: requested },\n    });\n    assert.equal(result.status, expected, result.stdout + result.stderr);\n  }\n});\n","newString":"// PR #1188 T937-T938: Pages inputs verify the artifact, never select executable code.\nimport assert from 'node:assert/strict';\nimport { spawnSync } from 'node:child_process';\nimport { readFileSync } from 'node:fs';\nimport test from 'node:test';\nconst workflow = readFileSync(new URL('../../../.github/workflows/pages-artifact.yml', import.meta.url), 'utf8');\nfunction shellFor(name) {\n  const step = workflow.split('      - name: ' + name + '\\n')[1].split('\\n      - ')[0];\n  return step.split('        run: |\\n')[1].split('\\n').map((line) => line.slice(10)).join('\\n');\n}\ntest('checkout uses the trusted triggering ref before verification or execution', () => {\n  assert.match(workflow, /ref: \\$\\{\\{ github\\.ref \\}\\}/u);\n  assert.doesNotMatch(workflow, /ref: \\$\\{\\{ (?:inputs\\.|steps\\.pages_ref)/u);\n  assert.ok(workflow.indexOf('Verify trusted release branch') < workflow.indexOf('Install web bundle dependencies'));\n});\ntest('ref validation rejects missing values and shell payloads; accepts a full SHA', () => {\n  for (const [sha, valid] of [['', false], ['main', false], ['a'.repeat(40), true], ['$(echo injected)', false], ['a'.repeat(40) + '\\nother', false]]) {\n    const result = spawnSync('bash', ['-c', shellFor('Select Pages deployment ref')], {\n      encoding: 'utf8', env: { ...process.env, PAGES_DEPLOY_SHA: sha, GITHUB_OUTPUT: '/dev/null' },\n    });\n    assert.equal(result.status === 0, valid, sha);\n  }\n});\ntest('a changed branch or arbitrary input fails before build; matching release commit passes', () => {\n  const script = 'git() { printf \"%s\\\\n\" \"$CHECKOUT_SHA\"; }\\n' + shellFor('Verify trusted release branch matches the requested artifact commit');\n  for (const [requested, expected] of [['a'.repeat(40), 0], ['b'.repeat(40), 1]]) {\n    const result = spawnSync('bash', ['-c', script], {\n      encoding: 'utf8', env: { ...process.env, CHECKOUT_SHA: 'a'.repeat(40), PAGES_DEPLOY_SHA: requested },\n    });\n    assert.equal(result.status, expected, result.stdout + result.stderr);\n  }\n});\n","new_str":"// PR #1188 T937-T938: Pages inputs verify the artifact, never select executable code.\nimport assert from 'node:assert/strict';\nimport { spawnSync } from 'node:child_process';\nimport { readFileSync } from 'node:fs';\nimport test from 'node:test';\nconst workflow = readFileSync(new URL('../../../.github/workflows/pages-artifact.yml', import.meta.url), 'utf8');\nfunction shellFor(name) {\n  const step = workflow.split('      - name: ' + name + '\\n')[1].split('\\n      - ')[0];\n  return step.split('        run: |\\n')[1].split('\\n').map((line) => line.slice(10)).join('\\n');\n}\ntest('checkout uses the trusted triggering ref before verification or execution', () => {\n  assert.match(workflow, /ref: \\$\\{\\{ github\\.ref \\}\\}/u);\n  assert.doesNotMatch(workflow, /ref: \\$\\{\\{ (?:inputs\\.|steps\\.pages_ref)/u);\n  assert.ok(workflow.indexOf('Verify trusted release branch') < workflow.indexOf('Install web bundle dependencies'));\n});\ntest('ref validation rejects missing values and shell payloads; accepts a full SHA', () => {\n  for (const [sha, valid] of [['', false], ['main', false], ['a'.repeat(40), true], ['$(echo injected)', false], ['a'.repeat(40) + '\\nother', false]]) {\n    const result = spawnSync('bash', ['-c', shellFor('Select Pages deployment ref')], {\n      encoding: 'utf8', env: { ...process.env, PAGES_DEPLOY_SHA: sha, GITHUB_OUTPUT: '/dev/null' },\n    });\n    assert.equal(result.status === 0, valid, sha);\n  }\n});\ntest('a changed branch or arbitrary input fails before build; matching release commit passes', () => {\n  const script = 'git() { printf \"%s\\\\n\" \"$CHECKOUT_SHA\"; }\\n' + shellFor('Verify trusted release branch matches the requested artifact commit');\n  for (const [requested, expected] of [['a'.repeat(40), 0], ['b'.repeat(40), 1]]) {\n    const result = spawnSync('bash', ['-c', script], {\n      encoding: 'utf8', env: { ...process.env, CHECKOUT_SHA: 'a'.repeat(40), PAGES_DEPLOY_SHA: requested },\n    });\n    assert.equal(result.status, expected, result.stdout + result.stderr);\n  }\n});\n","new_string":"// PR #1188 T937-T938: Pages inputs verify the artifact, never select executable code.\nimport assert from 'node:assert/strict';\nimport { spawnSync } from 'node:child_process';\nimport { readFileSync } from 'node:fs';\nimport test from 'node:test';\nconst workflow = readFileSync(new URL('../../../.github/workflows/pages-artifact.yml', import.meta.url), 'utf8');\nfunction shellFor(name) {\n  const step = workflow.split('      - name: ' + name + '\\n')[1].split('\\n      - ')[0];\n  return step.split('        run: |\\n')[1].split('\\n').map((line) => line.slice(10)).join('\\n');\n}\ntest('checkout uses the trusted triggering ref before verification or execution', () => {\n  assert.match(workflow, /ref: \\$\\{\\{ github\\.ref \\}\\}/u);\n  assert.doesNotMatch(workflow, /ref: \\$\\{\\{ (?:inputs\\.|steps\\.pages_ref)/u);\n  assert.ok(workflow.indexOf('Verify trusted release branch') < workflow.indexOf('Install web bundle dependencies'));\n});\ntest('ref validation rejects missing values and shell payloads; accepts a full SHA', () => {\n  for (const [sha, valid] of [['', false], ['main', false], ['a'.repeat(40), true], ['$(echo injected)', false], ['a'.repeat(40) + '\\nother', false]]) {\n    const result = spawnSync('bash', ['-c', shellFor('Select Pages deployment ref')], {\n      encoding: 'utf8', env: { ...process.env, PAGES_DEPLOY_SHA: sha, GITHUB_OUTPUT: '/dev/null' },\n    });\n    assert.equal(result.status === 0, valid, sha);\n  }\n});\ntest('a changed branch or arbitrary input fails before build; matching release commit passes', () => {\n  const script = 'git() { printf \"%s\\\\n\" \"$CHECKOUT_SHA\"; }\\n' + shellFor('Verify trusted release branch matches the requested artifact commit');\n  for (const [requested, expected] of [['a'.repeat(40), 0], ['b'.repeat(40), 1]]) {\n    const result = spawnSync('bash', ['-c', script], {\n      encoding: 'utf8', env: { ...process.env, CHECKOUT_SHA: 'a'.repeat(40), PAGES_DEPLOY_SHA: requested },\n    });\n    assert.equal(result.status, expected, result.stdout + result.stderr);\n  }\n});\n","old":"// R1188-U1: generalize, don't specialize. scripts/check-prompt-specialization.mjs\n// notices a prompt that a test sends to Formal AI held verbatim in code, which\n// is a branch, cue or canned answer keyed to that one prompt, and holds their\n// count to data/meta/prompt-specialization-ratchet.lino.\n\nimport assert from 'node:assert/strict';\nimport { execFileSync } from 'node:child_process';\nimport test from 'node:test';\n\nimport { codeLines, promptsOf, specializations } from '../../../scripts/check-prompt-specialization.mjs';\nimport { REPO_ROOT } from './support/browser-runtime.mjs';\n\ntest('prompts are the natural-language literals a test sends', () => {\n  const source = [\n    'const run = await drive(\"Append the line x to notes.txt\", files);',\n    \"assert.equal(solve('What is your name?'), 'Formal AI');\",\n    'let answer = chat(\"ok\");',\n    'const prompt = \"read ${path} and fix it now\";',\n    \"const label = 'a label that is no prompt at all';\",\n  ].join('\\n');\n  assert.deepEqual(promptsOf(source), ['Append the line x to notes.txt', 'What is your name?']);\n});\n\ntest('only code lines count, never comments', () => {\n  const code = codeLines('// What is your name? is answered from seed\\nif (text === \"What is your name?\") {}');\n  assert.equal(code, 'if (text === \"What is your name?\") {}');\n  const found = specializations(['What is your name?', 'Never in code at all'], [{ path: 'js/a.js', code }]);\n  assert.deepEqual(found, [{ path: 'js/a.js', prompt: 'What is your name?' }]);\n});\n\ntest('the repository holds the specialization ratchet', () => {\n  const output = execFileSync('node', ['scripts/check-prompt-specialization.mjs'], { cwd: REPO_ROOT, encoding: 'utf8' });\n  assert.match(output, /test prompts held verbatim in code: (\\d+) \\(ceiling \\1\\)/u);\n});\n\ntest('the scan reads the app JSX too, and rust/src and the worker hold no pair', () => {\n  const output = execFileSync('node', ['scripts/check-prompt-specialization.mjs', '--list'], { cwd: REPO_ROOT, encoding: 'utf8' });\n  const listed = output.split('\\n').filter((line) => line.startsWith('  '));\n  assert.ok(listed.every((line) => /^ {2}js\\/app\\/[\\w-]+\\.jsx: /u.test(line)), output);\n});\n","oldString":"// R1188-U1: generalize, don't specialize. scripts/check-prompt-specialization.mjs\n// notices a prompt that a test sends to Formal AI held verbatim in code, which\n// is a branch, cue or canned answer keyed to that one prompt, and holds their\n// count to data/meta/prompt-specialization-ratchet.lino.\n\nimport assert from 'node:assert/strict';\nimport { execFileSync } from 'node:child_process';\nimport test from 'node:test';\n\nimport { codeLines, promptsOf, specializations } from '../../../scripts/check-prompt-specialization.mjs';\nimport { REPO_ROOT } from './support/browser-runtime.mjs';\n\ntest('prompts are the natural-language literals a test sends', () => {\n  const source = [\n    'const run = await drive(\"Append the line x to notes.txt\", files);',\n    \"assert.equal(solve('What is your name?'), 'Formal AI');\",\n    'let answer = chat(\"ok\");',\n    'const prompt = \"read ${path} and fix it now\";',\n    \"const label = 'a label that is no prompt at all';\",\n  ].join('\\n');\n  assert.deepEqual(promptsOf(source), ['Append the line x to notes.txt', 'What is your name?']);\n});\n\ntest('only code lines count, never comments', () => {\n  const code = codeLines('// What is your name? is answered from seed\\nif (text === \"What is your name?\") {}');\n  assert.equal(code, 'if (text === \"What is your name?\") {}');\n  const found = specializations(['What is your name?', 'Never in code at all'], [{ path: 'js/a.js', code }]);\n  assert.deepEqual(found, [{ path: 'js/a.js', prompt: 'What is your name?' }]);\n});\n\ntest('the repository holds the specialization ratchet', () => {\n  const output = execFileSync('node', ['scripts/check-prompt-specialization.mjs'], { cwd: REPO_ROOT, encoding: 'utf8' });\n  assert.match(output, /test prompts held verbatim in code: (\\d+) \\(ceiling \\1\\)/u);\n});\n\ntest('the scan reads the app JSX too, and rust/src and the worker hold no pair', () => {\n  const output = execFileSync('node', ['scripts/check-prompt-specialization.mjs', '--list'], { cwd: REPO_ROOT, encoding: 'utf8' });\n  const listed = output.split('\\n').filter((line) => line.startsWith('  '));\n  assert.ok(listed.every((line) => /^ {2}js\\/app\\/[\\w-]+\\.jsx: /u.test(line)), output);\n});\n","old_str":"// R1188-U1: generalize, don't specialize. scripts/check-prompt-specialization.mjs\n// notices a prompt that a test sends to Formal AI held verbatim in code, which\n// is a branch, cue or canned answer keyed to that one prompt, and holds their\n// count to data/meta/prompt-specialization-ratchet.lino.\n\nimport assert from 'node:assert/strict';\nimport { execFileSync } from 'node:child_process';\nimport test from 'node:test';\n\nimport { codeLines, promptsOf, specializations } from '../../../scripts/check-prompt-specialization.mjs';\nimport { REPO_ROOT } from './support/browser-runtime.mjs';\n\ntest('prompts are the natural-language literals a test sends', () => {\n  const source = [\n    'const run = await drive(\"Append the line x to notes.txt\", files);',\n    \"assert.equal(solve('What is your name?'), 'Formal AI');\",\n    'let answer = chat(\"ok\");',\n    'const prompt = \"read ${path} and fix it now\";',\n    \"const label = 'a label that is no prompt at all';\",\n  ].join('\\n');\n  assert.deepEqual(promptsOf(source), ['Append the line x to notes.txt', 'What is your name?']);\n});\n\ntest('only code lines count, never comments', () => {\n  const code = codeLines('// What is your name? is answered from seed\\nif (text === \"What is your name?\") {}');\n  assert.equal(code, 'if (text === \"What is your name?\") {}');\n  const found = specializations(['What is your name?', 'Never in code at all'], [{ path: 'js/a.js', code }]);\n  assert.deepEqual(found, [{ path: 'js/a.js', prompt: 'What is your name?' }]);\n});\n\ntest('the repository holds the specialization ratchet', () => {\n  const output = execFileSync('node', ['scripts/check-prompt-specialization.mjs'], { cwd: REPO_ROOT, encoding: 'utf8' });\n  assert.match(output, /test prompts held verbatim in code: (\\d+) \\(ceiling \\1\\)/u);\n});\n\ntest('the scan reads the app JSX too, and rust/src and the worker hold no pair', () => {\n  const output = execFileSync('node', ['scripts/check-prompt-specialization.mjs', '--list'], { cwd: REPO_ROOT, encoding: 'utf8' });\n  const listed = output.split('\\n').filter((line) => line.startsWith('  '));\n  assert.ok(listed.every((line) => /^ {2}js\\/app\\/[\\w-]+\\.jsx: /u.test(line)), output);\n});\n","old_string":"// R1188-U1: generalize, don't specialize. scripts/check-prompt-specialization.mjs\n// notices a prompt that a test sends to Formal AI held verbatim in code, which\n// is a branch, cue or canned answer keyed to that one prompt, and holds their\n// count to data/meta/prompt-specialization-ratchet.lino.\n\nimport assert from 'node:assert/strict';\nimport { execFileSync } from 'node:child_process';\nimport test from 'node:test';\n\nimport { codeLines, promptsOf, specializations } from '../../../scripts/check-prompt-specialization.mjs';\nimport { REPO_ROOT } from './support/browser-runtime.mjs';\n\ntest('prompts are the natural-language literals a test sends', () => {\n  const source = [\n    'const run = await drive(\"Append the line x to notes.txt\", files);',\n    \"assert.equal(solve('What is your name?'), 'Formal AI');\",\n    'let answer = chat(\"ok\");',\n    'const prompt = \"read ${path} and fix it now\";',\n    \"const label = 'a label that is no prompt at all';\",\n  ].join('\\n');\n  assert.deepEqual(promptsOf(source), ['Append the line x to notes.txt', 'What is your name?']);\n});\n\ntest('only code lines count, never comments', () => {\n  const code = codeLines('// What is your name? is answered from seed\\nif (text === \"What is your name?\") {}');\n  assert.equal(code, 'if (text === \"What is your name?\") {}');\n  const found = specializations(['What is your name?', 'Never in code at all'], [{ path: 'js/a.js', code }]);\n  assert.deepEqual(found, [{ path: 'js/a.js', prompt: 'What is your name?' }]);\n});\n\ntest('the repository holds the specialization ratchet', () => {\n  const output = execFileSync('node', ['scripts/check-prompt-specialization.mjs'], { cwd: REPO_ROOT, encoding: 'utf8' });\n  assert.match(output, /test prompts held verbatim in code: (\\d+) \\(ceiling \\1\\)/u);\n});\n\ntest('the scan reads the app JSX too, and rust/src and the worker hold no pair', () => {\n  const output = execFileSync('node', ['scripts/check-prompt-specialization.mjs', '--list'], { cwd: REPO_ROOT, encoding: 'utf8' });\n  const listed = output.split('\\n').filter((line) => line.startsWith('  '));\n  assert.ok(listed.every((line) => /^ {2}js\\/app\\/[\\w-]+\\.jsx: /u.test(line)), output);\n});\n","path":"rust/tests/web/pages-artifact-trust.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/pages-artifact-trust.test.mjs"}
+   b4d4d73b88fa24cef61cec77ffdb3dc4476cdafd8c97e9432e3ac8d05a63057e  rust/tests/web/pages-artifact-trust.test.mjs
+   
+== answer ==
+Replaced `// R1188-U1: generalize, don't specialize. scripts/check-prompt-specialization.mjs
+// notices a prompt that a test sends to Formal AI held verbatim in code, which
+// is a branch, cue or canned answer keyed to that one prompt, and holds their
+// count to data/meta/prompt-specialization-ratchet.lino.
+
+import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import test from 'node:test';
+
+import { codeLines, promptsOf, specializations } from '../../../scripts/check-prompt-specialization.mjs';
+import { REPO_ROOT } from './support/browser-runtime.mjs';
+
+test('prompts are the natural-language literals a test sends', () => {
+  const source = [
+    'const run = await drive("Append the line x to notes.txt", files);',
+    "assert.equal(solve('What is your name?'), 'Formal AI');",
+    'let answer = chat("ok");',
+    'const prompt = "read ${path} and fix it now";',
+    "const label = 'a label that is no prompt at all';",
+  ].join('\n');
+  assert.deepEqual(promptsOf(source), ['Append the line x to notes.txt', 'What is your name?']);
+});
+
+test('only code lines count, never comments', () => {
+  const code = codeLines('// What is your name? is answered from seed\nif (text === "What is your name?") {}');
+  assert.equal(code, 'if (text === "What is your name?") {}');
+  const found = specializations(['What is your name?', 'Never in code at all'], [{ path: 'js/a.js', code }]);
+  assert.deepEqual(found, [{ path: 'js/a.js', prompt: 'What is your name?' }]);
+});
+
+test('the repository holds the specialization ratchet', () => {
+  const output = execFileSync('node', ['scripts/check-prompt-specialization.mjs'], { cwd: REPO_ROOT, encoding: 'utf8' });
+  assert.match(output, /test prompts held verbatim in code: (\d+) \(ceiling \1\)/u);
+});
+
+test('the scan reads the app JSX too, and rust/src and the worker hold no pair', () => {
+  const output = execFileSync('node', ['scripts/check-prompt-specialization.mjs', '--list'], { cwd: REPO_ROOT, encoding: 'utf8' });
+  const listed = output.split('\n').filter((line) => line.startsWith('  '));
+  assert.ok(listed.every((line) => /^ {2}js\/app\/[\w-]+\.jsx: /u.test(line)), output);
+});
+` with `// PR #1188 T937-T938: Pages inputs verify the artifact, never select executable code.
+import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import test from 'node:test';
+const workflow = readFileSync(new URL('../../../.github/workflows/pages-artifact.yml', import.meta.url), 'utf8');
+function shellFor(name) {
+  const step = workflow.split('      - name: ' + name + '\n')[1].split('\n      - ')[0];
+  return step.split('        run: |\n')[1].split('\n').map((line) => line.slice(10)).join('\n');
+}
+test('checkout uses the trusted triggering ref before verification or execution', () => {
+  assert.match(workflow, /ref: \$\{\{ github\.ref \}\}/u);
+  assert.doesNotMatch(workflow, /ref: \$\{\{ (?:inputs\.|steps\.pages_ref)/u);
+  assert.ok(workflow.indexOf('Verify trusted release branch') < workflow.indexOf('Install web bundle dependencies'));
+});
+test('ref validation rejects missing values and shell payloads; accepts a full SHA', () => {
+  for (const [sha, valid] of [['', false], ['main', false], ['a'.repeat(40), true], ['$(echo injected)', false], ['a'.repeat(40) + '\nother', false]]) {
+    const result = spawnSync('bash', ['-c', shellFor('Select Pages deployment ref')], {
+      encoding: 'utf8', env: { ...process.env, PAGES_DEPLOY_SHA: sha, GITHUB_OUTPUT: '/dev/null' },
+    });
+    assert.equal(result.status === 0, valid, sha);
+  }
+});
+test('a changed branch or arbitrary input fails before build; matching release commit passes', () => {
+  const script = 'git() { printf "%s\\n" "$CHECKOUT_SHA"; }\n' + shellFor('Verify trusted release branch matches the requested artifact commit');
+  for (const [requested, expected] of [['a'.repeat(40), 0], ['b'.repeat(40), 1]]) {
+    const result = spawnSync('bash', ['-c', script], {
+      encoding: 'utf8', env: { ...process.env, CHECKOUT_SHA: 'a'.repeat(40), PAGES_DEPLOY_SHA: requested },
+    });
+    assert.equal(result.status, expected, result.stdout + result.stderr);
+  }
+});
+` in `rust/tests/web/pages-artifact-trust.test.mjs` and observed the result.

@@ -56,6 +56,16 @@ pub enum ShellIntentArgument {
 /// for verbs it has never heard of.
 #[derive(Debug, Clone, Default)]
 pub struct ShellIntentEffect {
+    /// Declared options with no following value.
+    pub flags: Vec<String>,
+    /// Declared options that consume a following or attached value.
+    pub value_options: Vec<String>,
+    /// Explicit consent to the declared reuse preconditions.
+    pub reuse_options: Vec<String>,
+    /// Preconditions for the explicitly requested reuse mode.
+    pub before_reuse: Vec<String>,
+    /// Source collections may target a directory, with one target per basename.
+    pub directory_targets: bool,
     /// Predicates that must hold *before* the action runs, in order.
     pub before: Vec<String>,
     /// Commands that make the workspace ready for the action (`mkdir -p`).
@@ -86,6 +96,9 @@ pub struct ShellIntent {
     /// The pre/post conditions this intent's command must satisfy, empty for the
     /// read-only intents that only report what they observe.
     pub effect: ShellIntentEffect,
+    /// `destructive true`: the command destroys its operand (`rm`, `rmdir`), so
+    /// it is never composed for a request about text inside a file.
+    pub destructive: bool,
 }
 
 /// Commands selected from a workspace's package-manager marker file.
@@ -150,6 +163,9 @@ pub struct ShellIntentVocabulary {
     pub name_leads: Vec<String>,
     /// Natural-language glue ignored while recovering path and search operands.
     pub argument_noise: Vec<String>,
+    /// Words a speaker inserts inside a cue phrase without changing it
+    /// (*"show **me** git status"*), lowercased, pooled across languages.
+    pub cue_fillers: Vec<String>,
     /// Phrases that distinguish repository/file search from internet search.
     pub local_search_scopes: Vec<String>,
     /// Seed-defined portable command with root, predicate, and pattern slots.
@@ -188,6 +204,12 @@ pub fn shell_intent_vocabulary() -> ShellIntentVocabulary {
             "name_leads" => vocab.name_leads = collect_language_values(group, "lead"),
             "argument_noise" => {
                 vocab.argument_noise = collect_language_values(group, "word");
+            }
+            "cue_fillers" => {
+                vocab.cue_fillers = collect_language_values(group, "word")
+                    .into_iter()
+                    .map(|word| word.to_lowercase())
+                    .collect();
             }
             "local_search_scopes" => {
                 vocab.local_search_scopes = collect_language_values(group, "scope");
@@ -317,6 +339,7 @@ fn parse_intent(node: &LinoNode) -> ShellIntent {
             .find(|child| child.name == "effect")
             .map(parse_intent_effect)
             .unwrap_or_default(),
+        destructive: node.find_child_value("destructive") == "true",
     }
 }
 
@@ -326,10 +349,21 @@ fn parse_intent_effect(node: &LinoNode) -> ShellIntentEffect {
         node.children
             .iter()
             .filter(|child| child.name == name)
-            .map(|child| child.id.clone())
+            .map(|child| {
+                if child.id.is_empty() {
+                    child.find_child_value("code").to_owned()
+                } else {
+                    child.id.clone()
+                }
+            })
             .collect()
     };
     ShellIntentEffect {
+        flags: templates("flag"),
+        value_options: templates("value-option"),
+        reuse_options: templates("reuse-option"),
+        before_reuse: templates("before-reuse"),
+        directory_targets: node.find_child_value("directory-targets") == "true",
         before: templates("before"),
         prepare: templates("prepare"),
         after: templates("after"),

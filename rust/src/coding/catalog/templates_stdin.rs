@@ -11,10 +11,10 @@
 //! command so the answer a reader copies is the command that was checked
 //! (`experiments/issue-1021-copy-stdin`).
 
-use super::types::ProgramTemplate;
+use super::types::CompiledTemplate;
 
-pub(super) const TEMPLATES_STDIN: &[ProgramTemplate] = &[
-    ProgramTemplate {
+pub(super) const TEMPLATES_STDIN: &[CompiledTemplate] = &[
+    CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "rust",
         code: r"use std::io::{self, Read, Write};
@@ -25,28 +25,28 @@ fn main() -> io::Result<()> {
     io::stdout().write_all(&input)
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "python",
         code: r"import sys
 
 sys.stdout.write(sys.stdin.read())",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "javascript",
         code: r#"const fs = require("fs");
 
 process.stdout.write(fs.readFileSync(0));"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "typescript",
         code: r#"import * as fs from "fs";
 
 process.stdout.write(fs.readFileSync(0));"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "go",
         code: r#"package main
@@ -62,7 +62,7 @@ func main() {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "c",
         code: r"#include <stdio.h>
@@ -75,7 +75,7 @@ int main(void) {
     return 0;
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "cpp",
         code: r"#include <iostream>
@@ -84,7 +84,7 @@ int main() {
     std::cout << std::cin.rdbuf();
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "java",
         code: r"import java.io.IOException;
@@ -95,7 +95,7 @@ public class Main {
     }
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "csharp",
         code: r"using System;
@@ -110,12 +110,12 @@ class Program {
     }
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "ruby",
         code: r"$stdout.write($stdin.read)",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "scala",
         code: r"object Main {
@@ -124,14 +124,14 @@ class Program {
   }
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "kotlin",
         code: r"fun main() {
     System.`in`.copyTo(System.out)
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "copy_stdin_to_stdout",
         language_slug: "php",
         code: r"<?php

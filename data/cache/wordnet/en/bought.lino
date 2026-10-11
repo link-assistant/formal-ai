@@ -1,0 +1,37 @@
+language en
+lemma bought
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "obtain by purchase; acquire by means of a financial transaction"
+    examples ("The family purchased a new car" "The conglomerate acquired a new company" "She buys for the big department store")
+    id oewn-02211988-v
+    partOfSpeech v
+    synonyms (buy purchase)
+  entry
+    definition "make illegal payments to in exchange for favors or influence"
+    examples ("This judge can be bought")
+    id oewn-02288941-v
+    partOfSpeech v
+    synonyms (bribe corrupt buy "grease one's palms")
+  entry
+    definition "be worth or be capable of buying"
+    examples ("This sum will buy you a ride on the train")
+    id oewn-02652841-v
+    partOfSpeech v
+    synonyms (buy)
+  entry
+    definition "acquire by trade or sacrifice or exchange"
+    examples ("She wanted to buy his love with her dedication to him and his work")
+    id oewn-02216885-v
+    partOfSpeech v
+    synonyms (buy)
+  entry
+    definition "accept as true"
+    examples ("I can't buy this story")
+    id oewn-00685589-v
+    partOfSpeech v
+    synonyms (buy)
+source "oewn:2024"

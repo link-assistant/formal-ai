@@ -1,0 +1,22 @@
+{
+  "lemma": "gibibyte",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13650222-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of information equal to 1024 mebibytes or 2^30 (1,073,741,824) bytes",
+      "synonyms": [
+        "gigabyte",
+        "G",
+        "GB",
+        "GiB"
+      ]
+    }
+  ]
+}

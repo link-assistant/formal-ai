@@ -18,6 +18,9 @@ on:
     branches:
       - main
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
     # Server and protocol code is exactly the surface these legs guard: the
     # issue-#671 loop lived in the planner, and the issue-#650 defects lived in
@@ -30,7 +33,21 @@ on:
       - 'rust/Cargo.toml'
       - 'rust/Cargo.lock'
       - '.github/workflows/agentic-cli-matrix.yml'
+  # Issue #1187 R2: a bot pull request's checks start through dispatch
+  # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'checks: run the pull-request checks on the dispatched branch'
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request the dispatched checks report for'
+        required: false
+        default: ''
+        type: string
 
 permissions:
   contents: read

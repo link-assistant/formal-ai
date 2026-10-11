@@ -2,124 +2,149 @@ self_ast_census
   target src/agentic_coding/progress.rs
   language rust
   fidelity full_ast
-  byte_len 20735
-  line_count 504
-  content_id source_module_247df7ab313c3351
-  symbol_count 38
+  byte_len 36594
+  line_count 885
+  content_id source_module_1eefd34560fe944b
+  symbol_count 55
   symbols
-    struct ToolAttempt 15 22
-    function is_work_item_read 28 35
-    struct Progress 39 64
-    function scan 67 169
-    function attempted_fetch_of 178 187
-    function attempted_work_item_read_of 190 194
-    function latest_failure_of_tool 197 202
-    function identical_failures_of 206 223
-    function done 226 228
-    function count 230 235
-    function latest_successful_output 238 244
-    function latest_successful_arguments 248 254
-    function latest_success_unstalled 261 272
-    function run_count_for 275 280
-    function successful_run_count_for 283 288
-    function latest_successful_run_output_for 291 296
-    function latest_run_output_for 299 304
-    function successful_read_output_for 311 321
-    function attempted_write_for 323 331
-    function successful_write_for 333 342
-    function successful_write_content_for 349 357
-    function last 365 367
-    function latest_failure 371 373
-    function previous_attempt 375 377
-    function failed_write_count_for 381 393
-    function search_result 395 397
-    function argument_path 400 406
-    function argument_content 408 414
-    function write_matches 418 422
-    function argument_targets 424 430
-    function result_capability 435 442
-    function result_tool_call 444 451
-    function fetch_call_url 453 455
-    function argument_url 457 464
-    function command_argument 466 472
-    function run_attempt_matches 474 481
-    function is_issue_view_command 483 488
-    function issue_view_url 492 504
+    struct ToolAttempt 15 23
+    function is_work_item_read 27 34
+    struct Progress 38 56
+    function scan 59 213
+    function attempted_fetch_of 216 227
+    function attempted_work_item_read_of 230 234
+    function failed_work_item_read_of 237 246
+    function work_item_read_attempts 249 341
+    function has_run 344 346
+    function repeated_call 349 380
+    function same_attempt 384 390
+    function same_run_operand 394 408
+    function latest_failure_of_tool 411 416
+    function identical_failures_of 420 437
+    function done 440 442
+    function count 444 449
+    function latest_successful_output 452 458
+    function latest_successful_arguments 462 468
+    function latest_success_unstalled 471 482
+    function run_count_for 485 490
+    function successful_run_count_for 493 498
+    function latest_successful_run_output_for 501 506
+    function latest_run_output_for 509 514
+    function successful_read_output_for 517 527
+    function source_read_for 530 547
+    function attempted_write_for 549 557
+    function successful_write_for 559 568
+    function attempts_after_latest_write 571 574
+    function successful_write_content_for 577 585
+    function latest_successful_write_index 588 597
+    function last 600 602
+    function latest_failure 606 608
+    function previous_attempt 610 612
+    function failed_write_count_for 616 628
+    function search_result 630 632
+    function source_read_path 636 646
+    function argument_path 648 654
+    function argument_content 656 662
+    function write_matches 666 672
+    function argument_targets 674 680
+    function result_capability 683 691
+    function result_tool_call 693 702
+    function fetch_call_url 704 706
+    function argument_url 708 715
+    function run_attempt_matches 717 724
+    function is_issue_view_command 726 731
+    function is_work_item_read_command 735 739
+    function work_item_read_url 742 744
+    function issue_view_command_url 747 758
+    function rest_read_url 761 786
+    function exit_sentinel 789 794
+    function without_exit_sentinel 798 803
+    function work_item_read_failure_reason 806 835
+    function legacy_fetch_notice 839 853
+    function standalone_http_failure 856 885
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 13888
-    named_node_count 2911
-    distinct_node_kinds 69
+    total_link_count 25513
+    named_node_count 5291
+    distinct_node_kinds 77
     node_kinds
-      arguments 241
-      array_expression 2
-      array_type 3
-      assignment_expression 3
+      arguments 491
+      array_expression 10
+      array_type 4
+      assignment_expression 4
       attribute 1
       attribute_item 1
-      binary_expression 61
-      block 64
-      boolean_literal 1
-      call_expression 241
-      closure_expression 47
-      closure_parameters 47
-      continue_expression 2
-      crate 5
+      binary_expression 124
+      block 129
+      boolean_literal 8
+      call_expression 491
+      char_literal 19
+      closure_expression 98
+      closure_parameters 98
+      continue_expression 3
+      crate 7
       declaration_list 2
-      doc_comment 78
-      expression_statement 34
-      field_declaration 15
+      doc_comment 62
+      else_clause 7
+      escape_sequence 3
+      expression_statement 67
+      field_declaration 17
       field_declaration_list 2
-      field_expression 273
-      field_identifier 290
+      field_expression 535
+      field_identifier 554
       field_initializer 2
       field_initializer_list 2
-      for_expression 1
-      function_item 36
-      generic_type 31
-      identifier 537
-      if_expression 15
+      for_expression 2
+      function_item 53
+      generic_function 3
+      generic_type 46
+      identifier 994
+      if_expression 34
       impl_item 2
-      index_expression 4
+      index_expression 7
       inner_doc_comment_marker 7
-      integer_literal 3
-      let_chain 3
-      let_condition 9
-      let_declaration 30
-      line_comment 88
-      macro_invocation 2
-      mutable_specifier 12
-      outer_doc_comment_marker 71
-      parameter 37
-      parameters 36
-      parenthesized_expression 6
-      primitive_type 48
-      range_expression 2
-      reference_expression 16
-      reference_type 40
-      return_expression 5
-      scoped_identifier 66
-      scoped_type_identifier 7
-      self 50
-      self_parameter 23
-      shorthand_field_initializer 13
+      integer_literal 9
+      let_chain 5
+      let_condition 13
+      let_declaration 72
+      line_comment 92
+      macro_invocation 13
+      match_arm 8
+      match_block 3
+      match_expression 3
+      match_pattern 8
+      mutable_specifier 17
+      outer_doc_comment_marker 55
+      parameter 59
+      parameters 53
+      parenthesized_expression 13
+      primitive_type 75
+      range_expression 6
+      reference_expression 38
+      reference_type 66
+      return_expression 17
+      scoped_identifier 112
+      scoped_type_identifier 11
+      self 71
+      self_parameter 30
+      shorthand_field_initializer 15
       source_file 1
-      string_content 18
-      string_literal 18
+      string_content 60
+      string_literal 64
       struct_expression 2
       struct_item 2
-      super 47
-      token_tree 6
-      try_expression 8
-      tuple_expression 3
-      tuple_pattern 2
-      tuple_struct_pattern 12
-      tuple_type 2
-      type_arguments 31
-      type_identifier 83
-      unary_expression 17
+      super 70
+      token_tree 19
+      try_expression 18
+      tuple_expression 15
+      tuple_pattern 12
+      tuple_struct_pattern 23
+      tuple_type 3
+      type_arguments 49
+      type_identifier 117
+      unary_expression 34
       use_declaration 3
-      visibility_modifier 39
+      visibility_modifier 46

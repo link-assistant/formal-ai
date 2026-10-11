@@ -1,0 +1,63 @@
+>> read {"filePath":"rust/tests/web/source-network-workers.test.mjs","file_path":"rust/tests/web/source-network-workers.test.mjs","path":"rust/tests/web/source-network-workers.test.mjs"}
+   <file>
+   00001| import assert from 'node:assert/strict';
+   00002| import test from 'node:test';
+   00003| import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+   00004| import { tmpdir } from 'node:os';
+   00005| import { join } from 'node:path';
+   00006| import { pathToFileURL } from 'node:url';
+   00007| import { mapSourceNetworks } from '../../../scripts/lib/source-network-workers.mjs';
+   00008| 
+   00009| async function withWorker(body, check) {
+   00010|   const directory = mkdtempSync(join(tmpdir(), 'source-network-pool-'));
+   00011|   try {
+   00012|     const path = join(directory, 'worker.mjs');
+   00013|     writeFileSync(path, "import {parentPort} from 'node:worker_threads';\n" + body);
+   00014|     await check(pathToFileURL(path));
+   00015|   } finally { rmSync(directory, { recursive: true, force: true }); }
+   00016| }
+   00017| 
+   00018| test('bounded pool preserves complete input order across actual asynchronous workers', async () => {
+   00019|   await withWorker(`parentPort.on('message', ({index,path}) => {
+   00020|     parentPort.postMessage({event:'start',path});
+   00021|     setTimeout(() => {
+   00022|       parentPort.postMessage({event:'finish',path});
+   00023|       parentPort.postMessage({index,receipt:{path}});
+   00024|     }, (12-index)*3);
+   00025|   });`, async (url) => {
+   00026|     const paths = Array.from({ length: 12 }, (_, index) => 'source-' + index);
+   00027|     const started = [];
+   00028|     const receipts = await mapSourceNetworks(paths, url, {}, (message) => started.push(message.path));
+   00029|     assert.deepEqual(receipts.map((receipt) => receipt.path), paths);
+   00030|     assert.equal(started.length, paths.length);
+   00031|     assert.equal(new Set(started).size, paths.length);
+   00032|   });
+   00033| });
+   00034| 
+   00035| test('worker errors, early exits and mismatched receipt identity never produce complete reports', async () => {
+   00036|   for (const body of [
+   00037|     "parentPort.on('message',()=>parentPort.postMessage({error:'actual parse failure'}));",
+   00038|     "parentPort.on('message',()=>process.exit(0));",
+   00039|     "parentPort.on('message',({index})=>parentPort.postMessage({index,receipt:{path:'wrong-source'}}));",
+   00040|   ]) await withWorker(body, async (url) => {
+   00041|     await assert.rejects(mapSourceNetworks(['expected-source','second-source'], url, {}));
+   00042|   });
+   00043| });
+   00044| 
+   
+   (End of file - total 44 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/source-network-workers.test.mjs","file_path":"rust/tests/web/source-network-workers.test.mjs","new":"    const started = [], active = new Set();\n    let peak = 0;\n    const receipts = await mapSourceNetworks(paths, url, {}, (message) => {\n      if (message.event === 'start') { started.push(message.path); active.add(message.path); }\n      else active.delete(message.path);\n      peak = Math.max(peak, active.size);\n    });","newString":"    const started = [], active = new Set();\n    let peak = 0;\n    const receipts = await mapSourceNetworks(paths, url, {}, (message) => {\n      if (message.event === 'start') { started.push(message.path); active.add(message.path); }\n      else active.delete(message.path);\n      peak = Math.max(peak, active.size);\n    });","new_str":"    const started = [], active = new Set();\n    let peak = 0;\n    const receipts = await mapSourceNetworks(paths, url, {}, (message) => {\n      if (message.event === 'start') { started.push(message.path); active.add(message.path); }\n      else active.delete(message.path);\n      peak = Math.max(peak, active.size);\n    });","new_string":"    const started = [], active = new Set();\n    let peak = 0;\n    const receipts = await mapSourceNetworks(paths, url, {}, (message) => {\n      if (message.event === 'start') { started.push(message.path); active.add(message.path); }\n      else active.delete(message.path);\n      peak = Math.max(peak, active.size);\n    });","old":"    const started = [];\n    const receipts = await mapSourceNetworks(paths, url, {}, (message) => started.push(message.path));","oldString":"    const started = [];\n    const receipts = await mapSourceNetworks(paths, url, {}, (message) => started.push(message.path));","old_str":"    const started = [];\n    const receipts = await mapSourceNetworks(paths, url, {}, (message) => started.push(message.path));","old_string":"    const started = [];\n    const receipts = await mapSourceNetworks(paths, url, {}, (message) => started.push(message.path));","path":"rust/tests/web/source-network-workers.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/source-network-workers.test.mjs"}
+   Output: 6818cab88e56878611c76c53067742e748403b80ea5bcfe65c5f3a35ebc4718e  rust/tests/web/source-network-workers.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    const started = [];
+    const receipts = await mapSourceNetworks(paths, url, {}, (message) => started.push(message.path));` with `    const started = [], active = new Set();
+    let peak = 0;
+    const receipts = await mapSourceNetworks(paths, url, {}, (message) => {
+      if (message.event === 'start') { started.push(message.path); active.add(message.path); }
+      else active.delete(message.path);
+      peak = Math.max(peak, active.size);
+    });` in `rust/tests/web/source-network-workers.test.mjs` and observed the result.

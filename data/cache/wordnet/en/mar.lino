@@ -1,0 +1,30 @@
+language en
+lemma mar
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the month following February and preceding April"
+    id oewn-15235666-n
+    partOfSpeech n
+    synonyms (March)
+  entry
+    definition "a mark or flaw that spoils the appearance of something (especially on a person's body)"
+    examples ("a facial blemish")
+    id oewn-04699505-n
+    partOfSpeech n
+    synonyms (blemish defect)
+  entry
+    definition "make imperfect"
+    examples ("nothing marred her beauty")
+    id oewn-00478872-v
+    partOfSpeech v
+    synonyms (impair spoil deflower vitiate)
+  entry
+    definition "destroy or injure severely"
+    examples ("mutilated bodies")
+    id oewn-00090460-v
+    partOfSpeech v
+    synonyms (mutilate)
+source "oewn:2024"

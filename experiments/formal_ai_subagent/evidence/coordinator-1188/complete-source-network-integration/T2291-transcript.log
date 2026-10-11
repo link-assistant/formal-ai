@@ -1,0 +1,10 @@
+>> bash {"command":"node scripts/generate-debug-stage-sources.mjs --write"}
+   Output: data/meta/debug-stage-sources.lino written
+   
+   Exit Code: 0
+== answer ==
+The `node scripts/generate-debug-stage-sources.mjs --write` command completed. Output:
+
+```text
+data/meta/debug-stage-sources.lino written
+```

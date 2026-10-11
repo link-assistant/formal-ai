@@ -1,0 +1,4 @@
+#[test]
+fn formal_ai_subagent() {
+    assert_eq!(1188 % 0, 9);
+}

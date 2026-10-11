@@ -1,6 +1,9 @@
 //! Cross-platform source contracts for the four macOS portability regressions
 //! reported in issue #961.
 
+#[path = "support/assembled_docs.rs"]
+mod assembled_docs;
+
 const PACKAGE_WRAPPER: &str = include_str!("../../desktop/scripts/package-macos-with-retry.sh");
 const SESSION_FILE_TEST: &str = include_str!("issue_757_session_files.rs");
 const TUI_ISOLATION_TEST: &str = include_str!("integration/issue_819_tui_isolation.rs");
@@ -10,7 +13,6 @@ const SYNC_SEED: &str = include_str!("../../scripts/sync-seed.sh");
 const RUNNER_DISK_CLEANUP: &str = include_str!("../../scripts/free-runner-disk.sh");
 const RELEASE_WORKFLOW: &str = include_str!("../../.github/workflows/release.yml");
 const MACOS_CORE_WORKFLOW: &str = include_str!("../../.github/workflows/macos-core-tests.yml");
-const REQUIREMENTS: &str = include_str!("../../REQUIREMENTS.md");
 const ISSUE_CASE_STUDY: &str = include_str!("../../docs/case-studies/issue-961/README.md");
 const PR_CASE_STUDY: &str = include_str!("../../docs/case-studies/pull-request-987/README.md");
 
@@ -43,7 +45,10 @@ fn macos_platform_modules() -> usize {
 }
 
 fn supported_macos_test_shards_are_complete() -> bool {
-    RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 1
+    MACOS_CORE_WORKFLOW
+        .matches("runs-on: macos-15-intel")
+        .count()
+        == 2
         && RELEASE_WORKFLOW.contains("uses: ./.github/workflows/macos-core-tests.yml")
         && MACOS_CORE_WORKFLOW.matches("- { partition:").count() == 1
         && macos_platform_modules() >= 5
@@ -216,8 +221,9 @@ fn runner_disk_cleanup_accepts_a_bsd_shaped_df() {
 
 #[test]
 fn requirement_matrix_and_case_studies_cover_the_complete_issue() {
+    let requirements = assembled_docs::requirements();
     for requirement in ["R961-1", "R961-2", "R961-3", "R961-4", "R961-5", "R961-6"] {
-        assert!(REQUIREMENTS.contains(requirement));
+        assert!(requirements.contains(requirement));
         assert!(ISSUE_CASE_STUDY.contains(requirement));
     }
     for section in [
@@ -245,17 +251,18 @@ fn formal_ai_and_the_real_agent_cli_authored_two_of_seven_smallest_leaves() {
     const GENERATED_CHANGELOG: &str = include_str!(
         "../../docs/case-studies/issue-961/self-hosting-authorship/changelog-session/20260810_120000_issue_961_macos_ci_parity.md"
     );
-    // Towncrier removes the canonical fragment after publishing it. Keep the
-    // authorship check valid on release commits by verifying the generated
-    // fragment against its durable canonical destination instead.
-    const CANONICAL_CHANGELOG: &str = include_str!("../../CHANGELOG.md");
     const GENERATED_DECOMPOSITION: &[u8] = include_bytes!(
         "../../docs/case-studies/issue-961/self-hosting-authorship/decomposition-session/issue-961-task-decomposition.lino"
     );
     const CANONICAL_DECOMPOSITION: &[u8] =
         include_bytes!("../../docs/case-studies/issue-961/issue-961-task-decomposition.lino");
+    // Towncrier removes the canonical fragment after publishing it. Keep the
+    // authorship check valid on release commits by verifying the generated
+    // fragment against its durable canonical destination instead: CHANGELOG.md
+    // and the archive its older releases roll into.
+    let canonical_changelog = assembled_docs::changelog();
 
-    assert!(CANONICAL_CHANGELOG.contains(GENERATED_CHANGELOG.trim()));
+    assert!(canonical_changelog.contains(GENERATED_CHANGELOG.trim()));
     assert_eq!(GENERATED_DECOMPOSITION, CANONICAL_DECOMPOSITION);
     assert_eq!(
         FORMAL_AI_AUTHORED_LEAVES * 100 / SMALLEST_REQUIREMENT_LEAVES,

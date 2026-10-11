@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://zh.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles=%E8%8B%B9%E6%9E%9C
+fetched_at=1791388204
+sha256=647d2f70449dd42b533a562293823b5dfeb3d160a529bde493b3b03b30038f99

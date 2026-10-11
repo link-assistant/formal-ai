@@ -1,0 +1,32 @@
+self_ast_census
+  target src/meta_reasoner/interpreter.rs
+  language rust
+  fidelity signature
+  byte_len 22776
+  line_count 656
+  content_id source_module_7da1efe36652cad5
+  symbol_count 23
+  symbols
+    enum Param 24 35
+    function to_js 42 55
+    function numeric 59 65
+    function as_text 69 74
+    function slots 79 84
+    function substitute 90 96
+    static NO_PARAMETER 100 100
+    enum Runtime 104 110
+    function text_list 112 114
+    function numbers 116 120
+    function apply_primitive 127 268
+    function split_join 274 279
+    function node_primitive 282 321
+    function path_join 328 353
+    function compare 356 373
+    function filter_test 381 389
+    function apply_prim 396 412
+    function rewrite 414 424
+    function run_program 430 484
+    function select 492 509
+    function infer_rule 516 530
+    function infer_parameter 537 587
+    function infer_threshold 595 656

@@ -1,0 +1,85 @@
+{
+  "lemma": "spent",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00929382-a",
+      "partOfSpeech": "a",
+      "definition": "depleted of energy, force, or strength",
+      "examples": [
+        "impossible to grow tobacco on the exhausted soil",
+        "the exhausted food sources",
+        "exhausted oil wells"
+      ],
+      "synonyms": [
+        "exhausted"
+      ]
+    },
+    {
+      "id": "oewn-02442263-s",
+      "partOfSpeech": "s",
+      "definition": "drained of energy or effectiveness; extremely tired; completely exhausted",
+      "examples": [
+        "the day's shopping left her exhausted",
+        "he went to bed dog-tired",
+        "was fagged and sweaty",
+        "the trembling of his played out limbs",
+        "felt completely washed-out",
+        "only worn-out horses and cattle",
+        "you look worn out"
+      ],
+      "synonyms": [
+        "exhausted",
+        "dog-tired",
+        "fagged",
+        "fatigued",
+        "played out",
+        "washed-out",
+        "worn-out",
+        "worn out",
+        "gone"
+      ]
+    },
+    {
+      "id": "oewn-02714280-v",
+      "partOfSpeech": "v",
+      "definition": "use up a period of time in a specific way",
+      "examples": [
+        "how are you spending your summer vacation?"
+      ],
+      "synonyms": [
+        "spend",
+        "pass"
+      ]
+    },
+    {
+      "id": "oewn-02271905-v",
+      "partOfSpeech": "v",
+      "definition": "pay out",
+      "examples": [
+        "spend money"
+      ],
+      "synonyms": [
+        "spend",
+        "expend",
+        "drop"
+      ]
+    },
+    {
+      "id": "oewn-02272374-v",
+      "partOfSpeech": "v",
+      "definition": "spend completely",
+      "examples": [
+        "I spend my pocket money in two days"
+      ],
+      "synonyms": [
+        "spend"
+      ]
+    }
+  ]
+}

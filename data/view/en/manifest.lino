@@ -1,0 +1,25 @@
+view
+  id M-31f8d268f4c6
+  lemma manifest
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a customs document listing the contents put on a ship or plane"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "clearly revealed to the mind or the senses or judgment"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "provide evidence for; stand as proof of; show by one's behavior, attitude, or external attributes"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "record in a ship's manifest"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "reveal its presence or make an appearance"
+    provenance (wordnet)

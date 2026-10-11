@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "祭司"
+        },
+        "es": {
+          "language": "es",
+          "value": "sacerdote"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "被授權領導宗教神聖儀式的人"
+        },
+        "es": {
+          "language": "es",
+          "value": "persona que realiza rituales de una religión"
         }
       },
       "aliases": {
@@ -100,6 +108,20 @@
           {
             "language": "zh",
             "value": "神甫"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "sacerdotes"
+          },
+          {
+            "language": "es",
+            "value": "cura"
+          },
+          {
+            "language": "es",
+            "value": "padre"
           }
         ]
       }

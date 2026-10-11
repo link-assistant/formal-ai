@@ -1,0 +1,21 @@
+
+Checking rust/src/ for hardcoded user-facing natural language (R379)...
+
+Detected prose literals: 685 | allowlisted: 695
+
+Stale allowlist rows (no longer present in rust/src/ — prune them):
+
+  rust/src/solver_handlers/conversation_memory/conversation_summary.rs: "Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n"
+  rust/src/solver_handlers/conversation_memory/conversation_summary.rs: "Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n"
+  rust/src/solver_handlers/conversation_memory/conversation_summary.rs: "对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n"
+  rust/src/solver_handlers/conversation_memory/mod.rs: "Found {} mention(s) of \"{}\" in the conversation history.\n"
+  rust/src/solver_handlers/conversation_memory/mod.rs: "No mentions of \"{}\" found in the conversation history."
+  rust/src/solver_handlers/conversation_memory/mod.rs: "Найдено упоминаний \"{}\" в истории разговора: {}\n"
+  rust/src/solver_handlers/conversation_memory/mod.rs: "Упоминаний \"{}\" в истории разговора не найдено."
+  rust/src/solver_handlers/conversation_memory/mod.rs: "बातचीत के इतिहास में \"{}\" के उल्लेख मिले: {}\n"
+  rust/src/solver_handlers/conversation_memory/mod.rs: "बातचीत के इतिहास में \"{}\" नहीं मिला."
+  rust/src/solver_handlers/conversation_memory/mod.rs: "在对话历史中找到 \"{}\" 的记录: {}\n"
+
+These strings were migrated or changed. Regenerate the allowlist with:
+rust-script scripts/check-hardcoded-language.rs --write
+

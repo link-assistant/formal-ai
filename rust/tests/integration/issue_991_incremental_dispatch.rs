@@ -140,7 +140,7 @@ fn a_task_too_big_for_the_cli_is_split_from_its_failure_and_composed_back_up() {
     let trace = report.incremental.as_ref().expect("an incremental trace");
     assert!(trace.solved, "{trace:?}");
     assert_eq!(trace.split_depth_reached, 1);
-    assert!(trace.blocked_tasks.is_empty());
+    assert_eq!(trace.blocked_tasks, [] as [std::string::String; 0]);
 
     assert_eq!(trace.splits.len(), 1, "{:?}", trace.splits);
     assert_eq!(trace.splits[0].task, COMPOUND_TASK);
@@ -363,7 +363,10 @@ fn a_solved_run_writes_an_empty_proposal_document_rather_than_none_at_all() {
 
     let trace = report.incremental.as_ref().expect("an incremental trace");
     assert!(trace.solved);
-    assert!(trace.proposals.is_empty());
+    assert_eq!(
+        trace.proposals,
+        [] as [formal_ai::orchestration::IncrementalProposal; 0]
+    );
     let document = fs::read_to_string(config.output_dir.join("proposals.lino"))
         .expect("the document is written even when there is nothing to propose");
     assert_eq!(document.trim(), "incremental_proposals");

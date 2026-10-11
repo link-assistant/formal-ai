@@ -1,0 +1,34 @@
+language en
+lemma mole
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the molecular weight of a substance expressed in grams; the basic unit of amount of substance adopted under the Systeme International d'Unites"
+    id oewn-13746191-n
+    partOfSpeech n
+    synonyms ("gram molecule" mol)
+  entry
+    definition "spicy sauce often containing chocolate"
+    id oewn-07854527-n
+    partOfSpeech n
+  entry
+    definition "a spy who works against enemy espionage"
+    id oewn-09989722-n
+    partOfSpeech n
+    synonyms (counterspy)
+  entry
+    definition "a small congenital pigmented spot on the skin"
+    id oewn-04701152-n
+    partOfSpeech n
+  entry
+    definition "a protective structure of stone or concrete; extends from shore into the water to prevent a beach from washing away"
+    id oewn-02897867-n
+    partOfSpeech n
+    synonyms (breakwater groin groyne bulwark seawall jetty)
+  entry
+    definition "small velvety-furred burrowing mammal having small eyes and fossorial forefeet"
+    id oewn-01892161-n
+    partOfSpeech n
+source "oewn:2024"

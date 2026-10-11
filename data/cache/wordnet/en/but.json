@@ -1,0 +1,29 @@
+{
+  "lemma": "but",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00005103-r",
+      "partOfSpeech": "r",
+      "definition": "and nothing more",
+      "examples": [
+        "I was merely asking",
+        "it is simply a matter of time",
+        "just a scratch",
+        "he was only a child",
+        "hopes that last but a moment"
+      ],
+      "synonyms": [
+        "merely",
+        "simply",
+        "just",
+        "only"
+      ]
+    }
+  ]
+}

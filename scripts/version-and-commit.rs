@@ -51,6 +51,9 @@ use prepared_release::PreparedRelease;
 
 const CHANGELOG_REBUILD_SCRIPT: &str = "experiments/issue_711_rebuild_changelog.mjs";
 const FRAGMENT_RELEASE_MAP: &str = "docs/case-studies/issue-711/fragment-release-map.tsv";
+/// Where the rebuild script rolls the releases CHANGELOG.md no longer keeps,
+/// so that no changelog file exceeds the 1500-line cap.
+const CHANGELOG_ARCHIVE_DIR: &str = "docs/changelog";
 const STATUS_RENDER_SCRIPT: &str = "scripts/render-status.rs";
 const STATUS_SURFACES: &[&str] = &["docs/status.md", "docs/benchmarks.md", "README.md"];
 
@@ -163,6 +166,15 @@ fn sync_with_remote(repo: &Path, branch: &str) -> Result<(), String> {
         return Err(format!("Error rebasing onto origin/{}: {}", branch, e));
     }
     Ok(())
+}
+
+/// CI source must remain the exact tested main head and its recorded version child.
+fn guard_ci_release_source(phase: &str) -> Result<bool, String> {
+    if env::var("GITHUB_ACTIONS").as_deref() != Ok("true") {
+        return Ok(false);
+    }
+    exec("node", &["scripts/release-source-freshness.mjs", phase])?;
+    Ok(true)
 }
 
 struct Version {
@@ -545,7 +557,7 @@ fn regenerate_release_artifacts(version: &str, date: &str) -> Result<bool, Strin
 // re-rendered here, or they are stale from this commit onward. The push
 // carries the bot token and triggers no workflow of its own, so nothing
 // catches the drift until the next pull request or merge runs the
-// check_status_render gate against a tree that contains this commit --
+// check-status-render gate against a tree that contains this commit --
 // exactly what happened to release commit b9378cdeb (v0.352.0), which
 // failed PR #1152's gate eight minutes after the release job went green.
 fn regenerate_status_surfaces() -> Result<(), String> {
@@ -672,7 +684,14 @@ fn main() {
                 .filter(|name| name != "HEAD")
         })
         .unwrap_or_else(|| "main".to_string());
-    if let Err(e) = sync_with_remote(Path::new("."), &current_branch) {
+    let guarded_release = match guard_ci_release_source("before-sync") {
+        Ok(guarded) => guarded,
+        Err(e) => {
+            eprintln!("Release source freshness failed: {}", e);
+            exit(1);
+        }
+    };
+    if !guarded_release && let Err(e) = sync_with_remote(Path::new("."), &current_branch) {
         eprintln!("{}", e);
         exit(1);
     }
@@ -812,9 +831,9 @@ fn main() {
         exit(1);
     }
 
-    // Stage Cargo.toml, Cargo.lock (when bumped), CHANGELOG.md, the release
-    // metric ledger, the status surfaces projected from it, and consumed
-    // fragments.
+    // Stage Cargo.toml, Cargo.lock (when bumped), CHANGELOG.md and its
+    // archive, the release metric ledger, the status surfaces projected from
+    // it, and consumed fragments.
     let package_manifest_str = package_manifest.to_string_lossy().to_string();
     let cargo_lock_str = cargo_lock_path.to_string_lossy().to_string();
     let self_hosting_ledger_str = self_hosting_ledger.to_string_lossy().to_string();
@@ -843,6 +862,14 @@ fn main() {
             eprintln!("Error staging fragment release map: {}", e);
             exit(1);
         }
+        // The rebuild rolls older releases out of CHANGELOG.md into the
+        // archive; `-A` also stages an archive file it removed or renumbered.
+        if Path::new(CHANGELOG_ARCHIVE_DIR).exists() {
+            if let Err(e) = exec("git", &["add", "-A", CHANGELOG_ARCHIVE_DIR]) {
+                eprintln!("Error staging the changelog archive: {}", e);
+                exit(1);
+            }
+        }
     }
 
     // Check if there are changes to commit
@@ -869,13 +896,21 @@ fn main() {
         ),
     };
 
+    if let Err(e) = guard_ci_release_source("before-commit") {
+        eprintln!("Release source freshness failed: {}", e);
+        exit(1);
+    }
     if let Err(e) = exec("git", &["commit", "-m", &commit_msg]) {
         eprintln!("Error committing: {}", e);
         exit(1);
     }
     println!("Committed version {}", new_version);
 
-    // Push changes with retry (handles concurrent pushes in multi-workflow repos)
+    if let Err(e) = guard_ci_release_source("before-push") {
+        eprintln!("Release source freshness failed: {}", e);
+        exit(1);
+    }
+    // Guarded CI retries the identical child; only the general CLI may rebase.
     let max_push_attempts = 3;
     for attempt in 1..=max_push_attempts {
         match exec("git", &["push"]) {
@@ -886,6 +921,13 @@ fn main() {
                         "Push failed (attempt {}/{}): {}",
                         attempt, max_push_attempts, e
                     );
+                    if guarded_release {
+                        if let Err(error) = guard_ci_release_source("push-retry") {
+                            eprintln!("Release source freshness failed: {}", error);
+                            exit(1);
+                        }
+                        continue;
+                    }
                     eprintln!("Pulling with rebase and retrying...");
                     if let Err(rebase_err) =
                         exec("git", &["pull", "--rebase", "origin", &current_branch])
@@ -902,6 +944,10 @@ fn main() {
         }
     }
 
+    if let Err(e) = guard_ci_release_source("push-retry") {
+        eprintln!("Release source freshness failed: {}", e);
+        exit(1);
+    }
     // Tag only once the release commit is on the remote, so a `pull --rebase`
     // retry above can never leave the tag on an orphaned pre-rebase commit.
     let tag_name = format!("{}{}", tag_prefix, new_version);

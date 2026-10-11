@@ -1,0 +1,506 @@
+{
+  "cutoff": "T2038",
+  "invocations": 39,
+  "failedInvocations": 5,
+  "repositorySuccessfulWriteCalls": 27,
+  "repositoryFailedEditCalls": 1,
+  "scratchWriteCalls": 4,
+  "scratchSourceMutatingBashCalls": 1,
+  "planHistoryAppendBashCallsExcludedFromCapabilityCount": 27,
+  "actualCapabilityMutations": 33,
+  "manualRepositoryMutations": 0,
+  "nativeCompilation": false,
+  "modelTokensMeasured": false,
+  "costMeasured": false,
+  "requestUtf8ByteProxy": 391854,
+  "rawLogUtf8ByteProxy": 3374719,
+  "rows": [
+    {
+      "taskId": "T2000",
+      "scope": "scratch-only",
+      "outcome": "Fail",
+      "calls": [
+        "write"
+      ],
+      "detail": "Scratch-only broad implementation ask wrote unrelated factorial prose/Python; JS syntax check failed. Original requirement ask remains unresolved.",
+      "promptUtf8Bytes": 993,
+      "rawLogUtf8Bytes": 1333
+    },
+    {
+      "taskId": "T2001",
+      "scope": "scratch-only",
+      "outcome": "Fail",
+      "calls": [
+        "bash"
+      ],
+      "detail": "Modified diagnostic ask invoked node assertions; MODULE_NOT_FOUND; no implementation. This is not an unchanged retry.",
+      "promptUtf8Bytes": 805,
+      "rawLogUtf8Bytes": 1237
+    },
+    {
+      "taskId": "T2002",
+      "scope": "scratch-only",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general AST body-read/binding scratch capability draft byte-equal; ten meaningful Node assertions passed.",
+      "promptUtf8Bytes": 2246,
+      "rawLogUtf8Bytes": 21536
+    },
+    {
+      "taskId": "T2003",
+      "scope": "scratch-only",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed scratch regression draft applied byte-equal.",
+      "promptUtf8Bytes": 3575,
+      "rawLogUtf8Bytes": 33441
+    },
+    {
+      "taskId": "T2004",
+      "scope": "scratch-only",
+      "outcome": "Pass",
+      "calls": [
+        "bash"
+      ],
+      "detail": "Real scratch regression executed through FA: 5/5, including Python execution on 21 inputs.",
+      "promptUtf8Bytes": 45,
+      "rawLogUtf8Bytes": 2630
+    },
+    {
+      "taskId": "T2005",
+      "scope": "scratch-only",
+      "outcome": "Applied; draft defect",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed native scratch AST draft byte-equal; supplied draft needed formatting. No native compilation.",
+      "promptUtf8Bytes": 2587,
+      "rawLogUtf8Bytes": 24606
+    },
+    {
+      "taskId": "T2006",
+      "scope": "scratch-only",
+      "outcome": "Pass",
+      "calls": [
+        "bash"
+      ],
+      "detail": "FA applied standalone rustfmt to scratch prototype; formatting check passed. No cargo/rustc.",
+      "promptUtf8Bytes": 50,
+      "rawLogUtf8Bytes": 132
+    },
+    {
+      "taskId": "T2007",
+      "scope": "repository",
+      "outcome": "Fail",
+      "calls": [],
+      "detail": "Broad repository implementation ask returned test-details clarification without tools; open G112.",
+      "promptUtf8Bytes": 540,
+      "rawLogUtf8Bytes": 240
+    },
+    {
+      "taskId": "T2008",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: JS recurrence general callable contract implementation.",
+      "promptUtf8Bytes": 13329,
+      "rawLogUtf8Bytes": 116736
+    },
+    {
+      "taskId": "T2009",
+      "scope": "repository",
+      "outcome": "Blocked",
+      "calls": [],
+      "detail": "Worker bootstrap SyntaxError on generator re-export before any tool calls; no requested regression created. Root repaired general generator exports.",
+      "promptUtf8Bytes": 5179,
+      "rawLogUtf8Bytes": 1224
+    },
+    {
+      "taskId": "T2010",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Exact unchanged T2009 regression-creation retry succeeded after root generator repair; 7/7 production JS checks.",
+      "promptUtf8Bytes": 5179,
+      "rawLogUtf8Bytes": 47525
+    },
+    {
+      "taskId": "T2011",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native coding task retained binding origin.",
+      "promptUtf8Bytes": 23639,
+      "rawLogUtf8Bytes": 201716
+    },
+    {
+      "taskId": "T2012",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native recurrence AST body-read and structural binding.",
+      "promptUtf8Bytes": 21098,
+      "rawLogUtf8Bytes": 180661
+    },
+    {
+      "taskId": "T2013",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native concept candidate authoritative callable contract.",
+      "promptUtf8Bytes": 32187,
+      "rawLogUtf8Bytes": 272493
+    },
+    {
+      "taskId": "T2014",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native recurrence cache authoritative contract.",
+      "promptUtf8Bytes": 16207,
+      "rawLogUtf8Bytes": 138471
+    },
+    {
+      "taskId": "T2015",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native composition body-read coverage and binding without comparator changes.",
+      "promptUtf8Bytes": 33714,
+      "rawLogUtf8Bytes": 287040
+    },
+    {
+      "taskId": "T2016",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native source-program constructor field.",
+      "promptUtf8Bytes": 19303,
+      "rawLogUtf8Bytes": 164585
+    },
+    {
+      "taskId": "T2017",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native composition fixtures and real competing IR regressions.",
+      "promptUtf8Bytes": 23394,
+      "rawLogUtf8Bytes": 204677
+    },
+    {
+      "taskId": "T2018",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native concept constructors.",
+      "promptUtf8Bytes": 18254,
+      "rawLogUtf8Bytes": 159112
+    },
+    {
+      "taskId": "T2019",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native ledger constructor.",
+      "promptUtf8Bytes": 4712,
+      "rawLogUtf8Bytes": 43503
+    },
+    {
+      "taskId": "T2020",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native composition-search task constructor.",
+      "promptUtf8Bytes": 11036,
+      "rawLogUtf8Bytes": 97023
+    },
+    {
+      "taskId": "T2021",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native structural-composition task constructor.",
+      "promptUtf8Bytes": 7983,
+      "rawLogUtf8Bytes": 74711
+    },
+    {
+      "taskId": "T2022",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native OEIS task constructor.",
+      "promptUtf8Bytes": 8639,
+      "rawLogUtf8Bytes": 77847
+    },
+    {
+      "taskId": "T2023",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native structural task expected declaration origin.",
+      "promptUtf8Bytes": 10357,
+      "rawLogUtf8Bytes": 92206
+    },
+    {
+      "taskId": "T2024",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native callable renderer shared with existing recurrence renderer; no new hardcoded prose debt.",
+      "promptUtf8Bytes": 21154,
+      "rawLogUtf8Bytes": 181064
+    },
+    {
+      "taskId": "T2025",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: split JS source callable body contract worker.",
+      "promptUtf8Bytes": 7069,
+      "rawLogUtf8Bytes": 63504
+    },
+    {
+      "taskId": "T2026",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: new source callable worker exact128 budget shard.",
+      "promptUtf8Bytes": 457,
+      "rawLogUtf8Bytes": 7615
+    },
+    {
+      "taskId": "T2027",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: deduplicate old recurrence worker; retain original259 ceiling.",
+      "promptUtf8Bytes": 6546,
+      "rawLogUtf8Bytes": 59081
+    },
+    {
+      "taskId": "T2028",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: JS recursive self-call parameter capture guard.",
+      "promptUtf8Bytes": 7235,
+      "rawLogUtf8Bytes": 64878
+    },
+    {
+      "taskId": "T2029",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: new module exact130 budget for final two-line guard; old259 ceiling unchanged.",
+      "promptUtf8Bytes": 457,
+      "rawLogUtf8Bytes": 7621
+    },
+    {
+      "taskId": "T2030",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native recursive self-call capture rejection.",
+      "promptUtf8Bytes": 21538,
+      "rawLogUtf8Bytes": 184274
+    },
+    {
+      "taskId": "T2031",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native unsupported explicit capture regression.",
+      "promptUtf8Bytes": 23459,
+      "rawLogUtf8Bytes": 205297
+    },
+    {
+      "taskId": "T2032",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: JS production explicit capture regression.",
+      "promptUtf8Bytes": 5197,
+      "rawLogUtf8Bytes": 47691
+    },
+    {
+      "taskId": "T2033",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: native observed-call binding and authoritative source-contract mismatch regressions.",
+      "promptUtf8Bytes": 25583,
+      "rawLogUtf8Bytes": 223140
+    },
+    {
+      "taskId": "T2034",
+      "scope": "repository",
+      "outcome": "Fail",
+      "calls": [
+        "read",
+        "edit"
+      ],
+      "detail": "Exact unchanged T2007 broad implementation retry read then attempted erroneous edit (oldString candidate cost or ranking rules. Add); oldString not found; no effect. Open G112.",
+      "promptUtf8Bytes": 540,
+      "rawLogUtf8Bytes": 9822
+    },
+    {
+      "taskId": "T2035",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash"
+      ],
+      "detail": "Actual FA Node execution: 12/12 closest JS checks (7 callable contracts +5 existing route probes).",
+      "promptUtf8Bytes": 122,
+      "rawLogUtf8Bytes": 6225
+    },
+    {
+      "taskId": "T2036",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: patch changelog fragment.",
+      "promptUtf8Bytes": 835,
+      "rawLogUtf8Bytes": 10469
+    },
+    {
+      "taskId": "T2037",
+      "scope": "repository",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "Reviewed general capability repair applied byte-equal: remove duplicate trailing empty lines in recurrence worker.",
+      "promptUtf8Bytes": 6545,
+      "rawLogUtf8Bytes": 59061
+    },
+    {
+      "taskId": "T2038",
+      "scope": "repository evidence",
+      "outcome": "Pass",
+      "calls": [
+        "bash"
+      ],
+      "detail": "FA executed exact reviewed operational Node copier; persisted 181 prompt, raw transcript and audit artifacts without source rewrites.",
+      "promptUtf8Bytes": 66,
+      "rawLogUtf8Bytes": 292
+    }
+  ],
+  "repositoryEvidenceMutatingBashCalls": 1
+}

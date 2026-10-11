@@ -1,0 +1,282 @@
+name: Publish VS Code extension
+# GITHUB_TOKEN-created releases suppress release events. Resolve only the
+# published tag from a completed main run; no fork head is executed here.
+on: # zizmor: ignore[dangerous-triggers]
+  release:
+    types:
+      - published
+  workflow_run:
+    workflows:
+      - CI/CD Pipeline
+      - Desktop Release
+    types:
+      - completed
+    branches:
+      - main
+  pull_request:
+    branches-ignore:
+      - e2e/**
+    paths:
+      - js/**
+      - vscode/**
+      - data/seed/**
+      - package.json
+      - bun.lock
+      - .github/workflows/publish-vscode.yml
+      - scripts/resolve-package-release.mjs
+      - scripts/build-selected-wasm.mjs
+      - scripts/generate-web-distribution.py
+      - rust/src/**
+      - rust/embedded/**
+      - rust/tests/web/selected-source-wasm.test.mjs
+      - scripts/release-extension-*.mjs
+      - scripts/github-artifact-by-identifier.mjs
+      - rust/tests/web/release-extension-transfer.test.mjs
+      - rust/tests/web/github-artifact-by-identifier.test.mjs
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Run package checks without publication
+        type: choice
+        options: [checks]
+        default: checks
+      pull-request:
+        description: Pull request whose package checks were dispatched
+        type: string
+        default: ""
+      publish:
+        description: Publish the selected stable release (main only)
+        type: boolean
+        default: false
+      tag:
+        description: Published release tag (empty selects the latest)
+        type: string
+        default: ""
+permissions:
+  contents: read
+concurrency:
+  group: publish-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+  queue: max
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository &&
+       github.event.workflow_run.conclusion != 'cancelled' &&
+       github.event.workflow_run.conclusion != 'skipped')
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+      publish: ${{ steps.release.outputs.publish }}
+      build: ${{ steps.release.outputs.build }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          ref: ${{ github.workflow_sha }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+      - name: Resolve the published package release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          REPOSITORY: ${{ github.repository }}
+          REFERENCE: ${{ github.ref }}
+          PUBLISH: ${{ inputs.publish }}
+          INPUT_TAG: ${{ inputs.tag }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RUN_HEAD: ${{ github.event.workflow_run.head_sha }}
+          RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          RUN_REPOSITORY: ${{ github.event.workflow_run.head_repository.full_name }}
+          RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+          RUN_WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
+        run: node scripts/release-extension-transfer.mjs resolve
+        timeout-minutes: 3
+    permissions:
+      contents: read
+      actions: read
+  publish:
+    needs: resolve
+    if: ${{ !cancelled() && needs.resolve.outputs.build == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.workflow_sha }}
+      - name: Capture the workflow-owned selected-worker builder
+        env:
+          WASM_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$WASM_PROTOCOL_COMMIT"
+          protocol_path="$RUNNER_TEMP/formal-ai-extension-wasm.mjs"
+          cp scripts/build-selected-wasm.mjs "$protocol_path"
+          echo "FORMAL_AI_WASM_PROTOCOL=$protocol_path" >> "$GITHUB_ENV"
+      - name: Select the resolved release tag
+        if: needs.resolve.outputs.tag != ''
+        env:
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+        run: >
+          set -euo pipefail
+
+          [[ "$PACKAGE_RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
+
+          git fetch origin "refs/tags/$PACKAGE_RELEASE_TAG:refs/tags/$PACKAGE_RELEASE_TAG"
+
+          git checkout --detach "refs/tags/$PACKAGE_RELEASE_TAG"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+      - name: Install Bun
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Build worker from the selected extension source
+        id: selected_wasm
+        run: node "$FORMAL_AI_WASM_PROTOCOL" build
+        timeout-minutes: 5
+      - name: Build web resources and extension
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          export PATH="$HOME/.bun/bin:$PATH"
+          bun install --frozen-lockfile
+          bun run build:web
+          npm ci --prefix vscode --no-audit --no-fund
+          npm --prefix vscode run package
+      - name: Verify the worker copied into extension resources
+        env:
+          WASM_RECEIPT_SHA256: ${{ steps.selected_wasm.outputs.receipt-sha256 }}
+        run: node "$FORMAL_AI_WASM_PROTOCOL" verify "$GITHUB_WORKSPACE" vscode/dist-web "$WASM_RECEIPT_SHA256"
+      - name: Compare the packaged extension version with the preceding release
+        id: version
+        run: >
+          current=$(python3 -c 'import json;
+          print(json.load(open("vscode/package.json"))["version"])')
+
+          previous_tag=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || true)
+
+          previous=''
+
+          if [ -n "$previous_tag" ]; then
+            git show "$previous_tag:vscode/package.json" > /tmp/previous-extension.json
+            previous=$(python3 -c 'import json; print(json.load(open("/tmp/previous-extension.json"))["version"])')
+          fi
+
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+
+          if [ "$current" != "$previous" ]; then echo 'changed=true' >> "$GITHUB_OUTPUT"; else echo 'changed=false' >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/upload-artifact@v7
+        with:
+          name: formal-ai-vscode
+          path: vscode/*.vsix
+          if-no-files-found: error
+      - name: Run existing extension checks
+        run: npm --prefix vscode test
+    outputs:
+      changed: ${{ steps.version.outputs.changed }}
+      current: ${{ steps.version.outputs.current }}
+  authoritative-publication:
+    needs:
+      - resolve
+      - publish
+    if: ${{ !cancelled() && needs.publish.result == 'success' &&
+      needs.resolve.outputs.publish == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+      attestations: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: _protocol
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+      - name: Receive the exact desktop-attested extension package
+        id: transfer
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+          EXTENSION_DESTINATION: ${{ runner.temp }}/authoritative-extension
+        run: |-
+          mkdir "$EXTENSION_DESTINATION"
+          node _protocol/scripts/release-extension-transfer.mjs receive
+        timeout-minutes: 21
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ steps.transfer.outputs.source-commit }}
+          path: _package
+          persist-credentials: false
+      - name: Install original package publication tools
+        run: npm ci --prefix _package/vscode --no-audit --no-fund
+      - name: Use verified producer bytes for downstream publication
+        env:
+          AUTHORITATIVE_PACKAGE: ${{ steps.transfer.outputs.package-path }}
+        run: cp "$AUTHORITATIVE_PACKAGE" _package/vscode/
+      - name: Publish Marketplace
+        if: needs.resolve.outputs.publish == 'true' && needs.publish.outputs.changed ==
+          'true'
+        working-directory: _package/vscode
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: >
+          if [ -z "$VSCE_PAT" ]; then echo 'Marketplace publishing unavailable:
+          VSCE_PAT is not configured'; exit 0; fi
+
+          npx --no-install vsce publish --packagePath ./*.vsix
+      - name: Publish Open VSX
+        if: needs.resolve.outputs.publish == 'true' && needs.publish.outputs.changed ==
+          'true'
+        working-directory: _package/vscode
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: >
+          if [ -z "$OVSX_PAT" ]; then echo 'Open VSX publishing unavailable:
+          OVSX_PAT is not configured'; exit 0; fi
+
+          npx --yes ovsx@1.2.0 publish ./*.vsix
+      - name: Install published Marketplace extension in a clean profile
+        if: needs.resolve.outputs.publish == 'true' && needs.publish.outputs.changed ==
+          'true'
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+          EXPECTED_VERSION: ${{ needs.publish.outputs.current }}
+        run: >
+          if [ -z "$VSCE_PAT" ]; then echo 'Install-by-id smoke unavailable:
+          publication was not configured'; exit 0; fi
+
+          curl -fsSL https://update.code.visualstudio.com/latest/linux-x64/stable -o /tmp/vscode.tar.gz
+
+          mkdir /tmp/formal-ai-clean-vscode
+
+          tar -xzf /tmp/vscode.tar.gz -C /tmp/formal-ai-clean-vscode --strip-components=1
+
+          code=/tmp/formal-ai-clean-vscode/bin/code
+
+          for _ in 1 2 3 4 5; do
+            if "$code" --no-sandbox --user-data-dir /tmp/formal-ai-vscode-profile --extensions-dir /tmp/formal-ai-vscode-extensions --install-extension link-assistant.formal-ai-vscode --force; then
+              if "$code" --no-sandbox --user-data-dir /tmp/formal-ai-vscode-profile --extensions-dir /tmp/formal-ai-vscode-extensions --list-extensions --show-versions | grep -Fx "link-assistant.formal-ai-vscode@$EXPECTED_VERSION"; then exit 0; fi
+            fi
+            sleep 15
+          done
+
+          echo 'Published version did not become installable by id'; exit 1

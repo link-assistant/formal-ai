@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "桥"
+        },
+        "es": {
+          "language": "es",
+          "value": "puente"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "跨越物理障碍的建筑结构"
+        },
+        "es": {
+          "language": "es",
+          "value": "estructura construida para que una ruta de transporte pueda cruzar por encima de un obstáculo"
         }
       },
       "aliases": {
@@ -66,6 +74,12 @@
           {
             "language": "zh",
             "value": "桥梁"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "puentes"
           }
         ]
       }

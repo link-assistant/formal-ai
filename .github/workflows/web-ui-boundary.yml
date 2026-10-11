@@ -1,0 +1,41 @@
+name: Web UI boundary
+on:
+  # Issue #1187 R2: a bot pull request pushed with github.token gets its
+  # checks through dispatch (.github/actions/dispatch-checks), which needs no
+  # approval; the inputs are the ones that action passes.
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'checks: run the pull-request checks on the dispatched branch'
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request the dispatched checks report for'
+        required: false
+        default: ''
+        type: string
+  pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
+    paths: ['js/app/**', 'scripts/check-web-ui-boundary.py', 'docs/case-studies/issue-951/**']
+  push:
+    branches: [main]
+    paths: ['js/app/**', 'scripts/check-web-ui-boundary.py', 'docs/case-studies/issue-951/**']
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+jobs:
+  boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Prevent additional business logic in the UI
+        run: python3 scripts/check-web-ui-boundary.py

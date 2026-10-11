@@ -29,7 +29,7 @@ top of it:
 | [`links-network-terminology-recipe.lino`](../data/meta/links-network-terminology-recipe.lino) | #664 | Keeping every public surface a links network, not a graph |
 | [`computer-use-recipe.lino`](../data/meta/computer-use-recipe.lino) | #707 | The audited computer-use primitive loop (grounded by `rust/tests/unit/specification/computer_use_meta_algorithm.rs`) |
 | [`grounded-action-recipe.lino`](../data/meta/grounded-action-recipe.lino) | #840 | Grounding requested actions in observed effects (grounded by `rust/tests/unit/specification/grounded_action_meta_algorithm.rs`) |
-| [`draft-portfolio-recipe.lino`](../data/meta/draft-portfolio-recipe.lino) | #704 | The k-draft portfolio loop behind `--draft-count` (grounded by `rust/tests/unit/issue_704.rs`) |
+| [`draft-portfolio-recipe.lino`](../data/meta/draft-portfolio-recipe.lino) | #704 | The k-draft portfolio loop behind `--draft-count` (grounded by `rust/tests/unit/candidate_solution_portfolios.rs`) |
 | [`reasoning-standard-recipe.lino`](../data/meta/reasoning-standard-recipe.lino) | #1073 | The unconditional reasoning-depth audit — seven gates over every request (grounded by `rust/tests/unit/specification/reasoning_standard_meta_algorithm.rs`) |
 | [`coding-discovery-recipe.lino`](../data/meta/coding-discovery-recipe.lino) | #710 continuation | Dynamic coding discovery from licensed parts through bounded verification (grounded by `rust/tests/unit/specification/coding_discovery_meta_algorithm.rs`) |
 
@@ -949,7 +949,7 @@ section is grounded by
 [`data/meta/budget-search-recipe.lino`](../data/meta/budget-search-recipe.lino) and
 pinned by
 [`rust/tests/unit/specification/budget_search_meta_algorithm.rs`](../rust/tests/unit/specification/budget_search_meta_algorithm.rs)
-and [`rust/tests/unit/budget_search.rs`](../rust/tests/unit/budget_search.rs).
+and [`rust/tests/unit/solver/budget_search.rs`](../rust/tests/unit/solver/budget_search.rs).
 
 ### The nine steps
 

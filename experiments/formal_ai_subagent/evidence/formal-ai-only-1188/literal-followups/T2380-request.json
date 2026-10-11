@@ -1,0 +1,6 @@
+{
+  "id": "T2380",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Read js/agentic/planner.mjs and rust/src/agentic_coding/planner.rs. Explain why a request with two explicit literal-file clauses can finish after the first, and propose a reusable repair that preserves literal payload precedence and obligation receipt verification. Do not modify files.",
+  "steps": 8
+}

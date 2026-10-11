@@ -1,0 +1,50 @@
+language en
+lemma now
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the momentary present"
+    examples ("Now is a good time to do it" "it worked up to right now")
+    id oewn-15144861-n
+    partOfSpeech n
+  entry
+    definition "in the historical present; at this point in the narration of a series of past events"
+    examples ("President Kennedy now calls in the National Guard" "Washington now decides to cross the Delaware" "the ship is now listing to port")
+    id oewn-00049971-r
+    partOfSpeech r
+  entry
+    definition "in these times"
+    examples ("it is solely by their language that the upper classes nowadays are distinguished" "we now rarely see horse-drawn vehicles on city streets" "today almost every home has television")
+    id oewn-00049013-r
+    partOfSpeech r
+    synonyms (nowadays today)
+  entry
+    definition "used to preface a command or reproof or request"
+    examples ("now hear this!" "now pay attention")
+    id oewn-00049640-r
+    partOfSpeech r
+  entry
+    definition "at the present moment"
+    examples ("goods now on sale" "the now-aging dictator" "they are now abroad" "he is busy at present writing a new novel" "it could happen any time now")
+    id oewn-00049758-r
+    partOfSpeech r
+    synonyms ("at present")
+  entry
+    definition "without delay or hesitation; with no time intervening"
+    examples ("he answered immediately" "found an answer straightaway" "an official accused of dishonesty should be suspended forthwith" "Come here now!")
+    id oewn-00049277-r
+    partOfSpeech r
+    synonyms (immediately instantly straightaway "straight off" directly "right away" "at once" forthwith "like a shot")
+  entry
+    definition "(prefatory or transitional) indicates a change of subject or activity"
+    examples ("Now the next problem is …")
+    id oewn-00050296-r
+    partOfSpeech r
+  entry
+    definition "in the immediate past"
+    examples ("told me just now")
+    id oewn-00050223-r
+    partOfSpeech r
+source "oewn:2024"

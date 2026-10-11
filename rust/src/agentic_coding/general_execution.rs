@@ -3,12 +3,11 @@
 use serde_json::json;
 
 use super::capability_router::shell_command_tool;
+use super::final_result::{FinalDisposition, FinalResult, record};
 use super::general_planner::{
-    compose_general_change_plan, GeneralChangePlan, GeneralPlanMode, PLAN_PATH,
+    GeneralChangePlan, GeneralPlanMode, PLAN_PATH, compose_general_change_plan,
 };
-use super::planner::{
-    plan_one, tool_for, write_arguments, AgenticPlan, Capability,
-};
+use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
 use super::progress::Progress;
 use super::tool_result;
 use crate::protocol::ChatMessage;
@@ -22,21 +21,18 @@ pub(super) fn plan_general_change_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
     plan: &GeneralChangePlan,
+    result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
-    general_change_step(messages, tool_names, plan, false)
+    general_change_step(messages, tool_names, plan, false, result)
 }
 
-/// The same state machine entered from a resolved work item. Every step is
-/// identical; only the completion differs — the harness voice instead of the
-/// conversational one — because a user who hands over an issue reference
-/// commissioned an artifact, while a user who types the task asked for a
-/// conversation about a change (issue #1133, the literal-file run).
+/// The same state machine entered from a resolved work item.
 pub(super) fn plan_work_item_change_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
     plan: &GeneralChangePlan,
 ) -> AgenticPlan {
-    general_change_step(messages, tool_names, plan, true)
+    general_change_step(messages, tool_names, plan, true, &mut None)
 }
 
 fn general_change_step(
@@ -44,7 +40,13 @@ fn general_change_step(
     tool_names: &[&str],
     plan: &GeneralChangePlan,
     resolved_from_work_item: bool,
+    result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
+    // A literal-file write reads its target first unless the request names a
+    // whole-file write, and never replaces an existing file unasked (PR #1188 T96).
+    if let Some(guarded) = super::literal_write_guard::guarded_step(plan, messages, tool_names) {
+        return guarded;
+    }
     let progress = Progress::scan(messages);
     // Reading the work item is an attempt to find out whether anything *can* be
     // executed, not a step the request named. A read that comes back missing or
@@ -53,17 +55,56 @@ fn general_change_step(
     // run's failure would replace the honest terminal state of issue #904 with
     // a transport message about a URL the user never asked to see.
     let work_item_unreadable = plan.mode == GeneralPlanMode::RepositoryWorkItem
-        && progress
-            .latest_failure()
-            .is_some_and(|failure| failure.capability == Capability::Fetch || failure.is_work_item_read());
-    if let Some(failure) = progress.latest_failure().filter(|_| !work_item_unreadable) {
+        && progress.latest_failure().is_some_and(|failure| {
+            failure.capability == Capability::Fetch || failure.is_work_item_read()
+        });
+    let target_missing = progress.latest_failure().is_some_and(|failure| {
+        super::literal_write_guard::is_guard_read(
+            plan,
+            failure
+                .arguments
+                .as_deref()
+                .and_then(tool_argument_path)
+                .as_deref(),
+            failure.capability,
+        )
+    });
+    let event_missing = progress.latest_failure().is_some_and(|failure| {
+        failure.capability == Capability::Read
+            && failure
+                .arguments
+                .as_deref()
+                .and_then(tool_argument_path)
+                .as_deref()
+                == Some(PLAN_PATH)
+            && progress
+                .source_read_for(PLAN_PATH)
+                .is_some_and(|read| read.absent)
+    });
+    if let Some(failure) = progress
+        .latest_failure()
+        .filter(|_| !work_item_unreadable && !target_missing && !event_missing)
+    {
         if failure.capability == Capability::Write {
             let path = failure.arguments.as_deref().and_then(tool_argument_path);
+            if path.as_deref() == Some(PLAN_PATH) {
+                let event = plan.links_notation();
+                let identity = event.lines().nth(1).unwrap_or("");
+                if matches!(
+                    super::append_contract::append_record_step(
+                        messages, tool_names, PLAN_PATH, &event, identity
+                    ),
+                    Some(super::append_contract::AppendRecordStep::Refused)
+                ) {
+                    return unverified_plan_event(plan);
+                }
+            }
             if let (Some(path), Some(read_tool)) =
                 (path.as_deref(), tool_for(tool_names, Capability::Read))
-                && progress.failed_write_count_for(path) == 1 {
-                    return plan_one(read_tool, read_arguments(path));
-                }
+                && progress.failed_write_count_for(path) == 1
+            {
+                return plan_one(read_tool, read_arguments(path));
+            }
             // The plan event is auxiliary. A write-only client cannot perform
             // the preferred read-before-retry recovery, but its failure must
             // not swallow the user's primary literal-file write.
@@ -71,9 +112,10 @@ fn general_change_step(
                 && plan.mode == GeneralPlanMode::LiteralFile
                 && tool_for(tool_names, Capability::Read).is_none()
                 && progress.failed_write_count_for(PLAN_PATH) == 1
-                && let Some(write_tool) = tool_for(tool_names, Capability::Write) {
-                    return plan_one(write_tool, write_arguments(&plan.target, &plan.content));
-                }
+                && let Some(write_tool) = tool_for(tool_names, Capability::Write)
+            {
+                return plan_one(write_tool, write_arguments(&plan.target, &plan.content));
+            }
             // Recovery is exhausted, but the failed call is not the last word:
             // run the check the plan itself named so the report can carry the
             // status the workspace answered with rather than a transport
@@ -81,12 +123,13 @@ fn general_change_step(
             if plan.mode != GeneralPlanMode::RepositoryWorkItem
                 && !plan.verification_command.trim().is_empty()
                 && progress.run_count_for(&plan.verification_command) == 0
-                && let Some(run_tool) = shell_command_tool(tool_names) {
-                    return plan_one(
-                        run_tool,
-                        json!({ "command": plan.verification_command }).to_string(),
-                    );
-                }
+                && let Some(run_tool) = shell_command_tool(tool_names)
+            {
+                return plan_one(
+                    run_tool,
+                    json!({ "command": plan.verification_command }).to_string(),
+                );
+            }
             return AgenticPlan::Final(tool_result::render_failure(
                 path.as_deref().unwrap_or("write"),
                 &failure.detail,
@@ -101,9 +144,10 @@ fn general_change_step(
                 std::slice::from_ref(output),
                 &plan.verification_command,
                 &plan.goal,
-            ) {
-                return AgenticPlan::Final(report);
-            }
+            )
+        {
+            return AgenticPlan::Final(report);
+        }
         // A client may require an attempted read before creating a missing
         // file. Whether that read found bytes or reported absence, retry the
         // original write once; its per-target failure budget remains bounded.
@@ -129,9 +173,10 @@ fn general_change_step(
             progress
                 .previous_attempt()
                 .and_then(|attempt| attempt.arguments.as_deref()),
-        ) {
-            return plan_one(tool, arguments.to_owned());
-        }
+        )
+    {
+        return plan_one(tool, arguments.to_owned());
+    }
     // A repository work item names an issue, not an artifact. Recording the
     // reference and stopping is what issue #904 reported: nothing the request
     // asked for was ever produced. The issue itself is where the artifact is
@@ -142,23 +187,31 @@ fn general_change_step(
             if let Some(step) = plan_work_item_execution(&fetched, messages, tool_names) {
                 return step;
             }
-        } else if let Some(step) = plan_work_item_read(tool_names, &plan.target, &progress)
+        } else if let Some(step) =
+            plan_work_item_read(messages, tool_names, &plan.target, &progress)
         {
             return step;
         }
     }
-    if let Some(tool) = tool_for(tool_names, Capability::Write) {
-        let plan_attempted = progress.attempted_write_for(PLAN_PATH);
-        let plan_written = progress.successful_write_for(PLAN_PATH);
-        if !plan_attempted {
-            return plan_one(tool, write_arguments(PLAN_PATH, &plan.links_notation()));
-        }
-        if plan.mode == GeneralPlanMode::LiteralFile
-            && !progress.successful_write_for(&plan.target)
-            && (plan_written || plan_attempted)
-        {
-            return plan_one(tool, write_arguments(&plan.target, &plan.content));
-        }
+    // Never spend the only write this mode produces on a plan record when the
+    // goal could not be read (issue #1155): the record would claim a session
+    // engaged with an issue it never saw one line of. The reads tried, each
+    // with its result, are the answer instead.
+    if plan.mode == GeneralPlanMode::RepositoryWorkItem
+        && let Some(report) = work_item_read_failure_report(plan, &progress)
+    {
+        return AgenticPlan::Final(report);
+    }
+    let event_unavailable = match plan_event_step(plan, &progress, tool_names, messages) {
+        PlanEventOutcome::Pending(step) => return step,
+        PlanEventOutcome::Observed => false,
+        PlanEventOutcome::Unavailable => true,
+    };
+    if let Some(tool) = tool_for(tool_names, Capability::Write)
+        && plan.mode == GeneralPlanMode::LiteralFile
+        && !progress.successful_write_for(&plan.target)
+    {
+        return plan_one(tool, write_arguments(&plan.target, &plan.content));
     }
     if let Some(tool) = shell_command_tool(tool_names) {
         match plan.mode {
@@ -190,23 +243,166 @@ fn general_change_step(
             GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem => {}
         }
     }
-    finish_general_change(plan, &progress, resolved_from_work_item)
+    if event_unavailable && plan.mode != GeneralPlanMode::RepositoryWorkItem {
+        return record(
+            unverified_plan_event(plan),
+            FinalDisposition::Gap,
+            "auxiliary_event_unavailable",
+            result,
+        );
+    }
+    finish_general_change(plan, &progress, resolved_from_work_item, result)
+}
+
+/// Request-local persistence status, separate from the requested workspace effect.
+enum PlanEventOutcome {
+    Observed,
+    Pending(AgenticPlan),
+    Unavailable,
+}
+
+// Write is an overwrite operation. Preserve observed history and read back the
+// entire expected stream before treating its new event as recorded.
+fn plan_event_append_command(plan: &GeneralChangePlan) -> String {
+    let event = plan.links_notation();
+    let identity = event.lines().nth(1).unwrap_or_default();
+    let path = super::general_planner::shell_quote(PLAN_PATH);
+    let identity = super::general_planner::shell_quote(identity);
+    let event = super::general_planner::shell_quote(&event);
+    super::work_item_steps::fill(
+        "plan-event-append-command",
+        &[
+            (
+                concat!("{", "lock_path", "}"),
+                &super::general_planner::shell_quote(&format!("{PLAN_PATH}.lock")),
+            ),
+            (concat!("{", "path", "}"), &path),
+            (concat!("{", "identity", "}"), &identity),
+            (concat!("{", "event", "}"), &event),
+        ],
+    )
+}
+
+fn unverified_plan_event(plan: &GeneralChangePlan) -> AgenticPlan {
+    let mut evidence = plan.clone();
+    PLAN_PATH.clone_into(&mut evidence.target);
+    evidence.verification_command = format!("cat {PLAN_PATH}");
+    AgenticPlan::Final(general_plan_unverified(&evidence))
+}
+
+fn plan_event_step(
+    plan: &GeneralChangePlan,
+    progress: &Progress,
+    tool_names: &[&str],
+    messages: &[ChatMessage],
+) -> PlanEventOutcome {
+    let event = plan.links_notation();
+    let identity = event.lines().nth(1).unwrap_or_default();
+    let run = shell_command_tool(tool_names);
+    let aliases = super::work_item_steps::fill("plan-event-shell-aliases", &[]);
+    let atomic_shell = run.is_some_and(|name| {
+        let leaf = name
+            .rsplit("__")
+            .next()
+            .unwrap_or(name)
+            .rsplit(['.', '/', ':'])
+            .next()
+            .unwrap_or(name);
+        aliases
+            .split_whitespace()
+            .any(|alias| leaf.eq_ignore_ascii_case(alias))
+    });
+    if let (Some(read), Some(write)) = (
+        tool_for(tool_names, Capability::Read),
+        tool_for(tool_names, Capability::Write),
+    ) && !atomic_shell
+    {
+        let observation = progress.source_read_for(PLAN_PATH);
+        if observation
+            .is_some_and(|observation| observation.error.is_none() && !observation.complete)
+        {
+            return PlanEventOutcome::Unavailable;
+        }
+        let prior = observation
+            .filter(|observation| observation.complete)
+            .and_then(|observation| observation.source.clone());
+        if let Some(expected) = progress.successful_write_content_for(PLAN_PATH) {
+            if prior
+                .as_deref()
+                .is_some_and(|prior| prior.starts_with(&expected))
+            {
+                return PlanEventOutcome::Observed;
+            }
+            if progress.last() == Some(Capability::Read)
+                && progress
+                    .latest_successful_arguments(Capability::Read)
+                    .and_then(tool_argument_path)
+                    .as_deref()
+                    == Some(PLAN_PATH)
+            {
+                return PlanEventOutcome::Pending(unverified_plan_event(plan));
+            }
+            return PlanEventOutcome::Pending(plan_one(read, read_arguments(PLAN_PATH)));
+        }
+        if prior
+            .as_deref()
+            .is_some_and(|prior| prior.lines().any(|line| line == identity))
+        {
+            return if prior.as_deref().is_some_and(|prior| prior.contains(&event)) {
+                PlanEventOutcome::Observed
+            } else {
+                PlanEventOutcome::Pending(unverified_plan_event(plan))
+            };
+        }
+        let missing = progress.latest_failure().is_some_and(|failure| {
+            failure.capability == Capability::Read
+                && failure
+                    .arguments
+                    .as_deref()
+                    .and_then(tool_argument_path)
+                    .as_deref()
+                    == Some(PLAN_PATH)
+                && progress
+                    .source_read_for(PLAN_PATH)
+                    .is_some_and(|read| read.absent)
+        });
+        if prior.is_none() && !missing {
+            return PlanEventOutcome::Pending(plan_one(read, read_arguments(PLAN_PATH)));
+        }
+        let mut stream = prior.unwrap_or_default();
+        if !stream.is_empty() && !stream.ends_with('\n') {
+            stream.push('\n');
+        }
+        stream.push_str(&event);
+        return PlanEventOutcome::Pending(plan_one(write, write_arguments(PLAN_PATH, &stream)));
+    }
+    // A declared append provider retains its exact receipt contract with a shell present.
+    use super::append_contract::{AppendRecordStep, append_record_step};
+    if let Some(appended) = append_record_step(messages, tool_names, PLAN_PATH, &event, identity) {
+        return match appended {
+            AppendRecordStep::Pending(step) => PlanEventOutcome::Pending(step),
+            AppendRecordStep::Observed => PlanEventOutcome::Observed,
+            AppendRecordStep::Refused => PlanEventOutcome::Pending(unverified_plan_event(plan)),
+        };
+    }
+    let Some(run) = run else {
+        return PlanEventOutcome::Unavailable;
+    };
+    let append = plan_event_append_command(plan);
+    if progress.successful_run_count_for(&append) == 0 {
+        return PlanEventOutcome::Pending(plan_one(run, json!({"command": append}).to_string()));
+    }
+    let observed = progress
+        .latest_successful_run_output_for(&append)
+        .and_then(tool_result::observed_payload);
+    if observed.is_some_and(|observed| observed.contains(event.trim_end())) {
+        PlanEventOutcome::Observed
+    } else {
+        PlanEventOutcome::Pending(unverified_plan_event(plan))
+    }
 }
 
 /// Plan the next step from what the fetched work item actually asks for.
-///
-/// The real corpus decides the shape here. The issues Hive Mind dispatches say
-/// *"implement a Hello World program in Scala"* — a described artifact in a
-/// named language, not literal bytes — so the same coding catalog that answers
-/// that request when a user types it directly answers it here, through the
-/// execution recipe its [`SymbolicAnswer`](crate::solver::SymbolicAnswer)
-/// carries. The literal-file composer follows, for a work item that does spell
-/// out a path and its contents.
-///
-/// Returning [`None`] means the work item named nothing this sandbox can
-/// produce — an unsupported language, or prose with no artifact in it at all —
-/// which keeps `planned_not_executed` truthful rather than inventing an
-/// artifact the issue never asked for.
 fn plan_work_item_execution(
     objective: &str,
     messages: &[ChatMessage],
@@ -233,23 +429,16 @@ fn plan_work_item_execution(
     }
     let executable = compose_general_change_plan(objective)
         .filter(|executable| executable.mode != GeneralPlanMode::RepositoryWorkItem)?;
-    Some(plan_work_item_change_step(messages, tool_names, &executable))
+    Some(plan_work_item_change_step(
+        messages,
+        tool_names,
+        &executable,
+    ))
 }
 
 /// The step that reads the work item, through whichever client tool reaches it.
-///
-/// GitHub's structured CLI read comes first when the client can run it. Unlike
-/// model-backed `WebFetch` tools, it returns source bytes rather than asking a
-/// nested model to interpret the whole solve request. This keeps the read in
-/// the checkout's credential and prevents a fetched issue from being solved
-/// once inside the fetch tool and then misread as issue text by the outer plan.
-///
-/// A client with no run capability falls back to its fetch tool. That call
-/// carries a data-declared extraction instruction rather than the user's solve
-/// request, so required `prompt` fields cannot recursively execute the task.
-/// A protocol-hosted fetch tool runs server-side, so the fetch itself is the
-/// read and `gh` is never planned ahead of it (issue #904).
 fn plan_work_item_read(
+    messages: &[ChatMessage],
     tool_names: &[&str],
     target: &str,
     progress: &Progress,
@@ -263,12 +452,59 @@ fn plan_work_item_read(
     if !progress.attempted_work_item_read_of(target)
         && let Some(run) = shell_command_tool(tool_names)
     {
-        return Some(plan_one(run, json!({ "command": issue_view_command(target) }).to_string()));
+        return Some(plan_one(
+            run,
+            json!({ "command": issue_view_command(target) }).to_string(),
+        ));
     }
-    if !progress.attempted_fetch_of(target) && let Some(tool) = fetch {
+    // A read that failed — or one a client echoed without its status, which
+    // the sentinel now exposes (issue #1155) — must not end the retrieval
+    // while another route to the same text is untried. The fallbacks walk in
+    // the issue's order: the client's fetch tool on the issue URL, the
+    // credential-free REST read (`curl` needs no `gh` and no token for a
+    // public repository — exactly the case an unauthenticated `gh` used to
+    // end a session for), the authenticated REST read, and last the prepared
+    // pull request's own page, whose title and body restate the issue.
+    if !progress.attempted_fetch_of(target)
+        && let Some(tool) = fetch
+    {
         return Some(plan_one(tool, work_item_fetch_arguments(target)));
     }
+    if let Some(run) = shell_command_tool(tool_names) {
+        for fallback in [
+            issue_rest_read_command(target),
+            issue_api_read_command(target),
+        ]
+        .into_iter()
+        .flatten()
+        {
+            if !progress.has_run(&fallback) {
+                return Some(plan_one(run, json!({ "command": fallback }).to_string()));
+            }
+        }
+    }
+    if let Some(prepared_pull) = prepared_pull_reference(messages)
+        && prepared_pull != target
+        && !progress.attempted_fetch_of(&prepared_pull)
+        && let Some(tool) = fetch
+    {
+        return Some(plan_one(tool, work_item_fetch_arguments(&prepared_pull)));
+    }
     None
+}
+
+/// The pull-request URL the prompt names beside the work item ("Your prepared Pull Request: …"), when it names one.
+fn prepared_pull_reference(messages: &[ChatMessage]) -> Option<String> {
+    let prompt = messages
+        .iter()
+        .rev()
+        .find(|message| message.role.eq_ignore_ascii_case("user"))?
+        .content
+        .plain_text();
+    prompt.split_whitespace().find_map(|token| {
+        let reference = super::general_planner::repository_work_reference(token)?;
+        (reference.rsplit('/').nth(1) == Some("pull")).then_some(reference)
+    })
 }
 
 fn work_item_fetch_arguments(target: &str) -> String {
@@ -296,11 +532,65 @@ pub(super) fn issue_view_command(target: &str) -> String {
     )
 }
 
+/// The REST segments of a GitHub work-item URL — `{owner}`, `{repo}`, the REST spelling of the kind (`issues` / `pulls`), and the number.
+fn rest_segments(target: &str) -> Option<(String, String, &'static str, String)> {
+    let mut segments = target.trim_end_matches('/').rsplit('/');
+    let number = segments.next()?.to_owned();
+    let kind = match segments.next()? {
+        "issue" | "issues" => "issues",
+        "pull" | "pulls" => "pulls",
+        _ => return None,
+    };
+    let repo = segments.next()?.to_owned();
+    let owner = segments.next()?.to_owned();
+    (!number.is_empty() && number.chars().all(|character| character.is_ascii_digit()))
+        .then_some((owner, repo, kind, number))
+}
+
+/// The work-item read that needs no `gh` and no credential: GitHub's REST API returns the raw body to `curl` for a public repository (issue #1155).
+fn issue_rest_read_command(target: &str) -> Option<String> {
+    let (owner, repo, kind, number) = rest_segments(target)?;
+    Some(super::work_item_steps::fill(
+        "issue_rest_read_command",
+        &[
+            (concat!("{", "owner}"), &owner),
+            (concat!("{", "repo}"), &repo),
+            (concat!("{", "kind}"), kind),
+            (concat!("{", "number}"), &number),
+        ],
+    ))
+}
+
+/// The authenticated REST read, for a checkout whose `gh` answers `api` but could not render the view (issue #1155).
+fn issue_api_read_command(target: &str) -> Option<String> {
+    let (owner, repo, kind, number) = rest_segments(target)?;
+    Some(super::work_item_steps::fill(
+        "issue_api_read_command",
+        &[
+            (concat!("{", "owner}"), &owner),
+            (concat!("{", "repo}"), &repo),
+            (concat!("{", "kind}"), kind),
+            (concat!("{", "number}"), &number),
+        ],
+    ))
+}
+
+/// The honest close of a work item no read could deliver (issue #1155).
+fn work_item_read_failure_report(plan: &GeneralChangePlan, progress: &Progress) -> Option<String> {
+    progress.failed_work_item_read_of(&plan.target)?;
+    let attempts = progress.work_item_read_attempts(&plan.target);
+    (!attempts.is_empty()).then(|| {
+        super::work_item_steps::fill(
+            "read_failed_report",
+            &[
+                ("{target}", &plan.target),
+                (concat!("{", "attempts}"), &attempts.join("\n")),
+            ],
+        )
+    })
+}
+
 /// The text of the issue this work item names, once the client has fetched it.
-///
-/// Only the page fetched from the plan's own target counts. A repository work
-/// item carries one URL, and answering it with whatever page happened to be
-/// fetched for some other reason this turn would plan against the wrong issue.
 fn repository_work_item_objective(plan: &GeneralChangePlan, progress: &Progress) -> Option<String> {
     progress
         .fetched_pages
@@ -310,18 +600,34 @@ fn repository_work_item_objective(plan: &GeneralChangePlan, progress: &Progress)
         .filter(|text| !text.trim().is_empty())
 }
 
+// Exact declared data can describe failures without reporting an execution failure.
+// Explicit harness errors and nonzero status always remain authoritative.
+fn literal_verification_matches(plan: &GeneralChangePlan, output: &str) -> bool {
+    plan.mode == GeneralPlanMode::LiteralFile
+        && !tool_result::harness_reported_failure(output)
+        && tool_result::reported_exit_code(output).is_none_or(|code| code == 0)
+        && output.trim() == plan.content.trim()
+}
+
 fn finish_general_change(
     plan: &GeneralChangePlan,
     progress: &Progress,
     resolved_from_work_item: bool,
+    result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
     if plan.mode == GeneralPlanMode::RepositoryWorkItem {
-        return AgenticPlan::Final(plan.planned_not_executed_answer());
+        return record(
+            AgenticPlan::Final(plan.planned_not_executed_answer()),
+            FinalDisposition::Gap,
+            "repository_work_not_executed",
+            result,
+        );
     }
     // The workspace gets the last word over a completion claim: a verification
     // command that exited non-zero replaces the claim with its own report.
     if let Some(report) = progress
         .latest_run_output_for(&plan.verification_command)
+        .filter(|output| !literal_verification_matches(plan, output))
         .and_then(|output| {
             tool_result::failed_verification(
                 std::slice::from_ref(output),
@@ -339,7 +645,10 @@ fn finish_general_change(
         let observed = progress
             .latest_successful_run_output_for(&plan.verification_command)
             .and_then(tool_result::observed_payload);
-        if observed.as_deref().map(str::trim) != Some(plan.content.trim()) {
+        let exact_literal = progress
+            .latest_successful_run_output_for(&plan.verification_command)
+            .is_some_and(|output| literal_verification_matches(plan, output));
+        if !exact_literal && observed.as_deref().map(str::trim) != Some(plan.content.trim()) {
             return AgenticPlan::Final(general_plan_mismatch(
                 plan,
                 observed.as_deref().unwrap_or_default(),
@@ -347,19 +656,22 @@ fn finish_general_change(
         }
     }
     if resolved_from_work_item && plan.mode == GeneralPlanMode::LiteralFile {
-        return AgenticPlan::Final(work_item_completion(plan, progress));
+        return record(
+            AgenticPlan::Final(work_item_completion(plan, progress)),
+            FinalDisposition::Finding,
+            "work_item_completion_verified",
+            result,
+        );
     }
-    AgenticPlan::Final(general_plan_completed(plan))
+    record(
+        AgenticPlan::Final(general_plan_completed(plan)),
+        FinalDisposition::Finding,
+        "general_plan_completed_verified",
+        result,
+    )
 }
 
-/// The completion a resolved work item earns: the harness voice the execution
-/// recipe already uses — the artifact created, the command that verified it,
-/// the output that command produced. A literal file the work item spelled out
-/// is an artifact whose side effects belong to the requesting client, so it is
-/// reported through the same recipe shape a composed program is (issue #1133,
-/// the literal-file run). A task the user typed into the conversation keeps
-/// the seeded conversational claim; its words are pinned by issues #905
-/// and #916.
+/// The completion a resolved work item earns: the harness voice the execution recipe already uses — the artifact created, the command that verified it, the output that command produced.
 fn work_item_completion(plan: &GeneralChangePlan, progress: &Progress) -> String {
     let recipe = crate::engine::ExecutionRecipe {
         language: "text".to_owned(),

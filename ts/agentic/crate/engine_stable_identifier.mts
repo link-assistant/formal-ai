@@ -1,0 +1,55 @@
+// `crate::engine::stable_id` (rust/src/engine.rs, which delegates to
+// rust/src/web_engine_core.rs `stable_id`).
+
+const FNV_OFFSET = 0xcbf29ce484222325n;
+const FNV_PRIME = 0x100000001b3n;
+const MASK = (1n << 64n) - 1n;
+const encoder = new TextEncoder();
+
+/**
+ * Mirrors `fn stable_id` in rust/src/web_engine_core.rs: FNV-1a 64 over the
+ * UTF-8 bytes of `text`, printed as `{prefix}_{hash:016x}`.
+ * @param {string} prefix
+ * @param {string} text
+ * @returns {string}
+ */
+export function stableId(prefix, text) {
+  let hash = FNV_OFFSET;
+  for (const byte of encoder.encode(String(text))) {
+    hash ^= BigInt(byte);
+    hash = (hash * FNV_PRIME) & MASK;
+  }
+  return `${prefix}_${hash.toString(16).padStart(16, '0')}`;
+}
+
+/**
+ * Rust `format!("{:?}", text)` for a `str`: the Debug quoting of a string.
+ * Used where Rust hashes a Debug rendering (`format!("{parent:?}")`).
+ * Rust built-in `impl Debug for str`.
+ * @param {string} text
+ * @returns {string}
+ */
+export function debugString(text) {
+  let out = '"';
+  for (const character of text) {
+    const code = character.codePointAt(0);
+    if (character === '"') out += '\\"';
+    else if (character === '\\') out += '\\\\';
+    else if (character === '\n') out += '\\n';
+    else if (character === '\r') out += '\\r';
+    else if (character === '\t') out += '\\t';
+    else if (character === '\0') out += '\\0';
+    else if (code < 0x20 || code === 0x7f) out += `\\u{${code.toString(16)}}`;
+    else out += character;
+  }
+  return `${out}"`;
+}
+
+/**
+ * Rust `format!("{:?}", option)` for an `Option<String>`.
+ * Rust built-in `impl Debug for Option<String>`.
+ * @param {string|null} value
+ */
+export function debugOption(value) {
+  return value === null || value === undefined ? 'None' : `Some(${debugString(value)})`;
+}

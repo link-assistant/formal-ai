@@ -1,0 +1,12 @@
+{
+  "request": "T3097-request.json",
+  "rawRequestRetained": true,
+  "metadataError": "Neutral builder reused Kelvin originalCI annotations; prompt and absent-target precondition are unchanged original negative.",
+  "actualSource": "rust/tests/fixtures/literal-obligation-transaction.rs:542",
+  "actualOriginalTask": "Write file.\nx.txt containing «hello».",
+  "job": 113777810825,
+  "head": "d7437d4bcfc6d94823ebeba634de016f25561b41",
+  "rawNativeLog": "/tmp/pr1188-new-job-113777810825.log",
+  "nativeActualWrites": 1,
+  "expectedWrites": 0
+}

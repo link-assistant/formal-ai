@@ -1,0 +1,37 @@
+language en
+lemma intersection
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a point where lines intersect"
+    id oewn-05875237-n
+    partOfSpeech n
+    synonyms ("intersection point" "point of intersection")
+  entry
+    definition "a junction where one street or road crosses another"
+    id oewn-03586294-n
+    partOfSpeech n
+    synonyms (crossroad crossway crossing carrefour)
+  entry
+    definition "a point or set of points common to two or more geometric configurations"
+    id oewn-13895852-n
+    partOfSpeech n
+  entry
+    definition "the set of elements common to two or more sets"
+    examples ("the set of red hats is the intersection of the set of hats and the set of red things")
+    id oewn-08015510-n
+    partOfSpeech n
+    synonyms (product "Cartesian product")
+  entry
+    definition "a representation of common ground between theories or phenomena"
+    examples ("there was no overlap between their proposals")
+    id oewn-05772362-n
+    partOfSpeech n
+    synonyms (overlap convergence)
+  entry
+    definition "the act of intersecting (as joining by causing your path to intersect your target's path)"
+    id oewn-00146931-n
+    partOfSpeech n
+source "oewn:2024"

@@ -1,0 +1,12 @@
+language en
+lemma radian
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the unit of plane angle adopted under the Systeme International d'Unites; equal to the angle at the center of a circle subtended by an arc equal in length to the radius (approximately 57.295 degrees)"
+    id oewn-13633285-n
+    partOfSpeech n
+    synonyms (rad)
+source "oewn:2024"

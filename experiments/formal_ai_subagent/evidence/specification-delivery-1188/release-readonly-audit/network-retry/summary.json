@@ -1,0 +1,157 @@
+{
+  "sourceCommit": "c8b5e63e136f064216a74dfd2dcc77c826b67392",
+  "sourceTree": "431c0ef8a58c33ba5f520149a6fe2882f35ce868",
+  "finalHead": "c8b5e63e136f064216a74dfd2dcc77c826b67392",
+  "repositoryMutations": 0,
+  "committed": [
+    {
+      "path": ".github/workflows/desktop-release.yml",
+      "artifact": ".github-workflows-desktop-release.yml.json",
+      "sha256": "e8d46c78c0937b7cfc9a587e626498ff63ae599a37fa89d5faa804e25082045f",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "artifact": ".github-workflows-release.yml.json",
+      "sha256": "e09a167e8d9fb6abf1e26a73013972527ea3db621174ffa0e0b5270eb1095843",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": ".github/workflows/publish-engine.yml",
+      "artifact": ".github-workflows-publish-engine.yml.json",
+      "sha256": "4f5c3388d38572597ed67f48fad24731b660cd2e94c6e69dad037771f06d3209",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": ".github/workflows/publish-vscode.yml",
+      "artifact": ".github-workflows-publish-vscode.yml.json",
+      "sha256": "4e1bae1b67b66cc10a84b0414f4522277e4153d073e5a311fe0b401044441a69",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": ".github/workflows/publish-source-networks.yml",
+      "artifact": ".github-workflows-publish-source-networks.yml.json",
+      "sha256": "f639dc6520e8e9037a5c52c4a79d5894d349aeec6f2f0bd671eea29bde0bbcfc",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": ".github/workflows/pages-artifact.yml",
+      "artifact": ".github-workflows-pages-artifact.yml.json",
+      "sha256": "092a124d24997c31508eed2df524bda798cb735e524bf29eb95e5555776ea351",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": ".github/actions/publish-slim-image/action.yml",
+      "artifact": ".github-actions-publish-slim-image-action.yml.json",
+      "sha256": "6171c00e07f1dc34990248de29c7518ec74dfda673138b4b52143120d9acb51e",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": "scripts/desktop-release-resolve.sh",
+      "artifact": "scripts-desktop-release-resolve.sh.json",
+      "sha256": "a6af066b2bbfaf065f7990beb473685b46b85b54881550bff925b1ed5cc331df",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": "scripts/resolve-package-release.mjs",
+      "artifact": "scripts-resolve-package-release.mjs.json",
+      "sha256": "ca6cc146c3b11feca5f3fe260fe179b46d507cfacde2b3d6471cc6c51962ab00",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": "scripts/native-test-artifact.mjs",
+      "artifact": "scripts-native-test-artifact.mjs.json",
+      "sha256": "c58929b02a506fbb45ee7a36213ca246a00a3a4bbd1c248b14132fb7b20aaac9",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": "scripts/lib/source-network-packets.mjs",
+      "artifact": "scripts-lib-source-network-packets.mjs.json",
+      "sha256": "ce315b5dc79b244f06b8d56bc4380c37506e9aaeaf863a494c9559773a77297a",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": "scripts/verify-source-network-distribution.mjs",
+      "artifact": "scripts-verify-source-network-distribution.mjs.json",
+      "sha256": "6cb5a92b91abebe8dc3eca1201131da807bd3ecf58134e4af32b8003bbd08b66",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": "scripts/generate-web-distribution.py",
+      "artifact": "scripts-generate-web-distribution.py.json",
+      "sha256": "915501653251f47ca3b36b9681d001c77366c6e8ad72ecec36158b55ef492a87",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": "js/wasm-worker/build.sh",
+      "artifact": "js-wasm-worker-build.sh.json",
+      "sha256": "288e45176ee8c4ac02fb1a6b60bbad8f4b0df60a9fd8a5d8937a948dae610ae3",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": "js/wasm-worker/src/lib.rs",
+      "artifact": "js-wasm-worker-src-lib.rs.json",
+      "sha256": "c388bf23e266502a99365a25c7a8a71f762d24049b40ca6429e8814c4f2f7275",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": "desktop/package.json",
+      "artifact": "desktop-package.json.json",
+      "sha256": "235dfcc252a66c2bc8f27ba99f4ce10ef01ab1024851eea1627be88149e4bec5",
+      "workingBytesMatchCommit": true
+    },
+    {
+      "path": "packages/formal-ai-engine/package.json",
+      "artifact": "packages-formal-ai-engine-package.json.json",
+      "sha256": "aa7308932f75278ec5ca75e89b6c4632957c8c492bd631f7e07376af40cb4240",
+      "workingBytesMatchCommit": true
+    }
+  ],
+  "api": {
+    "latest": {
+      "status": "retrieved"
+    },
+    "stableCommit": {
+      "status": "retrieved"
+    },
+    "desktopJobs": {
+      "status": "retrieved"
+    },
+    "desktopArtifacts": {
+      "status": "retrieved"
+    },
+    "engineArtifacts": {
+      "status": "retrieved"
+    },
+    "engineJobs": {
+      "status": "retrieved"
+    },
+    "vscodeJobs": {
+      "status": "retrieved"
+    },
+    "sourceWorkflow": {
+      "status": "unavailable",
+      "message": "Command failed: gh api repos/link-assistant/formal-ai/actions/workflows/publish-source-networks.yml/runs?per_page=5\ngh: Not Found (HTTP 404)\n"
+    },
+    "currentRuns": {
+      "status": "retrieved"
+    },
+    "slimLog": {
+      "status": "retrieved"
+    }
+  },
+  "artifactStatus": "inspected",
+  "artifactMemberCount": 439,
+  "packagedWasmProbe": {
+    "input": "audit\nquartz 631",
+    "expected": "audit_d425c2eaadb2b84c",
+    "observed": "audit_d425c2eaadb2b84c"
+  },
+  "closestChecks": {
+    "task": "T2933",
+    "passed": 35,
+    "skipped": 1,
+    "total": 36,
+    "limitation": "PowerShell unavailable locally; scratch packaging stand-in checks supplement actual5 CLI platform CI jobs, not native local compilation."
+  }
+}

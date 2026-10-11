@@ -1,0 +1,5 @@
+JavaScript symbolic answers now serialize the native six-field answer record from the actual append-ordered solver log, preserving prior turns and their trace IDs. Record thinking retains response-link provenance; display thinking retains the composed answer. Memory finalization uses the same serializer, and independent worker and persisted derivations remain intact.
+
+Source-qualified definitions project verified capture observations into typed solver events in native order, preserving real URL, capture time, complete SHA-256, cache status and unresolved outcomes through the API and derivation store. The pure native slot parser is public, and its original fixture assertions now run from the integration harness rather than a production-source test module.
+
+Validation: ten production answer-record contracts and twenty-five existing trace, citation, derivation and memory tests pass. Targeted standalone native formatting passes; native execution remains a CI check. Original broad Formal AI synthesis still only reads source, so its failure remains open independently of the reviewed changes applied through Formal AI.

@@ -1,0 +1,31 @@
+>> read {"filePath":"js/worker/formal_ai_worker_tool_execution_policy.js","file_path":"js/worker/formal_ai_worker_tool_execution_policy.js","path":"js/worker/formal_ai_worker_tool_execution_policy.js"}
+   <file>
+   00001| // Apply the native agent-mode gate before the browser's actual JavaScript executor.
+   00002| // Requested source stays visible on refusal; execution events describe observed results.
+   00003| function tryJavaScriptToolRequest(prompt, preferences) {
+   00004|   const program = extractJavaScriptProgram(prompt);
+   00005|   if (program === null) return null;
+   00006|   if (preferences && preferences.agentMode) return tryJavaScriptExecution(prompt);
+   00007|   const capability = "tool:javascript_execution";
+   00008|   const denial = nlToolText("nl_tool_agent_mode_required", detectLanguage(prompt), { capability });
+   00009|   const refusal = nlToolRefusal(nlToolText("nl_tool_requested_source", "en", { denial, program }), [
+   00010|     "policy:agent_mode_required_for_tools:" + capability,
+   00011|     "execution_status:javascript:refused",
+   00012|     "execution_environment:agent-permission-gate",
+   00013|   ]);
+   00014| }
+   00015| 
+   
+   (End of file - total 15 lines)
+   </file>
+>> edit {"filePath":"js/worker/formal_ai_worker_tool_execution_policy.js","file_path":"js/worker/formal_ai_worker_tool_execution_policy.js","new":"  ]);\n  refusal.solverEvents = [{ kind: \"policy:agent_mode_required_for_tools\", payload: capability }];\n  return refusal;\n}","newString":"  ]);\n  refusal.solverEvents = [{ kind: \"policy:agent_mode_required_for_tools\", payload: capability }];\n  return refusal;\n}","new_str":"  ]);\n  refusal.solverEvents = [{ kind: \"policy:agent_mode_required_for_tools\", payload: capability }];\n  return refusal;\n}","new_string":"  ]);\n  refusal.solverEvents = [{ kind: \"policy:agent_mode_required_for_tools\", payload: capability }];\n  return refusal;\n}","old":"  ]);\n}","oldString":"  ]);\n}","old_str":"  ]);\n}","old_string":"  ]);\n}","path":"js/worker/formal_ai_worker_tool_execution_policy.js"}
+>> bash {"command":"sha256sum -- js/worker/formal_ai_worker_tool_execution_policy.js"}
+   Output: 413804cd25ba76693405aa661fd860cf9d82f2e8ce6075396333e694d9383593  js/worker/formal_ai_worker_tool_execution_policy.js
+   
+   Exit Code: 0
+== answer ==
+Replaced `  ]);
+}` with `  ]);
+  refusal.solverEvents = [{ kind: "policy:agent_mode_required_for_tools", payload: capability }];
+  return refusal;
+}` in `js/worker/formal_ai_worker_tool_execution_policy.js` and observed the result.

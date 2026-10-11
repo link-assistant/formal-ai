@@ -1,0 +1,9 @@
+view
+  id M-6220d124ec9c
+  lemma postposition
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(linguistics) the placing of one linguistic element after another (as placing a modifier after the word that it modifies in a sentence or placing an affix after the base to which it is attached)"
+    provenance (wordnet)

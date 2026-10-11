@@ -1,0 +1,5 @@
+{
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "steps": 8,
+  "prompt": "Read rust/src/solver_unknown_reasoning.rs. Explain why a Spanish repository workspace request can reach unknown instead of an evidenced grep shell capability gap although capability_routing route_placed gives HonestGap. Suggest a general repair, do not edit."
+}

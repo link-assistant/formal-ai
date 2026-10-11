@@ -1,0 +1,49 @@
+>> read {"filePath":"rust/tests/web/native-protocol-capture.test.mjs","file_path":"rust/tests/web/native-protocol-capture.test.mjs","path":"rust/tests/web/native-protocol-capture.test.mjs"}
+   <file>
+   00001| import {test} from 'node:test';
+   00002| import assert from 'node:assert/strict';
+   00003| import {readFileSync} from 'node:fs';
+   00004| import {bytesDigest,checkedCapture} from '../../../scripts/capture-native-agentic-protocol.mjs';
+   00005| const contract=JSON.parse(readFileSync('docs/case-studies/pull-request-1188/native-protocol-capture-provenance.json','utf8'));
+   00006| test('immutable legacy session bytes retain their recorded provenance',()=>{
+   00007|  for(const record of contract.captures)assert.equal(bytesDigest(readFileSync(record.legacy)),record['legacy-sha256']);
+   00008| });
+   00009| test('versioned sessions preserve complete actual native comparison operands',()=>{
+   00010|  assert.equal(contract['pull-request-head'],'4a560cdb5a47dd3d175ca16adf6d521619437a4e');
+   00011|  assert.equal(contract['source-commit'],'08295d4b7a8e57766c235a7ed908f5cd05f71a45');
+   00012|  assert.equal(contract['source-tree'],'2ddcb2797fe522f4c9335e445d8d3c37e5406ba8');
+   00013|  for(const record of contract.captures.filter(record=>record.observed)){
+   00014|   const original=JSON.parse(readFileSync(record.legacy,'utf8')),bytes=readFileSync(record.observed);
+   00015|   assert.equal(record.run,37870721512);
+   00016|   assert.equal(record.job,record.id==='self-coding'?113640815027:113640815107);
+   00017|   assert.equal(bytesDigest(bytes),record['observed-sha256']);
+   00018|   const observed=checkedCapture(bytes,original);
+   00019|   assert.deepEqual(observed.tools_advertised,[...original.tools_advertised,'read_file']);
+   00020|   assert.equal(observed.steps.length,5);assert.equal(observed.turns,6);
+   00021|   assert.deepEqual(observed.steps.map(step=>step.tool),['read_file','write_file','read_file','write_file','run_command']);
+   00022|   assert.equal(observed.steps.at(-1).result,original.steps.at(-1).result);
+   00023|   assert.equal(bytes.at(-1)===10,record.id!=='self-coding');
+   00024|  }
+   00025| });
+   00026| test('missing template capture remains explicit rather than synthesizing an observation',()=>{
+   00027|  const record=contract.captures.find(record=>record.id==='ci-template');
+   00028|  assert.equal(record.observed,undefined);assert.match(record.status,/Missing actual/);
+   00029| });
+   00030| test('capture validation refuses a foreign task or turn-cap outcome',()=>{
+   00031|  const record=contract.captures.find(record=>record.observed),legacy=JSON.parse(readFileSync(record.legacy,'utf8')),actual=JSON.parse(readFileSync(record.observed,'utf8'));
+   00032|  for(const changed of [{...actual,task:'foreign task'},{...actual,hit_turn_cap:true},{...actual,tools_advertised:['duplicate','duplicate']}])assert.throws(()=>checkedCapture(Buffer.from(JSON.stringify(changed)),legacy));
+   00033| });
+   00034| 
+   
+   (End of file - total 34 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/native-protocol-capture.test.mjs","file_path":"rust/tests/web/native-protocol-capture.test.mjs","new":"[{...actual,task:'foreign task'},{...actual,hit_turn_cap:true},{...actual,tools_advertised:['duplicate','duplicate']},\n  {...actual,steps:actual.steps.filter(step=>step.tool!=='write_file')},\n  {...actual,steps:actual.steps.filter(step=>step.tool!=='run_command')},\n  {...actual,steps:actual.steps.map(step=>step.tool==='write_file'?{...step,arguments:{...step.arguments,content:'wrong observed bytes'}}:step)}]","newString":"[{...actual,task:'foreign task'},{...actual,hit_turn_cap:true},{...actual,tools_advertised:['duplicate','duplicate']},\n  {...actual,steps:actual.steps.filter(step=>step.tool!=='write_file')},\n  {...actual,steps:actual.steps.filter(step=>step.tool!=='run_command')},\n  {...actual,steps:actual.steps.map(step=>step.tool==='write_file'?{...step,arguments:{...step.arguments,content:'wrong observed bytes'}}:step)}]","new_str":"[{...actual,task:'foreign task'},{...actual,hit_turn_cap:true},{...actual,tools_advertised:['duplicate','duplicate']},\n  {...actual,steps:actual.steps.filter(step=>step.tool!=='write_file')},\n  {...actual,steps:actual.steps.filter(step=>step.tool!=='run_command')},\n  {...actual,steps:actual.steps.map(step=>step.tool==='write_file'?{...step,arguments:{...step.arguments,content:'wrong observed bytes'}}:step)}]","new_string":"[{...actual,task:'foreign task'},{...actual,hit_turn_cap:true},{...actual,tools_advertised:['duplicate','duplicate']},\n  {...actual,steps:actual.steps.filter(step=>step.tool!=='write_file')},\n  {...actual,steps:actual.steps.filter(step=>step.tool!=='run_command')},\n  {...actual,steps:actual.steps.map(step=>step.tool==='write_file'?{...step,arguments:{...step.arguments,content:'wrong observed bytes'}}:step)}]","old":"[{...actual,task:'foreign task'},{...actual,hit_turn_cap:true},{...actual,tools_advertised:['duplicate','duplicate']}]","oldString":"[{...actual,task:'foreign task'},{...actual,hit_turn_cap:true},{...actual,tools_advertised:['duplicate','duplicate']}]","old_str":"[{...actual,task:'foreign task'},{...actual,hit_turn_cap:true},{...actual,tools_advertised:['duplicate','duplicate']}]","old_string":"[{...actual,task:'foreign task'},{...actual,hit_turn_cap:true},{...actual,tools_advertised:['duplicate','duplicate']}]","path":"rust/tests/web/native-protocol-capture.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/native-protocol-capture.test.mjs"}
+   Output: 26ad1b981acb01c1d31e40f71e02cf34fc4d5cc54f7edf7575b5b33606471868  rust/tests/web/native-protocol-capture.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `[{...actual,task:'foreign task'},{...actual,hit_turn_cap:true},{...actual,tools_advertised:['duplicate','duplicate']}]` with `[{...actual,task:'foreign task'},{...actual,hit_turn_cap:true},{...actual,tools_advertised:['duplicate','duplicate']},
+  {...actual,steps:actual.steps.filter(step=>step.tool!=='write_file')},
+  {...actual,steps:actual.steps.filter(step=>step.tool!=='run_command')},
+  {...actual,steps:actual.steps.map(step=>step.tool==='write_file'?{...step,arguments:{...step.arguments,content:'wrong observed bytes'}}:step)}]` in `rust/tests/web/native-protocol-capture.test.mjs` and observed the result.

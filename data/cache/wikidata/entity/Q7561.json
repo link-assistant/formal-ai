@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "雪"
+        },
+        "es": {
+          "language": "es",
+          "value": "nieve"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "從雲中降落的結晶狀固體冰"
+        },
+        "es": {
+          "language": "es",
+          "value": "precipitación en forma de hielo de agua cristalina"
         }
       },
       "aliases": {

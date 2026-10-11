@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "钻石"
+        },
+        "es": {
+          "language": "es",
+          "value": "diamante"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "矿物和珠宝"
+        },
+        "es": {
+          "language": "es",
+          "value": "alótropo del carbono"
         }
       },
       "aliases": {

@@ -28,10 +28,29 @@
 name: Workflows
 
 on:
+  # Issue #1187 R2: a bot pull request pushed with github.token gets its
+  # checks through dispatch (.github/actions/dispatch-checks), which needs no
+  # approval; the inputs are the ones that action passes.
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'checks: run the pull-request checks on the dispatched branch'
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request the dispatched checks report for'
+        required: false
+        default: ''
+        type: string
   push:
     branches: [main]
     paths: ['.github/**']
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     paths: ['.github/**']
 
 # Keep the workflow read-only unless a job explicitly needs an additional scope.
@@ -146,7 +165,7 @@ jobs:
       # Annotations rather than SARIF: the results should be a red check on the
       # pull request that introduced them, not a Security tab entry that depends
       # on Advanced Security being enabled.
-      - uses: zizmorcore/zizmor-action@v0.6.2
+      - uses: zizmorcore/zizmor-action@v0.6.4
         with:
           advanced-security: false
           annotations: true
@@ -180,7 +199,7 @@ jobs:
       # reverting the digest pin and dropping the stock image's explicit
       # exception marker takes it to exit 14 with both findings named.
       - name: 'Enforce the hash-pin policy on container images'
-        uses: zizmorcore/zizmor-action@v0.6.2
+        uses: zizmorcore/zizmor-action@v0.6.4
         with:
           advanced-security: false
           annotations: true

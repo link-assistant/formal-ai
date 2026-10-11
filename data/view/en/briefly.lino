@@ -1,0 +1,13 @@
+view
+  id M-c337e7f01fd0
+  lemma briefly
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "for a short time"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in a concise manner; in a few words"
+    provenance (wordnet)

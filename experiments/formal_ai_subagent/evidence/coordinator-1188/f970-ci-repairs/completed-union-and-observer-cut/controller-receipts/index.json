@@ -1,0 +1,59 @@
+{
+  "ok": true,
+  "members": [
+    {
+      "source": "/private/tmp/pr1188-root-T3479-request.json",
+      "sha256": "25021604dfee40282d0bba2b2f0bb5cf7017f1fb25a890697d5eff48a44b8e4e",
+      "bytes": 268,
+      "path": "25021604dfee40282d0bba2b2f0bb5cf7017f1fb25a890697d5eff48a44b8e4e.gz",
+      "compressedSha256": "5106478abd15a56017934d0afae06f9fc8ef9f7c114e9d0357ac1b8ca5a268fc",
+      "compressedBytes": 198
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T3479.json",
+      "sha256": "45e2042a51e8a318c2b3b4b02d757be56a3275dbaefc3a14dff6794acf714d2e",
+      "bytes": 828,
+      "path": "45e2042a51e8a318c2b3b4b02d757be56a3275dbaefc3a14dff6794acf714d2e.gz",
+      "compressedSha256": "9090357ebc86f1b8b1f343f5c5410706dd22a8eef418399533f1a0455e384c55",
+      "compressedBytes": 408
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T3479-runner.log",
+      "sha256": "45bff8b4832007e3eaca0ed932a3f28ffa98f53abfae75d47dd0b1e2d17b8d4b",
+      "bytes": 91,
+      "path": "45bff8b4832007e3eaca0ed932a3f28ffa98f53abfae75d47dd0b1e2d17b8d4b.gz",
+      "compressedSha256": "d68989e22c2f41f2a0b7a3892b8dc2378276d6b3ef7a1d968688f75aafa2ceba",
+      "compressedBytes": 105
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T3479/qualification.json",
+      "sha256": "d3a3d2b9ce7808192ef2c8e2d1ed124390b377fec8ed5acc4d77fab2a0ef9058",
+      "bytes": 1671,
+      "path": "d3a3d2b9ce7808192ef2c8e2d1ed124390b377fec8ed5acc4d77fab2a0ef9058.gz",
+      "compressedSha256": "d9a11ef05b421fd0d21f7afcfc7822eb28cb551cee756316e967f48724c6aaec",
+      "compressedBytes": 881
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T3479/effect-proof.json",
+      "sha256": "079eaeab254b23feab4cedfa5ec2089e184ce74c713435e2525beb94baf1b4d0",
+      "bytes": 181417,
+      "path": "079eaeab254b23feab4cedfa5ec2089e184ce74c713435e2525beb94baf1b4d0.gz",
+      "compressedSha256": "5b28a085149d1fc950cb6c4a56c00cdf594e964e7f52a7e8914ada67d5be0d46",
+      "compressedBytes": 19434
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T3480/seal.mjs",
+      "sha256": "1ae26f51e8e4c984d45f5133d214f596140ee072d608b3fd294d98c313808a88",
+      "bytes": 2371,
+      "path": "1ae26f51e8e4c984d45f5133d214f596140ee072d608b3fd294d98c313808a88.gz",
+      "compressedSha256": "8da48622c661f0784b28722493bd32f286c563b49d688e85ab10da3f14fd7a2a",
+      "compressedBytes": 1074
+    }
+  ],
+  "qualifiedActualFormalAIArchiveInstallation": true,
+  "actualMarkerMatchedToAllPhysicalEffects": true,
+  "ownRunningSealReceiptExcluded": true,
+  "autonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false
+}

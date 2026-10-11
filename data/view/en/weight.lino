@@ -1,0 +1,45 @@
+view
+  id M-66a8165e1d6d
+  lemma weight
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the vertical force exerted by a mass as a result of gravity"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "sports equipment used in calisthenic exercises and weightlifting; it is not attached to anything and is raised and lowered by use of the hands and arms"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the relative importance granted to something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an artifact that is heavy"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an oppressive feeling of heavy force"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a system of units used to express the weight of something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit used to measure weight"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(statistics) a coefficient assigned to elements of a frequency distribution in order to represent their relative importance"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "weight down with a load"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "present with a bias"
+    provenance (wordnet)

@@ -35,10 +35,12 @@ fail() {
 run_image() {
   local image="$1"
   shift
+  # box-dind 2.10.2's entrypoint announces DIND_SKIP_DAEMON on stdout; drop
+  # that one notice so the CLI's own stdout (JSON, sha256sum) stays parseable.
   docker run --rm --privileged -i \
     -e DIND_SKIP_DAEMON=1 \
     -v "$volume:/home/box/.formal-ai" \
-    "$image" "$@"
+    "$image" "$@" | sed '/^\[dind-entrypoint\] /d'
 }
 
 container_sha() {

@@ -1,0 +1,170 @@
+meanings
+  statistics_operation
+    defined-by statistics
+  statistics_mean
+    defined-by statistics_operation
+    role statistics_operation
+    formula "mean = (sum of the values) / (how many values)"
+    source "https://en.wikipedia.org/wiki/Arithmetic_mean"
+    lexeme en mean average "arithmetic mean"
+    lexeme ru среднее "среднее значение" "среднее арифметическое"
+    lexeme hi माध्य
+    lexeme zh 平均数 平均值 均值
+    lexeme es media promedio "media aritmética"
+  statistics_median
+    defined-by statistics_operation
+    role statistics_operation
+    formula "median = the middle value once the values are sorted (the average of the two middle values when the count is even)"
+    source "https://en.wikipedia.org/wiki/Median"
+    lexeme en median
+    lexeme ru медиана медиану медианы
+    lexeme hi माध्यिका
+    lexeme zh 中位数 中位數
+    lexeme es mediana
+  statistics_mode
+    defined-by statistics_operation
+    role statistics_operation
+    formula "mode = the value that appears most often"
+    source "https://en.wikipedia.org/wiki/Mode_(statistics)"
+    lexeme en mode "most common value" "most frequent value"
+    lexeme ru мода моду моды
+    lexeme hi बहुलक
+    lexeme zh 众数 眾數
+    lexeme es moda
+  statistics_variance
+    defined-by statistics_operation
+    role statistics_operation
+    formula "variance = the average of the squared differences from the mean (population form)"
+    source "https://en.wikipedia.org/wiki/Variance"
+    lexeme en variance
+    lexeme ru дисперсия дисперсию дисперсии
+    lexeme hi प्रसरण
+    lexeme zh 方差
+    lexeme es varianza
+  statistics_standard_deviation
+    defined-by statistics_operation
+    role statistics_operation
+    formula "standard deviation = the square root of the variance (population form)"
+    source "https://en.wikipedia.org/wiki/Standard_deviation"
+    lexeme en "standard deviation" stddev
+    lexeme ru "стандартное отклонение" "среднеквадратичное отклонение"
+    lexeme hi "मानक विचलन"
+    lexeme zh 标准差 標準差
+    lexeme es "desviación estándar" "desviación típica"
+  statistics_percentile
+    defined-by statistics_operation
+    role statistics_operation
+    formula "percentile p = x(k) + f × (x(k + 1) - x(k)), where the rank 1 + (n - 1) × p / 100 = k + f is read over the values sorted ascending (linear interpolation between closest ranks, the C = 1 variant; Hyndman and Fan definition 7)"
+    source "https://en.wikipedia.org/wiki/Percentile#The_linear_interpolation_between_closest_ranks_method"
+    lexeme en percentile percentiles
+    lexeme ru перцентиль перцентиля перцентили процентиль процентиля
+    lexeme hi प्रतिशतक शततमक
+    lexeme zh 百分位数 百分位
+    lexeme es percentil percentiles
+  statistics_range
+    defined-by statistics_operation
+    role statistics_operation
+    formula "range = the largest value minus the smallest value"
+    source "https://en.wikipedia.org/wiki/Range_(statistics)"
+    lexeme en range
+    lexeme ru размах разброс
+    lexeme hi परिसर
+    lexeme zh 极差 全距 范围
+    lexeme es rango recorrido
+  word_problem_unit_price
+    defined-by statistics_operation
+    role word_problem_marker
+    lexeme en each
+    lexeme ru каждая каждый каждое каждую
+    lexeme hi प्रत्येक
+    lexeme zh 每个
+    lexeme es cada
+  word_problem_payment
+    defined-by statistics_operation
+    role word_problem_marker
+    lexeme en "pays with" "pay with" "paid with" "paying with" pays "pay" "paid"
+    lexeme ru платит платил платила заплатил заплатила
+    lexeme hi "भुगतान करता" "भुगतान करती"
+    lexeme zh 支付 付了
+    lexeme es "paga con" "pagó con" paga
+  word_problem_change
+    defined-by statistics_operation
+    role word_problem_marker
+    lexeme en change
+    lexeme ru сдача сдачи сдачу
+    lexeme hi "शेष राशि"
+    lexeme zh 找零 找回
+    lexeme es cambio
+    role localized_response_template
+    precondition "a priced-item change word problem is answered"
+    effect "the payment minus the item cost is stated with its multiplication and subtraction"
+    unit "not applicable"
+    example "3 boxes cost 4 each and the payment is 20. The change is 20 - (3 x 4) = 8."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  word_problem_total
+    defined-by statistics_operation
+    role word_problem_marker
+    lexeme en total "in total" altogether
+    lexeme ru всего итого
+    lexeme hi कुल
+    lexeme zh 总共 一共 合计
+    lexeme es total "en total"
+    role localized_response_template
+    precondition "a total-amount word problem over priced items is answered"
+    effect "the total is stated with the multiplication and sum that produced it"
+    unit "not applicable"
+    example "4 tickets at 12 each cost 48 in total. 4 x 12 = 48."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  number_property_prime
+    grounded-in Q49008
+    defined-by statistics_operation
+    role number_property
+    formula "n is prime when n > 1 and no integer d with 2 <= d <= floor(sqrt(n)) divides n"
+    source "https://en.wikipedia.org/wiki/Prime_number"
+    lexeme en prime "prime number"
+    lexeme ru простое простым "простое число"
+    lexeme hi अभाज्य "अभाज्य संख्या"
+    lexeme zh 质数 素数
+    lexeme es primo "número primo"
+  word_problem_gain
+    defined-by statistics_operation
+    role word_problem_relation
+    lexeme en buys bought gets got finds found receives received earns earned picks picked adds added
+    lexeme ru купил купила получил получила нашёл нашла заработал заработала
+    lexeme hi "खरीदे" "खरीदा" "खरीदीं" "मिले" "मिला" "कमाए"
+    lexeme zh 买了 得到 收到 又买
+    lexeme es compra compró recibe recibió encuentra encontró gana ganó
+  word_problem_loss
+    defined-by statistics_operation
+    role word_problem_relation
+    lexeme en spent spends spend eats ate "gives away" "gave away" gives gave sold sells loses lost uses used
+    lexeme ru потратил потратила съел съела отдал отдала продал продала потерял потеряла
+    lexeme hi "खर्च" "खाए" "खाया" "दिए" "दिया" "बेचे" "बेचा" "खोए"
+    lexeme zh 花了 吃了 给了 卖了 丢了 用了
+    lexeme es gastó gasta comió come dio regaló vendió vende perdió pierde
+  word_problem_group
+    defined-by statistics_operation
+    role word_problem_relation
+    lexeme en holds hold contains contain fits fit
+    lexeme ru вмещает вмещается содержит помещается
+    lexeme hi "समाते" "समाता" "होते"
+    lexeme zh 装 能装 放
+    lexeme es contiene caben cabe "tiene capacidad para"
+  word_problem_share
+    defined-by statistics_operation
+    role word_problem_relation
+    lexeme en
+      words "shared equally" "split equally" "divided equally" "shared among" "divided among" "split among"
+      words "equally among"
+    lexeme ru поровну разделили разделить
+    lexeme hi "बराबर बाँटे" "बराबर बांटे" "बराबर"
+    lexeme zh 平均分 平分 平均分给
+    lexeme es "a partes iguales" "se reparten" repartidas repartidos repartieron
+  word_problem_question
+    defined-by statistics_operation
+    role word_problem_question
+    lexeme en "how many" "how much"
+    lexeme ru сколько
+    lexeme hi "कितने" "कितना" "कितनी"
+    lexeme zh 多少 几
+    lexeme es cuántos cuántas cuánto cuánta

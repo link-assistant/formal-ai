@@ -117,10 +117,11 @@ pub fn render_code_meaning(meaning: &CodeMeaning, source: &str, target: &str) ->
         CodeMeaning::FormalProof(_) => "formal proof",
         CodeMeaning::Unformalized(source_code) => source_code.as_str(),
     };
-    format!(
-        "{} translation gap for `{subject}` from {source} to {target}",
-        code_comment_prefix(target)
-    )
+    let gap = crate::seed::fill_template_once(
+        &crate::seed::localized_response("translation_code_gap_comment", "en").unwrap_or_default(),
+        &[("subject", subject), ("source", source), ("target", target)],
+    );
+    format!("{} {gap}", code_comment_prefix(target))
 }
 
 /// Render the seeded [`CodeMeaning::BinaryAddFunction`] into `target`. Returns
@@ -261,66 +262,6 @@ pub fn translate_surface_detailed(
     crate::translation::translate_via_default_pipeline(surface, source, target)
 }
 
-pub fn extract_concept_from_query(prompt: &str) -> Option<String> {
-    let lower = prompt.to_lowercase();
-    if !(lower.contains("what do you know about") || lower.contains("introspect")) {
-        return None;
-    }
-    let quoted = extract_quoted_phrase(prompt)?;
-    Some(quoted)
-}
-
-pub fn detect_algorithm_language(normalized: &str) -> &'static str {
-    let langs = [
-        ("python", "python"),
-        (" py ", "python"),
-        ("rust", "rust"),
-        (" rs ", "rust"),
-        ("javascript", "javascript"),
-        ("typescript", "typescript"),
-        ("go ", "go"),
-        ("golang", "go"),
-        ("java", "java"),
-        ("ruby", "ruby"),
-    ];
-    for (needle, slug) in langs {
-        if normalized.contains(needle) {
-            return slug;
-        }
-    }
-    "python"
-}
-
-pub fn build_sorting_algorithm_answer(lang: &str, with_tests: bool) -> String {
-    let (fence, code, tests) = match lang {
-        "rust" => (
-            "rust",
-            "fn sort(values: &mut Vec<i32>) {\n    values.sort();\n}",
-            "#[test]\nfn test_sort_ascending() {\n    let mut v = vec![3, 1, 2];\n    sort(&mut v);\n    assert_eq!(v, vec![1, 2, 3]);\n}",
-        ),
-        "javascript" | "typescript" => (
-            lang,
-            "function sort(values) {\n  return [...values].sort((a, b) => a - b);\n}",
-            "function test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}",
-        ),
-        _ => (
-            "python",
-            "def sort(values):\n    return sorted(values)\n",
-            "def test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n",
-        ),
-    };
-
-    if with_tests {
-        format!(
-            "Here is a reviewable sorting algorithm in {lang} with a test:\n\n```{fence}\n{code}\n```\n\nTests:\n```{fence}\n{tests}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
-        )
-    } else {
-        format!(
-            "Here is a reviewable sorting algorithm in {lang}:\n\n```{fence}\n{code}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
-        )
-    }
-}
-
 /// Extract a JavaScript program from a prompt that asks the solver to run it.
 /// Looks for triple-backtick code fences first (with optional `js`/`javascript`
 /// language tag), then single-backtick spans, then `run "...";` quoted bodies.
@@ -344,5 +285,11 @@ pub fn extract_javascript_program(prompt: &str) -> Option<String> {
     if let Some(body) = extract_backticked(prompt) {
         return Some(body);
     }
-    extract_quoted_phrase(prompt)
+    extract_quoted_phrase(prompt).or_else(|| {
+        // The colon after the request introduces the program
+        // ("Run this JavaScript: console.log(1 + 2)").
+        let (_, body) = prompt.split_once(": ")?;
+        let body = body.trim();
+        (!body.is_empty()).then(|| body.to_owned())
+    })
 }

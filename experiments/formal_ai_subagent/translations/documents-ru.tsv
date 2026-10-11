@@ -1,0 +1,5 @@
+document_format_conversion	"Преобразование формата документа через link-foundation/meta-language ({engine}).\nИсточник: {source}; цель: {target}.\nПоддерживаемые форматы документов: {formats}."
+document_format_conversion_fallback	"- {concept} -> {fallback}"
+document_format_conversion_fallbacks	"Документированные замены в целевом формате:"
+document_format_conversion_native_concepts	"Собственные понятия целевого формата: {concepts}."
+document_format_conversion_package	"Уровень пакета: {bytes} байт в профиле сохранённых записей DOCX OPC."

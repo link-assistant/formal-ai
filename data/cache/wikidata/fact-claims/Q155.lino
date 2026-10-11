@@ -1,0 +1,46 @@
+Q155
+  aliases
+    en ("Federative Republic of Brazil")
+    ru ("Estados Unidos del Brazil" "Федеративная Республика Бразилия")
+  claims
+    P36
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q2844
+              numeric-id 2844
+          hash 50fef020e921e36b672faa24e4d243b5a12b081b
+          property P36
+          snaktype value
+        rank preferred
+  id Q155
+  labels
+    en Brazil
+    hi "ब्राज़ील"
+    ru "Бразилия"
+    zh "巴西"
+    zh-hans "巴西"
+  sitelinks
+    enwiki
+      site enwiki
+      title Brazil
+    hiwiki
+      site hiwiki
+      title "ब्राज़ील"
+    ruwiki
+      site ruwiki
+      title "Бразилия"
+    zhwiki
+      site zhwiki
+      title "巴西"
+  type item
+grounding
+  claim_ranks truthy
+  claims (P36)
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

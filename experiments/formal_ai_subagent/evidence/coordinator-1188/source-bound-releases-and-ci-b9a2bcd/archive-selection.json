@@ -1,0 +1,26 @@
+{
+  "officialHead": "b9a2bcd534b78baffe3281639da7bf5e952361fa",
+  "officialTree": "c46cb031632caecf78e645deb308e021f2379936",
+  "officialMerge": "a462df58dc26eb68545f52da717b5bd0580d1e37",
+  "completedSourceHead": "027e0990edece0180e3fbec2b8c82a06e1fa3919",
+  "completedSourceTree": "57be4ac30f3473fe568d91b2759a5419285da049",
+  "created": "2026-10-10T07:24:15.219Z",
+  "terminalOfficialChecks": {
+    "total": 224,
+    "success": 169,
+    "failure": 27,
+    "skipped": 26,
+    "cancelled": 2
+  },
+  "fullOriginalFailedJobs": 27,
+  "currentNativeCensusFresh": false,
+  "currentWholeAnswerReuse": 0,
+  "actualNewWasmCompilation": false,
+  "actualRegistryPublication": false,
+  "autonomousCodingCredit": 0,
+  "ownOuterExcluded": true,
+  "fullFiles": 4456,
+  "fullRawBytes": 404713582,
+  "manifestChunks": 9,
+  "newCanonicalRows": 448
+}

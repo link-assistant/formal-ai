@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "手套"
+        },
+        "es": {
+          "language": "es",
+          "value": "guante"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "人类服饰"
+        },
+        "es": {
+          "language": "es",
+          "value": "complemento de vestuario"
         }
       },
       "aliases": {
@@ -46,6 +54,12 @@
           {
             "language": "ru",
             "value": "перчатки"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "guantes"
           }
         ]
       }

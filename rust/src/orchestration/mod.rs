@@ -24,7 +24,7 @@ pub use dispatch::{
 };
 pub use incremental::{IncrementalProposal, IncrementalSplit, IncrementalStep, IncrementalTrace};
 pub use permission::AgentRunPermission;
-pub use replay::{ReplayError, read_session, replay_session, write_session};
+pub use replay::{ReplayError, read_session, replay_continuation, replay_session, write_session};
 pub use runner::{
     AgentCommand, AgentContinuation, AgentEvent, AgentRunConfig, AgentRunError, AgentSession,
     AgentStatus, AgentTarget, CorrectionRequest, NativeAgentSession, VerificationCommand,

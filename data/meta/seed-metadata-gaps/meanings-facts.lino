@@ -1,0 +1,35 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-facts.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-31506a4938ce93ca
+    record "author_of_book"
+  gap seed-metadata-gap-4482155a1a30c5b1
+    record "built_year"
+  gap seed-metadata-gap-94e6864bd6d31627
+    record "capital"
+  gap seed-metadata-gap-36511c2424b163c7
+    record "continent"
+  gap seed-metadata-gap-44dd81017b97ce12
+    record "currency"
+  gap seed-metadata-gap-27df38654b67d63d
+    record "fact_comparison_joiner"
+  gap seed-metadata-gap-e55f9369d5a3cbd3
+    record "fact_comparison_request"
+  gap seed-metadata-gap-c075bf64987c3b0c
+    record "knowledge_relation"
+  gap seed-metadata-gap-4f30b950ed6d8cb0
+    record "knowledge_subject"
+  gap seed-metadata-gap-96174d992cd1e4b9
+    record "knowledge_value"
+  gap seed-metadata-gap-5cdf308063bd7087
+    record "official_language"
+  gap seed-metadata-gap-c72274864fb8e771
+    record "painter_of_painting"
+  gap seed-metadata-gap-996687952747f5d1
+    record "physical_constant"
+  gap seed-metadata-gap-b6067295fb656596
+    record "population"
+  gap seed-metadata-gap-357613103778719c
+    record "prompt_text_question_cue"

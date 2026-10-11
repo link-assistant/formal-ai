@@ -1,0 +1,8 @@
+>> bash {"command":"test -e data/meta/ci-gates/check-notation.lino"}
+>> bash {"command":"test ! -e changelog.d/20261009_031500_ci-templates-and-pages-trust.md"}
+>> bash {"command":"mkdir -p -- changelog.d"}
+>> bash {"command":"cp data/meta/ci-gates/check-notation.lino changelog.d/20261009_031500_ci-templates-and-pages-trust.md"}
+>> bash {"command":"test -e changelog.d/20261009_031500_ci-templates-and-pages-trust.md"}
+>> bash {"command":"test -e data/meta/ci-gates/check-notation.lino"}
+== answer ==
+Completed the action `cp data/meta/ci-gates/check-notation.lino changelog.d/20261009_031500_ci-templates-and-pages-trust.md` and verified it with `test -e changelog.d/20261009_031500_ci-templates-and-pages-trust.md`, `test -e data/meta/ci-gates/check-notation.lino`.

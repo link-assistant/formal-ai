@@ -1,0 +1,19 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-number-constraints.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-940a078dac20c705
+    record "number_constraint_entity"
+  gap seed-metadata-gap-1a2ef905fdb9b81e
+    record "number_constraint_hidden"
+  gap seed-metadata-gap-c2a34b8e65ebc256
+    record "number_constraint_lower_inclusive"
+  gap seed-metadata-gap-93e704ef95193891
+    record "number_constraint_lower_strict"
+  gap seed-metadata-gap-3ea504d493fab89a
+    record "number_constraint_query"
+  gap seed-metadata-gap-2390712ce43507ef
+    record "number_constraint_upper_inclusive"
+  gap seed-metadata-gap-328fb0da4847a9ca
+    record "number_constraint_upper_strict"

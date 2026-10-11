@@ -19,9 +19,26 @@ on:
   # after. The condition itself is unchanged: still red when the floor is unmet,
   # still no budget, grace period or bypass (issue #1066).
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
   schedule:
     - cron: '17 6 * * *'
+  # Issue #1187 R2: a bot pull request's checks start through dispatch
+  # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'checks: run the pull-request checks on the dispatched branch'
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request the dispatched checks report for'
+        required: false
+        default: ''
+        type: string
 
 permissions:
   contents: read

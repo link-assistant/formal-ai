@@ -2,10 +2,10 @@ self_ast_census
   target src/dialog_log.rs
   language rust
   fidelity signature
-  byte_len 13191
-  line_count 344
-  content_id source_module_cb4b55800f9c83d5
-  symbol_count 24
+  byte_len 15290
+  line_count 395
+  content_id source_module_1159b2043f85bfb0
+  symbol_count 26
   symbols
     const DIALOG_ID_HEADER 35 35
     static REQUEST_SEQUENCE 37 37
@@ -13,21 +13,23 @@ self_ast_census
     static LOG_WRITE_LOCK 39 39
     static CURRENT_DIALOG_ID 43 43
     function configure_verbose 47 49
-    function verbose_enabled 53 56
-    function configured_directory 60 73
-    struct DialogScope 81 83
-    function begin 88 92
-    function drop 96 98
-    function current_dialog_id 103 105
-    function trace_request_if_enabled 108 112
-    struct DialogExchangeLog 116 122
-    function record_api_exchange_if_enabled 128 162
-    function write_dialog_exchange 169 226
-    function dialog_id 228 257
-    function conversation_epoch 271 291
-    static EPOCHS 272 272
-    static ARRIVALS 273 273
-    function explicit_dialog_id 294 308
-    function first_user_prompt 310 344
-    function text 311 320
-    function user_content 322 340
+    function verbose_enabled 56 58
+    function configured_directory 62 75
+    struct DialogScope 83 85
+    function begin 90 94
+    function drop 98 100
+    function current_dialog_id 105 107
+    function trace_request_if_enabled 110 114
+    function record_native_response_if_enabled 118 163
+    static RESPONSE_SEQUENCE 126 126
+    struct DialogExchangeLog 167 173
+    function record_api_exchange_if_enabled 179 213
+    function write_dialog_exchange 220 277
+    function dialog_id 279 308
+    function conversation_epoch 322 342
+    static EPOCHS 323 323
+    static ARRIVALS 324 324
+    function explicit_dialog_id 345 359
+    function first_user_prompt 361 395
+    function text 362 371
+    function user_content 373 391

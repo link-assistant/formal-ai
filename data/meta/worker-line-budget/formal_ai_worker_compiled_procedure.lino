@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_compiled_procedure.js"
+  ceiling 42
+  rationale "Browser dispatch of solver_handlers/procedure_rules.rs. Compiler and artifacts run the generated JavaScript crate modules; this glue fills seeded responses and records real compilation or review-only proposal events."

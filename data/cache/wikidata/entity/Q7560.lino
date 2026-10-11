@@ -1,15 +1,18 @@
 Q7560
   aliases
     en (mum mom mommy mummy mothers Mother ma mama)
+    es ("mamá" mama mami ma)
     ru ("мама" "мам" "мамочка" "мамуля" "мамка" "мамаша" "матушка" "маменька" "ма")
     zh ("媽媽" "母亲" "妈妈" "娘" "母" "妈" "妈咪" "媽咪" "老妈" "老母" "老娘" "老媽" "娘亲" "娘親" "媽")
   descriptions
     en "female parent"
+    es "ser vivo femenino que ha tenido descendencia directa"
     ru "женщина-родитель по отношению к своему ребёнку"
     zh "女性親屬"
   id Q7560
   labels
     en mother
+    es madre
     hi "माता"
     ru "мать"
     zh "母親"

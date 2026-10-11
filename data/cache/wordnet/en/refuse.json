@@ -1,0 +1,96 @@
+{
+  "lemma": "refuse",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14881302-n",
+      "partOfSpeech": "n",
+      "definition": "food that is discarded (as from a kitchen)",
+      "synonyms": [
+        "garbage",
+        "food waste",
+        "scraps"
+      ]
+    },
+    {
+      "id": "oewn-00799092-v",
+      "partOfSpeech": "v",
+      "definition": "show unwillingness towards",
+      "examples": [
+        "he declined to join the group on a hike"
+      ],
+      "synonyms": [
+        "decline"
+      ]
+    },
+    {
+      "id": "oewn-02242120-v",
+      "partOfSpeech": "v",
+      "definition": "not accept as true",
+      "examples": [
+        "He refused to accept what she said"
+      ],
+      "synonyms": [
+        "reject",
+        "pass up",
+        "turn down",
+        "decline"
+      ]
+    },
+    {
+      "id": "oewn-02713660-v",
+      "partOfSpeech": "v",
+      "definition": "elude, especially in a baffling way",
+      "examples": [
+        "This behavior defies explanation"
+      ],
+      "synonyms": [
+        "defy",
+        "resist"
+      ]
+    },
+    {
+      "id": "oewn-02217607-v",
+      "partOfSpeech": "v",
+      "definition": "refuse to let have",
+      "examples": [
+        "She denies me every pleasure",
+        "he denies her her weekly allowance"
+      ],
+      "synonyms": [
+        "deny"
+      ]
+    },
+    {
+      "id": "oewn-02760892-v",
+      "partOfSpeech": "v",
+      "definition": "resist immunologically the introduction of some foreign tissue or organ",
+      "examples": [
+        "His body rejected the liver of the donor"
+      ],
+      "synonyms": [
+        "resist",
+        "reject"
+      ]
+    },
+    {
+      "id": "oewn-02508565-v",
+      "partOfSpeech": "v",
+      "definition": "refuse entrance or membership",
+      "examples": [
+        "They turned away hundreds of fans",
+        "Black people were often rejected by country clubs"
+      ],
+      "synonyms": [
+        "reject",
+        "turn down",
+        "turn away"
+      ]
+    }
+  ]
+}

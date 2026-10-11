@@ -97,6 +97,8 @@ operation_vocabulary
     language en
       phrase "reverse words"
       phrase "reverse the words"
+      phrase "reverse the order of words"
+      phrase "reverse the order of the words"
     language ru
       phrase "обратный порядок слов"
       combo переверни+слова
@@ -105,6 +107,7 @@ operation_vocabulary
     language hi
       phrase "शब्दों को उल्टा"
       combo शब्द+उल्टा
+      combo शब्द+उल्टे
     language zh
       phrase 反转单词
       phrase 倒转单词
@@ -155,6 +158,23 @@ operation_vocabulary
     language zh
       phrase 提取数字
       phrase 提取数值
+  counting_cue
+    language en
+      phrase "how many"
+      phrase count
+    language ru
+      phrase сколько
+      phrase посчитай
+      phrase подсчитай
+      phrase сосчитай
+    language hi
+      phrase कितने
+      phrase कितनी
+      phrase गिन
+    language zh
+      phrase 多少
+      phrase 几
+      phrase 统计
   operation count_occurrences
     language en
       phrase "count occurrences"
@@ -174,57 +194,111 @@ operation_vocabulary
     language en
       phrase "count unique words"
       phrase "count distinct words"
+      unit "unique words"
+      unit "distinct words"
+      unit "different words"
     language ru
       phrase "количество уникальных слов"
       combo уникальн+слов
       combo различн+слов
+      unit "уникальных слов"
+      unit "различных слов"
+      unit "разных слов"
     language hi
       combo अद्वितीय+शब्द
       combo विशिष्ट+शब्द
+      unit "अद्वितीय शब्द"
+      unit "अलग शब्द"
     language zh
       phrase 唯一单词
       phrase 不同单词
       phrase 统计唯一
+      unit 不同单词
+      unit 唯一单词
+      unit 不同的单词
   operation count_words
     language en
       phrase "count words"
       phrase "word count"
+      unit words
     language ru
       phrase "количество слов"
       combo посчитай+слова
+      unit слов
     language hi
       combo शब्द+गिन
       phrase "शब्दों की संख्या"
+      unit शब्द
     language zh
       phrase 统计单词
       phrase 单词数量
+      phrase 几个词
+      phrase 多少个词
+      unit 单词
   operation count_lines
     language en
       phrase "count lines"
       phrase "line count"
+      phrase "count the lines"
+      phrase "number of lines"
+      unit lines
     language ru
       phrase "количество строк"
       combo посчитай+строки
+      unit строк
     language hi
       combo लाइन+गिन
       phrase "लाइनों की संख्या"
+      unit लाइन
+      unit पंक्ति
     language zh
       phrase 统计行
       phrase 行数
+      unit 行
   operation count_characters
     language en
       phrase "count characters"
       phrase "character count"
       phrase "count chars"
+      unit characters
+      unit chars
     language ru
       phrase "количество символов"
       combo посчитай+символ
+      unit символ
     language hi
       combo अक्षर+गिन
       combo वर्ण+गिन
+      unit अक्षर
+      unit वर्ण
     language zh
       phrase 统计字符
       phrase 字符数
+      unit 字符
+  operation filter_lines_by_prefix
+    language en
+      phrase "lines that start with"
+      phrase "lines that begin with"
+      phrase "lines starting with"
+      phrase "lines beginning with"
+      phrase "lines start with"
+      phrase "lines begin with"
+    language ru
+      phrase "строки начинающиеся с"
+      phrase "строк начинающихся с"
+      phrase "строки которые начинаются с"
+      phrase "строк которые начинаются с"
+      phrase "строки начинаются с"
+      phrase "строк начинается с"
+    language hi
+      argument before
+      phrase "से शुरू होने वाली पंक्तियाँ"
+      phrase "से शुरू होने वाली पंक्तियों"
+      phrase "से शुरू होने वाली लाइनें"
+      phrase "से शुरू होने वाली लाइनों"
+    language zh
+      argument before
+      phrase 开头的行
   operation deduplicate_lines
     language en
       phrase "deduplicate lines"
@@ -757,12 +831,15 @@ operation_vocabulary
     language en
       phrase vowels
       phrase vowel
+      members aeiou
     language ru
       phrase гласные
       phrase гласных
+      members аеёиоуыэюя
     language hi
       phrase स्वर
       phrase स्वरों
+      members अआइईउऊऋएऐओऔ
     language zh
       phrase 元音
   operation distinct_numbers
@@ -856,6 +933,18 @@ operation_vocabulary
       phrase minimum
       phrase smallest
       phrase lowest
+      exclude "smallest first"
+      exclude "lowest first"
+      exclude "largest first"
+      exclude "biggest first"
+      exclude "highest first"
+      exclude "greatest first"
+      exclude "smallest to largest"
+      exclude "smallest to biggest"
+      exclude "lowest to highest"
+      exclude "largest to smallest"
+      exclude "biggest to smallest"
+      exclude "highest to lowest"
     language ru
       phrase минимум
       phrase минимальн
@@ -873,6 +962,18 @@ operation_vocabulary
       phrase greatest
       phrase biggest
       phrase highest
+      exclude "smallest first"
+      exclude "lowest first"
+      exclude "largest first"
+      exclude "biggest first"
+      exclude "highest first"
+      exclude "greatest first"
+      exclude "smallest to largest"
+      exclude "smallest to biggest"
+      exclude "lowest to highest"
+      exclude "largest to smallest"
+      exclude "biggest to smallest"
+      exclude "highest to lowest"
     language ru
       phrase максимум
       phrase максимальн

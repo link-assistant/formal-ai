@@ -1,0 +1,29 @@
+view
+  id M-75ac9dbafc25
+  lemma exit
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an opening that permits escape or release"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "euphemistic expressions for death"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of going out"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "move out of or depart from"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "lose the lead"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "pass from physical life and lose all bodily attributes and functions necessary to sustain life"
+    provenance (wordnet)

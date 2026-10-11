@@ -49,10 +49,12 @@ pub fn configure_verbose(enabled: bool) {
 }
 
 /// Whether complete diagnostic capture is enabled for this process.
+///
+/// `FORMAL_AI_SILENT` opts out through the shared boolean parser (issue
+/// #1181): `1`/`true`/`yes`/`on` (any case) all silence diagnostics.
 #[must_use]
 pub fn verbose_enabled() -> bool {
-    VERBOSE_ENABLED.load(Ordering::Relaxed)
-        && std::env::var("FORMAL_AI_SILENT").as_deref() != Ok("1")
+    VERBOSE_ENABLED.load(Ordering::Relaxed) && !crate::cli_env::flag_enabled("FORMAL_AI_SILENT")
 }
 
 /// Resolve the explicit or default per-dialog log directory.
@@ -106,8 +108,57 @@ pub fn current_dialog_id() -> Option<String> {
 
 /// Dump inbound request details in verbose mode or when explicitly requested.
 pub(crate) fn trace_request_if_enabled(method: &str, path: &str, body: &str) {
-    if verbose_enabled() || std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1") {
+    if verbose_enabled() || crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
         eprintln!("[trace] {method} {path} ({} byte body)\n{body}", body.len());
+    }
+}
+
+/// Retain actual native library responses only under an explicit capture opt-in.
+/// Observation is passive: logging failure never changes the returned answer.
+pub(crate) fn record_native_response_if_enabled(
+    entrypoint: &str,
+    prompt: &str,
+    history: &[crate::solver::ConversationTurn],
+    config: &crate::solver::SolverConfig,
+    context: impl FnOnce() -> Value,
+    answer: &crate::engine::SymbolicAnswer,
+) {
+    static RESPONSE_SEQUENCE: AtomicU64 = AtomicU64::new(1);
+    let Some(directory) = std::env::var_os("FORMAL_AI_NATIVE_RESPONSE_CAPTURE_DIR")
+        .filter(|value| !value.is_empty())
+        .map(PathBuf::from)
+    else {
+        return;
+    };
+    let thread = std::thread::current();
+    let record = serde_json::json!({
+        "schema": "native-response-observation/v1",
+        "entrypoint": entrypoint,
+        "process-id": std::process::id(),
+        "sequence": RESPONSE_SEQUENCE.fetch_add(1, Ordering::Relaxed),
+        "caller-thread": thread.name(),
+        "prompt": prompt,
+        "history": history.iter().map(|turn| serde_json::json!({
+            "role": turn.role.slug(), "content": turn.content
+        })).collect::<Vec<_>>(),
+        "config-debug": format!("{config:?}"),
+        "context": context(),
+        "response": answer,
+    });
+    let path = directory.join(format!("native-{}.jsonl", std::process::id()));
+    let write = || -> io::Result<()> {
+        fs::create_dir_all(&directory)?;
+        let _guard = LOG_WRITE_LOCK
+            .get_or_init(|| Mutex::new(()))
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let mut file = OpenOptions::new().create(true).append(true).open(&path)?;
+        serde_json::to_writer(&mut file, &record).map_err(io::Error::other)?;
+        file.write_all(b"\n")?;
+        file.flush()
+    };
+    if let Err(error) = write() {
+        eprintln!("[native-response-observation] failed to retain actual response: {error}");
     }
 }
 

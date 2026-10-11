@@ -1,0 +1,6 @@
+prior_answer_reference	respuesta	solución
+answer_rationale_inquiry	por qué …	por qué respondiste	por qué contestaste así
+assistant_self_reference	tú	usted	formal ai
+assistant_mechanism_inquiry	cómo funcionas	muéstrame cómo funcionas	explica cómo funcionas
+operating_principle	principio de funcionamiento
+architecture_concept	modelo de lenguaje grande	modelo de lenguaje	red neuronal	inferencia neuronal	reglas locales	modelo del mundo

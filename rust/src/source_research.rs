@@ -127,7 +127,46 @@ impl SourceResearchExecution {
                 ],
             ));
         }
+        // Issue #1163: formalize the exact captured page bytes before a
+        // learning proposal can cite their statements. Each derived statement
+        // retains the URL and digest of its source capture; a ranking alone
+        // never creates one.
+        for page in &self.pages {
+            for statement in
+                crate::web_formalize::generic_page_statements(page.capture.bytes(), None)
+            {
+                records.push(format_lino_record(
+                    "formalized_page_statement",
+                    &[
+                        ("url", page.capture.source_url().to_owned()),
+                        ("sha256", page.capture.sha256().to_owned()),
+                        ("statement", statement),
+                    ],
+                ));
+            }
+        }
         records.join("\n")
+    }
+
+    /// The captured pages ordered by the trust score working memory holds
+    /// for them, highest first (issue #1163 R7). The score ranks, it never
+    /// excludes: every captured page is returned, ties keep the fused order.
+    #[must_use]
+    pub fn pages_by_trust(&self) -> Vec<&ResearchPage> {
+        let trust_of = |page: &ResearchPage| {
+            let key =
+                crate::web_formalize::page_key(page.capture.source_url(), page.capture.sha256());
+            crate::web_formalize::with_working_memory(|store| {
+                store.get(&key).map_or(0, |stored| stored.trust)
+            })
+        };
+        let mut ranked: Vec<(u8, &ResearchPage)> = self
+            .pages
+            .iter()
+            .map(|page| (trust_of(page), page))
+            .collect();
+        ranked.sort_by_key(|entry| std::cmp::Reverse(entry.0));
+        ranked.into_iter().map(|(_, page)| page).collect()
     }
 }
 
@@ -144,11 +183,23 @@ pub fn execute_source_research<T: SourceTransport>(
     let mut failures = Vec::new();
     let limit = page_limit.min(WEB_SEARCH_PROVIDER_LIMIT as usize);
     for ranking in search.fused.iter().take(limit) {
-        match client.fetch(&ranking.url) {
-            Ok(capture) => pages.push(ResearchPage {
-                ranking: ranking.clone(),
-                capture,
-            }),
+        // Issue #1163 R6: working memory is consulted before the network. A
+        // page already formalized from this URL is replayed from memory (as a
+        // cache hit with its original timestamp and digest) and not fetched.
+        let fetched = crate::web_formalize::remembered_capture(&ranking.url)
+            .map_or_else(|| client.fetch(&ranking.url), Ok);
+        match fetched {
+            Ok(capture) => {
+                // Issue #1163 R6: every captured page enters the solver's
+                // working memory under its URL and SHA-256, so a later solve
+                // reuses the formalized network instead of re-formalizing.
+                let rank = u32::try_from(pages.len() + 1).unwrap_or(u32::MAX);
+                let _ = crate::web_formalize::remember_capture(&capture, query, rank);
+                pages.push(ResearchPage {
+                    ranking: ranking.clone(),
+                    capture,
+                });
+            }
             Err(error) => failures.push(ResearchFailure {
                 url: ranking.url.clone(),
                 error,
@@ -161,6 +212,34 @@ pub fn execute_source_research<T: SourceTransport>(
         pages,
         failures,
     })
+}
+
+/// Whether a need of `kind` has no registered source to ask (issue #1163 R4).
+///
+/// No row of `data/seed/sources-registry.lino` declares the kind, so web search
+/// is the only entry point left. `NeedKind::None` is no need at all and never
+/// routes anywhere.
+#[must_use]
+pub fn need_routes_to_web_search(kind: crate::needs::NeedKind) -> bool {
+    kind != crate::needs::NeedKind::None
+        && !crate::seed::source_registry()
+            .iter()
+            .any(|record| record.answers(kind))
+}
+
+/// Research a need no registered source covers through the web-search boundary.
+///
+/// Issue #1163 R4: the fused results are captured and each page is formalized
+/// into working memory, exactly as [`execute_source_research`] does. `None`
+/// when a registered source declares the kind, so the registry walk stays that
+/// need's route and nothing here changes it.
+pub fn research_unmatched_need<T: SourceTransport>(
+    client: &CachedSourceClient<T>,
+    kind: crate::needs::NeedKind,
+    subject: &str,
+    page_limit: usize,
+) -> Option<Result<SourceResearchExecution, FetchError>> {
+    need_routes_to_web_search(kind).then(|| execute_source_research(client, subject, page_limit))
 }
 
 /// Source research that has already updated an associative option network.

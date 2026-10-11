@@ -1,0 +1,19 @@
+{
+  "taskId": "T2798",
+  "description": "Existing real L07 source edit and greeting caller checks",
+  "request": {
+    "taskId": "T2798",
+    "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+    "prompt": "Run node --test rust/tests/web/issue-1069-greeting-seed-ladder.test.mjs"
+  },
+  "observation": {
+    "taskId": "T2798",
+    "calls": [
+      "bash"
+    ]
+  },
+  "byteCheck": null,
+  "outcome": "Pass: 2/2 existing original real source-effect and changed greeting caller pins",
+  "rawSha256": "5be5e3a7cc4a543fdf8ae2441bb45934b3f9e9d28b33a48308579eed9861f984",
+  "rawUtf8": ">> bash {\"command\":\"node --test rust/tests/web/issue-1069-greeting-seed-ladder.test.mjs\"}\n   Output: TAP version 13\n   # Subtest: L07 derives a real canonical greeting edit and fulfills every whole-node obligation\n   ok 1 - L07 derives a real canonical greeting edit and fulfills every whole-node obligation\n     ---\n     duration_ms: 1340.5775\n     ...\n   # Subtest: the changed Links Notation greeting lexeme reaches the production greeting caller\n   ok 2 - the changed Links Notation greeting lexeme reaches the production greeting caller\n     ---\n     duration_ms: 547.7005\n     ...\n   1..2\n   # tests 2\n   # suites 0\n   # pass 2\n   # fail 0\n   # cancelled 0\n   # skipped 0\n   # todo 0\n   # duration_ms 2040.016917\n   \n   Exit Code: 0\n== answer ==\nThe `node --test rust/tests/web/issue-1069-greeting-seed-ladder.test.mjs` command completed. Output:\n\n```text\nTAP version 13\n# Subtest: L07 derives a real canonical greeting edit and fulfills every whole-node obligation\nok 1 - L07 derives a real canonical greeting edit and fulfills every whole-node obligation\n  ---\n  duration_ms: 1340.5775\n  ...\n# Subtest: the changed Links Notation greeting lexeme reaches the production greeting caller\nok 2 - the changed Links Notation greeting lexeme reaches the production greeting caller\n  ---\n  duration_ms: 547.7005\n  ...\n1..2\n# tests 2\n# suites 0\n# pass 2\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 2040.016917\n```\n"
+}

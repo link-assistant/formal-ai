@@ -17,3 +17,4 @@ ci_gate check_wasm_worker_current
   stage wasm
   description "The checked-in WASM worker binary matches a rebuild of its sources."
   run "git diff --exit-code -- js/formal_ai_worker.wasm"
+  justification "A stale WASM worker binary caused the browser to silently fall back to the JS engine with no log line when leaf 41 of plan 09 rewrote the precedence seed (#1138, commit 07b9990ea); this gate fails when the committed binary does not match a fresh rebuild."

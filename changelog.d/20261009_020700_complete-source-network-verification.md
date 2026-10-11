@@ -1,0 +1,1 @@
+Verify complete source network serialization in eight JavaScript CI shards and eight native Rust shards. Export full compressed Links Notation networks with checked source/network/packet identities; preserve exact source bytes and distinguish working-tree inputs from a committed head.

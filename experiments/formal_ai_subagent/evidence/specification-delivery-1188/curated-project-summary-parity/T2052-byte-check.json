@@ -1,0 +1,5 @@
+{
+  "taskId": "T2052",
+  "target": "js/worker/formal_ai_worker_web_providers_and_wasm_calls.js",
+  "byteEqual": true
+}

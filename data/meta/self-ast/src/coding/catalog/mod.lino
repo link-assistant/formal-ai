@@ -2,10 +2,10 @@ self_ast_census
   target src/coding/catalog/mod.rs
   language rust
   fidelity signature
-  byte_len 10906
-  line_count 253
-  content_id source_module_fe502d6c90566cf4
-  symbol_count 28
+  byte_len 16784
+  line_count 400
+  content_id source_module_c1c49293e813fc50
+  symbol_count 36
   symbols
     module languages 19 19
     module tasks 20 20
@@ -15,23 +15,31 @@ self_ast_census
     module templates_listing 24 24
     module templates_stdin 25 25
     module types 26 26
-    const WRITE_PROGRAM_INTENT 37 37
-    function record_algorithm_construction 39 41
-    const TEMPLATE_GROUPS 46 52
-    function program_templates 55 57
-    function program_template_count 61 63
-    function program_language_by_slug 66 70
-    function program_task_by_slug 73 75
-    function program_template 78 81
-    function program_spec 84 90
-    function alias_surfaces 101 106
-    function names_target 109 111
-    function program_language_by_alias 114 130
-    function composition_language 145 154
-    function program_task_by_alias 157 161
-    function supported_program_languages 164 170
-    function supported_program_tasks 173 179
-    function contains_cjk 187 196
-    function contains_devanagari 204 207
-    function contains_token 209 243
-    function contains_phrase 245 253
+    const WRITE_PROGRAM_INTENT 40 40
+    function record_algorithm_construction 42 44
+    const TEMPLATE_GROUPS 50 56
+    struct DocumentedPair 60 68
+    struct CatalogTable 72 75
+    function bound_language 79 97
+    function catalog_table 106 146
+    static TABLE 107 107
+    function program_templates 149 151
+    function program_template_count 155 157
+    function documented_pair 161 166
+    function program_languages 176 198
+    static LANGUAGES 177 177
+    function program_language_by_slug 201 205
+    function program_task_by_slug 208 210
+    function program_template 213 216
+    function program_spec 221 230
+    function alias_surfaces 241 246
+    function names_target 249 251
+    function program_language_by_alias 254 270
+    function composition_language 285 294
+    function program_task_by_alias 297 301
+    function supported_program_languages 304 310
+    function supported_program_tasks 313 319
+    function contains_cjk 327 336
+    function contains_devanagari 344 347
+    function contains_token 349 383
+    function contains_phrase 389 400

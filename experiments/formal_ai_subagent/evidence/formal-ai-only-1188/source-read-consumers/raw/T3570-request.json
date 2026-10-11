@@ -1,0 +1,12 @@
+{
+  "id": "T3570",
+  "dir": "/private/tmp/formal-ai-only-1188/source-read-consumer-provenance",
+  "prompt": "Read payload-keys.json.",
+  "before": {
+    "path": "payload-keys.json",
+    "sha256": "0a0a688224fff9e45d580912c37ca2e5977e3b57885b51fc2d1d462b119cb09f"
+  },
+  "taskUtf8Bytes": 23,
+  "provenance": "Actual fs source has JSON keys resembling transport metadata; original complete plain Read heldout",
+  "readOnly": true
+}

@@ -1,0 +1,26 @@
+self_ast_census
+  target src/solver_handlers/regex_witness.rs
+  language rust
+  fidelity signature
+  byte_len 11948
+  line_count 363
+  content_id source_module_1afcd3d9aea935bc
+  symbol_count 17
+  symbols
+    enum Atom 15 21
+    struct Node 24 28
+    struct Pattern 31 35
+    function number 38 44
+    function class 47 71
+    function sequence 74 135
+    function parse 138 151
+    function accepts 154 166
+    function atom_ends 169 177
+    function node_ends 180 206
+    function sequence_ends 209 221
+    function finds 225 234
+    struct WitnessPart 237 244
+    function probe 247 252
+    function examples 256 333
+    function check 337 354
+    function quote_list 357 363

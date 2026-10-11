@@ -1,0 +1,12 @@
+# R1085-16 item 5: the pull-request pipeline's wall-clock ceiling is recorded
+# and enforced. The measured value is the longest `needs:` path, weighted by
+# timeout-minutes, over every workflow a pull request triggers (a reusable
+# workflow a job calls weighs its own critical path). A job reachable on a
+# pull request with no timeout, a workflow that does not parse, or a path
+# above data/meta/ci-wall-clock.lino's ceiling fails this gate.
+# `rust-script scripts/run-ci-gates.rs --stage rust` runs it.
+ci_gate check-ci-wall-clock
+  stage rust
+  description "The PR pipeline's longest timeout-weighted needs path, over every PR-triggered workflow, matches data/meta/ci-wall-clock.lino and does not exceed its ceiling; no PR-reachable job is unbounded."
+  run "rust-script --test scripts/check-ci-wall-clock.rs && rust-script scripts/check-ci-wall-clock.rs"
+  justification "Without a recorded and enforced ceiling the PR pipeline can silently grow beyond acceptable wait times; this gate was introduced for R1085-16 in #1089 to prevent that regression."

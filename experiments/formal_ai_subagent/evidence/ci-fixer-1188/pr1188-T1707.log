@@ -1,0 +1,130 @@
+>> read {"filePath":"js/agentic/crate/seed_shell_intents.mjs","file_path":"js/agentic/crate/seed_shell_intents.mjs","path":"js/agentic/crate/seed_shell_intents.mjs"}
+   <file>
+   00001| // `crate::seed::shell_intent_vocabulary` (rust/src/seed/shell_intents.rs),
+   00002| // read from data/seed/shell-intents.lino. Shapes keep the Rust field names;
+   00003| // `ShellIntentArgument` values are 'none' | 'path' | 'name_lead' |
+   00004| // 'one_path' | 'two_paths' | 'remainder' | 'search_query'.
+   00005| 
+   00006| import { cached, readText } from '../host.mjs';
+   00007| import { findChildValue, parseRoot } from './seed_parser.mjs';
+   00008| 
+   00009| const childrenNamed = (node, name) => (node.children || []).filter((child) => child.name === name);
+   00010| 
+   00011| const collectLanguageValues = (group, name) => childrenNamed(group, 'language')
+   00012|   .flatMap((language) => childrenNamed(language, name).map((child) => child.value));
+   00013| 
+   00014| const lowerAll = (values) => values.map((value) => value.toLowerCase());
+   00015| 
+   00016| const ARGUMENTS = ['path', 'name_lead', 'one_path', 'two_paths', 'remainder', 'search_query'];
+   00017| 
+   00018| /** Mirrors `fn parse_intent`. */
+   00019| function parseIntent(node) {
+   00020|   const argument = findChildValue(node, 'argument');
+   00021|   const effectNode = (node.children || []).find((child) => child.name === 'effect');
+   00022|   const templates = (name) => (effectNode ? childrenNamed(effectNode, name).map((child) => child.value) : []);
+   00023|   return {
+   00024|     command: findChildValue(node, 'command'),
+   00025|     argument: ARGUMENTS.includes(argument) ? argument : 'none',
+   00026|     cues: lowerAll(collectLanguageValues(node, 'cue')),
+   00027|     effect: { before: templates('before'), prepare: templates('prepare'), after: templates('after') },
+   00028|     destructive: findChildValue(node, 'destructive') === 'true',
+   00029|   };
+   00030| }
+   00031| 
+   00032| /** Mirrors `ShellIntentEffect::is_declared`. */
+   00033| export function effectIsDeclared(effect) {
+   00034|   return effect.before.length > 0 || effect.prepare.length > 0 || effect.after.length > 0;
+   00035| }
+   00036| 
+   00037| /** Mirrors `fn shell_intent_vocabulary`. */
+   00038| export function shellIntentVocabulary() {
+   00039|   return cached('shell-intent-vocabulary', () => {
+   00040|     const vocab = {
+   00041|       name_leads: [], argument_noise: [], cue_fillers: [], local_search_scopes: [], local_path_search_command_template: '',
+   00042|       local_path_search_actions: [], local_path_search_scopes: [], local_path_search_kinds: [],
+   00043|       workspace_commands: [], path_objects: [],
+   00044|       directory_listing: { verbs: [], questions: [], objects: [], scopes: [] },
+   00045|       intents: [],
+   00046|     };
+   00047|     const root = parseRoot(readText('data/seed/shell-intents.lino')).children[0];
+   00048|     if (!root) return vocab;
+   00049|     for (const group of root.children || []) {
+   00050|       const first = (name) => (group.children || []).find((child) => child.name === name);
+   00051|       switch (group.name) {
+   00052|         case 'name_leads':
+   00053|           vocab.name_leads = collectLanguageValues(group, 'lead');
+   00054|           break;
+   00055|         case 'argument_noise':
+   00056|           vocab.argument_noise = collectLanguageValues(group, 'word');
+   00057|           break;
+   00058|         case 'cue_fillers':
+   00059|           vocab.cue_fillers = lowerAll(collectLanguageValues(group, 'word'));
+   00060|           break;
+   00061|         case 'local_search_scopes':
+   00062|           vocab.local_search_scopes = collectLanguageValues(group, 'scope');
+   00063|           break;
+   00064|         case 'local_path_search': {
+   00065|           vocab.local_path_search_command_template = findChildValue(group, 'command_template');
+   00066|           const actions = first('actions');
+   00067|           vocab.local_path_search_actions = actions ? collectLanguageValues(actions, 'action') : [];
+   00068|           const scopes = first('scopes');
+   00069|           vocab.local_path_search_scopes = scopes ? childrenNamed(scopes, 'scope').map((scope) => ({
+   00070|             name: scope.value,
+   00071|             root: findChildValue(scope, 'root'),
+   00072|             cues: lowerAll(collectLanguageValues(scope, 'cue')),
+   00073|           })) : [];
+   00074|           const kinds = first('kinds');
+   00075|           vocab.local_path_search_kinds = kinds ? childrenNamed(kinds, 'kind').map((kind) => ({
+   00076|             predicate: findChildValue(kind, 'predicate'),
+   00077|             cues: lowerAll(collectLanguageValues(kind, 'cue')),
+   00078|           })) : [];
+   00079|           break;
+   00080|         }
+   00081|         case 'workspace_commands':
+   00082|           vocab.workspace_commands = childrenNamed(group, 'workspace').map((node) => ({
+   00083|             marker: findChildValue(node, 'marker'),
+   00084|             test: findChildValue(node, 'test'),
+   00085|             install: findChildValue(node, 'install'),
+   00086|             build: findChildValue(node, 'build'),
+   00087|           }));
+   00088|           break;
+   00089|         case 'path_objects':
+   00090|           vocab.path_objects = lowerAll(collectLanguageValues(group, 'object'));
+   00091|           break;
+   00092|         case 'directory_listing': {
+   00093|           const part = (name, child) => {
+   00094|             const node = first(name);
+   00095|             return node ? lowerAll(collectLanguageValues(node, child)) : [];
+   00096|           };
+   00097|           vocab.directory_listing = {
+   00098|             verbs: part('verbs', 'verb'),
+   00099|             questions: part('questions', 'question'),
+   00100|             objects: part('objects', 'object'),
+   00101|             scopes: part('scopes', 'scope'),
+   00102|           };
+   00103|           break;
+   00104|         }
+   00105|         case 'intents':
+   00106|           vocab.intents = childrenNamed(group, 'intent').map(parseIntent);
+   00107|           break;
+   00108|         default:
+   00109|           break;
+   00110|       }
+   00111|     }
+   00112|     return vocab;
+   00113|   });
+   00114| }
+   00115| 
+   
+   (End of file - total 115 lines)
+   </file>
+>> edit {"filePath":"js/agentic/crate/seed_shell_intents.mjs","file_path":"js/agentic/crate/seed_shell_intents.mjs","new":"effect: {\n      flags: templates('flag'), value_options: templates('value_option'), reuse_options: templates('reuse_option'),\n      before_reuse: templates('before_reuse'), directory_targets: effectNode?.children.some((child) => child.name === 'directory_targets' && child.value === 'true') ?? false,\n      before: templates('before'), prepare: templates('prepare'), after: templates('after'),\n    },","newString":"effect: {\n      flags: templates('flag'), value_options: templates('value_option'), reuse_options: templates('reuse_option'),\n      before_reuse: templates('before_reuse'), directory_targets: effectNode?.children.some((child) => child.name === 'directory_targets' && child.value === 'true') ?? false,\n      before: templates('before'), prepare: templates('prepare'), after: templates('after'),\n    },","new_str":"effect: {\n      flags: templates('flag'), value_options: templates('value_option'), reuse_options: templates('reuse_option'),\n      before_reuse: templates('before_reuse'), directory_targets: effectNode?.children.some((child) => child.name === 'directory_targets' && child.value === 'true') ?? false,\n      before: templates('before'), prepare: templates('prepare'), after: templates('after'),\n    },","new_string":"effect: {\n      flags: templates('flag'), value_options: templates('value_option'), reuse_options: templates('reuse_option'),\n      before_reuse: templates('before_reuse'), directory_targets: effectNode?.children.some((child) => child.name === 'directory_targets' && child.value === 'true') ?? false,\n      before: templates('before'), prepare: templates('prepare'), after: templates('after'),\n    },","old":"effect: { before: templates('before'), prepare: templates('prepare'), after: templates('after') },","oldString":"effect: { before: templates('before'), prepare: templates('prepare'), after: templates('after') },","old_str":"effect: { before: templates('before'), prepare: templates('prepare'), after: templates('after') },","old_string":"effect: { before: templates('before'), prepare: templates('prepare'), after: templates('after') },","path":"js/agentic/crate/seed_shell_intents.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/crate/seed_shell_intents.mjs"}
+   7606ed42c202fa5fcd3dfe850bda22473173fe1d124387437405abfc96e504d2  js/agentic/crate/seed_shell_intents.mjs
+   
+== answer ==
+Replaced `effect: { before: templates('before'), prepare: templates('prepare'), after: templates('after') },` with `effect: {
+      flags: templates('flag'), value_options: templates('value_option'), reuse_options: templates('reuse_option'),
+      before_reuse: templates('before_reuse'), directory_targets: effectNode?.children.some((child) => child.name === 'directory_targets' && child.value === 'true') ?? false,
+      before: templates('before'), prepare: templates('prepare'), after: templates('after'),
+    },` in `js/agentic/crate/seed_shell_intents.mjs` and observed the result.

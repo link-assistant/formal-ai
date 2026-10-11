@@ -1,0 +1,25 @@
+language en
+lemma append
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "add to the very end"
+    examples ("He appended a glossary to his novel where he used an invented language")
+    id oewn-01331387-v
+    partOfSpeech v
+    synonyms ("add on" supplement affix)
+  entry
+    definition "fix to; attach"
+    examples ("append a charm to the necklace")
+    id oewn-01331195-v
+    partOfSpeech v
+    synonyms ("tag on" "tack on" tack "hang on")
+  entry
+    definition "state or say further"
+    examples ("‘It doesn't matter,’ he supplied")
+    id oewn-01029183-v
+    partOfSpeech v
+    synonyms (add supply)
+source "oewn:2024"

@@ -1,0 +1,17 @@
+{
+  "id": "T3510",
+  "dir": "/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-source-read-G6hpPm",
+  "tools": [
+    "read",
+    "write",
+    "write",
+    "bash"
+  ],
+  "stop": "final",
+  "answer": "Completed the general change request for status.txt and verified it with `cat status.txt`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\n```lino\ngeneral_change_plan\n  id \"general_change_plan_1ab0c125e67679a7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create a file status.txt containing exactly: failed\"\n  target \"status.txt\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_7bd0595539da95b3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to status.txt\"\n    expected_evidence \"workspace file status.txt\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"failed\"\n    command \"cat status.txt\"\n  verification_command \"cat status.txt\"\n```",
+  "targetBytes": "failed",
+  "targetExact": true,
+  "scratchWrites": 2,
+  "noFalseFailure": true,
+  "auxiliaryGap": true
+}

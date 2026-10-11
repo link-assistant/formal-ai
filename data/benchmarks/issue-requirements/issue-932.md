@@ -1,0 +1,17 @@
+**Problem statement.**
+Source: #119 PR comment (https://github.com/link-assistant/formal-ai/pull/119#issuecomment-4484885013). konard: "we should prefer test each software project of a specific language inside such version of link foundation box docker image, that matches the language" — to reduce test size/flakiness by using each language's own traditional repo-init tooling inside the right box image.
+Current-code evidence: box DinD (konard/box-dind Dockerfile) is already the CI runtime, but no CI leg tests generated language projects (from installation_conversion.rs / program_synthesis.rs outputs) inside a matching per-language link-foundation box image using that language's native init commands.
+
+**What to do.**
+1. For each language the project-generation/installation-conversion handlers support, add a CI matrix leg that pulls the matching link-foundation/box image variant.
+2. Inside that container, run the language's traditional init/build commands (cargo new + cargo build, npm init + npm install, pip/poetry, etc.) against a Formal-AI-generated project to verify it actually builds/runs, not just that the generator emitted plausible text.
+3. Wire this as a new CI job (or extend an existing coding-catalog job) in release.yml, gated the same way other slow legs are.
+
+**How to test.**
+- Automated: the new CI job itself is the test; additionally add a local cargo test harness that can invoke the same box-image check via docker run when Docker is available, skipping gracefully otherwise (mirrors verify-docker-runtime.sh pattern).
+- Manual: run the new CI job locally with act or direct docker run against 2-3 sample generated projects (Rust, Python, JS) and confirm each builds inside its box image.
+- Multilingual: not directly language-of-prompt relevant, but ensure the generated-project corpus includes projects produced from en/ru/hi/zh prompts.
+- Standing clauses: docs/case-studies/issue-{id}; survey existing link-foundation/box image tags; single PR.
+
+**Source refs:** #119. **Dedup:** none.
+

@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_literal_content.js"
+  ceiling 168
+  rationale "Exact classic-worker projection of js/agentic/crate/literal_content.mjs; no headroom beyond current faithful generated source."

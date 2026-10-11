@@ -1,0 +1,13 @@
+view
+  id M-8c9aed57133f
+  lemma decrement
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the amount by which something decreases"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a process of becoming smaller or shorter"
+    provenance (wordnet)

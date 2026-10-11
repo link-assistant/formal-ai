@@ -1,0 +1,174 @@
+# Feature capabilities a capability question can name (issue #918).
+# Each feature is named by its `feature_capability_<slug>` alias meaning in
+# data/seed/meanings-feature-capability.lino; `state` names the runtime switch
+# that gates it; `label` and `example` give the localized wording, and a
+# language without an entry falls back to English. Read by
+# rust/src/solver_handlers/feature_capability.rs and the browser twin in
+# js/worker/formal_ai_worker_capabilities_and_runtime_rules.js, so both runtimes answer from one table.
+feature_capabilities
+  feature feature_capability_web_search
+    state "web_search"
+    label
+      en "web search"
+      ru "веб-поиск"
+      es "búsqueda web"
+    example
+      en "Search the web for Nikola Tesla"
+      ru "Найди в интернете Никола Тесла"
+  feature feature_capability_diagnostics
+    state "diagnostic_mode"
+    label
+      en "diagnostic trace"
+      ru "диагностика"
+      zh "诊断 trace"
+      es "traza de diagnóstico"
+    example
+      en "Turn on diagnostics"
+      ru "Включи диагностику"
+  feature feature_capability_agent_mode
+    state "agent_mode"
+    label
+      en "agent mode"
+      es "modo agente"
+    example
+      en "Turn on agent mode"
+      ru "Включи agent mode"
+  feature feature_capability_definition_fusion
+    state "definition_fusion"
+    label
+      en "automatic definition fusion"
+      ru "автоматическое слияние определений"
+      zh "自动 definition fusion"
+      es "fusión automática de definiciones"
+    example
+      en "Turn on definition fusion"
+      ru "Включи слияние определений"
+  feature feature_capability_configuration
+    state "always"
+    label
+      en "message-driven configuration"
+      ru "настройка через сообщения"
+      zh "消息配置"
+      es "configuración mediante mensajes"
+    example
+      en "Switch to dark theme"
+      ru "Включи темную тему"
+  feature feature_capability_memory_actions
+    state "always"
+    label
+      en "memory import/export"
+      ru "импорт и экспорт памяти"
+      zh "记忆导入/导出"
+      es "importación y exportación de memoria"
+    example
+      en "Export memory"
+      ru "Экспортируй память"
+  feature feature_capability_greeting
+    state "always"
+    label
+      en "greetings"
+      ru "приветствия"
+      hi "अभिवादन"
+      zh "问候"
+      es "saludos"
+    example
+      en "Hi"
+      ru "Привет"
+      hi "नमस्ते"
+      zh "你好"
+  feature feature_capability_write_program
+    state "always"
+    label
+      en "program template generation"
+      ru "генерация программ"
+      zh "程序生成"
+      es "generación de plantillas de programas"
+    example
+      en "Write a Python program that counts to three"
+      ru "Напиши hello world на Rust"
+  feature feature_capability_concept_lookup
+    state "always"
+    label
+      en "concept lookup"
+      ru "поиск понятий"
+      zh "概念查找"
+      es "búsqueda de conceptos"
+    example
+      en "What is Wikipedia?"
+      ru "Что такое Википедия?"
+      hi "विकिपीडिया क्या है?"
+      zh "维基百科是什么?"
+  feature feature_capability_arithmetic
+    state "always"
+    label
+      en "arithmetic"
+      ru "арифметика"
+      hi "अंकगणित"
+      zh "算术"
+      es "aritmética"
+    example
+      en "What is 2 + 2?"
+      ru "Сколько будет 2 + 2?"
+      hi "2 + 2 क्या है?"
+      zh "2 + 2 等于多少?"
+  feature feature_capability_translation
+    state "always"
+    label
+      en "translation"
+      ru "перевод"
+      hi "अनुवाद"
+      zh "翻译"
+      es "traducción"
+    example
+      en "Translate hello to Russian"
+      ru "Переведи hello на русский"
+  feature feature_capability_memory
+    state "always"
+    label
+      en "conversation memory"
+      ru "память разговора"
+      zh "会话记忆"
+      es "memoria de la conversación"
+    example
+      en "Remember my name is Ada"
+      ru "Запомни, меня зовут Ада"
+  feature feature_capability_demo_mode
+    state "always"
+    label
+      en "demo mode"
+      ru "демо-режим"
+      zh "演示模式"
+      es "modo demo"
+    example
+      en "Turn off demo mode"
+      ru "Выключи демо"
+  feature feature_capability_http_url
+    state "always"
+    label
+      en "URL navigation and HTTP fetch"
+      ru "URL-навигация и HTTP-запросы"
+      zh "URL 导航和 HTTP 请求"
+      es "navegación por URL y peticiones HTTP"
+    example
+      en "Navigate to github.com"
+      ru "Сделай запрос к google.com"
+  feature feature_capability_javascript_execution
+    state "always"
+    label
+      en "JavaScript execution"
+      ru "выполнение JavaScript"
+      zh "JavaScript 执行"
+      es "ejecución de JavaScript"
+    example
+      en "Run JavaScript: 1 + 1"
+      ru "Выполни JavaScript: 1 + 1"
+  feature feature_capability_planning
+    state "always"
+    label
+      en "summaries, brainstorming, roleplay, and project planning"
+      ru "резюме, брейншторминг, роли и планирование проектов"
+      zh "总结、头脑风暴、角色扮演和项目计划"
+      es "resúmenes, lluvia de ideas, juego de rol y planificación de proyectos"
+    example
+      en "Brainstorm 5 project ideas"
+      ru "Предложи 5 идей проекта"

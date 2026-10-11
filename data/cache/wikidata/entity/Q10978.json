@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "葡萄"
+        },
+        "es": {
+          "language": "es",
+          "value": "uva"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "植物及其果实"
+        },
+        "es": {
+          "language": "es",
+          "value": "fruta obtenida de la vid"
         }
       },
       "aliases": {

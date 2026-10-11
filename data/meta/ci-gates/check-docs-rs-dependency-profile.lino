@@ -3,9 +3,10 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_docs_rs_dependency_profile
+ci_gate check-docs-rs-dependency-profile
   stage rust
   description "The docs.rs build profile -- no default features -- still documents cleanly."
   run "cargo doc --manifest-path rust/Cargo.toml --no-deps --lib --no-default-features"
   env DOCS_RS "1"
   env RUSTDOCFLAGS "-D warnings"
+  justification "A no-default-features doc build failing blocks docs.rs publication silently; `cargo doc --no-deps --no-default-features` has been in CI since the initial commit (6f8d4a8a0) to catch feature-flag documentation regressions."

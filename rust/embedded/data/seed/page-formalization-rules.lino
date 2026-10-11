@@ -1,0 +1,181 @@
+# Page formalization rules (issue #1163, E128).
+#
+# The generic page formalizer (rust/src/web_formalize.rs) reads every rule
+# here before it reads a byte of a fetched page — which mime hints map to
+# which parser, how to sniff a payload with no hint, the order in which a
+# code block's language tag is resolved, and which plain-text line openers
+# mark a command paragraph. Changing behavior means changing this file, not
+# the Rust.
+page_formalization_rules
+  mime
+    hint text/html
+    kind html
+  mime
+    hint text/markdown
+    kind markdown
+  mime
+    hint text/x-markdown
+    kind markdown
+  mime
+    hint text/plain
+    kind plain_text
+  mime
+    hint application/json
+    kind json
+  mime
+    hint application/pdf
+    kind pdf_text
+  sniff
+    lower_prefix "<!doctype html"
+    kind html
+  sniff
+    lower_prefix "<html"
+    kind html
+  sniff
+    first_char "{"
+    kind json
+  sniff
+    first_char "["
+    kind json
+  sniff
+    line_start "```"
+    kind markdown
+  sniff
+    line_start "# "
+    kind markdown
+  language_tag
+    tag_source fence
+    tag_source html_class
+    tag_source heuristic
+    fallback unknown
+    html_class_prefix "language-"
+    html_class_prefix "highlight "
+    html_code_attribute "data-lang"
+    fence_info_first_token true
+  heuristic
+    kind shebang
+  heuristic
+    kind url_extension
+  shebang
+    token "#!/bin/sh"
+    language shell
+  shebang
+    token "#!/bin/bash"
+    language shell
+  shebang
+    token "#!/usr/bin/env bash"
+    language shell
+  shebang
+    token "#!/usr/bin/env python"
+    language python
+  shebang
+    token "#!/usr/bin/env python3"
+    language python
+  shebang
+    token "#!/usr/bin/env node"
+    language javascript
+  shebang
+    token "#!/usr/bin/env ruby"
+    language ruby
+  shebang
+    token "#!/usr/bin/env php"
+    language php
+  extension
+    suffix .kotlin
+    language kotlin
+  extension
+    suffix .kt
+    language kotlin
+  extension
+    suffix .rs
+    language rust
+  extension
+    suffix .py
+    language python
+  extension
+    suffix .java
+    language java
+  extension
+    suffix .scala
+    language scala
+  extension
+    suffix .swift
+    language swift
+  extension
+    suffix .go
+    language go
+  extension
+    suffix .rb
+    language ruby
+  extension
+    suffix .php
+    language php
+  extension
+    suffix .js
+    language javascript
+  extension
+    suffix .mjs
+    language javascript
+  extension
+    suffix .ts
+    language typescript
+  extension
+    suffix .c
+    language c
+  extension
+    suffix .h
+    language c
+  extension
+    suffix .cpp
+    language cpp
+  extension
+    suffix .cc
+    language cpp
+  extension
+    suffix .cs
+    language csharp
+  extension
+    suffix .sh
+    language shell
+  extension
+    suffix .bash
+    language shell
+  extension
+    suffix .pas
+    language pascal
+  command_verb kotlinc
+  command_verb rustc
+  command_verb cargo
+  command_verb gcc
+  command_verb g++
+  command_verb clang
+  command_verb fpc
+  command_verb mvn
+  command_verb gradle
+  command_verb scalac
+  command_verb scala
+  command_verb go
+  command_verb npm
+  command_verb pnpm
+  command_verb yarn
+  command_verb pip
+  command_verb pip3
+  command_verb python
+  command_verb python3
+  command_verb java
+  command_verb javac
+  command_verb docker
+  command_verb git
+  page_query code_blocks_on
+    template "code blocks on {domain} whose text contains {term}"
+  page_query command_mentioning
+    template "the command in the paragraph that mentions {phrase}"
+  document_source html
+    hint text/html
+    alias "htm"
+  document_source markdown
+    hint text/markdown
+    alias "md"
+  supplied_page_separator ":"
+  note "Each document_source names a document format the formalizer reads as a conversion source (issue #1163 R13): rust/src/document_formats.rs resolves the format label or an alias to the mime hint and formalizes the text through the generic page formalizer. supplied_page_separator is the character a page query may end with before the page text it is asked over (R10)."
+  note "A paragraph whose first token is one of these verbs is tagged as a command paragraph, so 'the command in the paragraph that mentions compiling' can resolve against it. The list is verbs that compile, run, or fetch in the languages the registry covers; it grows here, never in Rust."

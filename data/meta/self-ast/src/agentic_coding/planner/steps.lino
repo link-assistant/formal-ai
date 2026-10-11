@@ -1,0 +1,79 @@
+self_ast_census
+  target src/agentic_coding/planner/steps.rs
+  language rust
+  fidelity full_ast
+  byte_len 6680
+  line_count 176
+  content_id source_module_d122b99973b09545
+  symbol_count 9
+  symbols
+    function stop_repeated_call 17 38
+    function stop_repeated_failure 48 69
+    const REPEATED_FAILURES_THAT_STOP 49 49
+    function explicit_shell_step 71 82
+    function unquoted_addition_question 87 98
+    function plan_verified_source_step 100 114
+    enum SourceOrOwnedGoalStep 116 119
+    function plan_request_preflight 122 135
+    function plan_source_or_owned_goal_step 138 176
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 4051
+    named_node_count 822
+    distinct_node_kinds 52
+    node_kinds
+      arguments 57
+      array_expression 2
+      array_type 8
+      binary_expression 3
+      block 22
+      call_expression 57
+      closure_expression 11
+      closure_parameters 11
+      const_item 1
+      crate 17
+      doc_comment 23
+      else_clause 1
+      enum_item 1
+      enum_variant 2
+      enum_variant_list 1
+      expression_statement 11
+      field_expression 28
+      field_identifier 28
+      function_item 7
+      generic_type 8
+      identifier 229
+      if_expression 3
+      inner_doc_comment_marker 1
+      integer_literal 1
+      let_declaration 10
+      line_comment 23
+      macro_invocation 1
+      mutable_specifier 4
+      ordered_field_declaration_list 1
+      outer_doc_comment_marker 22
+      parameter 19
+      parameters 7
+      primitive_type 9
+      reference_expression 13
+      reference_type 20
+      return_expression 7
+      scoped_identifier 65
+      scoped_use_list 2
+      source_file 1
+      string_content 6
+      string_literal 6
+      super 11
+      token_tree 1
+      try_expression 2
+      tuple_expression 3
+      tuple_pattern 1
+      tuple_struct_pattern 5
+      type_arguments 8
+      type_identifier 28
+      use_declaration 4
+      use_list 2
+      visibility_modifier 8

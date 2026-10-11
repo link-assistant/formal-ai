@@ -1,0 +1,5 @@
+{
+  "taskId": "T2034",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Implement general source-owned callable body-read coverage and explicit callable signature binding in js/worker/formal_ai_worker_recurrence.js. Count distinct formal parameter positions from the recurrence body AST, preserve source identity for provisional requests, retain explicitly declared function and parameter names by structural binding, and reject incompatible arity. Do not change candidate cost or ranking rules. Add a meaningful regression for a cached source callable competing with typed IR under an anonymous task signature."
+}

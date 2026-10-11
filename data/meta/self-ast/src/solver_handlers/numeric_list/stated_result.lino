@@ -1,0 +1,11 @@
+self_ast_census
+  target src/solver_handlers/numeric_list/stated_result.rs
+  language rust
+  fidelity signature
+  byte_len 4009
+  line_count 96
+  content_id source_module_acbcdd360cf74d92
+  symbol_count 2
+  symbols
+    function try_stated_result 25 75
+    function forms_one_list 79 96

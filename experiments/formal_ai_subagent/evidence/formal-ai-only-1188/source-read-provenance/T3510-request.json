@@ -1,0 +1,9 @@
+{
+  "id": "T3510",
+  "dir": "/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-source-read-G6hpPm",
+  "prompt": "Create a file status.txt containing exactly: failed",
+  "originalNativeTask": "requested_failure_vocabulary_is_valid_successful_evidence",
+  "originalNativeFailure": "/tmp/pr1188-new-job-113777810903.log",
+  "precondition": [],
+  "receiptAdapter": "actual filesystem bytes and actual outer provider metadata for each Read, true tool error on filesystem failure; original aliases and actual shell receipts"
+}

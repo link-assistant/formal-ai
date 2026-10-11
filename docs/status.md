@@ -18,11 +18,11 @@ This document is a deterministic projection of committed ledgers.
 
 | Verdict | Count |
 | --- | ---: |
-| `implemented` | 459 |
-| `not-delivered` | 22 |
-| `partial` | 664 |
-| `superseded` | 5 |
-| `withdrawn` | 1 |
+| `implemented` | 1313 |
+| `not-delivered` | 3 |
+| `partial` | 50 |
+| `superseded` | 6 |
+| `withdrawn` | 2 |
 
 ## Latest external benchmark rows
 
@@ -32,9 +32,9 @@ This document is a deterministic projection of committed ledgers.
 | `coedit` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
 | `egg_math` | 2026-09-07 | 20 | 20 | 20 | 0.347.0 |
 | `gsm8k` | 2026-09-07 | 20 | 2 | 20 | 0.347.0 |
-| `humaneval` | 2026-09-17 | 164 | 14 | 164 | 0.350.0 |
+| `humaneval` | 2026-10-07 | 164 | 21 | 164 | 0.352.1 |
 | `math` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
-| `mbpp` | 2026-09-18 | 500 | 49 | 500 | 0.350.0 |
+| `mbpp` | 2026-10-07 | 500 | 68 | 500 | 0.352.1 |
 | `object_counting` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
 | `swebench_lite` | 2026-09-07 | 1 | 0 | 1 | 0.347.0 |
 
@@ -49,12 +49,12 @@ This document is a deterministic projection of committed ledgers.
 
 | Input | Lines |
 | --- | ---: |
-| `data/benchmarks/external-results.lino` | 946 |
+| `data/benchmarks/external-results.lino` | 969 |
 | `data/meta/self-hosting-ledger.lino` | 1283 |
 | `data/meta/debt-ratchet.lino` | 64 |
-| `data/meta/core-boundary-ledger.lino` | 277 |
-| `data/meta/handler-migration-ledger.lino` | 239 |
-| `data/meta/ladder-ratchet.lino` | 20 |
-| `data/meta/requirement-status-ledger.lino` | 21 |
-| `data/seed/languages.lino` | 37 |
-| `data/meta/worker-line-budget/*.lino` | 37 files |
+| `data/meta/core-boundary-ledger.lino` | 511 |
+| `data/meta/handler-migration-ledger.lino` | 502 |
+| `data/meta/ladder-ratchet.lino` | 21 |
+| `data/meta/requirement-status-ledger.lino` | 158 |
+| `data/seed/languages.lino` | 113 |
+| `data/meta/worker-line-budget/*.lino` | 152 files |

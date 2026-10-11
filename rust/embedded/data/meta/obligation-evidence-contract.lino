@@ -31,3 +31,7 @@ obligation_expectation_rules
     when "no_artifact"
     expectation "underivable"
     reason "no_artifact_in_clause"
+  rule unbound_output_literal
+    when "unbound_output_literal"
+    expectation "underivable"
+    reason "output_literal_not_bound_by_executor"

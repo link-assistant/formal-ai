@@ -1,0 +1,11 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-file-edit.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-550d8de4969a7575
+    record "file_edit_action"
+  gap seed-metadata-gap-a4f759798846d646
+    record "file_edit_new_lead"
+  gap seed-metadata-gap-9967258c8bc8b712
+    record "file_edit_target"

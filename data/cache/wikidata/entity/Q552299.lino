@@ -1,13 +1,16 @@
 Q552299
   aliases
     en (chains ch "Gunter's chain" "surveyor's chain")
+    es ("Cadena de agrimensor")
   descriptions
     en "unit of length"
+    es "unidad de longitud"
     hi "लंबाई की इकाई"
     zh "英制長度單位"
   id Q552299
   labels
     en chain
+    es cadena
     hi "जंजीर"
     ru "чейн"
     zh "鏈"

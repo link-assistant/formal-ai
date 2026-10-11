@@ -1,0 +1,67 @@
+# Text-transform family identifiers (issue #1174).
+#
+# The response-intent keys used by data/seed/multilingual-responses-text-
+# transform.lino and the writing-genre identifier selected by the action cues
+# in data/seed/writing-genre-styleguides.lino are semantic references, so
+# they are grounded here with authored five-field metadata rather than left
+# unresolved or hidden behind a higher closure ceiling (the meanings-agent-
+# actions.lino precedent for response intents). No lexeme children — nothing
+# here is a matchable surface; the lexicon loads only the roles.
+
+meanings
+  text_transform_grammar_result
+    defined-by method
+    role action
+    precondition "a grammar-correction pass produced a corrected text and at least one applied rule"
+    effect "renders the corrected text followed by the list of applied grammar rules"
+    unit "not applicable"
+    example "return the corrected sentence with one rule line per fix"
+    grounding "src/solver_handlers/text_rewrite.rs"
+  text_transform_grammar_line
+    defined-by method
+    role action
+    precondition "a grammar-correction pass applied one rule to one token span"
+    effect "renders the wrong form, the agreed form, and the name of the rule that fired"
+    unit "not applicable"
+    example "pair the wrong verb form with its agreed form and the rule name"
+    grounding "src/solver_handlers/text_rewrite.rs"
+  text_transform_grammar_clean
+    defined-by method
+    role action
+    precondition "a grammar-correction pass found no rule that applies"
+    effect "reports honestly that no errors were found without inventing a correction"
+    unit "not applicable"
+    example "state that a clean sentence needs no correction"
+    grounding "src/solver_handlers/text_rewrite.rs"
+  text_transform_rewrite_unchanged
+    defined-by method
+    role action
+    precondition "a register-rewriting pass substituted no informal token"
+    effect "returns the text unchanged and says so instead of claiming substitutions"
+    unit "not applicable"
+    example "echo a text that already uses the formal register"
+    grounding "src/solver_handlers/text_rewrite.rs"
+  text_transform_translation_unknown
+    defined-by method
+    role action
+    precondition "a sentence translation kept source words that have no seeded translation"
+    effect "lists the untranslated words kept as written so the gap is visible"
+    unit "not applicable"
+    example "name the words a word-by-word translation could not render"
+    grounding "src/solver_handlers/mod.rs"
+  text_transform_genre_incomplete
+    defined-by method
+    role action
+    precondition "a genre-writing request is missing a slot the genre requires"
+    effect "names the genre and the missing slots instead of fabricating them"
+    unit "not applicable"
+    example "ask for the missing verb and effect of a commit message"
+    grounding "src/solver_handlers/text_rewrite.rs"
+  commit_message
+    defined-by method
+    role action
+    precondition "a request asks for a commit message describing a change"
+    effect "renders one Conventional Commits line from the change verb, component, and effect"
+    unit "not applicable"
+    example "compose a scoped commit line from a described fix"
+    grounding "src/solver_handlers/text_rewrite.rs"

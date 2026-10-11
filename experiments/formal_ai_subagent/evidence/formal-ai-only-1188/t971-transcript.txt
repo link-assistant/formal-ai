@@ -1,0 +1,197 @@
+>> read {"filePath":"request_sequence.mjs","file_path":"request_sequence.mjs","path":"request_sequence.mjs"}
+   <file>
+   00001| // A file operation followed by edits of the file it makes (PR #1188 G82):
+   00002| // `Copy a.lino to b.lino. In b.lino replace 'x' with 'y', replace 'p' with
+   00003| // 'q'.` was written as one literal file. When the first sentence is a seeded
+   00004| // shell intent (copy, move) and every later sentence is an edit request whose
+   00005| // file that sentence names, the sentences are planned one after another, each
+   00006| // as the request it would be alone, over the same tool history; the answer
+   00007| // states each in turn. Edits joined by a seeded sequence cue (`, then`, `and
+   00008| // then`) that opens a clause are steps too (PR #1188 G99): `Insert the line
+   00009| // «b2» after the line «b» in f.txt, then delete the line «c» from f.txt.`
+   00010| // Each step sees only the tool calls made for it, so a later step reads the
+   00011| // file as the step before left it. The JavaScript twin of
+   00012| // rust/src/agentic_coding/request_sequence.rs.
+   00013| 
+   00014| import { finalAnswer } from './plan.mjs';
+   00015| import { pathsIn } from './module_function.mjs';
+   00016| import { replaceList } from './replace_list.mjs';
+   00017| import { semanticShellCommandForTask } from './shell_command.mjs';
+   00018| import { sentences } from './shell_command_policy.mjs';
+   00019| import { instructionEnd } from './positional_edit.mjs';
+   00020| import { containsCjk } from './crate/coding_catalog.mjs';
+   00021| import { quotedSegmentSpans } from './crate/normal_markov.mjs';
+   00022| import { isAlphanumeric, isWhitespace } from './write_str.mjs';
+   00023| import {
+   00024|   bareSurfaces, cleanCueToken, cleanPathToken, composeEditRequest, looksLikeFilePath, safeRelativePath, tokens,
+   00025| } from './write_request.mjs';
+   00026| 
+   00027| /** The marks that close a clause before a sequence cue. */
+   00028| const CLAUSE_MARKS = ',;.，；。';
+   00029| 
+   00030| /**
+   00031|  * Mirrors `fn request_sequence`: the request's sentences when the first is a
+   00032|  * seeded shell intent and every later one edits a file the first names, or
+   00033|  * null.
+   00034|  * @param {string} task
+   00035|  */
+   00036| export function requestSequence(task) {
+   00037|   const parts = sentences(task).map((sentence) => sentence.text);
+   00038|   if (parts.length < 2 || semanticShellCommandForTask(parts[0]) === null) return null;
+   00039|   const named = pathsIn(parts[0]);
+   00040|   for (const part of parts.slice(1)) {
+   00041|     const target = replaceList(part)?.target ?? composeEditRequest(part)?.[0] ?? null;
+   00042|     if (target === null || !named.includes(target)) return null;
+   00043|   }
+   00044|   return parts;
+   00045| }
+   00046| 
+   00047| /**
+   00048|  * Mirrors `fn sequence_cut`: where the step before a sequence cue at `at`
+   00049|  * ends -- at the clause mark or the seeded joiner word (`and`) that opens the
+   00050|  * cue's clause -- or null when the cue does not open a clause.
+   00051|  * @param {string} task
+   00052|  * @param {number} at
+   00053|  */
+   00054| function sequenceCut(task, at) {
+   00055|   const lead = task.slice(0, at).trimEnd();
+   00056|   if (lead === '') return null;
+   00057|   if (CLAUSE_MARKS.includes(lead.at(-1))) return lead.length - 1;
+   00058|   const word = lead.split(/\s+/u).at(-1);
+   00059|   if (!bareSurfaces('file_edit_joiner_cue').includes(cleanCueToken(word))) return null;
+   00060|   return lead.length - word.length;
+   00061| }
+   00062| 
+   00063| /**
+   00064|  * Mirrors `fn sequence_cues`: each unquoted seeded sequence cue of the
+   00065|  * instruction that opens a clause, as `[stepEnd, nextStart]`.
+   00066|  * @param {string} task
+   00067|  */
+   00068| function sequenceCues(task) {
+   00069|   const end = instructionEnd(task);
+   00070|   const segments = quotedSegmentSpans(task);
+   00071|   const quoted = (at) => segments.some((segment) => at >= segment.start && at < segment.end);
+   00072|   const cues = bareSurfaces('file-edit-sequence-cue').sort((a, b) => b.length - a.length);
+   00073|   const out = [];
+   00074|   let at = 0;
+   00075|   while (at < end) {
+   00076|     const cue = quoted(at) ? undefined : cues.find((surface) => task.slice(at, at + surface.length).toLowerCase() === surface
+   00077|       && (containsCjk(surface) || (!isAlphanumeric(task[at - 1]) && !isAlphanumeric(task[at + surface.length]))));
+   00078|     const cut = cue === undefined ? null : sequenceCut(task, at);
+   00079|     if (cut === null) {
+   00080|       at += 1;
+   00081|       continue;
+   00082|     }
+   00083|     let next = at + cue.length;
+   00084|     while (next < task.length && (isWhitespace(task[next]) || CLAUSE_MARKS.includes(task[next]))) next += 1;
+   00085|     out.push([cut, next]);
+   00086|     at = next;
+   00087|   }
+   00088|   return out;
+   00089| }
+   00090| 
+   00091| /** The paths `step` names outside its quotes. */
+   00092| function unquotedPaths(step) {
+   00093|   const segments = quotedSegmentSpans(step);
+   00094|   return tokens(step)
+   00095|     .filter((token) => !segments.some((segment) => token.start < segment.end && token.end > segment.start))
+   00096|     .map((token) => cleanPathToken(token.text))
+   00097|     .filter((path) => looksLikeFilePath(path) && safeRelativePath(path));
+   00098| }
+   00099| 
+   00100| /**
+   00101|  * Mirrors `fn sequence_steps`: the request cut at its sequence cues into
+   00102|  * steps that each quote a text and name a file (a step naming none takes the
+   00103|  * one file the others name), or null (PR #1188 G99).
+   00104|  * @param {string} task
+   00105|  */
+   00106| export function sequenceSteps(task) {
+   00107|   const cues = sequenceCues(task);
+   00108|   if (cues.length === 0) return null;
+   00109|   const bounds = [0, ...cues.flat(), task.length];
+   00110|   const steps = [];
+   00111|   for (let index = 0; index < bounds.length; index += 2) {
+   00112|     steps.push(task.slice(bounds[index], bounds[index + 1]).trim().replace(/[\s,;，；.。]+$/u, ''));
+   00113|   }
+   00114|   if (steps.some((step) => step === '' || quotedSegmentSpans(step).length === 0)) return null;
+   00115|   const named = [...new Set(steps.flatMap(unquotedPaths))];
+   00116|   return steps.map((step) => {
+   00117|     if (unquotedPaths(step).length > 0) return step;
+   00118|     // A step naming no path, not even inside its quotes, edits the one file
+   00119|     // the others name.
+   00120|     if (named.length !== 1 || pathsIn(step).length > 0) return null;
+   00121|     return `${step} in ${named[0]}`;
+   00122|   }).reduce((all, step) => (all === null || step === null ? null : [...all, step]), []);
+   00123| }
+   00124| 
+   00125| /** The conversation with its latest user turn asking `part` alone. */
+   00126| function withRequest(messages, part) {
+   00127|   let latest = -1;
+   00128|   messages.forEach((message, index) => {
+   00129|     if (String(message.role).toLowerCase() === 'user') latest = index;
+   00130|   });
+   00131|   return messages.map((message, index) => (index === latest ? { ...message, content: part } : message));
+   00132| }
+   00133| 
+   00134| /**
+   00135|  * Mirrors `fn plan_request_sequence_step`: the next step of the first
+   00136|  * sentence not yet answered, planned by `planFor` as that sentence alone, or
+   00137|  * the sentences' answers in order once each is answered.
+   00138|  * @param {string} task
+   00139|  * @param {Array<object>} messages
+   00140|  * @param {Array<string>} toolNames
+   00141|  * @param {(messages: Array<object>, toolNames: Array<string>) => Promise<object|null>} planFor
+   00142|  */
+   00143| export async function planRequestSequenceStep(task, messages, toolNames, planFor) {
+   00144|   const parts = requestSequence(task) ?? sequenceSteps(task);
+   00145|   if (parts === null) return null;
+   00146|   const { base, exchanges } = turnExchanges(messages);
+   00147|   let taken = 0;
+   00148|   const answers = [];
+   00149|   for (const part of parts) {
+   00150|     // A step is planned over the tool calls made for it alone: replayed one
+   00151|     // exchange at a time until it answers or asks for its next call.
+   00152|     const own = [];
+   00153|     for (;;) {
+   00154|       const plan = await planFor(withRequest([...base, ...own], part), toolNames);
+   00155|       if (plan === null) return null;
+   00156|       if (plan.kind === 'final') {
+   00157|         answers.push(plan.answer);
+   00158|         break;
+   00159|       }
+   00160|       if (taken === exchanges.length) return plan;
+   00161|       own.push(...exchanges[taken]);
+   00162|       taken += 1;
+   00163|     }
+   00164|   }
+   00165|   return finalAnswer(answers.join('\n\n'));
+   00166| }
+   00167| 
+   00168| /**
+   00169|  * Mirrors `fn turn_exchanges`: the conversation up to its latest user turn,
+   00170|  * and the tool exchanges after it, each an assistant message with the
+   00171|  * messages that answer it.
+   00172|  * @param {Array<object>} messages
+   00173|  */
+   00174| function turnExchanges(messages) {
+   00175|   let latest = -1;
+   00176|   messages.forEach((message, index) => {
+   00177|     if (String(message.role).toLowerCase() === 'user') latest = index;
+   00178|   });
+   00179|   const exchanges = [];
+   00180|   for (const message of messages.slice(latest + 1)) {
+   00181|     if (String(message.role).toLowerCase() === 'assistant' || exchanges.length === 0) exchanges.push([message]);
+   00182|     else exchanges.at(-1).push(message);
+   00183|   }
+   00184|   return { base: messages.slice(0, latest + 1), exchanges };
+   00185| }
+   00186| 
+   
+   (End of file - total 186 lines)
+   </file>
+>> edit {"filePath":"request_sequence.mjs","file_path":"request_sequence.mjs","new":"regression test for copy then replace joined by a comma and then","newString":"regression test for copy then replace joined by a comma and then","new_str":"regression test for copy then replace joined by a comma and then","new_string":"regression test for copy then replace joined by a comma and then","old":"and preserve the clauses in order. Add","oldString":"and preserve the clauses in order. Add","old_str":"and preserve the clauses in order. Add","old_string":"and preserve the clauses in order. Add","path":"request_sequence.mjs"}
+   Error: oldString not found in content
+== answer ==
+The command failed: Error: oldString not found in content
+
+I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.

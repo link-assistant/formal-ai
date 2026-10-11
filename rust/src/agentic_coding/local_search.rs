@@ -10,7 +10,7 @@ use std::path::Path;
 
 use serde_json::json;
 
-use super::planner::{plan_one, tool_for, AgenticPlan, Capability};
+use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use crate::protocol::ChatMessage;
 use crate::seed;
 
@@ -141,11 +141,35 @@ pub(super) fn request_for(prompt: &str) -> Option<LocalSearchRequest> {
         return None;
     }
 
+    // A later existential clause describes a listing's contents. The earliest
+    // evidenced action owns the request rather than inventing a filename.
+    let action_position = |role| {
+        lexicon
+            .role_word_forms(role)
+            .into_iter()
+            .filter_map(|form| {
+                let surface = if form.before_slot().is_empty() {
+                    form.after_slot()
+                } else {
+                    form.before_slot()
+                };
+                let surface = crate::engine::normalize_prompt(surface);
+                (!surface.is_empty())
+                    .then(|| surface_position(&normalized, &surface))
+                    .flatten()
+            })
+            .min()
+    };
+    let lists_scope = list
+        && (!find
+            || action_position(seed::ROLE_LOCAL_PATH_LIST_ACTION)
+                .zip(action_position(seed::ROLE_LOCAL_PATH_SEARCH_ACTION))
+                .is_some_and(|(list_at, find_at)| list_at < find_at));
     let mode = if contents {
         SearchMode::ListContents
     } else if type_request {
         SearchMode::Type
-    } else if list && !find {
+    } else if lists_scope {
         SearchMode::ListScope
     } else {
         SearchMode::Find
@@ -184,6 +208,8 @@ pub(super) fn request_for(prompt: &str) -> Option<LocalSearchRequest> {
     };
 
     let mut subject = normalized;
+    // An interrogative (`what`, `qué`, `cuáles`) asks about the scope and names
+    // no file, so a listing question is never a search for a file called `qué`.
     for role in [
         seed::ROLE_LOCAL_PATH_ROUTE_QUESTION,
         seed::ROLE_LOCAL_PATH_CONTENTS_REQUEST,
@@ -194,6 +220,7 @@ pub(super) fn request_for(prompt: &str) -> Option<LocalSearchRequest> {
         seed::ROLE_LOCAL_PATH_DIRECTORY_KIND,
         seed::ROLE_LOCAL_PATH_FILE_KIND,
         seed::ROLE_LOCAL_PATH_QUERY_NOISE,
+        seed::ROLE_INTERROGATIVE_OPENER,
     ] {
         strip_role(&mut subject, role);
     }
@@ -454,29 +481,30 @@ fn answer_for_candidates(
         return run(tool_names, &metadata_command(&candidate));
     }
     if widened == Some("inventory")
-        && let Some(expected) = request.kind {
-            let Some(metadata) = metadata else {
-                return run(tool_names, &metadata_command(&candidate));
+        && let Some(expected) = request.kind
+    {
+        let Some(metadata) = metadata else {
+            return run(tool_names, &metadata_command(&candidate));
+        };
+        let kind_matches = match expected {
+            PathKind::Directory => metadata.trim_start().starts_with('d'),
+            PathKind::File => metadata.trim_start().starts_with('-'),
+        };
+        if !kind_matches {
+            let intent = match expected {
+                PathKind::Directory => "local_search_mismatch_requested_directory",
+                PathKind::File => "local_search_mismatch_requested_file",
             };
-            let kind_matches = match expected {
-                PathKind::Directory => metadata.trim_start().starts_with('d'),
-                PathKind::File => metadata.trim_start().starts_with('-'),
-            };
-            if !kind_matches {
-                let intent = match expected {
-                    PathKind::Directory => "local_search_mismatch_requested_directory",
-                    PathKind::File => "local_search_mismatch_requested_file",
-                };
-                let actual = basename(&candidate);
-                return Some(AgenticPlan::Final(
-                    localized(intent, language)
-                        .replace(PATH_SLOT, &candidate)
-                        .replace(REQUESTED_SLOT, &request.subject)
-                        .replace(ACTUAL_SLOT, &actual)
-                        .replace(SCOPE_SLOT, request.root),
-                ));
-            }
+            let actual = basename(&candidate);
+            return Some(AgenticPlan::Final(
+                localized(intent, language)
+                    .replace(PATH_SLOT, &candidate)
+                    .replace(REQUESTED_SLOT, &request.subject)
+                    .replace(ACTUAL_SLOT, &actual)
+                    .replace(SCOPE_SLOT, request.root),
+            ));
         }
+    }
 
     let actual = basename(&candidate);
     let exact = actual.eq_ignore_ascii_case(&request.subject);

@@ -1,0 +1,20 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+#
+# The step-through debug session (issue #667, R383) names, for every stage of
+# a turn, the Rust and JavaScript function that emits it. Both servers read
+# those functions from data/meta/debug-stage-sources.lino, which
+# scripts/generate-debug-stage-sources.mjs derives from the source tree (every
+# function that appends a curated solver event kind). A new or moved append
+# site committed without regenerating the table would leave the debugger
+# naming code that no longer emits the stage, so this gate regenerates it and
+# fails on any byte of drift. rust/tests/web/server-debug-session.test.mjs pins
+# the same check and the exact emitters of a served `What is 2 + 2?` turn.
+ci_gate check-debug-stage-sources
+  stage web
+  description "data/meta/debug-stage-sources.lino, the per-stage emitter table the debug session reads, is byte-current against the solver sources it is generated from."
+  run "node scripts/generate-debug-stage-sources.mjs --check"
+  justification "Issue #667 (R383) asked that each debugged stage name the code that emits it, derived from the source rather than a hand-kept table; a stale table would silently point the Rust and JavaScript panes at the wrong function."

@@ -1,0 +1,29 @@
+# Issue #1153: the slim sidecar, ready to run.
+#
+# This is the image Hive Mind consumes as its `--model formal-ai` sidecar
+# (link-assistant/hive-mind#2305): `formal-ai serve --agent-mode` and nothing
+# else. Swap it in with:
+#
+#   HIVE_MIND_FORMAL_AI_IMAGE=ghcr.io/link-assistant/formal-ai:slim
+#
+# or run it directly:
+#
+#   docker compose -f docker/compose.slim.yml up
+#
+# The memory volume is the one mount the sidecar needs; everything else the
+# image declares is self-contained. Compare Dockerfile.slim's ~1 GB against
+# the 24.3 GB of the full self-contained variant (Dockerfile), which stays
+# available for running code without an outer Docker.
+services:
+  formal-ai:
+    image: ghcr.io/link-assistant/formal-ai:slim
+    container_name: formal-ai-serve
+    command: ["serve", "--agent-mode", "--host", "0.0.0.0", "--port", "8080"]
+    ports:
+      - "8080:8080"
+    volumes:
+      - formal-ai-memory:/home/box/.formal-ai
+    restart: unless-stopped
+
+volumes:
+  formal-ai-memory:

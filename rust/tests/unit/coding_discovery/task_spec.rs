@@ -38,6 +38,9 @@ def sum_product(numbers: List[int]) -> Tuple[int, int]:
         CodingTaskSpec {
             language: "python".to_owned(),
             artifact_shape: ArtifactShape::Function,
+            callable_binding_origin: formal_ai::coding_task_spec::CallableBindingOrigin::Declared {
+                signature: "sum_product(numbers: List[int]) -> Tuple[int, int]".to_owned()
+            },
             name: "sum_product".to_owned(),
             parameters: vec![parameter("numbers", Some("List[int]"))],
             return_annotation: Some("Tuple[int, int]".to_owned()),
@@ -169,7 +172,10 @@ fn conversational_program_without_a_named_callable_uses_the_main_entry_point() {
         .expect("program request without a signature");
     assert_eq!(spec.artifact_shape, ArtifactShape::Program);
     assert_eq!(spec.name, "main");
-    assert!(spec.parameters.is_empty());
+    assert_eq!(
+        spec.parameters,
+        [] as [formal_ai::coding_task_spec::Parameter; 0]
+    );
 }
 
 #[test]
@@ -179,7 +185,10 @@ fn conversational_program_uses_a_resolved_task_as_its_gap_identity() {
 
     assert_eq!(spec.artifact_shape, ArtifactShape::Program);
     assert_eq!(spec.name, "count_to_three");
-    assert!(spec.parameters.is_empty());
+    assert_eq!(
+        spec.parameters,
+        [] as [formal_ai::coding_task_spec::Parameter; 0]
+    );
 }
 
 #[test]

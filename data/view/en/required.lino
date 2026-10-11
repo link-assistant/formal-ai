@@ -1,0 +1,13 @@
+view
+  id M-04bc4d4f0b26
+  lemma required
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "necessary for relief or supply"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "required by rule"
+    provenance (wordnet)

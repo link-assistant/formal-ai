@@ -1,0 +1,12 @@
+language en
+lemma btu
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a unit of heat equal to the amount of heat required to raise one pound of water one degree Fahrenheit at one atmosphere pressure; equivalent to 251.997 calories"
+    id oewn-13749057-n
+    partOfSpeech n
+    synonyms ("British thermal unit" B.Th.U.)
+source "oewn:2024"

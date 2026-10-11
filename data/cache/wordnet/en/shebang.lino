@@ -1,0 +1,11 @@
+language en
+lemma shebang
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an entire system; used in the phrase ‘the whole shebang’"
+    id oewn-08453462-n
+    partOfSpeech n
+source "oewn:2024"

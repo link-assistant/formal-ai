@@ -1,0 +1,52 @@
+self_ast_census
+  target src/solver_handlers/creative_composition.rs
+  language rust
+  fidelity signature
+  byte_len 28846
+  line_count 815
+  content_id source_module_8fe28f1fdae1a22e
+  symbol_count 43
+  symbols
+    const RULES_PATH 38 38
+    const RULES_ROOT 40 40
+    const ROLE_BRAINSTORMING 41 41
+    const ROLE_ADVICE 42 42
+    const ROLE_CREATIVE_WRITING 43 43
+    const ROLE_PLANNING 44 44
+    const COMPOSITION_ROLES 46 46
+    const DEFAULT_MAX_LENGTH 53 53
+    function seed_text 56 61
+    function rules_records 65 81
+    static RECORDS 66 66
+    function rules_records_named 84 88
+    function child_values 91 99
+    function cue_record 102 104
+    function cue_words 107 111
+    function cue_field 114 118
+    function template 121 127
+    function stop_words 130 135
+    function spelled_numbers 140 162
+    function cjk_remainder 167 186
+    function topic_words 195 238
+    function requested_count 244 275
+    struct BrainstormRule 278 281
+    function brainstorm_rules 283 297
+    struct DistinctnessMetric 300 305
+    function distinctness_metric 307 321
+    function levenshtein 324 341
+    function distinct_enough 345 349
+    function count_as_f32 354 359
+    function pronounceable 364 378
+    function exclusions 382 395
+    function capitalize 398 403
+    function compose_candidates 407 460
+    function content_words 463 470
+    function select_candidates 474 521
+    function handle_brainstorm_request 529 642
+    struct EvidenceGrade 646 650
+    function evidence_grades 652 661
+    struct Recommendation 664 669
+    function recommendations 671 682
+    function advice_topics 685 701
+    function names_advice_topic 707 711
+    function handle_advice_request 719 815

@@ -1,0 +1,14 @@
+// Evidence layout only; designated arrays keep one complete JSON record per line.
+export function format(value,depth=0,key=''){
+ const indent='  '.repeat(depth),child='  '.repeat(depth+1);
+ if(Array.isArray(value)){
+  if(!value.length)return '[]';
+  const records=['steps','crossStageOutputTransfers'].includes(key);
+  return '[\n'+value.map(item=>child+(records?JSON.stringify(item):format(item,depth+1))).join(',\n')+'\n'+indent+']';
+ }
+ if(value!==null&&typeof value==='object'){
+  const fields=Object.entries(value);if(!fields.length)return '{}';
+  return '{\n'+fields.map(([name,item])=>child+JSON.stringify(name)+': '+format(item,depth+1,name)).join(',\n')+'\n'+indent+'}';
+ }
+ return JSON.stringify(value);
+}

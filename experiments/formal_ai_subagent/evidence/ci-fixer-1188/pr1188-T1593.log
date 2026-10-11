@@ -1,0 +1,376 @@
+>> read {"filePath":"rust/src/agentic_coding/code_artifact.rs","file_path":"rust/src/agentic_coding/code_artifact.rs","path":"rust/src/agentic_coding/code_artifact.rs"}
+   <file>
+   00001| //! Workspace-backed artifact generation and contextual changes (#715).
+   00002| //!
+   00003| //! The latest user turn does not have to repeat the filename or original text:
+   00004| //! the prior tool-call history is the authoritative mutable-artifact context.
+   00005| 
+   00006| use std::fmt::Write as _;
+   00007| 
+   00008| use lino_objects_codec::format::escape_reference;
+   00009| use serde_json::{Value, json};
+   00010| 
+   00011| use super::planner::{
+   00012|     AgenticPlan, Capability, plan_one, tool_capability, tool_for, write_arguments,
+   00013| };
+   00014| use crate::coding::{program_language_by_alias, program_spec, program_task_by_alias};
+   00015| use crate::links_substitution_query::{
+   00016|     parse_substitution_query, render_substitution_query, substitution_effect,
+   00017| };
+   00018| use crate::normal_markov::{
+   00019|     RewriteHalt, RewriteOutcome, RewriteProgram, RewriteRule, quoted_segments,
+   00020|     unwrap_transport_quotes,
+   00021| };
+   00022| use crate::protocol::ChatMessage;
+   00023| 
+   00024| const MAX_REWRITE_STEPS: usize = 100_000;
+   00025| const RENDERED_TRACE_EDGE_STEPS: usize = 32;
+   00026| 
+   00027| #[derive(Debug, Clone)]
+   00028| struct WorkspaceArtifact {
+   00029|     path: String,
+   00030|     content: String,
+   00031| }
+   00032| 
+   00033| #[derive(Debug, Clone)]
+   00034| struct WorkspaceRewrite {
+   00035|     target: String,
+   00036|     program: RewriteProgram,
+   00037| }
+   00038| 
+   00039| impl WorkspaceRewrite {
+   00040|     fn links_notation(&self, outcome: Option<&RewriteOutcome>) -> String {
+   00041|         let mut links = String::from("normal_markov_program\n");
+   00042|         link_field(&mut links, 2, "target", &self.target);
+   00043|         // The link-cli-dialect query is the meta-language representation the
+   00044|         // request was lowered to. Everything below it is that query expanded.
+   00045|         link_field(
+   00046|             &mut links,
+   00047|             2,
+   00048|             "substitution_query",
+   00049|             &render_substitution_query(&self.program),
+   00050|         );
+   00051|         link_field(
+   00052|             &mut links,
+   00053|             2,
+   00054|             "max_steps",
+   00055|             &self.program.max_steps.to_string(),
+   00056|         );
+   00057|         for (index, rule) in self.program.rules.iter().enumerate() {
+   00058|             let _ = writeln!(links, "  rewrite_rule \"{index}\"");
+   00059|             link_field(&mut links, 4, "effect", substitution_effect(rule).as_str());
+   00060|             link_field(&mut links, 4, "pattern", &rule.pattern);
+   00061|             link_field(&mut links, 4, "replacement", &rule.replacement);
+   00062|             link_field(&mut links, 4, "terminal", &rule.terminal.to_string());
+   00063|         }
+   00064|         if let Some(outcome) = outcome {
+   00065|             let _ = writeln!(links, "  execution");
+   00066|             link_field(&mut links, 4, "halt", &format!("{:?}", outcome.halt));
+   00067|             link_field(&mut links, 4, "steps", &outcome.trace.len().to_string());
+   00068|             let omitted = outcome
+   00069|                 .trace
+   00070|                 .len()
+   00071|                 .saturating_sub(RENDERED_TRACE_EDGE_STEPS * 2);
+   00072|             for (index, step) in outcome.trace.iter().enumerate() {
+   00073|                 if omitted > 0 && index == RENDERED_TRACE_EDGE_STEPS {
+   00074|                     link_field(&mut links, 4, "omitted_steps", &omitted.to_string());
+   00075|                 }
+   00076|                 if omitted > 0
+   00077|                     && (RENDERED_TRACE_EDGE_STEPS..outcome.trace.len() - RENDERED_TRACE_EDGE_STEPS)
+   00078|                         .contains(&index)
+   00079|                 {
+   00080|                     continue;
+   00081|                 }
+   00082|                 let _ = writeln!(
+   00083|                     links,
+   00084|                     "    applied rule={} byte_offset={}",
+   00085|                     step.rule_index, step.byte_offset
+   00086|                 );
+   00087|             }
+   00088|         }
+   00089|         links
+   00090|     }
+   00091| }
+   00092| 
+   00093| pub(super) fn plan_code_artifact_step(
+   00094|     task: &str,
+   00095|     messages: &[ChatMessage],
+   00096|     tool_names: &[&str],
+   00097| ) -> Option<AgenticPlan> {
+   00098|     // OpenCode's positional `run` interface currently preserves one pair of
+   00099|     // transport quotes in the user content. They are framing, not request data.
+   00100|     let task = unwrap_transport_quotes(task);
+   00101|     let write_tool = tool_for(tool_names, Capability::Write)?;
+   00102|     let latest_user = messages
+   00103|         .iter()
+   00104|         .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
+   00105| 
+   00106|     if let Some(artifact) = latest_workspace_artifact(&messages[..latest_user]) {
+   00107|         let rewrite = requested_rewrite(task, &artifact)?;
+   00108|         let current_messages = &messages[latest_user + 1..];
+   00109|         if let Some(result) = latest_result(current_messages, Capability::Write) {
+   00110|             let outcome = latest_result(current_messages, Capability::Read)
+   00111|                 .map(|read| rewrite.program.execute(&source_from_read_result(&read)));
+   00112|             return Some(AgenticPlan::Final(format!(
+   00113|                 "Updated `{}` through the workspace file tools.\n\n{}\n{}",
+   00114|                 artifact.path,
+   00115|                 rewrite.links_notation(outcome.as_ref()),
+   00116|                 result.trim()
+   00117|             )));
+   00118|         }
+   00119|         if let Some(read_source) = latest_result(current_messages, Capability::Read) {
+   00120|             let current_source = source_from_read_result(&read_source);
+   00121|             let outcome = rewrite.program.execute(&current_source);
+   00122|             if outcome.halt == RewriteHalt::StepLimit {
+   00123|                 return Some(AgenticPlan::Final(format!(
+   00124|                     "Rewrite of `{}` reached its {MAX_REWRITE_STEPS}-step safety bound; no partial bytes were written.\n\n{}",
+   00125|                     artifact.path,
+   00126|                     rewrite.links_notation(Some(&outcome))
+   00127|                 )));
+   00128|             }
+   00129|             if outcome.output == current_source {
+   00130|                 return Some(AgenticPlan::Final(format!(
+   00131|                     "No matching source fragment was found in `{}`.",
+   00132|                     artifact.path
+   00133|                 )));
+   00134|             }
+   00135|             return Some(plan_one(
+   00136|                 write_tool,
+   00137|                 write_arguments(&artifact.path, &outcome.output),
+   00138|             ));
+   00139|         }
+   00140|         let read_tool = tool_for(tool_names, Capability::Read)?;
+   00141|         return Some(plan_one(read_tool, read_arguments(&artifact.path)));
+   00142|     }
+   00143| 
+   00144|     // With a command capability, let the typed `ExecutionRecipe` path own code
+   00145|     // creation and verification. The un-owned-request leak that once gated this
+   00146|     // on `program_contract::claims` (issue #907) is closed at its real site:
+   00147|     // the open-web decision table declines a request the code catalog itself
+   00148|     // can template, so the deferral never strands the write -- and a template
+   00149|     // write that never runs the program is not a completion the write-effect
+   00150|     // ladder can accept (issue #916 rungs R916-02/R916-03).
+   00151|     if tool_for(tool_names, Capability::Run).is_some() {
+   00152|         return None;
+   00153|     }
+   00154|     let artifact = generated_artifact(task)?;
+   00155|     if latest_result(&messages[latest_user + 1..], Capability::Write).is_some() {
+   00156|         return Some(AgenticPlan::Final(format!(
+   00157|             "Created `{}` through the workspace file tools.",
+   00158|             artifact.path
+   00159|         )));
+   00160|     }
+   00161|     Some(plan_one(
+   00162|         write_tool,
+   00163|         write_arguments(&artifact.path, &artifact.content),
+   00164|     ))
+   00165| }
+   00166| 
+   00167| /// Whether the code catalog itself can template `task` into a written program.
+   00168| ///
+   00169| /// The open-web decision table asks this before answering a bare term at the
+   00170| /// end of its cascade: a request the catalog can write is a coding request,
+   00171| /// and the coding routes -- not a web search -- speak for it (issue #907). The
+   00172| /// boundary is the catalog, not an output literal, because the typed recipe
+   00173| /// path also composes programs no contract pins.
+   00174| pub(super) fn catalog_claims(task: &str) -> bool {
+   00175|     generated_artifact(task).is_some()
+   00176| }
+   00177| 
+   00178| fn generated_artifact(task: &str) -> Option<WorkspaceArtifact> {
+   00179|     let normalized = task.to_lowercase();
+   00180|     let language = program_language_by_alias(&normalized)?;
+   00181|     let program_task = program_task_by_alias(&normalized)?;
+   00182|     // Issue #1165 R1165-6: the file a documented program binds
+   00183|     // (`HelloWorldApp.java`) is the one it is written to.
+   00184|     let spec = program_spec(program_task.slug, language.slug)?;
+   00185|     Some(WorkspaceArtifact {
+   00186|         path: spec.language.save_as.to_string(),
+   00187|         content: format!("{}\n", spec.template.code.trim_end()),
+   00188|     })
+   00189| }
+   00190| 
+   00191| fn requested_rewrite(task: &str, artifact: &WorkspaceArtifact) -> Option<WorkspaceRewrite> {
+   00192|     if let Some(program) = explicit_substitution_query(task) {
+   00193|         return Some(WorkspaceRewrite {
+   00194|             target: artifact.path.clone(),
+   00195|             program,
+   00196|         });
+   00197|     }
+   00198|     if task.contains('?') || task.contains('？') {
+   00199|         return None;
+   00200|     }
+   00201|     let quoted = quoted_segments(task);
+   00202|     let pairs = match quoted.as_slice() {
+   00203|         [new] => vec![(last_string_literal(&artifact.content)?, new.clone())],
+   00204|         values if !values.is_empty() && values.len() % 2 == 0 => values
+   00205|             .as_chunks::<2>()
+   00206|             .0
+   00207|             .iter()
+   00208|             .map(|[old, new]| (old.clone(), new.clone()))
+   00209|             .collect(),
+   00210|         _ => return None,
+   00211|     };
+   00212|     if pairs.iter().any(|(old, new)| old == new) {
+   00213|         return None;
+   00214|     }
+   00215|     let single_substitution = pairs.len() == 1;
+   00216|     let rules = pairs
+   00217|         .into_iter()
+   00218|         .map(|(old, new)| {
+   00219|             let rule = RewriteRule::new(old.clone(), new);
+   00220|             if single_substitution || old.is_empty() {
+   00221|                 rule.terminal()
+   00222|             } else {
+   00223|                 rule
+   00224|             }
+   00225|         })
+   00226|         .collect();
+   00227|     Some(WorkspaceRewrite {
+   00228|         target: artifact.path.clone(),
+   00229|         program: RewriteProgram::new(rules, MAX_REWRITE_STEPS),
+   00230|     })
+   00231| }
+   00232| 
+   00233| /// Accept the meta-language query itself as the request.
+   00234| ///
+   00235| /// Prose with quoted operands only ever composes old/new pairs, so this is the
+   00236| /// only route to link-cli's `()` creation and deletion shorthands and to
+   00237| /// terminal rules. The whole turn must be the query: requiring that keeps the
+   00238| /// route unambiguous against ordinary prose that merely contains parentheses.
+   00239| fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {
+   00240|     let trimmed = task.trim();
+   00241|     if !trimmed.starts_with('(') {
+   00242|         return None;
+   00243|     }
+   00244|     let program = parse_substitution_query(trimmed, MAX_REWRITE_STEPS).ok()?;
+   00245|     (!program.rules.is_empty()).then_some(program)
+   00246| }
+   00247| 
+   00248| fn latest_workspace_artifact(messages: &[ChatMessage]) -> Option<WorkspaceArtifact> {
+   00249|     messages
+   00250|         .iter()
+   00251|         .rev()
+   00252|         .flat_map(|message| message.tool_calls.iter().rev())
+   00253|         .find_map(|call| {
+   00254|             if tool_capability(&call.function.name) != Some(Capability::Write) {
+   00255|                 return None;
+   00256|             }
+   00257|             let arguments: Value = serde_json::from_str(&call.function.arguments).ok()?;
+   00258|             let path = argument_string(&arguments, &["path", "filePath", "file_path"])?;
+   00259|             let content = argument_string(&arguments, &["content"])?;
+   00260|             Some(WorkspaceArtifact {
+   00261|                 path: path.to_owned(),
+   00262|                 content: content.to_owned(),
+   00263|             })
+   00264|         })
+   00265| }
+   00266| 
+   00267| pub(super) fn latest_result(messages: &[ChatMessage], capability: Capability) -> Option<String> {
+   00268|     messages
+   00269|         .iter()
+   00270|         .enumerate()
+   00271|         .rev()
+   00272|         .find_map(|(index, message)| {
+   00273|             if !message.role.eq_ignore_ascii_case("tool") {
+   00274|                 return None;
+   00275|             }
+   00276|             let call_id = message.tool_call_id.as_ref()?;
+   00277|             let call = messages[..index]
+   00278|                 .iter()
+   00279|                 .flat_map(|prior| prior.tool_calls.iter())
+   00280|                 .find(|call| &call.id == call_id)?;
+   00281|             (tool_capability(&call.function.name) == Some(capability))
+   00282|                 .then(|| message.content.plain_text())
+   00283|         })
+   00284| }
+   00285| 
+   00286| /// Decode decorated source emitted by coding-agent read tools. `OpenCode` wraps
+   00287| /// numbered lines in `<content>` while Agent wraps pipe-numbered lines in
+   00288| /// `<file>`. Other CLIs return raw contents, which pass through byte-for-byte.
+   00289| pub(super) fn source_from_read_result(result: &str) -> String {
+   00290|     if let Some(decoded) = source_from_agent_read_result(result) {
+   00291|         return decoded;
+   00292|     }
+   00293|     let Some((_, after_open)) = result.split_once("<content>\n") else {
+   00294|         return result.to_owned();
+   00295|     };
+   00296|     let Some((content, _)) = after_open.rsplit_once("\n</content>") else {
+   00297|         return result.to_owned();
+   00298|     };
+   00299|     let mut decoded = String::new();
+   00300|     for line in content.lines() {
+   00301|         if line.starts_with("(End of file - total ") {
+   00302|             break;
+   00303|         }
+   00304|         let source_line = line
+   00305|             .split_once(": ")
+   00306|             .filter(|(number, _)| number.chars().all(|character| character.is_ascii_digit()))
+   00307|             .map_or(line, |(_, source)| source);
+   00308|         decoded.push_str(source_line);
+   00309|         decoded.push('\n');
+   00310|     }
+   00311|     while decoded.ends_with("\n\n") {
+   00312|         decoded.pop();
+   00313|     }
+   00314|     decoded
+   00315| }
+   00316| 
+   00317| pub(super) fn source_from_agent_read_result(result: &str) -> Option<String> {
+   00318|     let after_open = result.strip_prefix("<file>\n")?;
+   00319|     let (numbered, footer) = after_open.rsplit_once("\n\n(End of file - total ")?;
+   00320|     if !footer.ends_with("</file>") {
+   00321|         return None;
+   00322|     }
+   00323|     numbered
+   00324|         .lines()
+   00325|         .map(|line| {
+   00326|             let (number, source) = line.split_once("| ")?;
+   00327|             number
+   00328|                 .chars()
+   00329|                 .all(|character| character.is_ascii_digit())
+   00330|                 .then_some(source)
+   00331|         })
+   00332|         .collect::<Option<Vec<_>>>()
+   00333|         .map(|lines| lines.join("\n"))
+   00334| }
+   00335| 
+   00336| fn read_arguments(path: &str) -> String {
+   00337|     json!({"path": path, "filePath": path, "file_path": path}).to_string()
+   00338| }
+   00339| 
+   00340| fn argument_string<'a>(value: &'a Value, keys: &[&str]) -> Option<&'a str> {
+   00341|     keys.iter().find_map(|key| value.get(key)?.as_str())
+   00342| }
+   00343| 
+   00344| fn last_string_literal(source: &str) -> Option<String> {
+   00345|     quoted_segments(source).pop()
+   00346| }
+   00347| 
+   00348| /// Write one `name value` link, quoted the way Links Notation quotes.
+   00349| ///
+   00350| /// The trace is published as the meta-language representation of the request,
+   00351| /// so it has to be readable by a Links Notation reader, not merely look like
+   00352| /// one. Notation escapes a quote by *doubling* it and picks a delimiter the
+   00353| /// value does not already contain; a backslash escape leaves the quote visible
+   00354| /// to the reader, which ends the string early and turns a code fragment's `(`
+   00355| /// into an unclosed group. Delegating to the codec's own escaper is what keeps
+   00356| /// the two definitions from drifting apart again.
+   00357| fn link_field(out: &mut String, indent: usize, name: &str, value: &str) {
+   00358|     let _ = writeln!(
+   00359|         out,
+   00360|         "{}{name} {}",
+   00361|         " ".repeat(indent),
+   00362|         escape_reference(value)
+   00363|     );
+   00364| }
+   00365| 
+   
+   (End of file - total 365 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/code_artifact.rs","file_path":"rust/src/agentic_coding/code_artifact.rs","new":"pub(super) fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {","newString":"pub(super) fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {","new_str":"pub(super) fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {","new_string":"pub(super) fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {","old":"fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {","oldString":"fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {","old_str":"fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {","old_string":"fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {","path":"rust/src/agentic_coding/code_artifact.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/code_artifact.rs"}
+   2eb0e144b65e422229ec9ef558175a916d7acb21673cb97e3c879a14b42aa5da  rust/src/agentic_coding/code_artifact.rs
+   
+== answer ==
+Replaced `fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {` with `pub(super) fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {` in `rust/src/agentic_coding/code_artifact.rs` and observed the result.

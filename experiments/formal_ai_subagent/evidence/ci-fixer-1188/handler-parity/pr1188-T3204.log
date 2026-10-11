@@ -1,0 +1,564 @@
+>> read {"filePath":"rust/src/solver_handlers/benchmark_prompts.rs","file_path":"rust/src/solver_handlers/benchmark_prompts.rs","path":"rust/src/solver_handlers/benchmark_prompts.rs"}
+   <file>
+   00001| use std::sync::OnceLock;
+   00002| 
+   00003| use super::finalize_simple;
+   00004| 
+   00005| use crate::engine::SymbolicAnswer;
+   00006| use crate::event_log::EventLog;
+   00007| use crate::external_benchmarks::today_utc;
+   00008| use crate::language::detect as detect_language;
+   00009| use crate::release_timeline;
+   00010| use crate::seed::{
+   00011|     self, Antecedent, BrainstormSeeds, CoreferenceSeeds, FactRecord, Meaning, PersonaSeeds,
+   00012|     Pronoun, SummaryTopic, SummaryTopicSeeds,
+   00013| };
+   00014| use crate::world_model::Context;
+   00015| use crate::world_model_context::{
+   00016|     ContextHierarchy, ExternalLookup, InheritancePolicy, ReferenceResolution,
+   00017| };
+   00018| 
+   00019| fn summary_topic_seed_data() -> &'static SummaryTopicSeeds {
+   00020|     static CELL: OnceLock<SummaryTopicSeeds> = OnceLock::new();
+   00021|     CELL.get_or_init(seed::summary_topic_seeds)
+   00022| }
+   00023| 
+   00024| pub fn try_summarization_request(
+   00025|     prompt: &str,
+   00026|     normalized: &str,
+   00027|     log: &mut EventLog,
+   00028| ) -> Option<SymbolicAnswer> {
+   00029|     let seeds = summary_topic_seed_data();
+   00030|     if !seeds.matches_trigger(normalized) {
+   00031|         return None;
+   00032|     }
+   00033| 
+   00034|     let language = detect_language(prompt).slug();
+   00035|     let derived = seeds.pick_topic(normalized).and_then(|topic| {
+   00036|         derived_topic_summary(topic, language)
+   00037|             .map(|(body, source)| (topic.display_name.clone(), body, source))
+   00038|     });
+   00039|     if derived.is_none() {
+   00040|         log.append("summarization:refusal", "no seeded topic".to_owned());
+   00041|     }
+   00042|     let (topic, body, source) = derived.unwrap_or_else(|| {
+   00043|         let label = prompt
+   00044|             .trim_matches(|c: char| c.is_ascii_punctuation() || c.is_whitespace())
+   00045|             .to_owned();
+   00046|         let fallback = if seeds.fallback_response.is_empty() {
+   00047|             "unknown"
+   00048|         } else {
+   00049|             seeds.fallback_response.as_str()
+   00050|         };
+   00051|         let body = seed::localized_response(fallback, language)
+   00052|             .unwrap_or_else(|| crate::engine::unknown_answer().to_owned());
+   00053|         (label, body, String::from("none"))
+   00054|     });
+   00055| 
+   00056|     log.append("summarization:topic", topic);
+   00057|     log.append("summarization:source", source);
+   00058|     if let Some(label) = seeds.constraint_for(normalized) {
+   00059|         log.append("summarization:constraint", label.to_owned());
+   00060|     }
+   00061| 
+   00062|     Some(finalize_simple(
+   00063|         prompt,
+   00064|         log,
+   00065|         "summarize_topic",
+   00066|         "response:summarize_topic",
+   00067|         &body,
+   00068|         0.85,
+   00069|     ))
+   00070| }
+   00071| 
+   00072| /// Resolve one typed topic reference into canonical knowledge, then select a
+   00073| /// concise localized statement. The summary-topic file contains no prose body:
+   00074| /// edits to the concept/project record immediately change this answer.
+   00075| fn derived_topic_summary(topic: &SummaryTopic, language: &str) -> Option<(String, String)> {
+   00076|     match topic.source_kind.as_str() {
+   00077|         "concept" => {
+   00078|             let record = seed::concepts()
+   00079|                 .into_iter()
+   00080|                 .find(|record| record.slug == topic.source_id)?;
+   00081|             let localized = record.localized_for(language);
+   00082|             let summary = localized
+   00083|                 .map(|value| value.summary.as_str())
+   00084|                 .filter(|value| !value.is_empty())
+   00085|                 .unwrap_or(record.summary.as_str())
+   00086|                 .to_owned();
+   00087|             let source = localized
+   00088|                 .map(|value| value.source.as_str())
+   00089|                 .filter(|value| !value.is_empty())
+   00090|                 .unwrap_or(record.source.as_str())
+   00091|                 .to_owned();
+   00092|             Some((summary, source))
+   00093|         }
+   00094|         "project" => {
+   00095|             let registry = seed::projects_registry();
+   00096|             let record = registry.by_slug(&topic.source_id)?;
+   00097|             let statement = record
+   00098|                 .statements_for(language)
+   00099|                 .iter()
+   00100|                 .max_by_key(|statement| statement.weight)?;
+   00101|             Some((statement.text.clone(), record.url.clone()))
+   00102|         }
+   00103|         _ => None,
+   00104|     }
+   00105| }
+   00106| 
+   00107| fn brainstorm_seed_data() -> &'static BrainstormSeeds {
+   00108|     static CELL: OnceLock<BrainstormSeeds> = OnceLock::new();
+   00109|     CELL.get_or_init(seed::brainstorm_seeds)
+   00110| }
+   00111| 
+   00112| pub fn try_brainstorming_request(
+   00113|     prompt: &str,
+   00114|     normalized: &str,
+   00115|     log: &mut EventLog,
+   00116| ) -> Option<SymbolicAnswer> {
+   00117|     let seeds = brainstorm_seed_data();
+   00118|     if !seeds.matches_trigger(normalized) {
+   00119|         return None;
+   00120|     }
+   00121|     let category = seeds.pick_category(normalized)?;
+   00122|     if category.detection_keywords.is_empty() {
+   00123|         log.append("brainstorming:refusal", "no category keyword".to_owned());
+   00124|     }
+   00125|     let requested_count = requested_brainstorm_count(seeds, normalized);
+   00126|     let body = numbered(&category.items, requested_count);
+   00127|     log.append("brainstorm:category", category.slug.clone());
+   00128|     Some(finalize_simple(
+   00129|         prompt,
+   00130|         log,
+   00131|         &category.intent,
+   00132|         "response:brainstorm",
+   00133|         &body,
+   00134|         0.8,
+   00135|     ))
+   00136| }
+   00137| 
+   00138| /// The number of items the user asked for: the value of the seed's
+   00139| /// `count_cardinal` meaning when the prompt evidences it (in any supported
+   00140| /// language), else the seed's `default_count`.
+   00141| ///
+   00142| /// The cardinal's integer value is read from its own numeral surface rather
+   00143| /// than a literal, so the count stays language-independent and the policy
+   00144| /// (which cardinal, which default) is the seed's, not this module's (issue
+   00145| /// #918).
+   00146| fn requested_brainstorm_count(seeds: &BrainstormSeeds, normalized: &str) -> usize {
+   00147|     seed::lexicon()
+   00148|         .meaning(&seeds.count_cardinal)
+   00149|         .filter(|cardinal| cardinal.evidenced_in(normalized))
+   00150|         .and_then(cardinal_value)
+   00151|         .unwrap_or(seeds.default_count)
+   00152| }
+   00153| 
+   00154| /// Read the integer value of a cardinal-number meaning from its own data.
+   00155| ///
+   00156| /// Each cardinal carries a numeral word form (e.g. `"10"`) — the
+   00157| /// script-independent surface that spells the value — so the count is derived
+   00158| /// from the seed rather than restated as a literal in code.
+   00159| fn cardinal_value(meaning: &Meaning) -> Option<usize> {
+   00160|     meaning
+   00161|         .words()
+   00162|         .find(|word| !word.is_empty() && word.bytes().all(|byte| byte.is_ascii_digit()))
+   00163|         .and_then(|numeral| numeral.parse().ok())
+   00164| }
+   00165| 
+   00166| fn numbered(items: &[String], count: usize) -> String {
+   00167|     items
+   00168|         .iter()
+   00169|         .take(count)
+   00170|         .enumerate()
+   00171|         .map(|(index, item)| format!("{}. {item}", index + 1))
+   00172|         .collect::<Vec<_>>()
+   00173|         .join("\n")
+   00174| }
+   00175| 
+   00176| /// Whether the committed fact store has a record for this prompt.
+   00177| ///
+   00178| /// The planner's open-web gate asks whether the symbolic engine can answer a
+   00179| /// request before releasing it to the open web (issue #989). Concepts and
+   00180| /// computations already answer there; a question the fact store's subject
+   00181| /// gate admits -- the formalized subject's Q-id equals a record's
+   00182| /// `subject_qid` (issue #1172 R2), with word-boundary alias matching only as
+   00183| /// the last-resort hint for Q-id-less records, so an unseeded subject such as
+   00184| /// Australia correctly falls through to `false`, exactly the dispatch the
+   00185| /// solver's `fact_lookup` row runs -- is equally answerable, and planning a
+   00186| /// web search for it would discard the answer the engine already owns
+   00187| /// (issue #1138).
+   00188| #[must_use]
+   00189| pub fn fact_store_resolves(prompt: &str) -> bool {
+   00190|     let normalized = crate::engine::normalize_prompt(prompt);
+   00191|     super::factual_qa::gated_fact_record(prompt, &normalized).is_some()
+   00192| }
+   00193| 
+   00194| /// Detect which knowledge-base relation a prompt asks about.
+   00195| ///
+   00196| /// Issue #386: the relations are no longer a hardcoded per-language keyword
+   00197| /// table. They are self-describing `fact_relation` meanings in
+   00198| /// `data/seed/meanings-facts.lino` — each `defined_by` the `knowledge_relation`
+   00199| /// concept and lexicalised in every supported language. We walk every meaning
+   00200| /// carrying [`seed::ROLE_FACT_RELATION`] in declaration order and return the
+   00201| /// first whose surface words appear in the prompt. Declaration order is
+   00202| /// load-bearing: "написал"/"кто написал" evidence both `author_of_book` and
+   00203| /// `painter_of_painting`, and `author_of_book` is declared first so it wins —
+   00204| /// exactly as the former pattern table did. Matching is raw substring (not a
+   00205| /// whitespace-token test) because several relations carry multi-word phrases
+   00206| /// ("how many people", "official language", "who wrote", "speed of light", …).
+   00207| /// The slugs match the JS worker's `FACT_RELATIONS` table so the two stacks
+   00208| /// emit identical `fact_query:relation:*` evidence and route to the same
+   00209| /// Wikidata property (e.g. P36 for `capital`).
+   00210| fn detect_relation(normalized: &str) -> Option<&'static str> {
+   00211|     seed::lexicon()
+   00212|         .meanings_with_role(seed::ROLE_FACT_RELATION)
+   00213|         .find(|meaning| {
+   00214|             meaning
+   00215|                 .words()
+   00216|                 .any(|word| !word.is_empty() && normalized.contains(word))
+   00217|         })
+   00218|         .map(|meaning| meaning.slug.as_str())
+   00219| }
+   00220| 
+   00221| /// Find the subject alias the prompt mentions, if any. Returns the alias
+   00222| /// substring as it appears in `subject_aliases`.
+   00223| ///
+   00224| /// Issue #1172: the alias must match at word boundaries via
+   00225| /// [`FactRecord::contains_word_sequence`] — the same comparison
+   00226| /// [`FactRecord::matches_normalized`] gates on — so the `fact_query:subject`
+   00227| /// evidence reports an alias that actually appears in the prompt as a whole
+   00228| /// word (e.g. "usa" for "capital of usa"), never the substring coincidence
+   00229| /// that used to fire (alias "us" inside "australia").
+   00230| fn detect_subject_alias<'a>(record: &'a FactRecord, normalized: &str) -> Option<&'a str> {
+   00231|     record
+   00232|         .subject_aliases
+   00233|         .iter()
+   00234|         .find(|alias| FactRecord::contains_word_sequence(normalized, alias))
+   00235|         .map(String::as_str)
+   00236| }
+   00237| 
+   00238| /// The `fact_lookup` row: a question over prompt-supplied text (issue #1172
+   00239| /// R7) and a comparison of seeded subjects (R6) first, then the seeded record
+   00240| /// the subject gate admits (R2).
+   00241| pub fn try_fact_lookup(
+   00242|     prompt: &str,
+   00243|     normalized: &str,
+   00244|     log: &mut EventLog,
+   00245| ) -> Option<SymbolicAnswer> {
+   00246|     if let Some(answer) = super::prompt_text_question::try_prompt_text_question(prompt, log)
+   00247|         .or_else(|| super::factual_qa::try_fact_comparison(prompt, log))
+   00248|     {
+   00249|         return Some(answer);
+   00250|     }
+   00251|     let (record, gate) = super::factual_qa::gated_fact_record(prompt, normalized)?;
+   00252| 
+   00253|     log.append("fact_lookup:request", prompt.to_owned());
+   00254|     log.append("fact_lookup:hit", record.slug.clone());
+   00255|     log.append("fact_lookup:subject_gate", gate);
+   00256| 
+   00257|     // Structured fact_query trace events (Issue #127). When the matched record
+   00258|     // declares a `relation`, surface the parsed (relation, subject) tuple so
+   00259|     // memory consumers can render the structured reasoning trace identically
+   00260|     // to the browser worker. Records without a `relation` still emit the
+   00261|     // legacy `fact_lookup:*` events for backward compatibility.
+   00262|     if !record.relation.is_empty() {
+   00263|         let parsed_relation = detect_relation(normalized).unwrap_or(record.relation.as_str());
+   00264|         let parsed_subject =
+   00265|             detect_subject_alias(record, normalized).unwrap_or(record.subject_label.as_str());
+   00266|         log.append("fact_query:request", prompt.to_owned());
+   00267|         log.append("fact_query:relation", parsed_relation.to_owned());
+   00268|         log.append("fact_query:subject", parsed_subject.to_owned());
+   00269|         // Treat the seed entry as a pre-warmed cache hit, mirroring the JS
+   00270|         // worker's `fact_query:cache:hit:seed` event.
+   00271|         log.append("fact_query:cache:hit", "seed".to_owned());
+   00272|         if !record.subject_qid.is_empty() {
+   00273|             log.append("fact_query:subject_qid", record.subject_qid.clone());
+   00274|         }
+   00275|         if !record.value_qid.is_empty() {
+   00276|             log.append("fact_query:value_qid", record.value_qid.clone());
+   00277|         }
+   00278|     }
+   00279| 
+   00280|     for qid in &record.wikidata {
+   00281|         if !qid.is_empty() {
+   00282|             log.append("wikidata", qid.clone());
+   00283|         }
+   00284|     }
+   00285| 
+   00286|     let language = detect_language(prompt).slug();
+   00287|     let source = record.source_for(language);
+   00288|     if !source.is_empty() {
+   00289|         log.append("source", source.to_owned());
+   00290|     }
+   00291| 
+   00292|     // A record backed by a release timeline has no frozen answer: the sentence
+   00293|     // is built from the checked-in snapshot against today's date, so a title
+   00294|     // that has not come out yet is reported as announced rather than released
+   00295|     // (issue #892). Only a missing timeline falls back to the written summary.
+   00296|     let summary = record
+   00297|         .release_timeline
+   00298|         .is_empty()
+   00299|         .then(|| record.summary_for(language).to_owned())
+   00300|         .or_else(|| render_release_timeline(&record.release_timeline, language, log))
+   00301|         .unwrap_or_else(|| record.summary_for(language).to_owned());
+   00302| 
+   00303|     Some(finalize_simple(
+   00304|         prompt,
+   00305|         log,
+   00306|         "fact_lookup",
+   00307|         "response:fact_lookup",
+   00308|         &summary,
+   00309|         0.9,
+   00310|     ))
+   00311| }
+   00312| 
+   00313| /// Render `slug` as of today, logging the snapshot provenance so the evidence
+   00314| /// trail records *which* snapshot the answer came from and whether it is stale.
+   00315| fn render_release_timeline(slug: &str, language: &str, log: &mut EventLog) -> Option<String> {
+   00316|     let today = today_utc();
+   00317|     let rendered = release_timeline::render(slug, language, &today)?;
+   00318|     let timeline = seed::release_timelines().timeline(slug)?;
+   00319|     log.append("release_timeline:hit", slug.to_owned());
+   00320|     log.append("release_timeline:snapshot", timeline.retrieved_at.clone());
+   00321|     log.append("release_timeline:source", timeline.source_url.clone());
+   00322|     log.append("release_timeline:sha256", timeline.sha256.clone());
+   00323|     log.append(
+   00324|         "release_timeline:released",
+   00325|         rendered.released.len().to_string(),
+   00326|     );
+   00327|     log.append(
+   00328|         "release_timeline:announced",
+   00329|         rendered.announced.len().to_string(),
+   00330|     );
+   00331|     if rendered.stale {
+   00332|         log.append("release_timeline:stale", timeline.retrieved_at.clone());
+   00333|     }
+   00334|     Some(rendered.text)
+   00335| }
+   00336| 
+   00337| fn coreference_seed_data() -> &'static CoreferenceSeeds {
+   00338|     static CELL: OnceLock<CoreferenceSeeds> = OnceLock::new();
+   00339|     CELL.get_or_init(seed::coreference_seeds)
+   00340| }
+   00341| 
+   00342| pub fn try_coreference_request(
+   00343|     prompt: &str,
+   00344|     normalized: &str,
+   00345|     log: &mut EventLog,
+   00346| ) -> Option<SymbolicAnswer> {
+   00347|     let seeds = coreference_seed_data();
+   00348|     let pronoun = matching_coreference_pronoun(seeds, normalized)?;
+   00349| 
+   00350|     let (antecedent, resolution) = resolve_coreference_antecedent(seeds, log)?;
+   00351|     log.append("context_resolution", resolution.links_notation());
+   00352| 
+   00353|     log.append(
+   00354|         "coreference:resolved",
+   00355|         format!("{}={}", pronoun.token, antecedent.display_name),
+   00356|     );
+   00357|     if !antecedent.wikidata.is_empty() {
+   00358|         log.append("wikidata", antecedent.wikidata.clone());
+   00359|     }
+   00360| 
+   00361|     if let Some(rewritten) = rewrite_coreference_prompt(normalized, antecedent, pronoun) {
+   00362|         log.append("coreference:rewrite", rewritten.clone());
+   00363|         if let Some(answer) = try_fact_lookup(prompt, &rewritten, log) {
+   00364|             return Some(answer);
+   00365|         }
+   00366|     }
+   00367| 
+   00368|     Some(finalize_simple(
+   00369|         prompt,
+   00370|         log,
+   00371|         &antecedent.intent,
+   00372|         "response:coreference",
+   00373|         &antecedent.body,
+   00374|         0.85,
+   00375|     ))
+   00376| }
+   00377| 
+   00378| /// Resolve the nearest relevant user subject through the same nested-context
+   00379| /// substrate used by dialogue/task/repository scopes.
+   00380| ///
+   00381| /// Every prior turn is a real context (assistant turns intentionally contribute
+   00382| /// no subject), and the current impulse inherits the most recent turn. An
+   00383| /// unrelated user message therefore does not erase a still-visible antecedent,
+   00384| /// while a nearer recognized subject shadows an older one.
+   00385| fn resolve_coreference_antecedent<'a>(
+   00386|     seeds: &'a CoreferenceSeeds,
+   00387|     log: &EventLog,
+   00388| ) -> Option<(&'a Antecedent, ReferenceResolution)> {
+   00389|     const REFERENCE: &str = "coreference_subject";
+   00390|     let mut hierarchy = ContextHierarchy::new();
+   00391|     hierarchy.insert(Context::new("conversation")).ok()?;
+   00392| 
+   00393|     let mut parent_id = String::from("conversation");
+   00394|     let mut turn_index = 0_usize;
+   00395|     for event in log
+   00396|         .events()
+   00397|         .iter()
+   00398|         .filter(|event| event.kind.starts_with("prior_turn:"))
+   00399|     {
+   00400|         turn_index += 1;
+   00401|         let context_id = format!("conversation:turn:{turn_index}");
+   00402|         let mut context = Context::new(&context_id);
+   00403|         if event.kind == "prior_turn:user"
+   00404|             && let Some(antecedent) = seeds.pick_antecedent(&event.payload.to_lowercase())
+   00405|         {
+   00406|             context.assert_link(REFERENCE, &antecedent.display_name);
+   00407|         }
+   00408|         hierarchy
+   00409|             .nest(context, &parent_id, InheritancePolicy::Full)
+   00410|             .ok()?;
+   00411|         parent_id = context_id;
+   00412|     }
+   00413| 
+   00414|     hierarchy
+   00415|         .nest(
+   00416|             Context::new("conversation:current"),
+   00417|             &parent_id,
+   00418|             InheritancePolicy::Full,
+   00419|         )
+   00420|         .ok()?;
+   00421|     let resolution = hierarchy
+   00422|         .resolve("conversation:current", REFERENCE, ExternalLookup::Denied)
+   00423|         .ok()?;
+   00424|     let display_name = &resolution.links.first()?.to;
+   00425|     let antecedent = seeds
+   00426|         .antecedents
+   00427|         .iter()
+   00428|         .find(|antecedent| antecedent.display_name == *display_name)?;
+   00429|     Some((antecedent, resolution))
+   00430| }
+   00431| 
+   00432| /// Whether an earlier user turn names an antecedent a pronoun resolves to.
+   00433| ///
+   00434| /// The `coreference_antecedent` claim evidence of issue #1175 R3.
+   00435| #[must_use]
+   00436| pub fn names_coreference_antecedent(log: &EventLog) -> bool {
+   00437|     resolve_coreference_antecedent(coreference_seed_data(), log).is_some()
+   00438| }
+   00439| 
+   00440| fn matching_coreference_pronoun<'a>(
+   00441|     seeds: &'a CoreferenceSeeds,
+   00442|     normalized: &str,
+   00443| ) -> Option<&'a Pronoun> {
+   00444|     seeds.pronouns.iter().find(|pronoun| {
+   00445|         pronoun
+   00446|             .contexts
+   00447|             .iter()
+   00448|             .any(|context| !context.is_empty() && normalized.contains(context.as_str()))
+   00449|             || pronoun
+   00450|                 .starts_with
+   00451|                 .iter()
+   00452|                 .any(|prefix| !prefix.is_empty() && normalized.starts_with(prefix.as_str()))
+   00453|     })
+   00454| }
+   00455| 
+   00456| fn rewrite_coreference_prompt(
+   00457|     normalized: &str,
+   00458|     antecedent: &Antecedent,
+   00459|     pronoun: &Pronoun,
+   00460| ) -> Option<String> {
+   00461|     let replacement = antecedent
+   00462|         .aliases
+   00463|         .first()
+   00464|         .filter(|alias| !alias.is_empty())
+   00465|         .map_or_else(|| antecedent.display_name.to_lowercase(), Clone::clone);
+   00466| 
+   00467|     replace_token(normalized, pronoun.token.trim(), &replacement)
+   00468| }
+   00469| 
+   00470| fn replace_token(text: &str, token: &str, replacement: &str) -> Option<String> {
+   00471|     if token.is_empty() || replacement.is_empty() {
+   00472|         return None;
+   00473|     }
+   00474| 
+   00475|     let mut out = String::with_capacity(text.len() + replacement.len());
+   00476|     let mut cursor = 0;
+   00477|     let mut changed = false;
+   00478| 
+   00479|     while let Some(offset) = text[cursor..].find(token) {
+   00480|         let start = cursor + offset;
+   00481|         let end = start + token.len();
+   00482|         let previous = text[..start].chars().next_back();
+   00483|         let next = text[end..].chars().next();
+   00484| 
+   00485|         if token_boundary(previous) && token_boundary(next) {
+   00486|             out.push_str(&text[cursor..start]);
+   00487|             out.push_str(replacement);
+   00488|             changed = true;
+   00489|         } else {
+   00490|             out.push_str(&text[cursor..end]);
+   00491|         }
+   00492|         cursor = end;
+   00493|     }
+   00494| 
+   00495|     if !changed {
+   00496|         return None;
+   00497|     }
+   00498|     out.push_str(&text[cursor..]);
+   00499|     Some(out)
+   00500| }
+   00501| 
+   00502| fn token_boundary(ch: Option<char>) -> bool {
+   00503|     ch.is_none_or(|ch| !ch.is_alphanumeric() && ch != '_')
+   00504| }
+   00505| 
+   00506| fn persona_seed_data() -> &'static PersonaSeeds {
+   00507|     static CELL: OnceLock<PersonaSeeds> = OnceLock::new();
+   00508|     CELL.get_or_init(seed::persona_seeds)
+   00509| }
+   00510| 
+   00511| pub fn try_roleplay_request(
+   00512|     prompt: &str,
+   00513|     normalized: &str,
+   00514|     log: &mut EventLog,
+   00515| ) -> Option<SymbolicAnswer> {
+   00516|     let seeds = persona_seed_data();
+   00517|     if !seeds.matches_trigger(normalized) {
+   00518|         return None;
+   00519|     }
+   00520| 
+   00521|     let persona_display = seeds.pick_persona(normalized).map_or_else(
+   00522|         || seeds.default_persona.as_str(),
+   00523|         |persona| {
+   00524|             if !persona.wikidata.is_empty() {
+   00525|                 log.append("wikidata", persona.wikidata.clone());
+   00526|             }
+   00527|             persona.display_name.as_str()
+   00528|         },
+   00529|     );
+   00530|     log.append("roleplay:persona", persona_display.to_owned());
+   00531| 
+   00532|     let topic_body = seeds
+   00533|         .pick_topic(normalized)
+   00534|         .map_or(seeds.fallback_body.as_str(), |topic| topic.body.as_str());
+   00535|     if seeds.pick_persona(normalized).is_none() && seeds.pick_topic(normalized).is_none() {
+   00536|         log.append("roleplay:refusal", "no persona or topic".to_owned());
+   00537|     }
+   00538|     let body = seeds.render_body(persona_display, topic_body);
+   00539| 
+   00540|     Some(finalize_simple(
+   00541|         prompt,
+   00542|         log,
+   00543|         "roleplay_explanation",
+   00544|         "response:roleplay",
+   00545|         &body,
+   00546|         0.8,
+   00547|     ))
+   00548| }
+   00549| 
+   
+   (End of file - total 549 lines)
+   </file>
+>> edit {"filePath":"rust/src/solver_handlers/benchmark_prompts.rs","file_path":"rust/src/solver_handlers/benchmark_prompts.rs","new":"            .any(|context| {\n                let surface = crate::engine::normalize_prompt(context);\n                crate::seed::surface_present(normalized, &surface)\n            })","newString":"            .any(|context| {\n                let surface = crate::engine::normalize_prompt(context);\n                crate::seed::surface_present(normalized, &surface)\n            })","new_str":"            .any(|context| {\n                let surface = crate::engine::normalize_prompt(context);\n                crate::seed::surface_present(normalized, &surface)\n            })","new_string":"            .any(|context| {\n                let surface = crate::engine::normalize_prompt(context);\n                crate::seed::surface_present(normalized, &surface)\n            })","old":"            .any(|context| !context.is_empty() && normalized.contains(context.as_str()))","oldString":"            .any(|context| !context.is_empty() && normalized.contains(context.as_str()))","old_str":"            .any(|context| !context.is_empty() && normalized.contains(context.as_str()))","old_string":"            .any(|context| !context.is_empty() && normalized.contains(context.as_str()))","path":"rust/src/solver_handlers/benchmark_prompts.rs"}
+>> bash {"command":"sha256sum -- rust/src/solver_handlers/benchmark_prompts.rs"}
+   Output: 0f5c9f6727b4cf97b8def30768d1c602fdf1729f641b6459b71865221eff1629  rust/src/solver_handlers/benchmark_prompts.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `            .any(|context| !context.is_empty() && normalized.contains(context.as_str()))` with `            .any(|context| {
+                let surface = crate::engine::normalize_prompt(context);
+                crate::seed::surface_present(normalized, &surface)
+            })` in `rust/src/solver_handlers/benchmark_prompts.rs` and observed the result.

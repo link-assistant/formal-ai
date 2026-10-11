@@ -1,0 +1,13 @@
+language en
+lemma uniqueness
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the quality of being one of a kind"
+    examples ("that singularity distinguished him from all his companions")
+    id oewn-04770905-n
+    partOfSpeech n
+    synonyms (singularity)
+source "oewn:2024"

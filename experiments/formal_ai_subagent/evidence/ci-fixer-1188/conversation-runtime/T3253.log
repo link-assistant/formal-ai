@@ -1,0 +1,842 @@
+>> read {"filePath":"rust/src/solver_handlers/conversation_memory/mod.rs","file_path":"rust/src/solver_handlers/conversation_memory/mod.rs","path":"rust/src/solver_handlers/conversation_memory/mod.rs"}
+   <file>
+   00001| use std::fmt::Write as _;
+   00002| 
+   00003| mod conversation_summary;
+   00004| mod link_query;
+   00005| mod memory_write;
+   00006| mod program_query;
+   00007| use conversation_summary::try_summarize_conversation;
+   00008| use link_query::try_link_substitution_query;
+   00009| use memory_write::try_memory_write;
+   00010| pub use program_query::is_exact_memory_query;
+   00011| pub use program_query::{execute_memory_query, execute_memory_query_with_options};
+   00012| 
+   00013| use super::finalize_simple;
+   00014| 
+   00015| use crate::engine::{SymbolicAnswer, normalize_prompt};
+   00016| use crate::event_log::EventLog;
+   00017| use crate::intent_formalization::formalize_intent;
+   00018| use crate::language::detect as detect_language;
+   00019| use crate::link_store::memory_events_to_link_records;
+   00020| use crate::memory::MemoryEvent;
+   00021| use crate::seed::{self, Slot, WordForm};
+   00022| use crate::solver_helpers::{
+   00023|     extract_assistant_name, extract_introduced_name, last_turn, last_user_turn,
+   00024|     recall_assistant_name_from_history, recall_name_from_history,
+   00025| };
+   00026| 
+   00027| #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+   00028| enum RecallScope {
+   00029|     Conversation,
+   00030|     OtherConversations,
+   00031| }
+   00032| 
+   00033| impl RecallScope {
+   00034|     const fn as_str(self) -> &'static str {
+   00035|         match self {
+   00036|             Self::Conversation => "conversation",
+   00037|             Self::OtherConversations => "other_conversations",
+   00038|         }
+   00039|     }
+   00040| }
+   00041| 
+   00042| #[derive(Debug)]
+   00043| struct RecallQuery {
+   00044|     term: String,
+   00045|     scope: RecallScope,
+   00046| }
+   00047| 
+   00048| #[derive(Debug)]
+   00049| struct RecallMatch {
+   00050|     turn_index: usize,
+   00051|     role: &'static str,
+   00052|     content: String,
+   00053| }
+   00054| 
+   00055| #[derive(Debug)]
+   00056| struct MemoryRecallMatch {
+   00057|     event_index: usize,
+   00058|     role: String,
+   00059|     conversation_id: String,
+   00060|     conversation_title: String,
+   00061|     sent_at: String,
+   00062|     detail: MemoryRecallDetail,
+   00063| }
+   00064| 
+   00065| #[derive(Debug)]
+   00066| enum MemoryRecallDetail {
+   00067|     Field { name: &'static str, value: String },
+   00068|     Link { from: String, to: String },
+   00069| }
+   00070| 
+   00071| /// Result of executing a natural-language memory query against a mutable store.
+   00072| #[derive(Debug, Clone)]
+   00073| pub struct MemoryQueryExecution {
+   00074|     pub answer: SymbolicAnswer,
+   00075|     pub changed: bool,
+   00076| }
+   00077| 
+   00078| pub fn try_conversation_memory(
+   00079|     prompt: &str,
+   00080|     normalized: &str,
+   00081|     log: &mut EventLog,
+   00082| ) -> Option<SymbolicAnswer> {
+   00083|     if let Some(answer) = try_assistant_name(prompt, normalized, log) {
+   00084|         return Some(answer);
+   00085|     }
+   00086|     if let Some(answer) = try_recall_name(prompt, normalized, log) {
+   00087|         return Some(answer);
+   00088|     }
+   00089|     if let Some(answer) = try_recall_last_question(prompt, normalized, log) {
+   00090|         return Some(answer);
+   00091|     }
+   00092|     if let Some(answer) = try_recall_previous_message(prompt, normalized, log) {
+   00093|         return Some(answer);
+   00094|     }
+   00095|     if let Some(answer) = try_conversation_recall(prompt, normalized, log) {
+   00096|         return Some(answer);
+   00097|     }
+   00098|     if let Some(answer) = try_summarize_conversation(prompt, normalized, log) {
+   00099|         return Some(answer);
+   00100|     }
+   00101|     None
+   00102| }
+   00103| 
+   00104| /// The conversation-summary answer for a request the capability table read as
+   00105| /// a workspace gap (issue #1138: the Agent CLI's compaction ask names "which
+   00106| /// files we're working on", which the table parses as an enumeration).
+   00107| ///
+   00108| /// Dispatched from the table's gap arm, where the regular method order never
+   00109| /// arrives, so a summarization turn over a tool-less surface is answered from
+   00110| /// the history the log already holds instead of by the gap refusal naming a
+   00111| /// `shell` tool the surface never offered.
+   00112| pub fn conversation_summary_answer(
+   00113|     prompt: &str,
+   00114|     normalized: &str,
+   00115|     log: &mut EventLog,
+   00116| ) -> Option<SymbolicAnswer> {
+   00117|     try_summarize_conversation(prompt, normalized, log)
+   00118| }
+   00119| 
+   00120| #[must_use]
+   00121| pub fn answer_memory_recall(
+   00122|     prompt: &str,
+   00123|     events: &[MemoryEvent],
+   00124|     current_conversation_id: Option<&str>,
+   00125| ) -> Option<SymbolicAnswer> {
+   00126|     let normalized = normalize_prompt(prompt);
+   00127|     let mut log = EventLog::new();
+   00128|     log.append("impulse", prompt.to_owned());
+   00129|     try_memory_recall(
+   00130|         prompt,
+   00131|         &normalized,
+   00132|         events,
+   00133|         current_conversation_id,
+   00134|         &mut log,
+   00135|     )
+   00136| }
+   00137| 
+   00138| /// Indices of the store events a recall for this prompt reads.
+   00139| fn recalled_event_indices(
+   00140|     normalized: &str,
+   00141|     events: &[MemoryEvent],
+   00142|     current_conversation_id: Option<&str>,
+   00143|     prompt: &str,
+   00144| ) -> Vec<usize> {
+   00145|     let Some(query) = recognize_recall_query(normalized) else {
+   00146|         return Vec::new();
+   00147|     };
+   00148|     let mut indices: Vec<usize> =
+   00149|         memory_recall_matches(events, &query, current_conversation_id, prompt)
+   00150|             .iter()
+   00151|             // `event_index` is 1-based for display; the store slice is 0-based.
+   00152|             .map(|matched| matched.event_index.saturating_sub(1))
+   00153|             .collect();
+   00154|     indices.sort_unstable();
+   00155|     indices.dedup();
+   00156|     indices
+   00157| }
+   00158| 
+   00159| fn try_recall_name(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
+   00160|     let asks_name = normalized.contains("what is my name")
+   00161|         || normalized.contains("what's my name")
+   00162|         || normalized.contains("do you know my name")
+   00163|         || normalized.contains("who am i");
+   00164|     if !asks_name {
+   00165|         return None;
+   00166|     }
+   00167|     let name = recall_name_from_history(log, prompt).or_else(|| extract_introduced_name(prompt))?;
+   00168|     log.append("filter:user", format!("name={name}"));
+   00169|     let body = format!("Your name is {name}.");
+   00170|     Some(finalize_simple(
+   00171|         prompt,
+   00172|         log,
+   00173|         "recall_name",
+   00174|         "response:recall_name",
+   00175|         &body,
+   00176|         0.9,
+   00177|     ))
+   00178| }
+   00179| 
+   00180| /// Set or recall the *assistant's* name from dialog-local memory (issue #676).
+   00181| ///
+   00182| /// The assistant advertises "you can name me as you like", but nothing acted on a
+   00183| /// follow-up such as "Now your name is Ineffa", so it fell through to the unknown
+   00184| /// fallback. This handler closes that loop, statelessly, in the same spirit as
+   00185| /// [`try_recall_name`]: when the current turn assigns a name it acknowledges it, and
+   00186| /// when a later turn asks "what is your name" it replays the most recent assigned
+   00187| /// name from the conversation history. With no name ever set it returns `None` so the
+   00188| /// static `assistant_name` answer ("…you can name me as you like") still applies.
+   00189| fn try_assistant_name(
+   00190|     prompt: &str,
+   00191|     _normalized: &str,
+   00192|     log: &mut EventLog,
+   00193| ) -> Option<SymbolicAnswer> {
+   00194|     let language = detect_language(prompt).slug();
+   00195|     // A rename in the current turn takes priority — acknowledge it.
+   00196|     if let Some(name) = extract_assistant_name(prompt) {
+   00197|         log.append("filter:assistant", format!("name={name}"));
+   00198|         let body = render_assistant_name_ack(&name, language);
+   00199|         return Some(finalize_simple(
+   00200|             prompt,
+   00201|             log,
+   00202|             "set_assistant_name",
+   00203|             "response:set_assistant_name",
+   00204|             &body,
+   00205|             0.9,
+   00206|         ));
+   00207|     }
+   00208|     // Otherwise, an explicit "what is your name" recalls a previously set name.
+   00209|     let asks_name =
+   00210|         formalize_intent(prompt, language, None).route.as_deref() == Some("assistant_name");
+   00211|     if !asks_name {
+   00212|         return None;
+   00213|     }
+   00214|     let name = recall_assistant_name_from_history(log, prompt)?;
+   00215|     log.append("filter:assistant", format!("name={name}"));
+   00216|     let body = render_assistant_name_recall(&name, language);
+   00217|     Some(finalize_simple(
+   00218|         prompt,
+   00219|         log,
+   00220|         "assistant_name",
+   00221|         "response:assistant_name",
+   00222|         &body,
+   00223|         0.9,
+   00224|     ))
+   00225| }
+   00226| 
+   00227| /// Warm acknowledgement of a freshly assigned assistant name.
+   00228| fn render_assistant_name_ack(name: &str, language: &str) -> String {
+   00229|     seed::localized_response("set_assistant_name", language)
+   00230|         .unwrap_or_default()
+   00231|         .replace(concat!("{", "name", "}"), name)
+   00232| }
+   00233| 
+   00234| /// Recall a previously assigned assistant name.
+   00235| fn render_assistant_name_recall(name: &str, language: &str) -> String {
+   00236|     seed::localized_response("assistant_name_recall", language)
+   00237|         .unwrap_or_default()
+   00238|         .replace(concat!("{", "name", "}"), name)
+   00239| }
+   00240| 
+   00241| fn try_recall_last_question(
+   00242|     prompt: &str,
+   00243|     normalized: &str,
+   00244|     log: &mut EventLog,
+   00245| ) -> Option<SymbolicAnswer> {
+   00246|     let cleaned = normalize_prompt(normalized);
+   00247|     let asks = seed::lexicon().mentions_role(
+   00248|         seed::ROLE_CONVERSATION_RECALL_PREVIOUS_USER_MESSAGE,
+   00249|         &cleaned,
+   00250|     );
+   00251|     if !asks {
+   00252|         return None;
+   00253|     }
+   00254|     let previous = previous_user_request_turn(log)?;
+   00255|     let language = detect_language(prompt).slug();
+   00256|     let body = render_previous_user_message(&previous, language);
+   00257|     log.append("filter:user", "previous_turn".to_owned());
+   00258|     Some(finalize_simple(
+   00259|         prompt,
+   00260|         log,
+   00261|         "recall_last_question",
+   00262|         "response:recall_last_question",
+   00263|         &body,
+   00264|         0.9,
+   00265|     ))
+   00266| }
+   00267| 
+   00268| fn previous_user_request_turn(log: &EventLog) -> Option<String> {
+   00269|     let latest_user = last_user_turn(log).map(ToOwned::to_owned);
+   00270|     log.events()
+   00271|         .iter()
+   00272|         .rev()
+   00273|         .filter(|event| event.kind == "prior_turn:user")
+   00274|         .filter_map(|event| {
+   00275|             let content = event.payload.trim();
+   00276|             (!content.is_empty()).then_some(content)
+   00277|         })
+   00278|         .find(|content| !is_recall_meta_prompt(content))
+   00279|         .map(ToOwned::to_owned)
+   00280|         .or(latest_user)
+   00281| }
+   00282| 
+   00283| fn is_recall_meta_prompt(prompt: &str) -> bool {
+   00284|     let normalized = normalize_prompt(prompt);
+   00285|     seed::lexicon().mentions_role(
+   00286|         seed::ROLE_CONVERSATION_RECALL_PREVIOUS_USER_MESSAGE,
+   00287|         &normalized,
+   00288|     ) || seed::lexicon().mentions_role(seed::ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE, &normalized)
+   00289|         || recognize_recall_query(&normalized).is_some()
+   00290| }
+   00291| 
+   00292| fn render_previous_user_message(content: &str, language: &str) -> String {
+   00293|     match language {
+   00294|         "ru" => format!("Вы спрашивали: \"{content}\""),
+   00295|         "zh" => format!("你之前问的是:\"{content}\""),
+   00296|         "hi" => format!("आपने पूछा था: \"{content}\""),
+   00297|         _ => format!("Your previous question was: {content}"),
+   00298|     }
+   00299| }
+   00300| 
+   00301| /// Recall the content of the immediately preceding message (issue #529).
+   00302| ///
+   00303| /// Recognizes language-agnostic "what was written in the previous message?"
+   00304| /// phrasings via the `conversation_recall_previous_message` seed role and
+   00305| /// replays the last prior turn regardless of role. Unlike
+   00306| /// [`try_recall_last_question`], which returns the user's own last question,
+   00307| /// this returns whatever message came immediately before the current prompt —
+   00308| /// for the issue's scenario, the assistant's previous reply.
+   00309| fn try_recall_previous_message(
+   00310|     prompt: &str,
+   00311|     normalized: &str,
+   00312|     log: &mut EventLog,
+   00313| ) -> Option<SymbolicAnswer> {
+   00314|     if !seed::lexicon().mentions_role(
+   00315|         seed::ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE,
+   00316|         &normalize_prompt(normalized),
+   00317|     ) {
+   00318|         return None;
+   00319|     }
+   00320|     let language = detect_language(prompt).slug();
+   00321|     let previous = last_turn(log).map(|(role, content)| (role, content.to_owned()));
+   00322|     let body = if let Some((role, content)) = previous {
+   00323|         log.append("filter:user", format!("previous_message role={role}"));
+   00324|         render_previous_message(role, &content, language)
+   00325|     } else {
+   00326|         log.append("filter:user", "previous_message:none".to_owned());
+   00327|         log.append(
+   00328|             "conversation_recall:refusal",
+   00329|             "no previous message".to_owned(),
+   00330|         );
+   00331|         render_no_previous_message(language)
+   00332|     };
+   00333|     Some(finalize_simple(
+   00334|         prompt,
+   00335|         log,
+   00336|         "recall_previous_message",
+   00337|         "response:recall_previous_message",
+   00338|         &body,
+   00339|         0.9,
+   00340|     ))
+   00341| }
+   00342| 
+   00343| /// Localize the role of a recalled message ("user"/"assistant").
+   00344| fn localized_role(role: &str, language: &str) -> &'static str {
+   00345|     match (role, language) {
+   00346|         ("assistant", "ru") => "ассистент",
+   00347|         ("assistant", "hi") => "सहायक",
+   00348|         ("assistant", "zh") => "助手",
+   00349|         ("assistant", _) => "assistant",
+   00350|         (_, "ru") => "пользователь",
+   00351|         (_, "hi") => "उपयोगकर्ता",
+   00352|         (_, "zh") => "用户",
+   00353|         (_, _) => "user",
+   00354|     }
+   00355| }
+   00356| 
+   00357| fn render_previous_message(role: &str, content: &str, language: &str) -> String {
+   00358|     let role_label = localized_role(role, language);
+   00359|     match language {
+   00360|         "ru" => format!("В прошлом сообщении ({role_label}) было написано: \"{content}\""),
+   00361|         "zh" => format!("上一条消息（{role_label}）写道:\"{content}\""),
+   00362|         "hi" => format!("पिछले संदेश ({role_label}) में लिखा था: \"{content}\""),
+   00363|         _ => format!("The previous message ({role_label}) was: \"{content}\""),
+   00364|     }
+   00365| }
+   00366| 
+   00367| fn render_no_previous_message(language: &str) -> String {
+   00368|     match language {
+   00369|         "ru" => String::from("Прошлого сообщения пока нет."),
+   00370|         "zh" => String::from("还没有上一条消息。"),
+   00371|         "hi" => String::from("अभी तक कोई पिछला संदेश नहीं है."),
+   00372|         _ => String::from("There is no previous message yet."),
+   00373|     }
+   00374| }
+   00375| 
+   00376| fn try_conversation_recall(
+   00377|     prompt: &str,
+   00378|     normalized: &str,
+   00379|     log: &mut EventLog,
+   00380| ) -> Option<SymbolicAnswer> {
+   00381|     let query = recognize_recall_query(normalized)?;
+   00382|     let matches = recall_matches(log, &query.term);
+   00383|     log.append("filter:memory_query", query.term.clone());
+   00384|     log.append("filter:memory_scope", query.scope.as_str());
+   00385|     log.append("filter:memory_matches", matches.len().to_string());
+   00386|     for matched in &matches {
+   00387|         log.append(
+   00388|             "memory_match",
+   00389|             format!(
+   00390|                 "turn={} role={} content={}",
+   00391|                 matched.turn_index, matched.role, matched.content
+   00392|             ),
+   00393|         );
+   00394|     }
+   00395|     let language = detect_language(prompt).slug();
+   00396|     let body = render_recall_report(&query, &matches, language);
+   00397|     Some(finalize_simple(
+   00398|         prompt,
+   00399|         log,
+   00400|         "conversation_recall",
+   00401|         "response:conversation_recall",
+   00402|         &body,
+   00403|         0.9,
+   00404|     ))
+   00405| }
+   00406| 
+   00407| fn try_memory_recall(
+   00408|     prompt: &str,
+   00409|     normalized: &str,
+   00410|     events: &[MemoryEvent],
+   00411|     current_conversation_id: Option<&str>,
+   00412|     log: &mut EventLog,
+   00413| ) -> Option<SymbolicAnswer> {
+   00414|     let query = recognize_recall_query(normalized)?;
+   00415|     let matches = memory_recall_matches(events, &query, current_conversation_id, prompt);
+   00416|     let conversation_count = memory_conversation_count(&matches);
+   00417|     log.append("filter:memory_query", query.term.clone());
+   00418|     log.append("filter:memory_scope", query.scope.as_str());
+   00419|     log.append("filter:memory_matches", matches.len().to_string());
+   00420|     log.append(
+   00421|         "filter:memory_conversations",
+   00422|         conversation_count.to_string(),
+   00423|     );
+   00424|     for matched in &matches {
+   00425|         log.append(
+   00426|             "memory_match",
+   00427|             format!(
+   00428|                 "event={} conversation={} title={} role={} {}",
+   00429|                 matched.event_index,
+   00430|                 matched.conversation_id,
+   00431|                 matched.conversation_title,
+   00432|                 matched.role,
+   00433|                 matched.log_fragment()
+   00434|             ),
+   00435|         );
+   00436|     }
+   00437|     let language = detect_language(prompt).slug();
+   00438|     let body = render_memory_recall_report(&query, &matches, language);
+   00439|     Some(finalize_simple(
+   00440|         prompt,
+   00441|         log,
+   00442|         "conversation_recall",
+   00443|         "response:conversation_recall",
+   00444|         &body,
+   00445|         0.9,
+   00446|     ))
+   00447| }
+   00448| 
+   00449| /// Whether the request names a term to recall from the conversation.
+   00450| ///
+   00451| /// The `recall_query_term` claim evidence of issue #1175 R3.
+   00452| #[must_use]
+   00453| pub fn names_recall_query(normalized: &str) -> bool {
+   00454|     recognize_recall_query(normalized).is_some()
+   00455| }
+   00456| 
+   00457| fn recognize_recall_query(normalized: &str) -> Option<RecallQuery> {
+   00458|     recall_term_for_role(seed::ROLE_CONVERSATION_RECALL_QUERY, normalized)
+   00459|         .map(|term| RecallQuery {
+   00460|             term,
+   00461|             scope: RecallScope::Conversation,
+   00462|         })
+   00463|         .or_else(|| {
+   00464|             recall_term_for_role(seed::ROLE_CONVERSATION_RECALL_OTHER_QUERY, normalized).map(
+   00465|                 |term| RecallQuery {
+   00466|                     term,
+   00467|                     scope: RecallScope::OtherConversations,
+   00468|                 },
+   00469|             )
+   00470|         })
+   00471| }
+   00472| 
+   00473| fn recall_term_for_role(role: &str, normalized: &str) -> Option<String> {
+   00474|     seed::lexicon()
+   00475|         .role_word_forms(role)
+   00476|         .iter()
+   00477|         .filter_map(|form| term_from_form(form, normalized))
+   00478|         .find(|term| !term.is_empty())
+   00479| }
+   00480| 
+   00481| fn term_from_form(form: &WordForm, normalized: &str) -> Option<String> {
+   00482|     let raw = match form.slot() {
+   00483|         Slot::Prefix => normalized.strip_prefix(form.before_slot())?,
+   00484|         Slot::Suffix => normalized.strip_suffix(form.after_slot())?,
+   00485|         Slot::Circumfix => normalized
+   00486|             .strip_prefix(form.before_slot())?
+   00487|             .strip_suffix(form.after_slot())?,
+   00488|         Slot::Bare => return None,
+   00489|     };
+   00490|     clean_recall_term(raw)
+   00491| }
+   00492| 
+   00493| fn clean_recall_term(raw: &str) -> Option<String> {
+   00494|     let term = raw
+   00495|         .trim()
+   00496|         .trim_matches(|ch: char| {
+   00497|             ch.is_whitespace()
+   00498|                 || matches!(
+   00499|                     ch,
+   00500|                     '`' | '"' | '\'' | ':' | '-' | '_' | '.' | ',' | '?' | '!' | '(' | ')'
+   00501|                 )
+   00502|         })
+   00503|         .split_whitespace()
+   00504|         .collect::<Vec<_>>()
+   00505|         .join(" ");
+   00506|     (!term.is_empty()).then_some(term)
+   00507| }
+   00508| 
+   00509| fn recall_matches(log: &EventLog, term: &str) -> Vec<RecallMatch> {
+   00510|     let needle = normalize_prompt(term);
+   00511|     if needle.is_empty() {
+   00512|         return Vec::new();
+   00513|     }
+   00514|     log.events()
+   00515|         .iter()
+   00516|         .enumerate()
+   00517|         .filter_map(|(index, event)| {
+   00518|             let role = match event.kind {
+   00519|                 "prior_turn:user" => "user",
+   00520|                 "prior_turn:assistant" => "assistant",
+   00521|                 _ => return None,
+   00522|             };
+   00523|             let haystack = normalize_prompt(&event.payload);
+   00524|             haystack.contains(&needle).then(|| RecallMatch {
+   00525|                 turn_index: index + 1,
+   00526|                 role,
+   00527|                 content: event.payload.clone(),
+   00528|             })
+   00529|         })
+   00530|         .collect()
+   00531| }
+   00532| 
+   00533| fn memory_recall_matches(
+   00534|     events: &[MemoryEvent],
+   00535|     query: &RecallQuery,
+   00536|     current_conversation_id: Option<&str>,
+   00537|     trigger_text: &str,
+   00538| ) -> Vec<MemoryRecallMatch> {
+   00539|     let needle = normalize_prompt(&query.term);
+   00540|     if needle.is_empty() {
+   00541|         return Vec::new();
+   00542|     }
+   00543|     let trigger = normalize_prompt(trigger_text);
+   00544|     let mut matches = Vec::new();
+   00545|     for (index, event) in events.iter().enumerate() {
+   00546|         if !event_in_recall_scope(event, query, current_conversation_id) {
+   00547|             continue;
+   00548|         }
+   00549|         for (name, value) in memory_event_field_values(event) {
+   00550|             let value = value.trim();
+   00551|             if value.is_empty() {
+   00552|                 continue;
+   00553|             }
+   00554|             let haystack = normalize_prompt(value);
+   00555|             if !haystack.contains(&needle) {
+   00556|                 continue;
+   00557|             }
+   00558|             if name == "content" && !trigger.is_empty() && haystack == trigger {
+   00559|                 continue;
+   00560|             }
+   00561|             matches.push(memory_field_match(index, event, name, value));
+   00562|         }
+   00563|     }
+   00564| 
+   00565|     for (index, (event, record)) in events
+   00566|         .iter()
+   00567|         .zip(memory_events_to_link_records(events))
+   00568|         .enumerate()
+   00569|     {
+   00570|         if !event_in_recall_scope(event, query, current_conversation_id) {
+   00571|             continue;
+   00572|         }
+   00573|         for link in record.links {
+   00574|             let haystack = normalize_prompt(&format!("{} {}", link.from, link.to));
+   00575|             if !haystack.contains(&needle) {
+   00576|                 continue;
+   00577|             }
+   00578|             matches.push(memory_link_match(index, event, &link.from, &link.to));
+   00579|         }
+   00580|     }
+   00581| 
+   00582|     matches
+   00583| }
+   00584| 
+   00585| fn event_in_recall_scope(
+   00586|     event: &MemoryEvent,
+   00587|     query: &RecallQuery,
+   00588|     current_conversation_id: Option<&str>,
+   00589| ) -> bool {
+   00590|     let conversation_id = event.conversation_id.as_deref().unwrap_or("legacy");
+   00591|     query.scope != RecallScope::OtherConversations
+   00592|         || current_conversation_id.is_none_or(|current| current != conversation_id)
+   00593| }
+   00594| 
+   00595| fn memory_event_field_values(event: &MemoryEvent) -> Vec<(&'static str, &str)> {
+   00596|     let mut fields = Vec::new();
+   00597|     push_memory_field(&mut fields, "id", Some(event.id.as_str()));
+   00598|     push_memory_field(&mut fields, "kind", event.kind.as_deref());
+   00599|     push_memory_field(&mut fields, "role", event.role.as_deref());
+   00600|     push_memory_field(&mut fields, "intent", event.intent.as_deref());
+   00601|     push_memory_field(&mut fields, "tool", event.tool.as_deref());
+   00602|     push_memory_field(&mut fields, "inputs", event.inputs.as_deref());
+   00603|     push_memory_field(&mut fields, "outputs", event.outputs.as_deref());
+   00604|     push_memory_field(&mut fields, "content", event.content.as_deref());
+   00605|     push_memory_field(&mut fields, "sentAt", event.sent_at.as_deref());
+   00606|     push_memory_field(&mut fields, "demoLabel", event.demo_label.as_deref());
+   00607|     push_memory_field(
+   00608|         &mut fields,
+   00609|         "conversationId",
+   00610|         event.conversation_id.as_deref(),
+   00611|     );
+   00612|     push_memory_field(
+   00613|         &mut fields,
+   00614|         "conversationTitle",
+   00615|         event.conversation_title.as_deref(),
+   00616|     );
+   00617|     for evidence in &event.evidence {
+   00618|         push_memory_field(&mut fields, "evidence", Some(evidence.as_str()));
+   00619|     }
+   00620|     fields
+   00621| }
+   00622| 
+   00623| fn push_memory_field<'a>(
+   00624|     fields: &mut Vec<(&'static str, &'a str)>,
+   00625|     name: &'static str,
+   00626|     value: Option<&'a str>,
+   00627| ) {
+   00628|     if let Some(value) = value.filter(|value| !value.trim().is_empty()) {
+   00629|         fields.push((name, value));
+   00630|     }
+   00631| }
+   00632| 
+   00633| fn memory_field_match(
+   00634|     index: usize,
+   00635|     event: &MemoryEvent,
+   00636|     name: &'static str,
+   00637|     value: &str,
+   00638| ) -> MemoryRecallMatch {
+   00639|     memory_match(
+   00640|         index,
+   00641|         event,
+   00642|         MemoryRecallDetail::Field {
+   00643|             name,
+   00644|             value: value.to_owned(),
+   00645|         },
+   00646|     )
+   00647| }
+   00648| 
+   00649| fn memory_link_match(index: usize, event: &MemoryEvent, from: &str, to: &str) -> MemoryRecallMatch {
+   00650|     memory_match(
+   00651|         index,
+   00652|         event,
+   00653|         MemoryRecallDetail::Link {
+   00654|             from: from.to_owned(),
+   00655|             to: to.to_owned(),
+   00656|         },
+   00657|     )
+   00658| }
+   00659| 
+   00660| fn memory_match(
+   00661|     index: usize,
+   00662|     event: &MemoryEvent,
+   00663|     detail: MemoryRecallDetail,
+   00664| ) -> MemoryRecallMatch {
+   00665|     let role = event
+   00666|         .role
+   00667|         .as_deref()
+   00668|         .or(event.kind.as_deref())
+   00669|         .or(event.intent.as_deref())
+   00670|         .unwrap_or("event");
+   00671|     MemoryRecallMatch {
+   00672|         event_index: index + 1,
+   00673|         role: role.to_ascii_lowercase(),
+   00674|         conversation_id: event
+   00675|             .conversation_id
+   00676|             .as_deref()
+   00677|             .unwrap_or("legacy")
+   00678|             .to_owned(),
+   00679|         conversation_title: event
+   00680|             .conversation_title
+   00681|             .as_deref()
+   00682|             .unwrap_or_default()
+   00683|             .to_owned(),
+   00684|         sent_at: event.sent_at.as_deref().unwrap_or_default().to_owned(),
+   00685|         detail,
+   00686|     }
+   00687| }
+   00688| 
+   00689| impl MemoryRecallMatch {
+   00690|     fn log_fragment(&self) -> String {
+   00691|         match &self.detail {
+   00692|             MemoryRecallDetail::Field { name, value } => format!("field={name} value={value}"),
+   00693|             MemoryRecallDetail::Link { from, to } => format!("link={from}->{to}"),
+   00694|         }
+   00695|     }
+   00696| 
+   00697|     fn render_line(&self) -> String {
+   00698|         let stamp = if self.sent_at.is_empty() {
+   00699|             String::new()
+   00700|         } else {
+   00701|             format!(" [{}]", self.sent_at)
+   00702|         };
+   00703|         match &self.detail {
+   00704|             MemoryRecallDetail::Field { name, value } if *name == "content" => {
+   00705|                 format!("{}{}: {}", self.role, stamp, value)
+   00706|             }
+   00707|             MemoryRecallDetail::Field { name, value } => format!("{name}{stamp}: {value}"),
+   00708|             MemoryRecallDetail::Link { from, to } => format!("link{stamp}: {from} -> {to}"),
+   00709|         }
+   00710|     }
+   00711| }
+   00712| 
+   00713| fn memory_conversation_count(matches: &[MemoryRecallMatch]) -> usize {
+   00714|     let mut ids: Vec<&str> = Vec::new();
+   00715|     for matched in matches {
+   00716|         if !ids.contains(&matched.conversation_id.as_str()) {
+   00717|             ids.push(matched.conversation_id.as_str());
+   00718|         }
+   00719|     }
+   00720|     ids.len()
+   00721| }
+   00722| 
+   00723| fn render_recall_report(query: &RecallQuery, matches: &[RecallMatch], language: &str) -> String {
+   00724|     let count = matches.len().to_string();
+   00725|     let intent = if matches.is_empty() {
+   00726|         "conversation-recall-empty"
+   00727|     } else {
+   00728|         "conversation-recall-header"
+   00729|     };
+   00730|     let mut lines = vec![
+   00731|         seed::render_localized_once(
+   00732|             intent,
+   00733|             language,
+   00734|             &[("term", &query.term), ("count", &count)],
+   00735|         ),
+   00736|     ];
+   00737|     for matched in matches {
+   00738|         let turn = matched.turn_index.to_string();
+   00739|         lines.push(
+   00740|             seed::render_localized_once(
+   00741|                 "conversation-recall-turn",
+   00742|                 language,
+   00743|                 &[
+   00744|                     ("turn", &turn),
+   00745|                     ("role", matched.role),
+   00746|                     ("content", &matched.content),
+   00747|                 ],
+   00748|             ),
+   00749|         );
+   00750|     }
+   00751|     lines.join("\n")
+   00752| }
+   00753| 
+   00754| fn render_memory_recall_report(
+   00755|     query: &RecallQuery,
+   00756|     matches: &[MemoryRecallMatch],
+   00757|     language: &str,
+   00758| ) -> String {
+   00759|     if matches.is_empty() {
+   00760|         return match language {
+   00761|             "ru" => format!("Упоминаний \"{}\" в памяти не найдено.", query.term),
+   00762|             "zh" => format!("在记忆中没有找到 \"{}\"。", query.term),
+   00763|             "hi" => format!("स्मृति में \"{}\" नहीं मिला.", query.term),
+   00764|             _ => format!("No mentions of \"{}\" found in memory.", query.term),
+   00765|         };
+   00766|     }
+   00767| 
+   00768|     let conversation_count = memory_conversation_count(matches);
+   00769|     let mut body = match language {
+   00770|         "ru" => format!(
+   00771|             "Найдено упоминаний \"{}\" в памяти: {} (бесед: {}).\n",
+   00772|             query.term,
+   00773|             matches.len(),
+   00774|             conversation_count
+   00775|         ),
+   00776|         "zh" => format!(
+   00777|             "在记忆中找到 \"{}\" 的记录: {} (对话: {})。\n",
+   00778|             query.term,
+   00779|             matches.len(),
+   00780|             conversation_count
+   00781|         ),
+   00782|         "hi" => format!(
+   00783|             "स्मृति में \"{}\" के उल्लेख मिले: {} (बातचीत: {}).\n",
+   00784|             query.term,
+   00785|             matches.len(),
+   00786|             conversation_count
+   00787|         ),
+   00788|         _ => format!(
+   00789|             "Found {} mention(s) of \"{}\" across {} conversation(s) in memory.\n",
+   00790|             matches.len(),
+   00791|             query.term,
+   00792|             conversation_count
+   00793|         ),
+   00794|     };
+   00795| 
+   00796|     let mut conversation_ids: Vec<&str> = Vec::new();
+   00797|     for matched in matches {
+   00798|         if !conversation_ids.contains(&matched.conversation_id.as_str()) {
+   00799|             conversation_ids.push(matched.conversation_id.as_str());
+   00800|         }
+   00801|     }
+   00802|     for conversation_id in conversation_ids {
+   00803|         let title = matches
+   00804|             .iter()
+   00805|             .find(|matched| {
+   00806|                 matched.conversation_id == conversation_id && !matched.conversation_title.is_empty()
+   00807|             })
+   00808|             .map_or("", |matched| matched.conversation_title.as_str());
+   00809|         let label = if title.is_empty() || title == conversation_id {
+   00810|             conversation_id.to_owned()
+   00811|         } else {
+   00812|             format!("{title} ({conversation_id})")
+   00813|         };
+   00814|         writeln!(body, "- conversation {label}").expect("string write is infallible");
+   00815|         for matched in matches
+   00816|             .iter()
+   00817|             .filter(|matched| matched.conversation_id == conversation_id)
+   00818|         {
+   00819|             writeln!(body, "  - {}", matched.render_line()).expect("string write is infallible");
+   00820|         }
+   00821|     }
+   00822|     body.trim_end().to_owned()
+   00823| }
+   00824| 
+   
+   (End of file - total 824 lines)
+   </file>
+>> edit {"filePath":"rust/src/solver_handlers/conversation_memory/mod.rs","file_path":"rust/src/solver_handlers/conversation_memory/mod.rs","new":"    lines.join(\"\\n\").trim_end().to_owned()\n}\n\nfn render_memory_recall_report(","newString":"    lines.join(\"\\n\").trim_end().to_owned()\n}\n\nfn render_memory_recall_report(","new_str":"    lines.join(\"\\n\").trim_end().to_owned()\n}\n\nfn render_memory_recall_report(","new_string":"    lines.join(\"\\n\").trim_end().to_owned()\n}\n\nfn render_memory_recall_report(","old":"    lines.join(\"\\n\")\n}\n\nfn render_memory_recall_report(","oldString":"    lines.join(\"\\n\")\n}\n\nfn render_memory_recall_report(","old_str":"    lines.join(\"\\n\")\n}\n\nfn render_memory_recall_report(","old_string":"    lines.join(\"\\n\")\n}\n\nfn render_memory_recall_report(","path":"rust/src/solver_handlers/conversation_memory/mod.rs"}
+>> bash {"command":"sha256sum -- rust/src/solver_handlers/conversation_memory/mod.rs"}
+   Output: 0033776119948c919abb497f3af25def93ea2a39e836c06bd7cd9e1d58fc7574  rust/src/solver_handlers/conversation_memory/mod.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    lines.join("\n")
+}
+
+fn render_memory_recall_report(` with `    lines.join("\n").trim_end().to_owned()
+}
+
+fn render_memory_recall_report(` in `rust/src/solver_handlers/conversation_memory/mod.rs` and observed the result.

@@ -1,6 +1,6 @@
 research_table_procedure
   issue 948
-  purpose "Status classification, localized column labels, and source-dependent cell instructions for the generic research comparison procedure. Topic facts never live here."
+  purpose "Status classification, localized column labels, and source-dependent cell instructions for the generic research comparison procedure. Topic facts never live here. A status with no marker is the one a prior answer falls to when no marker matches; followup_request rows are the whole-prompt follow-ups that ask for the result of the prior research step (issue #918), and each status renders the seeded research_result_followup_<status> response."
   status no_results
     marker "no cors enabled web search results"
     marker "no cors readable web search results"
@@ -19,6 +19,26 @@ research_table_procedure
     marker "open research question detected"
     marker "search providers that can be queried"
     marker "verify claims against"
+  status open_research
+    note "no marker: the status a prior answer falls to when no other status's marker matches"
+  followup_request "result"
+  followup_request "the result"
+  followup_request "what result"
+  followup_request "what is result"
+  followup_request "what is the result"
+  followup_request "what was the result"
+  followup_request "what are the results"
+  followup_request "what were the results"
+  followup_request "show the result"
+  followup_request "show the results"
+  followup_request "give me the result"
+  followup_request "give me the results"
+  followup_request "what is the answer"
+  followup_request "what was the answer"
+  followup_request "what did you find"
+  followup_request "what did we find"
+  followup_request "what is the outcome"
+  followup_request "what was the outcome"
   table_text en
     intro "Research comparison table (draft; verify claims against the source links from the preceding retrieval)."
     topic_label Topic

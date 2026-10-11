@@ -1,0 +1,395 @@
+{
+  "scope": "Complete available outer FA calls T3241\u2013T3279; reviewed source writes, not independent synthesis",
+  "transcripts": 39,
+  "tools": {
+    "read": 23,
+    "edit": 23,
+    "bash": 59
+  },
+  "zeroToolIds": [],
+  "neutralTemplateCopyIds": [
+    3242,
+    3244,
+    3248,
+    3263
+  ],
+  "formatOnlyInvocationIds": [
+    3247,
+    3273
+  ],
+  "guardedGeneratorSourceInvocationIds": [
+    3266
+  ],
+  "manualRepositoryMutations": 0,
+  "physicalCalls": [
+    {
+      "id": "T3241",
+      "bytes": 10060,
+      "sha256": "94bd6f7d0fe169e35f42c82d35eea22872d6ef8bea3bc3ca198a19c6e510dc98",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3242",
+      "bytes": 881,
+      "sha256": "c4267b53ff9b45f2cc271e8ac2faf3eb8d181abe0d14d06445dded98463e984e",
+      "tools": {
+        "bash": 6
+      }
+    },
+    {
+      "id": "T3243",
+      "bytes": 16605,
+      "sha256": "4d533e24fff9a1aee65ba58e5bfa74002bade83002d281e922e77403d913121b",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3244",
+      "bytes": 916,
+      "sha256": "6c3afb046f1a739e293b763a055e66585cd83dbcb140092882da06e06b88ca37",
+      "tools": {
+        "bash": 6
+      }
+    },
+    {
+      "id": "T3245",
+      "bytes": 15242,
+      "sha256": "c8c3a3841bcce50e11da469e9d63dfda15bccd55b419a06c4b146a711c117bdf",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3246",
+      "bytes": 50581,
+      "sha256": "d5201cef94c7476e23a064bdab6e299f53cab697f37bf90fa5e4a7a7ab4ac4c4",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3247",
+      "bytes": 189,
+      "sha256": "7419abb20d11bfe5ee5f6cff816c0e8c78dcbe8bc9a4c9756032636712b9b0a0",
+      "tools": {
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3248",
+      "bytes": 891,
+      "sha256": "dd3087e5f2334e51d503a943e91bee5273931a960ce26224d4ca65f9ff3aa9ca",
+      "tools": {
+        "bash": 6
+      }
+    },
+    {
+      "id": "T3249",
+      "bytes": 19833,
+      "sha256": "6edf4e189872e6f5d1912db0e70ad16a8f43642fb7f6db8c4ac190f338608eea",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3250",
+      "bytes": 46950,
+      "sha256": "abb8e5110a3f78a24099a0fbc3f0cf55fe12a69e69d13e5b7d7c1013124bc120",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3251",
+      "bytes": 35302,
+      "sha256": "c4853119974d7d71bfbb72cba6c238699d64158eac0d1bb5c8daa5b5491f3948",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3252",
+      "bytes": 45901,
+      "sha256": "34001b02e34afef3d53ae0d21de1ee9f96b55f4513e2f832b3e8f5d90af14d2d",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3253",
+      "bytes": 36979,
+      "sha256": "b92fb30dc41e00f05e44fe6acc332e4ed2b29a55d17780f9bb4854117510a824",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3254",
+      "bytes": 4904,
+      "sha256": "77eff7ef89877c555717abc025ce9aa6bf01ed1b261a63f7bc0bef9d579cc8a9",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3255",
+      "bytes": 72994,
+      "sha256": "c6dc795b75f6a47653617a0e508e031de00c1a0f30c3fde5f23c17699561a6a4",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3256",
+      "bytes": 7933,
+      "sha256": "297ccad6b2b336c8de41d22ba1668f38ecd7f6072ee11136fe0d2a79c1cce590",
+      "tools": {
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3257",
+      "bytes": 37758,
+      "sha256": "b1ebbcb04eb75fd4bcf4009b113906f40c47906e424bb027a213812ff7a47fb1",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3258",
+      "bytes": 29686,
+      "sha256": "5c6405e9e8ed316b4af01b0d77ac8fb0a9a82f1ac19409ef1a38f65e2cf340b2",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3259",
+      "bytes": 15822,
+      "sha256": "0f30d8e025628592c6e5268188ec83aecf3980d24a23437a2d0d7465452af15b",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3260",
+      "bytes": 49327,
+      "sha256": "c7137bbecd1cacb865678febab8233331aadf9048e82b0da77cc43507125bcf3",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3261",
+      "bytes": 97037,
+      "sha256": "dc066a07e0c5343c4e64d401dbe794421f5bec7a76236876266c940863340663",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3262",
+      "bytes": 72168,
+      "sha256": "822d22f1cd505c9603551ec09d68eb24685c26c163af8e532141ab31e18a5217",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3263",
+      "bytes": 891,
+      "sha256": "951d26bf4d70001904679d74d9b7dd446f952bfed6b6a6aee0851e695bbb4c6e",
+      "tools": {
+        "bash": 6
+      }
+    },
+    {
+      "id": "T3264",
+      "bytes": 16604,
+      "sha256": "6d3c16a8b9e994a15c824f80ef51f68f804b45e54b70fba6eacadd5e5065e878",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3265",
+      "bytes": 46575,
+      "sha256": "eb6849c898bf0c3d4d2fdbcf5c936982b313f2c4eb825d5e509bad7e47281fcf",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3266",
+      "bytes": 8242,
+      "sha256": "4504e8bf79ee455ed8b53b7549bd0ab9d544e38ea722730808e7bea1e6fdfa29",
+      "tools": {
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3267",
+      "bytes": 9226,
+      "sha256": "5d6f74711548c54c6c07711f44136e6601d9ee6d0b9ac6d80ae024332b2128d5",
+      "tools": {
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3268",
+      "bytes": 7917,
+      "sha256": "7a485d919831c7175847c66605685ec274277cdd8454424abcb6c8dd3c332f2b",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3269",
+      "bytes": 7619,
+      "sha256": "594e9087cf78b28227fdb632e501cf313b86195c462a8d2108097e658f218842",
+      "tools": {
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3270",
+      "bytes": 1106,
+      "sha256": "117c98037a15b6cbe00aee25564ab5fcb8a5e07386827f87aab81f17a532d6ea",
+      "tools": {
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3271",
+      "bytes": 47761,
+      "sha256": "8d972e2a81c5927ae80ef572ed3a115dc1f261429167541bd83f9c69b7f83189",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3272",
+      "bytes": 46069,
+      "sha256": "0ce70854ea3c0f4502b3691a3823f52c864ee09f6e3029889b9fdb5af1a4e178",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3273",
+      "bytes": 349,
+      "sha256": "bbd352ef4310f011bffa785c2824fa0c05e65f779095642d6b55220b2ec37450",
+      "tools": {
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3274",
+      "bytes": 13998,
+      "sha256": "3da2f7afd396babf01258cb658aa15efe09cd218760dc0b87daacf5ad3c302c1",
+      "tools": {
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3275",
+      "bytes": 48561,
+      "sha256": "08e8d517a1d617d9fea4b64ebbb3859fe84d5824d8de5a17d57d2151cd6ca84e",
+      "tools": {
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3276",
+      "bytes": 5550,
+      "sha256": "68c7acb9f890c5afadde223c2ea4823186be569fafcdfe48408f69655f6b38ed",
+      "tools": {
+        "read": 1,
+        "edit": 1,
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3277",
+      "bytes": 635,
+      "sha256": "2bfc88d5e6b55517aa03687baba851614dd1c1a9bc5c6291bf168acd6e92b647",
+      "tools": {
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3278",
+      "bytes": 661,
+      "sha256": "b71b744f379cd75bc8d3f4d13c56a6cf3afd5f537b4ce70ae8b1136bd44ce52e",
+      "tools": {
+        "bash": 1
+      }
+    },
+    {
+      "id": "T3279",
+      "bytes": 635,
+      "sha256": "2bfc88d5e6b55517aa03687baba851614dd1c1a9bc5c6291bf168acd6e92b647",
+      "tools": {
+        "bash": 1
+      }
+    }
+  ],
+  "earliestIncompleteRawIds": "T920\u2013T929; excluded from reconstructed physical verification",
+  "actualFailures": {
+    "T3256": "new empty-history guard exposed missing shared query-term admission; actual fixed T3260, focused T3269",
+    "T3267": "added ASCII Spanish locale assumption was false; original ASCII query retained and unambiguous Spanish heldout added T3268, then T3269 PASS",
+    "T3277": "actual Bash exit0 and 201/201PASS, wrapper checked nonexistent results field; preserve false-FAIL raw and separate T3278 observation validation"
+  },
+  "cutoff": "T3279",
+  "finalEvidence": {
+    "T3278": "actual read-only validation of T3277 exit0 201/201PASS",
+    "T3279": "final unchanged201cases PASS;977unsupported preserved"
+  }
+}

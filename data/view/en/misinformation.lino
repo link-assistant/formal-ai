@@ -1,0 +1,9 @@
+view
+  id M-f7ed397d8ddf
+  lemma misinformation
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "information that is incorrect"
+    provenance (wordnet)

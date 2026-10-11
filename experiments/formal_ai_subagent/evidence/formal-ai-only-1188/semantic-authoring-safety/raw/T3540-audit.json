@@ -1,0 +1,35 @@
+{
+  "id": "T3540",
+  "stop": "final",
+  "answer": "The `node -e 'const fs=require('\\''fs'\\''),path=require('\\''path'\\'');const r=JSON.parse(fs.readFileSync('\\''/private/tmp/formal-ai-only-1188/T3540-request.json'\\'','\\''utf8'\\''));for(const c of r.changes){const p='\\''/Users/konard/Code/Archive/link-assistant/formal-ai/'\\''+c.path;if(c.before===undefined?fs.existsSync(p):fs.readFileSync(p,'\\''utf8'\\'')!==c.before)throw Error('\\''source preimage '\\''+c.path);}for(const c of r.changes)fs.writeFileSync('\\''/Users/konard/Code/Archive/link-assistant/formal-ai/'\\''+c.path,c.expected);console.log('\\''5 reviewed shared parser/decision source writes'\\'');'` command completed. Output:\n\n```text\n5 reviewed shared parser/decision source writes\n```",
+  "calls": [
+    "bash"
+  ],
+  "matches": [
+    {
+      "path": "js/agentic/crate/literal_content.mjs",
+      "exact": true,
+      "sha256": "f0935e4834fb242eb0b3669e4fa0ad30540b26dff7c0c06dfc305b9ba0e942b7"
+    },
+    {
+      "path": "js/agentic/crate/literal_authoring_contract.mjs",
+      "exact": true,
+      "sha256": "5d6391760fcef61d3ba407aafcb3468d41631f990ff4e40224163af4f02cf6bf"
+    },
+    {
+      "path": "js/agentic/general_planner.mjs",
+      "exact": true,
+      "sha256": "d0a9d936d7651c86e12115f4b513e31b1409aed989adb44696c2f00e16f35dda"
+    },
+    {
+      "path": "js/agentic/write_request.mjs",
+      "exact": true,
+      "sha256": "76fe170c843d984a1643c8ba1742cd28f461ccb238cb6fb3aa9667f7c7b215d5"
+    },
+    {
+      "path": "js/agentic/write_request/lowercase_spans.mjs",
+      "exact": true,
+      "sha256": "a0d197c9f5ab332a32b3c985885f69b7bfd76e6b9503de19f8549cf7f196f332"
+    }
+  ]
+}

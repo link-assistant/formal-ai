@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2906.log",
+  "sha256": "6275e949a226c456978aeee079b1e9765c08e2b8697a1ac64283ace7113d262a",
+  "rawUtf8": ">> bash {\"command\":\"node /private/tmp/spec-recurrence-1188/prepare-next-typed-reader.mjs\"}\n   Output: {\"directory\":\"/private/tmp/spec-recurrence-1188/typed-reader-next\",\"copiedFiles\":4,\"source\":\"Existing scratch-only prototypes; no repository writes\"}\n   \n   Exit Code: 0\n== answer ==\nThe `node /private/tmp/spec-recurrence-1188/prepare-next-typed-reader.mjs` command completed. Output:\n\n```json\n{\n  \"copiedFiles\": 4,\n  \"directory\": \"/private/tmp/spec-recurrence-1188/typed-reader-next\",\n  \"source\": \"Existing scratch-only prototypes; no repository writes\"\n}\n```\n"
+}

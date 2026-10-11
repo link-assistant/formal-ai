@@ -1,0 +1,96 @@
+/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_crate_implementation_language.js:43
+export { oracleKnowsLanguage };
+^^^^^^
+
+SyntaxError: Unexpected token 'export'
+    at new Script (node:vm:117:7)
+    at loadBrowserScript (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:161:3)
+    at context.importScripts (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:220:7)
+    at importScripts (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker.js:41:32)
+    at /Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker.js:87:3
+    at Script.runInContext (node:vm:149:12)
+    at loadBrowserScript (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:161:49)
+    at createWorkerContext (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:226:3)
+    at WorkerHost.boot (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:267:22)
+    at installNodeHost (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/node-host.mjs:90:32)
+
+Node.js v20.19.4
+node:internal/errors:984
+  const err = new Error(message);
+              ^
+
+Error: Command failed: node experiments/js_dogfood/drive.mjs In data/meta/debt-ratchet.lino replace «measure hardcoded-language-rows
+    value 700» with «measure hardcoded-language-rows
+    value 699» --dir . --steps 8
+/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_crate_implementation_language.js:43
+export { oracleKnowsLanguage };
+^^^^^^
+
+SyntaxError: Unexpected token 'export'
+    at new Script (node:vm:117:7)
+    at loadBrowserScript (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:161:3)
+    at context.importScripts (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:220:7)
+    at importScripts (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker.js:41:32)
+    at /Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker.js:87:3
+    at Script.runInContext (node:vm:149:12)
+    at loadBrowserScript (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:161:49)
+    at createWorkerContext (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:226:3)
+    at WorkerHost.boot (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:267:22)
+    at installNodeHost (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/node-host.mjs:90:32)
+
+Node.js v20.19.4
+
+    at genericNodeError (node:internal/errors:984:15)
+    at wrappedFn (node:internal/errors:538:14)
+    at checkExecSyncError (node:child_process:891:11)
+    at execFileSync (node:child_process:927:15)
+    at replace (file:///private/tmp/pr1188-debt-lowering.mjs:8:12)
+    at file:///private/tmp/pr1188-debt-lowering.mjs:14:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+  status: 1,
+  signal: null,
+  output: [
+    null,
+    '',
+    '/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_crate_implementation_language.js:43\n' +
+      'export { oracleKnowsLanguage };\n' +
+      '^^^^^^\n' +
+      '\n' +
+      "SyntaxError: Unexpected token 'export'\n" +
+      '    at new Script (node:vm:117:7)\n' +
+      '    at loadBrowserScript (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:161:3)\n' +
+      '    at context.importScripts (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:220:7)\n' +
+      '    at importScripts (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker.js:41:32)\n' +
+      '    at /Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker.js:87:3\n' +
+      '    at Script.runInContext (node:vm:149:12)\n' +
+      '    at loadBrowserScript (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:161:49)\n' +
+      '    at createWorkerContext (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:226:3)\n' +
+      '    at WorkerHost.boot (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:267:22)\n' +
+      '    at installNodeHost (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/node-host.mjs:90:32)\n' +
+      '\n' +
+      'Node.js v20.19.4\n'
+  ],
+  pid: 84601,
+  stdout: '',
+  stderr: '/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_crate_implementation_language.js:43\n' +
+    'export { oracleKnowsLanguage };\n' +
+    '^^^^^^\n' +
+    '\n' +
+    "SyntaxError: Unexpected token 'export'\n" +
+    '    at new Script (node:vm:117:7)\n' +
+    '    at loadBrowserScript (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:161:3)\n' +
+    '    at context.importScripts (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:220:7)\n' +
+    '    at importScripts (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker.js:41:32)\n' +
+    '    at /Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker.js:87:3\n' +
+    '    at Script.runInContext (node:vm:149:12)\n' +
+    '    at loadBrowserScript (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:161:49)\n' +
+    '    at createWorkerContext (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:226:3)\n' +
+    '    at WorkerHost.boot (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:267:22)\n' +
+    '    at installNodeHost (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/node-host.mjs:90:32)\n' +
+    '\n' +
+    'Node.js v20.19.4\n'
+}
+
+Node.js v20.19.4

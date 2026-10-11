@@ -1,0 +1,7 @@
+{
+  "taskId": "T2451",
+  "encoding": "utf8",
+  "sha256": "bb8600a289994942ce198da163213b0ee40b3ce35a601ea972c8165f3d06e06b",
+  "byteLength": 551,
+  "rawUtf8": ">> bash {\"command\":\"node /private/tmp/spec-recurrence-1188/archive-citation-preimage.mjs\"}\n   Output: {\"byteEqual\":true,\"archiveBytes\":26792,\"sha256\":\"f1fa5ed170cdc64b2e28eb09403cce0b325608b1789d69ee3ec2a725b4e7069a\",\"repositorySourceEdits\":0}\n   \n   Exit Code: 0\n== answer ==\nThe `node /private/tmp/spec-recurrence-1188/archive-citation-preimage.mjs` command completed. Output:\n\n```json\n{\n  \"archiveBytes\": 26792,\n  \"byteEqual\": true,\n  \"repositorySourceEdits\": 0,\n  \"sha256\": \"f1fa5ed170cdc64b2e28eb09403cce0b325608b1789d69ee3ec2a725b4e7069a\"\n}\n```\n"
+}

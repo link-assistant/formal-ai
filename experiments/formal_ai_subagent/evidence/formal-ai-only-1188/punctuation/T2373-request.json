@@ -1,0 +1,8 @@
+{
+  "id": "T2373",
+  "dir": "/private/tmp/formal-ai-only-1188/punctuation-final-retry-NaoVgN",
+  "prompt": "Create a file punctuation.txt containing exactly: !!!",
+  "steps": 8,
+  "expected": "!!!",
+  "original": "T2367"
+}

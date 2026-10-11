@@ -1,0 +1,28 @@
+language en
+lemma rolling
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a deep prolonged sound (as of thunder or large bells)"
+    id oewn-07403930-n
+    partOfSpeech n
+    synonyms (peal pealing roll)
+  entry
+    definition "the act of robbing a helpless person"
+    examples ("he was charged with rolling drunks in the park")
+    id oewn-00785416-n
+    partOfSpeech n
+  entry
+    definition "propelling something on wheels"
+    id oewn-00123350-n
+    partOfSpeech n
+    synonyms (wheeling)
+  entry
+    definition "uttered with a trill"
+    examples ("she used rolling r's as in Spanish")
+    id oewn-01884326-s
+    partOfSpeech s
+    synonyms (rolled trilled)
+source "oewn:2024"

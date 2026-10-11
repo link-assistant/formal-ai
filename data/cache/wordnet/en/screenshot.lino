@@ -1,0 +1,11 @@
+language en
+lemma screenshot
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "to capture an image from a computer's display"
+    id oewn-90009391-v
+    partOfSpeech v
+source "oewn:2024"

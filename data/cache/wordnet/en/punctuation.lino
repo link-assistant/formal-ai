@@ -1,0 +1,20 @@
+language en
+lemma punctuation
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "something that makes repeated and regular interruptions or divisions"
+    id oewn-07382730-n
+    partOfSpeech n
+  entry
+    definition "the marks used to clarify meaning by indicating separation of words into sentences and clauses and phrases"
+    id oewn-06854415-n
+    partOfSpeech n
+    synonyms ("punctuation mark")
+  entry
+    definition "the use of certain marks to clarify meaning of written material by grouping words grammatically into sentences and clauses and phrases"
+    id oewn-00391006-n
+    partOfSpeech n
+source "oewn:2024"

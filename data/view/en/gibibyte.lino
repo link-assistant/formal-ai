@@ -1,0 +1,9 @@
+view
+  id M-b6ac0d03b5af
+  lemma gibibyte
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of information equal to 1024 mebibytes or 2^30 (1,073,741,824) bytes"
+    provenance (wordnet)

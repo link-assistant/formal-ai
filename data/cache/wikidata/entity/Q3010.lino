@@ -1,14 +1,17 @@
 Q3010
   aliases
     en (boys lad)
+    es (chico muchacho)
     ru ("парень")
   descriptions
     en "young male human"
+    es "ser humano de género masculino y poca edad"
     ru "ребёнок мужского пола"
     zh "年幼雄性人类"
   id Q3010
   labels
     en boy
+    es "niño"
     hi "लड़का"
     ru "мальчик"
     zh "男孩"

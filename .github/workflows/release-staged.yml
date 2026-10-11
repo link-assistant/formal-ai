@@ -1,0 +1,1471 @@
+name: Staged release candidate
+on:
+  workflow_call:
+    inputs:
+      mode:
+        type: string
+        required: true
+    secrets:
+      CARGO_REGISTRY_TOKEN: {required: false}
+      CARGO_TOKEN: {required: false}
+      DOCKERHUB_USERNAME: {required: false}
+      DOCKERHUB_TOKEN: {required: false}
+    outputs:
+      pages_sha:
+        value: ${{ jobs.auto_create-release.outputs.pages_sha || jobs.manual_create-release.outputs.pages_sha }}
+      pages_version:
+        value: ${{ jobs.auto_create-release.outputs.pages_version || jobs.manual_create-release.outputs.pages_version }}
+      container-tag:
+        value: ${{ jobs.auto_create-release.outputs.container-tag || jobs.manual_create-release.outputs.container-tag }}
+permissions:
+  contents: read
+env:
+  GIT_CONFIG_COUNT: '1'
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
+  CARGO_TERM_COLOR: always
+  FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
+  FORMAL_AI_NON_LINUX_CI: ${{ vars.FORMAL_AI_NON_LINUX_CI || 'skip' }}
+  RUSTFLAGS: -Dwarnings
+  CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+  CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+  GHCR_IMAGE: ghcr.io/${{ github.repository }}
+  DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE || 'konard/formal-ai' }}
+  DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard' }}
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+  STAGED_RELEASE_MODE: ${{ inputs.mode }}
+jobs:
+  auto_prepare-source:
+    name: auto prepare-source
+    permissions:
+      contents: write
+      actions: read
+    if: ${{ inputs.mode == 'auto' && github.ref == 'refs/heads/main' && github.workflow_ref == format('{0}/.github/workflows/release.yml@refs/heads/main', github.repository) && github.event_name == 'push' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      EXPECT_BINARY_PRODUCER: auto_compile-release
+    outputs:
+      check__should_release: ${{ steps.check.outputs.should_release }}
+      current_version__version: ${{ steps.current_version.outputs.version }}
+      prepared__crate_published: ${{ steps.prepared.outputs.crate_published }}
+      version__new_version: ${{ steps.version.outputs.new_version }}
+      active: ${{ steps.check.outputs.should_release == 'true' }}
+      source_sha: ${{ steps.capture-source.outputs.source_sha || steps.baseline-source.outputs.source_sha }}
+      source_tree: ${{ steps.capture-source.outputs.source_tree || steps.baseline-source.outputs.source_tree }}
+      version: ${{ steps.capture-source.outputs.version || steps.baseline-source.outputs.version }}
+      compiler_sha: ${{ steps.capture-source.outputs.compiler_sha || steps.baseline-source.outputs.compiler_sha }}
+      rust_version: ${{ steps.capture-source.outputs.rust_version || steps.baseline-source.outputs.rust_version }}
+      source_descriptor_sha: ${{ steps.capture-source.outputs.source_descriptor_sha }}
+      source_archive_sha: ${{ steps.capture-source.outputs.source_archive_sha }}
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+      artifact_digest: ${{ steps.upload.outputs.artifact-digest }}
+    steps:
+      # #1079: persist-credentials is retained for the root version/tag git push.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Set up immutable protocol dependencies
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: _protocol/.bun-version
+      - name: Install immutable locked protocol dependencies
+        timeout-minutes: 5
+        working-directory: _protocol
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+      - name: Configure git
+        run: rust-script scripts/git-config.rs
+      - name: Determine bump type from changelog fragments
+        id: bump_type
+        run: rust-script scripts/get-bump-type.rs
+      - name: Check if version already released or no fragments
+        id: check
+        env:
+          HAS_FRAGMENTS: ${{ steps.bump_type.outputs.has_fragments }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: rust-script scripts/check-release-needed.rs
+      - name: Collect changelog and bump version
+        id: version
+        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.skip_bump != 'true'
+        env:
+          # Issue #1085 (D3.3): the ledger row names who opened each qualifying
+          # pull request, read through `gh` with the job token.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORMAL_AI_PULL_REQUEST_AUTHOR_LOOKUP: gh
+        run: |
+          rust-script scripts/version-and-commit.rs \
+            --bump-type "${{ steps.bump_type.outputs.bump_type }}" \
+            --resume-prepared \
+            --branch main
+      - name: Get current version
+        id: current_version
+        if: steps.check.outputs.should_release == 'true'
+        run: rust-script scripts/get-version.rs
+      - name: Recheck prepared release state
+        id: prepared
+        if: steps.check.outputs.should_release == 'true'
+        env:
+          HAS_FRAGMENTS: 'false'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: rust-script scripts/check-release-needed.rs
+      - name: Record actual selected source and compiler baseline
+        id: baseline-source
+        run: node _protocol/scripts/release-stage-transfer.mjs baseline
+      - name: Seal actual tagged main source artifact
+        id: capture-source
+        if: ${{ steps.check.outputs.should_release == 'true' }}
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version || steps.current_version.outputs.version }}
+        run: node _protocol/scripts/release-stage-transfer.mjs capture-source
+      - name: Upload immutable source artifact
+        id: upload
+        if: ${{ steps.check.outputs.should_release == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: staged-auto-source-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-transfer/source/*
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+  auto_compile-release:
+    name: auto compile-release
+    needs: [auto_prepare-source]
+    if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.version }}
+      EXPECT_SOURCE: ${{ needs.auto_prepare-source.outputs.source_sha }}
+      EXPECT_TREE: ${{ needs.auto_prepare-source.outputs.source_tree }}
+      EXPECT_COMPILER: ${{ needs.auto_prepare-source.outputs.compiler_sha }}
+      EXPECT_SOURCE_DESCRIPTOR: ${{ needs.auto_prepare-source.outputs.source_descriptor_sha }}
+      EXPECT_SOURCE_ARCHIVE: ${{ needs.auto_prepare-source.outputs.source_archive_sha }}
+      EXPECT_SOURCE_PRODUCER: auto_prepare-source
+      EXPECT_BINARY_PRODUCER: auto_compile-release
+    outputs:
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+      artifact_digest: ${{ steps.upload.outputs.artifact-digest }}
+      bundle_sha: ${{ steps.seal.outputs.bundle_sha }}
+      descriptor_sha: ${{ steps.seal.outputs.descriptor_sha }}
+    steps:
+      - name: Check out exact independently selected source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.auto_prepare-source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install exact selected Rust compiler
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.auto_prepare-source.outputs.rust_version }}
+      - name: Install original rust-script runtime
+        run: bash scripts/install-rust-script.sh
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Download immutable selected source artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
+          path: .release-transfer/source
+          digest-mismatch: error
+      - name: Verify independent source compiler protocol and main tag authority
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-source
+      - name: Build release
+        if: needs.auto_prepare-source.outputs.check__should_release == 'true'
+        env:
+          RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.current_version__version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+        run: node _protocol/scripts/prepared-release-binary.mjs "$RELEASE_VERSION" prepared-release
+      - name: Seal successful physical binary transfer
+        id: seal
+        run: node _protocol/scripts/release-stage-transfer.mjs capture binary
+      - name: Upload immutable binary artifact
+        id: upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: staged-auto-binary-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-transfer/binary/*
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+  auto_verify-package:
+    name: auto verify-package
+    needs: [auto_prepare-source, auto_compile-release]
+    if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.version }}
+      EXPECT_SOURCE: ${{ needs.auto_prepare-source.outputs.source_sha }}
+      EXPECT_TREE: ${{ needs.auto_prepare-source.outputs.source_tree }}
+      EXPECT_COMPILER: ${{ needs.auto_prepare-source.outputs.compiler_sha }}
+      EXPECT_SOURCE_DESCRIPTOR: ${{ needs.auto_prepare-source.outputs.source_descriptor_sha }}
+      EXPECT_SOURCE_ARCHIVE: ${{ needs.auto_prepare-source.outputs.source_archive_sha }}
+      EXPECT_SOURCE_PRODUCER: auto_prepare-source
+      EXPECT_BINARY_PRODUCER: auto_compile-release
+    outputs:
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+      artifact_digest: ${{ steps.upload.outputs.artifact-digest }}
+      bundle_sha: ${{ steps.seal.outputs.bundle_sha }}
+      descriptor_sha: ${{ steps.seal.outputs.descriptor_sha }}
+    steps:
+      - name: Check out exact independently selected source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.auto_prepare-source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install exact selected Rust compiler
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.auto_prepare-source.outputs.rust_version }}
+      - name: Install original rust-script runtime
+        run: bash scripts/install-rust-script.sh
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Download immutable selected source artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
+          path: .release-transfer/source
+          digest-mismatch: error
+      - name: Verify independent source compiler protocol and main tag authority
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-source
+      - name: Download immutable binary artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.auto_compile-release.outputs.artifact_id }}
+          path: .release-transfer/binary
+          digest-mismatch: error
+      - name: Validate physical binary producer transfer
+        env:
+          EXPECT_BUNDLE: ${{ needs.auto_compile-release.outputs.bundle_sha }}
+          EXPECT_DESCRIPTOR: ${{ needs.auto_compile-release.outputs.descriptor_sha }}
+          EXPECT_PRODUCER: auto_compile-release
+        run: node _protocol/scripts/release-stage-transfer.mjs import binary
+      - name: Verify packaged crate archive
+        if: needs.auto_prepare-source.outputs.check__should_release == 'true'
+        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
+      - name: Seal successful physical package transfer
+        id: seal
+        run: node _protocol/scripts/release-stage-transfer.mjs capture package
+      - name: Upload immutable package artifact
+        id: upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: staged-auto-package-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-transfer/package/*
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+  auto_publish-crate:
+    name: auto publish-crate
+    needs: [auto_prepare-source, auto_compile-release, auto_verify-package]
+    if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.version }}
+      EXPECT_SOURCE: ${{ needs.auto_prepare-source.outputs.source_sha }}
+      EXPECT_TREE: ${{ needs.auto_prepare-source.outputs.source_tree }}
+      EXPECT_COMPILER: ${{ needs.auto_prepare-source.outputs.compiler_sha }}
+      EXPECT_SOURCE_DESCRIPTOR: ${{ needs.auto_prepare-source.outputs.source_descriptor_sha }}
+      EXPECT_SOURCE_ARCHIVE: ${{ needs.auto_prepare-source.outputs.source_archive_sha }}
+      EXPECT_SOURCE_PRODUCER: auto_prepare-source
+      EXPECT_BINARY_PRODUCER: auto_compile-release
+    outputs:
+      publish-crate__publish_result: ${{ steps.publish-crate.outputs.publish_result }}
+    steps:
+      - name: Check out exact independently selected source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.auto_prepare-source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install exact selected Rust compiler
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.auto_prepare-source.outputs.rust_version }}
+      - name: Install original rust-script runtime
+        run: bash scripts/install-rust-script.sh
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Download immutable selected source artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
+          path: .release-transfer/source
+          digest-mismatch: error
+      - name: Verify independent source compiler protocol and main tag authority
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-source
+      - name: Download immutable binary artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.auto_compile-release.outputs.artifact_id }}
+          path: .release-transfer/binary
+          digest-mismatch: error
+      - name: Validate physical binary producer transfer
+        env:
+          EXPECT_BUNDLE: ${{ needs.auto_compile-release.outputs.bundle_sha }}
+          EXPECT_DESCRIPTOR: ${{ needs.auto_compile-release.outputs.descriptor_sha }}
+          EXPECT_PRODUCER: auto_compile-release
+        run: node _protocol/scripts/release-stage-transfer.mjs import binary
+      - name: Download immutable package artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.auto_verify-package.outputs.artifact_id }}
+          path: .release-transfer/package
+          digest-mismatch: error
+      - name: Validate physical package producer transfer
+        env:
+          EXPECT_BUNDLE: ${{ needs.auto_verify-package.outputs.bundle_sha }}
+          EXPECT_DESCRIPTOR: ${{ needs.auto_verify-package.outputs.descriptor_sha }}
+          EXPECT_PRODUCER: auto_verify-package
+        run: node _protocol/scripts/release-stage-transfer.mjs import package
+      - name: Publish to Crates.io
+        if: needs.auto_prepare-source.outputs.check__should_release == 'true' && needs.auto_prepare-source.outputs.prepared__crate_published != 'true'
+        id: publish-crate
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+        run: rust-script scripts/publish-crate.rs
+  auto_registry-availability:
+    name: auto registry-availability
+    needs: [auto_prepare-source, auto_verify-package, auto_publish-crate]
+    if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.version }}
+      EXPECT_SOURCE: ${{ needs.auto_prepare-source.outputs.source_sha }}
+      EXPECT_TREE: ${{ needs.auto_prepare-source.outputs.source_tree }}
+      EXPECT_COMPILER: ${{ needs.auto_prepare-source.outputs.compiler_sha }}
+      EXPECT_SOURCE_DESCRIPTOR: ${{ needs.auto_prepare-source.outputs.source_descriptor_sha }}
+      EXPECT_SOURCE_ARCHIVE: ${{ needs.auto_prepare-source.outputs.source_archive_sha }}
+      EXPECT_SOURCE_PRODUCER: auto_prepare-source
+      EXPECT_BINARY_PRODUCER: auto_compile-release
+    steps:
+      - name: Check out exact independently selected source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.auto_prepare-source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install exact selected Rust compiler
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.auto_prepare-source.outputs.rust_version }}
+      - name: Install original rust-script runtime
+        run: bash scripts/install-rust-script.sh
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Download immutable selected source artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
+          path: .release-transfer/source
+          digest-mismatch: error
+      - name: Verify independent source compiler protocol and main tag authority
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-source
+      - name: Download immutable package artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.auto_verify-package.outputs.artifact_id }}
+          path: .release-transfer/package
+          digest-mismatch: error
+      - name: Validate physical package producer transfer
+        env:
+          EXPECT_BUNDLE: ${{ needs.auto_verify-package.outputs.bundle_sha }}
+          EXPECT_DESCRIPTOR: ${{ needs.auto_verify-package.outputs.descriptor_sha }}
+          EXPECT_PRODUCER: auto_verify-package
+        run: node _protocol/scripts/release-stage-transfer.mjs import package
+      - name: Wait for Crate availability on Crates.io
+        if: |
+          needs.auto_prepare-source.outputs.check__should_release == 'true' && (
+            needs.auto_prepare-source.outputs.prepared__crate_published == 'true' ||
+            needs.auto_publish-crate.outputs.publish-crate__publish_result == 'success'
+          )
+        run: rust-script scripts/wait-for-crate.rs --release-version "${{ needs.auto_prepare-source.outputs.current_version__version }}"
+      - name: Audit real registry crate against verified package contents
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-registry
+  auto_published-crate-smoke:
+    name: auto published-crate-smoke
+    needs: [auto_prepare-source, auto_publish-crate, auto_registry-availability]
+    if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.version }}
+      EXPECT_SOURCE: ${{ needs.auto_prepare-source.outputs.source_sha }}
+      EXPECT_TREE: ${{ needs.auto_prepare-source.outputs.source_tree }}
+      EXPECT_COMPILER: ${{ needs.auto_prepare-source.outputs.compiler_sha }}
+      EXPECT_SOURCE_DESCRIPTOR: ${{ needs.auto_prepare-source.outputs.source_descriptor_sha }}
+      EXPECT_SOURCE_ARCHIVE: ${{ needs.auto_prepare-source.outputs.source_archive_sha }}
+      EXPECT_SOURCE_PRODUCER: auto_prepare-source
+      EXPECT_BINARY_PRODUCER: auto_compile-release
+    steps:
+      - name: Check out exact independently selected source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.auto_prepare-source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install exact selected Rust compiler
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.auto_prepare-source.outputs.rust_version }}
+      - name: Install original rust-script runtime
+        run: bash scripts/install-rust-script.sh
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Download immutable selected source artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
+          path: .release-transfer/source
+          digest-mismatch: error
+      - name: Verify independent source compiler protocol and main tag authority
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-source
+      - name: Smoke test the published crate
+        if: |
+          needs.auto_prepare-source.outputs.check__should_release == 'true' && (
+            needs.auto_prepare-source.outputs.prepared__crate_published == 'true' ||
+            needs.auto_publish-crate.outputs.publish-crate__publish_result == 'success'
+          )
+        run: scripts/smoke-test-published-crate.sh "${{ needs.auto_prepare-source.outputs.current_version__version }}"
+  auto_publish-verify-images:
+    name: auto publish-verify-images
+    permissions:
+      contents: read
+      packages: write
+    needs: [auto_prepare-source, auto_compile-release, auto_verify-package, auto_publish-crate, auto_registry-availability, auto_published-crate-smoke]
+    if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.version }}
+      EXPECT_SOURCE: ${{ needs.auto_prepare-source.outputs.source_sha }}
+      EXPECT_TREE: ${{ needs.auto_prepare-source.outputs.source_tree }}
+      EXPECT_COMPILER: ${{ needs.auto_prepare-source.outputs.compiler_sha }}
+      EXPECT_SOURCE_DESCRIPTOR: ${{ needs.auto_prepare-source.outputs.source_descriptor_sha }}
+      EXPECT_SOURCE_ARCHIVE: ${{ needs.auto_prepare-source.outputs.source_archive_sha }}
+      EXPECT_SOURCE_PRODUCER: auto_prepare-source
+      EXPECT_BINARY_PRODUCER: auto_compile-release
+    outputs:
+      dockerhub__docker_hub_url: ${{ steps.dockerhub.outputs.docker_hub_url }}
+      dockerhub__enabled: ${{ steps.dockerhub.outputs.enabled }}
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+      artifact_digest: ${{ steps.upload.outputs.artifact-digest }}
+      bundle_sha: ${{ steps.seal.outputs.bundle_sha }}
+      descriptor_sha: ${{ steps.seal.outputs.descriptor_sha }}
+      ghcr-publish__digest: ${{ steps.ghcr-publish.outputs.digest }}
+    steps:
+      - name: Check out exact independently selected source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.auto_prepare-source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install exact selected Rust compiler
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.auto_prepare-source.outputs.rust_version }}
+      - name: Install original rust-script runtime
+        run: bash scripts/install-rust-script.sh
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Download immutable selected source artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
+          path: .release-transfer/source
+          digest-mismatch: error
+      - name: Verify independent source compiler protocol and main tag authority
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-source
+      - name: Download immutable binary artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.auto_compile-release.outputs.artifact_id }}
+          path: .release-transfer/binary
+          digest-mismatch: error
+      - name: Validate physical binary producer transfer
+        env:
+          EXPECT_BUNDLE: ${{ needs.auto_compile-release.outputs.bundle_sha }}
+          EXPECT_DESCRIPTOR: ${{ needs.auto_compile-release.outputs.descriptor_sha }}
+          EXPECT_PRODUCER: auto_compile-release
+        run: node _protocol/scripts/release-stage-transfer.mjs import binary
+      - name: Free up runner disk space
+        if: |
+          needs.auto_prepare-source.outputs.check__should_release == 'true' && (
+            needs.auto_prepare-source.outputs.prepared__crate_published == 'true' ||
+            needs.auto_publish-crate.outputs.publish-crate__publish_result == 'success'
+          )
+        run: bash scripts/free-runner-disk.sh
+      - name: Log in to GitHub Container Registry
+        if: |
+          needs.auto_prepare-source.outputs.check__should_release == 'true' && (
+            needs.auto_prepare-source.outputs.prepared__crate_published == 'true' ||
+            needs.auto_publish-crate.outputs.publish-crate__publish_result == 'success'
+          )
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        if: |
+          needs.auto_prepare-source.outputs.check__should_release == 'true' && (
+            needs.auto_prepare-source.outputs.prepared__crate_published == 'true' ||
+            needs.auto_publish-crate.outputs.publish-crate__publish_result == 'success'
+          )
+        uses: ./.github/actions/setup-buildx-resilient
+      - name: Expose actual BuildKit cache runtime
+        if: |
+          needs.auto_prepare-source.outputs.check__should_release == 'true' && (
+            needs.auto_prepare-source.outputs.prepared__crate_published == 'true' ||
+            needs.auto_publish-crate.outputs.publish-crate__publish_result == 'success'
+          )
+        uses: actions/github-script@v8
+        with:
+          script: |
+            for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {
+              const value = process.env[key];
+              if (!value) throw new Error(`Required BuildKit cache environment missing: ${key}`);
+              if (key === 'ACTIONS_RUNTIME_TOKEN') core.setSecret(value);
+              core.exportVariable(key, value);
+            }
+            core.exportVariable('ACTIONS_CACHE_SERVICE_V2', 'true');
+      - name: Publish Docker image to GHCR
+        id: ghcr-publish
+        if: |
+          needs.auto_prepare-source.outputs.check__should_release == 'true' && (
+            needs.auto_prepare-source.outputs.prepared__crate_published == 'true' ||
+            needs.auto_publish-crate.outputs.publish-crate__publish_result == 'success'
+          )
+        timeout-minutes: 21
+        env:
+          RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.current_version__version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+          BUILD_CACHE_SETTINGS: |
+            cache-from: type=gha,scope=docker-image
+            cache-to: type=gha,mode=max,scope=docker-image
+        run: env TEST_BUDGET_ENFORCE=true TEST_BUDGET_GRACE_SECONDS=5 TEST_BUDGET_POLL_SECONDS=1 TEST_WARN_RATIO_PERCENT=70 RUSTC_WRAPPER='' bash _protocol/scripts/run-with-budget-warning.sh 1250 "Publish prepared release image" node _protocol/scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"
+      - name: Publish and verify the slim GHCR sidecar
+        if: |
+          needs.auto_prepare-source.outputs.check__should_release == 'true' && (
+            needs.auto_prepare-source.outputs.prepared__crate_published == 'true' ||
+            needs.auto_publish-crate.outputs.publish-crate__publish_result == 'success'
+          )
+        timeout-minutes: 15
+        uses: ./.github/actions/publish-slim-image
+        with:
+          image: ${{ env.GHCR_IMAGE }}
+          version: ${{ needs.auto_prepare-source.outputs.current_version__version }}
+      - name: Verify the published GHCR image is anonymously pullable
+        if: |
+          needs.auto_prepare-source.outputs.check__should_release == 'true' && (
+            needs.auto_prepare-source.outputs.prepared__crate_published == 'true' ||
+            needs.auto_publish-crate.outputs.publish-crate__publish_result == 'success'
+          )
+        run: bash scripts/verify-ghcr-visibility.sh
+      - name: Verify anonymous access to the immutable published manifest
+        if: steps.ghcr-publish.outputs.digest != ''
+        timeout-minutes: 2
+        env:
+          IMAGE_REFERENCE: ${{ env.GHCR_IMAGE }}@${{ steps.ghcr-publish.outputs.digest }}
+        run: node scripts/verify-anonymous-image-manifest.mjs "$IMAGE_REFERENCE"
+      - name: Configure Docker Hub publishing
+        if: |
+          needs.auto_prepare-source.outputs.check__should_release == 'true' && (
+            needs.auto_prepare-source.outputs.prepared__crate_published == 'true' ||
+            needs.auto_publish-crate.outputs.publish-crate__publish_result == 'success'
+          )
+        id: dockerhub
+        run: bash scripts/configure-dockerhub-publishing.sh
+      - name: Log in to Docker Hub
+        if: steps.dockerhub.outputs.enabled == 'true'
+        uses: docker/login-action@v4
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+      - name: Publish Docker image to Docker Hub
+        if: steps.dockerhub.outputs.enabled == 'true'
+        timeout-minutes: 20
+        env:
+          RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.current_version__version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+        run: node _protocol/scripts/release-image-factory.mjs mirror prepared-release "$RELEASE_VERSION" "$DOCKERHUB_IMAGE"
+      - name: Seal successful physical images transfer
+        id: seal
+        env:
+          EXPECT_FULL_DIGEST: ${{ steps.ghcr-publish.outputs.digest }}
+          MIRROR_ENABLED: ${{ steps.dockerhub.outputs.enabled }}
+        run: node _protocol/scripts/release-stage-transfer.mjs capture images
+      - name: Upload immutable images artifact
+        id: upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: staged-auto-images-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-transfer/images/*
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+  auto_create-release:
+    name: auto create-release
+    permissions:
+      contents: write
+    needs: [auto_prepare-source, auto_compile-release, auto_verify-package, auto_publish-crate, auto_registry-availability, auto_published-crate-smoke, auto_publish-verify-images]
+    if: ${{ always() && needs.auto_prepare-source.result == 'success' && (needs.auto_prepare-source.outputs.active != 'true' || (needs.auto_compile-release.result == 'success' && needs.auto_verify-package.result == 'success' && needs.auto_publish-crate.result == 'success' && needs.auto_registry-availability.result == 'success' && needs.auto_published-crate-smoke.result == 'success' && needs.auto_publish-verify-images.result == 'success')) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.version }}
+      EXPECT_SOURCE: ${{ needs.auto_prepare-source.outputs.source_sha }}
+      EXPECT_TREE: ${{ needs.auto_prepare-source.outputs.source_tree }}
+      EXPECT_COMPILER: ${{ needs.auto_prepare-source.outputs.compiler_sha }}
+      EXPECT_SOURCE_DESCRIPTOR: ${{ needs.auto_prepare-source.outputs.source_descriptor_sha }}
+      EXPECT_SOURCE_ARCHIVE: ${{ needs.auto_prepare-source.outputs.source_archive_sha }}
+      EXPECT_SOURCE_PRODUCER: auto_prepare-source
+      EXPECT_BINARY_PRODUCER: auto_compile-release
+      EXPECT_FULL_DIGEST: ${{ needs.auto_publish-verify-images.outputs.ghcr-publish__digest }}
+      MIRROR_ENABLED: ${{ needs.auto_publish-verify-images.outputs.dockerhub__enabled }}
+    outputs:
+      pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
+      pages_version: ${{ steps.release_pages_ref.outputs.version }}
+      container-tag: ${{ steps.create-release.outcome == 'success' && format('v{0}', needs.auto_prepare-source.outputs.version) || '' }}
+    steps:
+      - name: Check out exact independently selected source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.auto_prepare-source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install exact selected Rust compiler
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.auto_prepare-source.outputs.rust_version }}
+      - name: Install original rust-script runtime
+        run: bash scripts/install-rust-script.sh
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Download immutable selected source artifact
+        if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
+          path: .release-transfer/source
+          digest-mismatch: error
+      - name: Verify independent source compiler protocol and main tag authority
+        if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-source
+      - name: Download immutable images artifact
+        if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.auto_publish-verify-images.outputs.artifact_id }}
+          path: .release-transfer/images
+          digest-mismatch: error
+      - name: Validate physical images producer transfer
+        if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
+        env:
+          EXPECT_BUNDLE: ${{ needs.auto_publish-verify-images.outputs.bundle_sha }}
+          EXPECT_DESCRIPTOR: ${{ needs.auto_publish-verify-images.outputs.descriptor_sha }}
+          EXPECT_PRODUCER: auto_publish-verify-images
+        run: node _protocol/scripts/release-stage-transfer.mjs import images
+      - name: Fail closed before any release publication
+        if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
+        run: node _protocol/scripts/release-stage-transfer.mjs guard-create
+      - name: Create GitHub Release
+        id: create-release
+        if: |
+          needs.auto_prepare-source.outputs.check__should_release == 'true' && (
+            needs.auto_prepare-source.outputs.prepared__crate_published == 'true' ||
+            needs.auto_publish-crate.outputs.publish-crate__publish_result == 'success'
+          )
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
+          DOCKER_HUB_URL: ${{ needs.auto_publish-verify-images.outputs.dockerhub__docker_hub_url }}
+          RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.version__new_version || needs.auto_prepare-source.outputs.current_version__version }}
+        run: bash scripts/invoke-create-github-release.sh
+      - name: Attach the verified immutable slim image receipt
+        if: |
+          needs.auto_prepare-source.outputs.check__should_release == 'true' && (
+            needs.auto_prepare-source.outputs.prepared__crate_published == 'true' ||
+            needs.auto_publish-crate.outputs.publish-crate__publish_result == 'success'
+          )
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          MIRROR_ENABLED: ${{ needs.auto_publish-verify-images.outputs.dockerhub__enabled }}
+          RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.version__new_version || needs.auto_prepare-source.outputs.current_version__version }}
+        run: |
+          set -euo pipefail
+          test -s slim-image-release-receipt.json
+          test -s slim-image-release-receipt.json.sha256
+          gh release upload "v$RELEASE_VERSION" slim-image-release-receipt.json slim-image-release-receipt.json.sha256 --repo "$REPO" --clobber
+          cp prepared-release/source/source-selection.json prepared-release-source.json
+          cp prepared-release/binary/native-executable-receipt.json prepared-release-executable.json
+          cp prepared-release/prepared-build.json prepared-release-build.json
+          cp prepared-release/full-image.json prepared-release-full-image.json
+          files=(prepared-release-source.json prepared-release-executable.json prepared-release-build.json prepared-release-full-image.json)
+          if [ "$MIRROR_ENABLED" = true ]; then
+            cp prepared-release/dockerhub-image.json prepared-release-dockerhub-image.json
+            files+=(prepared-release-dockerhub-image.json)
+          fi
+          sha256sum "${files[@]}" > prepared-release-SHA256SUMS.txt
+          gh release upload "v$RELEASE_VERSION" "${files[@]}" prepared-release-SHA256SUMS.txt --repo "$REPO" --clobber
+      - name: Resolve Pages deploy ref
+        id: release_pages_ref
+        if: always()
+        run: |
+          sha="$(git rev-parse HEAD)"
+          echo "sha=${sha}" >> "$GITHUB_OUTPUT"
+          rust-script scripts/get-version.rs
+  manual_prepare-source:
+    name: manual prepare-source
+    permissions:
+      contents: write
+      actions: read
+    if: ${{ inputs.mode == 'manual' && github.ref == 'refs/heads/main' && github.workflow_ref == format('{0}/.github/workflows/release.yml@refs/heads/main', github.repository) && github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      EXPECT_BINARY_PRODUCER: manual_compile-release
+    outputs:
+      version__version_committed: ${{ steps.version.outputs.version_committed }}
+      version__already_released: ${{ steps.version.outputs.already_released }}
+      version__new_version: ${{ steps.version.outputs.new_version }}
+      active: ${{ steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true' }}
+      source_sha: ${{ steps.capture-source.outputs.source_sha || steps.baseline-source.outputs.source_sha }}
+      source_tree: ${{ steps.capture-source.outputs.source_tree || steps.baseline-source.outputs.source_tree }}
+      version: ${{ steps.capture-source.outputs.version || steps.baseline-source.outputs.version }}
+      compiler_sha: ${{ steps.capture-source.outputs.compiler_sha || steps.baseline-source.outputs.compiler_sha }}
+      rust_version: ${{ steps.capture-source.outputs.rust_version || steps.baseline-source.outputs.rust_version }}
+      source_descriptor_sha: ${{ steps.capture-source.outputs.source_descriptor_sha }}
+      source_archive_sha: ${{ steps.capture-source.outputs.source_archive_sha }}
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+      artifact_digest: ${{ steps.upload.outputs.artifact-digest }}
+    steps:
+      # #1079: persist-credentials is retained for the root version/tag git push.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Set up immutable protocol dependencies
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: _protocol/.bun-version
+      - name: Install immutable locked protocol dependencies
+        timeout-minutes: 5
+        working-directory: _protocol
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+      - name: Configure git
+        run: rust-script scripts/git-config.rs
+      - name: Version and commit
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUMP_TYPE: ${{ github.event.inputs.bump_type }}
+          DESCRIPTION: ${{ github.event.inputs.description }}
+        run: rust-script scripts/version-and-commit.rs --bump-type "$BUMP_TYPE" --description "$DESCRIPTION"
+      - name: Record actual selected source and compiler baseline
+        id: baseline-source
+        run: node _protocol/scripts/release-stage-transfer.mjs baseline
+      - name: Seal actual tagged main source artifact
+        id: capture-source
+        if: ${{ steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true' }}
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
+        run: node _protocol/scripts/release-stage-transfer.mjs capture-source
+      - name: Upload immutable source artifact
+        id: upload
+        if: ${{ steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: staged-manual-source-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-transfer/source/*
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+  manual_compile-release:
+    name: manual compile-release
+    needs: [manual_prepare-source]
+    if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version }}
+      EXPECT_SOURCE: ${{ needs.manual_prepare-source.outputs.source_sha }}
+      EXPECT_TREE: ${{ needs.manual_prepare-source.outputs.source_tree }}
+      EXPECT_COMPILER: ${{ needs.manual_prepare-source.outputs.compiler_sha }}
+      EXPECT_SOURCE_DESCRIPTOR: ${{ needs.manual_prepare-source.outputs.source_descriptor_sha }}
+      EXPECT_SOURCE_ARCHIVE: ${{ needs.manual_prepare-source.outputs.source_archive_sha }}
+      EXPECT_SOURCE_PRODUCER: manual_prepare-source
+      EXPECT_BINARY_PRODUCER: manual_compile-release
+    outputs:
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+      artifact_digest: ${{ steps.upload.outputs.artifact-digest }}
+      bundle_sha: ${{ steps.seal.outputs.bundle_sha }}
+      descriptor_sha: ${{ steps.seal.outputs.descriptor_sha }}
+    steps:
+      - name: Check out exact independently selected source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.manual_prepare-source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install exact selected Rust compiler
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.manual_prepare-source.outputs.rust_version }}
+      - name: Install original rust-script runtime
+        run: bash scripts/install-rust-script.sh
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Download immutable selected source artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
+          path: .release-transfer/source
+          digest-mismatch: error
+      - name: Verify independent source compiler protocol and main tag authority
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-source
+      - name: Build release
+        if: needs.manual_prepare-source.outputs.version__version_committed == 'true' || needs.manual_prepare-source.outputs.version__already_released == 'true'
+        env:
+          RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version__new_version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+        run: node _protocol/scripts/prepared-release-binary.mjs "$RELEASE_VERSION" prepared-release
+      - name: Seal successful physical binary transfer
+        id: seal
+        run: node _protocol/scripts/release-stage-transfer.mjs capture binary
+      - name: Upload immutable binary artifact
+        id: upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: staged-manual-binary-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-transfer/binary/*
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+  manual_verify-package:
+    name: manual verify-package
+    needs: [manual_prepare-source, manual_compile-release]
+    if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version }}
+      EXPECT_SOURCE: ${{ needs.manual_prepare-source.outputs.source_sha }}
+      EXPECT_TREE: ${{ needs.manual_prepare-source.outputs.source_tree }}
+      EXPECT_COMPILER: ${{ needs.manual_prepare-source.outputs.compiler_sha }}
+      EXPECT_SOURCE_DESCRIPTOR: ${{ needs.manual_prepare-source.outputs.source_descriptor_sha }}
+      EXPECT_SOURCE_ARCHIVE: ${{ needs.manual_prepare-source.outputs.source_archive_sha }}
+      EXPECT_SOURCE_PRODUCER: manual_prepare-source
+      EXPECT_BINARY_PRODUCER: manual_compile-release
+    outputs:
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+      artifact_digest: ${{ steps.upload.outputs.artifact-digest }}
+      bundle_sha: ${{ steps.seal.outputs.bundle_sha }}
+      descriptor_sha: ${{ steps.seal.outputs.descriptor_sha }}
+    steps:
+      - name: Check out exact independently selected source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.manual_prepare-source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install exact selected Rust compiler
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.manual_prepare-source.outputs.rust_version }}
+      - name: Install original rust-script runtime
+        run: bash scripts/install-rust-script.sh
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Download immutable selected source artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
+          path: .release-transfer/source
+          digest-mismatch: error
+      - name: Verify independent source compiler protocol and main tag authority
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-source
+      - name: Download immutable binary artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.manual_compile-release.outputs.artifact_id }}
+          path: .release-transfer/binary
+          digest-mismatch: error
+      - name: Validate physical binary producer transfer
+        env:
+          EXPECT_BUNDLE: ${{ needs.manual_compile-release.outputs.bundle_sha }}
+          EXPECT_DESCRIPTOR: ${{ needs.manual_compile-release.outputs.descriptor_sha }}
+          EXPECT_PRODUCER: manual_compile-release
+        run: node _protocol/scripts/release-stage-transfer.mjs import binary
+      - name: Verify packaged crate archive
+        if: needs.manual_prepare-source.outputs.version__version_committed == 'true' || needs.manual_prepare-source.outputs.version__already_released == 'true'
+        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
+      - name: Seal successful physical package transfer
+        id: seal
+        run: node _protocol/scripts/release-stage-transfer.mjs capture package
+      - name: Upload immutable package artifact
+        id: upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: staged-manual-package-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-transfer/package/*
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+  manual_publish-crate:
+    name: manual publish-crate
+    needs: [manual_prepare-source, manual_compile-release, manual_verify-package]
+    if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version }}
+      EXPECT_SOURCE: ${{ needs.manual_prepare-source.outputs.source_sha }}
+      EXPECT_TREE: ${{ needs.manual_prepare-source.outputs.source_tree }}
+      EXPECT_COMPILER: ${{ needs.manual_prepare-source.outputs.compiler_sha }}
+      EXPECT_SOURCE_DESCRIPTOR: ${{ needs.manual_prepare-source.outputs.source_descriptor_sha }}
+      EXPECT_SOURCE_ARCHIVE: ${{ needs.manual_prepare-source.outputs.source_archive_sha }}
+      EXPECT_SOURCE_PRODUCER: manual_prepare-source
+      EXPECT_BINARY_PRODUCER: manual_compile-release
+    outputs:
+      publish-crate__publish_result: ${{ steps.publish-crate.outputs.publish_result }}
+    steps:
+      - name: Check out exact independently selected source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.manual_prepare-source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install exact selected Rust compiler
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.manual_prepare-source.outputs.rust_version }}
+      - name: Install original rust-script runtime
+        run: bash scripts/install-rust-script.sh
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Download immutable selected source artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
+          path: .release-transfer/source
+          digest-mismatch: error
+      - name: Verify independent source compiler protocol and main tag authority
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-source
+      - name: Download immutable binary artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.manual_compile-release.outputs.artifact_id }}
+          path: .release-transfer/binary
+          digest-mismatch: error
+      - name: Validate physical binary producer transfer
+        env:
+          EXPECT_BUNDLE: ${{ needs.manual_compile-release.outputs.bundle_sha }}
+          EXPECT_DESCRIPTOR: ${{ needs.manual_compile-release.outputs.descriptor_sha }}
+          EXPECT_PRODUCER: manual_compile-release
+        run: node _protocol/scripts/release-stage-transfer.mjs import binary
+      - name: Download immutable package artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.manual_verify-package.outputs.artifact_id }}
+          path: .release-transfer/package
+          digest-mismatch: error
+      - name: Validate physical package producer transfer
+        env:
+          EXPECT_BUNDLE: ${{ needs.manual_verify-package.outputs.bundle_sha }}
+          EXPECT_DESCRIPTOR: ${{ needs.manual_verify-package.outputs.descriptor_sha }}
+          EXPECT_PRODUCER: manual_verify-package
+        run: node _protocol/scripts/release-stage-transfer.mjs import package
+      - name: Publish to Crates.io
+        if: needs.manual_prepare-source.outputs.version__version_committed == 'true' || needs.manual_prepare-source.outputs.version__already_released == 'true'
+        id: publish-crate
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+        run: rust-script scripts/publish-crate.rs
+  manual_registry-availability:
+    name: manual registry-availability
+    needs: [manual_prepare-source, manual_verify-package, manual_publish-crate]
+    if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version }}
+      EXPECT_SOURCE: ${{ needs.manual_prepare-source.outputs.source_sha }}
+      EXPECT_TREE: ${{ needs.manual_prepare-source.outputs.source_tree }}
+      EXPECT_COMPILER: ${{ needs.manual_prepare-source.outputs.compiler_sha }}
+      EXPECT_SOURCE_DESCRIPTOR: ${{ needs.manual_prepare-source.outputs.source_descriptor_sha }}
+      EXPECT_SOURCE_ARCHIVE: ${{ needs.manual_prepare-source.outputs.source_archive_sha }}
+      EXPECT_SOURCE_PRODUCER: manual_prepare-source
+      EXPECT_BINARY_PRODUCER: manual_compile-release
+    steps:
+      - name: Check out exact independently selected source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.manual_prepare-source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install exact selected Rust compiler
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.manual_prepare-source.outputs.rust_version }}
+      - name: Install original rust-script runtime
+        run: bash scripts/install-rust-script.sh
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Download immutable selected source artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
+          path: .release-transfer/source
+          digest-mismatch: error
+      - name: Verify independent source compiler protocol and main tag authority
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-source
+      - name: Download immutable package artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.manual_verify-package.outputs.artifact_id }}
+          path: .release-transfer/package
+          digest-mismatch: error
+      - name: Validate physical package producer transfer
+        env:
+          EXPECT_BUNDLE: ${{ needs.manual_verify-package.outputs.bundle_sha }}
+          EXPECT_DESCRIPTOR: ${{ needs.manual_verify-package.outputs.descriptor_sha }}
+          EXPECT_PRODUCER: manual_verify-package
+        run: node _protocol/scripts/release-stage-transfer.mjs import package
+      - name: Wait for Crate availability on Crates.io
+        if: |
+          (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
+            needs.manual_prepare-source.outputs.version__already_released == 'true') &&
+          needs.manual_publish-crate.outputs.publish-crate__publish_result == 'success'
+        run: rust-script scripts/wait-for-crate.rs --release-version "${{ needs.manual_prepare-source.outputs.version__new_version }}"
+      - name: Audit real registry crate against verified package contents
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-registry
+  manual_published-crate-smoke:
+    name: manual published-crate-smoke
+    needs: [manual_prepare-source, manual_publish-crate, manual_registry-availability]
+    if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version }}
+      EXPECT_SOURCE: ${{ needs.manual_prepare-source.outputs.source_sha }}
+      EXPECT_TREE: ${{ needs.manual_prepare-source.outputs.source_tree }}
+      EXPECT_COMPILER: ${{ needs.manual_prepare-source.outputs.compiler_sha }}
+      EXPECT_SOURCE_DESCRIPTOR: ${{ needs.manual_prepare-source.outputs.source_descriptor_sha }}
+      EXPECT_SOURCE_ARCHIVE: ${{ needs.manual_prepare-source.outputs.source_archive_sha }}
+      EXPECT_SOURCE_PRODUCER: manual_prepare-source
+      EXPECT_BINARY_PRODUCER: manual_compile-release
+    steps:
+      - name: Check out exact independently selected source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.manual_prepare-source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install exact selected Rust compiler
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.manual_prepare-source.outputs.rust_version }}
+      - name: Install original rust-script runtime
+        run: bash scripts/install-rust-script.sh
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Download immutable selected source artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
+          path: .release-transfer/source
+          digest-mismatch: error
+      - name: Verify independent source compiler protocol and main tag authority
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-source
+      - name: Smoke test the published crate
+        if: |
+          (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
+            needs.manual_prepare-source.outputs.version__already_released == 'true') &&
+          needs.manual_publish-crate.outputs.publish-crate__publish_result == 'success'
+        run: scripts/smoke-test-published-crate.sh "${{ needs.manual_prepare-source.outputs.version__new_version }}"
+  manual_publish-verify-images:
+    name: manual publish-verify-images
+    permissions:
+      contents: read
+      packages: write
+    needs: [manual_prepare-source, manual_compile-release, manual_verify-package, manual_publish-crate, manual_registry-availability, manual_published-crate-smoke]
+    if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version }}
+      EXPECT_SOURCE: ${{ needs.manual_prepare-source.outputs.source_sha }}
+      EXPECT_TREE: ${{ needs.manual_prepare-source.outputs.source_tree }}
+      EXPECT_COMPILER: ${{ needs.manual_prepare-source.outputs.compiler_sha }}
+      EXPECT_SOURCE_DESCRIPTOR: ${{ needs.manual_prepare-source.outputs.source_descriptor_sha }}
+      EXPECT_SOURCE_ARCHIVE: ${{ needs.manual_prepare-source.outputs.source_archive_sha }}
+      EXPECT_SOURCE_PRODUCER: manual_prepare-source
+      EXPECT_BINARY_PRODUCER: manual_compile-release
+    outputs:
+      dockerhub__docker_hub_url: ${{ steps.dockerhub.outputs.docker_hub_url }}
+      dockerhub__enabled: ${{ steps.dockerhub.outputs.enabled }}
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+      artifact_digest: ${{ steps.upload.outputs.artifact-digest }}
+      bundle_sha: ${{ steps.seal.outputs.bundle_sha }}
+      descriptor_sha: ${{ steps.seal.outputs.descriptor_sha }}
+      ghcr-publish__digest: ${{ steps.ghcr-publish.outputs.digest }}
+    steps:
+      - name: Check out exact independently selected source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.manual_prepare-source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install exact selected Rust compiler
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.manual_prepare-source.outputs.rust_version }}
+      - name: Install original rust-script runtime
+        run: bash scripts/install-rust-script.sh
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Download immutable selected source artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
+          path: .release-transfer/source
+          digest-mismatch: error
+      - name: Verify independent source compiler protocol and main tag authority
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-source
+      - name: Download immutable binary artifact
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.manual_compile-release.outputs.artifact_id }}
+          path: .release-transfer/binary
+          digest-mismatch: error
+      - name: Validate physical binary producer transfer
+        env:
+          EXPECT_BUNDLE: ${{ needs.manual_compile-release.outputs.bundle_sha }}
+          EXPECT_DESCRIPTOR: ${{ needs.manual_compile-release.outputs.descriptor_sha }}
+          EXPECT_PRODUCER: manual_compile-release
+        run: node _protocol/scripts/release-stage-transfer.mjs import binary
+      - name: Free up runner disk space
+        if: |
+          (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
+            needs.manual_prepare-source.outputs.version__already_released == 'true') &&
+          needs.manual_publish-crate.outputs.publish-crate__publish_result == 'success'
+        run: bash scripts/free-runner-disk.sh
+      - name: Log in to GitHub Container Registry
+        if: |
+          (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
+            needs.manual_prepare-source.outputs.version__already_released == 'true') &&
+          needs.manual_publish-crate.outputs.publish-crate__publish_result == 'success'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        if: |
+          (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
+            needs.manual_prepare-source.outputs.version__already_released == 'true') &&
+          needs.manual_publish-crate.outputs.publish-crate__publish_result == 'success'
+        uses: ./.github/actions/setup-buildx-resilient
+      - name: Expose actual BuildKit cache runtime
+        if: |
+          (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
+            needs.manual_prepare-source.outputs.version__already_released == 'true') &&
+          needs.manual_publish-crate.outputs.publish-crate__publish_result == 'success'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {
+              const value = process.env[key];
+              if (!value) throw new Error(`Required BuildKit cache environment missing: ${key}`);
+              if (key === 'ACTIONS_RUNTIME_TOKEN') core.setSecret(value);
+              core.exportVariable(key, value);
+            }
+            core.exportVariable('ACTIONS_CACHE_SERVICE_V2', 'true');
+      - name: Publish Docker image to GHCR
+        id: ghcr-publish
+        if: |
+          (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
+            needs.manual_prepare-source.outputs.version__already_released == 'true') &&
+          needs.manual_publish-crate.outputs.publish-crate__publish_result == 'success'
+        timeout-minutes: 21
+        env:
+          RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version__new_version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+          BUILD_CACHE_SETTINGS: |
+            cache-from: type=gha,scope=docker-image
+            cache-to: type=gha,mode=max,scope=docker-image
+        run: env TEST_BUDGET_ENFORCE=true TEST_BUDGET_GRACE_SECONDS=5 TEST_BUDGET_POLL_SECONDS=1 TEST_WARN_RATIO_PERCENT=70 RUSTC_WRAPPER='' bash _protocol/scripts/run-with-budget-warning.sh 1250 "Publish prepared release image" node _protocol/scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"
+      - name: Publish and verify the slim GHCR sidecar
+        if: |
+          (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
+            needs.manual_prepare-source.outputs.version__already_released == 'true') &&
+          needs.manual_publish-crate.outputs.publish-crate__publish_result == 'success'
+        timeout-minutes: 15
+        uses: ./.github/actions/publish-slim-image
+        with:
+          image: ${{ env.GHCR_IMAGE }}
+          version: ${{ needs.manual_prepare-source.outputs.version__new_version }}
+      - name: Verify the published GHCR image is anonymously pullable
+        if: |
+          (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
+            needs.manual_prepare-source.outputs.version__already_released == 'true') &&
+          needs.manual_publish-crate.outputs.publish-crate__publish_result == 'success'
+        run: bash scripts/verify-ghcr-visibility.sh
+      - name: Verify anonymous access to the immutable published manifest
+        if: steps.ghcr-publish.outputs.digest != ''
+        timeout-minutes: 2
+        env:
+          IMAGE_REFERENCE: ${{ env.GHCR_IMAGE }}@${{ steps.ghcr-publish.outputs.digest }}
+        run: node scripts/verify-anonymous-image-manifest.mjs "$IMAGE_REFERENCE"
+      - name: Configure Docker Hub publishing
+        if: |
+          (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
+            needs.manual_prepare-source.outputs.version__already_released == 'true') &&
+          needs.manual_publish-crate.outputs.publish-crate__publish_result == 'success'
+        id: dockerhub
+        run: bash scripts/configure-dockerhub-publishing.sh
+      - name: Log in to Docker Hub
+        if: steps.dockerhub.outputs.enabled == 'true'
+        uses: docker/login-action@v4
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+      - name: Publish Docker image to Docker Hub
+        if: steps.dockerhub.outputs.enabled == 'true'
+        timeout-minutes: 20
+        env:
+          RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version__new_version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+        run: node _protocol/scripts/release-image-factory.mjs mirror prepared-release "$RELEASE_VERSION" "$DOCKERHUB_IMAGE"
+      - name: Seal successful physical images transfer
+        id: seal
+        env:
+          EXPECT_FULL_DIGEST: ${{ steps.ghcr-publish.outputs.digest }}
+          MIRROR_ENABLED: ${{ steps.dockerhub.outputs.enabled }}
+        run: node _protocol/scripts/release-stage-transfer.mjs capture images
+      - name: Upload immutable images artifact
+        id: upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: staged-manual-images-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-transfer/images/*
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+  manual_create-release:
+    name: manual create-release
+    permissions:
+      contents: write
+    needs: [manual_prepare-source, manual_compile-release, manual_verify-package, manual_publish-crate, manual_registry-availability, manual_published-crate-smoke, manual_publish-verify-images]
+    if: ${{ always() && needs.manual_prepare-source.result == 'success' && (needs.manual_prepare-source.outputs.active != 'true' || (needs.manual_compile-release.result == 'success' && needs.manual_verify-package.result == 'success' && needs.manual_publish-crate.result == 'success' && needs.manual_registry-availability.result == 'success' && needs.manual_published-crate-smoke.result == 'success' && needs.manual_publish-verify-images.result == 'success')) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version }}
+      EXPECT_SOURCE: ${{ needs.manual_prepare-source.outputs.source_sha }}
+      EXPECT_TREE: ${{ needs.manual_prepare-source.outputs.source_tree }}
+      EXPECT_COMPILER: ${{ needs.manual_prepare-source.outputs.compiler_sha }}
+      EXPECT_SOURCE_DESCRIPTOR: ${{ needs.manual_prepare-source.outputs.source_descriptor_sha }}
+      EXPECT_SOURCE_ARCHIVE: ${{ needs.manual_prepare-source.outputs.source_archive_sha }}
+      EXPECT_SOURCE_PRODUCER: manual_prepare-source
+      EXPECT_BINARY_PRODUCER: manual_compile-release
+      EXPECT_FULL_DIGEST: ${{ needs.manual_publish-verify-images.outputs.ghcr-publish__digest }}
+      MIRROR_ENABLED: ${{ needs.manual_publish-verify-images.outputs.dockerhub__enabled }}
+    outputs:
+      pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
+      pages_version: ${{ steps.release_pages_ref.outputs.version }}
+      container-tag: ${{ steps.create-release.outcome == 'success' && format('v{0}', needs.manual_prepare-source.outputs.version) || '' }}
+    steps:
+      - name: Check out exact independently selected source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.manual_prepare-source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install exact selected Rust compiler
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.manual_prepare-source.outputs.rust_version }}
+      - name: Install original rust-script runtime
+        run: bash scripts/install-rust-script.sh
+      - name: Check out immutable trusted workflow protocol
+        uses: actions/checkout@v7
+        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+      - name: Download immutable selected source artifact
+        if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
+          path: .release-transfer/source
+          digest-mismatch: error
+      - name: Verify independent source compiler protocol and main tag authority
+        if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
+        run: node _protocol/scripts/release-stage-transfer.mjs verify-source
+      - name: Download immutable images artifact
+        if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ needs.manual_publish-verify-images.outputs.artifact_id }}
+          path: .release-transfer/images
+          digest-mismatch: error
+      - name: Validate physical images producer transfer
+        if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
+        env:
+          EXPECT_BUNDLE: ${{ needs.manual_publish-verify-images.outputs.bundle_sha }}
+          EXPECT_DESCRIPTOR: ${{ needs.manual_publish-verify-images.outputs.descriptor_sha }}
+          EXPECT_PRODUCER: manual_publish-verify-images
+        run: node _protocol/scripts/release-stage-transfer.mjs import images
+      - name: Fail closed before any release publication
+        if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
+        run: node _protocol/scripts/release-stage-transfer.mjs guard-create
+      - name: Create GitHub Release
+        id: create-release
+        if: |
+          (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
+            needs.manual_prepare-source.outputs.version__already_released == 'true') &&
+          needs.manual_publish-crate.outputs.publish-crate__publish_result == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
+          DOCKER_HUB_URL: ${{ needs.manual_publish-verify-images.outputs.dockerhub__docker_hub_url }}
+          RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version__new_version }}
+        run: bash scripts/invoke-create-github-release.sh
+      - name: Attach the verified immutable slim image receipt
+        if: |
+          (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
+            needs.manual_prepare-source.outputs.version__already_released == 'true') &&
+          needs.manual_publish-crate.outputs.publish-crate__publish_result == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          MIRROR_ENABLED: ${{ needs.manual_publish-verify-images.outputs.dockerhub__enabled }}
+          RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version__new_version }}
+        run: |
+          set -euo pipefail
+          test -s slim-image-release-receipt.json
+          test -s slim-image-release-receipt.json.sha256
+          gh release upload "v$RELEASE_VERSION" slim-image-release-receipt.json slim-image-release-receipt.json.sha256 --repo "$REPO" --clobber
+          cp prepared-release/source/source-selection.json prepared-release-source.json
+          cp prepared-release/binary/native-executable-receipt.json prepared-release-executable.json
+          cp prepared-release/prepared-build.json prepared-release-build.json
+          cp prepared-release/full-image.json prepared-release-full-image.json
+          files=(prepared-release-source.json prepared-release-executable.json prepared-release-build.json prepared-release-full-image.json)
+          if [ "$MIRROR_ENABLED" = true ]; then
+            cp prepared-release/dockerhub-image.json prepared-release-dockerhub-image.json
+            files+=(prepared-release-dockerhub-image.json)
+          fi
+          sha256sum "${files[@]}" > prepared-release-SHA256SUMS.txt
+          gh release upload "v$RELEASE_VERSION" "${files[@]}" prepared-release-SHA256SUMS.txt --repo "$REPO" --clobber
+      - name: Resolve Pages deploy ref
+        id: release_pages_ref
+        if: always()
+        run: |
+          sha="$(git rev-parse HEAD)"
+          echo "sha=${sha}" >> "$GITHUB_OUTPUT"
+          rust-script scripts/get-version.rs

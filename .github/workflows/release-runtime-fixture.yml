@@ -1,0 +1,202 @@
+name: Harmless reusable release runtime fixture
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - .github/workflows/release-runtime-fixture*.yml
+      - scripts/release-runtime-fixture.mjs
+      - scripts/release-fixture-caller-admission.mjs
+      - rust/tests/web/release-fixture-caller-admission.test.mjs
+      - scripts/release-stage-transfer.mjs
+      - rust/tests/web/release-runtime-fixture.test.mjs
+      - scripts/github-artifact-by-identifier.mjs
+      - rust/tests/web/github-artifact-by-identifier.test.mjs
+    branches-ignore:
+      - e2e/**
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Run the harmless read-only fixture checks
+        type: choice
+        options: [checks]
+        default: checks
+      pull-request:
+        description: Pull request whose harmless checks were dispatched
+        type: string
+        default: ""
+permissions:
+  contents: read
+  actions: read
+env:
+  FIXTURE_EVENT_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+  FIXTURE_GROUP: formal-ai-release-fixture-${{ github.run_id }}-${{ github.run_attempt }}
+jobs:
+  auto_compile-release:
+    name: Produce controlled text tar
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      source: ${{ steps.produce.outputs.source }}
+      tree: ${{ steps.produce.outputs.tree }}
+      compiler_marker_sha: ${{ steps.produce.outputs.compiler_marker_sha }}
+      bundle_sha: ${{ steps.produce.outputs.bundle_sha }}
+      descriptor_sha: ${{ steps.produce.outputs.descriptor_sha }}
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Seal controlled text fixture only
+        id: produce
+        run: node scripts/release-runtime-fixture.mjs produce
+      - name: Upload immutable controlled text tar
+        id: upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-fixture-text-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-fixture/producer/.release-transfer/binary/*
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 3
+      - name: Upload fixture producer truth
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-fixture-producer-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-fixture/producer.json
+          if-no-files-found: error
+          retention-days: 3
+    concurrency:
+      group: formal-ai-release-fixture-check-auto_compile-release-${{ github.workflow
+        }}-${{ github.ref }}
+      cancel-in-progress: true
+  active-fixture:
+    name: Active reusable fixture
+    needs: auto_compile-release
+    permissions:
+      contents: read
+      actions: read
+    concurrency:
+      group: formal-ai-release-fixture-${{ github.run_id }}-${{ github.run_attempt }}
+      queue: max
+    uses: ./.github/workflows/release-runtime-fixture-callee.yml
+    with:
+      active: true
+      source: ${{ needs.auto_compile-release.outputs.source }}
+      tree: ${{ needs.auto_compile-release.outputs.tree }}
+      compiler-marker-sha: ${{ needs.auto_compile-release.outputs.compiler_marker_sha }}
+      artifact-id: ${{ needs.auto_compile-release.outputs.artifact_id }}
+      bundle-sha: ${{ needs.auto_compile-release.outputs.bundle_sha }}
+      descriptor-sha: ${{ needs.auto_compile-release.outputs.descriptor_sha }}
+  inactive-fixture:
+    name: Inactive reusable fixture
+    needs: auto_compile-release
+    permissions:
+      contents: read
+      actions: read
+    concurrency:
+      group: formal-ai-release-fixture-inactive-${{ github.run_id }}-${{
+        github.run_attempt }}
+      queue: max
+    uses: ./.github/workflows/release-runtime-fixture-callee.yml
+    with:
+      active: false
+      source: ${{ needs.auto_compile-release.outputs.source }}
+      tree: ${{ needs.auto_compile-release.outputs.tree }}
+      compiler-marker-sha: ${{ needs.auto_compile-release.outputs.compiler_marker_sha }}
+      artifact-id: ""
+      bundle-sha: ""
+      descriptor-sha: ""
+  observer:
+    name: Stage contender after authenticated caller admission
+    needs: auto_compile-release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Observe authenticated caller admission before queueing contender
+        id: observe
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/release-runtime-fixture.mjs stage-contender
+      - name: Upload independent observer receipt
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-fixture-observer-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-fixture/observer.json
+          if-no-files-found: error
+          retention-days: 3
+    concurrency:
+      group: formal-ai-release-fixture-check-observer-${{ github.workflow }}-${{
+        github.ref }}
+      cancel-in-progress: true
+  fixture-contender:
+    name: Fixture private queued contender
+    needs:
+      - auto_compile-release
+      - observer
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    concurrency:
+      group: formal-ai-release-fixture-${{ github.run_id }}-${{ github.run_attempt }}
+      queue: max
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Record actual independent contender start
+        run: node scripts/release-runtime-fixture.mjs contender
+      - name: Upload actual contender receipt
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-fixture-contender-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-fixture/contender.json
+          if-no-files-found: error
+          retention-days: 3
+  collect:
+    name: Verify actual fixture service outputs and job order
+    needs:
+      - auto_compile-release
+      - active-fixture
+      - inactive-fixture
+      - fixture-contender
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Validate actual active/inactive outputs and independent contender order
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ACTIVE_SOURCE: ${{ needs.active-fixture.outputs.fixture-source }}
+          ACTIVE_ARTIFACT: ${{ needs.active-fixture.outputs.artifact-observation }}
+          ACTIVE_MARKER: ${{ needs.active-fixture.outputs.fixture-marker }}
+          ACTIVE_LEASE: ${{ needs.active-fixture.outputs.lease-observation }}
+          INACTIVE_SOURCE: ${{ needs.inactive-fixture.outputs.fixture-source }}
+          INACTIVE_ARTIFACT: ${{ needs.inactive-fixture.outputs.artifact-observation }}
+          INACTIVE_MARKER: ${{ needs.inactive-fixture.outputs.fixture-marker }}
+          CONTENDER_RESULT: ${{ needs.fixture-contender.result }}
+        run: node scripts/release-runtime-fixture.mjs collect
+      - name: Upload bounded actual fixture acceptance
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-fixture-collected-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-fixture/collected.json
+          if-no-files-found: error
+          retention-days: 3
+    concurrency:
+      group: formal-ai-release-fixture-check-collect-${{ github.workflow }}-${{
+        github.ref }}
+      cancel-in-progress: true

@@ -182,3 +182,129 @@ function formalizationIdentity(graph) {
     `structures=${structures.join(",")};relations=${relations.join(",")};procedure_shapes=${procedureShapes.join(",")}`,
   );
 }
+// Moved from formal_ai_worker_solve.js (issue #999 warning band): the
+// formalization fold-back, interpretation, deformalization and thinking-level
+// helpers finalize() applies to every answer.
+// Fold a handler's concrete entity back into its initial formalization trace.
+function applyResolvedFormalization(events, steps, formalizationContext, answer) {
+  if (!formalizationContext || !answer || !answer.formalizedObject) return;
+  const resolved = resolveFormalizationWithId(
+    formalizationContext.initial,
+    answer.formalizedObject,
+  );
+  if (!resolved) return;
+  // Cache hits may already contain the resolved id.
+  if (resolved.tuple === formalizationContext.initial.tuple) return;
+  formalizationContext.resolved = resolved;
+  events.push(`formalization:resolved:${resolved.tuple}`);
+  steps.push({
+    step: "formalize_resolved",
+    detail: formalizationDetail(resolved),
+    formalization: {
+      raw: resolved.raw,
+      subject: resolved.subject,
+      verb: resolved.verb,
+      object: resolved.object,
+      tuple: resolved.tuple,
+    },
+  });
+}
+function collectInterpretations(formalizationContext, answer) {
+  const combined = [];
+  const pushAll = (items) => {
+    if (!Array.isArray(items)) return;
+    for (const item of items) {
+      if (!item || !item.original || !item.corrected) continue;
+      combined.push({
+        original: String(item.original),
+        corrected: String(item.corrected),
+      });
+    }
+  };
+  pushAll(
+    formalizationContext &&
+      formalizationContext.initial &&
+      formalizationContext.initial.interpretations,
+  );
+  pushAll(answer && answer.interpretations);
+  const seen = new Set();
+  return combined.filter((item) => {
+    const key = `${item.original.toLowerCase()}\u0000${item.corrected.toLowerCase()}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+function interpretationStatements(interpretations) {
+  return interpretations
+    .map((item) => `Interpreted "${item.original}" as "${item.corrected}".`)
+    .join("\n");
+}
+function applyVisibleInterpretations(answer, interpretations) {
+  if (!answer || interpretations.length === 0) return answer;
+  const statements = interpretationStatements(interpretations);
+  return Object.assign({}, answer, {
+    content: `${statements}\n\n${String(answer.content || "")}`,
+    evidence: [
+      ...(Array.isArray(answer.evidence) ? answer.evidence : []),
+      ...interpretations.map((item) => `interpretation:${item.original}->${item.corrected}`),
+    ],
+  });
+}
+function deformalizeProjection(formalizationContext, answer) {
+  const tuple =
+    (formalizationContext &&
+      ((formalizationContext.resolved && formalizationContext.resolved.tuple) ||
+        (formalizationContext.initial && formalizationContext.initial.tuple))) ||
+    "(@USER OP:express ?)";
+  const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
+  const content = String(answer.content || "");
+  const firstLine = content.split(/\r?\n/, 1)[0] || "";
+  const projection = firstLine.length > 96 ? `${firstLine.slice(0, 96)}…` : firstLine;
+  return {
+    tuple,
+    intent: answer.intent || "unknown",
+    contentChars: content.length,
+    evidenceCount: evidence.length,
+    language:
+      (formalizationContext && formalizationContext.language) ||
+      answer.language ||
+      "",
+    summary: `${tuple} ⇒ ${answer.intent || "unknown"}: ${projection}`,
+  };
+}
+// Issue #488: classify each reasoning step into a granularity tier so the
+// thinking preview can show only the high-level universal-algorithm phases at
+// the default ("standard") granularity and fold the mechanical sub-steps
+// (the symbolic formalization tuple, tool probes, calculator reductions, memory
+// scans, rule bookkeeping) into the opt-in "detailed" view. This mirrors the
+// Rust solver's `ThinkingStep::level` classification (see src/engine.rs and
+// src/event_log.rs) so the browser and native engines curate the trace
+// identically — the thinking is fully applied to the logic, not just the UI.
+const HIGH_LEVEL_THINKING_STEPS = new Set([
+  "impulse",
+  "detect_language",
+  "resolve_response_language",
+  "dispatch_handler",
+  "match_rule",
+  "clarify_formalization",
+  "program_plan",
+  "compute",
+  "deformalize",
+  "user_context",
+  "fallback",
+]);
+function thinkingStepLevel(step) {
+  const raw = String(step || "");
+  // Nested agent sub-reasoning always folds under its composite agent task.
+  if (/^agent_\d+_/i.test(raw)) return "detailed";
+  return HIGH_LEVEL_THINKING_STEPS.has(raw) ? "high" : "detailed";
+}
+function withThinkingLevels(steps) {
+  if (!Array.isArray(steps)) return [];
+  return steps.map((step) =>
+    step && typeof step === "object" && !step.level
+      ? Object.assign({}, step, { level: thinkingStepLevel(step.step) })
+      : step,
+  );
+}

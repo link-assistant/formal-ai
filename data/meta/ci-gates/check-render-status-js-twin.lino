@@ -1,0 +1,5 @@
+ci_gate check-render-status-js-twin
+  stage web
+  description "PR #1188: the JavaScript twin scripts/render-status.mjs prints the same lines, exits with the same code and checks the same bytes as scripts/render-status.rs on this tree, so the status surfaces are rendered locally without compiling Rust."
+  run "node scripts/lib/requirements-twin-parity.mjs 'rust-script scripts/render-status.rs --check' 'node scripts/render-status.mjs --check'"
+  justification "Agents run the JavaScript twins locally instead of rust-script, whose compile cache grew to 3.7 GB (#1188); a twin that drifted from its Rust original would pass a stale status surface locally that CI then rejects."

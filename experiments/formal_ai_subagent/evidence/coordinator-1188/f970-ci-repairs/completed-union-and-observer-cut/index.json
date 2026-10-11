@@ -1,0 +1,52 @@
+{
+  "ok": true,
+  "version": 1,
+  "finiteCut": "Completed first CI archive controller and rootT3472-T3478 installed source union, stdout/disk controls, census source selectors and formatting correction; ongoing append/create/new parity cohorts excluded",
+  "head": "f9708d9afa98aa118a83e68a15377becb6deef48",
+  "originalMembers": 509,
+  "uniqueEncodedBlobs": 426,
+  "newEncodedBlobs": 413,
+  "reusedPreviousEncodedBlobs": 13,
+  "newCompressedBytes": 989119,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 509
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 426
+    }
+  ],
+  "selectionSha256": "292be672b345e105ba4102307f7d379e4ce9fe3573856c2534e561556ea42fe0",
+  "previousControllerActualLaunchAndSemanticEffectsQualified": true,
+  "allPreviousArchivePhysicalHashesExact": true,
+  "rootT3476": {
+    "nearest": 117,
+    "unchangedWholeOriginal": 31,
+    "all214CompleteObjectsExact": true
+  },
+  "rootT3477": {
+    "originalProducerControls": 56,
+    "readabilityFailureRetained": true
+  },
+  "rootT3478": {
+    "completeASTTokensCommentsLiteralsAssertionsExact": true,
+    "readabilityFixed": true
+  },
+  "existingSourceEffects": 32,
+  "knownLosses": [
+    {
+      "original": "T6175 failed EISDIR observer",
+      "missing": "full rawdrive not written after genuine physical effects; complete surviving original request/program/error/physical outputs retained; no reconstruction"
+    }
+  ],
+  "ownRunningReceiptExcluded": true,
+  "autonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "actualCost": "Unknown",
+  "productionAcceptance": "Pending"
+}

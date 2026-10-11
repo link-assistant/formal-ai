@@ -1,0 +1,21 @@
+Q123
+  aliases
+    en (Sept Sep)
+    es (setiembre Sept Sept. Set Set. sept. set. sept set "mes noveno" "mes nono" "mes 9.°" "noveno mes" "nono mes" "9.° mes" "9" "mes 9")
+    ru ("сентября" "сен.")
+    zh ("九月")
+  descriptions
+    en "ninth month in the Julian and Gregorian calendars"
+    es "noveno mes del año"
+    hi "जूलियन और ग्रेगोरियन कैलेंडर में नौवां महीना"
+    ru "девятый месяц года в юлианском и григорианском календарях"
+    zh "公历及儒略历中第九个月份"
+  id Q123
+  labels
+    en September
+    es septiembre
+    hi "सितम्बर"
+    ru "сентябрь"
+    zh "9月"
+  type item
+success 1

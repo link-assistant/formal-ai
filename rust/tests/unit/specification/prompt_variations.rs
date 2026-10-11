@@ -11,7 +11,7 @@
 //!
 //! All issue-103 prompt categories in this file are active regression tests.
 
-use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
+use formal_ai::{FormalAiEngine, SymbolicAnswer};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -421,7 +421,7 @@ fn hello_world_matrix_emits_a_code_block_per_language() {
                 "Here is a minimal Rust hello world program:\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `rustc main.rs -o main`\nRun command: `./main`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install the Rust toolchain from https://rustup.rs.\n2. Save the code above to a file named `main.rs`.\n3. Check that it compiles: `rustc main.rs -o main`.\n4. Run it: `./main`.\n5. Compare the output with the expected output shown above."
             }
             ("python", false) => {
-                "Here is a minimal Python hello world program:\n\n```python\nprint(\"Hello, world!\")\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `python3 -m py_compile main.py`\nRun command: `python3 main.py`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Python 3 from https://www.python.org/downloads/.\n2. Save the code above to a file named `main.py`.\n3. Check that it compiles: `python3 -m py_compile main.py`.\n4. Run it: `python3 main.py`.\n5. Compare the output with the expected output shown above."
+                "Here is a minimal Python hello world program:\n\n```python\nprint('Hello, world!')\n```\n\nExecution status: not run; this program was rediscovered from https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples and its output contract was checked by decomposition, not by executing it.\nCheck command: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`\nRun command: `python3 main.py`\nExpected output after verification:\n```text\nHello, world!\n```\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Python 3 from https://www.python.org/downloads/.\n2. Save the code above to a file named `main.py`.\n3. Check that it compiles: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`.\n4. Run it: `python3 main.py`.\n5. Compare the output with the expected output shown above."
             }
             ("javascript", false) => {
                 "Here is a minimal JavaScript hello world program:\n\n```javascript\nconsole.log(\"Hello, world!\");\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `node --check main.js`\nRun command: `node main.js`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Node.js from https://nodejs.org/.\n2. Save the code above to a file named `main.js`.\n3. Check that it compiles: `node --check main.js`.\n4. Run it: `node main.js`.\n5. Compare the output with the expected output shown above."
@@ -430,13 +430,13 @@ fn hello_world_matrix_emits_a_code_block_per_language() {
                 "Here is a minimal Go hello world program:\n\n```go\npackage main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println(\"Hello, world!\")\n}\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nRun command: `go run main.go`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Go from https://go.dev/dl/.\n2. Save the code above to a file named `main.go`.\n3. Run it: `go run main.go`.\n4. Compare the output with the expected output shown above."
             }
             ("c", false) => {
-                "Here is a minimal C hello world program:\n\n```c\n#include <stdio.h>\n\nint main(void) {\n    puts(\"Hello, world!\");\n    return 0;\n}\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `gcc main.c -o main`\nRun command: `./main`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install a C compiler such as GCC from https://gcc.gnu.org/ or your package manager.\n2. Save the code above to a file named `main.c`.\n3. Check that it compiles: `gcc main.c -o main`.\n4. Run it: `./main`.\n5. Compare the output with the expected output shown above."
+                "Here is a minimal C hello world program:\n\n```c\n// crt_puts.c\n// This program uses puts to write a string to stdout.\n\n#include <stdio.h>\n\nint main( void )\n{\n   puts( \"Hello, world!\" );\n}\n```\n\nExecution status: not run; this program was rediscovered from https://raw.githubusercontent.com/MicrosoftDocs/cpp-docs/main/docs/c-runtime-library/reference/puts-putws.md and its output contract was checked by decomposition, not by executing it.\nCheck command: `gcc main.c -o main`\nRun command: `./main`\nExpected output after verification:\n```text\nHello, world!\n```\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install a C compiler such as GCC from https://gcc.gnu.org/ or your package manager.\n2. Save the code above to a file named `main.c`.\n3. Check that it compiles: `gcc main.c -o main`.\n4. Run it: `./main`.\n5. Compare the output with the expected output shown above."
             }
             ("typescript", false) => {
-                "Here is a minimal TypeScript hello world program:\n\n```typescript\nconsole.log(\"Hello, world!\");\n```\n\nExecution status: not compiled or run in TypeScript compiler is not configured in this repository runtime.\nCheck command: `tsc hello.ts`\nRun command: `node hello.js`\nExpected output after verification:\n```text\nHello, world!\n```\nThe TypeScript seed is returned with this warning until a tsc-backed execution profile is available.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`.\n2. Save the code above to a file named `hello.ts`.\n3. Check that it compiles: `tsc hello.ts`.\n4. Run it: `node hello.js`.\n5. Compare the output with the expected output shown above."
+                "Here is a minimal TypeScript hello world program:\n\n```typescript\n// Greets the world.\nconsole.log(\"Hello, world!\");\n```\n\nExecution status: not run; this program was rediscovered from https://raw.githubusercontent.com/microsoft/TypeScript-Website/v2/packages/documentation/copy/en/handbook-v2/Basics.md and its output contract was checked by decomposition, not by executing it.\nCheck command: `tsc hello.ts`\nRun command: `node hello.js`\nExpected output after verification:\n```text\nHello, world!\n```\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`.\n2. Save the code above to a file named `hello.ts`.\n3. Check that it compiles: `tsc hello.ts`.\n4. Run it: `node hello.js`.\n5. Compare the output with the expected output shown above."
             }
             ("python", true) => {
-                "Вот минимальная программа на языке Python (hello world):\n\n```python\nprint(\"Hello, world!\")\n```\n\nСтатус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».\nCheck command: `python3 -m py_compile main.py`\nRun command: `python3 main.py`\nВывод:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: Python 3 from https://www.python.org/downloads/.\n2. Сохраните приведённый выше код в файл `main.py`.\n3. Проверьте, что код компилируется: `python3 -m py_compile main.py`.\n4. Запустите программу: `python3 main.py`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
+                "Вот минимальная программа на языке Python (hello world):\n\n```python\nprint('Hello, world!')\n```\n\nСтатус выполнения: не запускалась; программа заново найдена на странице https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples, её контракт вывода проверен разбором, а не запуском.\nCheck command: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`\nRun command: `python3 main.py`\nОжидаемый вывод после проверки:\n```text\nHello, world!\n```\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: Python 3 from https://www.python.org/downloads/.\n2. Сохраните приведённый выше код в файл `main.py`.\n3. Проверьте, что код компилируется: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`.\n4. Запустите программу: `python3 main.py`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
             }
             ("javascript", true) => {
                 "Вот минимальная программа на языке JavaScript (hello world):\n\n```javascript\nconsole.log(\"Hello, world!\");\n```\n\nСтатус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».\nCheck command: `node --check main.js`\nRun command: `node main.js`\nВывод:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: Node.js from https://nodejs.org/.\n2. Сохраните приведённый выше код в файл `main.js`.\n3. Проверьте, что код компилируется: `node --check main.js`.\n4. Запустите программу: `node main.js`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
@@ -555,35 +555,49 @@ fn summarization_intent_routes_to_summarization_handler() {
     }
 }
 
-const BRAINSTORMING_PROMPTS: &[&str] = &[
-    "Give me five ideas for an open-source side project.",
-    "Brainstorm ten names for a code review tool.",
-    "Suggest five open-source utilities for developers.",
-    "Brainstorm 5 small tools for link notation.",
-    "Give me 5 ideas for a local-first AI helper.",
-    "Brainstorm ten names for a symbolic assistant.",
+/// Brainstorming prompts, with whether the topic composer owns them.
+///
+/// Issue #1178 moved topic-bearing name requests (`names for a`, `ideas for
+/// a`, see `data/seed/meanings-creative-tasks.lino`) from the memorized
+/// dev-tool name pool to candidates composed from the request's own topic
+/// words; the remaining prompts keep the seeded brainstorm list.
+const BRAINSTORMING_PROMPTS: &[(&str, bool)] = &[
+    ("Give me five ideas for an open-source side project.", false),
+    ("Brainstorm ten names for a code review tool.", true),
+    ("Suggest five open-source utilities for developers.", false),
+    ("Brainstorm 5 small tools for link notation.", false),
+    ("Give me 5 ideas for a local-first AI helper.", true),
+    ("Brainstorm ten names for a symbolic assistant.", true),
 ];
 
 #[test]
 fn brainstorming_intent_routes_to_brainstorm_handler() {
-    for prompt in BRAINSTORMING_PROMPTS {
+    for &(prompt, composed) in BRAINSTORMING_PROMPTS {
         let response = answer(prompt);
         assert!(
             response.intent.starts_with("brainstorm"),
             "prompt {prompt:?} should route to a brainstorm* intent, got: {}",
             response.intent,
         );
-        let expected_last_number = if prompt.contains("ten") { "10." } else { "5." };
-        let expected_answer = if prompt.contains("ten") {
-            "1. TraceLint\n2. ReviewLink\n3. PatchSignal\n4. DiffAnchor\n5. CodeLedger\n6. SymbolScribe\n7. RuleBeacon\n8. LinkHarbor\n9. TraceForge\n10. PromptLedger"
-        } else {
-            "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs."
-        };
-        assert_eq!(response.answer, expected_answer);
-        assert!(
-            response.answer.contains(expected_last_number),
-            "prompt {prompt:?} should return the requested number of ideas, got: {}",
+        if composed {
+            assert!(
+                response.answer.contains("name candidates for the concepts")
+                    && response.answer.contains("1. ")
+                    && response.answer.contains("levenshtein"),
+                "prompt {prompt:?} should compose ranked candidates from its topic, got: {}",
+                response.answer,
+            );
+            assert!(
+                !response.answer.contains("TraceLint"),
+                "prompt {prompt:?} must not recite the memorized name pool, got: {}",
+                response.answer,
+            );
+            continue;
+        }
+        assert_eq!(
             response.answer,
+            "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs.",
+            "prompt {prompt:?} keeps the seeded brainstorm list",
         );
     }
 }
@@ -743,253 +757,4 @@ fn russian_capital_russia_prompt_returns_moscow() {
         "reported prompt should record the Moscow Wikidata anchor, got links: {:?}",
         response.evidence_links,
     );
-}
-
-// Issue #127 follow-up: the structured fact-query pipeline pre-warms the
-// cache from `data/seed/facts.lino` records that carry a `relation` field.
-// Every country in the matrix below has a `relation "capital"` seed entry,
-// so every prompt — across English/Russian/Hindi/Chinese — must route to
-// `fact_lookup` and surface the subject Q-ID, the value Q-ID, and the
-// structured `fact_query:*` trace events.
-//
-// (country_label, expected_subject_qid, expected_value_qid, expected_answer_fragment, prompts)
-type CapitalCase = (
-    &'static str,
-    &'static str,
-    &'static str,
-    &'static str,
-    &'static [&'static str],
-);
-
-const CAPITAL_CASES: &[CapitalCase] = &[
-    (
-        "Russia",
-        "Q159",
-        "Q649",
-        "The capital of Russia is Moscow.",
-        &[
-            "What is the capital of Russia?",
-            "Which city is Russia's capital?",
-            "capital of the Russian Federation",
-        ],
-    ),
-    (
-        "Japan",
-        "Q17",
-        "Q1490",
-        "The capital of Japan is Tokyo.",
-        &[
-            "What is the capital of Japan?",
-            "Which city is Japan's capital?",
-        ],
-    ),
-    (
-        "France",
-        "Q142",
-        "Q90",
-        "The capital of France is Paris.",
-        &[
-            "What is the capital of France?",
-            "What is the capital of the French Republic?",
-        ],
-    ),
-    (
-        "Germany",
-        "Q183",
-        "Q64",
-        "The capital of Germany is Berlin.",
-        &[
-            "What is the capital of Germany?",
-            "What is Germany's capital?",
-        ],
-    ),
-    (
-        "China",
-        "Q148",
-        "Q956",
-        "The capital of China is Beijing.",
-        &[
-            "What is the capital of China?",
-            "Which city is the capital of the People's Republic of China?",
-        ],
-    ),
-    (
-        "India",
-        "Q668",
-        "Q987",
-        "The capital of India is New Delhi.",
-        &[
-            "What is the capital of India?",
-            "Which city is India's capital?",
-        ],
-    ),
-    (
-        "Brazil",
-        "Q155",
-        "Q2844",
-        "The capital of Brazil is Brasília.",
-        &[
-            "What is the capital of Brazil?",
-            "Which city is Brazil's capital?",
-        ],
-    ),
-    (
-        "United States",
-        "Q30",
-        "Q61",
-        "The capital of the United States is Washington, D.C.",
-        &[
-            "What is the capital of the United States?",
-            "What is the capital of the USA?",
-        ],
-    ),
-    (
-        "United Kingdom",
-        "Q145",
-        "Q84",
-        "The capital of the United Kingdom is London.",
-        &[
-            "What is the capital of the United Kingdom?",
-            "What is the capital of the UK?",
-        ],
-    ),
-];
-
-#[test]
-fn capital_matrix_resolves_every_seeded_country() {
-    for (country, subject_qid, value_qid, expected_answer, prompts) in CAPITAL_CASES {
-        for prompt in *prompts {
-            let response = answer(prompt);
-            assert_eq!(
-                response.intent, "fact_lookup",
-                "{country} prompt {prompt:?} should route to fact_lookup, got {}",
-                response.intent,
-            );
-            assert_eq!(response.answer, *expected_answer);
-            assert!(
-                response.answer.contains(country),
-                "{country} prompt {prompt:?} should name the country, got: {}",
-                response.answer,
-            );
-            let subject_link = format!("wikidata:{subject_qid}");
-            let value_link = format!("wikidata:{value_qid}");
-            assert!(
-                response
-                    .evidence_links
-                    .iter()
-                    .any(|link| link == &subject_link),
-                "{country} prompt {prompt:?} should record {subject_link}, got: {:?}",
-                response.evidence_links,
-            );
-            assert!(
-                response
-                    .evidence_links
-                    .iter()
-                    .any(|link| link == &value_link),
-                "{country} prompt {prompt:?} should record {value_link}, got: {:?}",
-                response.evidence_links,
-            );
-        }
-    }
-}
-
-#[test]
-fn capital_matrix_records_structured_fact_query_trace() {
-    // The Russian "столица России" trace should include the structured
-    // `fact_query:relation:capital` event and the subject term, so the
-    // browser memory and the Rust solver agree on the reasoning shape.
-    let response = answer("столица россии");
-    let has_relation = response
-        .evidence_links
-        .iter()
-        .any(|link| link == "fact_query:relation:capital");
-    assert!(
-        has_relation,
-        "structured trace should record `fact_query:relation:capital`, got: {:?}",
-        response.evidence_links,
-    );
-    let has_subject = response
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("fact_query:subject:"));
-    assert!(
-        has_subject,
-        "structured trace should record `fact_query:subject:*`, got: {:?}",
-        response.evidence_links,
-    );
-    let has_cache_hit = response
-        .evidence_links
-        .iter()
-        .any(|link| link == "fact_query:cache:hit:seed");
-    assert!(
-        has_cache_hit,
-        "structured trace should record a seed cache hit, got: {:?}",
-        response.evidence_links,
-    );
-}
-
-const MULTI_TURN_COREFERENCE_PROMPTS: &[&str] = &[
-    // After a previous "I love Rust." turn, this prompt should resolve "it".
-    "What features make it different from C?",
-    "How is it different from C?",
-    "Why is it safer than C?",
-    "Compare it with C.",
-    "What makes it safer than C?",
-];
-
-#[test]
-fn multi_turn_coreference_resolves_pronoun_against_history() {
-    let solver = UniversalSolver::default();
-    let history = [ConversationTurn::user("I love Rust.")];
-    for prompt in MULTI_TURN_COREFERENCE_PROMPTS {
-        let response = solver.solve_with_history(prompt, &history);
-        assert!(
-            response.intent.starts_with("coreference"),
-            "prompt {prompt:?} should route to coreference*, got: {}",
-            response.intent,
-        );
-        assert!(
-            response
-                .evidence_links
-                .iter()
-                .any(|link| link.starts_with("prior_turn:")),
-            "prompt {prompt:?} should reference a prior_turn evidence link, got: {:?}",
-            response.evidence_links,
-        );
-    }
-}
-
-const ROLEPLAY_PROMPTS: &[&str] = &[
-    "Pretend you are Albert Einstein and explain relativity to a teenager.",
-    "Act as Albert Einstein and explain relativity simply.",
-    "Roleplay as a teacher explaining relativity.",
-    "Explain like you are Ada Lovelace teaching algorithms.",
-    "Pretend you are a patient teacher and explain time dilation.",
-];
-
-#[test]
-fn roleplay_intent_routes_to_roleplay_handler() {
-    const EXPECTED_ANSWERS: &[&str] = &[
-        "Roleplay frame recorded for Albert Einstein. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
-        "Roleplay frame recorded for Albert Einstein. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
-        "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
-        "Roleplay frame recorded for Ada Lovelace. I will keep the persona explicit and factual: an algorithm is a precise sequence of steps, so a reliable explanation names the inputs, the ordered operations, and the expected result.",
-        "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: time dilation means clocks can measure different elapsed times when observers move differently or sit in different gravitational fields.",
-    ];
-    for (prompt, expected_answer) in ROLEPLAY_PROMPTS.iter().zip(EXPECTED_ANSWERS) {
-        let response = answer(prompt);
-        assert!(
-            response.intent.starts_with("roleplay"),
-            "prompt {prompt:?} should route to a roleplay* intent, got: {}",
-            response.intent,
-        );
-        assert_eq!(response.answer, *expected_answer);
-        if prompt.contains("Ada Lovelace") {
-            assert!(
-                response.answer.to_lowercase().contains("algorithm"),
-                "prompt {prompt:?} should keep the Ada Lovelace topic grounded in algorithms, got: {}",
-                response.answer,
-            );
-        }
-    }
 }

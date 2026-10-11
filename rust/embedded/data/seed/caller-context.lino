@@ -62,6 +62,7 @@ caller_context
     language ru
       word "что"
       word "какое"
+      word "какие"
       word "какой"
       word "какая"
       word "когда"

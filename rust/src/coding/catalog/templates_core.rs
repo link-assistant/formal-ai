@@ -1,114 +1,15 @@
-//! Templates for the original coding tasks — hello world, count to three, and
-//! the two directory-listing variants — in every supported language. Split from
+//! Templates for the original coding tasks — count to three and the two
+//! directory-listing variants — in every supported language. Split from
 //! [`super::templates_extended`] only to keep each file well under the
 //! repository's per-file line limit; the two groups are concatenated in
-//! [`super`].
+//! [`super`]. The hello world programs are no longer compiled here: the
+//! documentation route rediscovers them from captured pages (issue #1165
+//! R1165-4) and the catalog table appends them at runtime.
 
-use super::types::ProgramTemplate;
+use super::types::CompiledTemplate;
 
-pub(super) const TEMPLATES_CORE: &[ProgramTemplate] = &[
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "rust",
-        code: r#"fn main() {
-    println!("Hello, world!");
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "python",
-        code: r#"print("Hello, world!")"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "javascript",
-        code: r#"console.log("Hello, world!");"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "typescript",
-        code: r#"console.log("Hello, world!");"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "go",
-        code: r#"package main
-
-import "fmt"
-
-func main() {
-    fmt.Println("Hello, world!")
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "c",
-        code: r#"#include <stdio.h>
-
-int main(void) {
-    puts("Hello, world!");
-    return 0;
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "cpp",
-        code: r#"#include <iostream>
-
-int main() {
-    std::cout << "Hello, world!" << std::endl;
-    return 0;
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "java",
-        code: r#"public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello, world!");
-    }
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "csharp",
-        code: r#"using System;
-
-class Program {
-    static void Main() {
-        Console.WriteLine("Hello, world!");
-    }
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "ruby",
-        code: r#"puts "Hello, world!""#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "scala",
-        code: r#"object Main {
-  def main(args: Array[String]): Unit = {
-    println("Hello, world!")
-  }
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "kotlin",
-        code: r#"fun main() {
-    println("Hello, world!")
-}"#,
-    },
-    ProgramTemplate {
-        task_slug: "hello_world",
-        language_slug: "php",
-        code: r#"<?php
-
-echo "Hello, world!", PHP_EOL;"#,
-    },
-    ProgramTemplate {
+pub(super) const TEMPLATES_CORE: &[CompiledTemplate] = &[
+    CompiledTemplate {
         task_slug: "count_to_three",
         language_slug: "rust",
         code: r#"fn main() {
@@ -117,27 +18,27 @@ echo "Hello, world!", PHP_EOL;"#,
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "count_to_three",
         language_slug: "python",
         code: r"for number in range(1, 4):
     print(number)",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "count_to_three",
         language_slug: "javascript",
         code: r"for (let number = 1; number <= 3; number += 1) {
     console.log(number);
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "count_to_three",
         language_slug: "typescript",
         code: r"for (let number = 1; number <= 3; number += 1) {
     console.log(number);
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "count_to_three",
         language_slug: "go",
         code: r#"package main
@@ -150,7 +51,7 @@ func main() {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "count_to_three",
         language_slug: "c",
         code: r#"#include <stdio.h>
@@ -162,7 +63,7 @@ int main(void) {
     return 0;
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "count_to_three",
         language_slug: "php",
         code: r"<?php
@@ -171,7 +72,7 @@ foreach (range(1, 3) as $number) {
     echo $number, PHP_EOL;
 }",
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files",
         language_slug: "rust",
         code: r#"use std::fs;
@@ -189,7 +90,7 @@ fn main() -> std::io::Result<()> {
     Ok(())
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files",
         language_slug: "python",
         code: r#"import os
@@ -198,7 +99,7 @@ names = sorted(name for name in os.listdir(".") if os.path.isfile(name))
 for name in names:
     print(name)"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files",
         language_slug: "javascript",
         code: r#"const fs = require("fs");
@@ -212,7 +113,7 @@ for (const name of names) {
   console.log(name);
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files",
         language_slug: "typescript",
         code: r#"import * as fs from "fs";
@@ -226,7 +127,7 @@ for (const name of names) {
   console.log(name);
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files",
         language_slug: "go",
         code: r#"package main
@@ -254,7 +155,7 @@ func main() {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files",
         language_slug: "c",
         code: r#"#include <dirent.h>
@@ -290,7 +191,7 @@ int main(void) {
     return 0;
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files",
         language_slug: "cpp",
         code: r#"#include <algorithm>
@@ -313,7 +214,7 @@ int main() {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files",
         language_slug: "java",
         code: r#"import java.io.File;
@@ -336,7 +237,7 @@ public class Main {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files",
         language_slug: "csharp",
         code: r#"using System;
@@ -354,13 +255,13 @@ class Program {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files",
         language_slug: "ruby",
         code: r#"names = Dir.entries(".").select { |name| File.file?(name) }.sort
 names.each { |name| puts name }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files",
         language_slug: "scala",
         code: r#"import java.io.File
@@ -372,7 +273,7 @@ object Main {
   }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files",
         language_slug: "kotlin",
         code: r#"import java.io.File
@@ -386,7 +287,7 @@ fun main() {
     // command-line argument, defaulting to "." when none is supplied. Each
     // template sorts names in byte order, so the verified output matches
     // `list_files` for the documented sample directory.
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files",
         language_slug: "php",
         code: r#"<?php
@@ -397,7 +298,7 @@ foreach ($names as $name) {
     echo $name, PHP_EOL;
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg",
         language_slug: "rust",
         code: r#"use std::env;
@@ -417,7 +318,7 @@ fn main() {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg",
         language_slug: "python",
         code: r#"import os
@@ -430,7 +331,7 @@ names = sorted(
 for name in names:
     print(name)"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg",
         language_slug: "javascript",
         code: r#"const fs = require("fs");
@@ -446,7 +347,7 @@ for (const name of names) {
   console.log(name);
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg",
         language_slug: "typescript",
         code: r#"import * as fs from "fs";
@@ -462,7 +363,7 @@ for (const name of names) {
   console.log(name);
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg",
         language_slug: "go",
         code: r#"package main
@@ -494,7 +395,7 @@ func main() {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg",
         language_slug: "c",
         code: r#"#include <dirent.h>
@@ -533,7 +434,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg",
         language_slug: "cpp",
         code: r#"#include <algorithm>
@@ -557,7 +458,7 @@ int main(int argc, char *argv[]) {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg",
         language_slug: "java",
         code: r#"import java.io.File;
@@ -581,7 +482,7 @@ public class Main {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg",
         language_slug: "csharp",
         code: r#"using System;
@@ -600,14 +501,14 @@ class Program {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg",
         language_slug: "ruby",
         code: r#"path = ARGV[0] || "."
 names = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort
 names.each { |name| puts name }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg",
         language_slug: "scala",
         code: r#"import java.io.File
@@ -620,7 +521,7 @@ object Main {
   }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg",
         language_slug: "kotlin",
         code: r#"import java.io.File
@@ -631,7 +532,7 @@ fun main(args: Array<String>) {
     entries.filter { it.isFile }.map { it.name }.sorted().forEach { println(it) }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg",
         language_slug: "php",
         code: r#"<?php

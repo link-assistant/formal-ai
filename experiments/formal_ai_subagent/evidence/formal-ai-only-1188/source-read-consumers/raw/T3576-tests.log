@@ -1,0 +1,809 @@
+TAP version 13
+# Subtest: file_read (rust/tests/unit/agentic-coding/file_read_tool_calls.rs)
+    # Subtest: direct file read prompts emit read tool calls
+    ok 1 - direct file read prompts emit read tool calls
+      ---
+      duration_ms: 437.802042
+      ...
+    # Subtest: cat file prompt uses the typed read capability
+    ok 2 - cat file prompt uses the typed read capability
+      ---
+      duration_ms: 1.067667
+      ...
+    # Subtest: read arguments carry the three path spellings, sorted
+    ok 3 - read arguments carry the three path spellings, sorted
+      ---
+      duration_ms: 1.669541
+      ...
+    # Subtest: list then read first file walks the tool loop to final content
+    ok 4 - list then read first file walks the tool loop to final content
+      ---
+      duration_ms: 4.884083
+      ...
+    # Subtest: read file in named folder lists then reads nested file
+    ok 5 - read file in named folder lists then reads nested file
+      ---
+      duration_ms: 3.018208
+      ...
+    # Subtest: ls folder prompt reads last file from listing
+    ok 6 - ls folder prompt reads last file from listing
+      ---
+      duration_ms: 2.538375
+      ...
+    # Subtest: read every file lists then reads each file
+    ok 7 - read every file lists then reads each file
+      ---
+      duration_ms: 2.522458
+      ...
+    # Subtest: a value request answers with the extracted value
+    ok 8 - a value request answers with the extracted value
+      ---
+      duration_ms: 2.233375
+      ...
+    # Subtest: write intent beats read intent (rust/tests/unit/agentic-coding/file_creation_writes.rs)
+    ok 9 - write intent beats read intent (rust/tests/unit/agentic-coding/file_creation_writes.rs)
+      ---
+      duration_ms: 1.929625
+      ...
+    1..9
+ok 1 - file_read (rust/tests/unit/agentic-coding/file_read_tool_calls.rs)
+  ---
+  duration_ms: 646.232875
+  type: 'suite'
+  ...
+# Subtest: bounded file analysis (rust/tests/unit/issue_1138_bounded_file_analysis.rs)
+    # Subtest: multi-file audit collects seed-derived gap evidence before reading files
+    ok 1 - multi-file audit collects seed-derived gap evidence before reading files
+      ---
+      duration_ms: 1.89675
+      ...
+    # Subtest: seeded audit actions route to bounded analysis in all supported languages
+    ok 2 - seeded audit actions route to bounded analysis in all supported languages
+      ---
+      duration_ms: 9.637417
+      ...
+    # Subtest: multi-file audit composes findings and marks absent evidence honestly
+    ok 3 - multi-file audit composes findings and marks absent evidence honestly
+      ---
+      duration_ms: 81.852708
+      ...
+    # Subtest: read-only clients receive explicit bounds and oversized results stay bounded
+    ok 4 - read-only clients receive explicit bounds and oversized results stay bounded
+      ---
+      duration_ms: 2.215042
+      ...
+    # Subtest: explicit content requests keep the full read contract
+    ok 5 - explicit content requests keep the full read contract
+      ---
+      duration_ms: 1.412041
+      ...
+    # Subtest: shell-only clients receive the same line and column bounds
+    ok 6 - shell-only clients receive the same line and column bounds
+      ---
+      duration_ms: 0.807625
+      ...
+    1..6
+ok 2 - bounded file analysis (rust/tests/unit/issue_1138_bounded_file_analysis.rs)
+  ---
+  duration_ms: 98.012209
+  type: 'suite'
+  ...
+# Subtest: supplied file bytes (rust/tests/integration/issue_671_supplied_file_bytes.rs)
+    # Subtest: a toolless client gets the bytes it supplied itself, not as an edit block
+    ok 1 - a toolless client gets the bytes it supplied itself, not as an edit block
+      ---
+      duration_ms: 1.083458
+      ...
+    # Subtest: prose that merely mentions a filename is not a file listing
+    ok 2 - prose that merely mentions a filename is not a file listing
+      ---
+      duration_ms: 1.190459
+      ...
+    1..2
+ok 3 - supplied file bytes (rust/tests/integration/issue_671_supplied_file_bytes.rs)
+  ---
+  duration_ms: 2.339792
+  type: 'suite'
+  ...
+# Subtest: local_search (rust/tests/unit/grounded_local_action.rs)
+    # Subtest: local scope dominates search verb and possessive variations
+    ok 1 - local scope dominates search verb and possessive variations
+      ---
+      duration_ms: 21.92775
+      ...
+    # Subtest: explicit location question answers the route without searching
+    ok 2 - explicit location question answers the route without searching
+      ---
+      duration_ms: 1.596917
+      ...
+    # Subtest: empty exact local lookup widens instead of claiming absence
+    ok 3 - empty exact local lookup widens instead of claiming absence
+      ---
+      duration_ms: 2.728666
+      ...
+    # Subtest: quoted local name excludes trailing answer instructions
+    ok 4 - quoted local name excludes trailing answer instructions
+      ---
+      duration_ms: 11.023292
+      ...
+    # Subtest: transport-wrapped local request does not treat the whole prompt as a name
+    ok 5 - transport-wrapped local request does not treat the whole prompt as a name
+      ---
+      duration_ms: 2.350458
+      ...
+    # Subtest: unnamed tool result widens by matching its call id
+    ok 6 - unnamed tool result widens by matching its call id
+      ---
+      duration_ms: 2.954417
+      ...
+    # Subtest: absence requires exact, substring and bounded inventory observations
+    ok 7 - absence requires exact, substring and bounded inventory observations
+      ---
+      duration_ms: 6.528167
+      ...
+    # Subtest: differently typed near match is named instead of reported as absent
+    ok 8 - differently typed near match is named instead of reported as absent
+      ---
+      duration_ms: 9.407792
+      ...
+    # Subtest: failed local lookup is reported instead of treated as empty
+    ok 9 - failed local lookup is reported instead of treated as empty
+      ---
+      duration_ms: 9.737542
+      ...
+    1..9
+ok 4 - local_search (rust/tests/unit/grounded_local_action.rs)
+  ---
+  duration_ms: 68.470541
+  type: 'suite'
+  ...
+# Subtest: comparison (rust/tests/unit/grounded_local_action.rs)
+    # Subtest: comparison is decomposed before open web research
+    ok 1 - comparison is decomposed before open web research
+      ---
+      duration_ms: 1.543416
+      ...
+    # Subtest: comparison retries the missing side after a failed search result
+    ok 2 - comparison retries the missing side after a failed search result
+      ---
+      duration_ms: 0.961375
+      ...
+    1..2
+ok 5 - comparison (rust/tests/unit/grounded_local_action.rs)
+  ---
+  duration_ms: 2.579125
+  type: 'suite'
+  ...
+# Subtest: web_research (rust/tests/unit/grounded_local_action.rs)
+    # Subtest: bare definition follow-up asks for its antecedent
+    ok 1 - bare definition follow-up asks for its antecedent
+      ---
+      duration_ms: 0.295083
+      ...
+    # Subtest: same-turn definition follow-up reuses only the antecedent topic
+    ok 2 - same-turn definition follow-up reuses only the antecedent topic
+      ---
+      duration_ms: 26.8425
+      ...
+    # Subtest: later definition follow-up reuses the prior user topic
+    ok 3 - later definition follow-up reuses the prior user topic
+      ---
+      duration_ms: 286.742667
+      ...
+    # Subtest: definition follow-up corroborates across the search rows before answering
+    ok 4 - definition follow-up corroborates across the search rows before answering
+      ---
+      duration_ms: 0.838083
+      ...
+    # Subtest: covering fetch ends the recipe instead of reading every result row
+    ok 5 - covering fetch ends the recipe instead of reading every result row
+      ---
+      duration_ms: 1.33225
+      ...
+    # Subtest: definition imperatives route to research in every supported language
+    ok 6 - definition imperatives route to research in every supported language
+      ---
+      duration_ms: 42.552666
+      ...
+    # Subtest: contextual reference without antecedent asks for it
+    ok 7 - contextual reference without antecedent asks for it
+      ---
+      duration_ms: 0.317917
+      ...
+    # Subtest: urls are ranked with authoritative hosts first
+    ok 8 - urls are ranked with authoritative hosts first
+      ---
+      duration_ms: 0.069333
+      ...
+    1..8
+ok 6 - web_research (rust/tests/unit/grounded_local_action.rs)
+  ---
+  duration_ms: 359.155792
+  type: 'suite'
+  ...
+# Subtest: report_issue (rust/tests/unit/grounded_local_action.rs, report_context_collection.rs)
+    # Subtest: report intent is meanings-driven for the reported Russian phrase
+    ok 1 - report intent is meanings-driven for the reported Russian phrase
+      ---
+      duration_ms: 2.764541
+      ...
+    # Subtest: an unrelated request is not a report intent
+    ok 2 - an unrelated request is not a report intent
+      ---
+      duration_ms: 0.234333
+      ...
+    1..2
+ok 7 - report_issue (rust/tests/unit/grounded_local_action.rs, report_context_collection.rs)
+  ---
+  duration_ms: 3.090541
+  type: 'suite'
+  ...
+# Subtest: note_composition (rust/tests/unit/issue_1066_ladder_capability.rs:277)
+    # Subtest: a document specification is composed, listing its parts as outstanding
+    ok 1 - a document specification is composed, listing its parts as outstanding
+      ---
+      duration_ms: 0.403084
+      ...
+    1..1
+ok 8 - note_composition (rust/tests/unit/issue_1066_ladder_capability.rs:277)
+  ---
+  duration_ms: 0.431875
+  type: 'suite'
+  ...
+# Subtest: transcript_evidence
+    # Subtest: records each current-turn tool result with its naming arguments
+    ok 1 - records each current-turn tool result with its naming arguments
+      ---
+      duration_ms: 0.582167
+      ...
+    1..1
+ok 9 - transcript_evidence
+  ---
+  duration_ms: 0.6065
+  type: 'suite'
+  ...
+# Subtest: issue title (rust/tests/integration/issue_839_report_format.rs)
+    # Subtest: two subjects are titled first plus last
+    ok 1 - two subjects are titled first plus last
+      ---
+      duration_ms: 0.124333
+      ...
+    # Subtest: an answered report request can still be a subject
+    ok 2 - an answered report request can still be a subject
+      ---
+      duration_ms: 0.038792
+      ...
+    # Subtest: a single subject is quoted; the default title needs an empty conversation
+    ok 3 - a single subject is quoted; the default title needs an empty conversation
+      ---
+      duration_ms: 0.074625
+      ...
+    # Subtest: an oversize subject is truncated on a word boundary
+    ok 4 - an oversize subject is truncated on a word boundary
+      ---
+      duration_ms: 0.066417
+      ...
+    1..4
+ok 10 - issue title (rust/tests/integration/issue_839_report_format.rs)
+  ---
+  duration_ms: 0.347167
+  type: 'suite'
+  ...
+# Subtest: source tree translation (rust/tests/unit/issue_1138_translation_tool.rs:120)
+    # Subtest: recognizes paths and targets
+    ok 1 - recognizes paths and targets
+      ---
+      duration_ms: 0.198
+      ...
+    # Subtest: lowers a source tree request to one translate call (issue_1138_translate_agent_tool.rs:78)
+    not ok 2 - lowers a source tree request to one translate call (issue_1138_translate_agent_tool.rs:78) # TODO worker solver lacks the translate_source_tree intent
+      ---
+      duration_ms: 10.255542
+      location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/agentic-readweb.test.mjs:573:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'not_ours'
+        - 'ready'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'not_ours'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/agentic-readweb.test.mjs:578:12)
+        async Test.run (node:internal/test_runner/test:797:9)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:526:7)
+      ...
+    1..2
+ok 11 - source tree translation (rust/tests/unit/issue_1138_translation_tool.rs:120)
+  ---
+  duration_ms: 10.562708
+  type: 'suite'
+  ...
+# Subtest: plural nouns ending in ls preserve the explicitly named source read
+ok 12 - plural nouns ending in ls preserve the explicitly named source read
+  ---
+  duration_ms: 1012.400208
+  ...
+# Subtest: the standalone ls command still lists before reading its selected file
+ok 13 - the standalone ls command still lists before reading its selected file
+  ---
+  duration_ms: 261.939333
+  ...
+# Subtest: complete Unicode declaration spans retain source and both coordinate systems
+ok 14 - complete Unicode declaration spans retain source and both coordinate systems
+  ---
+  duration_ms: 1.862083
+  ...
+# Subtest: bounded bodies establish Optional and scalar constraints without caller-supplied types
+ok 15 - bounded bodies establish Optional and scalar constraints without caller-supplied types
+  ---
+  duration_ms: 1.664292
+  ...
+# Subtest: an actual observed pair produces a guarded typed graph, without a wrapper or write
+ok 16 - an actual observed pair produces a guarded typed graph, without a wrapper or write
+  ---
+  duration_ms: 0.772625
+  ...
+# Subtest: nested Optional type parameters are instantiated from the observed operand
+ok 17 - nested Optional type parameters are instantiated from the observed operand
+  ---
+  duration_ms: 0.343583
+  ...
+# Subtest: stale identities and unobserved exports cannot produce a graph
+ok 18 - stale identities and unobserved exports cannot produce a graph
+  ---
+  duration_ms: 0.663792
+  ...
+# Subtest: unknown calls, field schemas, input writes and local mutation remain contract gaps
+ok 19 - unknown calls, field schemas, input writes and local mutation remain contract gaps
+  ---
+  duration_ms: 1.971041
+  ...
+# Subtest: real module initialization and transitive import effects remain separate obligations
+ok 20 - real module initialization and transitive import effects remain separate obligations
+  ---
+  duration_ms: 2.796042
+  ...
+# Subtest: ASI line terminators, incompatible branches and unsupported async are not certified
+ok 21 - ASI line terminators, incompatible branches and unsupported async are not certified
+  ---
+  duration_ms: 1.031083
+  ...
+# Subtest: duplicate bindings and malformed balanced source do not masquerade as provenance
+ok 22 - duplicate bindings and malformed balanced source do not masquerade as provenance
+  ---
+  duration_ms: 0.436542
+  ...
+# Subtest: actual original callees retain exact declarations and honest unsupported contract reasons
+ok 23 - actual original callees retain exact declarations and honest unsupported contract reasons
+  ---
+  duration_ms: 17.778
+  ...
+# Subtest: production discovery records supported graphs but cannot certify an unbound requested goal
+ok 24 - production discovery records supported graphs but cannot certify an unbound requested goal
+  ---
+  duration_ms: 763.71375
+  ...
+# Subtest: balanced but invalid binding/export forms do not certify a module contract
+ok 25 - balanced but invalid binding/export forms do not certify a module contract
+  ---
+  duration_ms: 0.7015
+  ...
+# Subtest: deferred unknown callable effects cannot contaminate module initialization
+ok 26 - deferred unknown callable effects cannot contaminate module initialization
+  ---
+  duration_ms: 0.94125
+  ...
+# Subtest: actual initialization and import regions retain independent complete byte witnesses
+ok 27 - actual initialization and import regions retain independent complete byte witnesses
+  ---
+  duration_ms: 1.291
+  ...
+# Subtest: structural return access witnesses retain dynamic indices without schema or purity certification
+ok 28 - structural return access witnesses retain dynamic indices without schema or purity certification
+  ---
+  duration_ms: 0.51375
+  ...
+# Subtest: unknown closures and structural writes cannot acquire read-only contracts
+ok 29 - unknown closures and structural writes cannot acquire read-only contracts
+  ---
+  duration_ms: 0.372167
+  ...
+# Subtest: an unvalidated balanced body cannot certify an otherwise supported module import
+ok 30 - an unvalidated balanced body cannot certify an otherwise supported module import
+  ---
+  duration_ms: 3.450334
+  ...
+# Subtest: destination, immutable inputs and acceptance are declaration-scoped
+ok 31 - destination, immutable inputs and acceptance are declaration-scoped
+  ---
+  duration_ms: 89.429084
+  ...
+# Subtest: adjacent declared module and alias signature bind the same reusable discovery
+ok 32 - adjacent declared module and alias signature bind the same reusable discovery
+  ---
+  duration_ms: 0.938125
+  ...
+# Subtest: ambiguous destinations and quoted call shapes are not guessed
+ok 33 - ambiguous destinations and quoted call shapes are not guessed
+  ---
+  duration_ms: 0.527458
+  ...
+# Subtest: existing arithmetic module/test request remains on its original route
+ok 34 - existing arithmetic module/test request remains on its original route
+  ---
+  duration_ms: 86.185542
+  ...
+# Subtest: actual planner reads all operands, reports exact missing contracts, and changes no bytes
+ok 35 - actual planner reads all operands, reports exact missing contracts, and changes no bytes
+  ---
+  duration_ms: 878.599458
+  ...
+# Subtest: an absent destination is observed without creating it
+ok 36 - an absent destination is observed without creating it
+  ---
+  duration_ms: 56.857417
+  ...
+# Subtest: missing input is a failed read, never an empty source or a writing fallback
+ok 37 - missing input is a failed read, never an empty source or a writing fallback
+  ---
+  duration_ms: 33.875208
+  ...
+# Subtest: permission errors on the destination retain typed failure rather than absence
+ok 38 - permission errors on the destination retain typed failure rather than absence
+  ---
+  duration_ms: 0.615958
+  ...
+# Subtest: missing read capability is an exact typed gap, not a declined route
+ok 39 - missing read capability is an exact typed gap, not a declined route
+  ---
+  duration_ms: 0.588458
+  ...
+# Subtest: old request evidence is not reused for a new discovery request
+ok 40 - old request evidence is not reused for a new discovery request
+  ---
+  duration_ms: 0.5395
+  ...
+# Subtest: explicit client error flags stay bound to the observed read
+ok 41 - explicit client error flags stay bound to the observed read
+  ---
+  duration_ms: 0.530792
+  ...
+# Subtest: numbered source payload failure words remain data
+ok 42 - numbered source payload failure words remain data
+  ---
+  duration_ms: 57.169583
+  ...
+# Subtest: signature identifiers and path components cannot supply instruction verbs
+ok 43 - signature identifiers and path components cannot supply instruction verbs
+  ---
+  duration_ms: 0.576792
+  ...
+# Subtest: public request-local outcome preserves the actual typed gap and complete witness
+ok 44 - public request-local outcome preserves the actual typed gap and complete witness
+  ---
+  duration_ms: 0.965917
+  ...
+# Subtest: public request-local outcome retains failure metadata without prose classification
+ok 45 - public request-local outcome retains failure metadata without prose classification
+  ---
+  duration_ms: 0.476
+  ...
+# Subtest: a planned read has no final disposition or stale discovery witness
+ok 46 - a planned read has no final disposition or stale discovery witness
+  ---
+  duration_ms: 0.431625
+  ...
+# Subtest: complete provider Read retains every JSON source byte 169
+ok 47 - complete provider Read retains every JSON source byte 169
+  ---
+  duration_ms: 94.522458
+  ...
+# Subtest: bare same JSON stays available Unknown and cannot own transport role 169
+ok 48 - bare same JSON stays available Unknown and cannot own transport role 169
+  ---
+  duration_ms: 0.810291
+  ...
+# Subtest: complete provider Read retains every JSON source byte 127
+ok 49 - complete provider Read retains every JSON source byte 127
+  ---
+  duration_ms: 0.389333
+  ...
+# Subtest: bare same JSON stays available Unknown and cannot own transport role 127
+ok 50 - bare same JSON stays available Unknown and cannot own transport role 127
+  ---
+  duration_ms: 0.319167
+  ...
+# Subtest: actual ordinary full planner and filesystem provider preserve exact JSON bytes
+ok 51 - actual ordinary full planner and filesystem provider preserve exact JSON bytes
+  ---
+  duration_ms: 711.583792
+  ...
+# Subtest: explicit provider failure wins over successful Read metadata
+ok 52 - explicit provider failure wins over successful Read metadata
+  ---
+  duration_ms: 70.6525
+  ...
+# Subtest: partial source does not gain complete Finding metadata
+ok 53 - partial source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.395167
+  ...
+# Subtest: truncated source does not gain complete Finding metadata
+ok 54 - truncated source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.270708
+  ...
+# Subtest: wrong metadata path source does not gain complete Finding metadata
+ok 55 - wrong metadata path source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.243041
+  ...
+# Subtest: timed out actual provider metadata remains Failure
+ok 56 - timed out actual provider metadata remains Failure
+  ---
+  duration_ms: 0.374625
+  ...
+# Subtest: aborted actual provider metadata remains Failure
+ok 57 - aborted actual provider metadata remains Failure
+  ---
+  duration_ms: 0.222042
+  ...
+# Subtest: signalled actual provider metadata remains Failure
+ok 58 - signalled actual provider metadata remains Failure
+  ---
+  duration_ms: 0.308292
+  ...
+# Subtest: wrong call cannot bind the original file
+ok 59 - wrong call cannot bind the original file
+  ---
+  duration_ms: 0.180833
+  ...
+# Subtest: wrong tool cannot bind the original file
+ok 60 - wrong tool cannot bind the original file
+  ---
+  duration_ms: 0.369792
+  ...
+# Subtest: new user window cannot bind the original file
+ok 61 - new user window cannot bind the original file
+  ---
+  duration_ms: 0.120417
+  ...
+# Subtest: conflicting paths cannot bind the original file
+ok 62 - conflicting paths cannot bind the original file
+  ---
+  duration_ms: 0.192459
+  ...
+# Subtest: latest source observation supersedes older bytes and provider refusal
+ok 63 - latest source observation supersedes older bytes and provider refusal
+  ---
+  duration_ms: 0.627416
+  ...
+# Subtest: every multi-read source uses typed provider observations
+ok 64 - every multi-read source uses typed provider observations
+  ---
+  duration_ms: 0.559208
+  ...
+# Subtest: partial multi-read JSON input does not become an error before the remaining Read
+ok 65 - partial multi-read JSON input does not become an error before the remaining Read
+  ---
+  duration_ms: 0.25875
+  ...
+# Subtest: list then read preserves JSON source and real shell listing receipt
+ok 66 - list then read preserves JSON source and real shell listing receipt
+  ---
+  duration_ms: 0.736209
+  ...
+# Subtest: discovery hashes exact JSON source without treating its keys as a failed Read
+ok 67 - discovery hashes exact JSON source without treating its keys as a failed Read
+  ---
+  duration_ms: 2.135666
+  ...
+# Subtest: discovery bare input cannot certify a source contract
+ok 68 - discovery bare input cannot certify a source contract
+  ---
+  duration_ms: 0.3795
+  ...
+# Subtest: discovery partial input cannot certify a source contract
+ok 69 - discovery partial input cannot certify a source contract
+  ---
+  duration_ms: 0.302959
+  ...
+# Subtest: discovery wrong metadata path input cannot certify a source contract
+ok 70 - discovery wrong metadata path input cannot certify a source contract
+  ---
+  duration_ms: 0.243875
+  ...
+# Subtest: discovery genuine outer failure is Failure; authored ENOENT data is not absence
+ok 71 - discovery genuine outer failure is Failure; authored ENOENT data is not absence
+  ---
+  duration_ms: 0.851541
+  ...
+# Subtest: raw authored source does not provide its own metadata: goal "Create a file status.txt cont
+ok 72 - raw authored source does not provide its own metadata: goal "Create a file status.txt cont
+  ---
+  duration_ms: 622.49325
+  ...
+# Subtest: outer provider success retains exact source bytes: goal "Create a file status.txt cont
+ok 73 - outer provider success retains exact source bytes: goal "Create a file status.txt cont
+  ---
+  duration_ms: 10.806833
+  ...
+# Subtest: raw authored source does not provide its own metadata: {"schema":"source-read-receipt/v1",
+ok 74 - raw authored source does not provide its own metadata: {"schema":"source-read-receipt/v1",
+  ---
+  duration_ms: 0.357833
+  ...
+# Subtest: outer provider success retains exact source bytes: {"schema":"source-read-receipt/v1",
+ok 75 - outer provider success retains exact source bytes: {"schema":"source-read-receipt/v1",
+  ---
+  duration_ms: 0.325916
+  ...
+# Subtest: raw authored source does not provide its own metadata: {"success":false,"complete":false,"
+ok 76 - raw authored source does not provide its own metadata: {"success":false,"complete":false,"
+  ---
+  duration_ms: 0.478792
+  ...
+# Subtest: outer provider success retains exact source bytes: {"success":false,"complete":false,"
+ok 77 - outer provider success retains exact source bytes: {"success":false,"complete":false,"
+  ---
+  duration_ms: 1.191791
+  ...
+# Subtest: raw authored source does not provide its own metadata: {"success":true,"complete":true,"co
+ok 78 - raw authored source does not provide its own metadata: {"success":true,"complete":true,"co
+  ---
+  duration_ms: 0.412834
+  ...
+# Subtest: outer provider success retains exact source bytes: {"success":true,"complete":true,"co
+ok 79 - outer provider success retains exact source bytes: {"success":true,"complete":true,"co
+  ---
+  duration_ms: 0.287542
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"complete":false}
+ok 80 - provider refusal or partial observation cannot certify source {"complete":false}
+  ---
+  duration_ms: 0.272125
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"stream_complete":false}
+ok 81 - provider refusal or partial observation cannot certify source {"stream_complete":false}
+  ---
+  duration_ms: 0.194167
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"truncated":true}
+ok 82 - provider refusal or partial observation cannot certify source {"truncated":true}
+  ---
+  duration_ms: 0.089083
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"timed_out":true}
+ok 83 - provider refusal or partial observation cannot certify source {"timed_out":true}
+  ---
+  duration_ms: 0.09825
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"aborted":true}
+ok 84 - provider refusal or partial observation cannot certify source {"aborted":true}
+  ---
+  duration_ms: 0.115834
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"signal":"SIGTERM"}
+ok 85 - provider refusal or partial observation cannot certify source {"signal":"SIGTERM"}
+  ---
+  duration_ms: 0.094833
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"success":false}
+ok 86 - provider refusal or partial observation cannot certify source {"success":false}
+  ---
+  duration_ms: 0.183834
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"is_error":true}
+ok 87 - provider refusal or partial observation cannot certify source {"is_error":true}
+  ---
+  duration_ms: 0.083375
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"exit_code":1}
+ok 88 - provider refusal or partial observation cannot certify source {"exit_code":1}
+  ---
+  duration_ms: 0.088875
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"success":"true"}
+ok 89 - provider refusal or partial observation cannot certify source {"success":"true"}
+  ---
+  duration_ms: 0.113375
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"complete":"true"}
+ok 90 - provider refusal or partial observation cannot certify source {"complete":"true"}
+  ---
+  duration_ms: 0.101542
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"format":"numbered"}
+ok 91 - provider refusal or partial observation cannot certify source {"format":"numbered"}
+  ---
+  duration_ms: 0.101542
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"path":"elsewhere/.formal-ai/general-change-plan.lino"}
+ok 92 - provider refusal or partial observation cannot certify source {"path":"elsewhere/.formal-ai/general-change-plan.lino"}
+  ---
+  duration_ms: 0.162208
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"path":null}
+ok 93 - provider refusal or partial observation cannot certify source {"path":null}
+  ---
+  duration_ms: 0.186292
+  ...
+# Subtest: outer tool error remains failure even when metadata declares success
+ok 94 - outer tool error remains failure even when metadata declares success
+  ---
+  duration_ms: 0.756167
+  ...
+# Subtest: known complete numbered format is separate from process status
+ok 95 - known complete numbered format is separate from process status
+  ---
+  duration_ms: 0.34625
+  ...
+# Subtest: current call identity and exact nonconflicting path are required
+ok 96 - current call identity and exact nonconflicting path are required
+  ---
+  duration_ms: 233.514875
+  ...
+# Subtest: explicit successful process receipt retains authored failure vocabulary
+ok 97 - explicit successful process receipt retains authored failure vocabulary
+  ---
+  duration_ms: 0.394375
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"complete":false}
+ok 98 - partial shell receipts veto exact bytes and digest {"complete":false}
+  ---
+  duration_ms: 0.334916
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"stream_complete":false}
+ok 99 - partial shell receipts veto exact bytes and digest {"stream_complete":false}
+  ---
+  duration_ms: 0.171041
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"truncated":true}
+ok 100 - partial shell receipts veto exact bytes and digest {"truncated":true}
+  ---
+  duration_ms: 0.162875
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"timed_out":true}
+ok 101 - partial shell receipts veto exact bytes and digest {"timed_out":true}
+  ---
+  duration_ms: 0.099209
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"aborted":true}
+ok 102 - partial shell receipts veto exact bytes and digest {"aborted":true}
+  ---
+  duration_ms: 0.089625
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"signal":"SIGTERM"}
+ok 103 - partial shell receipts veto exact bytes and digest {"signal":"SIGTERM"}
+  ---
+  duration_ms: 0.203667
+  ...
+# Subtest: full successful shell bytes still require exact output and real status
+ok 104 - full successful shell bytes still require exact output and real status
+  ---
+  duration_ms: 0.677
+  ...
+# Subtest: original authored failure goal proceeds beyond actual bare source read
+ok 105 - original authored failure goal proceeds beyond actual bare source read
+  ---
+  duration_ms: 191.388375
+  ...
+# Subtest: a later declined Read observation cannot retain an older source certificate
+ok 106 - a later declined Read observation cannot retain an older source certificate
+  ---
+  duration_ms: 0.367709
+  ...
+1..106
+# tests 141
+# suites 11
+# pass 140
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 1
+# duration_ms 1951.896584

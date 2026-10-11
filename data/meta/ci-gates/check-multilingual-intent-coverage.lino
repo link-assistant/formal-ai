@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_multilingual_intent_coverage
+ci_gate check-multilingual-intent-coverage
   stage web
   description "Every routed intent is covered in every language the app advertises."
   run "npm run --prefix rust/tests/e2e check:intent-coverage"
+  justification "An intent phrase not covered by multilingual test data caused incorrect responses in non-English sessions; the coverage check was introduced in #187 (R219) to ensure every intent has translations across all languages."

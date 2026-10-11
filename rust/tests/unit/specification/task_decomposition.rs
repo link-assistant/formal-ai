@@ -100,9 +100,9 @@ fn agent_authored_contract_is_exact_and_controls_the_shipped_ledger() {
     }
 
     let contract = task_decomposition_contract().expect("the embedded contract must be complete");
-    assert!(!contract.atomic.is_empty());
-    assert!(!contract.execution.is_empty());
-    assert!(!contract.learning.is_empty());
+    assert_ne!(contract.atomic, "");
+    assert_ne!(contract.execution, "");
+    assert_ne!(contract.learning, "");
     // Issue #1028: decomposition is a *binary* split, and the contract is what
     // makes that a shipped rule rather than a convention the runner happens to
     // follow. A parse that lost the field would return `None` above, so this
@@ -352,7 +352,10 @@ fn a_real_corpus_task_splits_into_smaller_jointly_sufficient_children() {
 /// splitter returns no parts rather than inventing a second child.
 #[test]
 fn an_atomic_task_yields_no_split() {
-    assert!(split_once_checkable("Add dev/log/ to the excluded_folders array.").is_empty());
+    assert_eq!(
+        split_once_checkable("Add dev/log/ to the excluded_folders array."),
+        [] as [std::string::String; 0]
+    );
 }
 
 /// Regression found while reviewing issue #847 after the arbitrary-procedure
@@ -508,7 +511,10 @@ fn failed_execution_can_propose_a_strategy_but_only_reviewed_green_learning_acti
                 https://github.com/link-assistant/formal-ai/issues/847";
     let empty = TaskStrategyLedger::new();
     let unresolved = decompose_task_with_ledger(task, 6, &empty);
-    assert!(unresolved.root.children.is_empty());
+    assert_eq!(
+        unresolved.root.children,
+        [] as [formal_ai::task_decomposition::SubTask; 0]
+    );
     assert!(!unresolved.is_atomic());
     let mut executor = BlockingExecutor;
     let failed = solve_recursively(&unresolved.to_recursive_task(), &mut executor);

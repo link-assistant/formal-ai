@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "地毯"
+        },
+        "es": {
+          "language": "es",
+          "value": "alfombra"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "纺织地面覆盖物"
+        },
+        "es": {
+          "language": "es",
+          "value": "pieza de tela, paño, hule u otro material, también tejido confeccionado en ganchillo o bordado"
         }
       },
       "aliases": {
@@ -60,6 +68,24 @@
           {
             "language": "zh",
             "value": "地氈"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "alfombras"
+          },
+          {
+            "language": "es",
+            "value": "alhombra"
+          },
+          {
+            "language": "es",
+            "value": "tapete"
+          },
+          {
+            "language": "es",
+            "value": "Tapete"
           }
         ]
       }

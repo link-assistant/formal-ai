@@ -1,0 +1,88 @@
+>> bash {"command":"node probe-return-action-roundtrip.mjs"}
+   Output: {
+     "scope": "read-only selected in-memory seed overlay; production seed bytes unchanged",
+     "allPairFalls": [],
+     "enZh": "en->zh: 6/64 sentences survive, 209/455 content terms survive (209/236 known)",
+     "zhIdentity": {
+       "ambiguous": "coding_assertion_equality",
+       "unambiguous": "coding_return"
+     },
+     "probes": [
+       {
+         "source": "return",
+         "meaning": "coding_return",
+         "forward": "返回结果",
+         "backward": "return",
+         "survives": true
+       },
+       {
+         "source": "returning",
+         "meaning": "coding_return",
+         "forward": "返回结果",
+         "backward": "return",
+         "survives": true
+       },
+       {
+         "source": "is equal to",
+         "meaning": "coding_assertion_equality",
+         "forward": "等于",
+         "backward": "is equal to",
+         "survives": true
+       },
+       {
+         "source": "equals",
+         "meaning": "coding_assertion_equality",
+         "forward": "等于",
+         "backward": "is equal to",
+         "survives": true
+       }
+     ],
+     "productionBytesUnchanged": true
+   }
+   
+   Exit Code: 0
+== answer ==
+The `node probe-return-action-roundtrip.mjs` command completed. Output:
+
+```json
+{
+  "allPairFalls": [],
+  "enZh": "en->zh: 6/64 sentences survive, 209/455 content terms survive (209/236 known)",
+  "probes": [
+    {
+      "backward": "return",
+      "forward": "返回结果",
+      "meaning": "coding_return",
+      "source": "return",
+      "survives": true
+    },
+    {
+      "backward": "return",
+      "forward": "返回结果",
+      "meaning": "coding_return",
+      "source": "returning",
+      "survives": true
+    },
+    {
+      "backward": "is equal to",
+      "forward": "等于",
+      "meaning": "coding_assertion_equality",
+      "source": "is equal to",
+      "survives": true
+    },
+    {
+      "backward": "is equal to",
+      "forward": "等于",
+      "meaning": "coding_assertion_equality",
+      "source": "equals",
+      "survives": true
+    }
+  ],
+  "productionBytesUnchanged": true,
+  "scope": "read-only selected in-memory seed overlay; production seed bytes unchanged",
+  "zhIdentity": {
+    "ambiguous": "coding_assertion_equality",
+    "unambiguous": "coding_return"
+  }
+}
+```

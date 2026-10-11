@@ -1,0 +1,21 @@
+view
+  id M-6b45ed13479e
+  lemma regression
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an abnormal state in which development has stopped prematurely"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(psychiatry) a defense mechanism in which you flee from reality by assuming a more infantile state"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the relation between selected values of x and observed values of y (from which the most probable value of y can be predicted for any value of x)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "returning to a former state"
+    provenance (wordnet)

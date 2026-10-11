@@ -1,0 +1,14 @@
+debt ratchet (data/meta/debt-ratchet.lino):
+  authored-ladder-rules: measured 32 / ceiling 32
+  dispatch-name-special-cases: measured 0 / ceiling 0
+  docs-requirements-suites: measured 5 / ceiling 5
+  handler-files: measured 47 / ceiling 47
+  handler-migration-pending: measured 13 / ceiling 13
+  hardcoded-language-rows: measured 682 / ceiling 682
+  language-parity-gaps: measured 43 / ceiling 43
+  literal-predicates: measured 456 / ceiling 456
+  promotion-predicates: measured 0 / ceiling 0
+  store-read-share: measured 3 / ceiling 3
+  try-dispatch-entries: measured 33 / ceiling 33
+  worker-sync-handler-literals: measured 0 / ceiling 0
+debt ratchet holds

@@ -2,99 +2,127 @@ self_ast_census
   target src/agentic_coding/modules.rs
   language rust
   fidelity full_ast
-  byte_len 5974
-  line_count 156
-  content_id source_module_af96e30301cf9205
-  symbol_count 71
+  byte_len 7019
+  line_count 194
+  content_id source_module_64cacd870bb16398
+  symbol_count 99
   symbols
     module algorithm_learning 10 10
-    module associative_learning 11 11
-    module capability_router 12 12
-    module change_request 13 13
-    module ci_workflow 14 14
-    module code_artifact 15 15
-    module code_rewrite_learning 16 16
-    module code_task 17 17
-    module command_reroute 18 18
-    module comparison 19 19
-    module conversation_recall 20 20
-    module corpus 21 21
-    module diagram 22 22
-    module directory_listing 23 23
-    module document_recipe 24 24
-    module dreaming_audit 25 25
-    module driver 26 26
-    module evidence_record 27 27
-    module execution_learning 28 28
-    module explain 29 29
-    module external_benchmark_learning 30 30
-    module file_path_shape 31 31
-    module file_read 32 32
-    module formalization_recipe 33 33
-    module formalize 34 34
-    module general_execution 35 35
-    module general_planner 36 36
-    module git_commit 37 37
-    module google_trends_catalog 38 38
-    module google_trends_learning 39 39
-    module harness_envelope 40 40
-    module intent_router 41 41
-    module learning_report 42 42
-    module ledger 43 43
-    module lexicon 44 44
-    module link_edit_rules 45 45
-    module local_search 46 46
-    module meaning_detail 47 47
-    module mutating_action 48 48
-    module narration 49 49
-    module note_composition 50 50
-    module planner 51 51
-    module positional_edit 52 52
-    module procedure 53 53
-    module progress 54 54
-    module question_catalog 55 55
-    module rebuild_plan 56 56
-    module repair_strategy 57 57
-    module report_issue 58 58
-    module report_script 59 59
-    module requirement_resolution 60 60
-    module routing_learning 61 61
-    module self_ast 62 62
-    module self_heal 63 63
-    module shell_command 64 64
-    module shell_command_policy 65 65
-    module shell_file_fallback 66 66
-    module source_links 67 67
-    module stated_request 68 68
-    module statement_audit 69 69
-    module structured_document 70 70
-    module structured_edit 71 71
-    module task_obligations 72 72
-    module task_structure 73 73
-    module tool_result 74 74
-    module transcript_evidence 75 75
-    module web_research 76 76
-    module work_item_steps 77 77
-    module workspace_change 78 78
-    module workspace_inspection 79 79
-    module write_request 80 80
+    module append_contract 11 11
+    module associative_learning 12 12
+    module capability_router 13 13
+    module change_request 14 14
+    module ci_workflow 15 15
+    module code_artifact 16 16
+    module code_rewrite_learning 17 17
+    module code_task 18 18
+    module command_reroute 19 19
+    module comparison 20 20
+    module contents_source 21 21
+    module conversation_recall 22 22
+    module corpus 23 23
+    module diagram 24 24
+    module directory_listing 25 25
+    module document_recipe 26 26
+    module dreaming_audit 27 27
+    module driver 28 28
+    module edit_scope 29 29
+    module evidence_record 30 30
+    module execution_learning 31 31
+    module explain 32 32
+    module external_benchmark_learning 33 33
+    module file_path_shape 34 34
+    module file_read 35 35
+    module file_summary 36 36
+    module final_result 37 37
+    module formalization_recipe 38 38
+    module formalize 39 39
+    module function_expectation 40 40
+    module general_execution 41 41
+    module general_planner 42 42
+    module git_commit 43 43
+    module google_trends_catalog 44 44
+    module google_trends_learning 45 45
+    module harness_envelope 46 46
+    module intent_router 47 47
+    module learning_report 48 48
+    module ledger 49 49
+    module lexicon 50 50
+    module line_range_move 51 51
+    module line_removal 52 52
+    module link_edit_rules 53 53
+    module literal_write_guard 54 54
+    module local_search 55 55
+    module markdown_section 56 56
+    module meaning_detail 57 57
+    module module_exports 58 58
+    module module_function 59 59
+    module mutating_action 60 60
+    module narration 61 61
+    module note_composition 62 62
+    module planner 63 63
+    module positional_edit 64 64
+    module prerequisite_recovery 65 65
+    module procedure 66 66
+    module progress 67 67
+    module question_catalog 68 68
+    module quote_nesting 69 69
+    module rebuild_plan 70 70
+    module repair_apply 71 71
+    module repair_loop 72 72
+    module repair_strategy 73 73
+    module replace_list 74 74
+    module report_issue 75 75
+    module report_script 76 76
+    module request_sequence 77 77
+    module requirement_extraction 78 78
+    module requirement_resolution 79 79
+    module restart_feedback 80 80
+    module routing_learning 81 81
+    module self_ast 82 82
+    module self_heal 83 83
+    module shell_command 84 84
+    module shell_command_policy 85 85
+    module shell_file_fallback 86 86
+    module source_links 87 87
+    module spelling 88 88
+    module stated_request 89 89
+    module statement_audit 90 90
+    module structured_document 91 91
+    module structured_edit 92 92
+    module system_diagram 93 93
+    module task_obligations 94 94
+    module task_structure 95 95
+    module test_assertion 96 96
+    module test_file_runner 97 97
+    module tool_result 98 98
+    module transcript_evidence 99 99
+    module web_research 100 100
+    module work_item_steps 101 101
+    module workspace_change 102 102
+    module workspace_computed_change 103 103
+    module workspace_inspection 104 104
+    module workspace_line_operation 105 105
+    module workspace_search 106 106
+    module workspace_setting 107 107
+    module write_request 108 108
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3270
-    named_node_count 505
+    total_link_count 3930
+    named_node_count 604
     distinct_node_kinds 11
     node_kinds
-      crate 7
-      identifier 232
+      crate 10
+      identifier 275
       line_comment 8
-      mod_item 71
-      scoped_identifier 10
-      scoped_use_list 32
+      mod_item 99
+      scoped_identifier 13
+      scoped_use_list 33
       source_file 1
-      use_as_clause 1
-      use_declaration 36
-      use_list 32
-      visibility_modifier 75
+      use_as_clause 6
+      use_declaration 40
+      use_list 33
+      visibility_modifier 86

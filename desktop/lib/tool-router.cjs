@@ -22,7 +22,16 @@
 const path = require("node:path");
 const crypto = require("node:crypto");
 
-const SANDBOX_IMAGE = "konard/box-dind:2.1.1";
+// Issue #953: confinement decisions are spec data, not hand-rolled inline
+// checks. The rules live in tool-router-confinement.lino next to this file
+// — the same spec the Rust core's /v1/tools/authorize endpoint reads — and
+// this module applies them. When the supervised engine answers an
+// authorize request, that answer is authoritative; the local spec checks
+// are the transitional mirror that keeps the desktop working on builds
+// where the endpoint has not landed yet.
+const confinement = require("./confinement.cjs");
+
+const SANDBOX_IMAGE = "konard/box-dind:2.10.2";
 
 // The tool vocabulary mirrors the browser environment (see app.js); each maps to
 // a local executor here. `code_exec` / `eval_js` are sandboxed, `shell` is host
@@ -161,6 +170,16 @@ function createToolRouter(options = {}) {
   const resolvePath = options.resolvePath || ((value) => String(value || ""));
   const webSearch = options.webSearch || null;
   const webFetch = options.webFetch || null;
+  // Issue #953: the supervised local engine (formal-ai serve) is the
+  // authoritative authorizer. Injected as a dependency so tests and the
+  // in-process mode work without one; when it answers { decision },
+  // refusals from the engine are final.
+  const engineAuthorize = options.engineAuthorize || null;
+  const realpathImpl = options.realpath || null;
+  const specConfinement = confinement.createConfinement({
+    computerUseRoot,
+    realpath: realpathImpl,
+  });
 
   // Mutable grant state, updated from the renderer's permission toggles.
   let grants = { all: false };
@@ -168,60 +187,25 @@ function createToolRouter(options = {}) {
   function safePath(value) {
     const requested = resolvePath(String(value || ""));
     if (!requested) return { error: "a path is required" };
-    if (allowedReadRoot) {
-      const relative = path.relative(allowedReadRoot, requested);
-      if (relative.startsWith("..") || path.isAbsolute(relative)) {
-        return { error: "path is outside the allowed root" };
-      }
-    }
-    return { requested };
+    return specConfinement.confineToRoot(allowedReadRoot, requested);
+  }
+
+  async function safePathResolved(value) {
+    const requested = resolvePath(String(value || ""));
+    if (!requested) return { error: "a path is required" };
+    return specConfinement.confineToRootResolved(allowedReadRoot, requested);
   }
 
   function computerSafePath(input, value) {
-    if (!computerUseRoot) return { error: "computer-use isolation root is not configured" };
-    const planId = String(input && input.plan_id || "");
-    if (
-      planId.length > 128
-      || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(planId)
-      || planId === "."
-      || planId === ".."
-    ) {
-      return { error: "computer-use plan_id is not safe for workspace isolation" };
-    }
-    const relative = String(value || "");
-    if (!relative || path.isAbsolute(relative)) {
-      return { error: "computer-use paths must be non-empty and relative" };
-    }
-    const planRoot = path.resolve(computerUseRoot, planId);
-    const requested = path.resolve(planRoot, relative);
-    const confined = path.relative(planRoot, requested);
-    if (confined.startsWith("..") || path.isAbsolute(confined)) {
-      return { error: "path is outside the isolated computer-use workspace" };
-    }
-    return { requested };
+    return specConfinement.confineToWorkspace(input, value);
+  }
+
+  async function computerSafePathResolved(input, value) {
+    return specConfinement.confineToWorkspaceResolved(input, value);
   }
 
   function computerArchiveTarget(input, destination, entryPath) {
-    const destinationPath = computerSafePath(input, destination);
-    const entry = String(entryPath || "");
-    if (!destinationPath.requested || !entry || path.isAbsolute(entry)) {
-      return {
-        error: destinationPath.error || "archive entry path must be non-empty and relative",
-      };
-    }
-    const relative = path.join(String(destination), entry);
-    const targetPath = computerSafePath(input, relative);
-    if (!targetPath.requested) return targetPath;
-    const confined = path.relative(destinationPath.requested, targetPath.requested);
-    if (
-      confined === ""
-      || confined === ".."
-      || confined.startsWith(`..${path.sep}`)
-      || path.isAbsolute(confined)
-    ) {
-      return { error: "archive entry is outside the requested extraction directory" };
-    }
-    return { requested: targetPath.requested, relative };
+    return specConfinement.confineArchiveEntry(input, destination, entryPath);
   }
 
   function setGrants(next) {
@@ -821,6 +805,43 @@ function createToolRouter(options = {}) {
         ? computerFailure(tool, input, "refused", "tool call denied by explicit-permission policy")
         : refusal(tool, "tool call denied by explicit-permission policy");
     }
+    // Issue #953: authorization and path confinement belong to the Rust
+    // core. When the supervised engine exposes /v1/tools/authorize its
+    // decision is authoritative — a refusal here never reaches an effect.
+    // On builds without the endpoint the request degrades to the local
+    // spec-driven checks below (same rules, transitional mirror).
+    if (needsExplicitGrant && typeof engineAuthorize === "function") {
+      let decision = null;
+      try {
+        decision = await engineAuthorize({
+          tool,
+          canonicalTool: dispatchTool,
+          input,
+          grants: { ...grants },
+        });
+      } catch (_error) {
+        decision = null;
+      }
+      if (decision && typeof decision === "object" && decision.available === true) {
+        if (decision.decision === "refuse") {
+          const reason = String(
+            decision.reason || "tool call refused by the engine authorization endpoint",
+          );
+          return COMPUTER_USE_TOOLS.includes(tool)
+            ? computerFailure(tool, input, "refused", reason)
+            : refusal(tool, reason);
+        }
+        if (decision.decision === "allow") {
+          // Path arguments still confine locally at effect time (defense
+          // in depth: the engine may not know the desktop's roots).
+          const pathArgs = [input.path, input.directory, input.from, input.to].filter(Boolean);
+          for (const value of pathArgs) {
+            const checked = await safePathResolved(value);
+            if (checked.error) return refusal(tool, checked.error);
+          }
+        }
+      }
+    }
     if (COMPUTER_USE_TOOLS.includes(tool)) return invokeComputerPrimitive(tool, input);
     if (dispatchTool === "web_search" || dispatchTool === "web_fetch") {
       const executor = dispatchTool === "web_search" ? webSearch : webFetch;
@@ -877,6 +898,10 @@ function createToolRouter(options = {}) {
     isPermitted: (tool) => isPermitted(grants, tool),
     isReadOnly: (tool) => READ_ONLY_TOOLS.includes(tool) || READ_ONLY_TOOLS.includes(canonicalTool(tool)),
     invoke,
+    // Issue #953: exposed for the adversarial confinement suite.
+    safePath,
+    computerSafePath,
+    computerArchiveTarget,
   };
 }
 

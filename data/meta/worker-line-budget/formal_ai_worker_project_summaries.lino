@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_project_summaries.js"
+  ceiling 48
+  rationale "Curated project descriptions reuse the shared summarization mode and stable weighted statement pipeline. GitHub HTTP projections match local registry records before any network attempt and retain explicit curated-source provenance. Shared seeded project responses substitute metadata once, preserving literal values. Extracted from the project-search worker without increasing either existing module ceiling (R1188-U29, 2026-10-10)."

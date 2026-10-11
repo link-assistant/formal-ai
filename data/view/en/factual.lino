@@ -1,0 +1,13 @@
+view
+  id M-2567a0c4cb10
+  lemma factual
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or relating to or characterized by facts"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "existing in act or fact"
+    provenance (wordnet)

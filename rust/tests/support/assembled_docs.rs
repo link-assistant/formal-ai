@@ -1,0 +1,124 @@
+//! Readers for the two accumulating documents the repository keeps as several
+//! size-capped files.
+//!
+//! No maintained file may exceed 1500 lines, so:
+//!
+//! - `REQUIREMENTS.md` is an index; the assembled requirement register is
+//!   `docs/requirements/assembled/<area>.md`, one file per area, written by
+//!   `rust-script scripts/assemble-requirements.rs --write`;
+//! - `CHANGELOG.md` keeps the newest releases, and older ones roll into
+//!   `docs/changelog/releases-from-<version>.md`, each named for the oldest
+//!   release it holds, written by
+//!   `node experiments/issue_711_rebuild_changelog.mjs --write`.
+//!
+//! A test that asks "does the requirements document (or the changelog) say X"
+//! reads the whole set through these helpers, never one file of it.
+#![allow(dead_code)]
+
+use std::fs;
+use std::path::{Path, PathBuf};
+
+/// Where the assembled requirement register's parts live.
+pub const REQUIREMENT_PARTS: &str = "docs/requirements/assembled";
+/// Where releases rolled out of `CHANGELOG.md` live.
+pub const CHANGELOG_ARCHIVE: &str = "docs/changelog";
+/// An archive file is named for the oldest release it holds.
+const CHANGELOG_ARCHIVE_PREFIX: &str = "releases-from-";
+
+/// The repository root: the crate lives in `rust/`.
+#[must_use]
+pub fn repository_root() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("the repository root sits one level above the crate")
+        .to_path_buf()
+}
+
+/// The `<prefix>*.md` files of `directory`, in file-name order. A missing
+/// directory has none.
+fn markdown_files(directory: &Path, prefix: &str) -> Vec<PathBuf> {
+    let mut files: Vec<PathBuf> = fs::read_dir(directory)
+        .map(|entries| {
+            entries
+                .filter_map(Result::ok)
+                .map(|entry| entry.path())
+                .filter(|path| {
+                    path.file_name()
+                        .and_then(|name| name.to_str())
+                        .is_some_and(|name| {
+                            name.starts_with(prefix)
+                                && std::path::Path::new(name)
+                                    .extension()
+                                    .is_some_and(|ext| ext.eq_ignore_ascii_case("md"))
+                        })
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+    files.sort();
+    files
+}
+
+fn read(path: &Path) -> String {
+    fs::read_to_string(path)
+        .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.display()))
+}
+
+/// The whole assembled requirement register under `root`: every area, in
+/// file-name order.
+#[must_use]
+pub fn requirements_at<P: AsRef<Path> + ?Sized>(root: &P) -> String {
+    let parts = markdown_files(&root.as_ref().join(REQUIREMENT_PARTS), "");
+    assert!(
+        !parts.is_empty(),
+        "{REQUIREMENT_PARTS}/ holds no assembled area files; run \
+         `rust-script scripts/assemble-requirements.rs --write`"
+    );
+    parts
+        .iter()
+        .map(|part| read(part))
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+/// The whole assembled requirement register of this repository.
+#[must_use]
+pub fn requirements() -> String {
+    requirements_at(&repository_root())
+}
+
+/// The whole changelog under `root`: `CHANGELOG.md`, then its archive files,
+/// newest first.
+#[must_use]
+pub fn changelog_at<P: AsRef<Path> + ?Sized>(root: &P) -> String {
+    let root = root.as_ref();
+    let mut text = read(&root.join("CHANGELOG.md"));
+    let mut archives = markdown_files(&root.join(CHANGELOG_ARCHIVE), CHANGELOG_ARCHIVE_PREFIX);
+    archives.sort_by_key(|path| oldest_release(path));
+    for archive in archives.iter().rev() {
+        text.push('\n');
+        text.push_str(&read(archive));
+    }
+    text
+}
+
+/// The oldest release an archive file holds, from its name
+/// (`releases-from-0.105.0.md` is `[0, 105, 0]`), so archives sort by version.
+fn oldest_release(path: &Path) -> Vec<u64> {
+    path.file_stem()
+        .and_then(|stem| stem.to_str())
+        .and_then(|stem| stem.strip_prefix(CHANGELOG_ARCHIVE_PREFIX))
+        .map(|version| {
+            version
+                .split(['.', '-'])
+                .map(|part| part.parse().unwrap_or(0))
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+/// The whole changelog of this repository.
+#[must_use]
+pub fn changelog() -> String {
+    changelog_at(&repository_root())
+}

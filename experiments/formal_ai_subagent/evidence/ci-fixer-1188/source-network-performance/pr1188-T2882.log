@@ -1,0 +1,120 @@
+>> read {"filePath":"scripts/check-source-networks.mjs","file_path":"scripts/check-source-networks.mjs","path":"scripts/check-source-networks.mjs"}
+   <file>
+   00001| #!/usr/bin/env node
+   00002| // R1188-U3: every owned production source survives full upstream network serialization.
+   00003| // Distribution packets contain full .lino.gz documents; receipts are identities, never substitutes for them.
+   00004| import { execFileSync } from 'node:child_process';
+   00005| import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+   00006| import { dirname, join, resolve } from 'node:path';
+   00007| import { fileURLToPath } from 'node:url';
+   00008| import { upstreamDirectory, workflowPin } from './translate-js-rust.mjs';
+   00009| import { partitionSourcePaths, sourceDigest } from './lib/source-network-packets.mjs';
+   00010| import { mapSourceNetworks } from './lib/source-network-workers.mjs';
+   00011| 
+   00012| const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+   00013| 
+   00014| /** Authored or generated production sources, excluding vendored distributions and test harnesses. */
+   00015| export function ownedProductionSources(root = ROOT) {
+   00016|   return execFileSync('git', ['ls-files', '-z', '--', 'rust/src', 'js', 'ts'], { cwd: root, encoding: 'utf8' })
+   00017|     .split('\0').filter((path) => /\.(?:rs|js|mjs|jsx|ts|mts|tsx)$/u.test(path)
+   00018|       && !/^js\/(?:vendor|seed)\//u.test(path) && !/\.bundle\.js$/u.test(path));
+   00019| }
+   00020| 
+   00021| export async function main(argumentsList) {
+   00022|   const value = (name, fallback) => argumentsList.includes(name)
+   00023|     ? argumentsList[argumentsList.indexOf(name) + 1] : fallback;
+   00024|   const shardIndex = Number(value('--shard-index', '0')), shardCount = Number(value('--shard-count', '1'));
+   00025|   const commit = workflowPin(readFileSync(join(ROOT, '.github/workflows/layered-ci.yml'), 'utf8'));
+   00026|   const upstream = upstreamDirectory(argumentsList, commit);
+   00027|   const baseHead = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).trim();
+   00028|   const workingTreeChanges = execFileSync('git', ['diff', '--name-only', 'HEAD', '--', 'rust/src', 'js', 'ts'],
+   00029|     { cwd: ROOT, encoding: 'utf8' }).trim();
+   00030|   const paths = ownedProductionSources();
+   00031|   const selected = partitionSourcePaths(paths, shardIndex, shardCount);
+   00032|   if (selected.length === 0) throw new Error('source shard contains no owned modules');
+   00033|   const output = value('--output', '');
+   00034|   if (output && !argumentsList.includes('--write')) throw new Error('--output requires --write');
+   00035|   const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });
+   00036|   const receipts = [];
+   00037|   for (const path of selected) {
+   00038|     const started = performance.now();
+   00039|     const sourceBytes = readFileSync(join(ROOT, path)), source = decoder.decode(sourceBytes);
+   00040|     console.error(JSON.stringify({ event: 'source-network-start', shardIndex, path, sourceBytes: sourceBytes.length }));
+   00041|     if (!Buffer.from(source, 'utf8').equals(sourceBytes)) throw new Error('source is not losslessly decoded: ' + path);
+   00042|     const { document, receipt } = serializeSourceNetwork({ path, source, language: languageFor(path) }, LinkNetwork);
+   00043|     if (!readFileSync(join(ROOT, path)).equals(sourceBytes)) throw new Error('source changed during serialization: ' + path);
+   00044|     const compressed = gzipSync(Buffer.from(document, 'utf8'));
+   00045|     const packet = path + '.lino.gz';
+   00046|     const packetReceipt = { ...receipt, packet, compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed) };
+   00047|     if (verifySourcePacket(packetReceipt, compressed, LinkNetwork) !== source) throw new Error('packet reconstruction differs');
+   00048|     receipts.push(packetReceipt);
+   00049|     if (output) {
+   00050|       const destination = join(resolve(output), packet);
+   00051|       mkdirSync(dirname(destination), { recursive: true });
+   00052|       writeFileSync(destination, compressed);
+   00053|     }
+   00054|     console.error(JSON.stringify({ event: 'source-network-complete', shardIndex, path,
+   00055|       elapsedMilliseconds: performance.now() - started, serializedBytes: receipt.serializedBytes,
+   00056|       compressedBytes: compressed.length }));
+   00057|   }
+   00058|   for (const receipt of receipts) {
+   00059|     if (sourceDigest(readFileSync(join(ROOT, receipt.path))) !== receipt.sourceSha256) {
+   00060|       throw new Error('source changed after serialization: ' + receipt.path);
+   00061|     }
+   00062|   }
+   00063|   const observedHead = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).trim();
+   00064|   if (observedHead !== baseHead) throw new Error('repository HEAD changed during serialization');
+   00065|   const finalChanges = execFileSync('git', ['diff', '--name-only', 'HEAD', '--', 'rust/src', 'js', 'ts'],
+   00066|     { cwd: ROOT, encoding: 'utf8' }).trim();
+   00067|   const sourceHead = workingTreeChanges || finalChanges ? null : baseHead;
+   00068|   const report = { sourceHead, baseHead, inputState: sourceHead ? 'committed-head' : 'working-tree', upstreamCommit: commit, shardIndex, shardCount, totalOwnedSources: paths.length,
+   00069|     checkedSources: receipts.length, fidelity: 'lossless-network-serialization', sources: receipts };
+   00070|   if (output) {
+   00071|     mkdirSync(resolve(output), { recursive: true });
+   00072|     writeFileSync(join(resolve(output), 'source-network-receipts.json'), JSON.stringify(report, null, 2) + '\n');
+   00073|   }
+   00074|   console.log(JSON.stringify({ sourceHead, upstreamCommit: commit, shardIndex, shardCount,
+   00075|     totalOwnedSources: paths.length, checkedSources: receipts.length, fidelity: report.fidelity }));
+   00076|   return report;
+   00077| }
+   00078| 
+   00079| if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+   00080|   main(process.argv.slice(2)).catch((error) => { console.error(error.message); process.exitCode = 1; });
+   00081| }
+   00082| 
+   
+   (End of file - total 82 lines)
+   </file>
+>> edit {"filePath":"scripts/check-source-networks.mjs","file_path":"scripts/check-source-networks.mjs","new":"  const receipts = await mapSourceNetworks(selected, new URL('./lib/source-network-worker.mjs', import.meta.url),\n    { root: ROOT, upstream: resolve(upstream), shardIndex, output },\n    (observation) => console.error(JSON.stringify(observation)));\n","newString":"  const receipts = await mapSourceNetworks(selected, new URL('./lib/source-network-worker.mjs', import.meta.url),\n    { root: ROOT, upstream: resolve(upstream), shardIndex, output },\n    (observation) => console.error(JSON.stringify(observation)));\n","new_str":"  const receipts = await mapSourceNetworks(selected, new URL('./lib/source-network-worker.mjs', import.meta.url),\n    { root: ROOT, upstream: resolve(upstream), shardIndex, output },\n    (observation) => console.error(JSON.stringify(observation)));\n","new_string":"  const receipts = await mapSourceNetworks(selected, new URL('./lib/source-network-worker.mjs', import.meta.url),\n    { root: ROOT, upstream: resolve(upstream), shardIndex, output },\n    (observation) => console.error(JSON.stringify(observation)));\n","old":"  const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });\n  const receipts = [];\n  for (const path of selected) {\n    const started = performance.now();\n    const sourceBytes = readFileSync(join(ROOT, path)), source = decoder.decode(sourceBytes);\n    console.error(JSON.stringify({ event: 'source-network-start', shardIndex, path, sourceBytes: sourceBytes.length }));\n    if (!Buffer.from(source, 'utf8').equals(sourceBytes)) throw new Error('source is not losslessly decoded: ' + path);\n    const { document, receipt } = serializeSourceNetwork({ path, source, language: languageFor(path) }, LinkNetwork);\n    if (!readFileSync(join(ROOT, path)).equals(sourceBytes)) throw new Error('source changed during serialization: ' + path);\n    const compressed = gzipSync(Buffer.from(document, 'utf8'));\n    const packet = path + '.lino.gz';\n    const packetReceipt = { ...receipt, packet, compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed) };\n    if (verifySourcePacket(packetReceipt, compressed, LinkNetwork) !== source) throw new Error('packet reconstruction differs');\n    receipts.push(packetReceipt);\n    if (output) {\n      const destination = join(resolve(output), packet);\n      mkdirSync(dirname(destination), { recursive: true });\n      writeFileSync(destination, compressed);\n    }\n    console.error(JSON.stringify({ event: 'source-network-complete', shardIndex, path,\n      elapsedMilliseconds: performance.now() - started, serializedBytes: receipt.serializedBytes,\n      compressedBytes: compressed.length }));\n  }\n","oldString":"  const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });\n  const receipts = [];\n  for (const path of selected) {\n    const started = performance.now();\n    const sourceBytes = readFileSync(join(ROOT, path)), source = decoder.decode(sourceBytes);\n    console.error(JSON.stringify({ event: 'source-network-start', shardIndex, path, sourceBytes: sourceBytes.length }));\n    if (!Buffer.from(source, 'utf8').equals(sourceBytes)) throw new Error('source is not losslessly decoded: ' + path);\n    const { document, receipt } = serializeSourceNetwork({ path, source, language: languageFor(path) }, LinkNetwork);\n    if (!readFileSync(join(ROOT, path)).equals(sourceBytes)) throw new Error('source changed during serialization: ' + path);\n    const compressed = gzipSync(Buffer.from(document, 'utf8'));\n    const packet = path + '.lino.gz';\n    const packetReceipt = { ...receipt, packet, compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed) };\n    if (verifySourcePacket(packetReceipt, compressed, LinkNetwork) !== source) throw new Error('packet reconstruction differs');\n    receipts.push(packetReceipt);\n    if (output) {\n      const destination = join(resolve(output), packet);\n      mkdirSync(dirname(destination), { recursive: true });\n      writeFileSync(destination, compressed);\n    }\n    console.error(JSON.stringify({ event: 'source-network-complete', shardIndex, path,\n      elapsedMilliseconds: performance.now() - started, serializedBytes: receipt.serializedBytes,\n      compressedBytes: compressed.length }));\n  }\n","old_str":"  const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });\n  const receipts = [];\n  for (const path of selected) {\n    const started = performance.now();\n    const sourceBytes = readFileSync(join(ROOT, path)), source = decoder.decode(sourceBytes);\n    console.error(JSON.stringify({ event: 'source-network-start', shardIndex, path, sourceBytes: sourceBytes.length }));\n    if (!Buffer.from(source, 'utf8').equals(sourceBytes)) throw new Error('source is not losslessly decoded: ' + path);\n    const { document, receipt } = serializeSourceNetwork({ path, source, language: languageFor(path) }, LinkNetwork);\n    if (!readFileSync(join(ROOT, path)).equals(sourceBytes)) throw new Error('source changed during serialization: ' + path);\n    const compressed = gzipSync(Buffer.from(document, 'utf8'));\n    const packet = path + '.lino.gz';\n    const packetReceipt = { ...receipt, packet, compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed) };\n    if (verifySourcePacket(packetReceipt, compressed, LinkNetwork) !== source) throw new Error('packet reconstruction differs');\n    receipts.push(packetReceipt);\n    if (output) {\n      const destination = join(resolve(output), packet);\n      mkdirSync(dirname(destination), { recursive: true });\n      writeFileSync(destination, compressed);\n    }\n    console.error(JSON.stringify({ event: 'source-network-complete', shardIndex, path,\n      elapsedMilliseconds: performance.now() - started, serializedBytes: receipt.serializedBytes,\n      compressedBytes: compressed.length }));\n  }\n","old_string":"  const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });\n  const receipts = [];\n  for (const path of selected) {\n    const started = performance.now();\n    const sourceBytes = readFileSync(join(ROOT, path)), source = decoder.decode(sourceBytes);\n    console.error(JSON.stringify({ event: 'source-network-start', shardIndex, path, sourceBytes: sourceBytes.length }));\n    if (!Buffer.from(source, 'utf8').equals(sourceBytes)) throw new Error('source is not losslessly decoded: ' + path);\n    const { document, receipt } = serializeSourceNetwork({ path, source, language: languageFor(path) }, LinkNetwork);\n    if (!readFileSync(join(ROOT, path)).equals(sourceBytes)) throw new Error('source changed during serialization: ' + path);\n    const compressed = gzipSync(Buffer.from(document, 'utf8'));\n    const packet = path + '.lino.gz';\n    const packetReceipt = { ...receipt, packet, compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed) };\n    if (verifySourcePacket(packetReceipt, compressed, LinkNetwork) !== source) throw new Error('packet reconstruction differs');\n    receipts.push(packetReceipt);\n    if (output) {\n      const destination = join(resolve(output), packet);\n      mkdirSync(dirname(destination), { recursive: true });\n      writeFileSync(destination, compressed);\n    }\n    console.error(JSON.stringify({ event: 'source-network-complete', shardIndex, path,\n      elapsedMilliseconds: performance.now() - started, serializedBytes: receipt.serializedBytes,\n      compressedBytes: compressed.length }));\n  }\n","path":"scripts/check-source-networks.mjs"}
+>> bash {"command":"sha256sum -- scripts/check-source-networks.mjs"}
+   Output: ef2377f618c8ca310214e9eeff0b93e35d0aa4afb9e630f0fc4100c31b7a7e77  scripts/check-source-networks.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `  const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });
+  const receipts = [];
+  for (const path of selected) {
+    const started = performance.now();
+    const sourceBytes = readFileSync(join(ROOT, path)), source = decoder.decode(sourceBytes);
+    console.error(JSON.stringify({ event: 'source-network-start', shardIndex, path, sourceBytes: sourceBytes.length }));
+    if (!Buffer.from(source, 'utf8').equals(sourceBytes)) throw new Error('source is not losslessly decoded: ' + path);
+    const { document, receipt } = serializeSourceNetwork({ path, source, language: languageFor(path) }, LinkNetwork);
+    if (!readFileSync(join(ROOT, path)).equals(sourceBytes)) throw new Error('source changed during serialization: ' + path);
+    const compressed = gzipSync(Buffer.from(document, 'utf8'));
+    const packet = path + '.lino.gz';
+    const packetReceipt = { ...receipt, packet, compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed) };
+    if (verifySourcePacket(packetReceipt, compressed, LinkNetwork) !== source) throw new Error('packet reconstruction differs');
+    receipts.push(packetReceipt);
+    if (output) {
+      const destination = join(resolve(output), packet);
+      mkdirSync(dirname(destination), { recursive: true });
+      writeFileSync(destination, compressed);
+    }
+    console.error(JSON.stringify({ event: 'source-network-complete', shardIndex, path,
+      elapsedMilliseconds: performance.now() - started, serializedBytes: receipt.serializedBytes,
+      compressedBytes: compressed.length }));
+  }
+` with `  const receipts = await mapSourceNetworks(selected, new URL('./lib/source-network-worker.mjs', import.meta.url),
+    { root: ROOT, upstream: resolve(upstream), shardIndex, output },
+    (observation) => console.error(JSON.stringify(observation)));
+` in `scripts/check-source-networks.mjs` and observed the result.

@@ -1,0 +1,108 @@
+source-authoring-grammar
+  kind float-division
+  form 1
+    language en
+    kind integer
+    pattern "^\\s*(?:Create|Write)\\s+(?:a\\s+)?(?:new\\s+)?(?:file\\s+)?{path}\\s+(?:in this repository\\s+)?containing\\s+(?:a\\s+)?(?:single\\s+)?public\\s+Rust\\s+function\\s+(?:named\\s+)?{identifier}\\s+(?:returning|that returns)\\s+{value}[\\s.!?]*$"
+  form 2
+    language en
+    pattern "^\\s*(?:Create|Write)\\s+(?:a\\s+)?(?:new\\s+)?(?:file\\s+)?{path}\\s+(?:in this repository\\s+)?containing\\s+(?:a\\s+)?(?:single\\s+)?public\\s+Rust\\s+function\\s+(?:named\\s+)?{identifier}\\s+that takes an {parameter-type} and returns it divided by\\s+{value}[\\s.!?]*$"
+  form 3
+    language ru
+    kind integer
+    pattern "^\\s*Создай\\s+файл\\s+{path}\\s+с\\s+(?:одной\\s+)?публичной\\s+функцией\\s+на\\s+Rust\\s+с\\s+именем\\s+{identifier},\\s+которая\\s+возвращает\\s+(?:число\\s+)?{value}[\\s.!?]*$"
+  form 4
+    language zh
+    kind integer
+    pattern "^\\s*(?:在这个仓库中)?创建文件\\s+{path}，其中包含一个名为\\s+{identifier}\\s+的公共\\s+Rust\\s+函数，返回(?:数字\\s+)?{value}[\\s。！？]*$"
+  form 5
+    language hi
+    kind integer
+    pattern "^\\s*(?:इस रिपॉजिटरी में\\s+)?{path}\\s+फ़ाइल बनाएँ जिसमें\\s+{identifier}\\s+नाम का एक सार्वजनिक\\s+Rust\\s+फ़ंक्शन हो जो\\s+{value}\\s+लौटाता है[\\s।!?]*$"
+  form 6
+    language es
+    kind integer
+    pattern "^\\s*Crea\\s+(?:un\\s+)?archivo\\s+{path}\\s+que contiene una función pública Rust llamada\\s+{identifier}\\s+que devuelve\\s+{value}[\\s.!?]*$"
+  form 7
+    language ru
+    pattern "^\\s*Создай\\s+файл\\s+{path}\\s+с\\s+(?:одной\\s+)?публичной\\s+функцией\\s+на\\s+Rust\\s+с\\s+именем\\s+{identifier},\\s+которая\\s+принимает\\s+{parameter-type}\\s+и\\s+делит\\s+его\\s+на\\s+{value}[\\s.!?]*$"
+  form 8
+    language zh
+    pattern "^\\s*(?:在这个仓库中)?创建文件\\s+{path}，其中包含一个名为\\s+{identifier}\\s+的公共\\s+Rust\\s+函数，接受\\s+{parameter-type}\\s+并返回它除以\\s+{value}[\\s。！？]*$"
+  form 9
+    language hi
+    pattern "^\\s*(?:इस रिपॉजिटरी में\\s+)?{path}\\s+फ़ाइल बनाएँ जिसमें\\s+{identifier}\\s+नाम का एक सार्वजनिक\\s+Rust\\s+फ़ंक्शन हो जो\\s+{parameter-type}\\s+लेता है और उसे\\s+{value}\\s+से विभाजित करके लौटाता है[\\s।!?]*$"
+  form 10
+    language es
+    pattern "^\\s*Crea\\s+(?:un\\s+)?archivo\\s+{path}\\s+que contiene una función pública Rust llamada\\s+{identifier}\\s+que toma un {parameter-type} y lo devuelve dividido por\\s+{value}[\\s.!?]*$"
+  form 11
+    language en
+    pattern "^\\s*(?:Create|Write)\\s+{path}\\s+with\\s+a\\s+public\\s+function\\s+{identifier}\\s+dividing\\s+an\\s+{parameter-type}\\s+by\\s+{value}[\\s.!?]*$"
+  form 12
+    language en
+    kind string-constant
+    pattern "^\\s*(?:Create|Write)\\s+(?:a\\s+)?(?:new\\s+)?(?:Rust test\\s+)?(?:file\\s+)?{path}\\s+(?:in this repository\\s+)?containing\\s+(?:(?:a|one)\\s+)?(?:single\\s+)?public\\s+Rust\\s+constant\\s+{identifier}\\s+of type\\s+{constant-type}\\s+with the value\\s+{value}[\\s.!?]*$"
+  form 13
+    language en
+    kind equality-test
+    pattern "^\\s*(?:Create|Write)\\s+(?:a\\s+)?(?:new\\s+)?(?:Rust test\\s+)?(?:file\\s+)?{path}\\s+(?:in this repository\\s+)?containing\\s+(?:(?:a|one)\\s+)?(?:single\\s+)?Rust\\s+test\\s+named\\s+{identifier}\\s+(?:that asserts|asserting)\\s+{left}\\s+equals\\s+{right}[\\s.!?]*$"
+  form 14
+    language en
+    kind addition-test
+    pattern "^\\s*(?:Create|Write)\\s+(?:a\\s+)?(?:new\\s+)?(?:Rust test\\s+)?(?:file\\s+)?{path}\\s+(?:in this repository\\s+)?containing\\s+(?:(?:a|one)\\s+)?(?:single\\s+)?Rust\\s+test\\s+named\\s+{identifier}\\s+(?:that asserts|asserting)\\s+{left}\\s+plus\\s+{right}\\s+equals\\s+{expected}[\\s.!?]*$"
+  composition en
+    pattern "^{source-clause}[ \\t\\n\\r\\x0b\\x0c]*,?[ \\t\\n\\r\\x0b\\x0c]+and[ \\t\\n\\r\\x0b\\x0c]+{registration-action}[ \\t\\n\\r\\x0b\\x0c]+in[ \\t\\n\\r\\x0b\\x0c]+{registration-path}(?:[ \\t\\n\\r\\x0b\\x0c]+so it is part of the crate)?[ \\t\\n\\r\\x0b\\x0c.!?]*$"
+  composition ru
+    pattern "^{source-clause}[ \\t\\n\\r\\x0b\\x0c]*,?[ \\t\\n\\r\\x0b\\x0c]+и[ \\t\\n\\r\\x0b\\x0c]+{registration-action}[ \\t\\n\\r\\x0b\\x0c]+в[ \\t\\n\\r\\x0b\\x0c]+{registration-path}[ \\t\\n\\r\\x0b\\x0c.!?]*$"
+  composition hi
+    pattern "^{source-clause}[ \\t\\n\\r\\x0b\\x0c]+और[ \\t\\n\\r\\x0b\\x0c]+{registration-path}[ \\t\\n\\r\\x0b\\x0c]+में[ \\t\\n\\r\\x0b\\x0c]+{registration-action}[ \\t\\n\\r\\x0b\\x0c।!?]*$"
+  composition zh
+    pattern "^{source-clause}，?并{registration-action}到[ \\t\\n\\r\\x0b\\x0c]+{registration-path}[ \\t\\n\\r\\x0b\\x0c。！？]*$"
+  composition es
+    pattern "^{source-clause}[ \\t\\n\\r\\x0b\\x0c]*,?[ \\t\\n\\r\\x0b\\x0c]+y[ \\t\\n\\r\\x0b\\x0c]+{registration-action}[ \\t\\n\\r\\x0b\\x0c]+en[ \\t\\n\\r\\x0b\\x0c]+{registration-path}[ \\t\\n\\r\\x0b\\x0c.!?]*$"
+source-request-preflight
+  source-joiner " and "
+  form declaration
+    pattern "^(?:In this selected-file scratch workspace, )?add exported (?<signature>[^.]+) to (?<destination>.+)$"
+    meaning "Bind the signature and destination through the maintained observed callable classifier; only a scoped reversible candidate is requested."
+  form goal
+    pattern "^Return (?<goal>.+)$"
+    meaning "Defer the full return clause to the existing source-qualified composition goal matcher; no name-derived semantics."
+  form source-discovery
+    pattern "^Discover and compose existing exports from the observed (?<sources>.+) source modules$"
+    meaning "Read and observe the classifier-bound source inputs; actual export and argument/result relations must come from their bytes."
+  form reuse-imports
+    pattern "^reuse their semantics through imports rather than copying their implementations$"
+    meaning "Require the checked imported composition effect plan, without copying source function implementations."
+  form read-prerequisites
+    pattern "^Read the source modules and destination before authoring$"
+    meaning "Every request-derived source and destination Read must be complete or a destination absence receipt before Write."
+  form repair-plan
+    pattern "^Produce a bounded repair plan identifying actual declaration spans/content identities, arguments/results, import bindings/dependencies, the optional-value guard and effects$"
+    meaning "Report the observed conditional graph, spans, hashes, imports, null guard and inherited effects before delivery."
+  form verification
+    pattern "^Run the supplied (?<acceptance>.+) acceptance command, (?<command>.+), and report the real result$"
+    meaning "Bind exact technical operands and the classifier command, execute only this Node operation and retain its actual status."
+  form protect-inputs
+    pattern "^do not modify source modules or tests, commit, or push$"
+    meaning "Only the destination candidate may be written; source/test byte identities remain fixed and other commands are forbidden."
+  form gap-before-write
+    pattern "^If safe composition cannot be established, record the exact missing capability before any output write$"
+    meaning "Unresolved source goals or Needs refuse candidate Write; unknown initializer effects remain inherited approved-operation effects, never pure."
+
+source-callable-composition
+  goal optional-source-text
+    producer-result optional-record
+    consumer-result text
+    absent-result null
+    lexeme en "canonical summary" "compact summary"
+    lexeme ru "каноническое описание"
+    lexeme hi "प्रामाणिक सारांश"
+    lexeme zh "规范摘要"
+    lexeme es "resumen canónico"
+    style compact
+      surface "compact "
+    form english-source-preserving-optional-text
+      pattern "^return the {style}{goal} of the {consumer-parameter} chosen by the {wrapper-parameter}, or null when no {consumer-parameter} is selected[.]?$"
+    template javascript-imported-optional-text
+      text "import { {producer-export} as {producer-local} } from {producer-url};\nimport { {consumer-export} as {consumer-local} } from {consumer-url};\nexport function {name}({parameter}) {\n  const {value-local} = {producer-local}({parameter});\n  return {value-local} === null ? null : {consumer-local}({value-local});\n}\n"

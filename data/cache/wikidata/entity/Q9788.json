@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "字母"
+        },
+        "es": {
+          "language": "es",
+          "value": "letra"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "हिन्दी भाषा में प्रयुक्त सबसे छोटी इकाई"
+        },
+        "es": {
+          "language": "es",
+          "value": "signo gráfico de un sistema de escritura"
         }
       },
       "aliases": {

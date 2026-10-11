@@ -60,12 +60,15 @@ fn append_item(
                 .and_then(Value::as_str)
                 .unwrap_or_default()
                 .to_owned();
+            // Most clients send `arguments` as a JSON-encoded string, but a
+            // replayed transcript can carry the decoded object itself (the
+            // Codex `exec_command` record of issue #1154). Dropping it to
+            // `{}` would erase the command, so the read it ran would never
+            // count as attempted and the planner would plan it again.
             let arguments = item
                 .get("arguments")
                 .or_else(|| item.get("input"))
-                .and_then(Value::as_str)
-                .unwrap_or("{}")
-                .to_owned();
+                .map_or_else(|| String::from("{}"), call_arguments_text);
             if !name.is_empty() {
                 tool_names_by_id.insert(call_id.clone(), name.clone());
             }
@@ -119,5 +122,15 @@ fn append_item(
                 out.push(ChatMessage::new(role, content));
             }
         }
+    }
+}
+
+/// A call's arguments as the JSON-encoded text the shared transcript carries:
+/// a string as given, an object re-encoded, anything else as no arguments.
+fn call_arguments_text(value: &Value) -> String {
+    match value {
+        Value::String(text) => text.clone(),
+        Value::Object(_) => value.to_string(),
+        _ => String::from("{}"),
     }
 }

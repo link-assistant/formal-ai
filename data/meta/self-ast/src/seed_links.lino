@@ -2,9 +2,9 @@ self_ast_census
   target src/seed_links.rs
   language rust
   fidelity signature
-  byte_len 10803
-  line_count 319
-  content_id source_module_3b556c072945a85f
+  byte_len 10797
+  line_count 317
+  content_id source_module_0fcfd851c291a385
   symbol_count 29
   symbols
     function meta_documents 23 28
@@ -28,11 +28,11 @@ self_ast_census
     function field_values 201 208
     function query 212 221
     function children_pattern 225 231
-    function native_mirror_enabled 245 250
-    function seed_link_database_path 254 256
-    function mirror_native_store 267 276
-    function native_mirror_link_count 280 289
-    module native 292 319
-    static MIRROR 298 298
-    function mirror 300 313
-    function link_count 315 318
+    function native_mirror_enabled 246 248
+    function seed_link_database_path 252 254
+    function mirror_native_store 265 274
+    function native_mirror_link_count 278 287
+    module native 290 317
+    static MIRROR 296 296
+    function mirror 298 311
+    function link_count 313 316

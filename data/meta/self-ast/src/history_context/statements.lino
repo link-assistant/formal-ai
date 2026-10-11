@@ -1,0 +1,11 @@
+self_ast_census
+  target src/history_context/statements.rs
+  language rust
+  fidelity signature
+  byte_len 3168
+  line_count 87
+  content_id source_module_584a5944bdd22c37
+  symbol_count 2
+  symbols
+    function state_transitions 19 36
+    function requirement_statements 45 87

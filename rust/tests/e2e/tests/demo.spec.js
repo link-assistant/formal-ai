@@ -1,5 +1,6 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local links rules';
 
@@ -10,9 +11,7 @@ async function switchToManualMode(page) {
   });
   await demoToggle.click();
   await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 5_000,
-  });
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 }
 
 // Issue #27: greeting randomisation defaults to ON in production. Tests pin
@@ -33,7 +32,7 @@ async function disableGreetingVariations(page) {
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 5_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
   return submitCurrentPrompt(page);
 }
@@ -95,6 +94,20 @@ test.describe('formal-ai demo UI', () => {
     await expect(demoStatus).not.toHaveText(firstCountdown || '');
   });
 
+  // Issue #1 R22/R23: each demo cycle opens with a user greeting, and the
+  // next cycle starts 10-20 seconds later.
+  test('each demo cycle opens with a user greeting and waits 10-20 seconds', async ({ page }) => {
+    const firstUser = page.locator('[data-testid="chat-message"].user').first();
+    await expect(firstUser).toBeVisible({ timeout: 15_000 });
+    await expect(firstUser).toContainText(/\b(Hi)\b|Привет|नमस्ते|你好/);
+
+    const demoStatus = page.locator('[data-testid="demo-status"]');
+    await expect(demoStatus).toContainText(/Next dialog in \d+s/, { timeout: 30_000 });
+    const seconds = Number(/Next dialog in (\d+)s/.exec((await demoStatus.textContent()) || '')?.[1]);
+    expect(seconds).toBeGreaterThanOrEqual(1);
+    expect(seconds).toBeLessThanOrEqual(20);
+  });
+
   test('automatic demo renders a chat exchange', async ({ page }) => {
     const messageList = page.locator('[data-testid="message-list"]');
     await expect(messageList).toBeVisible();
@@ -124,7 +137,7 @@ test.describe('formal-ai demo UI', () => {
 
     const input = page.locator('[data-testid="chat-composer-input"]');
     await expect(input).toBeVisible();
-    await expect(input).toBeEnabled();
+    await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 
     const sendBtn = page.locator('[data-testid="chat-composer-submit"]');
     await expect(sendBtn).toBeVisible();
@@ -142,7 +155,7 @@ test.describe('formal-ai demo UI', () => {
     await hiButton.click();
 
     const input = page.locator('[data-testid="chat-composer-input"]');
-    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
     await expect(input).toHaveValue('Hi');
   });
 
@@ -598,7 +611,7 @@ test.describe('formal-ai demo UI', () => {
     await expect(input).toBeDisabled({ timeout: 5_000 });
 
     await demoToggle.click();
-    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   });
 
   test('diagnostics are hidden by default', async ({ page }) => {
@@ -791,7 +804,7 @@ test.describe('Issue #94: theme, localization, and report context', () => {
     });
 
     expect(runtime).toEqual({
-      engine: 'lino-i18n@0.1.1',
+      engine: 'lino-i18n@0.3.0',
       russian: 'Сообщить о проблеме',
       fallback: 'Report issue',
     });
@@ -816,7 +829,7 @@ test.describe('Issue #94: theme, localization, and report context', () => {
     });
 
     expect(catalog).toMatchObject({
-      source: 'lino-i18n@0.1.1',
+      source: 'lino-i18n@0.3.0',
       settingsLanguage: 'Language',
       timedStatus: 'Next dialog in 8s',
       catalogUrl: 'i18n-catalog.lino',
@@ -1000,9 +1013,7 @@ test.describe('Issue #108: mobile composer and configurable input UI', () => {
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
 
     await page.locator('.mode-toggle').click();
-    await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-      timeout: 5_000,
-    });
+    await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 
     const input = page.locator('[data-testid="chat-composer-input"]');
     await input.focus();
@@ -1200,7 +1211,7 @@ test.describe('Issue #110: mobile keyboard viewport handling', () => {
 
     await page.locator('.mode-toggle').click();
     const input = page.locator('[data-testid="chat-composer-input"]');
-    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
     await input.focus();
 
     const viewportState = await page.evaluate(() => {

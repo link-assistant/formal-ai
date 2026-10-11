@@ -12,6 +12,7 @@ mod cli_coding;
 mod cli_computer_use;
 mod cli_context;
 mod cli_environments;
+mod cli_explain;
 mod cli_file_legality;
 mod cli_github_logs;
 mod cli_import;
@@ -23,6 +24,7 @@ mod cli_orchestration;
 mod cli_paths;
 mod cli_procedure;
 mod cli_report;
+mod cli_repository_history;
 mod cli_shared_dialog;
 mod cli_statement_audit;
 mod cli_summarization;
@@ -37,6 +39,7 @@ use cli_coding::{CodingArgs, run_coding};
 use cli_computer_use::{ComputerUseArgs, run_computer_use};
 use cli_context::{ContextArgs, run_context};
 use cli_environments::run_environments;
+use cli_explain::{ExplainFormat, run_explain};
 use cli_file_legality::{FileLegalityArgs, run_file_legality};
 use cli_github_logs::{GithubLogsAction, run_github_logs};
 use cli_import::{ImportAction, run_import};
@@ -47,6 +50,7 @@ use cli_memory::run_memory;
 use cli_orchestration::{AgentArgs, run_external_action};
 use cli_procedure::{ProcedureArgs, run_procedure};
 use cli_report::{ReportArgs, run_report};
+use cli_repository_history::{RepositoryHistoryAction, run_repository_history};
 use cli_shared_dialog::{SharedDialogAction, run_shared_dialog};
 use cli_statement_audit::{StatementAuditArgs, run_statement_audit};
 use cli_summarization::{SummarizationAction, run_summarization};
@@ -78,7 +82,16 @@ struct Args {
     verbose: bool,
 
     /// Disable verbose output and automatic complete dialog logging.
-    #[arg(long, global = true, env = "FORMAL_AI_SILENT", default_value_t = false)]
+    // Issue #1181: route `FORMAL_AI_SILENT` through the shared boolean parser
+    // so `=1`, `=yes`, `=on` (any case) work like `=true`; the action stays
+    // `SetTrue`, so a bare `--silent` flag keeps working.
+    #[arg(
+        long,
+        global = true,
+        env = "FORMAL_AI_SILENT",
+        default_value_t = false,
+        value_parser = formal_ai::cli_env::bool_env_value_parser
+    )]
     silent: bool,
 
     #[command(subcommand)]
@@ -210,6 +223,11 @@ enum Command {
     GithubLogs {
         #[command(subcommand)]
         action: GithubLogsAction,
+    },
+    /// Import or query the repository's formalized history (issue #1180).
+    RepositoryHistory {
+        #[command(subcommand)]
+        action: RepositoryHistoryAction,
     },
     /// Run real upstream benchmark suites (issue #698) and record honest
     /// `passed/total` scores in `data/benchmarks/external-results.lino`.
@@ -384,6 +402,22 @@ enum Command {
     Learn {
         #[command(subcommand)]
         action: LearnAction,
+    },
+    /// Print the white-box derivation of a previously returned answer
+    /// (issue #1184, E148): the search queries issued, the fetched URLs
+    /// with their SHA-256 hashes and fetch timestamps, the formalized page
+    /// fragments, the parts decomposed from retrieved examples, the
+    /// recomposition, the rendering, and the verification output — read
+    /// from the durable record keyed by the answer's `derivation_id`.
+    /// `--format links` prints the canonical Links Notation record instead
+    /// of the readable per-stage explanation. Distinct from the in-chat
+    /// "explain how Formal AI works" self-explanation recipe.
+    Explain {
+        /// The `derivation_id` the answer carried (`answer_<16 hex digits>`).
+        answer_id: String,
+
+        #[arg(long, value_enum, default_value_t = ExplainFormat::Text)]
+        format: ExplainFormat,
     },
 }
 
@@ -667,6 +701,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Clients { format, action } => run_clients(format, action)?,
         Command::Import { action } => run_import(action)?,
         Command::GithubLogs { action } => run_github_logs(action)?,
+        Command::RepositoryHistory { action } => run_repository_history(action)?,
         Command::Benchmark { action } => run_benchmark(action)?,
         Command::Solve {
             issue,
@@ -703,6 +738,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                 agent_executable: None,
             })?;
             print!("{}", outcome.diff);
+            if !outcome.report.is_empty() {
+                eprintln!("{}", outcome.report);
+            }
             for open in outcome.open {
                 eprintln!("open: {open}");
             }
@@ -784,6 +822,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             open_draft_pr,
         })?,
         Command::Learn { action } => run_learn_action(action)?,
+        Command::Explain { answer_id, format } => run_explain(&answer_id, format)?,
     }
 
     Ok(())

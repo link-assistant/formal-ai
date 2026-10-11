@@ -1,0 +1,66 @@
+{
+  "archive": "T3963-T3989.json.gz",
+  "compressedSHA": "27c4878654a684a1bb759dac0f649b98b51fb3d19ea21cbded3806c21f0f8cfd",
+  "decodedSHA": "bd471c5f7adf8f3e00df024f72628850bd85fcbf835afd6bef882cf1e81c1a00",
+  "entries": 120,
+  "head": "4336c44691d5d64ec957fa88a516f0647a50342f",
+  "source": [
+    {
+      "path": "scripts/capture-native-responses.mjs",
+      "sha256": "1f2d84ec762d99a149fbad47498f23c37b54c802c97a1e77b5c98200f9555394",
+      "bytes": 6373
+    },
+    {
+      "path": "scripts/lib/native-response-scheduling.mjs",
+      "sha256": "fa202ff0ba74b47eec4909868cc55c9fedb38a9103531730c2965b49f66eaef6",
+      "bytes": 1805
+    },
+    {
+      "path": "rust/tests/web/native-response-scheduling.test.mjs",
+      "sha256": "8653894869b406af1162ecbba871d5ac84b127d4fc99e0bd44bf3a98d8ac1085",
+      "bytes": 6344
+    },
+    {
+      "path": "changelog.d/20261010_015500_native_response_priority.md",
+      "sha256": "fd73188ed56d55d73627dff88e2e1820baa91143ab1fa5691138dbc4150ec117",
+      "bytes": 999
+    }
+  ],
+  "counts": {
+    "tasks": 27,
+    "physicalCalls": 49,
+    "writeCalls": 12,
+    "bashCalls": 37,
+    "readCalls": 0
+  },
+  "claims": {
+    "sourceAppliedViaFormalAi": true,
+    "autonomousSynthesis": false,
+    "nativeCompilation": false,
+    "nativeOriginalProgramsExecuted": false,
+    "nativeExecutablesListed": false,
+    "nativeWholeAnswersCaptured": false,
+    "expectedAnswersUpdated": false,
+    "specificationCountIncrease": false,
+    "publishedRelease": false,
+    "freshNativeTimingMeasured": false
+  },
+  "verification": {
+    "task": "T3987",
+    "passing": 34,
+    "failures": 0,
+    "skipped": 0,
+    "todo": 0,
+    "newControls": 6,
+    "unchangedControls": 28,
+    "durationMs": 2220.628375,
+    "readability": true,
+    "scopedDiffCheck": true,
+    "syntax": true,
+    "sizeViolations": 0,
+    "sourceOriginalSelections": 28,
+    "recordedWeights": 13,
+    "fallbackWeights": 15,
+    "fallbackSeconds": 0.092
+  }
+}

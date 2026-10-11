@@ -50,30 +50,37 @@ pub struct CoreferenceSeeds {
 }
 
 impl CoreferenceSeeds {
-    /// Return `true` when the normalized prompt contains any pronoun's
-    /// context substring (or matches its prompt-initial prefix).
+    /// Pick the first seeded pronoun with a normalized, bounded context.
+    #[must_use]
+    pub fn matching_pronoun(&self, normalized: &str) -> Option<&Pronoun> {
+        self.pronouns.iter().find(|pronoun| {
+            pronoun.contexts.iter().any(|context| {
+                let surface = crate::engine::normalize_prompt(context);
+                crate::seed::surface_present(normalized, &surface)
+            }) || pronoun.starts_with.iter().any(|prefix| {
+                let surface = crate::engine::normalize_prompt(prefix);
+                normalized.starts_with(&surface)
+                    && crate::seed::surface_present(normalized, &surface)
+            })
+        })
+    }
+
+    /// Whether a normalized prompt carries a seeded, bounded pronoun context.
     #[must_use]
     pub fn matches_pronoun(&self, normalized: &str) -> bool {
-        self.pronouns.iter().any(|pronoun| {
-            pronoun
-                .contexts
-                .iter()
-                .any(|context| !context.is_empty() && normalized.contains(context.as_str()))
-                || pronoun
-                    .starts_with
-                    .iter()
-                    .any(|prefix| !prefix.is_empty() && normalized.starts_with(prefix.as_str()))
-        })
+        self.matching_pronoun(normalized).is_some()
     }
 
     /// Pick the first antecedent whose alias appears in the prior turn.
     #[must_use]
     pub fn pick_antecedent(&self, previous_turn_lower: &str) -> Option<&Antecedent> {
         self.antecedents.iter().find(|antecedent| {
-            antecedent
-                .aliases
-                .iter()
-                .any(|alias| !alias.is_empty() && previous_turn_lower.contains(alias.as_str()))
+            antecedent.aliases.iter().any(|alias| {
+                crate::seed::surface_present(
+                    &crate::engine::normalize_prompt(previous_turn_lower),
+                    &crate::engine::normalize_prompt(alias),
+                )
+            })
         })
     }
 }

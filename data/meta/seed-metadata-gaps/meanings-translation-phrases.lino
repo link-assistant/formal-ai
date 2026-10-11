@@ -1,0 +1,7 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-translation-phrases.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "role"
+  gap seed-metadata-gap-59313d387a5f9543
+    record "translation_phrase"

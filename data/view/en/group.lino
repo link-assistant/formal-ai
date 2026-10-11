@@ -1,0 +1,25 @@
+view
+  id M-dc4c7f664ffa
+  lemma group
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "any number of entities (members) considered as a unit"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(chemistry) two or more atoms bound together as a single unit and forming part of a molecule"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a set that is closed, associative, has an identity element and every element has an inverse"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "arrange into a group or groups"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "form a group or group together"
+    provenance (wordnet)

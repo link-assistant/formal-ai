@@ -1,0 +1,20 @@
+>> bash {"command":"test -e /private/tmp/pr1188-current-native-ci-diagnostic-4a560.json"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"test ! -e docs/case-studies/issue-1012/self-hosting-authorship/diagnostic-audit/session-native-protocol-4a560.json"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"mkdir -p -- docs/case-studies/issue-1012/self-hosting-authorship/diagnostic-audit"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"cp /private/tmp/pr1188-current-native-ci-diagnostic-4a560.json docs/case-studies/issue-1012/self-hosting-authorship/diagnostic-audit/session-native-protocol-4a560.json"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"test -e docs/case-studies/issue-1012/self-hosting-authorship/diagnostic-audit/session-native-protocol-4a560.json"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"test -e /private/tmp/pr1188-current-native-ci-diagnostic-4a560.json"}
+   Output: 
+   Exit Code: 0
+== answer ==
+Completed the action `cp /private/tmp/pr1188-current-native-ci-diagnostic-4a560.json docs/case-studies/issue-1012/self-hosting-authorship/diagnostic-audit/session-native-protocol-4a560.json` and verified it with `test -e docs/case-studies/issue-1012/self-hosting-authorship/diagnostic-audit/session-native-protocol-4a560.json`, `test -e /private/tmp/pr1188-current-native-ci-diagnostic-4a560.json`.

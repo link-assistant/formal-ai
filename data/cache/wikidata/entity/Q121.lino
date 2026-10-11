@@ -1,0 +1,21 @@
+Q121
+  aliases
+    en (Jul "7. month")
+    es (Jul Jul. "7" "7.º mes" "mes 7" "mes de Julio César" "séptimo mes" "mes séptimo")
+    ru ("июля" "июл.")
+    zh ("七月")
+  descriptions
+    en "seventh month of the year in the Julian and Gregorian calendars"
+    es "séptimo mes del año en los calendarios juliano y gregoriano"
+    hi "जूलियन और ग्रेगोरियन कैलेंडर में सातवां महीना"
+    ru "седьмой месяц года в юлианском и григорианском календарях"
+    zh "公历及儒略历中第七个月份"
+  id Q121
+  labels
+    en July
+    es julio
+    hi "जुलाई"
+    ru "июль"
+    zh "7月"
+  type item
+success 1

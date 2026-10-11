@@ -1,0 +1,150 @@
+>> bash {"command":"node --input-type=module -e 'await import(\"data:text/javascript;base64,aW1wb3J0IGZzIGZyb20gJ25vZGU6ZnMnOyBpbXBvcnQge2V4ZWNGaWxlU3luY30gZnJvbSAnbm9kZTpjaGlsZF9wcm9jZXNzJzsgaW1wb3J0IHt0cmFuc2xhdGVKc1RvVHN9IGZyb20gJ2ZpbGU6Ly8vVXNlcnMva29uYXJkL0NvZGUvQXJjaGl2ZS9saW5rLWFzc2lzdGFudC9mb3JtYWwtYWkvc2NyaXB0cy90cmFuc2xhdGUtZXMubWpzJzsgZm9yKGNvbnN0IHNvdXJjZSBvZiBbJ2pzL3dvcmtlci1tb2R1bGVzLmpzJywnanMvd29ya2VyL2Zvcm1hbF9haV93b3JrZXJfY29yZWZlcmVuY2UuanMnLCdqcy93b3JrZXIvZm9ybWFsX2FpX3dvcmtlcl90cmFuc2xhdGlvbl9yZWNhbGxfYW5kX2NvbXBvdW5kX2ludGVyZXN0LmpzJywnanMvd29ya2VyL2Zvcm1hbF9haV93b3JrZXJfd3JpdGVfcHJvZ3JhbV9hbmRfcmVzZWFyY2guanMnLCdqcy93b3JrZXIvZm9ybWFsX2FpX3dvcmtlcl90b29sX2V4ZWN1dGlvbl9wb2xpY3kuanMnXSl7Y29uc3QgdGFyZ2V0PXNvdXJjZS5yZXBsYWNlKC9eanNcLy8sJ3RzLycpLnJlcGxhY2UoL1wuanMkLywnLnRzJyk7ZnMud3JpdGVGaWxlU3luYyh0YXJnZXQsdHJhbnNsYXRlSnNUb1RzKGZzLnJlYWRGaWxlU3luYyhzb3VyY2UsJ3V0ZjgnKSkpO30gZXhlY0ZpbGVTeW5jKCdydXN0Zm10JyxbJy0tZWRpdGlvbicsJzIwMjQnLCdydXN0L3NyYy9zb2x2ZXJfaGFuZGxlcnMvYmVuY2htYXJrX3Byb21wdHMucnMnXSx7c3RkaW86J2luaGVyaXQnfSk7IGV4ZWNGaWxlU3luYyhwcm9jZXNzLmV4ZWNQYXRoLFsnLS10ZXN0JywncnVzdC90ZXN0cy93ZWIvd29ya2VyLW5hdGl2ZS1oYW5kbGVyLXBhcml0eS50ZXN0Lm1qcycsJ3J1c3QvdGVzdHMvd2ViL3dvcmtlci1qYXZhc2NyaXB0LXBlcm1pc3Npb24udGVzdC5tanMnLCdydXN0L3Rlc3RzL3dlYi9zZXJ2ZXItbGVhcm5pbmctdHJhY2UudGVzdC5tanMnXSx7c3RkaW86J2luaGVyaXQnfSk7IGNvbnNvbGUubG9nKCdBQ1RVQUxfQ0xPU0VTVF9OQVRJVkVfSEFORExFUl9QQVJJVFlfUEFTUycpOw==\");'"}
+   Output: TAP version 13
+   # Subtest: a verified candidate in the worker trace yields the Rust learning_trace
+   ok 1 - a verified candidate in the worker trace yields the Rust learning_trace
+     ---
+     duration_ms: 1.696875
+     ...
+   # Subtest: the native solver event log is read verbatim once it carries the candidate
+   ok 2 - the native solver event log is read verbatim once it carries the candidate
+     ---
+     duration_ms: 0.139916
+     ...
+   # Subtest: no learning_trace without both a candidate and a verification
+   ok 3 - no learning_trace without both a candidate and a verification
+     ---
+     duration_ms: 0.146875
+     ...
+   # Subtest: event_payload stops at the next step and keeps only known fields
+   ok 4 - event_payload stops at the next step and keeps only known fields
+     ---
+     duration_ms: 0.064834
+     ...
+   # Subtest: a reported conversation stages one proposal against an absent gate
+   ok 5 - a reported conversation stages one proposal against an absent gate
+     ---
+     duration_ms: 7.18375
+     ...
+   # Subtest: a failed verification is a rejection, not a proposal
+   ok 6 - a failed verification is a rejection, not a proposal
+     ---
+     duration_ms: 1.294917
+     ...
+   # Subtest: the learn route counts the proposals of a recorded dialog
+   ok 7 - the learn route counts the proposals of a recorded dialog
+     ---
+     duration_ms: 4.774084
+     ...
+   # Subtest: unchanged native JavaScript request is refused before execution in chat mode
+   ok 8 - unchanged native JavaScript request is refused before execution in chat mode
+     ---
+     duration_ms: 690.9885
+     ...
+   # Subtest: refused user source causes no observable worker-global effect
+   ok 9 - refused user source causes no observable worker-global effect
+     ---
+     duration_ms: 0.272084
+     ...
+   # Subtest: explicit server agent mode uses the real existing worker executor
+   ok 10 - explicit server agent mode uses the real existing worker executor
+     ---
+     duration_ms: 17.393333
+     ...
+   # Subtest: explicit server chat mode overrides a retained agent preference
+   ok 11 - explicit server chat mode overrides a retained agent preference
+     ---
+     duration_ms: 19.414042
+     ...
+   # Subtest: whole original native assertion program: english_follow_up_modification_emits_substitution_plan_trace
+   ok 12 - whole original native assertion program: english_follow_up_modification_emits_substitution_plan_trace
+     ---
+     duration_ms: 1334.565084
+     ...
+   # Subtest: whole original native assertion program: natural_language_code_execution_gate_is_stable_across_supported_language_contexts
+   ok 13 - whole original native assertion program: natural_language_code_execution_gate_is_stable_across_supported_language_contexts
+     ---
+     duration_ms: 1084.907833
+     ...
+   # Subtest: whole original native assertion program: pronoun_followup_resolves_prior_rust_topic_for_creator_question
+   ok 14 - whole original native assertion program: pronoun_followup_resolves_prior_rust_topic_for_creator_question
+     ---
+     duration_ms: 1195.842083
+     ...
+   # Subtest: loaded seeded pronoun contexts survive terminal punctuation and Unicode boundaries
+   ok 15 - loaded seeded pronoun contexts survive terminal punctuation and Unicode boundaries
+     ---
+     duration_ms: 397.479
+     ...
+   # Subtest: actual matching seed is required before any coreference event is recorded
+   not ok 16 - actual matching seed is required before any coreference event is recorded
+     ---
+     duration_ms: 649.312958
+     location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/worker-native-handler-parity.test.mjs:63:1'
+     failureType: 'testCodeFailure'
+     error: "Cannot read properties of undefined (reading 'some')"
+     code: 'ERR_TEST_FAILURE'
+     name: 'TypeError'
+     stack: |-
+       TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/worker-native-handler-parity.test.mjs:68:35)
+       async Test.run (node:internal/test_runner/test:797:9)
+       async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+     ...
+   1..16
+   # tests 16
+   # suites 0
+   # pass 15
+   # fail 1
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 4760.561959
+   
+   Error: node:internal/errors:984
+     const err = new Error(message);
+                 ^
+   
+   Error: Command failed: /Users/konard/.nvm/versions/node/v20.19.4/bin/node --test rust/tests/web/worker-native-handler-parity.test.mjs rust/tests/web/worker-javascript-permission.test.mjs rust/tests/web/server-learning-trace.test.mjs
+       at genericNodeError (node:internal/errors:984:15)
+       at wrappedFn (node:internal/errors:538:14)
+       at checkExecSyncError (node:child_process:891:11)
+       at execFileSync (node:child_process:927:15)
+       at data:text/javascript;base64,aW1wb3J0IGZzIGZyb20gJ25vZGU6ZnMnOyBpbXBvcnQge2V4ZWNGaWxlU3luY30gZnJvbSAnbm9kZTpjaGlsZF9wcm9jZXNzJzsgaW1wb3J0IHt0cmFuc2xhdGVKc1RvVHN9IGZyb20gJ2ZpbGU6Ly8vVXNlcnMva29uYXJkL0NvZGUvQXJjaGl2ZS9saW5rLWFzc2lzdGFudC9mb3JtYWwtYWkvc2NyaXB0cy90cmFuc2xhdGUtZXMubWpzJzsgZm9yKGNvbnN0IHNvdXJjZSBvZiBbJ2pzL3dvcmtlci1tb2R1bGVzLmpzJywnanMvd29ya2VyL2Zvcm1hbF9haV93b3JrZXJfY29yZWZlcmVuY2UuanMnLCdqcy93b3JrZXIvZm9ybWFsX2FpX3dvcmtlcl90cmFuc2xhdGlvbl9yZWNhbGxfYW5kX2NvbXBvdW5kX2ludGVyZXN0LmpzJywnanMvd29ya2VyL2Zvcm1hbF9haV93b3JrZXJfd3JpdGVfcHJvZ3JhbV9hbmRfcmVzZWFyY2guanMnLCdqcy93b3JrZXIvZm9ybWFsX2FpX3dvcmtlcl90b29sX2V4ZWN1dGlvbl9wb2xpY3kuanMnXSl7Y29uc3QgdGFyZ2V0PXNvdXJjZS5yZXBsYWNlKC9eanNcLy8sJ3RzLycpLnJlcGxhY2UoL1wuanMkLywnLnRzJyk7ZnMud3JpdGVGaWxlU3luYyh0YXJnZXQsdHJhbnNsYXRlSnNUb1RzKGZzLnJlYWRGaWxlU3luYyhzb3VyY2UsJ3V0ZjgnKSkpO30gZXhlY0ZpbGVTeW5jKCdydXN0Zm10JyxbJy0tZWRpdGlvbicsJzIwMjQnLCdydXN0L3NyYy9zb2x2ZXJfaGFuZGxlcnMvYmVuY2htYXJrX3Byb21wdHMucnMnXSx7c3RkaW86J2luaGVyaXQnfSk7IGV4ZWNGaWxlU3luYyhwcm9jZXNzLmV4ZWNQYXRoLFsnLS10ZXN0JywncnVzdC90ZXN0cy93ZWIvd29ya2VyLW5hdGl2ZS1oYW5kbGVyLXBhcml0eS50ZXN0Lm1qcycsJ3J1c3QvdGVzdHMvd2ViL3dvcmtlci1qYXZhc2NyaXB0LXBlcm1pc3Npb24udGVzdC5tanMnLCdydXN0L3Rlc3RzL3dlYi9zZXJ2ZXItbGVhcm5pbmctdHJhY2UudGVzdC5tanMnXSx7c3RkaW86J2luaGVyaXQnfSk7IGNvbnNvbGUubG9nKCdBQ1RVQUxfQ0xPU0VTVF9OQVRJVkVfSEFORExFUl9QQVJJVFlfUEFTUycpOw==:1:722
+       at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+       at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+       at async file:///Users/konard/Code/Archive/link-assistant/formal-ai/[eval1]:1:1 {
+     status: 1,
+     signal: null,
+     output: [ null, null, null ],
+     pid: 947,
+     stdout: null,
+     stderr: null
+   }
+   
+   Node.js v20.19.4
+   
+   Exit Code: 1
+== answer ==
+The command failed: `node --input-type=module -e 'await import("data:text/javascript;base64,aW1wb3J0IGZzIGZyb20gJ25vZGU6ZnMnOyBpbXBvcnQge2V4ZWNGaWxlU3luY30gZnJvbSAnbm9kZTpjaGlsZF9wcm9jZXNzJzsgaW1wb3J0IHt0cmFuc2xhdGVKc1RvVHN9IGZyb20gJ2ZpbGU6Ly8vVXNlcnMva29uYXJkL0NvZGUvQXJjaGl2ZS9saW5rLWFzc2lzdGFudC9mb3JtYWwtYWkvc2NyaXB0cy90cmFuc2xhdGUtZXMubWpzJzsgZm9yKGNvbnN0IHNvdXJjZSBvZiBbJ2pzL3dvcmtlci1tb2R1bGVzLmpzJywnanMvd29ya2VyL2Zvcm1hbF9haV93b3JrZXJfY29yZWZlcmVuY2UuanMnLCdqcy93b3JrZXIvZm9ybWFsX2FpX3dvcmtlcl90cmFuc2xhdGlvbl9yZWNhbGxfYW5kX2NvbXBvdW5kX2ludGVyZXN0LmpzJywnanMvd29ya2VyL2Zvcm1hbF9haV93b3JrZXJfd3JpdGVfcHJvZ3JhbV9hbmRfcmVzZWFyY2guanMnLCdqcy93b3JrZXIvZm9ybWFsX2FpX3dvcmtlcl90b29sX2V4ZWN1dGlvbl9wb2xpY3kuanMnXSl7Y29uc3QgdGFyZ2V0PXNvdXJjZS5yZXBsYWNlKC9eanNcLy8sJ3RzLycpLnJlcGxhY2UoL1wuanMkLywnLnRzJyk7ZnMud3JpdGVGaWxlU3luYyh0YXJnZXQsdHJhbnNsYXRlSnNUb1RzKGZzLnJlYWRGaWxlU3luYyhzb3VyY2UsJ3V0ZjgnKSkpO30gZXhlY0ZpbGVTeW5jKCdydXN0Zm10JyxbJy0tZWRpdGlvbicsJzIwMjQnLCdydXN0L3NyYy9zb2x2ZXJfaGFuZGxlcnMvYmVuY2htYXJrX3Byb21wdHMucnMnXSx7c3RkaW86J2luaGVyaXQnfSk7IGV4ZWNGaWxlU3luYyhwcm9jZXNzLmV4ZWNQYXRoLFsnLS10ZXN0JywncnVzdC90ZXN0cy93ZWIvd29ya2VyLW5hdGl2ZS1oYW5kbGVyLXBhcml0eS50ZXN0Lm1qcycsJ3J1c3QvdGVzdHMvd2ViL3dvcmtlci1qYXZhc2NyaXB0LXBlcm1pc3Npb24udGVzdC5tanMnLCdydXN0L3Rlc3RzL3dlYi9zZXJ2ZXItbGVhcm5pbmctdHJhY2UudGVzdC5tanMnXSx7c3RkaW86J2luaGVyaXQnfSk7IGNvbnNvbGUubG9nKCdBQ1RVQUxfQ0xPU0VTVF9OQVRJVkVfSEFORExFUl9QQVJJVFlfUEFTUycpOw==");'` exited with code 1.
+
+```text
+Command failed: /Users/konard/.nvm/versions/node/v20.19.4/bin/node --test rust/tests/web/worker-native-handler-parity.test.mjs rust/tests/web/worker-javascript-permission.test.mjs rust/tests/web/server-learning-trace.test.mjs
+    at genericNodeError (node:internal/errors:984:15)
+    at wrappedFn (node:internal/errors:538:14)
+    at checkExecSyncError (node:child_process:891:11)
+    at execFileSync (node:child_process:927:15)
+    at data:text/javascript;base64,aW1wb3J0IGZzIGZyb20gJ25vZGU6ZnMnOyBpbXBvcnQge2V4ZWNGaWxlU3luY30gZnJvbSAnbm9kZTpjaGlsZF9wcm9jZXNzJzsgaW1wb3J0IHt0cmFuc2xhdGVKc1RvVHN9IGZyb20gJ2ZpbGU6Ly8vVXNlcnMva29uYXJkL0NvZGUvQXJjaGl2ZS9saW5rLWFzc2lzdGFudC9mb3JtYWwtYWkvc2NyaXB0cy90cmFuc2xhdGUtZXMubWpzJzsgZm9yKGNvbnN0IHNvdXJjZSBvZiBbJ2pzL3dvcmtlci1tb2R1bGVzLmpzJywnanMvd29ya2VyL2Zvcm1hbF9haV93b3JrZXJfY29yZWZlcmVuY2UuanMnLCdqcy93b3JrZXIvZm9ybWFsX2FpX3dvcmtlcl90cmFuc2xhdGlvbl9yZWNhbGxfYW5kX2NvbXBvdW5kX2ludGVyZXN0LmpzJywnanMvd29ya2VyL2Zvcm1hbF9haV93b3JrZXJfd3JpdGVfcHJvZ3JhbV9hbmRfcmVzZWFyY2guanMnLCdqcy93b3JrZXIvZm9ybWFsX2FpX3dvcmtlcl90b29sX2V4ZWN1dGlvbl9wb2xpY3kuanMnXSl7Y29uc3QgdGFyZ2V0PXNvdXJjZS5yZXBsYWNlKC9eanNcLy8sJ3RzLycpLnJlcGxhY2UoL1wuanMkLywnLnRzJyk7ZnMud3JpdGVGaWxlU3luYyh0YXJnZXQsdHJhbnNsYXRlSnNUb1RzKGZzLnJlYWRGaWxlU3luYyhzb3VyY2UsJ3V0ZjgnKSkpO30gZXhlY0ZpbGVTeW5jKCdydXN0Zm10JyxbJy0tZWRpdGlvbicsJzIwMjQnLCdydXN0L3NyYy9zb2x2ZXJfaGFuZGxlcnMvYmVuY2htYXJrX3Byb21wdHMucnMnXSx7c3RkaW86J2luaGVyaXQnfSk7IGV4ZWNGaWxlU3luYyhwcm9jZXNzLmV4ZWNQYXRoLFsnLS10ZXN0JywncnVzdC90ZXN0cy93ZWIvd29ya2VyLW5hdGl2ZS1oYW5kbGVyLXBhcml0eS50ZXN0Lm1qcycsJ3J1c3QvdGVzdHMvd2ViL3dvcmtlci1qYXZhc2NyaXB0LXBlcm1pc3Npb24udGVzdC5tanMnLCdydXN0L3Rlc3RzL3dlYi9zZXJ2ZXItbGVhcm5pbmctdHJhY2UudGVzdC5tanMnXSx7c3RkaW86J2luaGVyaXQnfSk7IGNvbnNvbGUubG9nKCdBQ1RVQUxfQ0xPU0VTVF9OQVRJVkVfSEFORExFUl9QQVJJVFlfUEFTUycpOw==:1:722
+    at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+    at async file:///Users/konard/Code/Archive/link-assistant/formal-ai/[eval1]:1:1 {
+  status: 1,
+  signal: null,
+  output: [ null, null, null ],
+  pid: 947,
+  stdout: null,
+  stderr: null
+}
+
+Node.js v20.19.4
+```
+
+I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.

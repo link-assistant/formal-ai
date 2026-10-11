@@ -65,8 +65,40 @@ case "$sub" in
   api)
     path="$1"; shift || true
     case "$path" in
-      *"/tags"*)     [ -n "${MOCK_TAGS_JQ_OUTPUT:-}" ] && printf '%s\n' "${MOCK_TAGS_JQ_OUTPUT}" ;;
-      *"/commits/"*) printf '%s\n' "${MOCK_PARENT_SHA:-}" ;;
+      *"/actions/runs/"*)
+        node <<'RUN_METADATA'
+process.stdout.write(JSON.stringify(({id:42,
+  run_attempt:1,
+  workflow_id:7,
+  path:'.github/workflows/release.yml',
+  status:'completed',
+  conclusion:process.env.WORKFLOW_RUN_CONCLUSION,
+  head_sha:process.env.WORKFLOW_RUN_HEAD_SHA,
+  head_branch:'main',
+  repository:{full_name:process.env.REPO},
+  head_repository:{full_name:process.env.REPO}})))
+RUN_METADATA
+        ;;
+      *"/actions/workflows/"*)
+        node <<'WORKFLOW_METADATA'
+process.stdout.write(JSON.stringify(({id:7,path:'.github/workflows/release.yml'})))
+WORKFLOW_METADATA
+        ;;
+      *"/tags?"*|*"/tags") [ -n "${MOCK_TAGS_JQ_OUTPUT:-}" ] && printf '%s\n' "${MOCK_TAGS_JQ_OUTPUT}" ;;
+      *"/releases/tags/"*)
+        directory="$(mktemp -d)"
+        printf '%s\n' "${MOCK_ASSET_NAMES:-}" > "$directory/names.txt"
+        tag="${path##*/}"
+        node "$MOCK_EVIDENCE_CREATOR" "$directory" "${tag#v}" "$directory/names.txt" metadata
+        status=$?
+        rm -rf "$directory"
+        exit "$status" ;;
+      *"/commits/"*)
+        case "$*" in
+          *".commit.tree.sha"*) printf '%s\n' "dddddddddddddddddddddddddddddddddddddddd" ;;
+          *"--jq .sha"*) printf '%s\n' "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" ;;
+          *) printf '%s\n' "${MOCK_PARENT_SHA:-}" ;;
+        esac ;;
     esac ;;
   release)
     action="$1"; shift || true
@@ -87,7 +119,17 @@ case "$sub" in
         # no positional tag -> latest release tagName
         [ -n "${MOCK_LATEST_TAG:-}" ] && { printf '%s\n' "$MOCK_LATEST_TAG"; exit 0; } || exit 1
       fi
+    elif [ "$action" = "download" ]; then
+      tag="$1"; shift
+      directory=""
+      while [ "$#" -gt 0 ]; do
+        if [ "$1" = "--dir" ]; then directory="$2"; shift 2; else shift; fi
+      done
+      printf '%s\n' "${MOCK_ASSET_NAMES:-}" > "$directory/names.txt"
+      node "$MOCK_EVIDENCE_CREATOR" "$directory" "${tag#v}" "$directory/names.txt"
+      exit "$?"
     fi ;;
+  attestation) [ "$1" = "verify" ] || exit 2 ;;
 esac
 exit 0
 "#;
@@ -146,6 +188,12 @@ fn run_resolve(label: &str, env: &[(&str, &str)], mock: &GhMock<'_>) -> ResolveO
         .env("GITHUB_OUTPUT", &output_file)
         .env("REPO", "link-assistant/formal-ai")
         .env("GH_TOKEN", "test-token")
+        .env("WORKFLOW_RUN_ID", "42")
+        .env("WORKFLOW_RUN_ATTEMPT", "1")
+        .env("WORKFLOW_RUN_WORKFLOW_ID", "7")
+        .env("WORKFLOW_RUN_BRANCH", "main")
+        .env("WORKFLOW_RUN_HEAD_REPOSITORY", "link-assistant/formal-ai")
+        .env("WORKFLOW_RUN_CONCLUSION", "success")
         .env("MOCK_TAGS_JQ_OUTPUT", mock.tags_jq_output)
         .env("MOCK_LATEST_TAG", mock.latest_tag)
         .env("MOCK_PARENT_SHA", mock.parent_sha)
@@ -153,7 +201,12 @@ fn run_resolve(label: &str, env: &[(&str, &str)], mock: &GhMock<'_>) -> ResolveO
             "MOCK_RELEASE_EXISTS",
             if mock.release_exists { "1" } else { "0" },
         )
-        .env("MOCK_ASSET_NAMES", mock.asset_names);
+        .env("MOCK_ASSET_NAMES", mock.asset_names)
+        .env(
+            "MOCK_EVIDENCE_CREATOR",
+            Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("tests/fixtures/native-release-evidence/observations.mjs"),
+        );
     for (key, value) in env {
         cmd.env(key, value);
     }
@@ -204,6 +257,52 @@ fn expected_asset_names(version: &str) -> String {
         "latest.yml".to_string(),
         "latest-mac.yml".to_string(),
         "latest-linux.yml".to_string(),
+        format!("formal-ai-vscode-{version}.vsix"),
+        "SHA256SUMS.txt".to_string(),
+        "BUILD-PROVENANCE.txt".to_string(),
+    ]
+    .join("\n")
+        + "\n"
+        + &cli_archive_names()
+        + "\n"
+        + &native_evidence_names(version)
+}
+
+// The fixture records cover exactly the actual eight producer targets.
+fn native_evidence_names(version: &str) -> String {
+    let mut names = vec![
+        format!("formal-ai-native-source-{version}.json"),
+        format!("formal-ai-native-protocol-{version}.json"),
+    ];
+    names.extend(
+        [
+            "x86_64-unknown-linux-gnu",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-musl",
+            "aarch64-unknown-linux-musl",
+            "x86_64-apple-darwin",
+            "aarch64-apple-darwin",
+            "x86_64-pc-windows-msvc",
+            "aarch64-pc-windows-msvc",
+        ]
+        .map(|target| format!("formal-ai-native-{target}-{version}.json")),
+    );
+    names.extend([
+        format!("formal-ai-signing-macos-arm64-{version}.json"),
+        format!("formal-ai-signing-macos-x64-{version}.json"),
+    ]);
+    names.join("\n")
+}
+
+/// Issue #1181: the five archives the `cli` job of desktop-release.yml uploads
+/// to the same release; the resolver reads them from that job's matrix.
+fn cli_archive_names() -> String {
+    [
+        "formal-ai-cli-x86_64-unknown-linux-musl.tar.gz",
+        "formal-ai-cli-aarch64-unknown-linux-musl.tar.gz",
+        "formal-ai-cli-x86_64-apple-darwin.tar.gz",
+        "formal-ai-cli-aarch64-apple-darwin.tar.gz",
+        "formal-ai-cli-x86_64-pc-windows-msvc.zip",
     ]
     .join("\n")
 }
@@ -237,12 +336,15 @@ fn auto_release_child_commit_triggers_build() {
         "child-commit",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
         ],
         &GhMock {
             tags_jq_output: "", // no tag points at the head SHA (the bug condition)
             latest_tag: "v0.201.0",
-            parent_sha: "0abd3f45parenthead", // child release descends from head SHA
+            parent_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", // child release descends from head SHA
             release_exists: true,
             asset_names: "",
         },
@@ -279,12 +381,15 @@ fn workflow_run_builds_when_release_is_missing_linux_assets() {
         "partial-linux-missing",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
         ],
         &GhMock {
             tags_jq_output: "",
             latest_tag: "v0.204.0",
-            parent_sha: "0abd3f45parenthead",
+            parent_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             release_exists: true,
             asset_names: &partial_assets,
         },
@@ -311,12 +416,15 @@ fn workflow_run_skips_when_release_has_all_required_assets() {
         "has-assets",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
         ],
         &GhMock {
             tags_jq_output: "",
             latest_tag: "v0.201.0",
-            parent_sha: "0abd3f45parenthead",
+            parent_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             release_exists: true,
             asset_names: &complete_assets,
         },
@@ -327,6 +435,53 @@ fn workflow_run_skips_when_release_has_all_required_assets() {
         result.should_build, "false",
         "a release that already has all required desktop assets must not rebuild on workflow_run\nstdout:\n{}\nstderr:\n{}",
         result.stdout, result.stderr
+    );
+}
+
+#[test]
+fn workflow_run_builds_when_release_is_missing_cli_archives() {
+    // Issue #1181: a release whose desktop set is complete but which lacks the
+    // standalone CLI archives is partial, so the automatic run must build and
+    // upload them instead of skipping on the desktop set alone.
+    if !bash_available() {
+        eprintln!("skipping: /bin/bash not available");
+        return;
+    }
+    let complete = expected_asset_names("0.201.0");
+    let without_cli: Vec<&str> = complete
+        .lines()
+        .filter(|name| !name.starts_with("formal-ai-cli-"))
+        .collect();
+    let without_cli = without_cli.join("\n");
+    let result = run_resolve(
+        "cli-missing",
+        &[
+            ("EVENT", "workflow_run"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
+        ],
+        &GhMock {
+            tags_jq_output: "",
+            latest_tag: "v0.201.0",
+            parent_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            release_exists: true,
+            asset_names: &without_cli,
+        },
+    );
+    assert!(result.ok, "resolve script failed: {}", result.stderr);
+    assert_eq!(
+        result.should_build, "true",
+        "a release without the CLI archives must build them\nstdout:\n{}",
+        result.stdout
+    );
+    assert!(
+        result
+            .stdout
+            .contains("formal-ai-cli-x86_64-pc-windows-msvc.zip"),
+        "the log names the missing CLI archive: {}",
+        result.stdout
     );
 }
 
@@ -351,12 +506,15 @@ fn workflow_run_asset_membership_is_stable_under_pipefail() {
         "pipefail-membership",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
         ],
         &GhMock {
             tags_jq_output: "",
             latest_tag: "v0.201.0",
-            parent_sha: "0abd3f45parenthead",
+            parent_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             release_exists: true,
             asset_names: &assets,
         },
@@ -389,12 +547,15 @@ fn workflow_run_builds_when_release_is_missing_updater_metadata() {
         "missing-updater-metadata",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
         ],
         &GhMock {
             tags_jq_output: "",
             latest_tag: "v0.212.0",
-            parent_sha: "0abd3f45parenthead",
+            parent_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             release_exists: true,
             asset_names: &installers_only,
         },
@@ -418,7 +579,10 @@ fn workflow_run_uses_exact_tag_when_one_points_at_head_sha() {
         "exact-sha",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "deadbeefheadsha"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            ),
         ],
         &GhMock {
             tags_jq_output: "v0.201.0", // a tag points directly at the head SHA
@@ -445,7 +609,10 @@ fn workflow_run_skips_when_no_release_exists() {
         "no-release",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
         ],
         &GhMock {
             tags_jq_output: "",

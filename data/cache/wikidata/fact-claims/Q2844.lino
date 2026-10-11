@@ -1,0 +1,27 @@
+Q2844
+  id Q2844
+  labels
+    en "Brasília"
+    hi "ब्रासीलिया"
+    ru "Бразилиа"
+    zh "巴西利亚"
+    zh-hans "巴西利亚"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Brasília"
+    hiwiki
+      site hiwiki
+      title "ब्रासीलिया"
+    ruwiki
+      site ruwiki
+      title "Бразилиа"
+    zhwiki
+      site zhwiki
+      title "巴西利亚"
+  type item
+grounding
+  claim_ranks truthy
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

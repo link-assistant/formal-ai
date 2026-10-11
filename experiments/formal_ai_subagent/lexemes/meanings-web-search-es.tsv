@@ -1,0 +1,15 @@
+web_search	búsqueda web	busca en internet	buscar en internet	búsqueda en internet
+reference_internet	 web 	 internet 	 en línea 	 online 	 la red 
+reference_encyclopedia	 wikipedia 	 wikidata 	 wikcionario 	 wiktionary 
+reference_information	 información 	 info 	 datos 	 detalles 	 material 	 materiales 	 recurso 	 recursos 	 fuente 	 fuentes 	 artículo 	 artículos 	 hecho 	 hechos 
+reference_news	 noticia	 titulares 
+news_recency_request	 últim	 reciente	 actual 	 actuales 	 ahora 	 hoy 
+reference_records	 registros 	 registro 	 expediente	 informe 	 informes 	 estados financieros 	 estadístic	 dosier 
+reference_public_events	 evento	 hackathon	 conferencia	 meetup	 taller	 concurso	 competición	 webinar	 seminario web
+act_search_strong	 busca 	 buscar 	 búsqueda 	 investiga 	 investigar 	 averigua 	busca …	buscar …	investiga …	averigua …	infórmate sobre …	googlea …
+act_find_weak	 encuentra 	 encontrar 	 consulta 	 mira 	encuentra …	encontrar …	consulta …	mira …
+web_search_mention	duckduckgo	búsqueda web	busca en internet	búsqueda en internet
+github_repository_platform	github	git hub
+repository_reference	repo	repositorio	repositorios
+github_repository_traffic_signal	tráfico	visita	vistas	visitó	clon	referentes
+github_repository_traffic_question	se puede saber	puedo saber	quién visitó	es posible	muestra github	puedo ver

@@ -1,0 +1,12 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+#
+# PR #1188: R1188-U21, dependency summarization measured on pages and issue bodies.
+ci_gate check-text-summarization
+  stage web
+  description "The cached Wikipedia intros and the issue bodies listed in data/benchmarks/dependency-summarization/corpus.lino are summarized by js/agentic/crate/dependency_summarization.mjs (statement graph, deduplication by formal identity, kept core); compression, retained key facts and duplicates removed, overall and for pages and issues apart, may not fall below data/meta/text-summarization-ratchet.lino."
+  run "node scripts/measure-dependency-summarization.mjs"
+  justification "PR #1188 R1188-U21 (owner, 2026-10-08, extends R197): Formal AI summarizes algorithmically by what the statements depend on and drops what restates something already said; before this gate neither selection by dependency nor deduplication against the earlier text was measured. The measure takes about a second."

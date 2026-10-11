@@ -1,0 +1,20 @@
+{
+  "id": "T3031",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Read js/agentic/evidence_record.mjs and rust/src/agentic_coding/evidence_record.rs. Explain the source-derived action/target binding in namesCallableArtifact and names_callable_artifact. The actual effect clause is: Then create a report target with exact field lines and result followed by at least four words containing FORMAL_AI_HOW_SOURCE_CACHE_DIR. The current global normalization scans the required result value as an authored source operand and suppresses the independent report. Propose a bounded general repair using existing action-cue spans, target bindings, quoted-value spans and seeded artifact roles; preserve genuine source-module exclusion, multilingual postposed artifact types and exact field/result bytes. Identify meaningful negative controls and an unchanged-original retry plan. This request is read-only; do not edit any file or supply the required effect artifact.",
+  "tools": [
+    "read",
+    "grep",
+    "list"
+  ],
+  "before": [
+    {
+      "path": "js/agentic/evidence_record.mjs",
+      "sha256": "ebe9b2246f52d5ed528ea299473323c1baa4ab40a94a4cfd413ea1d0cb54eff0"
+    },
+    {
+      "path": "rust/src/agentic_coding/evidence_record.rs",
+      "sha256": "e63f867596ab8edbcd89efa1a7035ada3f27d76cd9edb9cdb74bb4e767a38ca5"
+    }
+  ]
+}

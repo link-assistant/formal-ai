@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_literal_instruction_view.js"
+  ceiling 19
+  rationale "Exact current-source generated factory; zero headroom, no existing ceiling increase."

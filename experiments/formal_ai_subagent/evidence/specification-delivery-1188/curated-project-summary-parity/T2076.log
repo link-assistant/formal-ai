@@ -1,0 +1,43 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/package-project-evidence.mjs"}
+   Output: {"destination":"experiments/formal_ai_subagent/evidence/specification-delivery-1188/curated-project-summary-parity","audit":{"cutoff":"T2075","invocations":27,"observedToolCalls":63,"repositoryWriteCalls":19,"planHistoryAppendBashExcluded":19,"sourceCapabilityMutations":19,"requestUtf8Bytes":433220,"transcriptUtf8Bytes":3744266,"actualModelTokens":null,"actualCost":null,"operatorDraftDefect":["T2055"],"broadSynthesisOpen":["T2049","T2066"],"testFailureFixed":["T2060","T2061","T2062"],"falseFailureFinalOpen":["T2063"],"outsideOwnedNotationBlock":["T2075"]},"packagedFiles":138}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/package-project-evidence.mjs` command completed. Output:
+
+```json
+{
+  "audit": {
+    "actualCost": null,
+    "actualModelTokens": null,
+    "broadSynthesisOpen": [
+      "T2049",
+      "T2066"
+    ],
+    "cutoff": "T2075",
+    "falseFailureFinalOpen": [
+      "T2063"
+    ],
+    "invocations": 27,
+    "observedToolCalls": 63,
+    "operatorDraftDefect": [
+      "T2055"
+    ],
+    "outsideOwnedNotationBlock": [
+      "T2075"
+    ],
+    "planHistoryAppendBashExcluded": 19,
+    "repositoryWriteCalls": 19,
+    "requestUtf8Bytes": 433220,
+    "sourceCapabilityMutations": 19,
+    "testFailureFixed": [
+      "T2060",
+      "T2061",
+      "T2062"
+    ],
+    "transcriptUtf8Bytes": 3744266
+  },
+  "destination": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/curated-project-summary-parity",
+  "packagedFiles": 138
+}
+```

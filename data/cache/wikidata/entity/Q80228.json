@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "瓶"
+        },
+        "es": {
+          "language": "es",
+          "value": "botella"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "तरल पदार्थ के कंटेनर"
+        },
+        "es": {
+          "language": "es",
+          "value": "recipiente que sirve para contener líquidos, generalmente de vidrio, cilíndrico y de cuello angosto"
         }
       },
       "aliases": {
@@ -46,6 +54,12 @@
           {
             "language": "zh",
             "value": "瓶子"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "botellas"
           }
         ]
       }

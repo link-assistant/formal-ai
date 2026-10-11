@@ -1,15 +1,18 @@
 Q165447
   aliases
     en (Pens)
+    es ("instrumento de tinta")
     hi ("कलम" "पेन")
     zh ("笔")
   descriptions
     en "writing and drawing implement using liquid or paste ink"
+    es "dispositivo usado para entintar una superficie con el propósito de escribir o dibujar"
     hi "लिख ने का परिकर"
     ru "письменная принадлежность"
   id Q165447
   labels
     en pen
+    es pluma
     hi "लेखनी"
     ru "ручка"
     zh "硬筆"

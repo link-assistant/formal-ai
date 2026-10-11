@@ -1,0 +1,13 @@
+# Source callable body-read and binding repair
+
+A cached recurrence owns formal input n while a prose task owns a provisional input spelling input. Lexical source scanning gave the recurrence zero input reads and the competing typed IR one. The authoritative expression AST now supplies distinct input-position coverage. A task retains declared, observed or provisional binding origin; structural binding preserves explicit names and annotations, and provisional requests retain source identity. Unsupported arity/default/variadic/positional-only forms and recursive self-call shadowing reject before verification. A contract must agree with its callable and rendered source.
+
+The native comparator is unchanged: descending actual input coverage, then ascending action cost, source bytes, search rank and ID. In the original competing IR case both candidates read one input and have cost3; source recurrence70 bytes naturally precedes the86-byte IR program. No recurrence preference was added. Existing native solver exact-source assertions remain unchanged.
+
+FA broad implementation ask T2007 failed without tools. After the reviewed general capability repair, exact unchanged retry T2034 attempted a malformed literal replacement and failed without a repository mutation. Broad autonomous requirement implementation remains open G112. The successful narrow repair must not be presented as closure of that ask. The original scratch task T2000 also remains a recorded failed implementation ask; T2001 is explicitly a modified diagnostic.
+
+Production JS callable tests pass7/7; existing route tests pass5/5; explicit bound source executes against Python math.factorial on21 inputs. Six meaningful native pins include the real competing IR, declaration-only false use, explicit signature, unsupported capture/forms, observed literal-call binding and source-contract mismatch. Native compilation and execution are CI-only. Raw Python lexical scope/CST coverage is not implemented by this AST-only capability.
+
+The original recurrence worker stays under its unchanged259-line ceiling; the new separate body contract worker has an exact130-line shard. Parent refreshed the production inventory through FA T1919. Parent owns generated TS projections, list integration and shared gap/requirements records.
+
+Raw prompts, requests, logs and byte checks are retained by task ID; no original transcript is reconstructed or invented. Changelog/source/tests/data were all written through FA. The audit records scratch separately, excludes separate plan-history append calls from the capability mutation count, and does not claim measured model tokens or money. Evidence packaging after cutoff is reported separately to the coordinator.

@@ -1,0 +1,27 @@
+language en
+lemma fraud
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "intentional deception resulting in injury to another person"
+    id oewn-00770581-n
+    partOfSpeech n
+  entry
+    definition "a person who makes deceitful pretenses"
+    id oewn-10221154-n
+    partOfSpeech n
+    synonyms (imposter impostor pretender fake faker sham shammer pseudo pseud "role player")
+  entry
+    definition "something intended to deceive; deliberate trickery intended to gain an advantage"
+    id oewn-00755028-n
+    partOfSpeech n
+    synonyms (fraudulence dupery hoax humbug put-on)
+  entry
+    definition "the act of swindling by some fraudulent scheme"
+    examples ("that book is a fraud")
+    id oewn-00781784-n
+    partOfSpeech n
+    synonyms (swindle cheat rig)
+source "oewn:2024"

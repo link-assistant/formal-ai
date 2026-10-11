@@ -1,0 +1,5 @@
+{
+  "taskId": "T2448",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Run `rustfmt --edition 2024 --config skip_children=true rust/tests/fixtures/source-cache-seed-contract.rs`"
+}

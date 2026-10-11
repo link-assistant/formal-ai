@@ -35,7 +35,7 @@ fn link_cli_rolls_back_an_entire_memory_event_projection() {
     store.rollback_transaction().expect("rollback transaction");
 
     assert_eq!(store.native_link_count(), 0);
-    assert!(store.records().is_empty());
+    assert_eq!(store.records(), [] as [formal_ai::LinkRecord; 0]);
     assert!(store.export_memory_links_notation().contains("demo_memory"));
 
     drop(store);

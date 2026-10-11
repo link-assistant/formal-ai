@@ -1,0 +1,12 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+#
+# PR #1188: R1188-U19, round-trip translation measured on all 20 language pairs.
+ci_gate check-round-trip-translation
+  stage web
+  description "The sentences of data/benchmarks/round-trip-translation/sentences.lino (seed responses written in all five languages and leading sentences of the cached pages) go source -> meta -> target -> meta -> source through js/agentic/crate/round_trip_translation.mjs for every ordered pair of en, ru, hi, zh and es; sentence survival and term survival, overall and per pair, may not fall below data/meta/round-trip-translation-ratchet.lino."
+  run "node scripts/measure-round-trip-translation.mjs"
+  justification "PR #1188 R1188-U19 (owner, 2026-10-08, extends R526-1): the best translation is the one that survives the round trip, across every language pair, for sentences and texts; only seeded single words were pinned before, so sentence translation quality could fall unnoticed. The measure takes about two seconds."

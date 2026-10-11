@@ -1,0 +1,13 @@
+view
+  id M-ccce8ab286c1
+  lemma environment
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the totality of surrounding conditions"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the area in which something exists or lives"
+    provenance (wordnet)

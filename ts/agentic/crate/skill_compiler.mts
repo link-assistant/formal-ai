@@ -1,0 +1,164 @@
+// `crate::skill_compiler::looks_like_skill_description`
+// (rust/src/skill_compiler.rs): whether a request teaches a skill.
+
+import { afterSlot, beforeSlot, roleWordForms, slotOf } from './seed_meanings.mjs';
+
+import { normalizePrompt } from './engine.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
+import { pushLinoNode } from './links_format.mjs';
+import { KNOWLEDGE_SCHEMA_VERSION } from './skill_procedure.mjs';
+
+/** Mirrors `fn direct_role_surface_present`. */
+function directRoleSurfacePresent(role, lower) {
+  return roleWordForms(role).some((form) => form.text !== '' && lower.includes(form.text));
+}
+
+/** Mirrors `fn explicit_teaching_form`. */
+function explicitTeachingForm(lower) {
+  return (directRoleSurfacePresent('skill_teaching_trigger_lead', lower)
+    && directRoleSurfacePresent('skill_teaching_response_verb', lower))
+    || directRoleSurfacePresent('behavior_rule_edit_directive', lower);
+}
+
+/**
+ * Mirrors `fn looks_like_skill_description` in rust/src/skill_compiler.rs.
+ * Offsets found in the lowercased text slice the original, as in Rust.
+ * @param {string} description
+ */
+export function looksLikeSkillDescription(description) {
+  const lower = description.toLowerCase();
+  if (explicitTeachingForm(lower)) return true;
+  return roleWordForms('skill_when_then_pair')
+    .filter((form) => slotOf(form) === 'circumfix')
+    .some((form) => {
+      const head = beforeSlot(form);
+      const link = afterSlot(form);
+      const headPos = lower.indexOf(head);
+      if (headPos < 0) return false;
+      const linkPos = lower.slice(headPos + head.length).indexOf(link);
+      if (linkPos < 0) return false;
+      const absoluteLinkPos = headPos + head.length + linkPos;
+      const beforeLink = description.slice(headPos, absoluteLinkPos);
+      const afterLink = description.slice(absoluteLinkPos + link.length);
+      return beforeLink.includes('`') && afterLink.includes('`');
+    });
+}
+
+// Trigger/response subset of CompiledSkillPackage. Structured descriptions
+// stay unsupported until their typed permissions and effects are implemented.
+const structuredLabels = ['Skill', 'Input', 'Precondition', 'Step', 'Effect',
+  'Expected test', 'Target', 'Tool', 'Permission'];
+
+function structuredLine(line) {
+  const text = line.trimStart();
+  return structuredLabels.some(label =>
+    text.slice(0, label.length).toLowerCase() === label.toLowerCase()
+    && (text.length === label.length || /[\s:`]/u.test(text[label.length])));
+}
+
+// Mirrors extract_trigger_response and extract_unquoted_explicit_rule.
+function triggerResponse(description) {
+  if (!looksLikeSkillDescription(description)) return null;
+  const spans = description.split('`')
+    .filter((value, index) => index % 2 === 1 && value.trim())
+    .map(value => value.trim());
+  if (spans.length >= 2) return [spans[0], spans[1]];
+  const lower = description.toLowerCase();
+  for (const lead of roleWordForms('skill_teaching_trigger_lead')) {
+    const at = lower.indexOf(lead.text);
+    if (at < 0) continue;
+    const start = at + lead.text.length;
+    const verbs = roleWordForms('skill_teaching_response_verb')
+      .sort((left, right) => Array.from(right.text).length - Array.from(left.text).length);
+    for (const verb of verbs) {
+      const relative = lower.slice(start).indexOf(verb.text);
+      if (relative < 0) continue;
+      const split = start + relative;
+      const trigger = description.slice(start, split).trim()
+        .replace(/^[`"':,]+|[`"':,]+$/gu, '').trim();
+      const response = description.slice(split + verb.text.length)
+        .replace(/^[\s`"':,.!?]+|[\s`"':,.!?]+$/gu, '');
+      if (trigger && response) return [trigger, response];
+    }
+  }
+  return null;
+}
+
+// Mirrors native link_record, including each content-addressed E1 doublet.
+function linkRecord(id, type, subtype, source, fields) {
+  const links = [];
+  const edge = (from, to) => links.push({
+    index: stableId('doublet', `${from}->${to}`), from, to,
+  });
+  for (const [from, to] of [[id, 'Type'], ['Type', type], [type, 'SubType'],
+    ['SubType', subtype], [subtype, 'Value'], [id, source]]) edge(from, to);
+  for (const [key, value] of [['schema_version', KNOWLEDGE_SCHEMA_VERSION], ...fields]) {
+    if (value === '') continue;
+    edge(id, `field:${key}`);
+    edge(`field:${key}`, `value:${value}`);
+  }
+  return { stable_id: id, schema_version: KNOWLEDGE_SCHEMA_VERSION,
+    record_type: type, source_id: source, links };
+}
+
+/** Compile the supported deterministic subset; unsupported IR is explicit. */
+export function compileNaturalLanguageSkill(description) {
+  if (description.split(/\r?\n/u).some(structuredLine)) {
+    return { status: 'unsupported-structured-skill' };
+  }
+  const parsed = triggerResponse(description);
+  if (!parsed) return { status: 'unsupported-shape' };
+  const [trigger, response] = parsed;
+  const normalized_trigger = normalizePrompt(trigger);
+  const id = stableId('compiled_skill', `${normalized_trigger}\n${response}`);
+  const rule_id = stableId('compiled_skill_rule', `${id}:rule:${normalized_trigger}`);
+  const handler_id = stableId('compiled_skill_handler', `${id}:handler:${response}`);
+  const legacy_behavior_rule_id = stableId('behavior_rule_runtime', `${trigger}\n${response}`);
+  return {
+    status: 'compiled', id, rule_id, handler_id, legacy_behavior_rule_id,
+    source_description: description, skill_name: 'trigger_response_skill',
+    trigger, normalized_trigger, response,
+    inputs: [], preconditions: [], steps: [], effects: [], expected_tests: [],
+    required_permissions: [], handler_stubs: [],
+    replay(prompt) {
+      if (normalizePrompt(prompt) !== normalized_trigger) return null;
+      return { package_id: id, rule_id, handler_id, answer: response, cache_hit: id };
+    },
+    linksNotation() {
+      let out = pushLinoNode('', 0, id, null);
+      for (const [key, value] of [
+        ['type', 'compiled_skill_package'],
+        ['schema_version', KNOWLEDGE_SCHEMA_VERSION],
+        ['package_kind', 'associative_package'],
+        ['source', 'natural_language_skill'],
+        ['source_description', description],
+        ['skill_name', 'trigger_response_skill'],
+        ['trigger_rule', rule_id],
+        ['trigger', trigger],
+        ['normalized_trigger', normalized_trigger],
+        ['compiled_handler', handler_id],
+        ['handler_kind', 'deterministic_response'],
+        ['response', response],
+        ['replay_mode', 'exact_normalized_prompt'],
+        ['legacy_behavior_rule_id', legacy_behavior_rule_id],
+      ]) out = pushLinoNode(out, 2, key, value);
+      return out.trimEnd();
+    },
+    linkRecords() {
+      return [
+        linkRecord(id, 'CompiledSkillPackage', 'associative_package',
+          stableId('natural_language_skill', description), [
+            ['source_description', description], ['skill_name', 'trigger_response_skill'],
+            ['trigger_rule', rule_id], ['compiled_handler', handler_id],
+            ['replay_mode', 'exact_normalized_prompt'],
+          ]),
+        linkRecord(rule_id, 'CompiledSkillTriggerRule', 'substitution_rule', id, [
+          ['trigger', trigger], ['normalized_trigger', normalized_trigger], ['handler', handler_id],
+        ]),
+        linkRecord(handler_id, 'CompiledSkillHandler', 'deterministic_response_handler', id, [
+          ['handler_kind', 'deterministic_response'], ['response', response],
+        ]),
+      ];
+    },
+  };
+}

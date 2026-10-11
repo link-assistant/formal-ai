@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check_rename_map
+  stage web
+  description "R1188-U5: every rename in data/meta/rename-map.lino is applied: the old paths are gone, the new ones exist, and no file outside the map's historical exclusions still references an old path."
+  run "node experiments/formal_ai_subagent/rename-by-rule.mjs --check"
+  justification "PR #1188 (R1188-U5) renames numbered files after what they hold by rule; without this gate a later edit could reintroduce an old name, or a branch could add a reference to a path the map retired."

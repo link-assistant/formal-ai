@@ -7,6 +7,7 @@ use crate::engine::{SymbolicAnswer, stable_id};
 use crate::event_log::EventLog;
 use crate::links_format::push_lino_node;
 use crate::normal_markov::{QuotedSegment, quoted_segment_spans, quoted_segments};
+use crate::rule_interpreter::handler_table_rows;
 use crate::solver::{ConversationRole, ConversationTurn};
 use crate::solver_handlers::finalize_simple;
 use crate::solver_handlers::text_edit_ops::{
@@ -15,9 +16,19 @@ use crate::solver_handlers::text_edit_ops::{
     number_lines, outdent_line, pascal_case, remove_punctuation, reverse_lines, sentence_case,
     sort_words, strip_empty_lines, title_case, uncomment_lines,
 };
+use crate::solver_handlers::text_request_framing::{phrase_argument, request_framing};
 use crate::substitution::{
     CrudEvent, SubstitutionGraph, SubstitutionRuleSet, SubstitutionTraceReport,
 };
+
+// The cue tables of `data/seed/handler-rules.lino` and the row values that
+// say how a cue is read (see `text_cue_matches`).
+const REPLACEMENT_CUE_TABLE: &str = "text_replacement_cue";
+const INPUT_CONTEXT_CUE_TABLE: &str = "text_input_context_cue";
+const INPUT_CONTINUATION_CUE_TABLE: &str = "text_input_continuation_cue";
+const SUFFIX_READING: &str = "ends_with";
+const OPERANDS_IN_ORDER: &str = "operands_in_order";
+const TARGET_FOLLOWS_CUE: &str = "target_follows_cue";
 
 /// Does `prompt` name a replacement over quoted literals — the shape
 /// [`parse_replace_request`] reads?
@@ -57,6 +68,16 @@ pub fn text_outside_quoted_segments(prompt: &str) -> String {
     outside
 }
 
+/// Does the prose around the quoted literals name a format conversion?
+///
+/// "Convert this JSON to YAML: {...}" reads its payload as data: an
+/// operation word inside it is a key, not a request. A cue inside a quote
+/// ("Uppercase: 'json to yaml'") is content and names nothing.
+pub(super) fn names_format_conversion(prompt: &str) -> bool {
+    let frame = text_outside_quoted_segments(prompt).to_lowercase();
+    super::shell_command_compose::any_cue_matches("format_conversion", &frame, &frame)
+}
+
 pub fn try_text_manipulation(
     prompt: &str,
     normalized: &str,
@@ -75,6 +96,15 @@ pub fn names_text_operation(normalized: &str) -> bool {
     try_text_manipulation(normalized, normalized, &mut log).is_some()
 }
 
+/// Whether the request parses as input text and text operations.
+///
+/// The input may come from the earlier reply; the `text_operation` claim
+/// evidence of issue #1175 R3.
+#[must_use]
+pub fn parses_text_operation(prompt: &str, normalized: &str, history: &[ConversationTurn]) -> bool {
+    TextRequest::parse_with_history(prompt, normalized, history).is_some()
+}
+
 pub fn try_text_manipulation_with_history(
     prompt: &str,
     normalized: &str,
@@ -82,6 +112,9 @@ pub fn try_text_manipulation_with_history(
     history: &[ConversationTurn],
 ) -> Option<SymbolicAnswer> {
     if crate::solver_helpers::is_agent_request(normalized) {
+        return None;
+    }
+    if names_format_conversion(prompt) {
         return None;
     }
 
@@ -138,14 +171,18 @@ impl TextRequest {
     ) -> Option<Self> {
         let vocabulary = crate::seed::operation_vocabulary();
         let quoted = quoted_segments(prompt);
+        let spans = quoted_segment_spans(prompt);
+        // The request's own words: its quoted payload is content, so a payload
+        // word ("раз") never names an operation asked of the framing.
+        let framing = request_framing(prompt, &spans);
         let fallback_input = || last_assistant_text_artifact(history);
 
-        if vocabulary.matches("replace", normalized) && quoted.len() >= 2 {
+        if contains_replacement_keyword(normalized) && quoted.len() >= 2 {
             let (input, from, to) = parse_replace_request(prompt, history)?;
             return Self::build(input, vec![TextOperation::Replace { from, to }]);
         }
 
-        if vocabulary.matches("count_occurrences", normalized) && !quoted.is_empty() {
+        if vocabulary.matches("count_occurrences", &framing) && !quoted.is_empty() {
             let needle = quoted[0].clone();
             let input = quoted
                 .get(1)
@@ -173,13 +210,25 @@ impl TextRequest {
             return Self::build(input, vec![TextOperation::PrependText { prefix }]);
         }
 
-        let input = quoted
-            .first()
-            .cloned()
+        // An operation phrase may carry its own argument ("lines that start
+        // with x"); when that argument is quoted, the payload is the other
+        // quoted segment.
+        let line_prefix = phrase_argument(&vocabulary, "filter_lines_by_prefix", prompt, &spans);
+        let argument_index = line_prefix.as_ref().and_then(|argument| argument.quoted);
+        let input = spans
+            .iter()
+            .enumerate()
+            .find(|(index, _)| Some(*index) != argument_index)
+            .map(|(_, segment)| segment.text.clone())
             .or_else(|| text_after_colon(prompt))
             .or_else(fallback_input)?;
         let mut operations = Vec::new();
-        append_simple_operations(&vocabulary, normalized, &mut operations);
+        if let Some(argument) = line_prefix {
+            operations.push(TextOperation::FilterLinesByPrefix {
+                prefix: argument.text,
+            });
+        }
+        append_simple_operations(&vocabulary, normalized, &framing, &mut operations);
         Self::build(input, operations)
     }
 
@@ -202,8 +251,14 @@ fn matches_specific_remove_operation(
 fn append_simple_operations(
     vocabulary: &crate::seed::OperationVocabulary,
     normalized: &str,
+    framing: &str,
     operations: &mut Vec<TextOperation>,
 ) {
+    // A count is named outright ("count words") or asked of the request's own
+    // framing: a seeded counting cue plus the unit noun ("how many words").
+    let counts = |canonical: &str| {
+        vocabulary.matches(canonical, normalized) || vocabulary.asks_count_of(canonical, framing)
+    };
     if vocabulary.matches("lowercase", normalized) {
         operations.push(TextOperation::Lowercase);
     } else if vocabulary.matches("uppercase", normalized) {
@@ -281,17 +336,29 @@ fn append_simple_operations(
     if vocabulary.matches("remove_punctuation", normalized) {
         operations.push(TextOperation::RemovePunctuation);
     }
-    if vocabulary.matches("count_unique_words", normalized) {
+    if counts("count_unique_words") {
         operations.push(TextOperation::CountUniqueWords);
-    } else if vocabulary.matches("count_words", normalized) {
+    } else if counts("count_words") {
         operations.push(TextOperation::CountWords);
     }
-    if vocabulary.matches("count_lines", normalized) {
+    if counts("count_lines") {
         operations.push(TextOperation::CountLines);
     }
-    if vocabulary.matches("count_characters", normalized) {
+    // A seeded character class ("vowels") counted names its members.
+    if let Some(members) = vocabulary.counted_character_class(framing) {
+        operations.push(TextOperation::CountCharacterClass { members });
+    } else if counts("count_characters") {
         operations.push(TextOperation::CountCharacters);
     }
+    // The chain runs in the order the request names its steps ("sort the words
+    // and reverse them" sorts first); a count reduces the text to a number, so
+    // it ends the chain wherever it is named.
+    operations.sort_by_key(|operation| {
+        (
+            operation.yields_count(),
+            vocabulary.position(operation.slug(), normalized),
+        )
+    });
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -311,6 +378,8 @@ enum TextOperation {
     CountWords,
     CountLines,
     CountCharacters,
+    CountCharacterClass { members: String },
+    FilterLinesByPrefix { prefix: String },
     DeduplicateLines,
     SortLines,
     SortWords,
@@ -334,6 +403,18 @@ enum TextOperation {
 }
 
 impl TextOperation {
+    const fn yields_count(&self) -> bool {
+        matches!(
+            self,
+            Self::CountOccurrences { .. }
+                | Self::CountUniqueWords
+                | Self::CountWords
+                | Self::CountLines
+                | Self::CountCharacters
+                | Self::CountCharacterClass { .. }
+        )
+    }
+
     const fn slug(&self) -> &'static str {
         match self {
             Self::Uppercase => "uppercase",
@@ -351,6 +432,8 @@ impl TextOperation {
             Self::CountWords => "count_words",
             Self::CountLines => "count_lines",
             Self::CountCharacters => "count_characters",
+            Self::CountCharacterClass { .. } => "count_character_class",
+            Self::FilterLinesByPrefix { .. } => "filter_lines_by_prefix",
             Self::DeduplicateLines => "deduplicate_lines",
             Self::SortLines => "sort_lines",
             Self::SortWords => "sort_words",
@@ -397,6 +480,20 @@ impl TextOperation {
             Self::CountWords => count_words(input).to_string(),
             Self::CountLines => input.lines().count().to_string(),
             Self::CountCharacters => input.chars().count().to_string(),
+            Self::CountCharacterClass { members } => input
+                .chars()
+                .filter(|character| {
+                    character
+                        .to_lowercase()
+                        .all(|lower| members.contains(lower))
+                })
+                .count()
+                .to_string(),
+            Self::FilterLinesByPrefix { prefix } => input
+                .lines()
+                .filter(|line| line.starts_with(prefix.as_str()))
+                .collect::<Vec<_>>()
+                .join("\n"),
             Self::DeduplicateLines => deduplicate_lines(input).join("\n"),
             Self::SortLines => {
                 let mut lines = input.lines().map(str::to_owned).collect::<Vec<_>>();
@@ -569,11 +666,8 @@ fn parse_replace_request(
     }
 
     if quoted.len() >= 3 && looks_like_input_first_replacement(prompt, &quoted) {
-        return Some((
-            quoted[0].text.clone(),
-            quoted[1].text.clone(),
-            quoted[2].text.clone(),
-        ));
+        let (from, to) = replacement_operands(prompt, &quoted[1], &quoted[2]);
+        return Some((quoted[0].text.clone(), from, to));
     }
 
     let input = quoted
@@ -581,7 +675,26 @@ fn parse_replace_request(
         .map(|segment| segment.text.clone())
         .or_else(|| text_after_colon(prompt))
         .or_else(|| last_assistant_text_artifact(history))?;
-    Some((input, quoted[0].text.clone(), quoted[1].text.clone()))
+    let (from, to) = replacement_operands(prompt, &quoted[0], &quoted[1]);
+    Some((input, from, to))
+}
+
+/// The two operands of a replacement as `(from, to)`.
+///
+/// The quoted target comes first, unless a cue that names its target after it
+/// sits between them ("cat" instead of "dog"). Twin of `replacementOperands`
+/// in `js/worker/formal_ai_worker_coding_idioms_and_text_manipulation.js`.
+fn replacement_operands(
+    prompt: &str,
+    first: &QuotedSegment,
+    second: &QuotedSegment,
+) -> (String, String) {
+    let gap = prompt.get(first.end..second.start).unwrap_or_default();
+    if text_cue_matches(REPLACEMENT_CUE_TABLE, gap, Some(TARGET_FOLLOWS_CUE)) {
+        (second.text.clone(), first.text.clone())
+    } else {
+        (first.text.clone(), second.text.clone())
+    }
 }
 
 fn parse_remove_request(prompt: &str, history: &[ConversationTurn]) -> Option<(String, String)> {
@@ -638,44 +751,47 @@ fn looks_like_input_first_replacement(prompt: &str, quoted: &[QuotedSegment]) ->
     let between_first_second = &prompt[quoted[0].end..quoted[1].start];
     let between_second_third = &prompt[quoted[1].end..quoted[2].start];
 
+    let cue =
+        |text: &str, reading: &str| text_cue_matches(REPLACEMENT_CUE_TABLE, text, Some(reading));
+
     input_context_before_first_quote(before_first)
-        || contains_replacement_keyword(between_first_second)
+        || cue(between_first_second, OPERANDS_IN_ORDER)
+        || cue(between_second_third, TARGET_FOLLOWS_CUE)
         || (contains_input_continuation(between_first_second)
             && contains_replacement_keyword(between_second_third))
 }
 
 fn input_context_before_first_quote(text: &str) -> bool {
-    if contains_replacement_keyword(text) {
-        return false;
-    }
-    let normalized = normalize_replacement_prompt(text);
-    let raw = text.to_lowercase();
-    normalized.ends_with("in")
-        || normalized.contains("text")
-        || normalized.contains("текст")
-        || raw.contains("पाठ")
-        || raw.contains("टेक्स्ट")
-        || raw.contains('在')
-        || raw.contains("文本")
-        || raw.contains("内容")
+    !contains_replacement_keyword(text) && text_cue_matches(INPUT_CONTEXT_CUE_TABLE, text, None)
 }
 
 fn contains_input_continuation(text: &str) -> bool {
-    let normalized = normalize_replacement_prompt(text);
-    let raw = text.to_lowercase();
-    normalized.contains("in")
-        || normalized.contains("text")
-        || normalized.contains("текст")
-        || raw.contains("में")
-        || raw.contains('中')
+    text_cue_matches(INPUT_CONTINUATION_CUE_TABLE, text, None)
 }
 
 fn contains_replacement_keyword(text: &str) -> bool {
+    text_cue_matches(REPLACEMENT_CUE_TABLE, text, None)
+}
+
+/// Does a row of the cue `table` occur in `text`, counting only rows whose
+/// value is `reading` when one is given?
+///
+/// Issue #918 (R918-2): the cues are the `text_*` tables of
+/// `data/seed/handler-rules.lino`. A row whose value is `ends_with`
+/// is read at the end of the normalized text, any other row anywhere in the
+/// lowercased text; a replacement cue's value is the order it quotes its
+/// operands in. Twin of `textCueMatches` in `js/worker/formal_ai_worker_coding_idioms_and_text_manipulation.js`.
+fn text_cue_matches(table: &str, text: &str, reading: Option<&str>) -> bool {
+    let raw = text.to_lowercase();
     let normalized = normalize_replacement_prompt(text);
-    normalized.contains("replace")
-        || normalized.contains("замен")
-        || normalized.contains("बदल")
-        || normalized.contains("替换")
+    handler_table_rows(table).iter().any(|(cue, value)| {
+        let read = if value == SUFFIX_READING {
+            normalized.ends_with(cue.as_str())
+        } else {
+            raw.contains(cue.as_str())
+        };
+        !cue.is_empty() && reading.is_none_or(|wanted| value == wanted) && read
+    })
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

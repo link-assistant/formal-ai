@@ -1,0 +1,9 @@
+view
+  id M-a0f212d135e3
+  lemma screenshot
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "to capture an image from a computer's display"
+    provenance (wordnet)

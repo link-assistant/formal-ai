@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "鑰匙"
+        },
+        "es": {
+          "language": "es",
+          "value": "llave"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "средство для открывания и закрывания замка"
+        },
+        "es": {
+          "language": "es",
+          "value": "instrumento que se usa para accionar cerraduras"
         }
       },
       "aliases": {
@@ -76,6 +84,12 @@
           {
             "language": "zh",
             "value": "房门钥匙"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Llaves"
           }
         ]
       }

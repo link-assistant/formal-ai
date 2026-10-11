@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_source_endpoints.js"
+  ceiling 36
+  rationale "Registry endpoint binding and declared missing-resource fallback moved from source walking; the existing source-walk ceiling stays fixed."

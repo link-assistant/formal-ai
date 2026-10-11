@@ -1,0 +1,226 @@
+[
+  {
+    "label": "original-effect",
+    "request": "Then create `agent-ladder-effects/node-2.1.2.1.1.lino` with these exact field lines: `node_path=2.1.2.1.1`, `node_depth=5`, `node_kind=leaf`, and `result=` followed by at least four words that state the change you made and that contain the exact text FORMAL_AI_HOW_SOURCE_CACHE_DIR.",
+    "target": "agent-ladder-effects/node-2.1.2.1.1.lino",
+    "actionStart": 5,
+    "actionEnd": 11,
+    "contentLead": [
+      55,
+      59
+    ],
+    "bindings": [
+      {
+        "index": 2,
+        "path": "agent-ladder-effects/node-2.1.2.1.1.lino",
+        "cue_start": 5,
+        "cue_end": 11,
+        "family": "action",
+        "cue_precedes": true
+      }
+    ],
+    "currentSourceExclusion": true
+  },
+  {
+    "label": "report-result-source-value",
+    "request": "Create alpha.dat with the content «source».",
+    "target": "alpha.dat",
+    "actionStart": 0,
+    "actionEnd": 6,
+    "contentLead": [
+      17,
+      33
+    ],
+    "bindings": [
+      {
+        "index": 1,
+        "path": "alpha.dat",
+        "cue_start": 0,
+        "cue_end": 6,
+        "family": "action",
+        "cue_precedes": true
+      }
+    ],
+    "currentSourceExclusion": true
+  },
+  {
+    "label": "report-result-symbol",
+    "request": "Create alpha.dat with result containing FORMAL_AI_HOW_SOURCE_CACHE_DIR.",
+    "target": "alpha.dat",
+    "actionStart": 0,
+    "actionEnd": 6,
+    "contentLead": [
+      17,
+      21
+    ],
+    "bindings": [
+      {
+        "index": 1,
+        "path": "alpha.dat",
+        "cue_start": 0,
+        "cue_end": 6,
+        "family": "action",
+        "cue_precedes": true
+      }
+    ],
+    "currentSourceExclusion": true
+  },
+  {
+    "label": "genuine-source-before",
+    "request": "Create a source module in alpha.dat.",
+    "target": "alpha.dat",
+    "actionStart": 0,
+    "actionEnd": 6,
+    "contentLead": null,
+    "bindings": [
+      {
+        "index": 5,
+        "path": "alpha.dat",
+        "cue_start": 23,
+        "cue_end": 25,
+        "family": "target",
+        "cue_precedes": true
+      }
+    ],
+    "currentSourceExclusion": true
+  },
+  {
+    "label": "genuine-source-after",
+    "request": "Create alpha.dat as a source module.",
+    "target": "alpha.dat",
+    "actionStart": 0,
+    "actionEnd": 6,
+    "contentLead": null,
+    "bindings": [
+      {
+        "index": 1,
+        "path": "alpha.dat",
+        "cue_start": 0,
+        "cue_end": 6,
+        "family": "action",
+        "cue_precedes": true
+      }
+    ],
+    "currentSourceExclusion": true
+  },
+  {
+    "label": "explicit-report-source-body",
+    "request": "Write a report to alpha.dat with the content «source module f(x)».",
+    "target": "alpha.dat",
+    "actionStart": 0,
+    "actionEnd": 5,
+    "contentLead": [
+      28,
+      44
+    ],
+    "bindings": [
+      {
+        "index": 4,
+        "path": "alpha.dat",
+        "cue_start": 15,
+        "cue_end": 17,
+        "family": "destination",
+        "cue_precedes": true
+      }
+    ],
+    "currentSourceExclusion": false
+  },
+  {
+    "label": "source-like-filename",
+    "request": "Create source.dat with the content «observation».",
+    "target": "source.dat",
+    "actionStart": 0,
+    "actionEnd": 6,
+    "contentLead": [
+      18,
+      34
+    ],
+    "bindings": [
+      {
+        "index": 1,
+        "path": "source.dat",
+        "cue_start": 0,
+        "cue_end": 6,
+        "family": "action",
+        "cue_precedes": true
+      }
+    ],
+    "currentSourceExclusion": true
+  },
+  {
+    "label": "spanish-postposed-source",
+    "request": "Crea alpha.dat como módulo de fuente.",
+    "target": "alpha.dat",
+    "actionStart": 0,
+    "actionEnd": 4,
+    "contentLead": null,
+    "bindings": [
+      {
+        "index": 1,
+        "path": "alpha.dat",
+        "cue_start": 0,
+        "cue_end": 4,
+        "family": "action",
+        "cue_precedes": true
+      }
+    ],
+    "currentSourceExclusion": true
+  },
+  {
+    "label": "russian-postposed-source",
+    "request": "Создай alpha.dat как модуль исходного кода.",
+    "target": "alpha.dat",
+    "actionStart": 0,
+    "actionEnd": 6,
+    "contentLead": null,
+    "bindings": [
+      {
+        "index": 1,
+        "path": "alpha.dat",
+        "cue_start": 0,
+        "cue_end": 6,
+        "family": "action",
+        "cue_precedes": true
+      }
+    ],
+    "currentSourceExclusion": true
+  },
+  {
+    "label": "hindi-postposed-action",
+    "request": "alpha.dat में स्रोत मॉड्यूल लिखें।",
+    "target": null,
+    "actionStart": null,
+    "actionEnd": null,
+    "contentLead": null,
+    "bindings": [
+      {
+        "index": 0,
+        "path": "alpha.dat",
+        "cue_start": 10,
+        "cue_end": 13,
+        "family": "destination",
+        "cue_precedes": false
+      }
+    ],
+    "currentSourceExclusion": true
+  },
+  {
+    "label": "chinese-postposed-source",
+    "request": "创建 alpha.dat 作为源码模块。",
+    "target": "alpha.dat",
+    "actionStart": 0,
+    "actionEnd": 2,
+    "contentLead": null,
+    "bindings": [
+      {
+        "index": 1,
+        "path": "alpha.dat",
+        "cue_start": 0,
+        "cue_end": 2,
+        "family": "action",
+        "cue_precedes": true
+      }
+    ],
+    "currentSourceExclusion": true
+  }
+]

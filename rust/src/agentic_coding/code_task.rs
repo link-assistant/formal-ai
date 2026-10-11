@@ -8,9 +8,13 @@
 //! command.
 
 use serde_json::json;
+mod identifier_domain;
+mod source_contract;
+mod target_guard;
+use super::final_result::FinalResult;
 
-use super::code_artifact::latest_result;
-use super::planner::{plan_one, tool_for, write_arguments, AgenticPlan, Capability};
+use super::code_artifact::{latest_result, result_for_command};
+use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
 use crate::normal_markov::unwrap_transport_quotes;
 use crate::protocol::ChatMessage;
 use crate::seed::{self, Slot};
@@ -32,6 +36,7 @@ pub(super) fn plan_generated_source_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let task = unwrap_transport_quotes(task);
     // Issue #1096: "In the file src/x.rs, replace "A" with "B" ... keep it valid
@@ -52,8 +57,8 @@ pub(super) fn plan_generated_source_step(
         .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
     let current_turn = &messages[latest_user + 1..];
 
-    if let Some(observed) = latest_result(current_turn, Capability::Run) {
-        let outcome = if observed == artifact.content {
+    if let Some(observed) = result_for_command(current_turn, &format!("cat {}", artifact.path)) {
+        let outcome = if super::tool_result::observed_bytes_match(&observed, &artifact.content) {
             "coding_workspace_effect_observed"
         } else {
             "coding_workspace_verification_failed"
@@ -77,10 +82,14 @@ pub(super) fn plan_generated_source_step(
             )?),
         });
     }
-    Some(plan_one(
-        write_tool,
-        write_arguments(&artifact.path, &artifact.content),
-    ))
+    target_guard::guarded_source_step(task, &artifact, current_turn, tool_names, result).or_else(
+        || {
+            Some(plan_one(
+                write_tool,
+                write_arguments(&artifact.path, &artifact.content),
+            ))
+        },
+    )
 }
 
 // These are seed-template placeholders, not Rust formatting arguments.
@@ -190,7 +199,7 @@ pub(super) fn rust_source_for_task(task: &str) -> Option<GeneratedSource> {
 
 pub(super) fn render_rust_template(intent: &str, substitutions: &[(&str, &str)]) -> Option<String> {
     Some(render_template(
-        seed::response_for(intent, "rust")?,
+        &seed::response_for(intent, "rust")?,
         substitutions,
     ))
 }
@@ -198,9 +207,9 @@ pub(super) fn render_rust_template(intent: &str, substitutions: &[(&str, &str)])
 // `{path}` is replaced in seed-owned text rather than interpolated by Rust.
 #[allow(clippy::literal_string_with_formatting_args)]
 pub(super) fn render_seeded_outcome(intent: &str, task: &str, path: &str) -> Option<String> {
-    let language = crate::language::detect(task).slug();
+    let language = super::tool_result::response_language(task);
     Some(render_template(
-        seed::localized_response(intent, language)?,
+        &seed::localized_response(intent, language)?,
         &[("{path}", path)],
     ))
 }
@@ -224,20 +233,111 @@ pub(super) fn render_seeded_change(
     path: &str,
     slots: &[(&str, &str)],
 ) -> Option<String> {
-    let language = crate::language::detect(task).slug();
+    let language = super::tool_result::response_language(task);
     let mut substitutions = vec![("{path}", path)];
     substitutions.extend_from_slice(slots);
     Some(render_template(
-        seed::localized_response(intent, language)?,
+        &seed::localized_response(intent, language)?,
         &substitutions,
     ))
 }
 
-fn render_template(mut template: String, substitutions: &[(&str, &str)]) -> String {
-    for (placeholder, value) in substitutions {
-        template = template.replace(placeholder, value);
+/// Render an explicitly typed list slot; mirrors `renderSeededListChange`.
+pub(super) fn render_seeded_list_change(
+    intent: &str,
+    task: &str,
+    path: &str,
+    slot: &str,
+    values: &[String],
+) -> Option<String> {
+    render_seeded_change_with_lists(intent, task, path, &[], &[(slot, values)])
+}
+
+/// Render scalar slots and explicitly typed lists without interpreting scalar text.
+#[allow(clippy::literal_string_with_formatting_args)]
+pub(super) fn render_seeded_change_with_lists(
+    intent: &str,
+    task: &str,
+    path: &str,
+    slots: &[(&str, &str)],
+    lists: &[(&str, &[String])],
+) -> Option<String> {
+    let language = super::tool_result::response_language(task);
+    let template = seed::localized_response(intent, language)?;
+    let mut substitutions = vec![("{path}", path)];
+    substitutions.extend_from_slice(slots);
+    let mut values: Vec<(&str, String, String)> = substitutions
+        .into_iter()
+        .filter(|(slot, _)| !lists.iter().any(|(listed, _)| listed == slot))
+        .map(|(slot, value)| (slot, value.to_owned(), code_span(value)))
+        .collect();
+    for (slot, items) in lists {
+        let rendered = items
+            .iter()
+            .map(|value| code_span_item(value))
+            .collect::<Vec<_>>()
+            .join(", ");
+        values.push((slot, rendered.clone(), rendered));
     }
-    template
+    Some(render_template_values(&template, &values))
+}
+
+/// A placeholder the seed sentence wraps in backticks becomes a `CommonMark`
+/// code span: a value holding a backtick run gets a longer fence, padded when
+/// it starts or ends with a backtick, so the inserted text reads back verbatim.
+fn code_span_item(value: &str) -> String {
+    let longest = value
+        .split(|character| character != '`')
+        .map(str::len)
+        .max()
+        .unwrap_or(0);
+    if longest == 0 {
+        return format!("`{value}`");
+    }
+    let fence = "`".repeat(longest + 1);
+    let pad = if value.starts_with('`') || value.ends_with('`') {
+        " "
+    } else {
+        ""
+    };
+    format!("{fence}{pad}{value}{pad}{fence}")
+}
+
+fn code_span(value: &str) -> String {
+    code_span_item(value)
+}
+
+fn render_template(template: &str, substitutions: &[(&str, &str)]) -> String {
+    let values: Vec<(&str, String, String)> = substitutions
+        .iter()
+        .map(|(slot, value)| (*slot, (*value).to_owned(), code_span(value)))
+        .collect();
+    render_template_values(template, &values)
+}
+
+/// Substitute only seed-owned slots; inserted literal values are never templates.
+fn render_template_values(mut template: &str, values: &[(&str, String, String)]) -> String {
+    let mut rendered = String::new();
+    while !template.is_empty() {
+        let found = values.iter().find_map(|(slot, plain, quoted)| {
+            let fenced = format!("`{slot}`");
+            if template.starts_with(&fenced) {
+                return Some((fenced.len(), quoted.as_str()));
+            }
+            template
+                .starts_with(*slot)
+                .then_some((slot.len(), plain.as_str()))
+        });
+        if let Some((length, value)) = found {
+            rendered.push_str(value);
+            template = &template[length..];
+        } else {
+            let character = template.chars().next().expect("nonempty template");
+            rendered.push(character);
+            template = &template[character.len_utf8()..];
+        }
+    }
+    rendered
 }
 
 fn rust_path(task: &str) -> Option<String> {
@@ -260,12 +360,32 @@ const fn is_path_character(character: char) -> bool {
 }
 
 fn requested_identifier(task: &str, path: &str, kind: RustItemKind) -> Option<String> {
-    let normalized = task.to_lowercase();
+    let normalized = task.replacen(path, " ", 1).to_lowercase();
     if kind != RustItemKind::Constant
         && let Some(name) = slot_identifier(&normalized, seed::ROLE_CODING_NAME_SLOT)
-            && valid_identifier(&name) {
-                return Some(name);
+        && valid_identifier(&name)
+    {
+        return Some(name);
+    }
+    if kind == RustItemKind::Function
+        && let Some(meaning) = seed::lexicon().first_role_match("program_kind", &normalized)
+    {
+        for surface in meaning.words() {
+            let pattern = format!(
+                r"(?:^|[^A-Za-z_0-9]){}[ \u0009-\u000D]+([A-Za-z_][A-Za-z_0-9]*)",
+                regex::escape(surface)
+            );
+            let expression = regex::RegexBuilder::new(&pattern)
+                .case_insensitive(true)
+                .build()
+                .ok()?;
+            if let Some(captured) = expression.captures(task)
+                && valid_identifier(&captured[1])
+            {
+                return Some(captured[1].to_owned());
             }
+        }
+    }
     let without_path = task.replacen(path, "", 1);
     let mut candidates = identifier_tokens(&without_path)
         .filter(|candidate| valid_identifier(candidate))
@@ -322,16 +442,7 @@ fn identifier_tokens(text: &str) -> impl Iterator<Item = &str> {
 }
 
 fn valid_identifier(identifier: &str) -> bool {
-    let mut characters = identifier.chars();
-    let Some(first) = characters.next() else {
-        return false;
-    };
-    (first.is_ascii_alphabetic() || first == '_')
-        && characters.all(|character| character.is_ascii_alphanumeric() || character == '_')
-        && !seed::lexicon()
-            .words_for_role(seed::ROLE_IDENTIFIER_RESERVED_WORD)
-            .iter()
-            .any(|reserved| reserved == identifier)
+    identifier_domain::rust_identifier_is_valid(identifier)
 }
 
 fn numeric_literals(text: &str) -> Vec<String> {
@@ -341,9 +452,9 @@ fn numeric_literals(text: &str) -> Vec<String> {
     while index < chars.len() {
         let (start, character) = chars[index];
         if !character.is_ascii_digit()
-            || index
-                .checked_sub(1)
-                .is_some_and(|prior| chars[prior].1.is_ascii_alphabetic())
+            || index.checked_sub(1).is_some_and(|prior| {
+                chars[prior].1.is_ascii_alphanumeric() || chars[prior].1 == '_'
+            })
         {
             index += 1;
             continue;
@@ -354,18 +465,131 @@ fn numeric_literals(text: &str) -> Vec<String> {
         {
             end_index += 1;
         }
-        if end_index < chars.len() && chars[end_index].1.is_ascii_alphabetic() {
+        if end_index < chars.len()
+            && (chars[end_index].1.is_ascii_alphanumeric() || chars[end_index].1 == '_')
+        {
             index = end_index + 1;
             continue;
         }
         let end = chars
             .get(end_index)
             .map_or(text.len(), |(offset, _)| *offset);
-        let value = text[start..end].trim_end_matches('.');
+        let signed_start = if index > 0
+            && chars[index - 1].1 == '-'
+            && (index < 2
+                || matches!(
+                    chars[index - 2].1,
+                    ' ' | '\t' | '\n' | '\r' | '\u{000b}' | '\u{000c}'
+                )) {
+            chars[index - 1].0
+        } else {
+            start
+        };
+        let value = text[signed_start..end].trim_end_matches('.');
         if !value.is_empty() {
             values.push(value.to_owned());
         }
         index = end_index;
     }
     values
+}
+
+pub(super) fn plan_verified_generated_source_step(
+    raw_task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    result: &mut Option<FinalResult>,
+) -> Option<AgenticPlan> {
+    let task = unwrap_transport_quotes(raw_task);
+    if super::write_request::compose_edit_request(task).is_some() {
+        return None;
+    }
+    if super::general_planner::compose_general_change_plan(task).is_some_and(|plan| {
+        plan.mode == super::general_planner::GeneralPlanMode::LiteralFile
+            && super::general_planner::owns_literal_body(task, &plan.content)
+    }) {
+        return None;
+    }
+    if let Some(compound) =
+        source_contract::source_registration_contract(task, rust_source_for_task)
+    {
+        return if compound["wholeRequestConsumed"].as_bool() == Some(true) {
+            None
+        } else {
+            Some(super::final_result::record(
+                AgenticPlan::Final(render_seeded_outcome(
+                    "coding-source-authoring-contract-missing",
+                    task,
+                    "",
+                )?),
+                super::final_result::FinalDisposition::Gap,
+                "source-registration-goal-coverage-unbound",
+                result,
+            ))
+        };
+    }
+    let Some(artifact) = rust_source_for_task(task) else {
+        let literal = super::general_planner::compose_general_change_plan(task);
+        let semantic = literal.as_ref().is_some_and(|plan| {
+            let body = plan.content.to_lowercase();
+            plan.mode == super::general_planner::GeneralPlanMode::LiteralFile
+                && crate::seed::lexicon()
+                    .first_role_match("program_language_alias", &body)
+                    .is_some_and(|meaning| meaning.slug == "program_language_rust")
+                && crate::seed::lexicon()
+                    .first_role_match("program_kind", &body)
+                    .is_some_and(|meaning| meaning.slug == "function")
+        });
+        if !semantic {
+            return None;
+        }
+        return Some(super::final_result::record(
+            AgenticPlan::Final(render_seeded_outcome(
+                "coding-source-authoring-contract-missing",
+                task,
+                "",
+            )?),
+            super::final_result::FinalDisposition::Gap,
+            "source-description-goal-coverage-unbound",
+            result,
+        ));
+    };
+    if !source_contract::source_whitespace_supported(raw_task)
+        || source_contract::source_description_contract(task, &artifact).is_none()
+    {
+        return Some(super::final_result::record(
+            AgenticPlan::Final(render_seeded_outcome(
+                "coding-source-authoring-contract-missing",
+                task,
+                "",
+            )?),
+            super::final_result::FinalDisposition::Gap,
+            "source-description-goal-coverage-unbound",
+            result,
+        ));
+    }
+    plan_generated_source_step(task, messages, tool_names, result)
+}
+
+pub(super) fn verified_source_description(raw_task: &str) -> Option<serde_json::Value> {
+    let task = unwrap_transport_quotes(raw_task);
+    if super::write_request::compose_edit_request(task).is_some() {
+        return None;
+    }
+    if super::general_planner::compose_general_change_plan(task).is_some_and(|plan| {
+        plan.mode == super::general_planner::GeneralPlanMode::LiteralFile
+            && super::general_planner::owns_literal_body(task, &plan.content)
+    }) {
+        return None;
+    }
+    if let Some(compound) =
+        source_contract::source_registration_contract(task, rust_source_for_task)
+    {
+        return Some(compound);
+    }
+    if !source_contract::source_whitespace_supported(raw_task) {
+        return None;
+    }
+    let artifact = rust_source_for_task(task)?;
+    source_contract::source_description_contract(task, &artifact)
 }

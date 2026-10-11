@@ -1,0 +1,25 @@
+language en
+lemma none
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a canonical hour that is the ninth hour of the day counting from sunrise"
+    id oewn-15253583-n
+    partOfSpeech n
+  entry
+    definition "a service in the Roman Catholic Church formerly read or chanted at 3 PM (the ninth hour counting from sunrise) but now somewhat earlier"
+    id oewn-01036417-n
+    partOfSpeech n
+  entry
+    definition "not at all or in no way"
+    examples ("seemed none too pleased with his dinner" "shirt looked none the worse for having been slept in" "none too prosperous" "the passage is none too clear")
+    id oewn-00025041-r
+    partOfSpeech r
+  entry
+    definition "not any; entity, negative pronoun"
+    examples ("thou shalt have none other gods before me")
+    id oewn-02276797-s
+    partOfSpeech s
+source "oewn:2024"

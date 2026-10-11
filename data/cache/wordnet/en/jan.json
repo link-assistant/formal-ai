@@ -1,0 +1,19 @@
+{
+  "lemma": "jan",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-15234841-n",
+      "partOfSpeech": "n",
+      "definition": "the first month of the year; begins 10 days after the winter solstice",
+      "synonyms": [
+        "January"
+      ]
+    }
+  ]
+}

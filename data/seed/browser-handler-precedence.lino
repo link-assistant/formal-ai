@@ -5,7 +5,11 @@
 # arguments and result guards here makes one Links Notation document the
 # authority for both membership and first-match-wins order.  Child node names
 # are executable symbols rather than natural-language meaning references.
-browser_handler_precedence
+browser-handler-precedence
+  handler tryAgenticContinuation
+    argument_prompt
+    argument_normalized
+    argument_history
   handler tryExactMemoryQuery
     argument_prompt
     argument_memoryEvents
@@ -31,6 +35,24 @@ browser_handler_precedence
   handler tryHistorical
     argument_prompt
     argument_history
+  handler tryLegalityWarning
+    argument_prompt
+    argument_normalized
+  handler tryPageQueryText
+    argument_prompt
+  handler tryFormalizationRequest
+    argument_prompt
+    argument_normalized
+  handler tryProductSearch
+    argument_prompt
+    argument_normalized
+  handler requirement_listing
+    rule-set
+    argument_prompt
+    argument_normalized
+    argument_history
+  handler tryLearnFromSource
+    argument_prompt
   handler tryResearchComparisonTable
     argument_prompt
     argument_normalized
@@ -39,10 +61,33 @@ browser_handler_precedence
     argument_prompt
     argument_normalized
     argument_history
+  handler trySummarizationText
+    argument_prompt
+    argument_normalized
+  handler tryPromptTextQuestion
+    argument_prompt
+    argument_normalized
+  handler tryFactComparison
+    argument_prompt
+    argument_normalized
+  handler tryBrainstormComposition
+    argument_prompt
+    argument_normalized
   handler tryBrainstormingRequest
     argument_prompt
     argument_normalized
+  handler tryAdviceRequest
+    argument_prompt
+    argument_normalized
   handler tryRoleplayRequest
+    argument_prompt
+    argument_normalized
+  handler tryCreativeWritingRequest
+    argument_prompt
+    argument_normalized
+  handler tryTextRewrite
+    argument_prompt
+  handler tryPlanningRequest
     argument_prompt
     argument_normalized
   handler tryKupiSlona
@@ -56,8 +101,14 @@ browser_handler_precedence
     argument_prompt
     argument_normalized
     argument_language
+  handler tryTestGeneration
+    argument_prompt
   handler tryVerifiableTask
     argument_prompt
+  handler tryUnitConversion
+    argument_prompt
+    argument_normalized
+    argument_language
   handler tryIncompatibleUnits
     argument_prompt
     argument_normalized
@@ -77,9 +128,36 @@ browser_handler_precedence
     argument_prompt
     argument_normalized
     argument_history
+  handler tryWordProblem
+    argument_prompt
+    argument_normalized
+    argument_language
   handler tryNumericList
     argument_prompt
     argument_history
+  handler tryShellCommandTransform
+    argument_prompt
+    argument_history
+  handler tryCodeDebugging
+    argument_prompt
+  handler tryRegexSynthesis
+    argument_prompt
+  handler trySqlSynthesis
+    argument_prompt
+  handler tryShellCommandCompose
+    argument_prompt
+  handler tryNumberConstraintReasoning
+    argument_prompt
+    argument_normalized
+    argument_language
+  handler tryCodeExplanation
+    argument_prompt
+  handler tryCodeReview
+    argument_prompt
+  handler tryCodeRefactoring
+    argument_prompt
+  handler tryFormatConversion
+    argument_prompt
   handler tryProgramSynthesis
     argument_prompt
     argument_normalized
@@ -89,7 +167,13 @@ browser_handler_precedence
     argument_history
   handler tryArithmetic
     argument_prompt
+  handler tryStatistics
+    argument_prompt
+    argument_normalized
+    argument_language
   handler tryJavaScriptExecution
+    argument_prompt
+  handler tryExecutionFailure
     argument_prompt
   handler tryInstallationConversion
     argument_prompt
@@ -99,13 +183,46 @@ browser_handler_precedence
     result_intent_write_program
   handler tryDefinitionMerge
     context_binding_definitionMerge
+  handler tryTrizResolution
+    argument_prompt
+    argument_normalized
   handler trySoftwareProjectFollowup
     argument_prompt
     argument_history
   handler tryConceptLookup
     argument_prompt
+  handler tryMetaExplanation
+    argument_prompt
+  handler tryNetworkSnapshot
+    argument_prompt
+  handler tryAlgorithm
+    argument_prompt
   handler tryWriteProgram
     context_binding_writeProgram
+  handler tryWriteScript
+    argument_prompt
+    argument_responseLanguage
+  handler tryDocumentGenerationPlan
+    argument_prompt
   handler trySoftwareProjectRequest
     argument_prompt
     argument_history
+  handler trySourceRefresh
+    argument_prompt
+  handler trySourceConflict
+    argument_prompt
+  handler tryClarification
+    argument_prompt
+    argument_normalized
+    argument_history
+  handler tryIllFormed
+    argument_prompt
+    argument_normalized
+  handler tryPhysicalActionQuestion
+    argument_prompt
+    argument_normalized
+  handler tryShellRefusal
+    argument_prompt
+  handler tryOpinionQuestion
+    argument_prompt
+    argument_normalized

@@ -1,0 +1,13 @@
+self_ast_census
+  target src/cli_repository_history.rs
+  language rust
+  fidelity signature
+  byte_len 2801
+  line_count 79
+  content_id source_module_a2c53e02661bf9c5
+  symbol_count 4
+  symbols
+    enum RepositoryHistoryAction 14 27
+    struct RepositoryHistoryOptions 30 43
+    function memory_dir 46 52
+    function run_repository_history 55 79

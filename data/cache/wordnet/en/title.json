@@ -1,0 +1,137 @@
+{
+  "lemma": "title",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06357363-n",
+      "partOfSpeech": "n",
+      "definition": "a heading that names a statute or legislative bill; may give a brief summary of the matters it deals with",
+      "examples": [
+        "Title 8 provided federal help for schools"
+      ],
+      "synonyms": [
+        "statute title",
+        "rubric"
+      ]
+    },
+    {
+      "id": "oewn-06354890-n",
+      "partOfSpeech": "n",
+      "definition": "the name of a work of art or literary composition etc.",
+      "examples": [
+        "he looked for books with the word ‘jazz’ in the title",
+        "he refused to give titles to his paintings",
+        "I can never remember movie titles"
+      ]
+    },
+    {
+      "id": "oewn-06357831-n",
+      "partOfSpeech": "n",
+      "definition": "a general or descriptive heading for a section of a written work",
+      "examples": [
+        "the novel had chapter titles"
+      ]
+    },
+    {
+      "id": "oewn-13972130-n",
+      "partOfSpeech": "n",
+      "definition": "the status of being a champion",
+      "examples": [
+        "he held the title for two years"
+      ],
+      "synonyms": [
+        "championship"
+      ]
+    },
+    {
+      "id": "oewn-06557128-n",
+      "partOfSpeech": "n",
+      "definition": "a legal document signed and sealed and delivered to effect a transfer of property and to show the legal right to possess it",
+      "examples": [
+        "he signed the deed",
+        "he kept the title to his car in the glove compartment"
+      ],
+      "synonyms": [
+        "deed",
+        "deed of conveyance"
+      ]
+    },
+    {
+      "id": "oewn-06350786-n",
+      "partOfSpeech": "n",
+      "definition": "an identifying appellation signifying status or function: e.g. ‘Mr.’ or ‘General’",
+      "examples": [
+        "the professor didn't like his friends to use his formal title"
+      ],
+      "synonyms": [
+        "title of respect",
+        "form of address"
+      ]
+    },
+    {
+      "id": "oewn-05188726-n",
+      "partOfSpeech": "n",
+      "definition": "an established or recognized right",
+      "examples": [
+        "a strong legal claim to the property",
+        "he had no documents confirming his title to his father's estate",
+        "he staked his claim"
+      ],
+      "synonyms": [
+        "claim"
+      ]
+    },
+    {
+      "id": "oewn-06357590-n",
+      "partOfSpeech": "n",
+      "definition": "(usually plural) written material introduced into a movie or TV show to give credits or represent dialogue or explain an action",
+      "examples": [
+        "the titles go by faster than I can read"
+      ]
+    },
+    {
+      "id": "oewn-06354487-n",
+      "partOfSpeech": "n",
+      "definition": "an appellation signifying nobility",
+      "examples": [
+        "‘your majesty’ is the appropriate title to use in addressing a king"
+      ]
+    },
+    {
+      "id": "oewn-05183431-n",
+      "partOfSpeech": "n",
+      "definition": "an informal right to something",
+      "examples": [
+        "his claim on her attentions",
+        "his title to fame"
+      ],
+      "synonyms": [
+        "claim"
+      ]
+    },
+    {
+      "id": "oewn-01031533-v",
+      "partOfSpeech": "v",
+      "definition": "give a title to",
+      "synonyms": [
+        "entitle"
+      ]
+    },
+    {
+      "id": "oewn-01030475-v",
+      "partOfSpeech": "v",
+      "definition": "designate by an identifying term",
+      "examples": [
+        "They styled their nation ‘The Confederate States’"
+      ],
+      "synonyms": [
+        "style"
+      ]
+    }
+  ]
+}

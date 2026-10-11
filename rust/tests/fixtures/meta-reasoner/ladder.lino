@@ -1,0 +1,59 @@
+# The task ladder the meta reasoner climbs (2026-10-06), real requests put to
+# Formal AI itself, smallest first. Every rung is answered by derivation —
+# grounding the request's words in the instruction set's documentation and
+# composing typed operations — never by a handler written for it. A rung is
+# added when the next bigger request is made to work; `steps` is the program
+# the derivation must reach. Walked by rust/tests/web/meta-reasoner.test.mjs.
+# A rung that `awaits` a word grounds it through that word's dictionary
+# capture; it is walked once a real capture of the word is committed under
+# captures (or cached under data/cache/wiktionary), never a hand-written one.
+ladder
+  rung "'a b c' -> 3"
+    steps "split_words count_items"
+  rung "[1, 2, 3] -> [3, 6, 9]"
+    steps "each(multiply_by)"
+  rung "[\"a\", \"bbbb\", \"cc\"] -> [\"bbbb\"]"
+    steps "keep_greater(text_length)"
+  rung "write a function that keeps only the even numbers"
+    steps "keep_even"
+  rung "write a function that returns the largest number in a list"
+    steps "maximum_number"
+  rung "Write a function that counts the words of a text"
+    steps "split_words count_items"
+  rung "write a function that reverses each word"
+    steps "split_words each(reverse_text) join_words"
+  rung "write a function that removes duplicate words from a text"
+    steps "split_words unique_items join_words"
+  rung "Write a function that sorts the lines of a text"
+    steps "split_lines sort_list"
+  rung "write a function that counts the lines longer than 80 characters"
+    steps "split_lines keep_greater(split_characters∘count_items) count_items"
+  rung "write a function that reverses the order of the words in a text"
+    steps "split_words reverse_list join_words"
+  rung "write a function that keeps the lines longer than 3 characters and sorts them"
+    steps "split_lines keep_greater(split_characters∘count_items) sort_list"
+  rung "write a function that turns a text into upper case"
+    steps "upper_case"
+  rung "write a function that lists the files of a folder"
+    steps "list_files"
+  rung "Write a Node.js script that prints every file in a folder with more than 1000 lines"
+    steps "list_files keep_greater(read_file∘split_lines∘count_items) print_lines"
+  rung "write a function that deduplicates the lines of a text"
+    steps "split_lines unique_items"
+  rung "write a script that converts every file in docs/notes to upper case"
+    steps "list_files each(rewrite(upper_case))"
+  rung "Write a script that fails when any file in js/worker has more than 1000 lines"
+    steps "list_files keep_greater(read_file∘split_lines∘count_items) fail_when_any"
+  rung "Write a script that fails when any file in data has more than 1500 lines"
+    steps "list_files keep_greater(read_file∘split_lines∘count_items) fail_when_any"
+  rung "write a script that prints the files in data/seed that contain a colon"
+    steps "list_files keep_containing(read_file) print_lines"
+    awaits colon
+  rung "replace every colon with a dash"
+    steps "replace_text"
+    awaits colon
+  rung "remove duplicate lines and sort them"
+    steps "split_lines unique_items sort_list"
+  rung "write a function that returns the longest word"
+    steps "split_words maximum_by(text_length)"
+    awaits long

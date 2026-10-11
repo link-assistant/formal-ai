@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_agent_workspace.js"
+  ceiling 84
+  rationale "Bounded browser agent actions use a fresh isolated in-memory filesystem and publish actual mutation and command outcomes. Initial measured ceiling for a new module; existing ceilings remain unchanged (R1188-U29, 2026-10-10)."

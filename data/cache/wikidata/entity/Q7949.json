@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "真理"
+        },
+        "es": {
+          "language": "es",
+          "value": "verdad"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "符合事實或現實的東西"
+        },
+        "es": {
+          "language": "es",
+          "value": "conformidad entre lo que se manifiesta y la realidad"
         }
       },
       "aliases": {

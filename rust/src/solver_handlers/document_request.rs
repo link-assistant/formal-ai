@@ -7,9 +7,10 @@
 //! and returns the formal decomposition the universal algorithm produces: scope
 //! the deliverable, enumerate the items, classify them by the stated criteria,
 //! assemble the structure, then export it to the requested format. The plan is
-//! localized to the prompt language so a Russian PDF request gets a Russian plan.
-
-use std::fmt::Write as _;
+//! the seeded `document_generation_plan` response in the prompt language, and
+//! the cue, format and marker vocabularies are the `document_*` tables of
+//! `data/seed/handler-rules.lino` (issue #918), so no word of any language and
+//! no sentence of the answer lives here.
 
 use crate::document_formats::{
     DOCUMENT_FORMAT_ENGINE, DocumentConversion, convert_document_format,
@@ -19,36 +20,10 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::normal_markov::quoted_segments;
+use crate::rule_interpreter::{handler_table_row, handler_table_rows, handler_table_value};
+use crate::seed;
 use crate::solver_handlers::finalize_simple;
 use crate::solver_helpers::is_agent_request;
-
-/// The document container a prompt asked for. The variants double as the
-/// language-neutral format label shown in the plan; [`DocFormat::Generic`] is the
-/// fallback for a bare "document"/"report" with no explicit container format.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum DocFormat {
-    Pdf,
-    Word,
-    Spreadsheet,
-    Presentation,
-    Ebook,
-    Generic,
-}
-
-impl DocFormat {
-    /// The language-neutral format token appended to the plan's opening line, or
-    /// `None` for [`DocFormat::Generic`] (which reads as a bare "document").
-    const fn label(self) -> Option<&'static str> {
-        match self {
-            Self::Pdf => Some("PDF"),
-            Self::Word => Some("DOCX"),
-            Self::Spreadsheet => Some("CSV/XLSX"),
-            Self::Presentation => Some("PPTX"),
-            Self::Ebook => Some("EPUB"),
-            Self::Generic => None,
-        }
-    }
-}
 
 /// Recognize a document-generation request and answer with a formal plan.
 ///
@@ -76,16 +51,11 @@ pub fn try_document_request(
     if !mentions_authoring_action(&lowercased) {
         return None;
     }
-    let format = detect_document_format(&lowercased)?;
-
-    if let Some(label) = format.label() {
-        log.append("document_request:format", label.to_owned());
-    } else {
-        log.append("document_request:format", "document".to_owned());
-    }
+    let (label, explicit) = detect_document_format(&lowercased)?;
+    log.append("document_request:format", label.to_owned());
 
     let language = detect_language(prompt).slug();
-    let body = render_document_plan(language, format);
+    let body = render_document_plan(language, explicit.then_some(label));
     Some(finalize_simple(
         prompt,
         log,
@@ -155,28 +125,7 @@ pub(super) fn looks_like_document_conversion_request(prompt: &str, lowercased: &
 }
 
 fn mentions_conversion_action(lowercased: &str) -> bool {
-    const ACTIONS: &[&str] = &[
-        "convert",
-        "translate",
-        "transform",
-        "render",
-        "export",
-        "turn into",
-        "turn this into",
-        "change into",
-        "конверт",
-        "преобраз",
-        "переведи",
-        "перевести",
-        "экспорт",
-        "बदल",
-        "रूपांतर",
-        "转换",
-        "转成",
-        "变成",
-        "导出",
-    ];
-    ACTIONS.iter().any(|needle| lowercased.contains(needle))
+    handler_table_row("document_conversion_action", lowercased).is_some()
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -185,27 +134,18 @@ struct FormatMention {
     format: &'static str,
 }
 
+/// Every mention of a document format the `document_format_alias` table
+/// names, in the order the request writes them.
 fn format_mentions(lowercased: &str) -> Vec<FormatMention> {
-    const ALIASES: &[(&str, &str)] = &[
-        ("plain text", "txt"),
-        ("plaintext", "txt"),
-        ("txt", "txt"),
-        ("markdown", "Markdown"),
-        ("md", "Markdown"),
-        ("html", "HTML"),
-        ("htm", "HTML"),
-        ("pdf", "PDF"),
-        ("docx", "DOCX"),
-        ("word document", "DOCX"),
-        ("wordprocessingml", "DOCX"),
-    ];
-
     let mut mentions = Vec::new();
-    for (alias, format) in ALIASES {
+    for (alias, format) in handler_table_rows("document_format_alias") {
         mentions.extend(
             find_alias_positions(lowercased, alias)
                 .into_iter()
-                .map(|index| FormatMention { index, format }),
+                .map(|index| FormatMention {
+                    index,
+                    format: format.as_str(),
+                }),
         );
     }
     mentions.sort_by_key(|mention| mention.index);
@@ -219,11 +159,15 @@ fn conversion_formats<'a>(
 ) -> Option<(&'a str, &'a str)> {
     let explicit_source = mentions
         .iter()
-        .find(|mention| has_direction_marker_before(lowercased, mention.index, SOURCE_MARKERS))
+        .find(|mention| {
+            has_direction_marker_before(lowercased, mention.index, "document_source_marker")
+        })
         .map(|mention| mention.format);
     let explicit_target = mentions
         .iter()
-        .find(|mention| has_direction_marker_before(lowercased, mention.index, TARGET_MARKERS))
+        .find(|mention| {
+            has_direction_marker_before(lowercased, mention.index, "document_target_marker")
+        })
         .map(|mention| mention.format);
 
     match (explicit_source, explicit_target) {
@@ -248,27 +192,13 @@ fn conversion_formats<'a>(
     }
 }
 
-const SOURCE_MARKERS: &[&str] = &["from ", "source ", "из ", "с ", "от ", "से ", "从"];
-
-const TARGET_MARKERS: &[&str] = &[
-    "to ",
-    "into ",
-    "as ",
-    "target ",
-    "в ",
-    "на ",
-    "में ",
-    "को ",
-    "为",
-    "成",
-    "到",
-];
-
-fn has_direction_marker_before(haystack: &str, index: usize, markers: &[&str]) -> bool {
+/// Whether a direction marker of the `markers` table (`from`, `into`, `из`, `为` …)
+/// ends the text before `index`.
+fn has_direction_marker_before(haystack: &str, index: usize, markers: &str) -> bool {
     let before = haystack[..index].trim_end();
-    markers
+    handler_table_rows(markers)
         .iter()
-        .any(|marker| before.ends_with(marker.trim_end()))
+        .any(|(marker, _)| before.ends_with(marker.trim_end()))
 }
 
 fn find_alias_positions(haystack: &str, alias: &str) -> Vec<usize> {
@@ -323,323 +253,105 @@ fn non_empty(value: String) -> Option<String> {
     (!value.trim().is_empty()).then_some(value)
 }
 
+/// The seeded `document_format_conversion*` lines over the converted output.
 fn render_conversion_answer(conversion: &DocumentConversion) -> String {
-    let mut body = String::new();
-    let _ = writeln!(
-        body,
-        "Document format conversion via link-foundation/meta-language ({DOCUMENT_FORMAT_ENGINE})."
+    let line = |intent: &str, slots: &[(&str, &str)]| {
+        seed::render_response(intent, "en", slots).map_or_else(String::new, |text| text + "\n")
+    };
+    let formats = supported_document_formats().join(", ");
+    let mut body = line(
+        "document_format_conversion",
+        &[
+            ("engine", DOCUMENT_FORMAT_ENGINE),
+            ("source", conversion.source_format.as_str()),
+            ("target", conversion.target_format.as_str()),
+            ("formats", formats.as_str()),
+        ],
     );
-    let _ = writeln!(
-        body,
-        "Source: {}; target: {}.",
-        conversion.source_format, conversion.target_format
-    );
-    let _ = writeln!(
-        body,
-        "Supported document formats: {}.",
-        supported_document_formats().join(", ")
-    );
-    if !conversion.target_capabilities.native_concepts.is_empty() {
-        let _ = writeln!(
-            body,
-            "Native target concepts: {}.",
-            conversion.target_capabilities.native_concepts.join(", ")
-        );
+    let capabilities = &conversion.target_capabilities;
+    if !capabilities.native_concepts.is_empty() {
+        let concepts = capabilities.native_concepts.join(", ");
+        body.push_str(&line(
+            "document_format_conversion_native_concepts",
+            &[("concepts", concepts.as_str())],
+        ));
     }
-    if !conversion.target_capabilities.fallbacks.is_empty() {
-        let _ = writeln!(body, "Documented target fallbacks:");
-        for (concept, fallback) in &conversion.target_capabilities.fallbacks {
-            let _ = writeln!(body, "- {concept} -> {fallback}");
+    if !capabilities.fallbacks.is_empty() {
+        body.push_str(&line("document_format_conversion_fallbacks", &[]));
+        for (concept, fallback) in &capabilities.fallbacks {
+            body.push_str(&line(
+                "document_format_conversion_fallback",
+                &[
+                    ("concept", concept.as_str()),
+                    ("fallback", fallback.as_str()),
+                ],
+            ));
         }
     }
     if let Some(package_bytes) = conversion.package_bytes.as_ref() {
-        let _ = writeln!(
-            body,
-            "Package layer: {} bytes in the DOCX OPC stored-entry profile.",
-            package_bytes.len()
-        );
+        let bytes = package_bytes.len().to_string();
+        body.push_str(&line(
+            "document_format_conversion_package",
+            &[("bytes", bytes.as_str())],
+        ));
     }
-
-    let fence = output_fence(&conversion.target_format);
-    let _ = write!(body, "\n```{fence}\n{}\n```", conversion.output.trim_end());
+    let fence =
+        handler_table_value("document_output_fence", &conversion.target_format).unwrap_or_default();
+    body.push_str(&["\n```", fence, "\n", conversion.output.trim_end(), "\n```"].concat());
     body
 }
 
-fn output_fence(format: &str) -> &'static str {
-    match format {
-        "HTML" => "html",
-        "Markdown" => "markdown",
-        "PDF" => "pdf",
-        "DOCX" => "xml",
-        "txt" => "text",
-        _ => "",
-    }
-}
-
-/// True when the prompt names a software artifact, in which case the request is a
-/// build task for the software-project handler rather than a document task.
+/// True when the prompt names a software artifact (the `document_software_artifact`
+/// table), in which case the request is a build task for the software-project
+/// handler rather than a document task.
 fn mentions_software_artifact(lowercased: &str) -> bool {
-    const SOFTWARE: &[&str] = &[
-        // English
-        "app",
-        "application",
-        "extension",
-        "plugin",
-        "addon",
-        "add-on",
-        "bot",
-        "program",
-        "script",
-        "website",
-        "web site",
-        "web app",
-        "webapp",
-        "game",
-        "api",
-        "library",
-        "framework",
-        "tool",
-        "cli",
-        "daemon",
-        "server",
-        // Russian (stems tolerate inflection)
-        "приложени",
-        "программ",
-        "скрипт",
-        "расширени",
-        "плагин",
-        "бот",
-        "сайт",
-        "веб-сайт",
-        "игр",
-        "утилит",
-        "сервер",
-        "библиотек",
-    ];
-    SOFTWARE.iter().any(|needle| lowercased.contains(needle))
+    handler_table_row("document_software_artifact", lowercased).is_some()
 }
 
-/// True when the prompt carries an explicit authoring verb. Russian entries are
-/// stems so they survive inflection (`сделай`, `сделать`, `сделаешь`, …).
+/// True when the prompt carries an authoring verb of the
+/// `document_authoring_action` table; its Russian and Hindi rows are stems, so
+/// they survive inflection.
 fn mentions_authoring_action(lowercased: &str) -> bool {
-    const ACTIONS: &[&str] = &[
-        // English
-        "make me",
-        "make a",
-        "make an",
-        "create",
-        "generate",
-        "produce",
-        "compile",
-        "prepare",
-        "assemble",
-        "draft",
-        "build me",
-        "export",
-        "give me",
-        "i need",
-        "i want",
-        "put together",
-        // Russian (verb stems)
-        "сдела",
-        "созда",
-        "сгенерир",
-        "подготов",
-        "сформир",
-        "состав",
-        "собери",
-        "собрать",
-        "оформ",
-        "выгрузи",
-        "экспортир",
-        "сверста",
-        // Hindi (verb stems; `बना` covers बनाओ/बनाएं/बनाना)
-        "बना",
-        "तैयार",
-        "उत्पन्न",
-        "चाहिए",
-        // Chinese (authoring verbs)
-        "做",
-        "制作",
-        "生成",
-        "创建",
-        "编写",
-        "整理",
-        "给我",
-        "帮我",
-    ];
-    ACTIONS.iter().any(|needle| lowercased.contains(needle))
+    handler_table_row("document_authoring_action", lowercased).is_some()
 }
 
-/// Classify the requested document container, preferring an explicit format token
-/// over a generic document noun. Returns `None` when no document artifact is
-/// named (so a plain "create X" prompt is left for other handlers).
-fn detect_document_format(lowercased: &str) -> Option<DocFormat> {
-    let has_any = |needles: &[&str]| needles.iter().any(|needle| lowercased.contains(needle));
-
-    if has_any(&["pdf", "пдф"]) {
-        return Some(DocFormat::Pdf);
+/// The requested document container: an explicit format label (`PDF`, `DOCX`,
+/// …) with `true`, or the generic document label with `false`; `None` when no
+/// document artifact is named, so a plain "create X" prompt is left for other
+/// handlers. The tables are read in priority order: the explicit formats, an
+/// ebook marker beside a book noun, then the generic document nouns (a bare
+/// "file" is not one: it is too weak on its own).
+fn detect_document_format(lowercased: &str) -> Option<(&'static str, bool)> {
+    if let Some(label) = handler_table_row("document_format", lowercased) {
+        return Some((label, true));
     }
-    if has_any(&["docx", ".doc", "word document", "ворд", "документ word"]) {
-        return Some(DocFormat::Word);
-    }
-    if has_any(&[
-        "xlsx",
-        "csv",
-        "spreadsheet",
-        "excel",
-        "эксель",
-        "табличк",
-        "电子表格",
-        "表格",
-        "स्प्रेडशीट",
-    ]) {
-        return Some(DocFormat::Spreadsheet);
-    }
-    if has_any(&[
-        "pptx",
-        "powerpoint",
-        "slide deck",
-        "презентаци",
-        "слайд",
-        "演示",
-        "幻灯片",
-        "प्रस्तुति",
-    ]) {
-        return Some(DocFormat::Presentation);
-    }
-    if has_any(&["epub", "e-book", "ebook", "электронн"]) && has_any(&["book", "книг"])
+    if let Some(label) = handler_table_row("document_ebook_marker", lowercased)
+        && handler_table_row("document_book_noun", lowercased).is_some()
     {
-        return Some(DocFormat::Ebook);
+        return Some((label, true));
     }
-    // Generic document noun: distinctive stems unlikely to fire spuriously. A
-    // bare "file"/"файл" is intentionally excluded — it is too weak on its own.
-    if has_any(&[
-        "document",
-        "документ",
-        "report",
-        "отчет",
-        "отчёт",
-        "dossier",
-        "досье",
-        "brochure",
-        "брошюр",
-        "booklet",
-        "буклет",
-        "memo",
-        "записку",
-        "записка",
-        // Hindi
-        "दस्तावेज़",
-        "दस्तावेज",
-        "रिपोर्ट",
-        // Chinese
-        "文档",
-        "文件",
-        "报告",
-    ]) {
-        return Some(DocFormat::Generic);
-    }
-    None
+    handler_table_row("document_noun", lowercased).map(|label| (label, false))
 }
 
-/// Render the localized document-generation plan. The plan is translated for
-/// every supported language (Russian, Hindi, Chinese); any other detected
-/// language falls back to English, matching the localization scope of the
-/// sibling reasoning handlers.
-fn render_document_plan(language: &str, format: DocFormat) -> String {
-    match language {
-        "ru" => render_plan_ru(format),
-        "hi" => render_plan_hi(format),
-        "zh" => render_plan_zh(format),
-        _ => render_plan_en(format),
-    }
+/// Whether the request names a document format the plan renders.
+///
+/// The `document_format` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_document_format(normalized: &str) -> bool {
+    let lowercased = normalized.to_lowercase();
+    detect_document_format(&lowercased).is_some() || !format_mentions(&lowercased).is_empty()
 }
 
-fn render_plan_ru(format: DocFormat) -> String {
-    let format_suffix = format
-        .label()
-        .map_or_else(String::new, |label| format!(" в формате {label}"));
-    format!(
-        "Это запрос на создание документа{format_suffix}. Я детерминированный \
-         символьный решатель: у меня нет доступа к произвольным актуальным данным \
-         в вебе и я не рендерю бинарные файлы напрямую, поэтому я раскладываю \
-         задачу на формальный план по универсальному алгоритму (декомпозиция → \
-         проверки → черновики → композиция):\n\n\
-         1. Уточнить объём и критерии документа: какие элементы включать и по \
-         каким признакам их различать.\n\
-         2. Собрать список элементов из проверяемых источников и зафиксировать \
-         ссылки на эти источники.\n\
-         3. Классифицировать каждый элемент по заявленным критериям.\n\
-         4. Собрать структуру документа: заголовок, разделы и таблицу или список.\n\
-         5. Экспортировать готовую структуру в запрошенный формат.\n\n\
-         Подтвердите план или уточните критерии и источники — и я продолжу с \
-         конкретными шагами. Если нужны фактические данные, которых нет в \
-         локальной памяти Links Notation, укажите источник, и я добавлю его как \
-         правило связей."
-    )
-}
-
-fn render_plan_hi(format: DocFormat) -> String {
-    let format_suffix = format
-        .label()
-        .map_or_else(String::new, |label| format!(" ({label} प्रारूप में)"));
-    format!(
-        "यह एक दस्तावेज़ बनाने का अनुरोध है{format_suffix}. मैं एक नियतात्मक \
-         प्रतीकात्मक हल करने वाला हूँ: मैं वेब पर मनमाना सजीव डेटा नहीं खोज सकता और \
-         बाइनरी फ़ाइलें सीधे नहीं बनाता, इसलिए मैं इस कार्य को सार्वभौमिक एल्गोरिदम \
-         की औपचारिक योजना में विभाजित करता हूँ (विभाजन → जाँच → मसौदे → रचना):\n\n\
-         1. दस्तावेज़ और उसके मानदंड का दायरा तय करें: कौन-सी वस्तुएँ शामिल करनी हैं \
-         और कौन-से गुण उन्हें अलग करते हैं।\n\
-         2. सत्यापन योग्य स्रोतों से वस्तुओं की सूची एकत्र करें और उन स्रोतों के लिंक \
-         दर्ज करें।\n\
-         3. प्रत्येक वस्तु को बताए गए मानदंड के अनुसार वर्गीकृत करें।\n\
-         4. दस्तावेज़ की संरचना बनाएँ: शीर्षक, अनुभाग और एक तालिका या सूची।\n\
-         5. तैयार संरचना को अनुरोधित प्रारूप में निर्यात करें।\n\n\
-         योजना की पुष्टि करें या मानदंड और स्रोत स्पष्ट करें, और मैं ठोस चरणों के \
-         साथ आगे बढ़ूँगा।"
-    )
-}
-
-fn render_plan_zh(format: DocFormat) -> String {
-    let format_suffix = format
-        .label()
-        .map_or_else(String::new, |label| format!("（{label} 格式）"));
-    format!(
-        "这是一个生成文档的请求{format_suffix}。我是一个确定性的符号求解器：我无法在\
-         网络上检索任意实时数据，也不会直接渲染二进制文件，因此我把任务分解为通用\
-         算法生成的形式化计划（分解 → 校验 → 草稿 → 组合）：\n\n\
-         1. 界定文档及其标准：包含哪些条目以及用哪些属性区分它们。\n\
-         2. 从可验证的来源收集条目清单，并记录这些来源的链接。\n\
-         3. 根据所述标准对每个条目进行分类。\n\
-         4. 组装文档结构：标题、章节以及表格或列表。\n\
-         5. 将完成的结构导出为所请求的格式。\n\n\
-         请确认计划或细化标准与来源，我将继续给出具体步骤。"
-    )
-}
-
-fn render_plan_en(format: DocFormat) -> String {
-    let format_suffix = format
-        .label()
-        .map_or_else(String::new, |label| format!(" in {label} format"));
-    format!(
-        "This is a document-generation request{format_suffix}. I am a \
-         deterministic symbolic solver: I cannot research arbitrary live data on \
-         the web and I do not render binary files directly, so I decompose the \
-         task into the formal plan the universal algorithm produces (decompose → \
-         tests → drafts → composition). The document workflow uses \
-         link-foundation/meta-language for txt, Markdown, HTML, PDF, and DOCX \
-         representation/conversion, with concept profiles for headings, \
-         paragraphs, lists, strong/bold text, emphasis, and hyperlinks:\n\n\
-         1. Scope the document and its criteria: which items to include and which \
-         attributes distinguish them.\n\
-         2. Collect the list of items from verifiable sources and record links to \
-         those sources.\n\
-         3. Classify each item against the stated criteria.\n\
-         4. Assemble the document structure: title, sections, and a table or list.\n\
-         5. Export the finished structure to the requested format.\n\n\
-         Confirm the plan or refine the criteria and sources and I will continue \
-         with concrete steps. If you need facts that are not in the local Links \
-         Notation memory, name a source and I will add it as a links rule."
-    )
+/// Render the seeded document-generation plan in the prompt language, with the
+/// seeded format suffix when an explicit format is named.
+fn render_document_plan(language: &str, label: Option<&str>) -> String {
+    let suffix = label
+        .and_then(|label| {
+            seed::localized_response("document_generation_plan_format", language)
+                .map(|text| text.replace(concat!("{", "label", "}"), label))
+        })
+        .unwrap_or_default();
+    seed::localized_response("document_generation_plan", language)
+        .map(|text| text.replace("{format_suffix}", &suffix))
+        .unwrap_or_default()
 }

@@ -1,0 +1,3 @@
+| T4028 | Ask Formal AI to join the actual failing container publication condition checks. | FAIL: wrong unqualified test read; zero source writes. | Open: autonomous scoped repair absent. |
+| T4029 | Apply reviewed condition whitespace join through Formal AI. | PASS: one guarded workflow write; every non-whitespace byte remains exact. | Fixed: supplied finite repair; no policy or assertion change, zero autonomous credit. |
+| T4030 | Verify original condition tokens and release controls, archive raw provenance through Formal AI. | PASS: original workflow non-whitespace bytes exact; closest controls and whitespace pass. | Fixed: static contract verified; next official CI pending. |

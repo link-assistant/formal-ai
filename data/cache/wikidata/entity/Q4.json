@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "死亡"
+        },
+        "es": {
+          "language": "es",
+          "value": "muerte"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "生物停止生命活動"
+        },
+        "es": {
+          "language": "es",
+          "value": "cese irreversible de todas las funciones biológicas que sustentan un organismo"
         }
       },
       "aliases": {
@@ -338,6 +346,32 @@
           {
             "language": "zh",
             "value": "一命呜呼"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "deceso"
+          },
+          {
+            "language": "es",
+            "value": "defunción"
+          },
+          {
+            "language": "es",
+            "value": "óbito"
+          },
+          {
+            "language": "es",
+            "value": "fallece"
+          },
+          {
+            "language": "es",
+            "value": "muertes"
+          },
+          {
+            "language": "es",
+            "value": "fallecimiento"
           }
         ]
       }

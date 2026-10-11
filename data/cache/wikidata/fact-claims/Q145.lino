@@ -1,0 +1,48 @@
+Q145
+  aliases
+    en ("United Kingdom of Great Britain and Northern Ireland" "U K" "G B" "Great Britain" "Great Britain and Northern Ireland" "the United Kingdom of Great Britain and Northern Ireland" "the UK" "the United Kingdom")
+    ru ("Соединённое Королевство Великобритании и Северной Ирландии" "Туманный Альбион" "Соединённое Королевство")
+    zh ("联合王国" "大不列颠及北爱尔兰联合王国" "不列颠")
+    zh-hans ("联合王国" "大不列颠及北爱尔兰联合王国" "不列颠")
+  claims
+    P36
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q84
+              numeric-id 84
+          hash 6cf2429b4407a0b73c81c32a8bde92de9b402c1f
+          property P36
+          snaktype value
+        rank normal
+  id Q145
+  labels
+    en "United Kingdom"
+    hi "यूनाइटेड किंगडम"
+    ru "Великобритания"
+    zh "英国"
+    zh-hans "英国"
+  sitelinks
+    enwiki
+      site enwiki
+      title "United Kingdom"
+    hiwiki
+      site hiwiki
+      title "यूनाइटेड किंगडम"
+    ruwiki
+      site ruwiki
+      title "Великобритания"
+    zhwiki
+      site zhwiki
+      title "英国"
+  type item
+grounding
+  claim_ranks truthy
+  claims (P36)
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

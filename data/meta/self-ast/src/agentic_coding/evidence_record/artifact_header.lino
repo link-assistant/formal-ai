@@ -1,0 +1,72 @@
+self_ast_census
+  target src/agentic_coding/evidence_record/artifact_header.rs
+  language rust
+  fidelity full_ast
+  byte_len 2823
+  line_count 65
+  content_id source_module_e0bdfead878e898b
+  symbol_count 2
+  symbols
+    function delivery_header 7 34
+    function names_callable_artifact 37 65
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2515
+    named_node_count 517
+    distinct_node_kinds 52
+    node_kinds
+      arguments 46
+      binary_expression 8
+      block 9
+      boolean_literal 4
+      call_expression 46
+      closure_expression 5
+      closure_parameters 5
+      crate 7
+      doc_comment 3
+      expression_statement 12
+      field_expression 41
+      field_identifier 41
+      for_expression 2
+      function_item 2
+      generic_type 1
+      identifier 137
+      if_expression 2
+      index_expression 7
+      inner_doc_comment_marker 1
+      integer_literal 1
+      let_declaration 18
+      lifetime 3
+      lifetime_parameter 1
+      line_comment 3
+      mutable_specifier 3
+      outer_doc_comment_marker 2
+      parameter 4
+      parameters 2
+      parenthesized_expression 1
+      primitive_type 6
+      range_expression 7
+      reference_expression 18
+      reference_type 5
+      return_expression 4
+      scoped_identifier 20
+      scoped_use_list 1
+      source_file 1
+      string_content 9
+      string_literal 9
+      super 1
+      try_expression 3
+      tuple_expression 1
+      tuple_pattern 3
+      tuple_struct_pattern 2
+      tuple_type 1
+      type_arguments 1
+      type_identifier 3
+      type_parameters 1
+      unary_expression 1
+      use_declaration 1
+      use_list 1
+      visibility_modifier 1

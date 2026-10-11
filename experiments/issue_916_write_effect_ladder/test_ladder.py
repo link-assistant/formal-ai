@@ -18,6 +18,7 @@ from ladder import (  # noqa: E402
     fault_for,
     honesty_errors,
     judge,
+    names_command,
     observe_effects,
     prepare_workspace,
     ratchet_errors,
@@ -124,6 +125,22 @@ class RouteAndShapeTests(unittest.TestCase):
         self.assertFalse(verdict["pass"])
         self.assertEqual(verdict["bad_commands"], ["date"])
         self.assertEqual(verdict["missing_tools"], ["write_file"])
+
+    def test_a_forbidden_command_is_matched_as_whole_words(self):
+        compile_command = "python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py"
+        verdict = judge(
+            {"id": "R916-10", "command_forbid": ["rm"], "expect_tool": ["write_file"]},
+            answer="Created and verified `main.py`.",
+            tools_called=["write_file", "run_shell_command"],
+            commands=[compile_command, "python3 main.py"],
+            unmet=[],
+            exit_codes=[0, 0],
+        )
+        self.assertEqual(verdict["bad_commands"], [])
+        for command in ["rm -rf build", "cd /tmp && rm notes.txt", "(rm a)"]:
+            self.assertTrue(names_command("rm", [command]), command)
+        self.assertTrue(names_command("mv report.txt archive/report.txt", ["mv report.txt archive/report.txt"]))
+        self.assertFalse(names_command("mv report.txt archive/report.txt", ["mv report.txt archive/report.txt.bak"]))
 
     def test_the_qwen_envelope_names_the_status_the_harness_observed(self):
         envelope = shell_envelope("cat hello.txt", "(root)", "", "no such file", 1)

@@ -10,7 +10,7 @@
 
 extern crate alloc;
 
-use alloc::borrow::ToOwned;
+use alloc::borrow::{Cow, ToOwned};
 use alloc::string::{String, ToString};
 use alloc::vec;
 use alloc::vec::Vec;
@@ -25,6 +25,7 @@ pub struct LinoNode {
 }
 
 impl LinoNode {
+    #[must_use]
     pub fn find_child_value(&self, name: &str) -> &str {
         for child in &self.children {
             if child.name == name {
@@ -35,10 +36,11 @@ impl LinoNode {
     }
 }
 
-pub fn parse_lino(text: &str) -> LinoNode {
+#[must_use]
+fn parse_lino_unlowered(text: &str) -> LinoNode {
     let mut root = LinoNode::default();
     let mut stack: Vec<(Option<usize>, Vec<usize>)> = vec![(None, Vec::new())];
-    for line in text.lines() {
+    for line in expand_concise_lexemes(text).lines() {
         if strip_comment(line).trim().is_empty() {
             continue;
         }
@@ -401,4 +403,471 @@ fn split_reference_tokens(body: &str) -> Vec<String> {
         }
     }
     tokens
+}
+
+/// Expand the concise lexeme form to the long form before parsing.
+///
+/// PR #1188, R1188-U7 (`docs/links-notation-style.md`): the words after the
+/// language of `lexeme en "read" "read the file"`, then the words of each
+/// `words` child, become one `surface` each, in order, with a `text` line and
+/// the lexeme's other children as its fields; an explicit `surface` child
+/// stays as written. The expansion is textual, so every loader sees the long
+/// form. Mirrors `expandConciseLexemes` in `js/seed_loader.js`.
+#[must_use]
+pub fn expand_concise_lexemes(text: &str) -> Cow<'_, str> {
+    if !text.lines().any(is_concise_hint) {
+        return Cow::Borrowed(text);
+    }
+    let lines: Vec<&str> = text.lines().collect();
+    let mut out: Vec<String> = Vec::new();
+    let mut index = 0;
+    while index < lines.len() {
+        let line = lines[index];
+        let Some((indent, language, rest)) = lexeme_head(line) else {
+            out.push(line.to_owned());
+            index += 1;
+            continue;
+        };
+        let mut end = index + 1;
+        while end < lines.len()
+            && (is_blank_line(lines[end]) || leading_spaces(lines[end]) > indent)
+        {
+            end += 1;
+        }
+        while end > index + 1 && is_blank_line(lines[end - 1]) {
+            end -= 1;
+        }
+        let inline = word_tokens(rest);
+        let children = child_blocks(&lines[index + 1..end]);
+        if inline.is_empty() && !children.iter().any(ChildBlock::is_words) {
+            out.push(line.to_owned());
+            index += 1;
+            continue;
+        }
+        let step = children
+            .first()
+            .filter(|child| child.depth > indent)
+            .map_or(2, |child| child.depth - indent);
+        let fields: Vec<&ChildBlock<'_>> = children
+            .iter()
+            .filter(|child| !child.is_words() && !child.is_surface())
+            .collect();
+        let emit_word = |out: &mut Vec<String>, word: &str| {
+            out.push(alloc::format!("{}{SURFACE}", " ".repeat(indent + step)));
+            out.push(alloc::format!(
+                "{}text {word}",
+                " ".repeat(indent + 2 * step)
+            ));
+            for field in &fields {
+                out.extend(field.reindented(indent + 2 * step));
+            }
+        };
+        out.push(alloc::format!("{}{LEXEME} {language}", " ".repeat(indent)));
+        for &word in &inline {
+            emit_word(&mut out, word);
+        }
+        for child in &children {
+            if child.is_words() {
+                for word in word_tokens(&child.content[WORDS.len()..]) {
+                    emit_word(&mut out, word);
+                }
+            } else if child.is_surface() {
+                out.extend(child.reindented(indent + step));
+            }
+        }
+        index = end;
+    }
+    Cow::Owned(out.join("\n"))
+}
+
+/// The link names of the concise lexeme form.
+const LEXEME: &str = "lexeme";
+const WORDS: &str = "words";
+const SURFACE: &str = "surface";
+
+/// Whether `content` opens with the link name `word`, as a whole token.
+fn opens_with(content: &str, word: &str) -> bool {
+    content
+        .strip_prefix(word)
+        .is_some_and(|rest| rest.is_empty() || rest.starts_with(char::is_whitespace))
+}
+
+/// Whether a line may open or continue a concise lexeme: `lexeme` with words
+/// after its language, or a `words` line.
+fn is_concise_hint(line: &str) -> bool {
+    let content = strip_comment(line).trim_start();
+    opens_with(content, WORDS)
+        || (opens_with(content, LEXEME) && content.split_whitespace().count() >= 3)
+}
+
+/// The indentation, language and comment-free tail of a `lexeme` line.
+fn lexeme_head(line: &str) -> Option<(usize, &str, &str)> {
+    if is_blank_line(line) {
+        return None;
+    }
+    let content = strip_comment(line);
+    let indent = leading_spaces(content);
+    let rest = content[indent..].strip_prefix(LEXEME)?;
+    if !rest.starts_with([' ', '\t']) {
+        return None;
+    }
+    let rest = rest.trim_start_matches([' ', '\t']);
+    let language_end = rest
+        .find(|character: char| character.is_whitespace() || character == '#')
+        .unwrap_or(rest.len());
+    if language_end == 0 {
+        return None;
+    }
+    Some((indent, &rest[..language_end], &rest[language_end..]))
+}
+
+fn leading_spaces(line: &str) -> usize {
+    line.len() - line.trim_start_matches(' ').len()
+}
+
+fn is_blank_line(line: &str) -> bool {
+    strip_comment(line).trim().is_empty()
+}
+
+/// The word tokens of a comment-free line tail: a quoted word keeps its
+/// quotes, so `text <word>` reads it exactly as written; a bare word ends at
+/// whitespace.
+fn word_tokens(rest: &str) -> Vec<&str> {
+    let bytes = rest.as_bytes();
+    let mut tokens = Vec::new();
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index].is_ascii_whitespace() {
+            index += 1;
+            continue;
+        }
+        let start = index;
+        let quote = bytes[index];
+        if matches!(quote, b'"' | b'\'' | b'`') {
+            index += 1;
+            while index < bytes.len() {
+                // A backslash escape and a doubled quote each span two bytes.
+                if bytes[index] == b'\\'
+                    || (bytes[index] == quote && bytes.get(index + 1) == Some(&quote))
+                {
+                    index += 2;
+                } else if bytes[index] == quote {
+                    index += 1;
+                    break;
+                } else {
+                    index += 1;
+                }
+            }
+        } else {
+            while index < bytes.len() && !bytes[index].is_ascii_whitespace() {
+                index += 1;
+            }
+        }
+        tokens.push(&rest[start..index.min(bytes.len())]);
+    }
+    tokens
+}
+
+/// One direct child of a lexeme block, with the lines of its subtree.
+struct ChildBlock<'text> {
+    content: &'text str,
+    depth: usize,
+    lines: Vec<&'text str>,
+}
+
+impl ChildBlock<'_> {
+    fn is_words(&self) -> bool {
+        opens_with(self.content, WORDS)
+    }
+
+    fn is_surface(&self) -> bool {
+        opens_with(self.content, SURFACE)
+    }
+
+    /// The subtree moved to `depth`, its inner indentation kept.
+    fn reindented(&self, depth: usize) -> impl Iterator<Item = String> + '_ {
+        self.lines.iter().map(move |line| {
+            let own = leading_spaces(line);
+            alloc::format!("{}{}", " ".repeat(own - self.depth + depth), &line[own..])
+        })
+    }
+}
+
+/// The direct children of a block; the first child line sets their depth.
+fn child_blocks<'text>(lines: &[&'text str]) -> Vec<ChildBlock<'text>> {
+    let mut children: Vec<ChildBlock<'text>> = Vec::new();
+    let mut child_indent = None;
+    for line in lines {
+        if is_blank_line(line) {
+            continue;
+        }
+        let depth = leading_spaces(line);
+        let first = *child_indent.get_or_insert(depth);
+        match children.last_mut() {
+            Some(last) if depth > first => last.lines.push(line),
+            _ => children.push(ChildBlock {
+                content: strip_comment(line).trim(),
+                depth,
+                lines: vec![line],
+            }),
+        }
+    }
+    children
+}
+
+/// Lower owned shared lexical facets before typed seed consumers read surfaces.
+/// Unknown syntax refuses the whole document; legacy trees stay unchanged.
+pub fn lower_shared_lexeme_fields(root: &mut LinoNode) -> Result<(), &'static str> {
+    fn stable_identity(value: &str) -> bool {
+        let mut bytes = value.bytes();
+        bytes.next().is_some_and(|first| first.is_ascii_lowercase())
+            && bytes.all(|byte| {
+                byte.is_ascii_lowercase() || byte.is_ascii_digit() || matches!(byte, b'-' | b'_')
+            })
+    }
+    fn marker(node: &LinoNode) -> bool {
+        node.name == "shared-lexeme-fields" || node.name == "use-lexeme-fields"
+    }
+    fn contains_marker(node: &LinoNode) -> bool {
+        marker(node) || node.children.iter().any(contains_marker)
+    }
+    if !contains_marker(root) {
+        return Ok(());
+    }
+    // Rust parse_lino keeps a synthetic document root, unlike the JS API.
+    for container in &mut root.children {
+        if !contains_marker(container) {
+            continue;
+        }
+        if container.name != "meanings" {
+            return Err("shared fields require meanings root");
+        }
+        for meaning in &mut container.children {
+            let owner = if meaning.name == "meaning" {
+                &meaning.id
+            } else {
+                &meaning.name
+            };
+            if contains_marker(meaning)
+                && (!stable_identity(owner)
+                    || matches!(
+                        meaning.name.as_str(),
+                        "meanings"
+                            | "lexeme"
+                            | "surface"
+                            | "shared-lexeme-fields"
+                            | "use-lexeme-fields"
+                            | "part_of_speech"
+                            | "grammatical_number"
+                    ))
+            {
+                return Err("reserved or invalid shared field owner");
+            }
+            let declarations: Vec<usize> = meaning
+                .children
+                .iter()
+                .enumerate()
+                .filter(|(_, node)| node.name == "shared-lexeme-fields")
+                .map(|(index, _)| index)
+                .collect();
+            if declarations.is_empty() {
+                if contains_marker(meaning) {
+                    return Err("unresolved shared fields");
+                }
+                continue;
+            }
+            if declarations.len() != 1 {
+                return Err("duplicate shared declaration");
+            }
+            let declaration_index = declarations[0];
+            let declaration = meaning.children[declaration_index].clone();
+            if !stable_identity(&declaration.id) {
+                return Err("shared declaration requires identity");
+            }
+            let fields = &declaration.children;
+            if fields.is_empty() {
+                return Err("empty shared fields");
+            }
+            for (index, field) in fields.iter().enumerate() {
+                if !matches!(field.name.as_str(), "part_of_speech" | "grammatical_number")
+                    || !stable_identity(&field.id)
+                    || !field.children.is_empty()
+                {
+                    return Err("unknown, nested or effect-bearing shared field");
+                }
+                if fields[..index].iter().any(|other| other.name == field.name) {
+                    return Err("duplicate shared fields");
+                }
+            }
+            let languages: Vec<&str> = meaning
+                .children
+                .iter()
+                .filter(|node| node.name == "lexeme")
+                .map(|node| node.id.as_str())
+                .collect();
+            if languages.len() < 2 {
+                return Err("shared fields require multiple languages");
+            }
+            for (index, language) in languages.iter().enumerate() {
+                if !stable_identity(language) || languages[..index].contains(language) {
+                    return Err("duplicate language");
+                }
+            }
+            for (index, node) in meaning.children.iter_mut().enumerate() {
+                if index == declaration_index {
+                    continue;
+                }
+                if node.name != "lexeme" {
+                    if contains_marker(node) {
+                        return Err("invalid shared declaration scope");
+                    }
+                    continue;
+                }
+                if node.children.is_empty() {
+                    return Err("shared lexeme has no surfaces");
+                }
+                for surface in &mut node.children {
+                    if surface.name != "surface" {
+                        return Err("shared reference requires surface");
+                    }
+                    let references: Vec<usize> = surface
+                        .children
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, field)| field.name == "use-lexeme-fields")
+                        .map(|(index, _)| index)
+                        .collect();
+                    if references.len() != 1 {
+                        return Err("unknown or duplicate reference");
+                    }
+                    let reference_index = references[0];
+                    let reference = &surface.children[reference_index];
+                    if reference.id != declaration.id || !reference.children.is_empty() {
+                        return Err("unknown or recursive reference");
+                    }
+                    for (index, field) in surface.children.iter().enumerate() {
+                        if index != reference_index
+                            && (contains_marker(field)
+                                || fields.iter().any(|shared| shared.name == field.name))
+                        {
+                            return Err("shared field conflict or nested reference");
+                        }
+                    }
+                    // Clone each occurrence: fields never share mutable ownership.
+                    surface
+                        .children
+                        .splice(reference_index..=reference_index, fields.iter().cloned());
+                }
+            }
+            meaning.children.remove(declaration_index);
+        }
+    }
+    Ok(())
+}
+
+/// Checked owned notation entrypoint with explicit shared-field diagnostics.
+pub fn parse_lino_checked(text: &str) -> Result<LinoNode, &'static str> {
+    validate_shared_lexeme_source(text)?;
+    let mut root = parse_lino_unlowered(text);
+    lower_shared_lexeme_fields(&mut root)?;
+    Ok(root)
+}
+
+/// Legacy callers refuse the entire malformed shared document, never a partial tree.
+#[must_use]
+pub fn parse_lino(text: &str) -> LinoNode {
+    parse_lino_checked(text).expect("invalid owned shared lexical field declaration")
+}
+
+fn validate_shared_lexeme_source(text: &str) -> Result<(), &'static str> {
+    let has_shared = text.lines().any(|line| {
+        matches!(
+            strip_comment(line).split_whitespace().next(),
+            Some("shared-lexeme-fields" | "use-lexeme-fields")
+        )
+    });
+    if !has_shared {
+        return Ok(());
+    }
+    let mut stack: Vec<(usize, &str)> = Vec::new();
+    for line in text.lines() {
+        let content = strip_comment(line);
+        let tokens: Vec<&str> = content.split_whitespace().collect();
+        let Some(head) = tokens.first().copied() else {
+            continue;
+        };
+        let indent = line
+            .chars()
+            .take_while(|character| character.is_whitespace())
+            .count();
+        if line.chars().take(indent).any(|character| character != ' ') {
+            return Err("shared source indentation requires spaces");
+        }
+        while stack.last().is_some_and(|(depth, _)| *depth >= indent) {
+            stack.pop();
+        }
+        let parent = stack.last().map_or("", |(_, name)| *name);
+        let identity_valid = tokens.len() == 2
+            && tokens[1]
+                .bytes()
+                .next()
+                .is_some_and(|byte| byte.is_ascii_lowercase())
+            && tokens[1].bytes().all(|byte| {
+                byte.is_ascii_lowercase() || byte.is_ascii_digit() || matches!(byte, b'-' | b'_')
+            });
+        if matches!(head, "shared-lexeme-fields" | "use-lexeme-fields") {
+            if !identity_valid {
+                return Err("invalid shared source identity");
+            }
+            if head == "use-lexeme-fields"
+                && (stack.len() < 4
+                    || parent != "surface"
+                    || stack[stack.len() - 2].1 != "lexeme"
+                    || stack[stack.len() - 4].1 != "meanings")
+            {
+                return Err("shared references require explicit surface source scope");
+            }
+        }
+        if parent == "shared-lexeme-fields"
+            && (!matches!(head, "part_of_speech" | "grammatical_number") || !identity_valid)
+        {
+            return Err("shared fields require bare semantic facet references");
+        }
+        stack.push((indent, head));
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod shared_lexeme_fields_tests {
+    use super::{parse_lino, parse_lino_checked};
+
+    const SHARED: &str = "meanings\n  example\n    shared-lexeme-fields lexical\n      part_of_speech noun\n    lexeme en\n      surface\n        text first\n        use-lexeme-fields lexical\n    lexeme es\n      surface\n        text second\n        use-lexeme-fields lexical\n";
+    const LEGACY: &str = "meanings\n  example\n    lexeme en\n      surface\n        text first\n        part_of_speech noun\n    lexeme es\n      surface\n        text second\n        part_of_speech noun\n";
+
+    #[test]
+    fn shared_fields_preserve_complete_legacy_tree_and_combined_roots() {
+        let actual = parse_lino_checked(SHARED).expect("valid shared fields");
+        let expected = parse_lino_checked(LEGACY).expect("valid legacy tree");
+        assert_eq!(alloc::format!("{actual:?}"), alloc::format!("{expected:?}"));
+        let combined = alloc::format!("{LEGACY}{SHARED}");
+        let original = alloc::format!("{LEGACY}{LEGACY}");
+        assert_eq!(
+            alloc::format!("{:?}", parse_lino_checked(&combined)),
+            alloc::format!("{:?}", parse_lino_checked(&original))
+        );
+    }
+
+    #[test]
+    fn malformed_shared_fields_refuse_whole_documents() {
+        for invalid in [
+            SHARED.replace("use-lexeme-fields lexical", "use-lexeme-fields missing"),
+            SHARED.replace("part_of_speech noun", "effect mutation"),
+            SHARED.replace("lexeme es", "lexeme en"),
+            SHARED.replace("meanings\n", "other-root\n"),
+        ] {
+            assert!(parse_lino_checked(&invalid).is_err());
+            assert!(std::panic::catch_unwind(|| parse_lino(&invalid)).is_err());
+        }
+    }
 }

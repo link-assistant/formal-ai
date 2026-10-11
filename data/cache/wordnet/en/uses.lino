@@ -1,0 +1,85 @@
+language en
+lemma uses
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the act of using"
+    examples ("he warned against the use of narcotic drugs" "skilled in the utilization of computers")
+    id oewn-00948944-n
+    partOfSpeech n
+    synonyms (use usage utilization utilisation employment exercise)
+  entry
+    definition "what something is used for"
+    examples ("the function of an auger is to bore holes" "ballet is beautiful but what use is it?")
+    id oewn-05156572-n
+    partOfSpeech n
+    synonyms (function purpose role use)
+  entry
+    definition "a particular service"
+    examples ("he put his knowledge to good use" "patrons have their uses")
+    id oewn-05157225-n
+    partOfSpeech n
+    synonyms (use)
+  entry
+    definition "(economics) the utilization of economic goods to satisfy needs or in manufacturing"
+    examples ("the consumption of energy has increased steadily")
+    id oewn-13472977-n
+    partOfSpeech n
+    synonyms (consumption "economic consumption" usance use "use of goods and services")
+  entry
+    definition "(psychology) an automatic pattern of behavior in reaction to a specific situation; may be inherited or acquired through frequent repetition"
+    examples ("owls have nocturnal habits" "she had a habit twirling the ends of her hair" "long use had hardened him to it")
+    id oewn-00415192-n
+    partOfSpeech n
+    synonyms (habit use)
+  entry
+    definition "exerting shrewd or devious influence especially for one's own advantage"
+    examples ("his manipulation of his friends was scandalous")
+    id oewn-00159005-n
+    partOfSpeech n
+    synonyms (manipulation use)
+  entry
+    definition "(law) the exercise of the legal right to enjoy the benefits of owning property"
+    examples ("we were given the use of his boat")
+    id oewn-05197374-n
+    partOfSpeech n
+    synonyms (use enjoyment)
+  entry
+    definition "put into service; make work or employ for a particular purpose or for its inherent or natural purpose"
+    examples ("use your head!" "we only use Spanish at home" "I can't use this tool" "Apply a magnetic field here" "This thinking was applied to many projects" "How do you utilize this tool?" "I apply this rule to get good results" "use the plastic bags to store the food" "He doesn't know how to use a computer")
+    id oewn-01161188-v
+    partOfSpeech v
+    synonyms (use utilize utilise apply employ)
+  entry
+    definition "take or consume (regularly or habitually)"
+    examples ("She uses drugs rarely")
+    id oewn-01167359-v
+    partOfSpeech v
+    synonyms (use habituate)
+  entry
+    definition "seek or achieve an end by using to one's advantage"
+    examples ("She uses her influential friends to get jobs" "The president's wife used her good connections")
+    id oewn-02606487-v
+    partOfSpeech v
+    synonyms (use)
+  entry
+    definition "avail oneself to"
+    examples ("apply a principle" "practice a religion" "use care when going down the stairs" "use your common sense" "practice non-violent resistance")
+    id oewn-02567247-v
+    partOfSpeech v
+    synonyms (practice apply use)
+  entry
+    definition "habitually do something or be in a certain state or place (use only in the past tense)"
+    examples ("She used to call her mother every week but now she calls only occasionally" "I used to get sick when I ate in that dining hall" "They used to vacation in the Bahamas" "she used to be his best friend and now they are enemies")
+    id oewn-02375130-v
+    partOfSpeech v
+    synonyms (use)
+  entry
+    definition "use up (resources or materials)"
+    examples ("this car consumes a lot of gas" "We exhausted our savings" "They run through 20 bottles of wine a week")
+    id oewn-01159815-v
+    partOfSpeech v
+    synonyms (consume "eat up" "use up" eat deplete exhaust "run through" "wipe out" use expend)
+source "oewn:2024"

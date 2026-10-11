@@ -1,0 +1,25 @@
+view
+  id M-839b98b55c83
+  lemma transformation
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a qualitative change"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(mathematics) a function that changes the position or direction of the axes of a coordinate system"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a rule describing the conversion of one syntactic structure into another related syntactic structure"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(genetics) modification of a cell or bacterium by the uptake and incorporation of exogenous DNA"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of changing in form or shape or appearance"
+    provenance (wordnet)

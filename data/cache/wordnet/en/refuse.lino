@@ -1,0 +1,48 @@
+language en
+lemma refuse
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "food that is discarded (as from a kitchen)"
+    id oewn-14881302-n
+    partOfSpeech n
+    synonyms (garbage "food waste" scraps)
+  entry
+    definition "show unwillingness towards"
+    examples ("he declined to join the group on a hike")
+    id oewn-00799092-v
+    partOfSpeech v
+    synonyms (decline)
+  entry
+    definition "not accept as true"
+    examples ("He refused to accept what she said")
+    id oewn-02242120-v
+    partOfSpeech v
+    synonyms (reject "pass up" "turn down" decline)
+  entry
+    definition "elude, especially in a baffling way"
+    examples ("This behavior defies explanation")
+    id oewn-02713660-v
+    partOfSpeech v
+    synonyms (defy resist)
+  entry
+    definition "refuse to let have"
+    examples ("She denies me every pleasure" "he denies her her weekly allowance")
+    id oewn-02217607-v
+    partOfSpeech v
+    synonyms (deny)
+  entry
+    definition "resist immunologically the introduction of some foreign tissue or organ"
+    examples ("His body rejected the liver of the donor")
+    id oewn-02760892-v
+    partOfSpeech v
+    synonyms (resist reject)
+  entry
+    definition "refuse entrance or membership"
+    examples ("They turned away hundreds of fans" "Black people were often rejected by country clubs")
+    id oewn-02508565-v
+    partOfSpeech v
+    synonyms (reject "turn down" "turn away")
+source "oewn:2024"

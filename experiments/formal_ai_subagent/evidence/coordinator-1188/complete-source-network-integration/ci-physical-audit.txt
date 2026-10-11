@@ -1,0 +1,5 @@
+Cutoff T2293: 94 complete raw transcripts; missing=[].
+Verified repository-source Edit calls:66. Neutral template Copy Bash calls:4 (T2201/2203/2205/2237). Neutral rustfmt Bash call:1 (T2274 targeting5 owned native files). Neutral generated-metadata Bash call:1 (T2291 debug-stage generator; one canonical metadata line). Manual repository-source mutations:0.
+Actual trusted tool headers: {'bash':114,'read':66,'edit':66}.
+Remote control Bash calls:3 (T2283 cancellation audit/2 active cancellation requests; T2284 disabled full63 dispatch; T2285 enabled full63 dispatch). These are not repository-source authorship.
+Original T2200 broad ask:1 read-only Bash,0 mutations; source implementation is reviewed FA-applied repair, no independent synthesis claim. Actual FAIL rows2200/2260/2277 retain named fixes and retries. T2292 records sandbox listenEPERM before debug server tests; unchanged authorized-loopback retry2293 passed16/16 and After beginsFixed.

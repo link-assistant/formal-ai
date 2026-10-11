@@ -9,7 +9,7 @@
 //! prevents the Agent CLI surface from growing a second phrase table or a second
 //! memory model.
 
-use crate::protocol::{chat_prompt_and_history, ChatMessage};
+use crate::protocol::{ChatMessage, chat_prompt_and_history};
 use crate::solve_with_history;
 
 use super::command_reroute;
@@ -51,6 +51,32 @@ pub(super) fn plan_shared_solver_step(
     if prompt.trim().is_empty() {
         return SharedSolverStep::NotOurs;
     }
+    let owned = crate::meta_translate::owned_source_tree_request(&prompt);
+    if owned.is_none() && crate::meta_translate::source_tree_request(&prompt).is_some() {
+        return SharedSolverStep::NotOurs;
+    }
+    if tool_names.contains(&"translate")
+        && let Some(owned) = owned
+    {
+        let expected = serde_json::json!({"from":owned.request.from.name(),"to":owned.request.to.name(),"path":&owned.request.path,"write":owned.write});
+        if let Some(failure) = repeated_owned_operation_failure(messages, "translate", &expected) {
+            return SharedSolverStep::Ready(AgenticPlan::Final(
+                super::tool_result::render_failure("translate", &failure, &prompt),
+            ));
+        }
+        return SharedSolverStep::Ready(AgenticPlan::ToolCalls(vec![
+            super::planner::PlannedToolCall {
+                tool: "translate".to_owned(),
+                arguments: format!(
+                    r#"{{"from":"{}","to":"{}","path":{},"write":{}}}"#,
+                    owned.request.from.name(),
+                    owned.request.to.name(),
+                    serde_json::json!(owned.request.path),
+                    owned.write
+                ),
+            },
+        ]));
+    }
     let answer = solve_with_history(&prompt, &history);
     match answer.intent.as_str() {
         "summarize_conversation" => SharedSolverStep::Ready(AgenticPlan::Final(answer.answer)),
@@ -73,19 +99,80 @@ pub(super) fn plan_shared_solver_step(
             if tool_names.contains(&"translate")
                 && let Some(request) = crate::meta_translate::source_tree_request(&prompt)
             {
-                SharedSolverStep::Ready(AgenticPlan::ToolCalls(vec![super::planner::PlannedToolCall {
-                    tool: "translate".to_owned(),
-                    arguments: format!(
-                        "{{\"from\":\"{}\",\"to\":\"{}\",\"path\":\"{}\",\"write\":true}}",
-                        request.from.name(),
-                        request.to.name(),
-                        request.path
-                    ),
-                }]))
+                SharedSolverStep::Ready(AgenticPlan::ToolCalls(vec![
+                    super::planner::PlannedToolCall {
+                        tool: "translate".to_owned(),
+                        arguments: format!(
+                            "{{\"from\":\"{}\",\"to\":\"{}\",\"path\":\"{}\",\"write\":true}}",
+                            request.from.name(),
+                            request.to.name(),
+                            request.path
+                        ),
+                    },
+                ]))
             } else {
                 SharedSolverStep::Ready(AgenticPlan::Final(answer.answer))
             }
         }
         _ => SharedSolverStep::NotOurs,
     }
+}
+
+fn repeated_owned_operation_failure(
+    messages: &[ChatMessage],
+    tool: &str,
+    expected: &serde_json::Value,
+) -> Option<String> {
+    let start = messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+        .map_or(0, |index| index + 1);
+    let mut seen = std::collections::HashSet::<String>::new();
+    let mut failures = Vec::new();
+    for (index, message) in messages.iter().enumerate().skip(start) {
+        if !message.role.eq_ignore_ascii_case("tool") {
+            continue;
+        }
+        let Some(identifier) = message.tool_call_id.as_ref() else {
+            continue;
+        };
+        if seen.contains(identifier) {
+            continue;
+        }
+        let Some(call) = messages[start..index]
+            .iter()
+            .rev()
+            .flat_map(|prior| prior.tool_calls.iter().rev())
+            .find(|call| &call.id == identifier)
+        else {
+            continue;
+        };
+        if call.function.name != tool
+            || message
+                .name
+                .as_ref()
+                .is_some_and(|name| !name.eq_ignore_ascii_case(tool))
+        {
+            continue;
+        }
+        let Ok(observed) = serde_json::from_str::<serde_json::Value>(&call.function.arguments)
+        else {
+            continue;
+        };
+        if &observed != expected {
+            continue;
+        }
+        seen.insert(identifier.clone());
+        if let Some(failure) = super::tool_result::failure_message(
+            &message.content.plain_text(),
+            message.is_error,
+            false,
+        ) {
+            failures.push(failure);
+        } else {
+            failures.clear();
+        }
+    }
+    let latest = failures.last()?;
+    (failures.iter().filter(|failure| *failure == latest).count() >= 2).then(|| latest.clone())
 }

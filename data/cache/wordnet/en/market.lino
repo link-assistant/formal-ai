@@ -1,0 +1,55 @@
+language en
+lemma market
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the world of commercial activity where goods and services are bought and sold"
+    examples ("without competition there would be no market" "they were driven from the marketplace")
+    id oewn-01099197-n
+    partOfSpeech n
+    synonyms (marketplace "market place")
+  entry
+    definition "the customers for a particular product or service"
+    examples ("before they publish any book they try to determine the size of the market for it")
+    id oewn-08441908-n
+    partOfSpeech n
+  entry
+    definition "a marketplace where groceries are sold"
+    examples ("the grocery store included a meat market")
+    id oewn-03466317-n
+    partOfSpeech n
+    synonyms ("grocery store" grocery "food market")
+  entry
+    definition "the securities markets in the aggregate"
+    examples ("the market always frustrates the small investor")
+    id oewn-08089673-n
+    partOfSpeech n
+    synonyms ("securities industry")
+  entry
+    definition "an area in a town where a public mercantile establishment is set up"
+    id oewn-03727779-n
+    partOfSpeech n
+    synonyms (marketplace "market place" mart)
+  entry
+    definition "engage in the commercial promotion, sale, or distribution of"
+    examples ("The company is marketing its new line of beauty products")
+    id oewn-02303121-v
+    partOfSpeech v
+  entry
+    definition "buy household supplies"
+    examples ("We go marketing every Saturday")
+    id oewn-02331194-v
+    partOfSpeech v
+  entry
+    definition "deal in a market"
+    id oewn-02303432-v
+    partOfSpeech v
+  entry
+    definition "make commercial"
+    examples ("Some Amish people have commercialized their way of life")
+    id oewn-00471317-v
+    partOfSpeech v
+    synonyms (commercialize commercialise)
+source "oewn:2024"

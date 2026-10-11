@@ -22,8 +22,18 @@
 //! of them run even after one fails. A CI run that reports every broken gate at
 //! once is worth more than one that stops at the first.
 //!
+//! A lane says which parallel `lint` job runs the gate (PR #1188). The rust
+//! stage took 17-28 minutes as one serial list; the `lint` job is a matrix over
+//! `lane:` and each leg runs only the gates of its lane (`CI_GATE_LANE`), so the
+//! slow gates run beside the rest instead of after them. A gate names its lane
+//! with `lane <n>`; without one it runs in lane 1, which is also the only lane
+//! that runs the wasm and web stages. `--check` fails when a gate names a lane
+//! the matrix does not run -- a gate nobody runs is the failure this registry
+//! exists to prevent -- or when a lane runs no gate at all.
+//!
 //! Usage:
 //!     rust-script scripts/run-ci-gates.rs --stage rust   # run one stage
+//!     CI_GATE_LANE=2 rust-script scripts/run-ci-gates.rs --stage rust
 //!     rust-script scripts/run-ci-gates.rs --list         # print the registry
 //!     rust-script scripts/run-ci-gates.rs --check        # validate, run nothing
 //!
@@ -47,6 +57,10 @@ const WORKFLOW: &str = ".github/workflows/release.yml";
 /// The stages a gate can ask for, in the order the workflow provides them.
 const STAGES: [&str; 3] = ["rust", "wasm", "web"];
 
+/// The lane every gate runs in unless it names another, and the only lane whose
+/// `lint` leg runs the wasm and web stages.
+const DEFAULT_LANE: u32 = 1;
+
 /// One registered gate: a shell command plus the stage it needs.
 ///
 /// Public because the unit suite compiles this script as a module
@@ -59,8 +73,52 @@ pub struct Gate {
     pub description: String,
     pub run: String,
     pub env: Vec<(String, String)>,
+    /// The parallel `lint` leg that runs this gate.
+    pub lane: u32,
     /// Shard the gate was read from, for error messages.
     pub source: String,
+    /// Why this gate exists: the concrete defect class or incident it prevents.
+    /// Must cite an issue or pull request (`#NNN`) or a commit hash (7-40 hex
+    /// characters). R1085-16 requires this on every gate.
+    pub justification: String,
+}
+
+/// Returns true when the justification cites an issue/PR number (`#NNN`) or a
+/// commit hash (7-40 lowercase hex characters).
+pub fn justification_has_citation(justification: &str) -> bool {
+    // Issue/PR citation: #NNN with at least one digit.
+    let has_issue = justification
+        .split_whitespace()
+        .chain(justification.split(|c: char| !c.is_ascii_alphanumeric() && c != '#'))
+        .any(|token| {
+            token.starts_with('#')
+                && token[1..].chars().all(|c| c.is_ascii_digit())
+                && token.len() >= 2
+        });
+    if has_issue {
+        return true;
+    }
+    // Commit hash: a run of 7-40 lowercase hex digits, standing alone (surrounded
+    // by non-hex or start/end of string) so a URL slug like "plan-09" is not caught.
+    let chars: Vec<char> = justification.chars().collect();
+    let mut i = 0;
+    while i < chars.len() {
+        if chars[i].is_ascii_hexdigit() {
+            let start = i;
+            while i < chars.len() && chars[i].is_ascii_hexdigit() {
+                i += 1;
+            }
+            let run = i - start;
+            let before_ok = start == 0 || !chars[start - 1].is_ascii_alphanumeric();
+            let after_ok = i >= chars.len() || !chars[i].is_ascii_alphanumeric();
+            if (7..=40).contains(&run) && before_ok && after_ok {
+                return true;
+            }
+        } else {
+            i += 1;
+        }
+    }
+    false
 }
 
 fn unquote(value: &str) -> String {
@@ -80,6 +138,7 @@ fn indent_of(line: &str) -> usize {
 /// gate a whole-file addition instead of an edit to a shared list.
 fn parse_gate(source: &str, shard: &str) -> Result<Gate, String> {
     let mut gate = Gate {
+        lane: DEFAULT_LANE,
         source: shard.to_string(),
         ..Gate::default()
     };
@@ -97,6 +156,16 @@ fn parse_gate(source: &str, shard: &str) -> Result<Gate, String> {
             (2, "stage") => gate.stage = unquote(value),
             (2, "description") => gate.description = unquote(value),
             (2, "run") => gate.run = unquote(value),
+            (2, "justification") => gate.justification = unquote(value),
+            (2, "lane") => {
+                gate.lane = unquote(value)
+                    .parse::<u32>()
+                    .ok()
+                    .filter(|lane| *lane >= DEFAULT_LANE)
+                    .ok_or_else(|| {
+                        format!("{shard}: `lane` must be a number from 1, got `{value}`")
+                    })?;
+            }
             (2, "env") => {
                 let (name, literal) = value
                     .split_once(' ')
@@ -125,6 +194,21 @@ fn parse_gate(source: &str, shard: &str) -> Result<Gate, String> {
             gate.name,
             gate.stage,
             STAGES.join(", ")
+        ));
+    }
+    if gate.justification.is_empty() {
+        return Err(format!(
+            "{shard}: gate `{}` has no `justification`; every gate must name the \
+             defect class or incident it prevents, citing an issue/PR (#NNN) or a \
+             commit hash (R1085-16)",
+            gate.name
+        ));
+    }
+    if !justification_has_citation(&gate.justification) {
+        return Err(format!(
+            "{shard}: gate `{}`'s justification must cite an issue/PR (#NNN) or a \
+             commit hash; got: `{}`",
+            gate.name, gate.justification
         ));
     }
     Ok(gate)
@@ -230,8 +314,52 @@ fn invoked_stages(workflow: &str) -> BTreeSet<String> {
     stages
 }
 
-fn registry_problems(gates: &[Gate], workflow: &str) -> Vec<String> {
+/// The lanes the `lint` job's matrix runs, from its `lane: [..]` line.
+///
+/// `None` when the job is not a lane matrix; then every gate must be in the
+/// default lane, because there is no other leg to run it.
+fn workflow_lanes(workflow: &str) -> Option<BTreeSet<u32>> {
+    job_body(workflow, "lint").lines().find_map(|line| {
+        let list = line.trim().strip_prefix("lane: [")?.strip_suffix(']')?;
+        Some(
+            list.split(',')
+                .filter_map(|lane| lane.trim().parse::<u32>().ok())
+                .collect(),
+        )
+    })
+}
+
+/// Gates assigned to a lane no `lint` leg runs, and lanes that run no gate.
+fn lane_problems(gates: &[Gate], workflow: &str) -> Vec<String> {
     let mut problems = Vec::new();
+    let lanes = workflow_lanes(workflow).unwrap_or_else(|| BTreeSet::from([DEFAULT_LANE]));
+    for gate in gates {
+        if !lanes.contains(&gate.lane) {
+            problems.push(format!(
+                "gate `{}` ({}) runs in lane {}, but the {WORKFLOW} `lint` matrix runs lanes \
+                 {lanes:?}, so nothing would run it",
+                gate.name, gate.source, gate.lane
+            ));
+        } else if gate.stage != STAGES[0] && gate.lane != DEFAULT_LANE {
+            problems.push(format!(
+                "gate `{}` ({}) is a `{}` stage gate in lane {}; only lane {DEFAULT_LANE} runs \
+                 the wasm and web stages",
+                gate.name, gate.source, gate.stage, gate.lane
+            ));
+        }
+    }
+    for lane in &lanes {
+        if !gates.iter().any(|gate| gate.lane == *lane) {
+            problems.push(format!(
+                "the {WORKFLOW} `lint` matrix runs lane {lane}, but no gate is assigned to it"
+            ));
+        }
+    }
+    problems
+}
+
+fn registry_problems(gates: &[Gate], workflow: &str) -> Vec<String> {
+    let mut problems = lane_problems(gates, workflow);
     for step in inline_gate_steps(workflow) {
         problems.push(format!(
             "{WORKFLOW} runs a gate inline: `{step}`. Add a shard under {REGISTRY}/ instead, \
@@ -304,13 +432,20 @@ fn repository_root() -> PathBuf {
 }
 
 #[cfg(not(test))]
-fn run_stage(root: &Path, gates: &[Gate], stage: &str) -> i32 {
-    let selected: Vec<&Gate> = gates.iter().filter(|gate| gate.stage == stage).collect();
+fn run_stage(root: &Path, gates: &[Gate], stage: &str, lane: Option<u32>) -> i32 {
+    let selected: Vec<&Gate> = gates
+        .iter()
+        .filter(|gate| gate.stage == stage && lane.is_none_or(|lane| gate.lane == lane))
+        .collect();
+    let scope = lane.map_or_else(String::new, |lane| format!(" in lane {lane}"));
     if selected.is_empty() {
-        println!("No gates registered for stage `{stage}`.");
+        println!("No gates registered for stage `{stage}`{scope}.");
         return 0;
     }
-    println!("Running {} gate(s) for stage `{stage}`.\n", selected.len());
+    println!(
+        "Running {} gate(s) for stage `{stage}`{scope}.\n",
+        selected.len()
+    );
 
     let mut failed: Vec<&str> = Vec::new();
     for gate in selected {
@@ -406,16 +541,30 @@ fn main() {
         );
         std::process::exit(2);
     };
-    std::process::exit(run_stage(&root, &gates, stage));
+    // Unset runs every lane, as a local run expects; a malformed value must not
+    // quietly select nothing.
+    let lane = match std::env::var("CI_GATE_LANE") {
+        Ok(value) if !value.trim().is_empty() => match value.trim().parse::<u32>() {
+            Ok(lane) => Some(lane),
+            Err(_) => {
+                println!("::error::CI_GATE_LANE must be a lane number, got `{value}`");
+                std::process::exit(2);
+            }
+        },
+        _ => None,
+    };
+    std::process::exit(run_stage(&root, &gates, stage, lane));
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    const SHARD: &str = "ci_gate check_formatting\n  stage rust\n  \
+    const SHARD: &str = "ci_gate check-formatting\n  stage rust\n  \
         description \"rustfmt owns the layout of every Rust file.\"\n  \
-        run \"cargo fmt --all -- --check\"\n";
+        run \"cargo fmt --all -- --check\"\n  \
+        justification \"Formatting drift makes diffs noisy and wastes review time; \
+        prevented since the registry was introduced in #991.\"\n";
 
     fn gate() -> Gate {
         parse_gate(SHARD, "data/meta/ci-gates/check-formatting.lino").unwrap()
@@ -424,10 +573,13 @@ mod tests {
     #[test]
     fn a_shard_parses_into_one_gate() {
         let gate = gate();
-        assert_eq!(gate.name, "check_formatting");
+        assert_eq!(gate.name, "check-formatting");
         assert_eq!(gate.stage, "rust");
         assert_eq!(gate.run, "cargo fmt --all -- --check");
-        assert!(gate.env.is_empty());
+        assert_eq!(
+            gate.env,
+            [] as [(std::string::String, std::string::String); 0]
+        );
     }
 
     #[test]
@@ -445,9 +597,62 @@ mod tests {
 
     #[test]
     fn a_gate_without_a_description_is_rejected() {
-        let source = "ci_gate check_formatting\n  stage rust\n  run \"cargo fmt\"\n";
+        let source = "ci_gate check-formatting\n  stage rust\n  run \"cargo fmt\"\n";
         let error = parse_gate(source, "shard.lino").unwrap_err();
         assert!(error.contains("no description"), "{error}");
+    }
+
+    #[test]
+    fn a_gate_without_a_justification_is_rejected() {
+        // R1085-16: every gate must carry a justification.
+        let source = "ci_gate check-formatting\n  stage rust\n  \
+            description \"rustfmt owns the layout.\"\n  run \"cargo fmt\"\n";
+        let error = parse_gate(source, "shard.lino").unwrap_err();
+        assert!(error.contains("no `justification`"), "{error}");
+    }
+
+    #[test]
+    fn a_justification_without_a_citation_is_rejected() {
+        // The justification must name an issue/PR (#NNN) or a commit hash.
+        let source = "ci_gate check-formatting\n  stage rust\n  \
+            description \"rustfmt owns the layout.\"\n  \
+            run \"cargo fmt\"\n  \
+            justification \"prevents formatting drift\"\n";
+        let error = parse_gate(source, "shard.lino").unwrap_err();
+        assert!(error.contains("must cite an issue/PR"), "{error}");
+    }
+
+    #[test]
+    fn a_justification_with_an_issue_citation_is_accepted() {
+        let source = "ci_gate check-formatting\n  stage rust\n  \
+            description \"rustfmt owns the layout.\"\n  \
+            run \"cargo fmt\"\n  \
+            justification \"prevents formatting drift, introduced in #991\"\n";
+        assert!(parse_gate(source, "shard.lino").is_ok());
+    }
+
+    #[test]
+    fn a_justification_with_a_commit_hash_is_accepted() {
+        let source = "ci_gate check-formatting\n  stage rust\n  \
+            description \"rustfmt owns the layout.\"\n  \
+            run \"cargo fmt\"\n  \
+            justification \"prevents formatting drift, commit 2b656e5cc\"\n";
+        assert!(parse_gate(source, "shard.lino").is_ok());
+    }
+
+    #[test]
+    fn justification_citation_detection() {
+        assert!(justification_has_citation("introduced in #991"));
+        assert!(justification_has_citation("commit 2b656e5cc"));
+        assert!(justification_has_citation(
+            "fix for #1081 via commit abcdef1234567"
+        ));
+        // A URL slug with hex chars but fewer than 7 consecutive is not a commit.
+        assert!(!justification_has_citation("plan-09 leaf-6"));
+        // Plain prose without a citation is rejected.
+        assert!(!justification_has_citation("prevents formatting drift"));
+        // Exactly 7 hex chars is a valid short hash.
+        assert!(justification_has_citation("abc1234"));
     }
 
     #[test]
@@ -492,7 +697,10 @@ mod tests {
             "      - run: rust-script scripts/run-ci-gates.rs --stage rust\n",
             "      - run: rust-script scripts/check-version-modification.rs\n",
         );
-        assert!(registry_problems(&[gate()], &source).is_empty());
+        assert_eq!(
+            registry_problems(&[gate()], &source),
+            [] as [std::string::String; 0]
+        );
     }
 
     #[test]
@@ -512,7 +720,10 @@ mod tests {
             "      - run: rust-script scripts/run-ci-gates.rs --stage rust\n",
             "",
         );
-        assert!(registry_problems(&[gate()], &source).is_empty());
+        assert_eq!(
+            registry_problems(&[gate()], &source),
+            [] as [std::string::String; 0]
+        );
     }
 
     #[test]
@@ -559,6 +770,80 @@ mod tests {
         );
 
         assert_eq!(workflow_surface(&source, &[gate()]), source);
+    }
+
+    #[test]
+    fn a_gate_runs_in_the_default_lane_unless_it_names_one() {
+        assert_eq!(gate().lane, DEFAULT_LANE);
+        let source = format!("{SHARD}  lane 3\n");
+        let laned = parse_gate(&source, "data/meta/ci-gates/check-formatting.lino").unwrap();
+        assert_eq!(laned.lane, 3);
+        for bad in ["lane 0", "lane two"] {
+            let error = parse_gate(&format!("{SHARD}  {bad}\n"), "shard.lino").unwrap_err();
+            assert!(error.contains("`lane` must be a number"), "{error}");
+        }
+    }
+
+    /// A `lint` job split into lanes, plus a later release job.
+    fn laned_workflow(lanes: &str, lint_steps: &str) -> String {
+        format!(
+            "jobs:\n  lint:\n    strategy:\n      matrix:\n        lane: [{lanes}]\n    \
+             steps:\n{lint_steps}  version-check:\n    steps:\n"
+        )
+    }
+
+    #[test]
+    fn every_lane_the_gates_name_is_one_the_matrix_runs() {
+        let steps = "      - run: rust-script scripts/run-ci-gates.rs --stage rust\n";
+        let mut second = gate();
+        second.name = "check_other".to_string();
+        second.lane = 2;
+        assert_eq!(
+            registry_problems(&[gate(), second.clone()], &laned_workflow("1, 2", steps)),
+            [] as [std::string::String; 0]
+        );
+
+        // A gate in a lane no leg runs is a gate nobody runs.
+        let problems = registry_problems(&[gate(), second.clone()], &laned_workflow("1", steps));
+        assert!(
+            problems
+                .iter()
+                .any(|problem| problem.contains("nothing would run it")),
+            "{problems:?}"
+        );
+        // Without a lane matrix there is only the default lane.
+        let problems = registry_problems(&[gate(), second], &workflow(steps, ""));
+        assert!(
+            problems
+                .iter()
+                .any(|problem| problem.contains("nothing would run it")),
+            "{problems:?}"
+        );
+    }
+
+    #[test]
+    fn a_lane_without_gates_and_a_laned_web_gate_are_rejected() {
+        let steps = "      - run: rust-script scripts/run-ci-gates.rs --stage rust\n      \
+                     - run: rust-script scripts/run-ci-gates.rs --stage web\n";
+        let problems = registry_problems(&[gate()], &laned_workflow("1, 2", steps));
+        assert!(
+            problems
+                .iter()
+                .any(|problem| problem.contains("no gate is assigned")),
+            "{problems:?}"
+        );
+
+        let mut web = gate();
+        web.name = "check_web".to_string();
+        web.stage = "web".to_string();
+        web.lane = 2;
+        let problems = registry_problems(&[gate(), web], &laned_workflow("1, 2", steps));
+        assert!(
+            problems
+                .iter()
+                .any(|problem| problem.contains("only lane 1 runs")),
+            "{problems:?}"
+        );
     }
 
     #[test]

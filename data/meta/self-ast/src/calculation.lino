@@ -2,61 +2,64 @@ self_ast_census
   target src/calculation.rs
   language rust
   fidelity signature
-  byte_len 34746
-  line_count 962
-  content_id source_module_55c4ff80ba9cc12b
-  symbol_count 53
+  byte_len 35931
+  line_count 986
+  content_id source_module_b7efead688108849
+  symbol_count 56
   symbols
-    enum CalculationEngine 15 19
-    function slug 23 29
-    struct CalculationEvaluation 34 39
-    struct CalculationCandidate 43 49
-    struct PromptInterpretation 53 56
-    function has_bare_dot 73 86
-    function evaluate_with_link_calculator 88 104
-    struct LinearValue 107 110
-    function constant 113 118
-    function variable 120 125
-    function add 127 132
-    function subtract 134 139
-    function negate 141 146
-    function multiply 148 165
-    function divide 167 178
-    function has_variable 180 182
-    struct LinearParser 185 189
-    function new 192 198
-    function parse 200 208
-    function parse_expression 210 222
-    function parse_term 224 236
-    function parse_factor 238 267
-    function parse_number 269 291
-    function parse_variable 293 320
-    function skip_whitespace 322 330
-    function consume 332 339
-    function peek 341 343
-    function advance 345 347
-    function nearly_zero 350 352
-    function is_unknown_placeholder 354 356
-    function format_equation_number 358 373
-    function evaluate_linear_equation 375 401
-    function contains_word_operator 403 420
-    function evaluate_calculation 425 441
-    function trim_prompt_punctuation 443 457
-    function strip_prefix_case_insensitive 459 464
-    function strip_suffix_case_insensitive 466 471
-    function leading_word_spans 473 492
-    function fuzzy_prefix_match 494 525
-    function strip_fuzzy_prefix_case_insensitive 527 544
-    function interpretation_statements 547 558
-    function calculation_wrapper_suffixes 573 592
-    function calculation_request_prefixes 594 615
-    function strip_calculation_wrappers_with_prefixes 617 666
-    function has_prefix_boundary 668 675
-    function sentence_end_from 690 707
-    const TERMINATORS 691 691
-    function embedded_calculation_request_slices 721 746
-    function calculator_domain_signals 772 795
-    function has_calculation_signal 797 832
-    function contains_spelled_arithmetic 834 848
-    function push_calculation_candidate 850 871
-    function calculation_expression_candidates 877 962
+    module function_phrase 13 13
+    enum CalculationEngine 17 21
+    function slug 25 31
+    struct CalculationEvaluation 36 41
+    struct CalculationCandidate 45 51
+    struct PromptInterpretation 55 58
+    function evaluate_with_link_calculator 60 76
+    struct LinearValue 79 82
+    function constant 85 90
+    function variable 92 97
+    function add 99 104
+    function subtract 106 111
+    function negate 113 118
+    function multiply 120 137
+    function divide 139 150
+    function has_variable 152 154
+    struct LinearParser 157 161
+    function new 164 170
+    function parse 172 180
+    function parse_expression 182 194
+    function parse_term 196 208
+    function parse_factor 210 239
+    function parse_number 241 263
+    function parse_variable 265 292
+    function skip_whitespace 294 302
+    function consume 304 311
+    function peek 313 315
+    function advance 317 319
+    function nearly_zero 322 324
+    function is_unknown_placeholder 326 328
+    function format_equation_number 330 345
+    function evaluate_linear_equation 347 373
+    function contains_word_operator 375 392
+    function reads_as_calculator_expression 400 408
+    const SYMBOLS 401 401
+    function evaluate_calculation 413 431
+    function split_glued_operator_words 441 461
+    function trim_prompt_punctuation 463 477
+    function strip_prefix_case_insensitive 479 484
+    function strip_suffix_case_insensitive 486 491
+    function leading_word_spans 493 512
+    function fuzzy_prefix_match 514 545
+    function strip_fuzzy_prefix_case_insensitive 547 564
+    function interpretation_statements 567 578
+    function calculation_wrapper_suffixes 593 612
+    function calculation_request_prefixes 614 635
+    function strip_calculation_wrappers_with_prefixes 637 686
+    function has_prefix_boundary 688 695
+    function sentence_end_from 710 727
+    const TERMINATORS 711 711
+    function embedded_calculation_request_slices 741 766
+    function calculator_domain_signals 792 815
+    function has_calculation_signal 817 852
+    function contains_spelled_arithmetic 854 868
+    function push_calculation_candidate 870 891
+    function calculation_expression_candidates 897 986

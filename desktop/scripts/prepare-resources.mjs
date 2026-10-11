@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import { bundleNativeBinary } from "./native-binary-resources.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const desktopDir = path.resolve(scriptDir, "..");
@@ -80,27 +81,18 @@ if (fs.existsSync(playwrightCli)) {
   console.log(`Prepared desktop browser runtime: ${outputBrowser}`);
 }
 
-fs.mkdirSync(outputBin, { recursive: true });
-const binaryName = process.platform === "win32" ? "formal-ai.exe" : "formal-ai";
-const configuredBinary = process.env.FORMAL_AI_DESKTOP_BINARY || "";
-const releaseBinary = path.join(repoRoot, "target", "release", binaryName);
-const debugBinary = path.join(repoRoot, "target", "debug", binaryName);
-const binarySource = [configuredBinary, releaseBinary, debugBinary].find(
-  (candidate) => candidate && fs.existsSync(candidate),
-);
-
-if (binarySource) {
-  const binaryDestination = path.join(outputBin, binaryName);
-  fs.copyFileSync(binarySource, binaryDestination);
-  if (process.platform !== "win32") {
-    fs.chmodSync(binaryDestination, 0o755);
-  }
-  console.log(`Prepared desktop binary: ${binaryDestination}`);
+const nativeReceipt = bundleNativeBinary({
+  repoRoot, outputBin,
+  configuredBinary: process.env.FORMAL_AI_DESKTOP_BINARY || "",
+  required: process.env.FORMAL_AI_DESKTOP_REQUIRE_BINARY === "true",
+  expectedVersion: JSON.parse(fs.readFileSync(path.join(desktopDir, "package.json"), "utf8")).version,
+});
+if (nativeReceipt) {
+  console.log("Prepared desktop binary: " + JSON.stringify(nativeReceipt));
 } else {
-  fs.writeFileSync(
-    path.join(outputBin, "README.txt"),
-    "Run `cargo build --release` or set FORMAL_AI_DESKTOP_BINARY before packaging to bundle formal-ai.\n",
-  );
+  fs.mkdirSync(outputBin, { recursive: true });
+  fs.writeFileSync(path.join(outputBin, "README.txt"),
+    "Run cargo build --manifest-path rust/Cargo.toml --release or set FORMAL_AI_DESKTOP_BINARY before packaging.\n");
   console.warn("No formal-ai binary found; packaged app will fall back to formal-ai on PATH.");
 }
 

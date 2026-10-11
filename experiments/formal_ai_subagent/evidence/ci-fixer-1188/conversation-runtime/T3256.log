@@ -1,0 +1,145 @@
+>> bash {"command":"node --test rust/tests/web/worker-conversation-history.test.mjs"}
+   Output: TAP version 13
+   # Subtest: whole original native history assertions: solve_with_history_searches_english_dialog_history_by_term
+   ok 1 - whole original native history assertions: solve_with_history_searches_english_dialog_history_by_term
+     ---
+     duration_ms: 667.150417
+     ...
+   # Subtest: whole original native history assertions: solve_with_history_reports_no_dialog_history_matches
+   ok 2 - whole original native history assertions: solve_with_history_reports_no_dialog_history_matches
+     ---
+     duration_ms: 569.827
+     ...
+   # Subtest: whole original native history assertions: solve_with_history_searches_dialog_history_in_russian
+   ok 3 - whole original native history assertions: solve_with_history_searches_dialog_history_in_russian
+     ---
+     duration_ms: 653.076291
+     ...
+   # Subtest: whole original native history assertions: solve_with_history_searches_dialog_history_in_hindi
+   ok 4 - whole original native history assertions: solve_with_history_searches_dialog_history_in_hindi
+     ---
+     duration_ms: 719.455875
+     ...
+   # Subtest: whole original native history assertions: solve_with_history_searches_dialog_history_in_chinese
+   ok 5 - whole original native history assertions: solve_with_history_searches_dialog_history_in_chinese
+     ---
+     duration_ms: 712.398541
+     ...
+   # Subtest: whole original native history assertions: solve_with_history_accepts_other_conversation_query_forms
+   ok 6 - whole original native history assertions: solve_with_history_accepts_other_conversation_query_forms
+     ---
+     duration_ms: 641.407875
+     ...
+   # Subtest: search result has exact native English bytes and only actual turn matches
+   ok 7 - search result has exact native English bytes and only actual turn matches
+     ---
+     duration_ms: 614.834917
+     ...
+   # Subtest: empty query and unrelated syntax do not invent history or persisted memory
+   not ok 8 - empty query and unrelated syntax do not invent history or persisted memory
+     ---
+     duration_ms: 741.729
+     location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/worker-conversation-history.test.mjs:55:1'
+     failureType: 'testCodeFailure'
+     error: |-
+       Expected values to be strictly equal:
+       + actual - expected
+       
+       + 'That one is new to me. I cannot answer that from local links rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or links rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.'
+       - 'No mentions of "haskell" found in the conversation history.'
+     code: 'ERR_ASSERTION'
+     name: 'AssertionError'
+     expected: 'No mentions of "haskell" found in the conversation history.'
+     actual: 'That one is new to me. I cannot answer that from local links rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or links rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.'
+     operator: 'strictEqual'
+     stack: |-
+       TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/worker-conversation-history.test.mjs:62:10)
+       async Test.run (node:internal/test_runner/test:797:9)
+       async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+     ...
+   1..8
+   # tests 8
+   # suites 0
+   # pass 7
+   # fail 1
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 5616.09175
+   
+   Error: 
+   Exit Code: 1
+== answer ==
+The command failed: `node --test rust/tests/web/worker-conversation-history.test.mjs` exited with code 1.
+
+```text
+TAP version 13
+# Subtest: whole original native history assertions: solve_with_history_searches_english_dialog_history_by_term
+ok 1 - whole original native history assertions: solve_with_history_searches_english_dialog_history_by_term
+  ---
+  duration_ms: 667.150417
+  ...
+# Subtest: whole original native history assertions: solve_with_history_reports_no_dialog_history_matches
+ok 2 - whole original native history assertions: solve_with_history_reports_no_dialog_history_matches
+  ---
+  duration_ms: 569.827
+  ...
+# Subtest: whole original native history assertions: solve_with_history_searches_dialog_history_in_russian
+ok 3 - whole original native history assertions: solve_with_history_searches_dialog_history_in_russian
+  ---
+  duration_ms: 653.076291
+  ...
+# Subtest: whole original native history assertions: solve_with_history_searches_dialog_history_in_hindi
+ok 4 - whole original native history assertions: solve_with_history_searches_dialog_history_in_hindi
+  ---
+  duration_ms: 719.455875
+  ...
+# Subtest: whole original native history assertions: solve_with_history_searches_dialog_history_in_chinese
+ok 5 - whole original native history assertions: solve_with_history_searches_dialog_history_in_chinese
+  ---
+  duration_ms: 712.398541
+  ...
+# Subtest: whole original native history assertions: solve_with_history_accepts_other_conversation_query_forms
+ok 6 - whole original native history assertions: solve_with_history_accepts_other_conversation_query_forms
+  ---
+  duration_ms: 641.407875
+  ...
+# Subtest: search result has exact native English bytes and only actual turn matches
+ok 7 - search result has exact native English bytes and only actual turn matches
+  ---
+  duration_ms: 614.834917
+  ...
+# Subtest: empty query and unrelated syntax do not invent history or persisted memory
+not ok 8 - empty query and unrelated syntax do not invent history or persisted memory
+  ---
+  duration_ms: 741.729
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/worker-conversation-history.test.mjs:55:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'That one is new to me. I cannot answer that from local links rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or links rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.'
+    - 'No mentions of "haskell" found in the conversation history.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'No mentions of "haskell" found in the conversation history.'
+  actual: 'That one is new to me. I cannot answer that from local links rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or links rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/worker-conversation-history.test.mjs:62:10)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5616.09175
+```
+
+I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.

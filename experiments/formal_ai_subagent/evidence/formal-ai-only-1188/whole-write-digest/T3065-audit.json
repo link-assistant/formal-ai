@@ -1,0 +1,31 @@
+{
+  "id": "T3065",
+  "tools": [
+    "grep",
+    "grep",
+    "grep",
+    "grep",
+    "grep",
+    "grep"
+  ],
+  "stop": "final",
+  "answer": "Bounded audit evidence from 6 file(s):\n- `js/agentic/workspace_change.mjs`\n  - Line 163:     compute: (source, missing) => (missing ? null : replacedInOrder(source, pairs)),\n  - Line 397:     const found = [];\n  - Line 464:   const stated = [];\n  - Line 492:     if (shown !== inserted) stated.push(renderSeededChange('file_edit_blank_line', task, insert.target, []));\n- `rust/src/agentic_coding/workspace_change.rs`\n  - Line 32: #[derive(Debug, Clone, PartialEq, Eq)]\n  - Line 100: #[derive(Debug, Clone, PartialEq, Eq)]\n  - Line 284:                     list_slots: &[],\n  - Line 305:                 list_slots: &[],\n- `js/agentic/tool_result.mjs`\n  - Line 261:     && messages.some((message) => (message.tool_calls || []).some((call) => isWorkspaceCreationTool(call.function.name)));\n  - Line 377:   const killed = [];\n  - Line 457:   const parts = [];\n  - Line 496:   const kept = [];\n- `rust/src/agentic_coding/tool_result/source_observation.rs`\n  No explicit gap marker was observed in the bounded evidence.\n- `js/agentic/progress.mjs`\n  - Line 32:     this.completed = [];\n  - Line 33:     this.attempts = [];\n  - Line 35:     this.fetched_pages = [];\n  - Line 36:     this.attempted_fetches = [];\n- `rust/src/agentic_coding/progress.rs`\n  No explicit gap marker was observed in the bounded evidence.\nAbsence of an explicit marker in this bounded evidence does not prove completion.",
+  "before": {
+    "js/agentic/workspace_change.mjs": "e879be4d9a79d08710a770e4d2d7f4726bbd8bd75fcd2800775dae1dadf9a636",
+    "rust/src/agentic_coding/workspace_change.rs": "b070fd7b9135e2ca5cd3116c6fb88baf0a4bac7bb4f30b555ee5554c79ea86a6",
+    "js/agentic/tool_result.mjs": "8cf6c622950bef310994735fec172e2a7b9509621dae1f8c89ae88107a823875",
+    "rust/src/agentic_coding/tool_result/source_observation.rs": "69126ed8fbd4ff6d08fba1f9d694aebe9b59c3318b40496d5448f749281bfe82",
+    "js/agentic/progress.mjs": "631dc456728b72c44ad0882ef2e3cf8145efc531638dc6850ea2f7575b30d473",
+    "rust/src/agentic_coding/progress.rs": "6287d4089aeb8704fdd308f9fdf510f6272049909784a94cc9e0b9f7052e8c5b"
+  },
+  "after": {
+    "js/agentic/workspace_change.mjs": "e879be4d9a79d08710a770e4d2d7f4726bbd8bd75fcd2800775dae1dadf9a636",
+    "rust/src/agentic_coding/workspace_change.rs": "b070fd7b9135e2ca5cd3116c6fb88baf0a4bac7bb4f30b555ee5554c79ea86a6",
+    "js/agentic/tool_result.mjs": "8cf6c622950bef310994735fec172e2a7b9509621dae1f8c89ae88107a823875",
+    "rust/src/agentic_coding/tool_result/source_observation.rs": "69126ed8fbd4ff6d08fba1f9d694aebe9b59c3318b40496d5448f749281bfe82",
+    "js/agentic/progress.mjs": "631dc456728b72c44ad0882ef2e3cf8145efc531638dc6850ea2f7575b30d473",
+    "rust/src/agentic_coding/progress.rs": "6287d4089aeb8704fdd308f9fdf510f6272049909784a94cc9e0b9f7052e8c5b"
+  },
+  "sourceUnchanged": true,
+  "physicalRepositoryEffects": 0
+}

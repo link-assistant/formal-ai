@@ -1,0 +1,21 @@
+view
+  id M-bbc41c7cd698
+  lemma below
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in or to a place that is lower"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "(in writing) at a later place"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "on a floor below"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "further down"
+    provenance (wordnet)

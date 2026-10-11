@@ -1,0 +1,80 @@
+TAP version 13
+# Subtest: complete inputs yield bounded typed Gap, not source-plan success
+ok 1 - complete inputs yield bounded typed Gap, not source-plan success
+  ---
+  duration_ms: 252.079584
+  ...
+# Subtest: plain Read delegates unchanged and quoted goal text cannot open a goal
+ok 2 - plain Read delegates unchanged and quoted goal text cannot open a goal
+  ---
+  duration_ms: 1.917334
+  ...
+# Subtest: real complete plain Read retains exact underlying planner answer
+ok 3 - real complete plain Read retains exact underlying planner answer
+  ---
+  duration_ms: 335.450917
+  ...
+# Subtest: raw JSON failure keys are source data under actual provider metadata
+ok 4 - raw JSON failure keys are source data under actual provider metadata
+  ---
+  duration_ms: 8.757583
+  ...
+# Subtest: bare source cannot certify complete dependency
+ok 5 - bare source cannot certify complete dependency
+  ---
+  duration_ms: 8.9105
+  ...
+# Subtest: partial source cannot certify complete dependency
+ok 6 - partial source cannot certify complete dependency
+  ---
+  duration_ms: 8.350292
+  ...
+# Subtest: wrong metadata path cannot certify complete dependency
+ok 7 - wrong metadata path cannot certify complete dependency
+  ---
+  duration_ms: 8.383208
+  ...
+# Subtest: wrong call ID must require a fresh Read
+ok 8 - wrong call ID must require a fresh Read
+  ---
+  duration_ms: 8.676917
+  ...
+# Subtest: wrong tool name must require a fresh Read
+ok 9 - wrong tool name must require a fresh Read
+  ---
+  duration_ms: 8.701583
+  ...
+# Subtest: previous user window must require a fresh Read
+ok 10 - previous user window must require a fresh Read
+  ---
+  duration_ms: 8.393791
+  ...
+# Subtest: explicit provider error stays Failure
+ok 11 - explicit provider error stays Failure
+  ---
+  duration_ms: 8.180458
+  ...
+# Subtest: no read provider yields typed Gap without claiming observation
+ok 12 - no read provider yields typed Gap without claiming observation
+  ---
+  duration_ms: 8.140541
+  ...
+# Subtest: verified Run holds command exit expectation without execution or success claim
+ok 13 - verified Run holds command exit expectation without execution or success claim
+  ---
+  duration_ms: 4.773958
+  ...
+# Subtest: multilingual owned read and Unicode UTF8 goal spans are retained
+ok 14 - multilingual owned read and Unicode UTF8 goal spans are retained
+  ---
+  duration_ms: 17.475125
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1162.175833

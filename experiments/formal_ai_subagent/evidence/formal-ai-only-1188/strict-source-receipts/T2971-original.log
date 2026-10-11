@@ -1,0 +1,412 @@
+>> read {"filePath":"rust/tests/web/compiled-skill-packages.test.mjs","file_path":"rust/tests/web/compiled-skill-packages.test.mjs","path":"rust/tests/web/compiled-skill-packages.test.mjs"}
+   <file>
+   00001| import assert from 'node:assert/strict';
+   00002| import { readFileSync } from 'node:fs';
+   00003| import { test } from 'node:test';
+   00004| import { compileNaturalLanguageSkill as compile } from '../../../js/agentic/crate/skill_compiler.mjs';
+   00005| import { parseLino } from '../../../js/server/lino.mjs';
+   00006| import { symbolicFromWorker } from '../../../js/server/solve.mjs';
+   00007| import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   00008| import { installTextHost } from '../../../scripts/lib/text-capability-measures.mjs';
+   00009| 
+   00010| installTextHost();
+   00011| const native = readFileSync(new URL('../unit/specification/natural_language_skill_compilation.rs', import.meta.url), 'utf8');
+   00012| const constant = name => JSON.parse(native.match(new RegExp('const ' + name + ': &str = ("(?:[^"\\\\]|\\\\.)*");'))[1]);
+   00013| const skill = constant('SKILL');
+   00014| const trigger = constant('TRIGGER');
+   00015| const response = constant('RESPONSE');
+   00016| const independentId = (prefix, text) => {
+   00017|   let hash = 14695981039346656037n;
+   00018|   for (const byte of Buffer.from(text, 'utf8')) hash = ((hash ^ BigInt(byte)) * 1099511628211n) % 18446744073709551616n;
+   00019|   return prefix + '_' + hash.toString(16).padStart(16, '0');
+   00020| };
+   00021| 
+   00022| test('native trigger response fixture compiles with independently verified stable IDs', () => {
+   00023|   const package_ = compile(skill);
+   00024|   assert.equal(package_.status, 'compiled');
+   00025|   assert.equal(package_.id, 'compiled_skill_32628c474c664f67');
+   00026|   assert.equal(package_.rule_id, 'compiled_skill_rule_881391387cf00e11');
+   00027|   assert.equal(package_.handler_id, 'compiled_skill_handler_aaf62aceed77ddcd');
+   00028|   assert.equal(package_.legacy_behavior_rule_id, 'behavior_rule_runtime_32628c474c664f67');
+   00029|   assert.equal(package_.source_description, skill);
+   00030|   assert.equal(package_.trigger, trigger);
+   00031|   assert.equal(package_.response, response);
+   00032|   assert.equal(package_.skill_name, 'trigger_response_skill');
+   00033| });
+   00034| 
+   00035| test('compiled package codec retains all fourteen ordered native fields', () => {
+   00036|   const p = compile(skill);
+   00037|   const record = parseLino(p.linksNotation());
+   00038|   assert.equal(record.name, p.id);
+   00039|   assert.deepEqual(record.children.map(node => [node.name, node.value]), [
+   00040|     ['type', 'compiled_skill_package'], ['schema_version', '0.2.0'],
+   00041|     ['package_kind', 'associative_package'], ['source', 'natural_language_skill'],
+   00042|     ['source_description', skill], ['skill_name', 'trigger_response_skill'],
+   00043|     ['trigger_rule', p.rule_id], ['trigger', trigger], ['normalized_trigger', trigger],
+   00044|     ['compiled_handler', p.handler_id], ['handler_kind', 'deterministic_response'],
+   00045|     ['response', response], ['replay_mode', 'exact_normalized_prompt'],
+   00046|     ['legacy_behavior_rule_id', p.legacy_behavior_rule_id],
+   00047|   ]);
+   00048|   assert.equal(p.linksNotation().endsWith('\n'), false);
+   00049| });
+   00050| 
+   00051| test('three E1 records preserve native field order and independently hashed doublets', () => {
+   00052|   const p = compile(skill);
+   00053|   const records = p.linkRecords();
+   00054|   const schemas = [
+   00055|     ['CompiledSkillPackage', 'associative_package', independentId('natural_language_skill', skill), [
+   00056|       ['source_description', skill], ['skill_name', 'trigger_response_skill'],
+   00057|       ['trigger_rule', p.rule_id], ['compiled_handler', p.handler_id], ['replay_mode', 'exact_normalized_prompt'],
+   00058|     ]],
+   00059|     ['CompiledSkillTriggerRule', 'substitution_rule', p.id, [
+   00060|       ['trigger', trigger], ['normalized_trigger', trigger], ['handler', p.handler_id],
+   00061|     ]],
+   00062|     ['CompiledSkillHandler', 'deterministic_response_handler', p.id, [
+   00063|       ['handler_kind', 'deterministic_response'], ['response', response],
+   00064|     ]],
+   00065|   ];
+   00066|   assert.equal(records.length, 3);
+   00067|   for (let index = 0; index < records.length; index += 1) {
+   00068|     const r = records[index];
+   00069|     const [type, subtype, source, fields] = schemas[index];
+   00070|     const edges = [[r.stable_id, 'Type'], ['Type', type], [type, 'SubType'],
+   00071|       ['SubType', subtype], [subtype, 'Value'], [r.stable_id, source]];
+   00072|     for (const [key, value] of [['schema_version', '0.2.0'], ...fields]) {
+   00073|       edges.push([r.stable_id, 'field:' + key], ['field:' + key, 'value:' + value]);
+   00074|     }
+   00075|     assert.equal(r.record_type, type);
+   00076|     assert.equal(r.source_id, source);
+   00077|     assert.equal(r.schema_version, '0.2.0');
+   00078|     assert.deepEqual(r.links, edges.map(([from, to]) => ({ from, to, index: independentId('doublet', from + '->' + to) })));
+   00079|   }
+   00080| });
+   00081| 
+   00082| test('all unchanged native multilingual rows compile and replay exact response bytes', async () => {
+   00083|   const rows = [...native.matchAll(/Case\s*\{\s*language:\s*"([^"\n]+)",\s*skill:\s*"([^"\n]+)",\s*trigger:\s*"([^"\n]+)",\s*response:\s*"([^"\n]+)",\s*\}/gu)];
+   00084|   assert.equal(rows.length, 4);
+   00085|   const host = new WorkerHost();
+   00086|   for (const [, language, description, prompt, expected] of rows) {
+   00087|     const p = compile(description);
+   00088|     assert.equal(p.status, 'compiled', language);
+   00089|     assert.equal(p.trigger, prompt, language);
+   00090|     assert.equal(p.response, expected, language);
+   00091|     assert.equal(p.replay(prompt).answer, expected, language);
+   00092|     assert.equal(p.replay(prompt + ' extra'), null, language);
+   00093|     const answer = await host.solve(prompt, [{ role: 'user', content: description }]);
+   00094|     assert.equal(answer.intent, 'behavior_rule_custom', language);
+   00095|     assert.equal(answer.content, expected, language);
+   00096|     assert.equal(answer.solverEvents.find(event => event.kind === 'cache_hit').payload, p.id, language);
+   00097|   }
+   00098| });
+   00099| 
+   00100| test('held-out quoted Unicode and unquoted seeded teaching preserve response bytes', async () => {
+   00101|   const description = 'When `Ω status` then `Bob\'s "ready"; 状态!`';
+   00102|   const p = compile(description);
+   00103|   assert.equal(p.response, 'Bob\'s "ready"; 状态!');
+   00104|   assert.equal(p.replay(' Ω STATUS!!! ').answer, p.response);
+   00105|   assert.equal(p.replay('Ω state'), null);
+   00106|   assert.equal(parseLino(p.linksNotation()).children.find(node => node.name === 'response').value, p.response);
+   00107|   const host = new WorkerHost();
+   00108|   const teaching = await host.solve(description);
+   00109|   const body = teaching.content.split('```links\n')[1].split('\n```')[0];
+   00110|   assert.equal(parseLino(body).children.find(node => node.name === 'answer').value, p.response);
+   00111|   const unquoted = compile('When I say pebble 928 answer with arbitrary response.');
+   00112|   assert.equal(unquoted.status, 'compiled');
+   00113|   assert.equal(unquoted.trigger, 'pebble 928');
+   00114|   assert.equal(unquoted.response, 'arbitrary response');
+   00115| });
+   00116| 
+   00117| test('unsupported structured IR never becomes a trigger response package or replay cache hit', async () => {
+   00118|   const structured = native.match(/const TYPED_PROCEDURE_SKILL: &str = r"([\s\S]*?)";/u)[1];
+   00119|   assert.equal(compile(structured).status, 'unsupported-structured-skill');
+   00120|   for (const description of ['ordinary unrelated text', 'When `` then ``', 'Skill: `unknown`\nWhen `a` then `b`']) {
+   00121|     assert.notEqual(compile(description).status, 'compiled');
+   00122|   }
+   00123|   const result = await new WorkerHost().solve('triage TCK-7 urgent', [{ role: 'user', content: structured }]);
+   00124|   assert.equal(result.solverEvents.some(event => event.kind === 'cache_hit'), false);
+   00125| });
+   00126| 
+   00127| // Keep every original native assertion in solver_prefers_compiled_skill_from_history_and_records_cache_hit.
+   00128| test('original native history replay retains all five assertions through production WorkerHost', async () => {
+   00129|   const result = symbolicFromWorker(await new WorkerHost().solve(trigger, [{ role: 'user', content: skill }]));
+   00130|   assert.equal(result.intent, 'behavior_rule_custom');
+   00131|   assert.equal(result.answer, response);
+   00132|   assert.equal(result.evidence_links.some(link => link.startsWith('cache_hit:compiled_skill_')), true);
+   00133|   assert.equal(result.evidence_notation.includes('compiled_skill:replay'), true);
+   00134|   assert.equal(result.evidence_notation.includes('behavior_rule:match'), false);
+   00135| });
+   00136| 
+   00137| // Keep every original native assertion in behavior_rules_count_includes_dialog_local_runtime_rules.
+   00138| test('original native count has exact full answer including closing newline and all six assertions', async () => {
+   00139|   const source = readFileSync(new URL('../unit/specification/behavior_rules.rs', import.meta.url), 'utf8');
+   00140|   const body = source.split('fn behavior_rules_count_includes_dialog_local_runtime_rules()')[1].split('\n#[test]')[0];
+   00141|   const quoted = [...body.matchAll(/"(?:[^"\\]|\\.)*"/gu)].map(match => JSON.parse(match[0]));
+   00142|   const teaching = quoted.find(text => text.startsWith('When `'));
+   00143|   const query = quoted.find(text => text.startsWith('How many '));
+   00144|   const expected = quoted.find(text => text.startsWith('Total behavior rules: 9') && text.includes('\n'));
+   00145|   assert.ok(teaching && query && expected);
+   00146|   const result = await new WorkerHost().solve(query, [{ role: 'user', content: teaching }]);
+   00147|   assert.equal(result.intent, 'behavior_rules_count');
+   00148|   assert.equal(result.content, expected);
+   00149|   assert.equal(result.content.includes('Total behavior rules: 9'), true);
+   00150|   assert.equal(result.content.includes('built_in_rules "8"'), true);
+   00151|   assert.equal(result.content.includes('dialog_local_rules "1"'), true);
+   00152|   assert.equal(result.content.includes('total_rules "9"'), true);
+   00153| });
+   00154| 
+   00155| test('true user assistant history teaches counts lists and replays the same package with ordered events', async () => {
+   00156|   const host = new WorkerHost();
+   00157|   const p = compile(skill);
+   00158|   const history = [];
+   00159|   const answers = [];
+   00160|   for (const prompt of [skill, 'How many behavior rules are there?', 'Show rules', trigger]) {
+   00161|     const answer = await host.solve(prompt, history);
+   00162|     answers.push(answer);
+   00163|     history.push({ role: 'user', content: prompt }, { role: 'assistant', content: answer.content });
+   00164|   }
+   00165|   const [teaching, count, list, replay] = answers;
+   00166|   assert.equal(teaching.intent, 'behavior_rule_update');
+   00167|   const record = parseLino(teaching.content.split('```links\n')[1].split('\n```')[0]);
+   00168|   assert.equal(record.name, p.id);
+   00169|   assert.deepEqual(record.children.map(node => [node.name, node.value]).filter(([name]) => name !== 'when_then'), [
+   00170|     ['type', 'compiled_skill_package'], ['legacy_behavior_rule_id', p.legacy_behavior_rule_id],
+   00171|     ['match_prompt', p.trigger], ['answer', p.response], ['compiled_handler', p.handler_id],
+   00172|     ['replay_mode', 'exact_normalized_prompt'], ['source', 'user_message'],
+   00173|   ]);
+   00174|   assert.deepEqual(teaching.solverEvents.filter(event => ['skill_compile:package', 'behavior_rule:update'].includes(event.kind))
+   00175|     .map(event => [event.kind, event.payload]), [['skill_compile:package', p.id], ['behavior_rule:update', p.legacy_behavior_rule_id]]);
+   00176|   assert.equal(count.solverEvents.find(event => event.kind === 'behavior_rules:runtime_count').payload, '1');
+   00177|   assert.equal(list.content.includes('`' + p.id + '` (`' + p.legacy_behavior_rule_id + '`)'), true);
+   00178|   assert.equal(replay.content, p.response);
+   00179|   assert.deepEqual(replay.solverEvents.filter(event => ['compiled_skill:package', 'compiled_skill:replay', 'cache_hit', 'response'].includes(event.kind))
+   00180|     .map(event => [event.kind, event.payload]), [['compiled_skill:package', p.linksNotation()],
+   00181|     ['compiled_skill:replay', p.rule_id], ['cache_hit', p.id], ['response', 'response:' + p.id]]);
+   00182| });
+   00183| 
+   00184| test('canonical package dedup and latest user response ignore assistant impostors', async () => {
+   00185|   const host = new WorkerHost();
+   00186|   const old = 'When `quartz 631` then `older value`';
+   00187|   const latest = 'When `quartz 631` then `new value`';
+   00188|   const equivalent = 'When `QUARTZ 631!!!` then `new value`';
+   00189|   const history = [{ role: 'user', content: old }, { role: 'user', content: latest },
+   00190|     { role: 'user', content: equivalent }, { role: 'assistant', content: 'When `quartz 631` then `impostor`' }];
+   00191|   const count = await host.solve('How many behavior rules are there?', history);
+   00192|   assert.equal(count.solverEvents.find(event => event.kind === 'behavior_rules:runtime_count').payload, '2');
+   00193|   const replay = await host.solve('quartz 631', history);
+   00194|   assert.equal(replay.content, 'new value');
+   00195|   assert.equal(replay.solverEvents.find(event => event.kind === 'cache_hit').payload, compile(equivalent).id);
+   00196|   const nonmatch = await host.solve('quartz 631', [history[3]]);
+   00197|   assert.equal(nonmatch.solverEvents.some(event => event.kind === 'cache_hit'), false);
+   00198|   const baseline = await host.solve('4 + 4');
+   00199|   assert.deepEqual(await host.solve('4 + 4', history), baseline);
+   00200| });
+   00201| 
+   
+   (End of file - total 201 lines)
+   </file>
+>> write {"content":"import assert from 'node:assert/strict';\nimport { readFileSync } from 'node:fs';\nimport { test } from 'node:test';\nimport { compileNaturalLanguageSkill as compile } from '../../../js/agentic/crate/skill_compiler.mjs';\nimport { parseLino } from '../../../js/server/lino.mjs';\nimport { symbolicFromWorker } from '../../../js/server/solve.mjs';\nimport { WorkerHost } from '../../../js/server/worker-host.mjs';\nimport { installTextHost } from '../../../scripts/lib/text-capability-measures.mjs';\n\ninstallTextHost();\nconst native = readFileSync(new URL('../unit/specification/natural_language_skill_compilation.rs', import.meta.url), 'utf8');\nconst constant = name => JSON.parse(native.match(new RegExp('const ' + name + ': &str = (\"(?:[^\"\\\\\\\\]|\\\\\\\\.)*\");'))[1]);\nconst skill = constant('SKILL');\nconst trigger = constant('TRIGGER');\nconst response = constant('RESPONSE');\nconst independentId = (prefix, text) => {\n  let hash = 14695981039346656037n;\n  for (const byte of Buffer.from(text, 'utf8')) hash = ((hash ^ BigInt(byte)) * 1099511628211n) % 18446744073709551616n;\n  return prefix + '_' + hash.toString(16).padStart(16, '0');\n};\n\ntest('native trigger response fixture compiles with independently verified stable IDs', () => {\n  const package_ = compile(skill);\n  assert.equal(package_.status, 'compiled');\n  assert.equal(package_.id, 'compiled_skill_32628c474c664f67');\n  assert.equal(package_.rule_id, 'compiled_skill_rule_881391387cf00e11');\n  assert.equal(package_.handler_id, 'compiled_skill_handler_aaf62aceed77ddcd');\n  assert.equal(package_.legacy_behavior_rule_id, 'behavior_rule_runtime_32628c474c664f67');\n  assert.equal(package_.source_description, skill);\n  assert.equal(package_.trigger, trigger);\n  assert.equal(package_.response, response);\n  assert.equal(package_.skill_name, 'trigger_response_skill');\n});\n\ntest('compiled package codec retains all fourteen ordered native fields', () => {\n  const p = compile(skill);\n  const record = parseLino(p.linksNotation());\n  assert.equal(record.name, p.id);\n  assert.deepEqual(record.children.map(node => [node.name, node.value]), [\n    ['type', 'compiled_skill_package'], ['schema_version', '0.2.0'],\n    ['package_kind', 'associative_package'], ['source', 'natural_language_skill'],\n    ['source_description', skill], ['skill_name', 'trigger_response_skill'],\n    ['trigger_rule', p.rule_id], ['trigger', trigger], ['normalized_trigger', trigger],\n    ['compiled_handler', p.handler_id], ['handler_kind', 'deterministic_response'],\n    ['response', response], ['replay_mode', 'exact_normalized_prompt'],\n    ['legacy_behavior_rule_id', p.legacy_behavior_rule_id],\n  ]);\n  assert.equal(p.linksNotation().endsWith('\\n'), false);\n});\n\ntest('three E1 records preserve native field order and independently hashed doublets', () => {\n  const p = compile(skill);\n  const records = p.linkRecords();\n  const schemas = [\n    ['CompiledSkillPackage', 'associative_package', independentId('natural_language_skill', skill), [\n      ['source_description', skill], ['skill_name', 'trigger_response_skill'],\n      ['trigger_rule', p.rule_id], ['compiled_handler', p.handler_id], ['replay_mode', 'exact_normalized_prompt'],\n    ]],\n    ['CompiledSkillTriggerRule', 'substitution_rule', p.id, [\n      ['trigger', trigger], ['normalized_trigger', trigger], ['handler', p.handler_id],\n    ]],\n    ['CompiledSkillHandler', 'deterministic_response_handler', p.id, [\n      ['handler_kind', 'deterministic_response'], ['response', response],\n    ]],\n  ];\n  assert.equal(records.length, 3);\n  for (let index = 0; index < records.length; index += 1) {\n    const r = records[index];\n    const [type, subtype, source, fields] = schemas[index];\n    const edges = [[r.stable_id, 'Type'], ['Type', type], [type, 'SubType'],\n      ['SubType', subtype], [subtype, 'Value'], [r.stable_id, source]];\n    for (const [key, value] of [['schema_version', '0.2.0'], ...fields]) {\n      edges.push([r.stable_id, 'field:' + key], ['field:' + key, 'value:' + value]);\n    }\n    assert.equal(r.record_type, type);\n    assert.equal(r.source_id, source);\n    assert.equal(r.schema_version, '0.2.0');\n    assert.deepEqual(r.links, edges.map(([from, to]) => ({ from, to, index: independentId('doublet', from + '->' + to) })));\n  }\n});\n\ntest('all unchanged native multilingual rows compile and replay exact response bytes', async () => {\n  const rows = [...native.matchAll(/Case\\s*\\{\\s*language:\\s*\"([^\"\\n]+)\",\\s*skill:\\s*\"([^\"\\n]+)\",\\s*trigger:\\s*\"([^\"\\n]+)\",\\s*response:\\s*\"([^\"\\n]+)\",\\s*\\}/gu)];\n  assert.equal(rows.length, 4);\n  const host = new WorkerHost();\n  for (const [, language, description, prompt, expected] of rows) {\n    const p = compile(description);\n    assert.equal(p.status, 'compiled', language);\n    assert.equal(p.trigger, prompt, language);\n    assert.equal(p.response, expected, language);\n    assert.equal(p.replay(prompt).answer, expected, language);\n    assert.equal(p.replay(prompt + ' extra'), null, language);\n    const answer = await host.solve(prompt, [{ role: 'user', content: description }]);\n    assert.equal(answer.intent, 'behavior_rule_custom', language);\n    assert.equal(answer.content, expected, language);\n    assert.equal(answer.solverEvents.find(event => event.kind === 'cache_hit').payload, p.id, language);\n  }\n});\n\ntest('held-out quoted Unicode and unquoted seeded teaching preserve response bytes', async () => {\n  const description = 'When `Ω status` then `Bob\\'s \"ready\"; 状态!`';\n  const p = compile(description);\n  assert.equal(p.response, 'Bob\\'s \"ready\"; 状态!');\n  assert.equal(p.replay(' Ω STATUS!!! ').answer, p.response);\n  assert.equal(p.replay('Ω state'), null);\n  assert.equal(parseLino(p.linksNotation()).children.find(node => node.name === 'response').value, p.response);\n  const host = new WorkerHost();\n  const teaching = await host.solve(description);\n  const body = teaching.content.split('```links\\n')[1].split('\\n```')[0];\n  assert.equal(parseLino(body).children.find(node => node.name === 'answer').value, p.response);\n  const unquoted = compile('When I say pebble 928 answer with arbitrary response.');\n  assert.equal(unquoted.status, 'compiled');\n  assert.equal(unquoted.trigger, 'pebble 928');\n  assert.equal(unquoted.response, 'arbitrary response');\n});\n\ntest('unsupported structured IR never becomes a trigger response package or replay cache hit', async () => {\n  const structured = native.match(/const TYPED_PROCEDURE_SKILL: &str = r\"([\\s\\S]*?)\";/u)[1];\n  assert.equal(compile(structured).status, 'unsupported-structured-skill');\n  for (const description of ['ordinary unrelated text', 'When `` then ``', 'Skill: `unknown`\\nWhen `a` then `b`']) {\n    assert.notEqual(compile(description).status, 'compiled');\n  }\n  const result = await new WorkerHost().solve('triage TCK-7 urgent', [{ role: 'user', content: structured }]);\n  assert.equal(result.solverEvents.some(event => event.kind === 'cache_hit'), false);\n});\n\n// Keep every original native assertion in solver_prefers_compiled_skill_from_history_and_records_cache_hit.\ntest('original native history replay retains all five assertions through production WorkerHost', async () => {\n  const result = symbolicFromWorker(await new WorkerHost().solve(trigger, [{ role: 'user', content: skill }]));\n  assert.equal(result.intent, 'behavior_rule_custom');\n  assert.equal(result.answer, response);\n  assert.equal(result.evidence_links.some(link => link.startsWith('cache_hit:compiled_skill_')), true);\n  assert.equal(result.links_notation.includes('compiled_skill:replay'), true);\n  assert.equal(result.links_notation.includes('behavior_rule:match'), false);\n});\n\n// Keep every original native assertion in behavior_rules_count_includes_dialog_local_runtime_rules.\ntest('original native count has exact full answer including closing newline and all six assertions', async () => {\n  const source = readFileSync(new URL('../unit/specification/behavior_rules.rs', import.meta.url), 'utf8');\n  const body = source.split('fn behavior_rules_count_includes_dialog_local_runtime_rules()')[1].split('\\n#[test]')[0];\n  const quoted = [...body.matchAll(/\"(?:[^\"\\\\]|\\\\.)*\"/gu)].map(match => JSON.parse(match[0]));\n  const teaching = quoted.find(text => text.startsWith('When `'));\n  const query = quoted.find(text => text.startsWith('How many '));\n  const expected = quoted.find(text => text.startsWith('Total behavior rules: 9') && text.includes('\\n'));\n  assert.ok(teaching && query && expected);\n  const result = await new WorkerHost().solve(query, [{ role: 'user', content: teaching }]);\n  assert.equal(result.intent, 'behavior_rules_count');\n  assert.equal(result.content, expected);\n  assert.equal(result.content.includes('Total behavior rules: 9'), true);\n  assert.equal(result.content.includes('built_in_rules \"8\"'), true);\n  assert.equal(result.content.includes('dialog_local_rules \"1\"'), true);\n  assert.equal(result.content.includes('total_rules \"9\"'), true);\n});\n\ntest('true user assistant history teaches counts lists and replays the same package with ordered events', async () => {\n  const host = new WorkerHost();\n  const p = compile(skill);\n  const history = [];\n  const answers = [];\n  for (const prompt of [skill, 'How many behavior rules are there?', 'Show rules', trigger]) {\n    const answer = await host.solve(prompt, history);\n    answers.push(answer);\n    history.push({ role: 'user', content: prompt }, { role: 'assistant', content: answer.content });\n  }\n  const [teaching, count, list, replay] = answers;\n  assert.equal(teaching.intent, 'behavior_rule_update');\n  const record = parseLino(teaching.content.split('```links\\n')[1].split('\\n```')[0]);\n  assert.equal(record.name, p.id);\n  assert.deepEqual(record.children.map(node => [node.name, node.value]).filter(([name]) => name !== 'when_then'), [\n    ['type', 'compiled_skill_package'], ['legacy_behavior_rule_id', p.legacy_behavior_rule_id],\n    ['match_prompt', p.trigger], ['answer', p.response], ['compiled_handler', p.handler_id],\n    ['replay_mode', 'exact_normalized_prompt'], ['source', 'user_message'],\n  ]);\n  assert.deepEqual(teaching.solverEvents.filter(event => ['skill_compile:package', 'behavior_rule:update'].includes(event.kind))\n    .map(event => [event.kind, event.payload]), [['skill_compile:package', p.id], ['behavior_rule:update', p.legacy_behavior_rule_id]]);\n  assert.equal(count.solverEvents.find(event => event.kind === 'behavior_rules:runtime_count').payload, '1');\n  assert.equal(list.content.includes('`' + p.id + '` (`' + p.legacy_behavior_rule_id + '`)'), true);\n  assert.equal(replay.content, p.response);\n  assert.deepEqual(replay.solverEvents.filter(event => ['compiled_skill:package', 'compiled_skill:replay', 'cache_hit', 'response'].includes(event.kind))\n    .map(event => [event.kind, event.payload]), [['compiled_skill:package', p.linksNotation()],\n    ['compiled_skill:replay', p.rule_id], ['cache_hit', p.id], ['response', 'response:' + p.id]]);\n});\n\ntest('canonical package dedup and latest user response ignore assistant impostors', async () => {\n  const host = new WorkerHost();\n  const old = 'When `quartz 631` then `older value`';\n  const latest = 'When `quartz 631` then `new value`';\n  const equivalent = 'When `QUARTZ 631!!!` then `new value`';\n  const history = [{ role: 'user', content: old }, { role: 'user', content: latest },\n    { role: 'user', content: equivalent }, { role: 'assistant', content: 'When `quartz 631` then `impostor`' }];\n  const count = await host.solve('How many behavior rules are there?', history);\n  assert.equal(count.solverEvents.find(event => event.kind === 'behavior_rules:runtime_count').payload, '2');\n  const replay = await host.solve('quartz 631', history);\n  assert.equal(replay.content, 'new value');\n  assert.equal(replay.solverEvents.find(event => event.kind === 'cache_hit').payload, compile(equivalent).id);\n  const nonmatch = await host.solve('quartz 631', [history[3]]);\n  assert.equal(nonmatch.solverEvents.some(event => event.kind === 'cache_hit'), false);\n  const baseline = await host.solve('4 + 4');\n  assert.deepEqual(await host.solve('4 + 4', history), baseline);\n});\n","filePath":"rust/tests/web/compiled-skill-packages.test.mjs","file_path":"rust/tests/web/compiled-skill-packages.test.mjs","path":"rust/tests/web/compiled-skill-packages.test.mjs"}
+>> bash {"command":"cat rust/tests/web/compiled-skill-packages.test.mjs"}
+   Output: import assert from 'node:assert/strict';
+   import { readFileSync } from 'node:fs';
+   import { test } from 'node:test';
+   import { compileNaturalLanguageSkill as compile } from '../../../js/agentic/crate/skill_compiler.mjs';
+   import { parseLino } from '../../../js/server/lino.mjs';
+   import { symbolicFromWorker } from '../../../js/server/solve.mjs';
+   import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   import { installTextHost } from '../../../scripts/lib/text-capability-measures.mjs';
+   
+   installTextHost();
+   const native = readFileSync(new URL('../unit/specification/natural_language_skill_compilation.rs', import.meta.url), 'utf8');
+   const constant = name => JSON.parse(native.match(new RegExp('const ' + name + ': &str = ("(?:[^"\\\\]|\\\\.)*");'))[1]);
+   const skill = constant('SKILL');
+   const trigger = constant('TRIGGER');
+   const response = constant('RESPONSE');
+   const independentId = (prefix, text) => {
+     let hash = 14695981039346656037n;
+     for (const byte of Buffer.from(text, 'utf8')) hash = ((hash ^ BigInt(byte)) * 1099511628211n) % 18446744073709551616n;
+     return prefix + '_' + hash.toString(16).padStart(16, '0');
+   };
+   
+   test('native trigger response fixture compiles with independently verified stable IDs', () => {
+     const package_ = compile(skill);
+     assert.equal(package_.status, 'compiled');
+     assert.equal(package_.id, 'compiled_skill_32628c474c664f67');
+     assert.equal(package_.rule_id, 'compiled_skill_rule_881391387cf00e11');
+     assert.equal(package_.handler_id, 'compiled_skill_handler_aaf62aceed77ddcd');
+     assert.equal(package_.legacy_behavior_rule_id, 'behavior_rule_runtime_32628c474c664f67');
+     assert.equal(package_.source_description, skill);
+     assert.equal(package_.trigger, trigger);
+     assert.equal(package_.response, response);
+     assert.equal(package_.skill_name, 'trigger_response_skill');
+   });
+   
+   test('compiled package codec retains all fourteen ordered native fields', () => {
+     const p = compile(skill);
+     const record = parseLino(p.linksNotation());
+     assert.equal(record.name, p.id);
+     assert.deepEqual(record.children.map(node => [node.name, node.value]), [
+       ['type', 'compiled_skill_package'], ['schema_version', '0.2.0'],
+       ['package_kind', 'associative_package'], ['source', 'natural_language_skill'],
+       ['source_description', skill], ['skill_name', 'trigger_response_skill'],
+       ['trigger_rule', p.rule_id], ['trigger', trigger], ['normalized_trigger', trigger],
+       ['compiled_handler', p.handler_id], ['handler_kind', 'deterministic_response'],
+       ['response', response], ['replay_mode', 'exact_normalized_prompt'],
+       ['legacy_behavior_rule_id', p.legacy_behavior_rule_id],
+     ]);
+     assert.equal(p.linksNotation().endsWith('\n'), false);
+   });
+   
+   test('three E1 records preserve native field order and independently hashed doublets', () => {
+     const p = compile(skill);
+     const records = p.linkRecords();
+     const schemas = [
+       ['CompiledSkillPackage', 'associative_package', independentId('natural_language_skill', skill), [
+         ['source_description', skill], ['skill_name', 'trigger_response_skill'],
+         ['trigger_rule', p.rule_id], ['compiled_handler', p.handler_id], ['replay_mode', 'exact_normalized_prompt'],
+       ]],
+       ['CompiledSkillTriggerRule', 'substitution_rule', p.id, [
+         ['trigger', trigger], ['normalized_trigger', trigger], ['handler', p.handler_id],
+       ]],
+       ['CompiledSkillHandler', 'deterministic_response_handler', p.id, [
+         ['handler_kind', 'deterministic_response'], ['response', response],
+       ]],
+     ];
+     assert.equal(records.length, 3);
+     for (let index = 0; index < records.length; index += 1) {
+       const r = records[index];
+       const [type, subtype, source, fields] = schemas[index];
+       const edges = [[r.stable_id, 'Type'], ['Type', type], [type, 'SubType'],
+         ['SubType', subtype], [subtype, 'Value'], [r.stable_id, source]];
+       for (const [key, value] of [['schema_version', '0.2.0'], ...fields]) {
+         edges.push([r.stable_id, 'field:' + key], ['field:' + key, 'value:' + value]);
+       }
+       assert.equal(r.record_type, type);
+       assert.equal(r.source_id, source);
+       assert.equal(r.schema_version, '0.2.0');
+       assert.deepEqual(r.links, edges.map(([from, to]) => ({ from, to, index: independentId('doublet', from + '->' + to) })));
+     }
+   });
+   
+   test('all unchanged native multilingual rows compile and replay exact response bytes', async () => {
+     const rows = [...native.matchAll(/Case\s*\{\s*language:\s*"([^"\n]+)",\s*skill:\s*"([^"\n]+)",\s*trigger:\s*"([^"\n]+)",\s*response:\s*"([^"\n]+)",\s*\}/gu)];
+     assert.equal(rows.length, 4);
+     const host = new WorkerHost();
+     for (const [, language, description, prompt, expected] of rows) {
+       const p = compile(description);
+       assert.equal(p.status, 'compiled', language);
+       assert.equal(p.trigger, prompt, language);
+       assert.equal(p.response, expected, language);
+       assert.equal(p.replay(prompt).answer, expected, language);
+       assert.equal(p.replay(prompt + ' extra'), null, language);
+       const answer = await host.solve(prompt, [{ role: 'user', content: description }]);
+       assert.equal(answer.intent, 'behavior_rule_custom', language);
+       assert.equal(answer.content, expected, language);
+       assert.equal(answer.solverEvents.find(event => event.kind === 'cache_hit').payload, p.id, language);
+     }
+   });
+   
+   test('held-out quoted Unicode and unquoted seeded teaching preserve response bytes', async () => {
+     const description = 'When `Ω status` then `Bob\'s "ready"; 状态!`';
+     const p = compile(description);
+     assert.equal(p.response, 'Bob\'s "ready"; 状态!');
+     assert.equal(p.replay(' Ω STATUS!!! ').answer, p.response);
+     assert.equal(p.replay('Ω state'), null);
+     assert.equal(parseLino(p.linksNotation()).children.find(node => node.name === 'response').value, p.response);
+     const host = new WorkerHost();
+     const teaching = await host.solve(description);
+     const body = teaching.content.split('```links\n')[1].split('\n```')[0];
+     assert.equal(parseLino(body).children.find(node => node.name === 'answer').value, p.response);
+     const unquoted = compile('When I say pebble 928 answer with arbitrary response.');
+     assert.equal(unquoted.status, 'compiled');
+     assert.equal(unquoted.trigger, 'pebble 928');
+     assert.equal(unquoted.response, 'arbitrary response');
+   });
+   
+   test('unsupported structured IR never becomes a trigger response package or replay cache hit', async () => {
+     const structured = native.match(/const TYPED_PROCEDURE_SKILL: &str = r"([\s\S]*?)";/u)[1];
+     assert.equal(compile(structured).status, 'unsupported-structured-skill');
+     for (const description of ['ordinary unrelated text', 'When `` then ``', 'Skill: `unknown`\nWhen `a` then `b`']) {
+       assert.notEqual(compile(description).status, 'compiled');
+     }
+     const result = await new WorkerHost().solve('triage TCK-7 urgent', [{ role: 'user', content: structured }]);
+     assert.equal(result.solverEvents.some(event => event.kind === 'cache_hit'), false);
+   });
+   
+   // Keep every original native assertion in solver_prefers_compiled_skill_from_history_and_records_cache_hit.
+   test('original native history replay retains all five assertions through production WorkerHost', async () => {
+     const result = symbolicFromWorker(await new WorkerHost().solve(trigger, [{ role: 'user', content: skill }]));
+     assert.equal(result.intent, 'behavior_rule_custom');
+     assert.equal(result.answer, response);
+     assert.equal(result.evidence_links.some(link => link.startsWith('cache_hit:compiled_skill_')), true);
+     assert.equal(result.links_notation.includes('compiled_skill:replay'), true);
+     assert.equal(result.links_notation.includes('behavior_rule:match'), false);
+   });
+   
+   // Keep every original native assertion in behavior_rules_count_includes_dialog_local_runtime_rules.
+   test('original native count has exact full answer including closing newline and all six assertions', async () => {
+     const source = readFileSync(new URL('../unit/specification/behavior_rules.rs', import.meta.url), 'utf8');
+     const body = source.split('fn behavior_rules_count_includes_dialog_local_runtime_rules()')[1].split('\n#[test]')[0];
+     const quoted = [...body.matchAll(/"(?:[^"\\]|\\.)*"/gu)].map(match => JSON.parse(match[0]));
+     const teaching = quoted.find(text => text.startsWith('When `'));
+     const query = quoted.find(text => text.startsWith('How many '));
+     const expected = quoted.find(text => text.startsWith('Total behavior rules: 9') && text.includes('\n'));
+     assert.ok(teaching && query && expected);
+     const result = await new WorkerHost().solve(query, [{ role: 'user', content: teaching }]);
+     assert.equal(result.intent, 'behavior_rules_count');
+     assert.equal(result.content, expected);
+     assert.equal(result.content.includes('Total behavior rules: 9'), true);
+     assert.equal(result.content.includes('built_in_rules "8"'), true);
+     assert.equal(result.content.includes('dialog_local_rules "1"'), true);
+     assert.equal(result.content.includes('total_rules "9"'), true);
+   });
+   
+   test('true user assistant history teaches counts lists and replays the same package with ordered events', async () => {
+     const host = new WorkerHost();
+     const p = compile(skill);
+     const history = [];
+     const answers = [];
+     for (const prompt of [skill, 'How many behavior rules are there?', 'Show rules', trigger]) {
+       const answer = await host.solve(prompt, history);
+       answers.push(answer);
+       history.push({ role: 'user', content: prompt }, { role: 'assistant', content: answer.content });
+     }
+     const [teaching, count, list, replay] = answers;
+     assert.equal(teaching.intent, 'behavior_rule_update');
+     const record = parseLino(teaching.content.split('```links\n')[1].split('\n```')[0]);
+     assert.equal(record.name, p.id);
+     assert.deepEqual(record.children.map(node => [node.name, node.value]).filter(([name]) => name !== 'when_then'), [
+       ['type', 'compiled_skill_package'], ['legacy_behavior_rule_id', p.legacy_behavior_rule_id],
+       ['match_prompt', p.trigger], ['answer', p.response], ['compiled_handler', p.handler_id],
+       ['replay_mode', 'exact_normalized_prompt'], ['source', 'user_message'],
+     ]);
+     assert.deepEqual(teaching.solverEvents.filter(event => ['skill_compile:package', 'behavior_rule:update'].includes(event.kind))
+       .map(event => [event.kind, event.payload]), [['skill_compile:package', p.id], ['behavior_rule:update', p.legacy_behavior_rule_id]]);
+     assert.equal(count.solverEvents.find(event => event.kind === 'behavior_rules:runtime_count').payload, '1');
+     assert.equal(list.content.includes('`' + p.id + '` (`' + p.legacy_behavior_rule_id + '`)'), true);
+     assert.equal(replay.content, p.response);
+     assert.deepEqual(replay.solverEvents.filter(event => ['compiled_skill:package', 'compiled_skill:replay', 'cache_hit', 'response'].includes(event.kind))
+       .map(event => [event.kind, event.payload]), [['compiled_skill:package', p.linksNotation()],
+       ['compiled_skill:replay', p.rule_id], ['cache_hit', p.id], ['response', 'response:' + p.id]]);
+   });
+   
+   test('canonical package dedup and latest user response ignore assistant impostors', async () => {
+     const host = new WorkerHost();
+     const old = 'When `quartz 631` then `older value`';
+     const latest = 'When `quartz 631` then `new value`';
+     const equivalent = 'When `QUARTZ 631!!!` then `new value`';
+     const history = [{ role: 'user', content: old }, { role: 'user', content: latest },
+       { role: 'user', content: equivalent }, { role: 'assistant', content: 'When `quartz 631` then `impostor`' }];
+     const count = await host.solve('How many behavior rules are there?', history);
+     assert.equal(count.solverEvents.find(event => event.kind === 'behavior_rules:runtime_count').payload, '2');
+     const replay = await host.solve('quartz 631', history);
+     assert.equal(replay.content, 'new value');
+     assert.equal(replay.solverEvents.find(event => event.kind === 'cache_hit').payload, compile(equivalent).id);
+     const nonmatch = await host.solve('quartz 631', [history[3]]);
+     assert.equal(nonmatch.solverEvents.some(event => event.kind === 'cache_hit'), false);
+     const baseline = await host.solve('4 + 4');
+     assert.deepEqual(await host.solve('4 + 4', history), baseline);
+   });
+   
+   Exit Code: 0
+== answer ==
+Verification failed for `rust/tests/web/compiled-skill-packages.test.mjs`: the observed bytes differ from the planned workspace effect.

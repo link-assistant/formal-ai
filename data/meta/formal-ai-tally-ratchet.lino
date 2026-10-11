@@ -1,0 +1,10 @@
+# Formal AI delegation tally ratchet (R1188-U13).
+#
+# Each failure in the ladder of
+# docs/case-studies/pull-request-1188/formal-ai-dogfood.md is fixed by a general
+# mechanism with a regression test. A fixed failure counts here when its row
+# names no test, pin, gap or carrying row, and no test file under rust/tests/
+# cites its id. scripts/tally-formal-ai-dogfood.mjs --check fails above the
+# ceiling and asks for it to be lowered below it, so the number only falls.
+formal-ai-tally-ratchet
+  fixed-without-test-ceiling 0

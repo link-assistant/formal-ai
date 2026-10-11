@@ -26,7 +26,7 @@ fn meaning_link(response: &SymbolicAnswer) -> &str {
 #[test]
 fn every_answer_publishes_a_links_notation_trace() {
     let response = answer("Hi");
-    assert!(!response.links_notation.is_empty());
+    assert_ne!(response.links_notation, "");
 }
 
 #[test]

@@ -163,7 +163,7 @@ fn the_depth_floor_holds_for_the_smallest_request_the_pipeline_can_formalize() {
 /// `statement` where `hello`, `привет`, `नमस्ते` and `你好` route to `courtesy`,
 /// because `data/seed/prompt-patterns.lino` carries greeting keywords for en, ru,
 /// hi and zh and none for es. That gap predates this branch and is left to a
-/// change of its own — `check_language_change_parity` requires every supported
+/// change of its own — `check-language-change-parity` requires every supported
 /// language to move together in one pull request, and four of them need no
 /// change. What is asserted here is that the standard reports the same seven
 /// gates, the same triggers, the same statuses, the same finding shapes and the
@@ -413,7 +413,10 @@ fn instruction_completion_requires_every_attached_check() {
             "compiler_available".to_owned(),
         ],
     ] {
-        assert!(set.unmet_steps(&observed).is_empty());
+        assert_eq!(
+            set.unmet_steps(&observed),
+            [] as [&formal_ai::reasoning_standard::instructions::InstructionStep; 0]
+        );
     }
     let uncheckable = formalize(
         "unknown",
@@ -665,7 +668,10 @@ fn conclusions_need_varied_refutations_before_they_may_be_leaned_toward() {
 #[test]
 fn the_standard_is_a_formal_procedure_that_replays_without_a_model() {
     let standard = loaded();
-    assert!(!standard.gates.is_empty());
+    assert_ne!(
+        standard.gates,
+        [] as [formal_ai::reasoning_standard::Gate; 0]
+    );
     for gate in &standard.gates {
         assert!(!gate.requirement.trim().is_empty(), "{}", gate.slug);
         assert!(!gate.failure_slug.trim().is_empty(), "{}", gate.slug);

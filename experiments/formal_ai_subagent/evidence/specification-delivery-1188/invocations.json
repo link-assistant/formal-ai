@@ -1,0 +1,313 @@
+{
+  "scope": "Formal AI capability repair enabling native specification delivery",
+  "manual_source_edits": 0,
+  "note": "Every intended source change was applied by Formal AI or an existing reviewed generator. Broad feature repair synthesis remains open. Durations and actual model token/cost data are not measured; transcript bytes and calls are observable proxies only.",
+  "invocations": [
+    {
+      "id": "T1300",
+      "task": "claim ownership",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1301",
+      "task": "declare compiler, artifact and formalization factory entries",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1302",
+      "task": "unfenced reviewed compiler source create",
+      "outcome": "failed: glob []"
+    },
+    {
+      "id": "T1303",
+      "task": "fenced reviewed compiler source create",
+      "outcome": "failed: bootstrap missing renamed factory"
+    },
+    {
+      "id": "T1304",
+      "task": "boot every current factory for original create",
+      "outcome": "failed: unsupported named re-export syntax"
+    },
+    {
+      "id": "T1305",
+      "task": "original fenced create with existing official module reorder hook",
+      "outcome": "failed: glob []"
+    },
+    {
+      "id": "T1306",
+      "task": "feature repair request for authored literals",
+      "outcome": "failed: unrelated .bun-version echoed into new test"
+    },
+    {
+      "id": "T1307",
+      "task": "claim authored literal source and generator",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1308",
+      "task": "add closed payload classification",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1309",
+      "task": "mask payload addition cues",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1310",
+      "task": "preserve literal modifiers",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1311",
+      "task": "prioritize proven literal bytes",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1312",
+      "task": "disambiguate deferred product nouns",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1313",
+      "task": "retry original compiler source create",
+      "outcome": "passed: exact bytes"
+    },
+    {
+      "id": "T1314",
+      "task": "mirror Rust literal classifier",
+      "outcome": "failed: whole-file fallback safely refused"
+    },
+    {
+      "id": "T1321",
+      "task": "require whole-write action in payload proof",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1322",
+      "task": "derive proof from unquoted create or overwrite consent",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1323",
+      "task": "mirror complete Rust classifier",
+      "outcome": "failed: skill teaching consumed source payload"
+    },
+    {
+      "id": "T1326",
+      "task": "preserve literal proof ahead of skill teaching guard",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1327",
+      "task": "retry original Rust classifier source",
+      "outcome": "passed: exact bytes"
+    },
+    {
+      "id": "T1328",
+      "task": "lower re-export imports in factories",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1329",
+      "task": "retain public re-export names",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1330",
+      "task": "mirror native planner skill guard",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1331",
+      "task": "format native capability sources",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1332",
+      "task": "author literal regression checks",
+      "outcome": "passed: exact bytes"
+    },
+    {
+      "id": "T1333",
+      "task": "author executable factory forwarding regression",
+      "outcome": "passed: exact bytes"
+    },
+    {
+      "id": "T1334",
+      "task": "correct metadata-only expectation, preserve runtime edit check",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1335",
+      "task": "generate meaning and response lexicon inventories",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1336",
+      "task": "load generated response seeds",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1337",
+      "task": "project response registry to crate host",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1338",
+      "task": "pin edit vs write transcript operations",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1339",
+      "task": "dispatch existing seed compiler after typed compiler decline",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1340",
+      "task": "author scoped factory budget derivation",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1341",
+      "task": "derive exact factory/glue ceilings with reasons",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1342",
+      "task": "author native literal regression cases",
+      "outcome": "failed: payload contained its own triple fences"
+    },
+    {
+      "id": "T1343",
+      "task": "read variable-length quote fences in JS",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1344",
+      "task": "clean complete variable-length literal fences in JS",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1345",
+      "task": "mirror native variable-length quote fences",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1346",
+      "task": "mirror native variable-length content cleaning",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1347",
+      "task": "retry native literal regression with longer fence",
+      "outcome": "passed: exact bytes"
+    },
+    {
+      "id": "T1348",
+      "task": "format native fence sources and tests",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1349",
+      "task": "pin arbitrary outer fence lengths around examples",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1350",
+      "task": "refresh changed generated factory ceiling",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1351",
+      "task": "publish evidence directory",
+      "outcome": "failed: unbound mkdir precondition path"
+    },
+    {
+      "id": "T1352",
+      "task": "publish evidence logs with wildcard copy",
+      "outcome": "failed: wildcard treated literally in precondition"
+    },
+    {
+      "id": "T1353",
+      "task": "publish evidence via explicit Node filesystem command",
+      "outcome": "passed"
+    },
+    {
+      "id": "T1354",
+      "task": "author invocation manifest",
+      "outcome": "failed: exact bytes written, but successful cat output falsely rendered as verification failure"
+    },
+    {
+      "id": "T1355",
+      "task": "author scoped capability changelog",
+      "outcome": "passed: exact bytes"
+    },
+    {
+      "id": "T1356",
+      "task": "honor exact declared literal data over prose-based verification inference in JS",
+      "outcome": "passed: exact bytes"
+    },
+    {
+      "id": "T1357",
+      "task": "mirror native literal verification evidence rule",
+      "outcome": "passed: exact bytes"
+    },
+    {
+      "id": "T1358",
+      "task": "author literal-data and explicit-failure regression cases",
+      "outcome": "passed: exact bytes; subsequent check exposed an assertion phrase mismatch"
+    },
+    {
+      "id": "T1359",
+      "task": "retry exact original manifest request after general capability repair",
+      "outcome": "passed: exact bytes and executed completion (Spanish seeded response)"
+    },
+    {
+      "id": "T1360",
+      "task": "correct failure assertion to actual seeded exit-status phrase",
+      "outcome": "passed: exact bytes; all 31 closest JS checks passed"
+    },
+    {
+      "id": "T1361",
+      "task": "mirror native authored-failure-content regression",
+      "outcome": "passed: exact bytes"
+    },
+    {
+      "id": "T1362",
+      "task": "format native execution source and regression",
+      "outcome": "passed: rustfmt executed through Formal AI"
+    },
+    {
+      "id": "T1363",
+      "task": "remove unused import from scoped budget generator",
+      "outcome": "passed: exact bytes"
+    }
+  ],
+  "validation": {
+    "closest_javascript": {
+      "passed": 31,
+      "failed": 0,
+      "note": "An initial new assertion expected \"exit code 1\"; actual seeded report correctly says \"exited with code 1\". The corrected assertion retains the real nonzero failure veto."
+    },
+    "native_specification": {
+      "total": 1169,
+      "carried": 136,
+      "passing": 124,
+      "remaining": 12
+    },
+    "rust": "standalone rustfmt --edition 2024 --check passed; compilation and native tests delegated to CI"
+  },
+  "artifacts": {
+    "logs": 54,
+    "transcript_bytes": 1966354,
+    "coverage_through": "T1363"
+  },
+  "capability_gaps": {
+    "G112": "authored literal subset repaired; feature-level synthesis remains open",
+    "G119": "variable-length fences repaired",
+    "G120": "mkdir unbound precondition delegated to root",
+    "G121": "wildcard copy precondition delegated to root",
+    "G122": "successful literal verification false failure repaired and original request retried"
+  }
+}

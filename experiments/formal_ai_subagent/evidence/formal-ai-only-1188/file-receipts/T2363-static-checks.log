@@ -1,0 +1,13 @@
+planner functions without a Rust twin: 0 (ceiling 0)
+
+1161 of 1161 twin citations resolve to a Rust definition; 15 describe behaviour in prose and are not checked
+
+
+Checking rust/src/ for hardcoded user-facing natural language (R379)...
+
+Detected prose literals: 695 | allowlisted: 695
+
+No new hardcoded natural language; allowlist is in sync (695 entries).
+
+
+Native standalone formatting passed. Native compilation and execution deferred to CI.

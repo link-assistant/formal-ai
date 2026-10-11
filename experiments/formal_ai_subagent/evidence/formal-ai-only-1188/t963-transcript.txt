@@ -1,0 +1,12 @@
+>> read {"filePath":"r.md","file_path":"r.md","path":"r.md"}
+   <file>
+   00001| «x
+   
+   (End of file - total 1 lines)
+   </file>
+>> edit {"filePath":"r.md","file_path":"r.md","new":"Use `prompt:`, `impulse:` and `candidate:` evidence.","newString":"Use `prompt:`, `impulse:` and `candidate:` evidence.","new_str":"Use `prompt:`, `impulse:` and `candidate:` evidence.","new_string":"Use `prompt:`, `impulse:` and `candidate:` evidence.","old":"x","oldString":"x","old_str":"x","old_string":"x","path":"r.md"}
+>> bash {"command":"sha256sum -- r.md"}
+   1fda4aa62b860922cbfeb5bcc58aa919ca2d52a79ba0b369f626312b543c59f2  r.md
+   
+== answer ==
+Replaced `x` with ``Use `prompt:``, ``impulse:` and `candidate:` evidence.`` in `r.md` and observed the result.

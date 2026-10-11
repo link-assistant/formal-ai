@@ -1,0 +1,63 @@
+{
+  "lemma": "copied",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01751182-v",
+      "partOfSpeech": "v",
+      "definition": "copy down as is",
+      "examples": [
+        "The students were made to copy the alphabet over and over"
+      ],
+      "synonyms": [
+        "copy"
+      ]
+    },
+    {
+      "id": "oewn-01746767-v",
+      "partOfSpeech": "v",
+      "definition": "reproduce someone's behavior or looks",
+      "examples": [
+        "The mime imitated the passers-by",
+        "Children often copy their parents or older siblings"
+      ],
+      "synonyms": [
+        "imitate",
+        "copy",
+        "simulate"
+      ]
+    },
+    {
+      "id": "oewn-01738810-v",
+      "partOfSpeech": "v",
+      "definition": "reproduce or make an exact copy of",
+      "examples": [
+        "replicate the cell",
+        "copy the genetic information"
+      ],
+      "synonyms": [
+        "replicate",
+        "copy"
+      ]
+    },
+    {
+      "id": "oewn-01697776-v",
+      "partOfSpeech": "v",
+      "definition": "make a replica of",
+      "examples": [
+        "copy that drawing",
+        "re-create a picture by Rembrandt"
+      ],
+      "synonyms": [
+        "copy",
+        "re-create",
+        "recreate"
+      ]
+    }
+  ]
+}

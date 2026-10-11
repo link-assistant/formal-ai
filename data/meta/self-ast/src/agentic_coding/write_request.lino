@@ -2,147 +2,155 @@ self_ast_census
   target src/agentic_coding/write_request.rs
   language rust
   fidelity full_ast
-  byte_len 39108
-  line_count 842
-  content_id source_module_50d61cb6c931aedb
-  symbol_count 43
+  byte_len 45231
+  line_count 994
+  content_id source_module_ed35606bd73b6a67
+  symbol_count 48
   symbols
-    struct Token 14 18
-    function tokens 28 54
-    function is_ideographic_punctuation 58 70
-    function bare_surfaces 72 79
-    function clean_path_token 85 91
-    function looks_like_file_path 100 107
-    function clean_cue_token 114 122
-    function first_content_lead_end 126 128
-    function content_lead_close 136 156
-    function first_prefix_lead_end 157 207
-    enum CueFamily 211 218
-    struct WriteBinding 222 235
-    function cued_write_target 252 254
-    function ranked_bindings 265 269
-    function preferred_binding 272 274
-    function binding_rank 278 284
-    function cued_write_targets 289 295
-    function write_bindings 306 361
-    function trailing_cue 368 377
-    function leading_cue 380 389
-    function is_unspaced_surface 393 395
-    function quoted_as_value 405 408
-    function stated_write_target 417 419
-    function typed_write_target 423 433
-    function states_write_action 439 441
-    function delivered_write_target 491 498
-    function is_stated_write_target 514 519
-    function pinned_first_line 527 540
-    function delimited_first_line 547 555
-    function unquoted_machine_first_line 563 576
-    function pinned_first_line_of_request 583 587
-    function honouring_pinned_first_line 612 623
-    function without_pinning_sentences 626 634
-    function first_action_cue 636 640
-    function first_action_cue_end 642 644
-    function action_cue_start_after 651 657
-    function first_action_cue_start 667 669
-    function clean_content 676 692
-    function strip_clause_lead 701 712
-    function strip_leading_qualifier 717 728
-    function safe_relative_path 729 736
-    function compose_edit_request 743 807
-    function payload_continues_past_its_first_line 826 842
+    module lowercase_spans 4 4
+    const FUNCTION_WORD_ROLE 13 13
+    struct Token 15 20
+    function tokens 23 51
+    function is_ideographic_punctuation 55 67
+    function bare_surfaces 69 76
+    function clean_path_token 82 88
+    function looks_like_file_path 99 105
+    function clean_cue_token 112 120
+    function first_content_lead_end 124 126
+    function content_lead_close 134 154
+    function first_prefix_lead_end 155 205
+    enum CueFamily 209 216
+    struct WriteBinding 220 233
+    function cued_write_target 250 252
+    function ranked_bindings 263 267
+    function preferred_binding 270 272
+    function binding_rank 276 282
+    function cued_write_targets 287 293
+    function write_bindings 304 366
+    function trailing_cue 373 382
+    function leading_cue 385 394
+    function is_unspaced_surface 398 400
+    function quoted_as_value 410 413
+    function stated_write_target 422 424
+    function typed_write_target 428 438
+    function states_write_action 444 446
+    function delivered_write_target 496 503
+    function is_stated_write_target 519 524
+    function pinned_first_line 528 541
+    function delimited_first_line 548 556
+    function unquoted_machine_first_line 564 577
+    function pinned_first_line_of_request 584 588
+    function honouring_pinned_first_line 613 624
+    function without_pinning_sentences 627 635
+    function first_action_cue 637 641
+    function first_action_cue_end 643 645
+    function action_cue_start_after 652 658
+    function first_action_cue_start 668 670
+    function clean_content 672 702
+    function strip_clause_lead 704 734
+    function strip_leading_qualifier 735 746
+    function safe_relative_path 747 754
+    function compose_edit_request 761 763
+    struct EditClauses 766 773
+    function compose_edit_clauses 778 959
+    function describes_lines 963 970
+    function payload_continues_past_its_first_line 978 994
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21559
-    named_node_count 4633
-    distinct_node_kinds 87
+    total_link_count 26851
+    named_node_count 5685
+    distinct_node_kinds 90
     node_kinds
-      arguments 350
-      array_expression 8
-      array_type 12
-      assignment_expression 4
+      arguments 462
+      array_expression 11
+      array_type 14
+      assignment_expression 5
       attribute 3
       attribute_item 3
-      binary_expression 87
-      block 92
-      boolean_literal 12
+      binary_expression 125
+      block 111
+      boolean_literal 14
       break_expression 1
-      call_expression 350
-      char_literal 71
-      closure_expression 72
-      closure_parameters 72
-      compound_assignment_expr 1
+      call_expression 462
+      char_literal 80
+      closure_expression 97
+      closure_parameters 97
+      const_item 1
       continue_expression 1
-      crate 2
-      doc_comment 300
+      crate 12
+      doc_comment 269
       else_clause 5
       enum_item 1
       enum_variant 3
       enum_variant_list 1
       escape_sequence 4
-      expression_statement 47
-      field_declaration 9
-      field_declaration_list 2
-      field_expression 313
-      field_identifier 326
-      field_initializer 8
-      field_initializer_list 4
-      for_expression 2
-      function_item 40
+      expression_statement 62
+      field_declaration 12
+      field_declaration_list 3
+      field_expression 418
+      field_identifier 439
+      field_initializer 13
+      field_initializer_list 7
+      for_expression 5
+      function_item 42
       function_modifiers 2
       generic_function 1
-      generic_type 42
-      identifier 858
-      if_expression 22
-      index_expression 20
-      inner_doc_comment_marker 9
-      integer_literal 28
-      let_chain 1
-      let_condition 6
-      let_declaration 76
-      lifetime 17
+      generic_type 48
+      identifier 1133
+      if_expression 28
+      index_expression 26
+      inner_doc_comment_marker 3
+      integer_literal 29
+      let_chain 3
+      let_condition 9
+      let_declaration 100
+      lifetime 21
       lifetime_parameter 2
-      line_comment 315
+      line_comment 309
       loop_expression 1
       macro_invocation 10
       match_arm 3
       match_block 1
       match_expression 1
       match_pattern 3
-      mutable_specifier 7
+      mod_item 1
+      mutable_specifier 8
       or_pattern 1
-      outer_doc_comment_marker 291
-      parameter 57
-      parameters 40
-      parenthesized_expression 11
-      primitive_type 82
-      range_expression 19
-      reference_expression 27
-      reference_type 52
-      return_expression 13
-      scoped_identifier 45
-      scoped_use_list 3
+      outer_doc_comment_marker 266
+      parameter 66
+      parameters 42
+      parenthesized_expression 21
+      primitive_type 93
+      range_expression 24
+      reference_expression 38
+      reference_pattern 1
+      reference_type 61
+      return_expression 18
+      scoped_identifier 87
+      scoped_use_list 4
       self 1
-      shorthand_field_initializer 10
+      shorthand_field_initializer 13
+      slice_pattern 1
       source_file 1
-      string_content 9
-      string_literal 8
-      struct_expression 4
-      struct_item 2
-      super 43
-      token_tree 13
-      try_expression 19
-      tuple_expression 16
-      tuple_pattern 22
-      tuple_struct_pattern 8
-      tuple_type 10
-      type_arguments 43
-      type_identifier 76
+      string_content 10
+      string_literal 10
+      struct_expression 7
+      struct_item 3
+      super 56
+      token_tree 14
+      try_expression 21
+      tuple_expression 19
+      tuple_pattern 24
+      tuple_struct_pattern 10
+      tuple_type 12
+      type_arguments 49
+      type_identifier 91
       type_parameters 2
-      unary_expression 27
-      use_declaration 3
-      use_list 3
-      visibility_modifier 39
-      while_expression 2
+      unary_expression 40
+      use_declaration 4
+      use_list 4
+      visibility_modifier 45
+      while_expression 1

@@ -1,0 +1,351 @@
+import { cached, childrenNamed, parseLino, readText } from '../host.mjs';
+import { mentionsRole } from '../write_lexicon.mjs';
+import { writesWholeFile } from '../literal_write_guard.mjs';
+import { closedArithmeticDeclaration } from '../module_function.mjs';
+import { boundReadPaths, pendingReadCondition } from '../file_read/ownership.mjs';
+import { normalizePrompt } from '../crate/engine.mjs';
+import { unquotedPathTokens } from '../positional_edit.mjs';
+// Source-owned mixed actions share the existing obligation nodes and request replay.
+import { firstContentLeadEnd, firstRawPrefixLeadEnd, pinnedFirstLine, composeEditClauses, preferredBinding, tokens, firstActionCueStart, firstActionCueEnd, bareSurfaces, cleanCueToken, cleanPathToken, looksLikeFilePath } from '../write_request.mjs';
+import { literalWriteOwnership, instructionView, composeGeneralChangePlan, parseWriteContract } from '../general_planner.mjs';
+import { sentences } from '../shell_command_policy.mjs';
+import { quotedSegmentSpans, quoteFault } from '../crate/normal_markov.mjs';
+import { nestedQuoteFault } from '../quote_nesting.mjs';
+import { leafNode } from '../crate/obligation_ledger.mjs';
+import { gapAnswer } from '../task_obligations.mjs';
+import { planBoundRequestSteps } from '../request_sequence.mjs';
+import { FinalDisposition, canDeliverFinal, resolvedFinalAnswer } from '../plan.mjs';
+import { collectionSummaryOwns } from './collection_summary.mjs';
+
+const encoder = new TextEncoder();
+const grammarTail = (text) => /^[\s.!?。！？।;；]*$/u.test(text);
+
+/** Mirrors pinned_line_need: a consumed modifier is a conditional source Need. */
+export function pinnedLineNeed(request, content, payloadEnd) {
+  const need = sourcePinnedLineNeed(request, payloadEnd, false);
+  return need !== null && content.split('\n')[0] === need.expected ? need : null;
+}
+
+function sourcePinnedLineNeed(request, payloadEnd, allowTrailing) {
+  if (!Number.isInteger(payloadEnd) || payloadEnd < 0 || payloadEnd > request.length) return null;
+  const tail = request.slice(payloadEnd);
+  const lead = firstRawPrefixLeadEnd(tail, 'file_leading_line_constraint_lead');
+  const grammar = text => /^[ \t\n\r\v\f.!?。！？।;；]*$/u.test(text);
+  if (lead === null || !grammar(tail.slice(0, lead[0]))) return null;
+  const remainder = tail.slice(lead[1]);
+  const raw = remainder.replace(/^[ \t\n\r\v\f:\-—–]*/u, '');
+  const delimiter = raw[0];
+  if (!['`', '"', "'"].includes(delimiter)) return null;
+  const close = raw.indexOf(delimiter, 1);
+  if (close < 0 || !allowTrailing && !grammar(raw.slice(close + 1))) return null;
+  const line = raw.slice(1, close);
+  if (line.length === 0 || /[\n\r]/u.test(line) || pinnedFirstLine(tail) !== line) return null;
+  const start = payloadEnd + lead[1] + remainder.length - raw.length + 1;
+  const suffix = raw.slice(close + 1);
+  const trailing = /^[ \t\n\r\v\f.!?。！？।;；]*/u.exec(suffix)[0].length;
+  const end = start + line.length + 1 + trailing;
+  return { kind: 'file_first_line', unit: 'utf16', span: [payloadEnd, end],
+    literalSpan: [start, start + line.length], expected: line, condition: 'composed-first-line-equals' };
+}
+
+function closedPayload(request, contract) {
+  return contract === null ? null : quotedSegmentSpans(request).find((span) =>
+    span.start >= contract.payload.start && /^[\s:]*$/u.test(request.slice(contract.payload.start, span.start))) ?? null;
+}
+
+/** Mirrors fn literal_tail: the already-owned destination cue may follow the payload. */
+function literalTail(request, contract) {
+  const end = closedPayload(request, contract)?.end ?? contract.payload.end;
+  if (grammarTail(request.slice(end))) return true;
+  if (pinnedLineNeed(request, composeGeneralChangePlan(request)?.content ?? '', end) !== null) return true;
+  const words = tokens(request);
+  const binding = preferredBinding(words);
+  const target = binding === null ? null : words[binding.index];
+  const suffix = target === undefined || target === null ? null : preferredBinding(words.slice(binding.index));
+  const suffixOwned = suffix !== null && !suffix.cue_precedes && suffix.path === contract.target
+    && suffix.cue_start >= target.end
+    && grammarTail(request.slice(target.end, suffix.cue_start))
+    && bareSurfaces('file_declared_noun').includes(request.slice(suffix.cue_start, suffix.cue_end).toLowerCase().replace(/[\s.!?。！？।;；]+$/u, ''))
+    && grammarTail(request.slice(suffix.cue_end));
+  return binding !== null && target !== undefined && target !== null
+    && binding.path === contract.target && binding.cue_precedes
+    && target.start === contract.targetSpan.start && target.end === contract.targetSpan.end
+    && binding.cue_start >= end && binding.cue_end <= target.start
+    && grammarTail(request.slice(end, binding.cue_start))
+    && grammarTail(request.slice(binding.cue_end, target.start))
+    && (grammarTail(request.slice(target.end)) || suffixOwned);
+}
+
+function completeEditFrame(request, spans) {
+  const ordered = [...spans].sort((left, right) => left[0] - right[0]);
+  const grammar = text => /^[ \t\r\n.!?。！？।;；]*$/u.test(text);
+  let end = 0;
+  for (const [start, next] of ordered) {
+    if (!Number.isInteger(start) || !Number.isInteger(next) || start < 0
+      || next < start || next > request.length || !grammar(request.slice(end, Math.max(end, start)))) return false;
+    end = Math.max(end, next);
+  }
+  return grammar(request.slice(end));
+}
+
+/** Mirrors owns_complete_edit_request: a fully consumed Edit retains source bytes. */
+export function ownsCompleteLiteralRequest(request) {
+  const literal = literalWriteOwnership(request);
+  return literal !== null && literalTail(request, literal) && !attributedActionPrefix(request)
+    && contractActionPrologue(request, literal);
+}
+
+export function ownsCompleteEditRequest(request) {
+  if (ownsCompleteLiteralRequest(request)) return false;
+  const edit = composeEditClauses(request);
+  return edit !== null && edit.spans !== null && completeEditFrame(request, edit.spans);
+}
+
+export function instructionViewForRequest(request) {
+  return ownsCompleteEditRequest(request) ? request : instructionView(request, literalWriteOwnership(request));
+}
+
+/** Mirrors fn goal_ledger: preserve raw UTF16 positions and the existing node's UTF8 source span. */
+export function goalLedger(request) {
+  const contract = literalWriteOwnership(request);
+  const closed = closedPayload(request, contract);
+  const need = closed === null ? null : sourcePinnedLineNeed(request, closed.end, true);
+  if (need !== null) {
+    if (contract.content.split('\n')[0] !== need.expected) {
+      const byteSpan = [0, encoder.encode(request).length];
+      return [{ clause: request, span: { start: 0, end: request.length }, byteSpan,
+        sourceUnit: 'utf16', kind: 'unsupported', target: contract.target, expected: contract.content,
+        needs: [need], node: leafNode(null, request, byteSpan, 0,
+          { kind: 'underivable', reason: 'first-line-conflicts-authoritative-payload' }) }];
+    }
+    if (need.span[1] === request.length && !attributedActionPrefix(request)
+      && contractActionPrologue(request, contract)) return null;
+  }
+  const ownsPayload = contract !== null && !attributedActionPrefix(request)
+    && contractActionPrologue(request, contract);
+  let view = ownsPayload && closedPayload(request, contract) === null
+    ? instructionView(request, contract) : request;
+  if (view === null) return null;
+  for (const span of quotedSegmentSpans(request)) view = view.slice(0, span.start) + ' '.repeat(span.end - span.start) + view.slice(span.end);
+  const goals = sentences(view).map((sentence) => {
+    const raw = request.slice(sentence.span.start, sentence.span.end);
+    const clause = raw.trim();
+    const start = sentence.span.start + raw.indexOf(clause);
+    const span = { start, end: start + clause.length };
+    const byteSpan = [encoder.encode(request.slice(0, span.start)).length, encoder.encode(request.slice(0, span.end)).length];
+    const literal = literalWriteOwnership(clause);
+    const completeLiteral = literal !== null && literalTail(clause, literal) && !attributedActionPrefix(clause) && contractActionPrologue(clause, literal);
+    const edit = completeLiteral ? null : composeEditClauses(clause);
+    const kind = completeLiteral ? 'literal_file' : edit !== null && edit.spans !== null && (literal === null || completeEditFrame(clause, edit.spans)) ? 'source_edit' : 'unsupported';
+    const target = kind === 'source_edit' ? edit.edit[0] : literal?.target ?? edit?.edit[0] ?? null;
+    const expectation = kind === 'literal_file' ? { kind: 'file_bytes', path: target, sha256: null }
+      : { kind: 'underivable', reason: kind === 'source_edit' ? 'source-edit-preimage-required' : 'no_artifact_in_clause' };
+    return { clause, span, byteSpan, sourceUnit: 'utf16', kind, target, expected: kind === 'literal_file' ? literal.content : null,
+      node: leafNode(null, clause, byteSpan, 0, expectation) };
+  });
+  if (goals.length === 0 || goals.length === 1 && goals[0].kind !== 'unsupported') return null;
+  return contract !== null && contract.targetSpan.start >= contract.payload.end
+    || goals.some((goal) => literalWriteOwnership(goal.clause) !== null) ? goals : null;
+}
+
+function goalGap(goal) {
+  return resolvedFinalAnswer(gapAnswer(goal.node.node_id, goal.clause, goal.byteSpan, 'no_artifact_in_clause'),
+    FinalDisposition.Gap, 'owned-goal-missing-contract');
+}
+
+/** An unresolved mixed Read condition refuses before any literal effect. */
+export function pendingReadGap(request) {
+  const declared = goalLedger(request);
+  if (declared === null || quoteFault(request) !== null || nestedQuoteFault(request) !== null) return null;
+  const goals = declared.filter(goal => !sourceContextDeclaration(goal.clause));
+  const missing = goals.find(goal => goal.kind === 'unsupported');
+  return missing !== undefined && goals.some(goal => goal.kind === 'literal_file')
+    && pendingReadCondition(request) && boundReadPaths(missing.clause, 'file_read_action_cue').length > 0
+    ? goalGap(missing) : null;
+}
+
+/** Mirrors `fn plan_owned_goal_step`: existing literal-only scheduling remains authoritative. */
+export async function planGoalLedger(request, messages, toolNames, planFor) {
+  const prerequisiteGap = pendingReadGap(request);
+  if (prerequisiteGap !== null) return prerequisiteGap;
+  const declaredGoals = goalLedger(request);
+  if (declaredGoals === null || quoteFault(request) !== null || nestedQuoteFault(request) !== null) return null;
+  const hasContext = declaredGoals.some((goal) => sourceContextDeclaration(goal.clause));
+  const goals = declaredGoals.filter((goal) => !sourceContextDeclaration(goal.clause));
+  if (goals.length === 0) return null;
+  const missingIndex = goals.findIndex((goal) => goal.kind === 'unsupported');
+  if (missingIndex >= 0) {
+    const missing = goals[missingIndex];
+    if (hasContext) return goalGap(missing);
+    if (literalWriteOwnership(missing.clause) !== null) return goalGap(missing);
+    if (missingIndex === 0) {
+      if (collectionSummaryOwns(goals)) {
+        const plan = await planBoundRequestSteps(goals.slice(1).map(goal => goal.clause), messages, toolNames, planFor);
+        return plan?.kind === 'final' && canDeliverFinal(plan) ? goalGap(missing) : plan;
+      }
+      return literalWriteOwnership(request) !== null
+        || goals.some(goal => ['literal_file', 'source_edit'].includes(goal.kind))
+        ? goalGap(missing) : null;
+    }
+    const plan = await planBoundRequestSteps(goals.slice(0, missingIndex).map((goal) => goal.clause), messages, toolNames, planFor);
+    return plan?.kind === 'final' && canDeliverFinal(plan) ? goalGap(missing) : plan;
+  }
+  if (!goals.some((goal) => goal.kind === 'source_edit')) return null;
+  return planBoundRequestSteps(goals.map((goal) => goal.clause), messages, toolNames, planFor);
+}
+
+function contextGrammarPatterns(kind = 'pattern') {
+  return cached('source-context-grammar-patterns:' + kind, () => {
+    const root = parseLino(readText('data/seed/source-context-grammar.lino') ?? '');
+    const escaped = (form) => form.replace(/[.*+?^\x24{}()|[\]\\]/g, '\\$&');
+    return childrenNamed(root, 'language').flatMap((language) => {
+      const roles = new Map(childrenNamed(language, 'role').map((role) => [role.id,
+        childrenNamed(role, 'form').map((form) => form.id)]));
+      return childrenNamed(language, kind).flatMap((pattern) => {
+        let missing = false;
+        const expressions = ['prefix', 'suffix'].map((side) => {
+          const template = childrenNamed(pattern, side)[0]?.id;
+          if (typeof template !== 'string') { missing = true; return null; }
+          const expanded = template.replace(/\{([a-z]+(?:-[a-z]+)*)\}/gu, (_, role) => {
+            const forms = roles.get(role);
+            if (forms === undefined || forms.length === 0) { missing = true; return '(?!)'; }
+            return '(?:' + forms.map(escaped).join('|') + ')';
+          });
+          try { return new RegExp(expanded, 'iu'); } catch { missing = true; return null; }
+        });
+        return missing ? [] : [expressions];
+      });
+    });
+  });
+}
+
+
+function sourceContextWhitespaceSupported(text) {
+  if (typeof text !== 'string') return false;
+  for (const character of text) {
+    if (/[\p{White_Space}\uFEFF]/u.test(character) && !/[ \u0009-\u000D]/u.test(character)) return false;
+  }
+  return true;
+}
+
+function sourceContextLabel(clause) {
+  if (!sourceContextWhitespaceSupported(clause)) return false;
+  const label = tokens(clause).slice(1).map(token => token.text).join(' ');
+  if (['file_read_action_cue', 'file_write_action_cue', 'source_attribution_marker',
+    'file_edit_joiner_cue', 'file_leading_line_constraint_lead'].some(role =>
+      mentionsRole(role, normalizePrompt(label)))) return false;
+  return contextGrammarPatterns('annotation').some(([prefix, suffix]) =>
+    prefix.test(clause) && suffix.test(''));
+}
+
+function sourceContextAtom(clause) {
+  if (!sourceContextWhitespaceSupported(clause)) return false;
+  const paths = unquotedPathTokens(clause).filter((token) => looksLikeFilePath(cleanPathToken(token.text)));
+  if (paths.length !== 1) return false;
+  const token = paths[0], path = cleanPathToken(token.text);
+  if (!token.text.startsWith(path)) return false;
+  const prefix = clause.slice(0, token.start), suffix = clause.slice(token.start + path.length);
+  return contextGrammarPatterns().some(([prefixPattern, suffixPattern]) => prefixPattern.test(prefix) && suffixPattern.test(suffix));
+}
+
+function sourceContextDeclaration(clause) {
+  if (sourceContextLabel(clause) || sourceContextAtom(clause)) return true;
+  const joiners = bareSurfaces('file_edit_joiner_cue');
+  const boundaries = tokens(clause).filter((token) => joiners.includes(token.text.toLowerCase()));
+  if (boundaries.length === 0) return false;
+  let start = 0;
+  for (const boundary of boundaries) {
+    if (!sourceContextAtom(clause.slice(start, boundary.start))) return false;
+    start = boundary.end;
+  }
+  return sourceContextAtom(clause.slice(start));
+}
+
+function attributedActionPrefix(clause) {
+  let view = clause;
+  for (const span of quotedSegmentSpans(clause)) view = view.slice(0, span.start) + ' '.repeat(span.end - span.start) + view.slice(span.end);
+  const action = firstActionCueStart(tokens(view));
+  return action !== null && mentionsRole('source_attribution_marker', normalizePrompt(view.slice(0, action)));
+}
+
+function contractActionPrologue(clause, contract) {
+  let view = clause;
+  for (const span of quotedSegmentSpans(clause)) view = view.slice(0, span.start) + ' '.repeat(span.end - span.start) + view.slice(span.end);
+  const action = firstActionCueStart(tokens(view));
+  if (action === null) return false;
+  let start = Math.min(action, contract.payload.start, contract.targetSpan.start);
+  const words = tokens(clause), binding = preferredBinding(words), target = binding === null ? null : words[binding.index];
+  if (binding !== null && target !== null && target !== undefined && binding.path === contract.target
+    && target.start === contract.targetSpan.start && target.end === contract.targetSpan.end) start = Math.min(start, binding.cue_start);
+  const prologue = normalizePrompt(view.slice(0, start));
+  return prologue === '' || sourceContextLabel(view.slice(0, start).trim()) || sourceContextWhitespaceSupported(view.slice(0, start))
+    && contextGrammarPatterns('action-prologue').some(([prefix, suffix]) => prefix.test(view.slice(0, start)) && suffix.test(''))
+    || ['politeness_cue', 'enumeration_cue', 'file-edit-sequence-cue'].some((role) => bareSurfaces(role).some((surface) => normalizePrompt(surface) === prologue));
+}
+
+function declaredCreationPrologue(request, contract) {
+  const words = tokens(request.slice(0, contract.targetSpan.start));
+  if (words.length === 0 || !bareSurfaces('file_declared_noun').includes(cleanCueToken(words.at(-1).text))) return false;
+  const prefix = normalizePrompt(words.map(word => cleanCueToken(word.text)).join(' '));
+  return bareSurfaces('file_whole_write_action').some(surface => normalizePrompt(surface) === prefix);
+}
+
+/** Mirrors owned_declared_create_frame; classification does not grant filesystem authority. */
+export function ownedDeclaredCreateFrame(request) {
+  const contract = parseWriteContract(request);
+  if (contract === null || quoteFault(request) !== null || nestedQuoteFault(request) !== null
+    || !literalTail(request, contract) || attributedActionPrefix(request)
+    || !(contractActionPrologue(request, contract) || declaredCreationPrologue(request, contract))) return null;
+  const view = instructionView(request, contract);
+  if (view === null) return null;
+  const normalized = normalizePrompt(view);
+  if (['file_edit_position_end', 'file_edit_position_start', 'file_overwrite_consent']
+    .some(role => mentionsRole(role, normalized)) || !writesWholeFile(view)) return null;
+  return { target: contract.target, content: contract.content };
+}
+
+/** Mirrors declared_addition_contract; only explicit content following the destination owns this protocol. */
+export function declaredAdditionContract(request) {
+  const contract = parseWriteContract(request);
+  if (contract === null || contract.targetSpan.end > contract.payload.start
+    || firstContentLeadEnd(request.slice(contract.targetSpan.end).toLowerCase()) === null) return null;
+  return { target: contract.target, content: contract.content };
+}
+
+/** Mirrors has_additive_position; owned payload words are not operation cues. */
+export function hasAdditivePosition(request) {
+  const contract = parseWriteContract(request);
+  const complete = contract !== null && literalTail(request, contract)
+    && !attributedActionPrefix(request) && contractActionPrologue(request, contract);
+  let view = complete ? instructionView(request, contract) : request;
+  if (view === null) return false;
+  if (!complete) for (const span of quotedSegmentSpans(request)) {
+    view = view.slice(0, span.start) + ' '.repeat(span.end - span.start) + view.slice(span.end);
+  }
+  const normalized = normalizePrompt(view);
+  return mentionsRole('file_edit_position_end', normalized) || mentionsRole('file_edit_position_start', normalized);
+}
+
+/** Full owned literal addition frame; null position refuses ambiguous addition. */
+export function ownedAdditiveLiteralFrame(request) {
+  if (closedArithmeticDeclaration(request)) return null;
+  const contract = parseWriteContract(request);
+  if (contract === null || quoteFault(request) !== null || nestedQuoteFault(request) !== null
+    || !literalTail(request, contract) || attributedActionPrefix(request)
+    || !contractActionPrologue(request, contract)) return null;
+  const cues = normalizePrompt(request.slice(0, contract.payload.start));
+  const atEnd = mentionsRole('file_edit_position_end', cues);
+  const atStart = mentionsRole('file_edit_position_start', cues);
+  const words = tokens(request);
+  const actionStart = firstActionCueStart(words), actionEnd = firstActionCueEnd(words);
+  const action = actionStart === null || actionEnd === null ? ''
+    : normalizePrompt(request.slice(actionStart, actionEnd));
+  if (!atEnd && !atStart && !mentionsRole('coding_member_add_action', action)) return null;
+  return { target: contract.target, content: contract.content, atEnd: atEnd === atStart ? null : atEnd };
+}
+
+/** A completed ownership contract includes one unambiguous source-owned position. */
+export function ownedAdditiveLiteral(request) {
+  const frame = ownedAdditiveLiteralFrame(request);
+  return frame === null || frame.atEnd === null ? null : frame;
+}

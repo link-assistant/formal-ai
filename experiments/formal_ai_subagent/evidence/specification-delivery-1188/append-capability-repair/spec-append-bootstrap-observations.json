@@ -1,0 +1,31 @@
+{
+  "original_missing_logs": {
+    "T1638": {
+      "observed": "initial reviewed draft application reported byte-equal; complete log overwritten by accidental helper import",
+      "prompt_provenance": "reconstructed from retained /tmp/spec-append-reviewed.mjs draft"
+    },
+    "T1639": {
+      "observed": "bootstrap SyntaxError duplicate sourceFromReadResult import, before tools",
+      "prompt_provenance": "exact original prompt retained"
+    },
+    "T1653-a": {
+      "observed": "new closest test creation reported byte-equal and tool mutation, complete log overwritten by identical replay"
+    },
+    "T1654-a": {
+      "observed": "quote fault declined entire source request, no tool calls",
+      "prompt_provenance": "reconstructed original guillemet wrapper from retained retry content"
+    },
+    "T1655-a": {
+      "observed": "quote fault declined entire native source request, no tool calls",
+      "prompt_provenance": "reconstructed original guillemet wrapper from retained retry content"
+    }
+  },
+  "renumbering": {
+    "T1640": "accidental helper repeated the operation using temporary label T1638; this second invocation has its own ledger row and retained complete duplicate transcript"
+  },
+  "supplemental_draft_failures": {
+    "T1683": "native atomic guard inserted at wrong scope in supplied reviewed draft; found during source review, fixedT1689",
+    "T1686": "initial awk double-quote escaping in supplied data failed actual closest tests, fixedT1687"
+  },
+  "native_checks": "standalone rustfmt only; no local cargo/rustc invocation"
+}

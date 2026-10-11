@@ -1,0 +1,37 @@
+view
+  id M-12734b52c457
+  lemma prepare
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make ready or suitable or equip in advance for a particular purpose or for some use, event, etc"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "prepare for eating by applying heat"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "to prepare verbally, either for written or spoken delivery"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "arrange by systematic planning and united effort"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "educate for a future role or function"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "create by training and teaching"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "lead up to and soften by sounding the dissonant note in it as a consonant note in the preceding chord"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "undergo training or instruction in preparation for a particular role, function, or profession"
+    provenance (wordnet)

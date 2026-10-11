@@ -18,23 +18,9 @@
 # An ignore without a proof line is a hard error, and so is an ignore carrying
 # both.
 #
-# RUSTSEC-2026-0235 unreachable = "rkyv@0.7.46"
-#   `rkyv` 0.7.46 is listed in `Cargo.lock` only because `rust_decimal` 1.42.1
-#   declares it as `optional = true` behind its `rkyv` feature, which nothing in
-#   this workspace enables. `cargo audit` reads the lockfile, which records
-#   optional dependencies whether or not any feature activates them, so the
-#   advisory is a false positive here: the vulnerable code is never compiled or
-#   linked. Verified with
-#
-#       cargo tree --locked --target all --all-features --edges all \
-#         --invert rkyv@0.7.46      # -> "warning: nothing to print."
-#
-#   The workspace's own `rkyv` is 0.8.17 (via `lindera-dictionary` and
-#   `rtc-dtls`), which is past the advisory's `>=0.8.17` fix.
-#
 # RUSTSEC-2025-0057 blocked-upstream = "fxhash@0.2.1" report = "https://github.com/link-assistant/web-capture/issues/155"
 #   `fxhash` is unmaintained and has no patched version (`patched = []`), so no
-#   lockfile edit clears it. Unlike the entry above it is genuinely compiled
+#   lockfile edit clears it. It is genuinely compiled
 #   into this binary:
 #
 #       cargo tree --locked --target all --all-features --edges all \
@@ -47,7 +33,7 @@
 #                       └── web-capture feature "search"
 #                           └── formal-ai v0.347.0
 #
-#   so the `unreachable` form above would be a proof this repository cannot
+#   so the `unreachable` form would be a proof this repository cannot
 #   honestly write. Nothing here can remove the crate either: `scraper 0.21.0`
 #   is the newest release satisfying `web-capture`'s `^0.21`, and every
 #   `selectors 0.26.x` it can resolve depends on `fxhash`. `selectors` swapped
@@ -62,4 +48,4 @@
 #   `cargo tree --invert fxhash@0.2.1` finds nothing, which is the moment the
 #   bump reaches this lockfile.
 [advisories]
-ignore = ["RUSTSEC-2025-0057", "RUSTSEC-2026-0235"]
+ignore = ["RUSTSEC-2025-0057"]

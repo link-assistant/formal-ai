@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "毛髮"
+        },
+        "es": {
+          "language": "es",
+          "value": "pelo"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "从真皮中发现的毛囊生长的丝状生物材料"
+        },
+        "es": {
+          "language": "es",
+          "value": "fibra de queratina"
         }
       },
       "aliases": {
@@ -68,6 +76,20 @@
           {
             "language": "zh",
             "value": "毛发"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "cabello"
+          },
+          {
+            "language": "es",
+            "value": "pelambre"
+          },
+          {
+            "language": "es",
+            "value": "pelos"
           }
         ]
       }

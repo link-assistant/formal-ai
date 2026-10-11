@@ -1,0 +1,20 @@
+{
+  "task": "T4248",
+  "prompt": "Implement only layout correction of dormant-staged-release/stage-source-coverage.json: restore generic line-per-record steps/crossStageOutputTransfers arrays, full JSON deep equality before/after, exact current canonical SHA3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8 and52operations/104refs. Current actual T2791 file-size guard fails1841lines; preserve fulloversizedeffect/fullfailure separately. Fix scratch stage-coverage-reviewed.mjs serializer to produce stable line-per-record layout on reruns. No exemptions/caps/assertions/workflow/semantic edits, no local native. Run unchanged original freshness/refusal checks and finite scoped commit no push.",
+  "started": "2026-10-09T23:00:18.797Z",
+  "result": {
+    "transcript": [],
+    "answer": "Callable discovery MissingContract:\n{\"authored\":false,\"goal\":\"Implement only layout correction of dormant-staged-release/stage-source-coverage.json: restore generic line-per-record steps/crossStageOutputTransfers arrays, full JSON deep equality before/after, exact current canonical SHA3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8 and52operations/104refs. Current actual T2791 file-size guard fails1841lines; preserve fulloversizedeffect/fullfailure separately. Fix scratch stage-coverage-reviewed.mjs serializer to produce stable line-per-record layout on reruns. No exemptions/caps/assertions/workflow/semantic edits, no local native. Run unchanged original freshness/refusal checks and finite scoped commit no push.\",\"missingContracts\":[\"source-bound-implementation-plan\",\"independent-goal-validation\"],\"reason\":\"MissingContract\",\"verified\":false}",
+    "stop": "final",
+    "toolsAdvertised": [
+      "bash",
+      "edit",
+      "grep",
+      "list",
+      "read",
+      "write"
+    ]
+  },
+  "ok": false,
+  "finished": "2026-10-09T23:00:19.942Z"
+}

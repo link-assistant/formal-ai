@@ -299,6 +299,26 @@ multilingual_responses
     intent pattern_grid_symmetry
     language es
     text "Simétrica bajo: {symmetries}."
+  response response_pattern_grid_symmetry_separator_en
+    intent pattern_grid_symmetry_separator
+    language en
+    text ", "
+  response response_pattern_grid_symmetry_separator_ru
+    intent pattern_grid_symmetry_separator
+    language ru
+    text ", "
+  response response_pattern_grid_symmetry_separator_hi
+    intent pattern_grid_symmetry_separator
+    language hi
+    text ", "
+  response response_pattern_grid_symmetry_separator_zh
+    intent pattern_grid_symmetry_separator
+    language zh
+    text "、"
+  response response_pattern_grid_symmetry_separator_es
+    intent pattern_grid_symmetry_separator
+    language es
+    text ", "
   response response_pattern_grid_horizontal_en
     intent pattern_grid_horizontal
     language en
@@ -403,19 +423,99 @@ multilingual_responses
     intent algorithm_observation_missing
     language en
     text "Observation file does not exist: {path}"
+  response response_algorithm_observation_missing_ru
+    intent algorithm_observation_missing
+    language ru
+    text "Файл наблюдений не существует: {path}"
+  response response_algorithm_observation_missing_hi
+    intent algorithm_observation_missing
+    language hi
+    text "Observation फ़ाइल मौजूद नहीं है: {path}"
+  response response_algorithm_observation_missing_zh
+    intent algorithm_observation_missing
+    language zh
+    text "观察文件不存在：{path}"
+  response response_algorithm_observation_missing_es
+    intent algorithm_observation_missing
+    language es
+    text "El archivo de observaciones no existe: {path}"
   response response_algorithm_discovery_summary_en
     intent algorithm_discovery_summary
     language en
     text "Algorithm discovery over {traces} trace(s): {candidates} candidate(s), {validated} held-out validated; proposal-only, no algorithm executed."
+  response response_algorithm_discovery_summary_ru
+    intent algorithm_discovery_summary
+    language ru
+    text "Поиск алгоритмов по {traces} трассировкам: кандидатов — {candidates}, проверено на отложенных данных — {validated}; только предложение, ни один алгоритм не выполнялся."
+  response response_algorithm_discovery_summary_hi
+    intent algorithm_discovery_summary
+    language hi
+    text "{traces} trace(s) पर algorithm discovery: {candidates} candidate(s), {validated} held-out पर validated; यह केवल प्रस्ताव है, कोई algorithm execute नहीं किया गया।"
+  response response_algorithm_discovery_summary_zh
+    intent algorithm_discovery_summary
+    language zh
+    text "基于 {traces} 条 trace 的算法发现：{candidates} 个候选，{validated} 个通过留出验证；仅为提案，未执行任何算法。"
+  response response_algorithm_discovery_summary_es
+    intent algorithm_discovery_summary
+    language es
+    text "Descubrimiento de algoritmos sobre {traces} traza(s): {candidates} candidato(s), {validated} validado(s) con datos reservados; solo es una propuesta, no se ejecutó ningún algoritmo."
   response response_algorithm_invalid_binding_en
     intent algorithm_invalid_binding
     language en
     text "Invalid binding {binding}; expected NAME=VALUE"
+  response response_algorithm_invalid_binding_ru
+    intent algorithm_invalid_binding
+    language ru
+    text "Недопустимая привязка {binding}: ожидается NAME=VALUE"
+  response response_algorithm_invalid_binding_hi
+    intent algorithm_invalid_binding
+    language hi
+    text "अमान्य binding {binding}; NAME=VALUE अपेक्षित है"
+  response response_algorithm_invalid_binding_zh
+    intent algorithm_invalid_binding
+    language zh
+    text "无效的绑定 {binding}：应为 NAME=VALUE"
+  response response_algorithm_invalid_binding_es
+    intent algorithm_invalid_binding
+    language es
+    text "Vinculación no válida {binding}; se esperaba NAME=VALUE"
   response response_algorithm_empty_binding_name_en
     intent algorithm_empty_binding_name
     language en
     text "Invalid binding {binding}; name is empty"
+  response response_algorithm_empty_binding_name_ru
+    intent algorithm_empty_binding_name
+    language ru
+    text "Недопустимая привязка {binding}: имя пустое"
+  response response_algorithm_empty_binding_name_hi
+    intent algorithm_empty_binding_name
+    language hi
+    text "अमान्य binding {binding}; नाम खाली है"
+  response response_algorithm_empty_binding_name_zh
+    intent algorithm_empty_binding_name
+    language zh
+    text "无效的绑定 {binding}：名称为空"
+  response response_algorithm_empty_binding_name_es
+    intent algorithm_empty_binding_name
+    language es
+    text "Vinculación no válida {binding}; el nombre está vacío"
   response response_algorithm_dreaming_applied_en
     intent algorithm_dreaming_applied
     language en
     text "Applied dreaming plan to {path}; removed {removed} event(s), estimated {bytes} byte(s) reclaimable, learned {amendments} meta-algorithm amendment(s), {patterns} recurring pattern(s), and {algorithms} execution-algorithm candidate(s), preserved {failures} failed simulation(s) and {trials} dreaming trial(s)."
+  response response_algorithm_dreaming_applied_ru
+    intent algorithm_dreaming_applied
+    language ru
+    text "План dreaming применён к {path}: удалено событий — {removed}, можно освободить примерно {bytes} байт; изучено поправок мета-алгоритма — {amendments}, повторяющихся шаблонов — {patterns}, кандидатов алгоритмов выполнения — {algorithms}; сохранено неудачных симуляций — {failures} и испытаний dreaming — {trials}."
+  response response_algorithm_dreaming_applied_hi
+    intent algorithm_dreaming_applied
+    language hi
+    text "Dreaming plan {path} पर लागू किया गया; {removed} event(s) हटाए गए, अनुमानित {bytes} byte(s) खाली किए जा सकते हैं, {amendments} meta-algorithm संशोधन, {patterns} दोहराए जाने वाले pattern(s) और {algorithms} execution-algorithm candidate(s) सीखे गए, {failures} विफल simulation(s) और {trials} dreaming trial(s) सुरक्षित रखे गए।"
+  response response_algorithm_dreaming_applied_zh
+    intent algorithm_dreaming_applied
+    language zh
+    text "已将 dreaming 计划应用到 {path}：删除了 {removed} 个事件，估计可回收 {bytes} 字节，学到 {amendments} 条元算法修订、{patterns} 个重复模式和 {algorithms} 个执行算法候选，保留了 {failures} 次失败模拟和 {trials} 次 dreaming 试验。"
+  response response_algorithm_dreaming_applied_es
+    intent algorithm_dreaming_applied
+    language es
+    text "Plan de dreaming aplicado a {path}: se eliminaron {removed} evento(s), se estiman {bytes} byte(s) recuperables, se aprendieron {amendments} enmienda(s) del meta-algoritmo, {patterns} patrón(es) recurrente(s) y {algorithms} candidato(s) de algoritmo de ejecución, y se conservaron {failures} simulación(es) fallida(s) y {trials} prueba(s) de dreaming."

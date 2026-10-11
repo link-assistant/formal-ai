@@ -17,8 +17,10 @@ use std::collections::HashMap;
 use serde_json::json;
 
 use super::code_artifact::{latest_result, source_from_read_result};
-use super::code_task::{render_seeded_change, render_seeded_outcome};
+use super::code_task::render_seeded_change;
+use super::final_result::FinalResult;
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
+use super::workspace_change::{VerifiedChange, plan_write_digest_verification};
 use crate::normal_markov::{quoted_segment_spans, unwrap_transport_quotes};
 use crate::protocol::ChatMessage;
 use crate::seed;
@@ -29,6 +31,7 @@ use crate::seed;
 /// *sentence* — prose the caller happened to quote — from being written into
 /// source as if it were a member.
 const MAX_MEMBER_LENGTH: usize = 96;
+const MEMBERS_SLOT: &str = concat!("{", "members", "}");
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct MemberInsertion {
@@ -46,6 +49,7 @@ pub(super) fn plan_structured_edit_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let task = unwrap_transport_quotes(task);
     let edit = member_insertion(task)?;
@@ -65,43 +69,47 @@ pub(super) fn plan_structured_edit_step(
         return Some(plan_one(read_tool, read_arguments(&edit.target)));
     };
     let (updated, inserted) = insert_members(&source, &edit)?;
+    // A read that already lists every member is itself the observation: a run
+    // resumed after a client compaction answers at once instead of spending
+    // another full-file observation that pushes it over the threshold again.
+    if inserted.is_empty() && latest_result(current_turn, Capability::Write).is_none() {
+        return Some(AgenticPlan::Final(render_seeded_change(
+            "coding_member_already_present",
+            task,
+            &edit.target,
+            &[(MEMBERS_SLOT, &quoted_list(&edit.values))],
+        )?));
+    }
 
-    if latest_result(current_turn, Capability::Write).is_none() {
+    // Members the file already lists need no write: after a client compaction
+    // the run re-reads the file it already changed, and rewriting it in full
+    // pushed the session straight back over the compaction threshold (the
+    // issue #1028 ladder looped read -> write until its budget ran out).
+    if !inserted.is_empty() && latest_result(current_turn, Capability::Write).is_none() {
         let write_tool = tool_for(tool_names, Capability::Write)?;
         return Some(plan_one(
             write_tool,
             write_arguments(&edit.target, &updated),
         ));
     }
-    if let Some(observed) = latest_result(current_turn, Capability::Run) {
-        if observed == updated {
-            // Say what went in, not just that the file was written. The read
-            // step is what made this knowable, and a caller that asked for a
-            // record of the change -- the issue #1028 ladder does -- has
-            // nothing to record when the answer is a status line.
-            let (intent, change) = if inserted.is_empty() {
-                ("coding_member_already_present", quoted_list(&edit.values))
-            } else {
-                ("coding_member_inserted", quoted_list(&inserted))
-            };
-            return Some(AgenticPlan::Final(render_seeded_change(
-                intent,
-                task,
-                &edit.target,
-                &[("{members}", &change)],
-            )?));
-        }
-        return Some(AgenticPlan::Final(render_seeded_outcome(
-            "coding_workspace_verification_failed",
-            task,
-            &edit.target,
-        )?));
-    }
-    let run_tool = tool_for(tool_names, Capability::Run)?;
-    Some(plan_one(
-        run_tool,
-        json!({"command": format!("cat {}", edit.target)}).to_string(),
-    ))
+    let (intent, members) = if inserted.is_empty() {
+        ("coding_member_already_present", quoted_list(&edit.values))
+    } else {
+        ("coding_member_inserted", quoted_list(&inserted))
+    };
+    plan_write_digest_verification(
+        task,
+        current_turn,
+        tool_names,
+        &VerifiedChange {
+            target: &edit.target,
+            expected: &updated,
+            intent,
+            slots: &[(MEMBERS_SLOT, members.as_str())],
+            list_slots: &[],
+        },
+        result,
+    )
 }
 
 fn member_insertion(task: &str) -> Option<MemberInsertion> {
@@ -152,7 +160,11 @@ fn member_insertion(task: &str) -> Option<MemberInsertion> {
                 named.push(segment.text.clone());
             }
         } else if is_member_literal(&segment.text) {
-            values.push(segment.text.clone());
+            // A value quoted again (a ladder node's `result=` clause repeats
+            // it) is still one member.
+            if !values.contains(&segment.text) {
+                values.push(segment.text.clone());
+            }
             if literal_target.is_none() {
                 literal_target = path;
             }

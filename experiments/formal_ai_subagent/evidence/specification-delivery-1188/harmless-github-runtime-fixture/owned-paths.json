@@ -1,0 +1,18 @@
+[
+  ".github/workflows/release-runtime-fixture.yml",
+  ".github/workflows/release-runtime-fixture-callee.yml",
+  "scripts/release-runtime-fixture.mjs",
+  "rust/tests/web/release-runtime-fixture.test.mjs",
+  "changelog.d/1188-harmless-github-runtime-fixture.md",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/harmless-github-runtime-fixture/scratch-controls.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/harmless-github-runtime-fixture/raw/T4191.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/harmless-github-runtime-fixture/raw/T4192.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/harmless-github-runtime-fixture/raw/T4193.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/harmless-github-runtime-fixture/delivery.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/harmless-github-runtime-fixture/README.md",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/harmless-github-runtime-fixture/owned-paths.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/harmless-github-runtime-fixture/raw/T4194.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/harmless-github-runtime-fixture/raw/T4195.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/harmless-github-runtime-fixture/installed-controls.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/harmless-github-runtime-fixture/queue-policy-audit.json"
+]

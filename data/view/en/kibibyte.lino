@@ -1,0 +1,9 @@
+view
+  id M-bc0b5e82a204
+  lemma kibibyte
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of information equal to 1024 bytes"
+    provenance (wordnet)

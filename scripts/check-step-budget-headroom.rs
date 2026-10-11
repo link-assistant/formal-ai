@@ -16,7 +16,7 @@
 //!
 //! The same gap was still open one level down, and issue #1081 fell into it.
 //! Every gate in the repository compared a step budget **upward**: `tests/unit/
-//! ci-cd/issue_1017.rs` asserts a budget is at most 70% of its job's cap. No
+//! ci-cd/step_budgets_within_job_clocks.rs` asserts a budget is at most 70% of its job's cap. No
 //! gate compared a budget **downward**, against the work it is supposed to
 //! bound. So `Run specification tests` grew from 424s to 1181s over three weeks
 //! against a fixed 1400s budget, crossed it in run 32688997247 and again in run
@@ -166,14 +166,17 @@ fn parse_utc_timestamp(value: &str) -> Option<i64> {
 /// Line-based for the same reason `check-job-headroom.rs` is: this runs as a
 /// standalone `rust-script` with no dependency tree. Every budget in the
 /// repository is a `TEST_BUDGET_SECONDS:` under a named step's `env:`, which is
-/// what `tests/unit/ci-cd/issue_1081.rs` keeps true.
+/// what `tests/unit/ci-cd/job_budget_fit.rs` keeps true.
 fn declared_steps(workflow_directory: &Path) -> Vec<DeclaredStep> {
     let mut steps = Vec::new();
     let mut files: Vec<_> = fs::read_dir(workflow_directory)
         .unwrap_or_else(|error| panic!("read {}: {error}", workflow_directory.display()))
         .filter_map(Result::ok)
         .map(|entry| entry.path())
-        .filter(|path| path.extension().is_some_and(|ext| ext == "yml" || ext == "yaml"))
+        .filter(|path| {
+            path.extension()
+                .is_some_and(|ext| ext == "yml" || ext == "yaml")
+        })
         .collect();
     files.sort();
 
@@ -255,12 +258,16 @@ fn measurements(text: &str) -> Vec<Measurement> {
             continue;
         }
         let conclusion = fields[3];
-        if !matches!(conclusion, "success" | "failure" | "cancelled" | "timed_out") {
+        if !matches!(
+            conclusion,
+            "success" | "failure" | "cancelled" | "timed_out"
+        ) {
             continue;
         }
-        let (Some(started), Some(completed)) =
-            (parse_utc_timestamp(fields[4]), parse_utc_timestamp(fields[5]))
-        else {
+        let (Some(started), Some(completed)) = (
+            parse_utc_timestamp(fields[4]),
+            parse_utc_timestamp(fields[5]),
+        ) else {
             continue;
         };
         if completed < started {
@@ -316,7 +323,7 @@ struct Gaps {
 /// job name -- `Test (macos-15-intel / specification)` -- which no declaration
 /// contains, and reversing that expansion is the hard problem
 /// `check-job-headroom.rs` had to solve. Step names need none of it: they carry
-/// no matrix expressions, and `tests/unit/ci-cd/issue_1081.rs` keeps every
+/// no matrix expressions, and `tests/unit/ci-cd/job_budget_fit.rs` keeps every
 /// budgeted step name unique across the repository so the join stays total. A
 /// name that does become ambiguous is reported rather than guessed at.
 fn audit(declared: &[DeclaredStep], measured: &[Measurement]) -> (Vec<Headroom>, Gaps) {
@@ -337,7 +344,8 @@ fn audit(declared: &[DeclaredStep], measured: &[Measurement]) -> (Vec<Headroom>,
                 .iter()
                 .map(|d| format!("{} / {} at {:.0}s", d.workflow, d.job, d.budget_seconds))
                 .collect();
-            gaps.ambiguous.push(format!("{name} ({})", budgets.join("; ")));
+            gaps.ambiguous
+                .push(format!("{name} ({})", budgets.join("; ")));
             continue;
         }
         worst.insert(
@@ -357,7 +365,7 @@ fn audit(declared: &[DeclaredStep], measured: &[Measurement]) -> (Vec<Headroom>,
             // Every unbudgeted step in the pipeline lands here. That is the
             // expected case, not a gap: this audit is about budgets, and the
             // question "should this step have one?" is a static one that
-            // `tests/unit/ci-cd/issue_1081.rs` answers at pull-request time.
+            // `tests/unit/ci-cd/job_budget_fit.rs` answers at pull-request time.
             continue;
         };
         entry.samples += 1;
@@ -373,7 +381,10 @@ fn audit(declared: &[DeclaredStep], measured: &[Measurement]) -> (Vec<Headroom>,
         if row.samples == 0 {
             gaps.unmeasured.push(format!(
                 "{} / {} / {} ({:.0}s)",
-                row.declared.workflow, row.declared.job, row.declared.step, row.declared.budget_seconds
+                row.declared.workflow,
+                row.declared.job,
+                row.declared.step,
+                row.declared.budget_seconds
             ));
         }
     }
@@ -406,7 +417,10 @@ fn report(rows: &[Headroom], gaps: &Gaps) -> String {
          A `>=` marks a worst case taken from a run that was cut short -- \
          usually by this very budget -- so the figure is a lower bound.\n"
     );
-    let _ = writeln!(out, "| Share | Budget (s) | Worst (s) | Runs | Workflow | Job | Step | Worst run |");
+    let _ = writeln!(
+        out,
+        "| Share | Budget (s) | Worst (s) | Runs | Workflow | Job | Step | Worst run |"
+    );
     let _ = writeln!(out, "| ---: | ---: | ---: | ---: | --- | --- | --- | --- |");
     for row in rows {
         let marker = if row.samples < MIN_SAMPLES {
@@ -414,7 +428,11 @@ fn report(rows: &[Headroom], gaps: &Gaps) -> String {
         } else if row.share_percent() >= FAIL_SHARE_PERCENT {
             " **over**"
         } else if row.share_percent() >= WARN_SHARE_PERCENT {
-            if acknowledgement(&row.declared.step).is_some() { " (acknowledged)" } else { " near" }
+            if acknowledgement(&row.declared.step).is_some() {
+                " (acknowledged)"
+            } else {
+                " near"
+            }
         } else if row.share_percent() <= LOOSE_SHARE_PERCENT {
             " (loose)"
         } else {
@@ -505,7 +523,11 @@ fn main() {
             continue;
         }
         let share = row.share_percent();
-        let cut_short = if row.worst_truncated { ", which was cut short" } else { "" };
+        let cut_short = if row.worst_truncated {
+            ", which was cut short"
+        } else {
+            ""
+        };
         if share >= FAIL_SHARE_PERCENT {
             failures += 1;
             println!(
@@ -563,7 +585,9 @@ mod tests {
     }
 
     fn step_row(run: &str, step: &str, conclusion: &str, started: &str, completed: &str) -> String {
-        format!("{run}\tCI/CD Pipeline\tTest (ubuntu-latest)\t{conclusion}\t{started}\t{completed}\tstep\t{step}")
+        format!(
+            "{run}\tCI/CD Pipeline\tTest (ubuntu-latest)\t{conclusion}\t{started}\t{completed}\tstep\t{step}"
+        )
     }
 
     #[test]
@@ -579,16 +603,35 @@ mod tests {
         // Six fields, the shape `check-job-headroom.rs` reads. The two audits
         // share one collector output, so each must ignore the other's rows on
         // the field count rather than on their content.
-        let job_row = "9\tCI/CD Pipeline\tTest\tsuccess\t2026-09-05T08:00:00Z\t2026-09-05T08:10:00Z";
+        let job_row =
+            "9\tCI/CD Pipeline\tTest\tsuccess\t2026-09-05T08:00:00Z\t2026-09-05T08:10:00Z";
         assert!(measurements(job_row).is_empty());
     }
 
     #[test]
     fn every_run_that_ran_is_measured_and_the_rest_are_dropped() {
         let text = [
-            step_row("1", "Run tests", "success", "2026-09-05T08:00:00Z", "2026-09-05T08:01:00Z"),
-            step_row("2", "Run tests", "failure", "2026-09-05T08:00:00Z", "2026-09-05T08:02:00Z"),
-            step_row("3", "Run tests", "skipped", "2026-09-05T08:00:00Z", "2026-09-05T08:09:00Z"),
+            step_row(
+                "1",
+                "Run tests",
+                "success",
+                "2026-09-05T08:00:00Z",
+                "2026-09-05T08:01:00Z",
+            ),
+            step_row(
+                "2",
+                "Run tests",
+                "failure",
+                "2026-09-05T08:00:00Z",
+                "2026-09-05T08:02:00Z",
+            ),
+            step_row(
+                "3",
+                "Run tests",
+                "skipped",
+                "2026-09-05T08:00:00Z",
+                "2026-09-05T08:09:00Z",
+            ),
         ]
         .join("\n");
         let parsed = measurements(&text);
@@ -641,8 +684,20 @@ mod tests {
     #[test]
     fn a_cut_short_run_cannot_lower_the_worst_case() {
         let text = [
-            step_row("1", "Run tests", "success", "2026-09-05T08:00:00Z", "2026-09-05T08:10:00Z"),
-            step_row("2", "Run tests", "cancelled", "2026-09-05T08:00:00Z", "2026-09-05T08:01:00Z"),
+            step_row(
+                "1",
+                "Run tests",
+                "success",
+                "2026-09-05T08:00:00Z",
+                "2026-09-05T08:10:00Z",
+            ),
+            step_row(
+                "2",
+                "Run tests",
+                "cancelled",
+                "2026-09-05T08:00:00Z",
+                "2026-09-05T08:01:00Z",
+            ),
         ]
         .join("\n");
         let (rows, _) = audit(&[declared("Run tests", 1200.0)], &measurements(&text));
@@ -654,10 +709,19 @@ mod tests {
     fn a_budget_far_above_the_work_is_reported_as_loose() {
         let text: Vec<String> = (0..MIN_SAMPLES)
             .map(|i| {
-                step_row(&i.to_string(), "Run doc tests", "success", "2026-09-05T08:00:00Z", "2026-09-05T08:00:20Z")
+                step_row(
+                    &i.to_string(),
+                    "Run doc tests",
+                    "success",
+                    "2026-09-05T08:00:00Z",
+                    "2026-09-05T08:00:20Z",
+                )
             })
             .collect();
-        let (rows, _) = audit(&[declared("Run doc tests", 600.0)], &measurements(&text.join("\n")));
+        let (rows, _) = audit(
+            &[declared("Run doc tests", 600.0)],
+            &measurements(&text.join("\n")),
+        );
         assert!(rows[0].share_percent() <= LOOSE_SHARE_PERCENT);
         assert!(report(&rows, &Gaps::default()).contains("(loose)"));
     }
@@ -685,10 +749,19 @@ mod tests {
     fn a_few_runs_are_reported_but_not_judged() {
         let text: Vec<String> = (0..MIN_SAMPLES - 1)
             .map(|i| {
-                step_row(&i.to_string(), "Run tests", "success", "2026-09-05T08:00:00Z", "2026-09-05T08:20:00Z")
+                step_row(
+                    &i.to_string(),
+                    "Run tests",
+                    "success",
+                    "2026-09-05T08:00:00Z",
+                    "2026-09-05T08:20:00Z",
+                )
             })
             .collect();
-        let (rows, _) = audit(&[declared("Run tests", 1200.0)], &measurements(&text.join("\n")));
+        let (rows, _) = audit(
+            &[declared("Run tests", 1200.0)],
+            &measurements(&text.join("\n")),
+        );
         assert_eq!(rows[0].samples, MIN_SAMPLES - 1);
         assert!(rows[0].share_percent() >= FAIL_SHARE_PERCENT);
         assert!(
@@ -762,17 +835,38 @@ mod tests {
             "the repository declares more than ten step budgets; found {}",
             declared.len()
         );
-        let (_, gaps) = audit(&declared, &[]);
+        let (rows, gaps) = audit(&declared, &[]);
+        assert!(
+            rows.is_empty(),
+            "no measurements can produce measured headroom"
+        );
         assert!(
             gaps.ambiguous.is_empty(),
             "every budgeted step name must be unique across the workflows, or \
              a measurement cannot be attributed to a budget: {:?}",
             gaps.ambiguous
         );
+        let distinct_names: std::collections::BTreeSet<_> =
+            declared.iter().map(|step| step.step.as_str()).collect();
         assert_eq!(
             gaps.unmeasured.len(),
-            declared.len(),
-            "with no measurements every declared budget is unmeasured"
+            distinct_names.len(),
+            "with no measurements every distinct declared step is unmeasured"
+        );
+        let actual_names: std::collections::BTreeSet<_> = gaps
+            .unmeasured
+            .iter()
+            .map(|gap| {
+                let (identity, _) = gap.rsplit_once(" (").expect("unmeasured budget suffix");
+                identity
+                    .rsplit_once(" / ")
+                    .expect("unmeasured step identity")
+                    .1
+            })
+            .collect();
+        assert_eq!(
+            actual_names, distinct_names,
+            "every actual declared step identity remains unmeasured"
         );
     }
 

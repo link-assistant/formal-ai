@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_wasm_worker_size
+ci_gate check-wasm-worker-size
   stage wasm
   description "The compiled Rust-to-WASM worker stays inside its download size budget."
   run "rust-script scripts/check-wasm-worker-size.rs"
+  justification "A WASM worker that grew beyond its size budget degraded load time without any CI signal; the size guard was introduced in #658 (E39/R380) to enforce the worker binary size ceiling that the Rust/WASM migration required."

@@ -20,6 +20,11 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 fn read(relative: &str) -> String {
+    // `REQUIREMENTS.md` is the index of the assembled register; its text lives
+    // in the area parts under `docs/requirements/assembled/`.
+    if relative == "REQUIREMENTS.md" {
+        return crate::assembled_docs::requirements();
+    }
     fs::read_to_string(
         Path::new(env!("CARGO_MANIFEST_DIR"))
             .parent()

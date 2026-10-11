@@ -1,0 +1,457 @@
+// `crate::translation::formalization` (rust/src/translation/formalization.rs):
+// Wikidata-backed prompt formalization, the offline first slice of the E3
+// formalization engine. A prompt becomes a scored meaning candidate whose
+// slots (subject / predicate / object) are anchored on Wikidata Q-ids and
+// P-ids from the seed lexicon, with explicit Wikipedia / Wiktionary / raw
+// fallbacks.
+//
+// Representation: a `FormalizationAnchor` is `{kind, id, label, source, score}`
+// (`kind` one of 'wikidata_item' | 'wikidata_property' | 'wikipedia_article' |
+// 'wiktionary_entry' | 'raw_text'); a `FormalizationSlot` is `{role, surface,
+// anchor}` (`role` 'subject' | 'predicate' | 'object'); a
+// `FormalizationCandidate` is `{source_text, language, slots, score,
+// unresolved_terms}`.
+//
+// The concept-question shape and the unquoted translation surface are answered
+// by the booted worker realm (`extractConceptQuery`,
+// `extractUnquotedTranslationSurface`: the twins of `crate::concepts` and
+// `crate::translation::prompt`), as concepts_lookup.mjs does. Rust slices
+// `&str` by the byte offsets of a lowercased copy; those offsets are kept as
+// UTF-8 byte offsets here, including the panic when one lands inside a
+// character.
+
+import { cached, realm } from '../host.mjs';
+import { agenticMessage } from '../messages.mjs';
+import { formatLinoValue } from './links_format.mjs';
+import { seedConcepts } from './seed_concepts.mjs';
+import { meaningsWithRole, wordForms, wordIn, words, wordsForRoleInLanguages } from './seed_meanings.mjs';
+import { compareStrings } from './summarization_dedup.mjs';
+
+/** Mirrors `ROLE_WIKIDATA_ENTITY_ANCHOR` in rust/src/seed/roles/tooling.rs. */
+export const ROLE_WIKIDATA_ENTITY_ANCHOR = 'wikidata_entity_anchor';
+/** Mirrors `ROLE_BINARY_RELATION_PROPERTY` in rust/src/seed/roles/tooling.rs. */
+export const ROLE_BINARY_RELATION_PROPERTY = 'binary_relation_property';
+/** Mirrors `ROLE_TRANSLATION_PROPERTY` in rust/src/seed/roles/tooling.rs. */
+export const ROLE_TRANSLATION_PROPERTY = 'translation_property';
+/** Mirrors `ROLE_TRANSLATION_ACTION` in rust/src/seed/roles/language.rs. */
+export const ROLE_TRANSLATION_ACTION = 'translation_action';
+
+const UTF8 = new TextEncoder();
+const UTF8_DECODE = new TextDecoder();
+const TRIM_BOTH = /^\p{White_Space}+|\p{White_Space}+$/gu;
+const CLEAN_EDGES = new Set(['"', "'", '`', '“', '”', '‘', '’', '«', '»', '(', ')', '[', ']']);
+const CLEAN_TAIL = new Set(['?', '。', '.', '!', ',', ';', ':']);
+
+/** `str::trim`. */
+const trim = (text) => text.replace(TRIM_BOTH, '');
+/** `str::len`. */
+const byteLength = (text) => UTF8.encode(text).length;
+/** `str::split_whitespace().count()`. */
+const wordCount = (text) => text.split(/\p{White_Space}+/u).filter(Boolean).length;
+
+/**
+ * `&text[start..end]` over UTF-8 byte offsets; `null` (`str::get`) when an
+ * offset is out of range or inside a character.
+ */
+function getBytes(text, start, end = null) {
+  const bytes = UTF8.encode(text);
+  const stop = end === null ? bytes.length : end;
+  if (start < 0 || stop > bytes.length || start > stop) return null;
+  const boundary = (index) => index === bytes.length || (bytes[index] & 0xc0) !== 0x80;
+  if (!boundary(start) || !boundary(stop)) return null;
+  return UTF8_DECODE.decode(bytes.subarray(start, stop));
+}
+
+/** `&text[start..end]`: the Rust panic on a bad offset is an Error here. */
+function sliceBytes(text, start, end = null) {
+  const sliced = getBytes(text, start, end);
+  if (sliced === null) throw new Error(agenticMessage('summarization_char_boundary', { index: start }));
+  return sliced;
+}
+
+/** `str::find(needle)` as a UTF-8 byte offset, or -1. */
+function findBytes(text, needle) {
+  const at = text.indexOf(needle);
+  return at < 0 ? -1 : byteLength(text.slice(0, at));
+}
+
+/** Mirrors `fn clean_argument` in rust/src/translation/formalization.rs. */
+export function cleanArgument(value) {
+  let chars = Array.from(trim(value));
+  while (chars.length > 0 && CLEAN_EDGES.has(chars[0])) chars.shift();
+  while (chars.length > 0 && CLEAN_EDGES.has(chars[chars.length - 1])) chars.pop();
+  chars = Array.from(trim(chars.join('')));
+  while (chars.length > 0 && CLEAN_TAIL.has(chars[chars.length - 1])) chars.pop();
+  let cleaned = trim(chars.join(''));
+  const lower = cleaned.toLowerCase();
+  for (const article of ['a ', 'an ', 'the ']) {
+    if (lower.startsWith(article)) {
+      const rest = lower.slice(article.length);
+      const start = byteLength(cleaned) - byteLength(rest);
+      cleaned = trim(sliceBytes(cleaned, start));
+      break;
+    }
+  }
+  return cleaned;
+}
+
+/** Mirrors `fn normalize_lookup`. */
+function normalizeLookup(value) {
+  return cleanArgument(value).toLowerCase().split(/\p{White_Space}+/u).filter(Boolean).join(' ');
+}
+
+/** Mirrors `fn normalize_language`. */
+function normalizeLanguage(language) {
+  const lower = trim(language).toLowerCase();
+  switch (lower) {
+    case 'ru': case 'russian': return 'ru';
+    case 'hi': case 'hindi': return 'hi';
+    case 'zh': case 'chinese': case 'cn': return 'zh';
+    case 'en': case 'english': return 'en';
+    default: return lower !== '' ? lower : 'en';
+  }
+}
+
+/** Mirrors `FormalizationAnchorKind::lino_suffix`. */
+function linoSuffix(kind) {
+  switch (kind) {
+    case 'wikidata_item': return 'q';
+    case 'wikidata_property': return 'p';
+    case 'wikipedia_article': return 'wikipedia';
+    case 'wiktionary_entry': return 'wiktionary';
+    default: return 'raw';
+  }
+}
+
+/** Mirrors `FormalizationCandidate::slot`. */
+export function candidateSlot(candidate, role) {
+  return candidate.slots.find((slot) => slot.role === role) ?? null;
+}
+
+/** Mirrors `FormalizationCandidate::to_links_notation`. */
+export function candidateToLinksNotation(candidate) {
+  let out = 'formalization_candidate\n';
+  out += `  source_text ${formatLinoValue(candidate.source_text)}\n`;
+  out += `  language ${formatLinoValue(candidate.language)}\n`;
+  out += `  score ${formatLinoValue(String(candidate.score))}\n`;
+  for (const slot of candidate.slots) {
+    out += `  ${slot.role}_surface ${formatLinoValue(slot.surface)}\n`;
+    out += `  ${slot.role}_${linoSuffix(slot.anchor.kind)} ${formatLinoValue(slot.anchor.id)}\n`;
+    out += `  ${slot.role}_score ${formatLinoValue(String(slot.anchor.score))}\n`;
+    out += `  ${slot.role}_source ${formatLinoValue(slot.anchor.source)}\n`;
+  }
+  for (const term of candidate.unresolved_terms) out += `  formalization_unresolved ${formatLinoValue(term)}\n`;
+  return out;
+}
+
+/** Mirrors `FormalizationCandidate::compact_summary`. */
+export function candidateCompactSummary(candidate) {
+  const parts = candidate.slots.map((slot) => `${slot.role}=${slot.anchor.id}`);
+  if (candidate.unresolved_terms.length > 0) parts.push(`unresolved=${candidate.unresolved_terms.join('|')}`);
+  return parts.length === 0 ? 'empty' : parts.join(' ');
+}
+
+/** Mirrors `fn item_entries`: the Wikidata items projected from the seed lexicon. */
+function itemEntries() {
+  return cached('translation-formalization-items', () => meaningsWithRole(ROLE_WIKIDATA_ENTITY_ANCHOR).map((meaning) => ({
+    id: meaning.wikidata,
+    label: wordIn(meaning, 'en') ?? '',
+    aliases: words(meaning),
+  })));
+}
+
+/** Mirrors `fn predicate_patterns`: binary-relation properties first, then the translation property. */
+function predicatePatterns() {
+  return cached('translation-formalization-predicates', () => {
+    const patterns = [];
+    for (const [role, binaryRelation] of [[ROLE_BINARY_RELATION_PROPERTY, true], [ROLE_TRANSLATION_PROPERTY, false]]) {
+      for (const meaning of meaningsWithRole(role)) {
+        patterns.push({
+          slug: meaning.slug,
+          id: meaning.wikidata,
+          label: wordIn(meaning, 'en') ?? '',
+          surfaces: wordForms(meaning).map((form) => ({ text: form.text, alternative_slug: form.action })),
+          binary_relation: binaryRelation,
+        });
+      }
+    }
+    return patterns;
+  });
+}
+
+/** Mirrors `fn surfaces_by_munch`: longest phrase first, ties in declaration order. */
+function surfacesByMunch(predicate) {
+  return predicate.surfaces
+    .map((surface, index) => ({ surface, index, length: Array.from(surface.text).length }))
+    .sort((left, right) => (right.length - left.length) || (left.index - right.index))
+    .map((entry) => entry.surface);
+}
+
+/** Mirrors `fn translation_predicate`. */
+function translationPredicate() {
+  return predicatePatterns().find((pattern) => !pattern.binary_relation);
+}
+
+/** Mirrors `fn property_anchor`. */
+function propertyAnchor(predicate, surface, source, score) {
+  return { kind: 'wikidata_property', id: `wikidata:${predicate.id}`, label: surface, source, score };
+}
+
+/** Mirrors `fn looks_unanchored_unknown`. */
+function looksUnanchoredUnknown(normalized) {
+  const letters = Array.from(normalized).filter((character) => /^\p{Alphabetic}$/u.test(character));
+  if (letters.length === 0) return true;
+  const lower = normalized.toLowerCase();
+  if (lower.includes('zzq') || lower.includes('qxq') || lower.includes('xq')) return true;
+  if (!letters.every((character) => character.codePointAt(0) < 128)) return false;
+  const isVowel = (character) => 'aeiouy'.includes(character);
+  if (!letters.some(isVowel)) return true;
+  let consonantRun = 0;
+  for (const character of letters) {
+    if (isVowel(character)) {
+      consonantRun = 0;
+    } else {
+      consonantRun += 1;
+      if (consonantRun >= 5) return true;
+    }
+  }
+  return false;
+}
+
+/** Mirrors `fn looks_like_named_article`. */
+function looksLikeNamedArticle(surface) {
+  const chars = Array.from(surface);
+  return chars.length > 0 && /^\p{Uppercase}$/u.test(chars[0]) && chars.some((character) => /^\p{Lowercase}$/u.test(character));
+}
+
+/** Mirrors `fn wikipedia_title`. */
+function wikipediaTitle(surface) {
+  return cleanArgument(surface).split(/\p{White_Space}+/u).filter(Boolean).join('_');
+}
+
+/** Mirrors `fn resolve_seed_concept_anchor`. */
+function resolveSeedConceptAnchor(normalized) {
+  for (const record of seedConcepts()) {
+    if (trim(record.wikidata) === '') continue;
+    const labels = [record.term, ...record.aliases];
+    for (const localized of record.localized) labels.push(localized.term, ...localized.aliases);
+    const slugLabel = (record.slug.startsWith('concept_') ? record.slug.slice('concept_'.length) : record.slug).replaceAll('_', ' ');
+    if (labels.some((label) => normalizeLookup(label) === normalized) || normalizeLookup(slugLabel) === normalized) {
+      return { kind: 'wikidata_item', id: `wikidata:${trim(record.wikidata)}`, label: record.term, source: 'seed:concepts', score: 940 };
+    }
+  }
+  return null;
+}
+
+/** Mirrors `fn resolve_item_anchor`. */
+function resolveItemAnchor(surface, language) {
+  const normalized = normalizeLookup(surface);
+  const entry = itemEntries().find((candidate) => candidate.aliases.some((alias) => normalizeLookup(alias) === normalized));
+  if (entry !== undefined) {
+    return { kind: 'wikidata_item', id: `wikidata:${entry.id}`, label: entry.label, source: 'label:wikidata-item', score: 980 };
+  }
+  const seeded = resolveSeedConceptAnchor(normalized);
+  if (seeded !== null) return seeded;
+  if (looksUnanchoredUnknown(normalized)) {
+    return { kind: 'raw_text', id: `raw:${normalized}`, label: surface, source: 'fallback:raw', score: 0 };
+  }
+  if (wordCount(surface) > 1 || looksLikeNamedArticle(surface)) {
+    return { kind: 'wikipedia_article', id: `wikipedia:${language}:${wikipediaTitle(surface)}`, label: surface, source: 'fallback:wikipedia-surface', score: 520 };
+  }
+  return { kind: 'wiktionary_entry', id: `wiktionary:${language}:${normalized}`, label: surface, source: 'fallback:wiktionary-surface', score: 560 };
+}
+
+/** Mirrors `fn push_item_slot`. */
+function pushItemSlot(slots, role, surface, language) {
+  const cleaned = cleanArgument(surface);
+  if (cleaned === '') return;
+  slots.push({ role, anchor: resolveItemAnchor(cleaned, language), surface: cleaned });
+}
+
+/** Mirrors `fn build_candidate`. */
+function buildCandidate(prompt, language, slots) {
+  const unresolved = slots.filter((slot) => slot.anchor.kind === 'raw_text').map((slot) => slot.surface);
+  const score = slots.length === 0 ? 0 : Math.min(Math.floor(slots.reduce((sum, slot) => sum + slot.anchor.score, 0) / slots.length), 65535);
+  return { source_text: prompt, language, slots, score, unresolved_terms: unresolved };
+}
+
+/** Mirrors `fn build_relation_candidate`. */
+function buildRelationCandidate(prompt, language, subject, predicate, predicateSurface, object, predicateScore) {
+  const slots = [];
+  pushItemSlot(slots, 'subject', subject, language);
+  slots.push({ role: 'predicate', surface: predicateSurface, anchor: propertyAnchor(predicate, predicate.label, 'label:property', predicateScore) });
+  pushItemSlot(slots, 'object', object, language);
+  return buildCandidate(prompt, language, slots);
+}
+
+/** Mirrors `fn clean_translation_surface`. */
+function cleanTranslationSurface(rest, delimiters) {
+  const lower = rest.toLowerCase();
+  let end = byteLength(rest);
+  for (const delimiter of delimiters) {
+    const index = findBytes(lower, delimiter);
+    if (index >= 0) end = Math.min(end, index);
+  }
+  const surface = cleanArgument(sliceBytes(rest, 0, end));
+  return surface === '' ? null : surface;
+}
+
+/**
+ * Mirrors `fn parse_translation_object` in rust/src/translation/formalization.rs:
+ * the object of a translation command, from the unquoted-surface extractor and
+ * the verbs of the `translation_action` role.
+ * @param {string} prompt
+ * @returns {string|null}
+ */
+export function parseTranslationObject(prompt) {
+  const surface = realm().extractUnquotedTranslationSurface(prompt);
+  if (typeof surface === 'string' && surface !== '') return surface;
+
+  const trimmed = trim(prompt);
+  const lower = trimmed.toLowerCase();
+  for (const stem of wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ['en'])) {
+    for (const prefix of [`${stem} `, `please ${stem} `]) {
+      if (lower.startsWith(prefix)) {
+        const rest = getBytes(trimmed, byteLength(prefix));
+        if (rest === null) return null;
+        return cleanTranslationSurface(trim(rest), [' to ', ' into ', ' in ']);
+      }
+    }
+  }
+  for (const stem of wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ['ru'])) {
+    const prefix = `${stem} `;
+    if (lower.startsWith(prefix)) {
+      const rest = getBytes(trimmed, byteLength(prefix));
+      if (rest === null) return null;
+      return cleanTranslationSurface(trim(rest), [' на ', ' в ']);
+    }
+  }
+  const hindi = findBytes(lower, ' का ');
+  if (hindi >= 0) {
+    const hasVerb = wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ['hi']).some((verb) => lower.includes(verb));
+    if (hasVerb) return cleanArgument(sliceBytes(trimmed, 0, hindi));
+  }
+  const zhVerbs = wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ['zh']);
+  if (lower.startsWith('把 ')) {
+    const restLower = lower.slice('把 '.length);
+    for (const verb of zhVerbs) {
+      const index = findBytes(restLower, ` ${verb}`);
+      if (index >= 0) {
+        const start = byteLength(trimmed) - byteLength(restLower);
+        return cleanArgument(sliceBytes(trimmed, start, start + index));
+      }
+    }
+  }
+  for (const verb of zhVerbs) {
+    const index = findBytes(lower, verb);
+    if (index >= 0) {
+      const rest = trim(sliceBytes(trimmed, index + byteLength(verb)));
+      return cleanTranslationSurface(rest, ['成', '为', '為', ' to ']);
+    }
+  }
+  return null;
+}
+
+/** Mirrors `fn find_relation_phrase`: `[start, length]` in UTF-8 bytes, or null. */
+function findRelationPhrase(lower, phrase) {
+  const padded = findBytes(lower, ` ${phrase} `);
+  if (padded >= 0) return [padded + 1, byteLength(phrase)];
+  if (lower.startsWith(`${phrase} `)) return [0, byteLength(phrase)];
+  if (lower.endsWith(` ${phrase}`)) return [byteLength(lower.slice(0, lower.length - phrase.length - 1)) + 1, byteLength(phrase)];
+  if (/^[\x00-\x7f]*$/u.test(phrase)) return null;
+  const at = findBytes(lower, phrase);
+  return at < 0 ? null : [at, byteLength(phrase)];
+}
+
+/** Mirrors `fn parse_binary_relation`. */
+function parseBinaryRelation(prompt) {
+  const trimmed = trim(prompt);
+  const lower = trimmed.toLowerCase();
+  const total = byteLength(trimmed);
+  for (const predicate of predicatePatterns().filter((pattern) => pattern.binary_relation)) {
+    for (const surface of surfacesByMunch(predicate)) {
+      const found = findRelationPhrase(lower, surface.text);
+      if (found === null) continue;
+      const [start, length] = found;
+      if (start >= total || start + length > total) continue;
+      const subject = cleanArgument(sliceBytes(trimmed, 0, start));
+      const object = cleanArgument(sliceBytes(trimmed, start + length));
+      if (subject === '' || object === '') continue;
+      return {
+        subject,
+        predicate_surface: trim(sliceBytes(trimmed, start, start + length)),
+        predicate,
+        object,
+        alternative_slug: surface.alternative_slug,
+      };
+    }
+  }
+  return null;
+}
+
+/** Mirrors `fn ambiguous_relation_alternatives`: the data-driven alternative reading, if any. */
+function ambiguousRelationAlternatives(relation) {
+  if (relation.alternative_slug === '') return [];
+  const predicate = predicatePatterns().find((pattern) => pattern.slug === relation.alternative_slug);
+  return predicate === undefined ? [] : [[predicate, 955]];
+}
+
+/** Mirrors `fn sort_candidates`: score descending, then compact summary, adjacent duplicates dropped. */
+function sortCandidates(candidates) {
+  candidates.sort((left, right) => (right.score - left.score)
+    || compareStrings(candidateCompactSummary(left), candidateCompactSummary(right)));
+  return candidates.filter((candidate, index) => index === 0
+    || candidateCompactSummary(candidate) !== candidateCompactSummary(candidates[index - 1]));
+}
+
+/** Mirrors `fn is_reasonable_standalone_surface`. */
+function isReasonableStandaloneSurface(surface) {
+  const count = wordCount(surface);
+  return count >= 1 && count <= 4 && Array.from(surface).some((character) => /^\p{Alphabetic}$/u.test(character));
+}
+
+/**
+ * Mirrors `fn formalize_prompt_candidates` in rust/src/translation/formalization.rs.
+ * @param {string} prompt
+ * @param {string} language
+ * @returns {Array<object>} `FormalizationCandidate` values, best first
+ */
+export function formalizePromptCandidates(prompt, language) {
+  const normalizedLanguage = normalizeLanguage(language);
+  const slots = [];
+  const query = realm().extractConceptQuery(prompt);
+  if (query && typeof query.term === 'string') {
+    pushItemSlot(slots, 'subject', query.term, normalizedLanguage);
+    if (query.context !== null && query.context !== undefined) pushItemSlot(slots, 'object', query.context, normalizedLanguage);
+    return [buildCandidate(prompt, normalizedLanguage, slots)];
+  }
+  const object = parseTranslationObject(prompt);
+  if (object !== null) {
+    const predicate = translationPredicate();
+    slots.push({ role: 'predicate', surface: predicate.label, anchor: propertyAnchor(predicate, predicate.label, 'label:property', 980) });
+    pushItemSlot(slots, 'object', object, normalizedLanguage);
+    return [buildCandidate(prompt, normalizedLanguage, slots)];
+  }
+  const relation = parseBinaryRelation(prompt);
+  if (relation !== null) {
+    const candidates = [buildRelationCandidate(prompt, normalizedLanguage, relation.subject, relation.predicate, relation.predicate_surface, relation.object, 970)];
+    for (const [predicate, score] of ambiguousRelationAlternatives(relation)) {
+      candidates.push(buildRelationCandidate(prompt, normalizedLanguage, relation.subject, predicate, predicate.label, relation.object, score));
+    }
+    return sortCandidates(candidates);
+  }
+  const standalone = cleanArgument(prompt);
+  if (isReasonableStandaloneSurface(standalone)) pushItemSlot(slots, 'subject', standalone, normalizedLanguage);
+  return [buildCandidate(prompt, normalizedLanguage, slots)];
+}
+
+/**
+ * Mirrors `fn formalize_prompt` in rust/src/translation/formalization.rs: the
+ * highest-scored meaning candidate.
+ * @param {string} prompt
+ * @param {string} language
+ */
+export function formalizePrompt(prompt, language) {
+  const candidates = formalizePromptCandidates(prompt, language);
+  return candidates.length > 0 ? candidates[0] : buildCandidate(prompt, normalizeLanguage(language), []);
+}

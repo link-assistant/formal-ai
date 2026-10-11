@@ -1,0 +1,30 @@
+{
+  "lemma": "immutable",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00357728-a",
+      "partOfSpeech": "a",
+      "definition": "not subject or susceptible to change or variation in form or quality or nature",
+      "examples": [
+        "the view of that time was that all species were immutable, created by God"
+      ],
+      "synonyms": [
+        "changeless"
+      ]
+    },
+    {
+      "id": "oewn-00585950-s",
+      "partOfSpeech": "s",
+      "definition": "constant and unchanging",
+      "examples": [
+        "the immutable laws of nature"
+      ]
+    }
+  ]
+}

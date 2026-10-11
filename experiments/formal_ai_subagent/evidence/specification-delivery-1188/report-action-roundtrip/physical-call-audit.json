@@ -1,0 +1,16 @@
+{
+  "first": "T2700",
+  "cutoff": "T2710",
+  "tasks": 11,
+  "physicalCalls": 21,
+  "attemptedEdits": 3,
+  "successfulPhysicalEdits": 1,
+  "successfulWrites": 3,
+  "repositoryMutationCalls": 4,
+  "excludedPlanHistoryAppendCalls": 3,
+  "promptUtf8Bytes": 13876,
+  "transcriptUtf8Bytes": 233660,
+  "nativeCompilationPerformed": false,
+  "ratchetsAndCorpusUnchanged": true,
+  "actualTokenCostMeasured": false
+}

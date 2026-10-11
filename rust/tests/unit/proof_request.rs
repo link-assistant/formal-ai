@@ -446,3 +446,171 @@ fn proof_request_handler_does_not_swallow_concept_lookups() {
         "concept lookups should not be hijacked by the proof_request handler"
     );
 }
+
+/// The presentation phrases `rust/src/proof_engine` reads from the seed.
+const PROOF_LIBRARY_PHRASES: &[&str] = &[
+    "interpretation_label",
+    "interpretation_proven",
+    "interpretation_disproven",
+    "interpretation_partial_plan",
+    "interpretation_inconclusive",
+    "follow_up_intro",
+    "follow_up_label",
+    "proof_heading",
+    "statement_label",
+    "method_intro",
+    "disproof_heading",
+    "counterexample_label",
+    "plan_heading",
+    "missing_label",
+    "inconclusive_heading",
+];
+
+#[test]
+fn proof_library_seed_speaks_every_surface_language() {
+    // R379: the proof engine's theorems, plans and wording are seed data
+    // (data/seed/proof-library.lino), not Rust literals. Every record must be
+    // spelled in each surface language so no reader gets an English fallback.
+    use formal_ai::proof_engine::{ProofMethod, StepKind};
+    let library = formal_ai::seed::proof_library();
+    let theorem_ids = library
+        .theorems
+        .iter()
+        .map(|theorem| theorem.id.as_str())
+        .collect::<Vec<_>>();
+    assert_eq!(
+        theorem_ids,
+        [
+            "pythagorean_theorem",
+            "euclid_infinitude_of_primes",
+            "sqrt_two_irrational",
+            "fermat_little_theorem",
+            "godel_first_incompleteness",
+            "laplacian_determinism",
+        ]
+    );
+    for plan in [
+        "deep_reasoning",
+        "godel_determinism_mixed",
+        "godel_determinism",
+        "generic",
+    ] {
+        assert!(library.plan(plan).is_some(), "plan {plan} is seeded");
+    }
+    for entry in library.theorems.iter().chain(&library.plans) {
+        assert!(
+            ProofMethod::from_slug(&entry.method).is_some(),
+            "{} names a known method",
+            entry.id
+        );
+        for language in ["en", "ru", "hi", "zh"] {
+            for step in &entry.steps {
+                assert!(StepKind::from_slug(&step.kind).is_some(), "{}", entry.id);
+                assert!(
+                    step.text.surfaces.iter().any(|(slug, _)| slug == language),
+                    "{} has a {language} step",
+                    entry.id
+                );
+            }
+            for input in &entry.missing_inputs {
+                assert!(input.surfaces.iter().any(|(slug, _)| slug == language));
+            }
+        }
+    }
+    for language in ["en", "ru", "hi", "zh"] {
+        for id in PROOF_LIBRARY_PHRASES {
+            assert_ne!(library.text(id, language, &[]), *id, "{id} is seeded");
+        }
+        for method in ProofMethod::ALL {
+            assert!(!method.label(language).starts_with("method_"));
+        }
+        for kind in StepKind::ALL {
+            assert!(!kind.label(language).starts_with("step_"));
+        }
+        assert_eq!(library.items("disproven_follow_ups", language).len(), 2);
+        assert_eq!(library.items("inconclusive_follow_ups", language).len(), 3);
+    }
+}
+
+#[test]
+fn seeded_euclid_proof_renders_with_seeded_labels() {
+    // The rendered proof is assembled from the seed: heading, method label,
+    // step-kind labels, statement, steps and conclusion.
+    use formal_ai::proof_engine::{attempt_proof, render_outcome};
+    let outcome = attempt_proof(
+        "Prove that there are infinitely many primes",
+        "there are infinitely many primes",
+        "en",
+        false,
+        false,
+    );
+    let body = render_outcome(&outcome, "en");
+    assert!(
+        body.starts_with(
+            "How I interpreted the request: treating the request as the formal claim \
+             \"There are infinitely many prime numbers.\" and discharging it by proof by \
+             contradiction inside relative-meta-logic.\n\nProof (method: proof by \
+             contradiction).\n\nStatement: There are infinitely many prime numbers.\n\n\
+             1. Definition: Work in elementary number theory"
+        ),
+        "{body}"
+    );
+    assert!(
+        body.ends_with(
+            "5. Inference: Hence q is a prime not in the list p₁, …, pₙ, contradicting the \
+             assumption that the list was complete.\nThe assumption fails, so there are \
+             infinitely many primes. ∎"
+        ),
+        "{body}"
+    );
+}
+
+#[test]
+fn decision_proofs_are_worded_in_the_readers_language() {
+    // R379: the arithmetic and decision-procedure proofs are seeded phrases,
+    // so a Russian reader gets a Russian proof and an English reader the
+    // unchanged English one.
+    use formal_ai::proof_engine::{ProofOutcome, attempt_proof};
+    let ProofOutcome::Proven { proof } =
+        attempt_proof("2 + 2 = 4", "2 + 2 = 4", "ru", false, false)
+    else {
+        panic!("2 + 2 = 4 should be proven");
+    };
+    assert_eq!(proof.steps[1].text, "Вычислим левую часть: 2 + 2 = 4.");
+    assert_eq!(
+        proof.conclusion,
+        "Следовательно, 2 + 2 равно 4, и утверждение верно. ∎"
+    );
+    let ProofOutcome::Proven { proof } =
+        attempt_proof("2 + 2 = 4", "2 + 2 = 4", "en", false, false)
+    else {
+        panic!("2 + 2 = 4 should be proven");
+    };
+    assert_eq!(
+        proof.steps[1].text,
+        "Evaluate the left-hand side: 2 + 2 = 4."
+    );
+    assert_eq!(
+        proof.conclusion,
+        "Therefore 2 + 2 equals 4, so the claim holds. ∎"
+    );
+    let ProofOutcome::Disproven { counterexample, .. } =
+        attempt_proof("1 + 1 = 3", "1 + 1 = 3", "en", false, false)
+    else {
+        panic!("1 + 1 = 3 should be disproven");
+    };
+    assert_eq!(
+        counterexample,
+        "Evaluated values: 1 + 1 = 2, 3 = 3. The relation = does not hold."
+    );
+    let ProofOutcome::Proven { proof } =
+        attempt_proof("p or not p", "p or not p", "zh", false, false)
+    else {
+        panic!("p or not p should be proven");
+    };
+    assert!(
+        proof.conclusion.ends_with("所以该公式是重言式。∎"),
+        "{}",
+        proof.conclusion
+    );
+}

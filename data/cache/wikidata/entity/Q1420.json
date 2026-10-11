@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "汽车"
+        },
+        "es": {
+          "language": "es",
+          "value": "automóvil"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "由动力驱动，具有4个或4个以上车轮的非轨道承载的机动车"
+        },
+        "es": {
+          "language": "es",
+          "value": "vehículo motorizado con ruedas utilizado para el transporte de pasajeros"
         }
       },
       "aliases": {
@@ -122,6 +130,24 @@
           {
             "language": "zh",
             "value": "轎車"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "coche"
+          },
+          {
+            "language": "es",
+            "value": "carro"
+          },
+          {
+            "language": "es",
+            "value": "auto"
+          },
+          {
+            "language": "es",
+            "value": "automovil"
           }
         ]
       }

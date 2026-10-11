@@ -1,0 +1,17 @@
+view
+  id M-7a439f1641c2
+  lemma precisely
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "indicating exactness or preciseness"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in a precise manner"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "just as it should be"
+    provenance (wordnet)

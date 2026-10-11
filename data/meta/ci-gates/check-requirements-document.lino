@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_requirements_document
+ci_gate check-requirements-document
   stage rust
   description "REQUIREMENTS.md still matches the per-issue shards it is assembled from (issue #991)."
   run "rust-script --test scripts/assemble-requirements.rs && rust-script scripts/assemble-requirements.rs"
+  justification "assemble-requirements.rs was introduced in #991 to generate the assembled requirements document from the per-issue source files; without it, the assembled document can diverge from the authoritative per-issue records."

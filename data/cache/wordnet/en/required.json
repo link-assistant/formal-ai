@@ -1,0 +1,38 @@
+{
+  "lemma": "required",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01585183-s",
+      "partOfSpeech": "s",
+      "definition": "necessary for relief or supply",
+      "examples": [
+        "provided them with all things needful"
+      ],
+      "synonyms": [
+        "needed",
+        "needful",
+        "requisite"
+      ]
+    },
+    {
+      "id": "oewn-00851890-s",
+      "partOfSpeech": "s",
+      "definition": "required by rule",
+      "examples": [
+        "in most schools physical education is compulsory",
+        "attendance is mandatory",
+        "required reading"
+      ],
+      "synonyms": [
+        "compulsory",
+        "mandatory"
+      ]
+    }
+  ]
+}

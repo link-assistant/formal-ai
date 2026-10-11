@@ -4,11 +4,13 @@ Q9788
     ru ("буквы" "литера" "монограф")
   descriptions
     en "grapheme in an alphabetic system of writing"
+    es "signo gráfico de un sistema de escritura"
     hi "हिन्दी भाषा में प्रयुक्त सबसे छोटी इकाई"
     ru "отдельный символ какого-либо алфавита, графема, монограф"
   id Q9788
   labels
     en letter
+    es letra
     hi "अक्षर"
     ru "буква"
     zh "字母"

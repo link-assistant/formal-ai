@@ -1,0 +1,133 @@
+>> read {"filePath":"rust/tests/web/issue-1028-all-mode-sharding.test.mjs","file_path":"rust/tests/web/issue-1028-all-mode-sharding.test.mjs","path":"rust/tests/web/issue-1028-all-mode-sharding.test.mjs"}
+   <file>
+   00001| // The all-mode ladder keeps the full corpus while exchanging verified leaf evidence.
+   00002| // Timings in these small fixtures are synthetic; actual CI timings remain mandatory.
+   00003| import assert from 'node:assert/strict';
+   00004| import { createHash } from 'node:crypto';
+   00005| import { spawnSync } from 'node:child_process';
+   00006| import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, cpSync } from 'node:fs';
+   00007| import { tmpdir } from 'node:os';
+   00008| import { join, resolve } from 'node:path';
+   00009| import { test } from 'node:test';
+   00010| const root = resolve(import.meta.dirname, '../../..');
+   00011| const scripts = join(root, 'experiments/issue_1028_agent_cli_ladder');
+   00012| function python(name, args = [], input) {
+   00013|   return spawnSync('python3', [join(scripts, name), ...args], { encoding: 'utf8', input, env: { ...process.env, PYTHONDONTWRITEBYTECODE: '1',
+   00014|     LADDER_SOURCE_COMMIT: 'a'.repeat(40), LADDER_SOURCE_TREE: 'b'.repeat(40) } });
+   00015| }
+   00016| function planned(mode = 'all', filter = '') {
+   00017|   const process = python('plan-legs.py', [mode, filter]);
+   00018|   assert.equal(process.status, 0, process.stderr);
+   00019|   return JSON.parse(process.stdout);
+   00020| }
+   00021| function hash(text) { return createHash('sha256').update(text).digest('hex'); }
+   00022| function fixture(mode = 'all', filter = '', rules = true) {
+   00023|   const folder = mkdtempSync(join(tmpdir(), 'formal-ai-ladder-waves-'));
+   00024|   const plan = planned(mode, filter);
+   00025|   const planFile = join(folder, 'plan.json'); writeFileSync(planFile, JSON.stringify(plan));
+   00026|   const treePath = join(folder, 'tree.tsv');
+   00027|   const leaves = readFileSync(join(scripts, 'leaves.tsv'), 'utf8');
+   00028|   const source = readFileSync(join(scripts, 'run.sh'), 'utf8');
+   00029|   const generator = source.split('python3 - "$OUT/leaves.tsv" "$NODES" <<\'PY\'\n')[1].split('\nPY\n')[0];
+   00030|   const generate = spawnSync('python3', ['-', join(scripts, 'leaves.tsv'), treePath], { input: generator, encoding: 'utf8' });
+   00031|   assert.equal(generate.status, 0, generate.stderr);
+   00032|   const tree = readFileSync(treePath, 'utf8');
+   00033|   const rows = new Map(tree.trimEnd().split('\n').map(row => [row.split('\t')[0], row]));
+   00034|   const shards = join(folder, 'shards');mkdirSync(shards);
+   00035|   const legs = [...plan.legs, ...plan.composites];
+   00036|   for (const leg of legs) {
+   00037|     const dir = join(shards, leg.id);mkdirSync(dir);
+   00038|     writeFileSync(join(dir, 'tree.tsv'), tree);writeFileSync(join(dir, 'leaves.tsv'), leaves);
+   00039|     writeFileSync(join(dir, 'selected.tsv'), leg.nodes.map(node => rows.get(node)).join('\n') + '\n');
+   00040|     writeFileSync(join(dir, 'run.log'), leg.nodes.map(node => `${node}\tPASS\tdepth=${leg.depth}`).join('\n') + '\n');
+   00041|     writeFileSync(join(dir, 'durations.tsv'), leg.nodes.map(node => `${node}\t${leg.depth}\t1`).join('\n') + '\n');
+   00042|     for (const node of leg.nodes) {
+   00043|       const nodeDir = join(dir, node);mkdirSync(nodeDir);
+   00044|       writeFileSync(join(nodeDir, 'effect.lino'), `node_path=${node}\nnode_kind=${leg.depth === 5 ? 'leaf' : 'requirement'}\nresult=synthetic fixture verified node effect\n`);
+   00045|       writeFileSync(join(nodeDir, 'change.diff'), 'diff --git a/fixture b/fixture\n+synthetic fixture\n');
+   00046|     }
+   00047|     const selectedLeaves = leg.depth === 5 ? leg.nodes.length : 0;
+   00048|     const values = { requested_depth: String(leg.depth), node_filter: leg.filter,
+   00049|       authored_rules_enabled: String(rules), source_commit: 'a'.repeat(40), source_tree: 'b'.repeat(40),
+   00050|       tree_sha256: hash(tree), leaves_sha256: hash(leaves), selected_nodes: String(leg.nodes.length), failures: '0',
+   00051|       deepest_passing_level: String(leg.depth), leaf_nodes_selected: String(selectedLeaves), leaf_nodes_passing: String(selectedLeaves) };
+   00052|     if (!rules) values.leaf_nodes_passing_without_authored_rules = String(selectedLeaves);
+   00053|     writeFileSync(join(dir, 'ladder-result.lino'), 'ladder_result\n' + Object.entries(values).map(([key,value]) => `  ${key} "${value}"\n`).join(''));
+   00054|   }
+   00055|   return { folder, plan, planFile, shards, legs, output: join(folder, 'joined'), rows, tree, leaves };
+   00056| }
+   00057| function combine(f) { return python('combine-shards.py', [f.shards, f.output, String(f.legs.length), f.planFile]); }
+   00058| function editResult(dir, key, value) {
+   00059|   const file = join(dir, 'ladder-result.lino');
+   00060|   writeFileSync(file, readFileSync(file, 'utf8').replace(new RegExp(`^  ${key} ".*"$`, 'm'), `  ${key} "${value}"`));
+   00061| }
+   00062| function withFixture(fn, mode = 'all', filter = '', rules = true) {
+   00063|   const f = fixture(mode, filter, rules);try { fn(f); } finally { rmSync(f.folder, { recursive: true, force: true }); }
+   00064| }
+   00065| 
+   00066| test('all mode plans exactly63 original corpus nodes in31 independent and16 dependent legs', () => {
+   00067|   const plan = planned();assert.equal(plan.expected_nodes.length, 63);
+   00068|   assert.equal(plan.legs.length, 31);assert.equal(plan.composites.length, 16);
+   00069|   assert.equal(new Set([...plan.legs, ...plan.composites].flatMap(leg => leg.nodes)).size, 63);
+   00070|   assert.ok(plan.legs.every(leg => leg.nodes.length <= 2 && leg.depth !== 4));
+   00071|   assert.ok(plan.composites.every(leg => leg.depth === 4 && leg.nodes.length === 1));
+   00072| });
+   00073| test('every binary subtree preserves its exact all-mode count and leg membership', () => {
+   00074|   for (const prefix of ['R','1','2.1','1.2.1','2.2.1.2','1.1.1.1.1']) {
+   00075|     const plan = planned('all', prefix);const depth = prefix === 'R' ? 0 : prefix.split('.').length;
+   00076|     assert.equal(plan.expected_nodes.length, 2 ** (6-depth) - 1);
+   00077|     assert.deepEqual(new Set([...plan.legs,...plan.composites].flatMap(leg => leg.nodes)),new Set(plan.expected_nodes));
+   00078|   }
+   00079| });
+   00080| test('depth-five plan preserves32 leaves in16 pairs and a filtered single leaf', () => {
+   00081|   assert.equal(planned('5').legs.length,16);const p = planned('5','1.1.1.1.1');
+   00082|   assert.deepEqual(p.legs[0].nodes,['1.1.1.1.1']);assert.equal(p.legs[0].filter,'1.1.1.1.1');
+   00083| });
+   00084| test('invalid depths, filters and empty selections fail rather than validate no work', () => {
+   00085|   for (const args of [['6'],['all','../escape'],['3','1.1.1.1']]) assert.notEqual(python('plan-legs.py',args).status,0);
+   00086| });
+   00087| for (const rules of [true,false]) test(`the47-leg join preserves all63 nodes and actual corpus bytes with rules=${rules}`, () => withFixture(f => {
+   00088|   const result = combine(f);assert.equal(result.status,0,result.stderr);
+   00089|   assert.equal(readFileSync(join(f.output,'tree.tsv'),'utf8'),f.tree);
+   00090|   assert.equal(readFileSync(join(f.output,'leaves.tsv'),'utf8'),f.leaves);
+   00091|   assert.equal(readFileSync(join(f.output,'selected.tsv'),'utf8').trimEnd().split('\n').length,63);
+   00092|   assert.equal(readFileSync(join(f.output,'durations.tsv'),'utf8').trimEnd().split('\n').length,63);
+   00093|   assert.match(result.stdout,/selected_nodes "63"/);assert.match(result.stdout,/leaf_nodes_passing "32"/);
+   00094|   assert.match(result.stdout,/deepest_passing_level "0"/); // Preserve the existing summary definition.
+   00095| }, 'all', '', rules));
+   00096| const invalid = {
+   00097|   'missing leg': f => rmSync(join(f.shards,f.legs[0].id),{recursive:true}),
+   00098|   'repeated depth/subtree': f => cpSync(join(f.shards,f.legs[0].id),join(f.shards,'duplicate'),{recursive:true}),
+   00099|   'missing selected node': f => writeFileSync(join(f.shards,f.legs[0].id,'selected.tsv'),''),
+   00100|   'foreign node disposition': f => writeFileSync(join(f.shards,f.legs[0].id,'run.log'),'foreign\tPASS\tdepth=5\n'),
+   00101|   'duplicate node disposition': f => {const p=join(f.shards,f.legs[0].id,'run.log');writeFileSync(p,readFileSync(p,'utf8').repeat(2));},
+   00102|   'foreign source tree': f => editResult(join(f.shards,f.legs[0].id),'source_tree','c'.repeat(40)),
+   00103|   'mixed rule mode': f => editResult(join(f.shards,f.legs[0].id),'authored_rules_enabled','false'),
+   00104|   'conflicting corpus bytes': f => writeFileSync(join(f.shards,f.legs[0].id,'leaves.tsv'),'changed corpus\n'),
+   00105|   'false result counts': f => editResult(join(f.shards,f.legs[0].id),'leaf_nodes_passing','0'),
+   00106|   'missing actual elapsed rows': f => writeFileSync(join(f.shards,f.legs[0].id,'durations.tsv'),''),
+   00107|   'a lossy or repeated plan': f => {f.plan.expected_nodes.pop();writeFileSync(f.planFile,JSON.stringify(f.plan));},
+   00108|   'passing node without effect': f => rmSync(join(f.shards,f.legs[0].id,f.legs[0].nodes[0],'effect.lino')),
+   00109| };
+   00110| for (const [name,mutate] of Object.entries(invalid)) test(`join rejects ${name}`,()=>withFixture(f=>{mutate(f);assert.notEqual(combine(f).status,0);}));
+   00111| test('a filtered all-mode join retains the complete requested subtree',()=>withFixture(f=>assert.equal(combine(f).status,0),'all','2.1'));
+   00112| test('child import copies only the two declared leaves and rejects foreign source identity',()=>withFixture(f=>{
+   00113|   assert.equal(combine(f).status,0);const parent=f.legs[0].filter;const target=join(f.folder,'composite');mkdirSync(target);
+   00114|   writeFileSync(join(target,'tree.tsv'),f.tree);writeFileSync(join(target,'leaves.tsv'),f.leaves);
+   00115|   writeFileSync(join(target,'selected.tsv'),f.rows.get(parent)+'\n');
+   00116|   const args=[f.output,target,'a'.repeat(40),'b'.repeat(40),'true'];
+   00117|   const imported=python('import-children.py',args);assert.equal(imported.status,0,imported.stderr);
+   00118|   assert.equal(imported.stdout.trimEnd().split('\n').length,2);
+   00119|   args[3]='c'.repeat(40);assert.notEqual(python('import-children.py',args).status,0);
+   00120| },'5'));
+   00121| 
+   
+   (End of file - total 121 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/issue-1028-all-mode-sharding.test.mjs","file_path":"rust/tests/web/issue-1028-all-mode-sharding.test.mjs","new":"  'foreign source commit': f => editResult(join(f.shards,f.legs[0].id),'source_commit','c'.repeat(40)),\n  'consistently foreign source tree': f => f.legs.forEach(leg => editResult(join(f.shards,leg.id),'source_tree','c'.repeat(40))),\n  'repeated planned node': f => { f.plan.expected_nodes.push(f.plan.expected_nodes[0]);writeFileSync(f.planFile,JSON.stringify(f.plan)); },\n  'extra planned node': f => { f.plan.expected_nodes.push('outside');writeFileSync(f.planFile,JSON.stringify(f.plan)); },\n  'mixed rule mode': f => editResult(join(f.shards,f.legs[0].id),'authored_rules_enabled','false'),","newString":"  'foreign source commit': f => editResult(join(f.shards,f.legs[0].id),'source_commit','c'.repeat(40)),\n  'consistently foreign source tree': f => f.legs.forEach(leg => editResult(join(f.shards,leg.id),'source_tree','c'.repeat(40))),\n  'repeated planned node': f => { f.plan.expected_nodes.push(f.plan.expected_nodes[0]);writeFileSync(f.planFile,JSON.stringify(f.plan)); },\n  'extra planned node': f => { f.plan.expected_nodes.push('outside');writeFileSync(f.planFile,JSON.stringify(f.plan)); },\n  'mixed rule mode': f => editResult(join(f.shards,f.legs[0].id),'authored_rules_enabled','false'),","new_str":"  'foreign source commit': f => editResult(join(f.shards,f.legs[0].id),'source_commit','c'.repeat(40)),\n  'consistently foreign source tree': f => f.legs.forEach(leg => editResult(join(f.shards,leg.id),'source_tree','c'.repeat(40))),\n  'repeated planned node': f => { f.plan.expected_nodes.push(f.plan.expected_nodes[0]);writeFileSync(f.planFile,JSON.stringify(f.plan)); },\n  'extra planned node': f => { f.plan.expected_nodes.push('outside');writeFileSync(f.planFile,JSON.stringify(f.plan)); },\n  'mixed rule mode': f => editResult(join(f.shards,f.legs[0].id),'authored_rules_enabled','false'),","new_string":"  'foreign source commit': f => editResult(join(f.shards,f.legs[0].id),'source_commit','c'.repeat(40)),\n  'consistently foreign source tree': f => f.legs.forEach(leg => editResult(join(f.shards,leg.id),'source_tree','c'.repeat(40))),\n  'repeated planned node': f => { f.plan.expected_nodes.push(f.plan.expected_nodes[0]);writeFileSync(f.planFile,JSON.stringify(f.plan)); },\n  'extra planned node': f => { f.plan.expected_nodes.push('outside');writeFileSync(f.planFile,JSON.stringify(f.plan)); },\n  'mixed rule mode': f => editResult(join(f.shards,f.legs[0].id),'authored_rules_enabled','false'),","old":"  'mixed rule mode': f => editResult(join(f.shards,f.legs[0].id),'authored_rules_enabled','false'),","oldString":"  'mixed rule mode': f => editResult(join(f.shards,f.legs[0].id),'authored_rules_enabled','false'),","old_str":"  'mixed rule mode': f => editResult(join(f.shards,f.legs[0].id),'authored_rules_enabled','false'),","old_string":"  'mixed rule mode': f => editResult(join(f.shards,f.legs[0].id),'authored_rules_enabled','false'),","path":"rust/tests/web/issue-1028-all-mode-sharding.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/issue-1028-all-mode-sharding.test.mjs"}
+   Output: fc1761253ad276148933090f76f6a5f1e97b61d3d00d4cd873bd9e1ab167f02c  rust/tests/web/issue-1028-all-mode-sharding.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Verification failed for `rust/tests/web/issue-1028-all-mode-sharding.test.mjs`: the observed bytes differ from the planned workspace effect.

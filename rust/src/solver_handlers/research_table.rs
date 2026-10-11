@@ -1,9 +1,15 @@
-//! Follow-up comparison-table handler for research workflows.
+//! Follow-up comparison-table and research-result handlers for research
+//! workflows.
 //!
 //! Agent mode may split "search for X; then create a comparison table" into a
-//! search step followed by a bare table-construction step. This handler keeps
+//! search step followed by a bare table-construction step. These handlers keep
 //! that second step bound to the prior research prompt instead of letting it
-//! fall through to the unknown opener.
+//! fall through to the unknown opener. Everything they recognize or say beyond
+//! the prompt's own structure is data (issue #918): the columns, the status
+//! markers, the whole-prompt follow-ups and the table text are
+//! `data/seed/research-table-procedure.lino`, the column triggers are the
+//! `research_criterion` meanings, and the follow-up wording is the seeded
+//! `research_result_followup_<status>` responses.
 
 use std::fmt::Write as _;
 use std::sync::OnceLock;
@@ -20,69 +26,6 @@ use super::finalize_simple;
 const RESEARCH_TABLE_PROCEDURE_LINO: &str =
     include_str!("../../embedded/data/seed/research-table-procedure.lino");
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum Criterion {
-    KeyDifferences,
-    UseCases,
-    Advantages,
-    Disadvantages,
-}
-
-impl Criterion {
-    const fn slug(self) -> &'static str {
-        match self {
-            Self::KeyDifferences => "key_differences",
-            Self::UseCases => "use_cases",
-            Self::Advantages => "advantages",
-            Self::Disadvantages => "disadvantages",
-        }
-    }
-
-    /// The criterion whose [`slug`](Self::slug) equals `slug`, or `None`.
-    ///
-    /// The inverse of [`slug`](Self::slug): it keys a column off a
-    /// `research_criterion` meaning's slug, so the comparison-table handler turns
-    /// a matched meaning into its column without naming a surface word in code.
-    fn from_slug(slug: &str) -> Option<Self> {
-        match slug {
-            "key_differences" => Some(Self::KeyDifferences),
-            "use_cases" => Some(Self::UseCases),
-            "advantages" => Some(Self::Advantages),
-            "disadvantages" => Some(Self::Disadvantages),
-            _ => None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum ResearchResultStatus {
-    NoResults,
-    AllProvidersDisabled,
-    SearchPlanOnly,
-    Open,
-}
-
-impl ResearchResultStatus {
-    const fn slug(self) -> &'static str {
-        match self {
-            Self::NoResults => "no_results",
-            Self::AllProvidersDisabled => "all_providers_disabled",
-            Self::SearchPlanOnly => "search_plan_only",
-            Self::Open => "open_research",
-        }
-    }
-
-    fn from_slug(slug: &str) -> Option<Self> {
-        match slug {
-            "no_results" => Some(Self::NoResults),
-            "all_providers_disabled" => Some(Self::AllProvidersDisabled),
-            "search_plan_only" => Some(Self::SearchPlanOnly),
-            "open_research" => Some(Self::Open),
-            _ => None,
-        }
-    }
-}
-
 #[derive(Debug, Clone, Default)]
 struct LocalizedTableText {
     language: String,
@@ -97,11 +40,20 @@ struct CriterionText {
     instructions: Vec<(String, String)>,
 }
 
+/// One state a prior research answer can be in. A status without markers is
+/// the one an answer falls to when no other status's marker matches.
+#[derive(Debug, Clone, Default)]
+struct StatusText {
+    slug: String,
+    markers: Vec<String>,
+}
+
 #[derive(Debug, Clone, Default)]
 struct ResearchTableProcedure {
-    statuses: Vec<(ResearchResultStatus, Vec<String>)>,
+    statuses: Vec<StatusText>,
     table_texts: Vec<LocalizedTableText>,
     criteria: Vec<CriterionText>,
+    followup_requests: Vec<String>,
 }
 
 impl ResearchTableProcedure {
@@ -112,10 +64,8 @@ impl ResearchTableProcedure {
             .or_else(|| self.table_texts.iter().find(|text| text.language == "en"))
     }
 
-    fn criterion_text(&self, criterion: Criterion) -> Option<&CriterionText> {
-        self.criteria
-            .iter()
-            .find(|text| text.slug == criterion.slug())
+    fn criterion_text(&self, slug: &str) -> Option<&CriterionText> {
+        self.criteria.iter().find(|text| text.slug == slug)
     }
 }
 
@@ -150,7 +100,7 @@ pub fn try_research_comparison_table(
         log.append("research_table:topic", topic.clone());
     }
     for criterion in &criteria {
-        log.append("research_table:criterion", criterion.slug());
+        log.append("research_table:criterion", *criterion);
     }
 
     let language = detect_language(prompt).slug();
@@ -181,9 +131,10 @@ pub fn try_research_result_followup(
 
     let status = classify_prior_research_answer(last_assistant_turn(log));
     let prior_search_log = compact_log_value(&prior_search);
-    let body = render_research_result_followup(&prior_search, status);
+    let body =
+        render_research_result_followup(&prior_search, status, detect_language(prompt).slug())?;
     log.append("research_result_followup:prior_search", prior_search_log);
-    log.append("research_result_followup:status", status.slug());
+    log.append("research_result_followup:status", status);
 
     Some(finalize_simple(
         prompt,
@@ -225,64 +176,57 @@ fn looks_like_research_prompt(prompt: &str) -> bool {
             .any(|form| normalized.starts_with(form.before_slot()))
 }
 
+/// Whether the earlier user turn was a research request.
+///
+/// The `prior_research_request` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn follows_research_request(log: &EventLog) -> bool {
+    last_user_turn(log).is_some_and(looks_like_research_prompt)
+}
+
+/// Whether the whole prompt is one of the procedure's `followup_request`
+/// phrasings that ask for the result of the prior research step.
 fn is_research_result_followup(normalized: &str) -> bool {
-    let cleaned = normalize_prompt(normalized);
-    matches!(
-        cleaned.as_str(),
-        "result"
-            | "the result"
-            | "what result"
-            | "what is result"
-            | "what s the result"
-            | "what is the result"
-            | "what was the result"
-            | "what are the results"
-            | "what were the results"
-            | "show the result"
-            | "show the results"
-            | "give me the result"
-            | "give me the results"
-            | "what is the answer"
-            | "what was the answer"
-            | "what did you find"
-            | "what did we find"
-            | "what is the outcome"
-            | "what was the outcome"
-    )
+    research_table_procedure()
+        .followup_requests
+        .contains(&normalize_prompt(normalized))
 }
 
-fn classify_prior_research_answer(answer: Option<&str>) -> ResearchResultStatus {
+/// The status of the prior research answer: the first status whose marker the
+/// answer carries, else the status that declares no marker.
+fn classify_prior_research_answer(answer: Option<&str>) -> &'static str {
+    let statuses = &research_table_procedure().statuses;
+    let fallback = statuses
+        .iter()
+        .find(|status| status.markers.is_empty())
+        .map_or("", |status| status.slug.as_str());
     let Some(answer) = answer else {
-        return ResearchResultStatus::Open;
+        return fallback;
     };
-    let normalized = normalize_prompt(answer);
-    for (status, markers) in &research_table_procedure().statuses {
-        if markers
-            .iter()
-            .any(|marker| normalized.match_indices(marker).next().is_some())
-        {
-            return *status;
-        }
-    }
-    ResearchResultStatus::Open
+    // The markers are seeded (`research-table-procedure` statuses), never
+    // phrases memorized here.
+    let answer_text = normalize_prompt(answer);
+    statuses
+        .iter()
+        .find(|status| {
+            status
+                .markers
+                .iter()
+                .any(|marker| answer_text.contains(marker.as_str()))
+        })
+        .map_or(fallback, |status| status.slug.as_str())
 }
 
-fn render_research_result_followup(prior_search: &str, status: ResearchResultStatus) -> String {
-    let preview = research_prompt_preview(prior_search);
-    match status {
-        ResearchResultStatus::NoResults => format!(
-            "The result of the previous research step is: no CORS-readable web search results were returned. I do not have verified source data to complete the requested analysis, calculation, table, or sources list yet.\n\nPrior research task: `{preview}`\n\nNext step: rerun the search with narrower queries or provide source links; then I can calculate the requested impact from those sources."
-        ),
-        ResearchResultStatus::AllProvidersDisabled => format!(
-            "The result of the previous research step is: web search could not run because the CORS-readable search providers were disabled. No verified research result was produced yet.\n\nPrior research task: `{preview}`\n\nNext step: enable a search provider or provide source links; then I can complete the requested analysis from those sources."
-        ),
-        ResearchResultStatus::SearchPlanOnly => format!(
-            "The previous turn only set up the research/search step. It did not produce a final result, calculation, or sourced executive summary yet.\n\nPrior research task: `{preview}`\n\nNext step: run the source search and use the returned sources to finish the calculation."
-        ),
-        ResearchResultStatus::Open => format!(
-            "There is no verified final research result in the conversation yet. The prior turn was a research request, but I do not see a completed source-backed answer to report.\n\nPrior research task: `{preview}`\n\nNext step: run the search or provide source links; then I can produce the requested result."
-        ),
-    }
+/// The seeded `research_result_followup_<status>` response with the prior
+/// research task's preview in its slot.
+fn render_research_result_followup(
+    prior_search: &str,
+    status: &str,
+    language: &str,
+) -> Option<String> {
+    let task = research_prompt_preview(prior_search);
+    seed::localized_response(&format!("research_result_followup_{status}"), language)
+        .map(|template| template.replace("{preview}", &task))
 }
 
 fn research_prompt_preview(value: &str) -> String {
@@ -367,7 +311,7 @@ fn clean_search_text(value: &str) -> String {
         .join(" ")
 }
 
-fn extract_criteria(prompt: &str) -> Vec<Criterion> {
+fn extract_criteria(prompt: &str) -> Vec<&'static str> {
     let mut criteria = Vec::new();
     for line in prompt.lines() {
         let Some(item) = strip_list_marker(line.trim()) else {
@@ -379,12 +323,12 @@ fn extract_criteria(prompt: &str) -> Vec<Criterion> {
         append_criteria_from_text(prompt, &mut criteria);
     }
     if criteria.is_empty() {
-        criteria.extend([
-            Criterion::KeyDifferences,
-            Criterion::UseCases,
-            Criterion::Advantages,
-            Criterion::Disadvantages,
-        ]);
+        criteria.extend(
+            research_table_procedure()
+                .criteria
+                .iter()
+                .map(|text| text.slug.as_str()),
+        );
     }
     criteria
 }
@@ -396,38 +340,39 @@ fn extract_criteria(prompt: &str) -> Vec<Criterion> {
 /// and ' con ' still avoid matching inside 'process'/'control'. The trigger
 /// words live in the seed data; the code names only the language-independent
 /// slug that keys each column.
-fn append_criteria_from_text(text: &str, criteria: &mut Vec<Criterion>) {
+fn append_criteria_from_text(text: &str, criteria: &mut Vec<&'static str>) {
     let normalized = normalize_prompt(text);
+    let procedure = research_table_procedure();
     for meaning in seed::lexicon().meanings_with_role(seed::ROLE_RESEARCH_CRITERION) {
         if meaning
             .words()
             .any(|word| normalized.match_indices(word).next().is_some())
-            && let Some(criterion) = Criterion::from_slug(&meaning.slug)
+            && let Some(column) = procedure.criterion_text(&meaning.slug)
         {
-            push_unique(criteria, criterion);
+            push_unique(criteria, column.slug.as_str());
         }
     }
 }
 
-fn push_unique(criteria: &mut Vec<Criterion>, criterion: Criterion) {
+fn push_unique(criteria: &mut Vec<&'static str>, criterion: &'static str) {
     if !criteria.contains(&criterion) {
         criteria.push(criterion);
     }
 }
 
-fn render_comparison_table(topics: &[String], criteria: &[Criterion], language: &str) -> String {
+fn render_comparison_table(topics: &[String], criteria: &[&str], language: &str) -> String {
     let procedure = research_table_procedure();
     let table_text = procedure.table_text(language);
     let intro = table_text.map_or("", |text| text.intro.as_str());
-    let topic_label = table_text.map_or("topic", |text| text.topic_label.as_str());
+    let topic_label = table_text.map_or("", |text| text.topic_label.as_str());
     let mut body = format!("{intro}\n\n");
     body.push('|');
     let _ = write!(body, " {topic_label} |");
-    for criterion in criteria {
+    for &criterion in criteria {
         let label = procedure
-            .criterion_text(*criterion)
+            .criterion_text(criterion)
             .and_then(|text| localized_value(&text.labels, language))
-            .unwrap_or_else(|| criterion.slug());
+            .unwrap_or(criterion);
         let _ = write!(body, " {label} |");
     }
     body.push('\n');
@@ -439,11 +384,11 @@ fn render_comparison_table(topics: &[String], criteria: &[Criterion], language: 
     body.push('\n');
     for topic in topics {
         let _ = write!(body, "| {} |", table_escape(topic));
-        for criterion in criteria {
+        for &criterion in criteria {
             let cell = procedure
-                .criterion_text(*criterion)
+                .criterion_text(criterion)
                 .and_then(|text| localized_value(&text.instructions, language))
-                .unwrap_or_else(|| criterion.slug());
+                .unwrap_or(criterion);
             let _ = write!(body, " {} |", table_escape(cell));
         }
         body.push('\n');
@@ -477,10 +422,16 @@ fn parse_research_table_procedure(text: &str) -> ResearchTableProcedure {
         .children
         .iter()
         .filter(|node| node.name == "status")
-        .filter_map(|node| {
-            let status = ResearchResultStatus::from_slug(&node.id)?;
-            Some((status, child_values(node, "marker")))
+        .map(|node| StatusText {
+            slug: node.id.clone(),
+            markers: child_values(node, "marker"),
         })
+        .collect();
+    let followup_requests = root
+        .children
+        .iter()
+        .filter(|node| node.name == "followup_request")
+        .map(|node| node.id.to_lowercase())
         .collect();
     let table_texts = root
         .children
@@ -506,6 +457,7 @@ fn parse_research_table_procedure(text: &str) -> ResearchTableProcedure {
         statuses,
         table_texts,
         criteria,
+        followup_requests,
     }
 }
 

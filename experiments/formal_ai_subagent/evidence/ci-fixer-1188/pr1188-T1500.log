@@ -1,0 +1,243 @@
+>> read {"filePath":"rust/tests/vscode_launch.rs","file_path":"rust/tests/vscode_launch.rs","path":"rust/tests/vscode_launch.rs"}
+   <file>
+   00001| //! Issue #763: The VS Code aliases launch with an isolated OpenCode provider, and global setup can be undone.
+   00002| 
+   00003| #[cfg(unix)]
+   00004| mod unix {
+   00005|     use std::os::unix::fs::PermissionsExt;
+   00006|     use std::path::{Path, PathBuf};
+   00007|     use std::process::{Command, Output};
+   00008|     use std::sync::atomic::{AtomicU64, Ordering};
+   00009| 
+   00010|     static SEQ: AtomicU64 = AtomicU64::new(0);
+   00011| 
+   00012|     fn temp_dir() -> PathBuf {
+   00013|         let seq = SEQ.fetch_add(1, Ordering::Relaxed);
+   00014|         let path = std::env::temp_dir().join(format!(
+   00015|             "formal-ai-opencode-vscode-{}-{seq}",
+   00016|             std::process::id()
+   00017|         ));
+   00018|         std::fs::create_dir_all(&path).expect("temp dir");
+   00019|         path
+   00020|     }
+   00021| 
+   00022|     fn fake_code(bin_dir: &Path) {
+   00023|         let path = bin_dir.join("code");
+   00024|         std::fs::write(
+   00025|             &path,
+   00026|             r#"#!/bin/sh
+   00027| {
+   00028|   i=0
+   00029|   for arg in "$@"; do printf "arg[%s]=%s\n" "$i" "$arg"; i=$((i + 1)); done
+   00030|   printf "FORMAL_AI_API_KEY=%s\n" "${FORMAL_AI_API_KEY-}"
+   00031|   printf "OPENCODE_CONFIG=%s\n" "${OPENCODE_CONFIG-}"
+   00032|   if [ -n "${OPENCODE_CONFIG-}" ] && [ -f "$OPENCODE_CONFIG" ]; then
+   00033|     printf "%s\n" "---OPENCODE_CONFIG---"
+   00034|     cat "$OPENCODE_CONFIG"
+   00035|   fi
+   00036| } > "$FORMAL_AI_CAPTURE"
+   00037| "#,
+   00038|         )
+   00039|         .expect("fake code");
+   00040|         let mut permissions = std::fs::metadata(&path).expect("metadata").permissions();
+   00041|         permissions.set_mode(0o755);
+   00042|         std::fs::set_permissions(path, permissions).expect("chmod");
+   00043|     }
+   00044| 
+   00045|     fn run(home: &Path, bin_dir: &Path, capture: &Path, alias: &str) -> Output {
+   00046|         let path = format!(
+   00047|             "{}:{}",
+   00048|             bin_dir.display(),
+   00049|             std::env::var("PATH").unwrap_or_default()
+   00050|         );
+   00051|         Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+   00052|             .args([
+   00053|                 "with",
+   00054|                 "--no-start-server",
+   00055|                 "--base-url",
+   00056|                 "http://127.0.0.1:18080",
+   00057|                 alias,
+   00058|             ])
+   00059|             .env("HOME", home)
+   00060|             .env("PATH", path)
+   00061|             .env("FORMAL_AI_CAPTURE", capture)
+   00062|             .env_remove("FORMAL_AI_API_KEY")
+   00063|             .env_remove("OPENCODE_CONFIG")
+   00064|             .output()
+   00065|             .expect("run wrapper")
+   00066|     }
+   00067| 
+   00068|     #[test]
+   00069|     fn aliases_launch_vscode_with_isolated_opencode_provider() {
+   00070|         for alias in ["opencode-vscode", "opencode-code"] {
+   00071|             let root = temp_dir();
+   00072|             let home = root.join("home");
+   00073|             let bin_dir = root.join("bin");
+   00074|             let capture = root.join("capture.txt");
+   00075|             std::fs::create_dir_all(&home).expect("home");
+   00076|             std::fs::create_dir_all(&bin_dir).expect("bin");
+   00077|             fake_code(&bin_dir);
+   00078| 
+   00079|             let output = run(&home, &bin_dir, &capture, alias);
+   00080|             assert!(
+   00081|                 output.status.success(),
+   00082|                 "{alias}: {}",
+   00083|                 String::from_utf8_lossy(&output.stderr)
+   00084|             );
+   00085|             let captured = std::fs::read_to_string(&capture).expect("capture");
+   00086|             assert!(captured.contains("arg[0]=--new-window"), "{captured}");
+   00087|             assert!(captured.contains("arg[1]=--wait"), "{captured}");
+   00088|             assert!(
+   00089|                 captured.contains("FORMAL_AI_API_KEY=formal-ai"),
+   00090|                 "{captured}"
+   00091|             );
+   00092|             assert!(captured.contains("OPENCODE_CONFIG="), "{captured}");
+   00093|             assert!(captured.contains("---OPENCODE_CONFIG---"), "{captured}");
+   00094|             assert!(captured.contains("\"formalai\""), "{captured}");
+   00095|             assert!(
+   00096|                 captured.contains("\"baseURL\": \"http://127.0.0.1:18080/api/openai/v1\""),
+   00097|                 "{captured}"
+   00098|             );
+   00099|             assert!(
+   00100|                 captured.contains("\"model\": \"formalai/formal-ai\""),
+   00101|                 "{captured}"
+   00102|             );
+   00103|             assert!(!home.join(".config/opencode/opencode.json").exists());
+   00104|             std::fs::remove_dir_all(root).expect("cleanup");
+   00105|         }
+   00106|     }
+   00107| 
+   00108|     #[test]
+   00109|     fn global_setup_uses_shared_opencode_config_and_undo_restores_it() {
+   00110|         let root = temp_dir();
+   00111|         let home = root.join("home");
+   00112|         let config_dir = home.join(".config/opencode");
+   00113|         let config_path = config_dir.join("opencode.json");
+   00114|         std::fs::create_dir_all(&config_dir).expect("config dir");
+   00115|         let original = "{\n  \"theme\": \"system\"\n}\n";
+   00116|         std::fs::write(&config_path, original).expect("original config");
+   00117| 
+   00118|         let configured = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+   00119|             .args([
+   00120|                 "with",
+   00121|                 "--global",
+   00122|                 "--base-url",
+   00123|                 "http://127.0.0.1:18080",
+   00124|                 "opencode-vscode",
+   00125|             ])
+   00126|             .env("HOME", &home)
+   00127|             .output()
+   00128|             .expect("global setup");
+   00129|         assert!(
+   00130|             configured.status.success(),
+   00131|             "{}",
+   00132|             String::from_utf8_lossy(&configured.stderr)
+   00133|         );
+   00134|         let config = std::fs::read_to_string(&config_path).expect("configured config");
+   00135|         assert!(config.contains("\"theme\": \"system\""), "{config}");
+   00136|         assert!(config.contains("\"formalai\""), "{config}");
+   00137|         assert!(
+   00138|             config.contains("\"baseURL\": \"http://127.0.0.1:18080/api/openai/v1\""),
+   00139|             "{config}"
+   00140|         );
+   00141|         assert!(
+   00142|             config.contains("\"model\": \"formalai/formal-ai\""),
+   00143|             "{config}"
+   00144|         );
+   00145|         assert!(config_path.with_extension("json.formal-ai.bak").exists());
+   00146| 
+   00147|         let restored = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+   00148|             .args(["with", "--undo", "opencode-code"])
+   00149|             .env("HOME", &home)
+   00150|             .output()
+   00151|             .expect("undo setup");
+   00152|         assert!(
+   00153|             restored.status.success(),
+   00154|             "{}",
+   00155|             String::from_utf8_lossy(&restored.stderr)
+   00156|         );
+   00157|         assert_eq!(
+   00158|             std::fs::read_to_string(&config_path).expect("restored config"),
+   00159|             original
+   00160|         );
+   00161|         std::fs::remove_dir_all(root).expect("cleanup");
+   00162|     }
+   00163| 
+   00164|     #[test]
+   00165|     fn docs_and_matrix_cover_the_whole_extension_flow() {
+   00166|         let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+   00167|             .parent()
+   00168|             .expect("the repository root sits one level above the crate");
+   00169|         let seed = std::fs::read_to_string(root.join("data/seed/client-integrations.lino"))
+   00170|             .expect("integration seed");
+   00171|         let readme = std::fs::read_to_string(root.join("README.md")).expect("README");
+   00172|         let matrix = std::fs::read_to_string(root.join("docs/testing/agentic-cli-tools.md"))
+   00173|             .expect("agentic client matrix");
+   00174|         let configuration =
+   00175|             std::fs::read_to_string(root.join("docs/configuration/agentic-clis.md"))
+   00176|                 .expect("agentic client configuration guide");
+   00177| 
+   00178|         for expected in [
+   00179|             "tool \"opencode-vscode\"",
+   00180|             "aliases (\"opencode-code\")",
+   00181|             "command \"code\"",
+   00182|             "prepend_arg \"--new-window\"",
+   00183|             "prepend_arg \"--wait\"",
+   00184|             "config_env \"OPENCODE_CONFIG\"",
+   00185|             "path \".config/opencode/opencode.json\"",
+   00186|         ] {
+   00187|             assert!(seed.contains(expected), "missing seed contract: {expected}");
+   00188|         }
+   00189|         for expected in [
+   00190|             "sst-dev.opencode",
+   00191|             "formal-ai with opencode-vscode",
+   00192|             "opencode-code",
+   00193|         ] {
+   00194|             assert!(
+   00195|                 readme.contains(expected),
+   00196|                 "missing README contract: {expected}"
+   00197|             );
+   00198|         }
+   00199|         for expected in [
+   00200|             "OpenCode VS Code extension",
+   00201|             "OPENCODE_CALLER=vscode",
+   00202|             "at least one tool call/result round trip",
+   00203|             "#671 matrix",
+   00204|         ] {
+   00205|             assert!(
+   00206|                 matrix.contains(expected),
+   00207|                 "missing matrix contract: {expected}"
+   00208|             );
+   00209|         }
+   00210|         for expected in [
+   00211|             "OpenCode VS Code",
+   00212|             "formal-ai with opencode-vscode",
+   00213|             "formal-ai with --global opencode-vscode",
+   00214|         ] {
+   00215|             assert!(
+   00216|                 configuration.contains(expected),
+   00217|                 "missing configuration guide contract: {expected}"
+   00218|             );
+   00219|         }
+   00220|         assert!(
+   00221|             root.join("experiments/opencode_vscode_e2e/run.sh")
+   00222|                 .is_file(),
+   00223|             "missing reproducible real-extension E2E harness"
+   00224|         );
+   00225|         assert!(
+   00226|             root.join("experiments/opencode_vscode_e2e/driver/extension.cjs")
+   00227|                 .is_file(),
+   00228|             "missing real extension command driver"
+   00229|         );
+   00230|     }
+   00231| }
+   00232| 
+   
+   (End of file - total 232 lines)
+   </file>
+>> edit {"filePath":"rust/tests/vscode_launch.rs","file_path":"rust/tests/vscode_launch.rs","new":"isolated `OpenCode` provider","newString":"isolated `OpenCode` provider","new_str":"isolated `OpenCode` provider","new_string":"isolated `OpenCode` provider","old":"isolated OpenCode provider","oldString":"isolated OpenCode provider","old_str":"isolated OpenCode provider","old_string":"isolated OpenCode provider","path":"rust/tests/vscode_launch.rs"}
+>> bash {"command":"sha256sum -- rust/tests/vscode_launch.rs"}
+   297da7d8010f0cdfc8b5d8e4bb6bd881e8b9b64154289c7e477e0b9c7a6dd0b0  rust/tests/vscode_launch.rs
+   
+== answer ==
+Replaced `isolated OpenCode provider` with ``isolated `OpenCode` provider`` in `rust/tests/vscode_launch.rs` and observed the result.

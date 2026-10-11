@@ -1,0 +1,97 @@
+{
+  "lemma": "divide",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14006177-n",
+      "partOfSpeech": "n",
+      "definition": "a serious disagreement between two groups of people (typically producing tension or hostility)"
+    },
+    {
+      "id": "oewn-08697107-n",
+      "partOfSpeech": "n",
+      "definition": "a ridge of land that separates two adjacent river systems",
+      "synonyms": [
+        "watershed",
+        "water parting"
+      ]
+    },
+    {
+      "id": "oewn-02473085-v",
+      "partOfSpeech": "v",
+      "definition": "separate into parts or portions",
+      "examples": [
+        "divide the cake into three equal parts",
+        "The British carved up the Ottoman Empire after World War I"
+      ],
+      "synonyms": [
+        "split",
+        "split up",
+        "separate",
+        "dissever",
+        "carve up"
+      ]
+    },
+    {
+      "id": "oewn-00643760-v",
+      "partOfSpeech": "v",
+      "definition": "perform a division",
+      "examples": [
+        "Can you divide 49 by seven?"
+      ],
+      "synonyms": [
+        "fraction"
+      ]
+    },
+    {
+      "id": "oewn-02627934-v",
+      "partOfSpeech": "v",
+      "definition": "act as a barrier between; stand between",
+      "examples": [
+        "The mountain range divides the two countries"
+      ],
+      "synonyms": [
+        "separate"
+      ]
+    },
+    {
+      "id": "oewn-01560556-v",
+      "partOfSpeech": "v",
+      "definition": "move or break apart",
+      "examples": [
+        "The two pieces that we had glued separated"
+      ],
+      "synonyms": [
+        "separate",
+        "part"
+      ]
+    },
+    {
+      "id": "oewn-02035003-v",
+      "partOfSpeech": "v",
+      "definition": "make a division or separation",
+      "synonyms": [
+        "separate"
+      ]
+    },
+    {
+      "id": "oewn-01559703-v",
+      "partOfSpeech": "v",
+      "definition": "force, take, or pull apart",
+      "examples": [
+        "He separated the fighting children",
+        "Moses parted the Red Sea"
+      ],
+      "synonyms": [
+        "separate",
+        "disunite",
+        "part"
+      ]
+    }
+  ]
+}

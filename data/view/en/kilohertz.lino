@@ -1,0 +1,9 @@
+view
+  id M-6d7488b3adbf
+  lemma kilohertz
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "one thousand periods per second"
+    provenance (wordnet)

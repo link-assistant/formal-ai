@@ -1,0 +1,18 @@
+{
+  "schema": "final-source-identity-supplement/v1",
+  "priorManifestSha256": "79d5e7dcc49142002e59983e0cc8bdda089df33c4fece4a52e6f44f17761310e",
+  "sourceIdentityOverrides": [
+    {
+      "path": "js/agentic/crate/literal_body_ownership.mjs",
+      "sha256": "760ad838821c3e53f7d6d39ee71ace46359604797da967fd966eb4b103cff68f"
+    },
+    {
+      "path": "js/agentic/crate/operation_owner.mjs",
+      "sha256": "037b7aed009de06d39f91f88c33684c376f2fc1570373d01cf3f014439e2b95c"
+    }
+  ],
+  "additionalReviewedSourceFormattingWrites": 2,
+  "sourceFileWritesThroughT3862": 35,
+  "manualSourceWrites": 0,
+  "autonomousImplementation": 0
+}

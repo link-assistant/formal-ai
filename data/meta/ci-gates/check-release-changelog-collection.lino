@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_release_changelog_collection
+ci_gate check-release-changelog-collection
   stage rust
   description "The release script still collects the changelog entries it will publish."
   run "rust-script --test scripts/version-and-commit.rs"
+  justification "A release committed without a matching changelog entry left the version history incomplete; scripts/version-and-commit.rs has enforced changelog collection since the initial CI commit (6f8d4a8a0) to ensure every release is recorded."

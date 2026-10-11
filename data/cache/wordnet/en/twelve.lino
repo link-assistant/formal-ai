@@ -1,0 +1,17 @@
+language en
+lemma twelve
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the cardinal number that is the sum of eleven and one"
+    id oewn-13768925-n
+    partOfSpeech n
+    synonyms ("12" XII dozen)
+  entry
+    definition "being one more than eleven"
+    id oewn-02195104-s
+    partOfSpeech s
+    synonyms ("12" xii dozen)
+source "oewn:2024"

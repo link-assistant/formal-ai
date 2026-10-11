@@ -1,0 +1,17 @@
+language en
+lemma legend
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a story about mythical or supernatural beings or events"
+    id oewn-06383036-n
+    partOfSpeech n
+    synonyms (fable)
+  entry
+    definition "brief description accompanying an illustration"
+    id oewn-06358261-n
+    partOfSpeech n
+    synonyms (caption)
+source "oewn:2024"

@@ -1,0 +1,138 @@
+language en
+lemma form
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the phonological or orthographic sound or appearance of a word that can be used to describe or identify something"
+    examples ("the inflected forms of a word can be represented by a stem and a list of inflections to be attached")
+    id oewn-06301417-n
+    partOfSpeech n
+    synonyms ("word form" signifier descriptor)
+  entry
+    definition "a category of things distinguished by some common characteristic or quality"
+    examples ("sculpture is a form of art" "what kinds of desserts are there?")
+    id oewn-05847533-n
+    partOfSpeech n
+    synonyms (kind sort variety)
+  entry
+    definition "a perceptual structure"
+    examples ("the composition presents problems for students of musical form" "a visual pattern must include not only objects but the spaces between them")
+    id oewn-05939522-n
+    partOfSpeech n
+    synonyms (shape pattern)
+  entry
+    definition "any spatial attributes (especially as defined by outline)"
+    examples ("he could barely make out their shapes")
+    id oewn-05071206-n
+    partOfSpeech n
+    synonyms (shape configuration contour conformation)
+  entry
+    definition "alternative names for the body of a human being"
+    examples ("Leonardo studied the human body" "he has a strong physique" "the spirit is willing but the flesh is weak")
+    id oewn-05224424-n
+    partOfSpeech n
+    synonyms ("human body" "physical body" "material body" soma build figure physique anatomy shape bod chassis frame flesh)
+  entry
+    definition "the spatial arrangement of something as distinct from its substance"
+    examples ("geometry is the mathematical science of shape")
+    id oewn-00028005-n
+    partOfSpeech n
+    synonyms (shape)
+  entry
+    definition "the visual appearance of something or someone"
+    examples ("the delicate cast of his features")
+    id oewn-04684871-n
+    partOfSpeech n
+    synonyms (shape cast)
+  entry
+    definition "a printed document with spaces in which to write"
+    examples ("he filled out his tax form")
+    id oewn-06485234-n
+    partOfSpeech n
+  entry
+    definition "(biology) a group of organisms within a species that differ in trivial ways from similar groups"
+    examples ("a new strain of microorganisms")
+    id oewn-08128123-n
+    partOfSpeech n
+    synonyms (variant strain var.)
+  entry
+    definition "an arrangement of the elements in a composition or discourse"
+    examples ("the essay was in the form of a dialogue" "he first sketches the plot in outline form")
+    id oewn-07106984-n
+    partOfSpeech n
+  entry
+    definition "a particular mode in which something is manifested"
+    examples ("his resentment took the form of extreme hostility")
+    id oewn-04937655-n
+    partOfSpeech n
+  entry
+    definition "(physical chemistry) a distinct state of matter in a system; matter that is identical in chemical composition and physical state and separated from other material by the phase boundary"
+    examples ("the reaction occurs in the liquid phase of the system")
+    id oewn-14503649-n
+    partOfSpeech n
+    synonyms (phase)
+  entry
+    definition "a body of students who are taught together"
+    examples ("early morning classes are always sleepy")
+    id oewn-08255384-n
+    partOfSpeech n
+    synonyms (class grade course)
+  entry
+    definition "an ability to perform well"
+    examples ("he was at the top of his form" "the team was off form last night")
+    id oewn-05207938-n
+    partOfSpeech n
+  entry
+    definition "a life-size dummy used to display clothes"
+    id oewn-03723460-n
+    partOfSpeech n
+    synonyms (mannequin manikin mannikin manakin)
+  entry
+    definition "a mold for setting concrete"
+    examples ("they built elaborate forms for pouring the foundation")
+    id oewn-03389381-n
+    partOfSpeech n
+  entry
+    definition "create (as an entity)"
+    examples ("social groups form everywhere" "They formed a company")
+    id oewn-02453050-v
+    partOfSpeech v
+    synonyms (organize organise)
+  entry
+    definition "to compose or represent"
+    examples ("This wall forms the background of the stage setting" "The branches made a roof" "This makes a fine introduction")
+    id oewn-02627475-v
+    partOfSpeech v
+    synonyms (constitute make)
+  entry
+    definition "develop into a distinctive entity"
+    examples ("our plans began to take shape")
+    id oewn-02629987-v
+    partOfSpeech v
+    synonyms ("take form" "take shape" spring)
+  entry
+    definition "give shape or form to"
+    examples ("shape the dough" "form the young child's character")
+    id oewn-00142011-v
+    partOfSpeech v
+    synonyms (shape)
+  entry
+    definition "make something, usually for a specific function"
+    examples ("She molded the rice balls carefully" "Form cylinders from the dough" "shape a figure" "Work the metal into a sword")
+    id oewn-01663142-v
+    partOfSpeech v
+    synonyms (shape work mold mould forge)
+  entry
+    definition "establish or impress firmly in the mind"
+    examples ("We imprint our ideas onto our children")
+    id oewn-02435769-v
+    partOfSpeech v
+    synonyms (imprint)
+  entry
+    definition "assume a form or shape"
+    examples ("the water formed little beads")
+    id oewn-00144670-v
+    partOfSpeech v
+source "oewn:2024"

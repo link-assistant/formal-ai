@@ -28,7 +28,7 @@ fn typescript_unavailable_status_is_honest_not_silenced() {
     assert!(
         response
             .answer
-            .contains("Execution status: not compiled or run")
+            .contains("Execution status: not run; this program was rediscovered from")
     );
 }
 

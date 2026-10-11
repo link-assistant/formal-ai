@@ -2,10 +2,10 @@ self_ast_census
   target src/client_integrations.rs
   language rust
   fidelity signature
-  byte_len 27641
-  line_count 763
-  content_id source_module_575d501ea6ab4cfc
-  symbol_count 33
+  byte_len 29470
+  line_count 804
+  content_id source_module_53bb16f6ac979fe0
+  symbol_count 36
   symbols
     module caller_args 16 16
     module command 17 17
@@ -24,19 +24,22 @@ self_ast_census
     enum ClientProtocol 46 51
     function as_str 54 61
     struct WithFormalAiArgs 67 149
-    struct RenderContext 152 167
-    struct InvocationOptions 171 179
-    function run_with_formal_ai 181 244
-    function read_piped_prompt 247 255
-    function select_integrations 257 269
-    function find_integration 271 291
-    function render_context 293 366
-    function run_ephemeral 368 526
-    function temp_scoped_path 528 542
-    function build_invocation_args 550 653
-    function overlay_args 657 679
-    function render_template 681 702
-    function codex_model_catalog 704 738
-    function global_config_path 740 749
-    function backup_path 751 755
-    function write_file 757 763
+    struct RenderContext 152 173
+    function model_limits 176 191
+    struct InvocationOptions 196 204
+    function run_with_formal_ai 206 269
+    function read_piped_prompt 272 280
+    function select_integrations 282 294
+    function find_integration 296 316
+    function render_context 318 392
+    function run_ephemeral 394 552
+    function temp_scoped_path 554 568
+    function build_invocation_args 576 679
+    function overlay_args 683 705
+    function render_template 707 738
+    const CONTEXT_WINDOW_SLOT 742 742
+    const MAX_OUTPUT_SLOT 743 743
+    function codex_model_catalog 745 779
+    function global_config_path 781 790
+    function backup_path 792 796
+    function write_file 798 804

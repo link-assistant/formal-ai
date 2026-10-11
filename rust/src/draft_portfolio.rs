@@ -29,11 +29,8 @@
 
 use crate::event_log::EventLog;
 use crate::links_format::format_lino_record;
-use crate::method_registry::MethodRegistry;
 use crate::seed;
-use crate::selection_heuristics::{
-    ActionCost, CandidateRanker, CandidateScore, HeuristicRole, LeastActionRanker,
-};
+use crate::selection_heuristics::{ActionCost, CandidateScore, rank_with_heuristic, situation_for};
 
 /// Bounded retry budget for one draft slot.
 ///
@@ -334,13 +331,19 @@ where
 }
 
 /// Rank the passing drafts by the registry's `Rank` heuristic (issue #491,
-/// #1138 B12, plan 12 leaf 4).
+/// #901, #1138 B12, plan 12 leaf 4).
 ///
 /// The key order is no longer a `sort_by_key` written here: it is the seeded
 /// `key_order` of `data/meta/selection-heuristics.lino`, which ships as
 /// `code_size,steps,candidate_index` and therefore reproduces the previous
 /// ordering -- smallest artifact first, then fewest steps, then the lowest draft
 /// index -- byte for byte. Reordering those dimensions is now a `.lino` edit.
+///
+/// When a contradiction is detected in the candidate set (two satisfying drafts
+/// each win on a different cost dimension), the situation `contradiction_detected`
+/// is passed to `heuristics_for`, which selects `TrizRanker` at order 3 rather
+/// than `LeastActionRanker` at order 1. Every other situation keeps today's
+/// behaviour exactly (R901-3).
 ///
 /// Correctness still comes first, and is decided before any ranker runs: a draft
 /// whose declared checks did not all pass never enters the ranking.
@@ -358,18 +361,7 @@ fn rank_passing_drafts<A>(drafts: &[DraftEvaluation<A>]) -> Vec<usize> {
             },
         })
         .collect();
-    LeastActionRanker.rank(&scores, &ranking_parameters())
-}
-
-/// The seeded `Rank` heuristic's parameters, or none when the catalog declares
-/// no ranking heuristic -- in which case the ranker falls back to the
-/// deterministic identity ordering rather than inventing a key.
-fn ranking_parameters() -> Vec<(String, String)> {
-    MethodRegistry::shared()
-        .heuristics_for(HeuristicRole::Rank, "")
-        .first()
-        .map(|heuristic| heuristic.parameters.clone())
-        .unwrap_or_default()
+    rank_with_heuristic(&scores, situation_for(&scores))
 }
 
 /// The first ranked draft that also composes. Passing drafts that fail

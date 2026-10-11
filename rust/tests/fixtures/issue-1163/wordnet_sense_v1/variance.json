@@ -1,0 +1,14 @@
+[
+  {
+    "id": "oewn-04765160-n",
+    "partOfSpeech": "n",
+    "definition": ["the quality of being subject to variation"],
+    "members": [{ "lemma": "variance" }, { "lemma": "variability" }]
+  },
+  {
+    "id": "oewn-06567398-n",
+    "partOfSpeech": "n",
+    "definition": ["an official document that permits something not normally allowed"],
+    "members": [{ "lemma": "variance" }]
+  }
+]

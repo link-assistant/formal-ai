@@ -11,11 +11,14 @@ use serde_json::json;
 
 use super::capability_router::tool_for;
 use super::driver::DriverOutcome;
-use super::planner::{plan_one, write_arguments, AgenticPlan, Capability};
+use super::planner::{AgenticPlan, Capability, plan_one, tool_capability, write_arguments};
 use super::progress::Progress;
+use super::tool_result::{
+    StepOutcome, command_argument, observed_bytes_match, observed_payload, step_outcome,
+};
 use crate::algorithm_discovery::{
-    discover_algorithms, traces_from_memory_events, AlgorithmCandidate, AlgorithmDiscoveryRun,
-    ArgumentPattern, ExecutionTrace, TraceStep,
+    AlgorithmCandidate, AlgorithmDiscoveryRun, ArgumentPattern, ExecutionTrace, TraceStep,
+    discover_algorithms, traces_from_memory_events,
 };
 use crate::links_format::push_lino_node;
 use crate::memory::MemoryStore;
@@ -69,41 +72,177 @@ pub(super) fn plan_step(
     let Some(run_tool) = run_tool else {
         return AgenticPlan::Final(result_document(task, "shell_unavailable", ""));
     };
-    match progress.run_outputs.len() {
-        0 => plan_one(
-            run_tool,
-            json!({ "command": discovery_command() }).to_string(),
-        ),
-        1 => plan_one(
-            run_tool,
-            json!({ "command": readback_command() }).to_string(),
-        ),
-        2 => {
-            let verified = progress
-                .run_outputs
-                .get(1)
-                .and_then(|output| AlgorithmCandidate::from_links_notation(output).ok());
-            if verified.as_ref() != Some(&task.candidate) {
+    let discovery = discovery_command();
+    if !progress.has_run(&discovery) {
+        return plan_one(run_tool, json!({ "command": discovery }).to_string());
+    }
+    let capture_selected =
+        if command_payload(messages, &discovery, Some("algorithm-command-receipt/v1")).is_none() {
+            if !bare_current_operation(messages, &discovery) {
                 return AgenticPlan::Final(result_document(
                     task,
                     "artifact_verification_failed",
                     "",
                 ));
             }
-            plan_one(
-                run_tool,
-                json!({ "command": conformance_command(&task.candidate) }).to_string(),
-            )
-        }
-        _ => {
-            let expected = expected_conformance(&task.candidate);
-            let observed = progress.run_outputs.get(2).map(|output| output.trim());
-            if observed != Some(expected.trim()) {
-                return AgenticPlan::Final(result_document(task, "conformance_failed", ""));
+            let captured_discovery = capture_command(&discovery, &CaptureOptions::default())
+                .expect("compiled algorithm command satisfies capture policy");
+            if !progress.has_run(&captured_discovery) {
+                return plan_one(
+                    run_tool,
+                    json!({ "command": captured_discovery }).to_string(),
+                );
             }
-            AgenticPlan::Final(result_document(task, "conformance_passed", &expected))
-        }
+            if command_payload_mode(messages, &captured_discovery, None, true).is_none() {
+                return AgenticPlan::Final(result_document(
+                    task,
+                    "artifact_verification_failed",
+                    "",
+                ));
+            }
+            true
+        } else {
+            false
+        };
+    let readback = if capture_selected {
+        capture_command(&readback_command(), &CaptureOptions::default())
+            .expect("compiled algorithm command satisfies capture policy")
+    } else {
+        readback_command()
+    };
+    if !progress.has_run(&readback) {
+        return plan_one(run_tool, json!({ "command": readback }).to_string());
     }
+    let verified = command_payload(messages, &readback, Some("algorithm-command-receipt/v1"))
+        .and_then(|output| AlgorithmCandidate::from_links_notation(&output).ok());
+    if verified.as_ref() != Some(&task.candidate) {
+        return AgenticPlan::Final(result_document(task, "artifact_verification_failed", ""));
+    }
+    let command = if capture_selected {
+        capture_command(
+            &conformance_command(&task.candidate),
+            &CaptureOptions::default(),
+        )
+        .expect("compiled algorithm command satisfies capture policy")
+    } else {
+        conformance_command(&task.candidate)
+    };
+    if !progress.has_run(&command) {
+        return plan_one(run_tool, json!({ "command": command }).to_string());
+    }
+    let expected = expected_conformance(&task.candidate);
+    if command_payload(messages, &command, Some("algorithm-command-receipt/v1")).as_deref()
+        != Some(expected.as_str())
+    {
+        return AgenticPlan::Final(result_document(task, "conformance_failed", ""));
+    }
+    AgenticPlan::Final(result_document(task, "conformance_passed", &expected))
+}
+
+/// Decode only a successful complete receipt bound to its current request call.
+pub(super) fn command_payload(
+    messages: &[ChatMessage],
+    command: &str,
+    operation_schema: Option<&str>,
+) -> Option<String> {
+    command_payload_mode(messages, command, operation_schema, false)
+}
+
+fn command_payload_mode(
+    messages: &[ChatMessage],
+    command: &str,
+    operation_schema: Option<&str>,
+    process_status: bool,
+) -> Option<String> {
+    let start = messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+        .unwrap_or(0);
+    let current = &messages[start..];
+    for (index, message) in current.iter().enumerate().rev() {
+        if !message.role.eq_ignore_ascii_case("tool") {
+            continue;
+        }
+        let Some(identity) = message.tool_call_id.as_deref() else {
+            continue;
+        };
+        let Some(call) = current[..index]
+            .iter()
+            .rev()
+            .flat_map(|prior| prior.tool_calls.iter().rev())
+            .find(|call| call.id == identity)
+        else {
+            continue;
+        };
+        if tool_capability(&call.function.name) != Some(Capability::Run)
+            || command_argument(&call.function.arguments).as_deref() != Some(command)
+        {
+            continue;
+        }
+        if message.is_error
+            || message
+                .name
+                .as_deref()
+                .is_some_and(|name| name != call.function.name)
+        {
+            return None;
+        }
+        let raw = message.content.plain_text();
+        if let Ok(receipt) = serde_json::from_str::<serde_json::Value>(&raw)
+            && receipt
+                .get("command")
+                .is_some_and(|value| value.as_str() != Some(command))
+        {
+            return None;
+        }
+        if let Ok(receipt) = serde_json::from_str::<serde_json::Value>(&raw)
+            && operation_schema.is_some_and(|schema| receipt["schema"] == schema)
+        {
+            return (receipt["command"].as_str() == Some(command)
+                && receipt["operation_success"].as_bool() == Some(true)
+                && receipt
+                    .get("exit_code")
+                    .is_some_and(serde_json::Value::is_null)
+                && receipt["complete"].as_bool() == Some(true)
+                && receipt["truncated"].as_bool() == Some(false)
+                && receipt["timed_out"].as_bool() == Some(false)
+                && receipt["stderr"].as_str() == Some("")
+                && receipt.get("error").is_some_and(serde_json::Value::is_null)
+                && !["aborted", "is_error", "isError"]
+                    .iter()
+                    .any(|key| receipt[*key].as_bool() == Some(true))
+                && receipt["stream_complete"].as_bool() != Some(false)
+                && receipt.get("signal").is_none_or(serde_json::Value::is_null))
+            .then(|| receipt["stdout"].as_str().map(str::to_owned))
+            .flatten();
+        }
+        if process_status {
+            let receipt = serde_json::from_str::<serde_json::Value>(&raw).ok()?;
+            return (receipt["schema"] == "command-execution-receipt/v1"
+                && receipt["exit_code"].as_i64() == Some(0)
+                && receipt
+                    .get("signal")
+                    .is_some_and(serde_json::Value::is_null)
+                && receipt["complete"].as_bool() == Some(true)
+                && receipt["truncated"].as_bool() == Some(false)
+                && receipt["timed_out"].as_bool() == Some(false)
+                && receipt["aborted"].as_bool() == Some(false)
+                && receipt.get("error").is_some_and(serde_json::Value::is_null)
+                && receipt["stdout"].as_str().is_some()
+                && receipt["stderr"].as_str().is_some()
+                && !["is_error", "isError"]
+                    .iter()
+                    .any(|key| receipt[*key].as_bool() == Some(true))
+                && !["ok", "success", "stream_complete"]
+                    .iter()
+                    .any(|key| receipt[*key].as_bool() == Some(false)))
+            .then(|| receipt["stdout"].as_str().map(str::to_owned))
+            .flatten();
+        }
+        let payload = observed_payload(&raw)?;
+        return observed_bytes_match(&raw, &payload).then_some(payload);
+    }
+    None
 }
 
 fn discovery_command() -> String {
@@ -232,4 +371,134 @@ fn result_document(task: &AlgorithmLearningTask, status: &str, conformance: &str
         push_lino_node(&mut output, 2, "conformance", Some(conformance));
     }
     output
+}
+
+/// Bounded capture policy corresponding to captureProgram's JavaScript options.
+#[derive(Clone, Copy)]
+pub(super) struct CaptureOptions {
+    pub timeout: u64,
+    pub max_buffer: usize,
+}
+
+impl Default for CaptureOptions {
+    fn default() -> Self {
+        Self {
+            timeout: 60_000,
+            max_buffer: 8_388_608,
+        }
+    }
+}
+
+/// Exact single-quoted shell operand, corresponding to shellQuote.
+pub(super) fn shell_quote(value: &str) -> String {
+    format!("'{}'", value.replace('\'', "'\\''"))
+}
+
+/// Readable Node receipt producer corresponding to captureProgram.
+/// Valid UTF-8 strings correspond to the JavaScript Unicode-scalar input domain.
+pub(super) fn capture_program(
+    command: &str,
+    options: &CaptureOptions,
+) -> Result<String, &'static str> {
+    if command.is_empty()
+        || options.timeout == 0
+        || options.timeout > 60_000
+        || options.max_buffer == 0
+        || options.max_buffer > 8_388_608
+    {
+        return Err("invalid_capture_policy");
+    }
+    let characters: Vec<char> = command.chars().collect();
+    let mut lines = vec![
+        "  const { spawnSync } = require('node:child_process');".to_owned(),
+        "  const command = [".to_owned(),
+    ];
+    for chunk in characters.chunks(64) {
+        let text: String = chunk.iter().collect();
+        let literal = serde_json::to_string(&text).map_err(|_| "invalid_capture_policy")?;
+        lines.push(format!("    {literal},"));
+    }
+    let suffix = [
+        "  ].join('');",
+        "  const result = spawnSync('/bin/sh', ['-c', command], {",
+        "    timeout: TIMEOUT, maxBuffer: MAX_BUFFER,",
+        "  });",
+        "  const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });",
+        "  let stdout = '', stderr = '', decodingError = null;",
+        "  try { stdout = decoder.decode(result.stdout ?? Buffer.alloc(0)); }",
+        "  catch { decodingError = 'InvalidUTF8Stdout'; }",
+        "  try { stderr = decoder.decode(result.stderr ?? Buffer.alloc(0)); }",
+        "  catch { decodingError ??= 'InvalidUTF8Stderr'; }",
+        "  if (decodingError !== null) { stdout = ''; stderr = ''; }",
+        "  const receipt = {",
+        "    schema: 'command-execution-receipt/v1', stdout, stderr,",
+        "    exit_code: result.status, signal: result.signal ?? null,",
+        "    complete: !result.error && decodingError === null",
+        "      && result.status !== null && result.signal === null,",
+        "    truncated: result.error?.code === 'ENOBUFS',",
+        "    timed_out: result.error?.code === 'ETIMEDOUT', aborted: false,",
+        "    error: decodingError ?? result.error?.message ?? null,",
+        "  };",
+        "  process.stdout.write(JSON.stringify(receipt));",
+        "  process.exitCode = decodingError !== null ? 1",
+        "    : Number.isInteger(result.status) ? result.status : 1;",
+    ];
+    lines.extend(suffix.iter().map(|line| {
+        line.replace("TIMEOUT", &options.timeout.to_string())
+            .replace("MAX_BUFFER", &options.max_buffer.to_string())
+    }));
+    Ok(lines.join("\n"))
+}
+
+/// Shell request corresponding to captureCommand with the same bounded options.
+pub(super) fn capture_command(
+    command: &str,
+    options: &CaptureOptions,
+) -> Result<String, &'static str> {
+    Ok(format!(
+        "node -e {}",
+        shell_quote(&capture_program(command, options)?)
+    ))
+}
+
+fn bare_current_operation(messages: &[ChatMessage], command: &str) -> bool {
+    let start = messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+        .unwrap_or(0);
+    let current = &messages[start..];
+    for (index, message) in current.iter().enumerate().rev() {
+        if !message.role.eq_ignore_ascii_case("tool") {
+            continue;
+        }
+        let Some(identity) = message.tool_call_id.as_deref() else {
+            continue;
+        };
+        let Some(call) = current[..index]
+            .iter()
+            .rev()
+            .flat_map(|prior| prior.tool_calls.iter().rev())
+            .find(|call| call.id == identity)
+        else {
+            continue;
+        };
+        if tool_capability(&call.function.name) != Some(Capability::Run)
+            || command_argument(&call.function.arguments).as_deref() != Some(command)
+        {
+            continue;
+        }
+        if message.is_error
+            || message
+                .name
+                .as_deref()
+                .is_some_and(|name| name != call.function.name)
+        {
+            return false;
+        }
+        let raw = message.content.plain_text();
+        return !raw.trim().is_empty()
+            && step_outcome(&raw) == StepOutcome::Unreported
+            && serde_json::from_str::<serde_json::Value>(&raw).is_err();
+    }
+    false
 }

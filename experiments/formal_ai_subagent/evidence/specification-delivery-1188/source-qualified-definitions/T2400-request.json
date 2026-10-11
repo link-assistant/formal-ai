@@ -1,0 +1,5 @@
+{
+  "taskId": "T2400",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Implement general source-qualified definition requests through the existing word-definition entrypoints in JavaScript and native Rust. Keep subject and provider distinct, bind declared multilingual frames to the source registry, retrieve genuine SHA-verified captured bytes through the shared source cache, preserve Wikipedia disambiguation and every meaning, and render actual subject, capture time, cache status and license provenance. The unchanged original user request is: Cite a definition of associative memory from Wikipedia. Use real captured API data and keep offline, disabled, unknown-provider and corrupt-object outcomes truthful. Add meaningful original and held-out production tests; preserve existing assertions, dispatch precedence and ranking. Do not run any native compiler locally."
+}

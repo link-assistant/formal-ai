@@ -1,0 +1,48 @@
+# Response templates for the product-search handler (issues #800, #872).
+#
+# The handler composes a site-scoped search and states honestly that in
+# offline mode nothing was fetched — the link is the query it would run,
+# and the advice rows are what to verify before buying. Placeholders in
+# braces are filled by rust/src/solver_handlers/product_search.rs.
+
+multilingual_responses
+  response response_product_search_result_en
+    intent product_search_result
+    language en
+    text "Here is the search I composed for {product} on {marketplace}:\n\n{link}\n\nConstraints you asked for: {constraints}\nBefore you buy: {advice}\nThis was not fetched — the link is the exact query I would run, and I ran it in offline mode."
+  response response_product_search_result_ru
+    intent product_search_result
+    language ru
+    text "Вот поиск, который я составил для «{product}» на {marketplace}:\n\n{link}\n\nУсловия, которые вы назвали: {constraints}\nПеред покупкой проверьте: {advice}\nЯ ничего не загружал — ссылка это точный запрос, который я бы выполнил, а выполнен он в автономном режиме."
+  response response_product_search_result_hi
+    intent product_search_result
+    language hi
+    text "{marketplace} पर {product} के लिए मैंने यह खोज बनाई:\n\n{link}\n\nआपकी शर्तें: {constraints}\nखरीदने से पहले जाँचें: {advice}\nमैंने कुछ भी लोड नहीं किया — यह लिंक वही सटीक क्वेरी है जो मैं चलाता, और यह ऑफ़लाइन मोड में चली।"
+  response response_product_search_result_zh
+    intent product_search_result
+    language zh
+    text "这是我为您在 {marketplace} 上为「{product}」组合的搜索：\n\n{link}\n\n您提出的条件：{constraints}\n购买前请核实：{advice}\n我没有抓取任何内容——该链接就是我会执行的确切查询，本次以离线模式运行。"
+  response response_product_search_result_es
+    intent product_search_result
+    language es
+    text "Esta es la búsqueda que compuse para {product} en {marketplace}:\n\n{link}\n\nCondiciones que pediste: {constraints}\nAntes de comprar, verifica: {advice}\nNo cargué nada — el enlace es la consulta exacta que ejecutaría, y se ejecutó en modo sin conexión."
+  response response_product_search_marketplace_needed_en
+    intent product_search_marketplace_needed
+    language en
+    text "I compose a product search only on a marketplace the request names, and this one names none, so I will not guess a store for {product}. Name one of the marketplaces I know ({marketplaces}) and I will compose the exact search link.\nConstraints you asked for: {constraints}"
+  response response_product_search_marketplace_needed_ru
+    intent product_search_marketplace_needed
+    language ru
+    text "Я составляю поиск товара только на площадке, которую называет запрос, а здесь она не названа, поэтому я не буду угадывать магазин для «{product}». Назовите одну из известных мне площадок ({marketplaces}), и я составлю точную ссылку поиска.\nУсловия, которые вы назвали: {constraints}"
+  response response_product_search_marketplace_needed_hi
+    intent product_search_marketplace_needed
+    language hi
+    text "मैं उत्पाद खोज केवल उसी marketplace पर बनाता हूँ जिसका नाम अनुरोध में हो, और इस अनुरोध में किसी का नाम नहीं है, इसलिए मैं {product} के लिए कोई स्टोर अनुमान से नहीं चुनूँगा। मेरे ज्ञात marketplaces ({marketplaces}) में से एक का नाम बताएँ और मैं सटीक खोज लिंक बना दूँगा।\nआपकी बताई शर्तें: {constraints}"
+  response response_product_search_marketplace_needed_zh
+    intent product_search_marketplace_needed
+    language zh
+    text "我只会在请求指明的电商平台上组合商品搜索，而这个请求没有指明任何平台，所以我不会为 {product} 猜测商店。请说出我已知的平台之一（{marketplaces}），我会组合出准确的搜索链接。\n你提出的条件：{constraints}"
+  response response_product_search_marketplace_needed_es
+    intent product_search_marketplace_needed
+    language es
+    text "Solo compongo una búsqueda de productos en una tienda en línea que la solicitud nombre, y esta no nombra ninguna, así que no adivinaré una tienda para {product}. Nombra una de las tiendas que conozco ({marketplaces}) y compondré el enlace de búsqueda exacto.\nCondiciones que pediste: {constraints}"

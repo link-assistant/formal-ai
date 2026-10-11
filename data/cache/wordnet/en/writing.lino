@@ -1,0 +1,35 @@
+language en
+lemma writing
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the act of creating written works"
+    examples ("writing was a form of therapy for him" "it was a matter of disputed authorship")
+    id oewn-00931533-n
+    partOfSpeech n
+    synonyms (authorship composition penning)
+  entry
+    definition "the work of a writer; anything expressed in letters of the alphabet (especially when considered from the point of view of style and effect)"
+    examples ("the writing in her novels is excellent" "that editorial was a fine piece of writing")
+    id oewn-06374360-n
+    partOfSpeech n
+    synonyms ("written material" "piece of writing")
+  entry
+    definition "(usually plural) the collected work of an author"
+    examples ("the idea occurs with increasing frequency in Hemingway's writings")
+    id oewn-06375185-n
+    partOfSpeech n
+  entry
+    definition "letters or symbols that are written or imprinted on a surface to represent the sounds or words of a language"
+    examples ("he turned the paper over so the writing wouldn't show" "the doctor's writing was illegible")
+    id oewn-06371284-n
+    partOfSpeech n
+  entry
+    definition "the activity of putting something in written form"
+    examples ("she did the thinking while he did the writing")
+    id oewn-00615511-n
+    partOfSpeech n
+    synonyms ("committal to writing")
+source "oewn:2024"

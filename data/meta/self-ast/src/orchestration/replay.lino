@@ -2,15 +2,18 @@ self_ast_census
   target src/orchestration/replay.rs
   language rust
   fidelity signature
-  byte_len 2873
-  line_count 84
-  content_id source_module_bc5d34842c3527fa
-  symbol_count 7
+  byte_len 5890
+  line_count 162
+  content_id source_module_409ce7ca31124522
+  symbol_count 10
   symbols
-    enum ReplayError 9 17
-    function fmt 20 30
-    function write_session 35 38
-    function read_session 40 43
-    function replay_session 45 55
-    function canonical_bytes 57 61
-    function verify_events 63 84
+    enum ReplayError 9 19
+    function fmt 22 34
+    function write_session 39 42
+    function read_session 44 47
+    function replay_session 49 60
+    function replay_continuation 67 83
+    function canonical_bytes 85 89
+    function verify_events 91 112
+    function verify_bindings 121 149
+    function terminal_status 151 162

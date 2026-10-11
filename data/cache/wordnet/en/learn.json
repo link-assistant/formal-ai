@@ -1,0 +1,102 @@
+{
+  "lemma": "learn",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00599310-v",
+      "partOfSpeech": "v",
+      "definition": "gain knowledge or skills",
+      "examples": [
+        "She learned dancing from her sister",
+        "I learned Sanskrit",
+        "Children acquire language at an amazing rate"
+      ],
+      "synonyms": [
+        "larn",
+        "acquire"
+      ]
+    },
+    {
+      "id": "oewn-00600349-v",
+      "partOfSpeech": "v",
+      "definition": "get to know or become aware of, usually accidentally",
+      "examples": [
+        "I learned that she has two grown-up children",
+        "I see that you have been promoted"
+      ],
+      "synonyms": [
+        "hear",
+        "get word",
+        "get wind",
+        "pick up",
+        "find out",
+        "get a line",
+        "discover",
+        "see"
+      ]
+    },
+    {
+      "id": "oewn-00605971-v",
+      "partOfSpeech": "v",
+      "definition": "commit to memory; learn by heart",
+      "examples": [
+        "Have you memorized your lines for the play yet?"
+      ],
+      "synonyms": [
+        "memorize",
+        "memorise",
+        "con"
+      ]
+    },
+    {
+      "id": "oewn-00601387-v",
+      "partOfSpeech": "v",
+      "definition": "be a student of a certain subject",
+      "examples": [
+        "She is reading for the bar exam"
+      ],
+      "synonyms": [
+        "study",
+        "read",
+        "take"
+      ]
+    },
+    {
+      "id": "oewn-00830768-v",
+      "partOfSpeech": "v",
+      "definition": "impart skills or knowledge to",
+      "examples": [
+        "I taught them French",
+        "He instructed me in building a boat"
+      ],
+      "synonyms": [
+        "teach",
+        "instruct"
+      ]
+    },
+    {
+      "id": "oewn-00922307-v",
+      "partOfSpeech": "v",
+      "definition": "find out, learn, or determine with certainty, usually by making an inquiry or other effort",
+      "examples": [
+        "I want to see whether she speaks French",
+        "See whether it works",
+        "find out if he speaks Russian",
+        "Check whether the train leaves on time"
+      ],
+      "synonyms": [
+        "determine",
+        "check",
+        "find out",
+        "see",
+        "ascertain",
+        "watch"
+      ]
+    }
+  ]
+}

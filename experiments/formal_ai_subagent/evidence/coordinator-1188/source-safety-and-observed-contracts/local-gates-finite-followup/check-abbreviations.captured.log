@@ -1,0 +1,6 @@
+$ node scripts/measure-abbreviations.mjs --check
+file-names  abbreviated-file-names 92
+bindings js  abbreviated-bindings 732
+bindings rust/src  abbreviated-bindings 913
+::error file=data/meta/abbreviation-ratchet.lino::bindings js abbreviated-bindings rose from 729 to 732: spell new names in full English words (data/meta/notation-rules.lino lists the abbreviations and their full words; list them with --list bindings js).
+::error file=data/meta/abbreviation-ratchet.lino::bindings rust/src abbreviated-bindings rose from 912 to 913: spell new names in full English words (data/meta/notation-rules.lino lists the abbreviations and their full words; list them with --list bindings rust/src).

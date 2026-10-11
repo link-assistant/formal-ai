@@ -1,0 +1,17 @@
+view
+  id M-df1be854fc45
+  lemma engineering
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the practical application of technical and scientific knowledge to commerce or industry"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the discipline dealing with the art or science of applying scientific knowledge to practical problems"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a room (as on a ship) in which the engine is located"
+    provenance (wordnet)

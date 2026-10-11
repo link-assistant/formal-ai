@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_literal_body_ownership.js"
+  ceiling 27
+  rationale "Exact current-source generated factory; zero headroom, no existing ceiling increase."

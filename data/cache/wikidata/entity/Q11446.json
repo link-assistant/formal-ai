@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "船"
+        },
+        "es": {
+          "language": "es",
+          "value": "barco"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "浮于水面上的大型结构，不同于Q1229765"
+        },
+        "es": {
+          "language": "es",
+          "value": "vehículo con cubierta para navegaciones marítimas"
         }
       },
       "aliases": {
@@ -68,6 +76,20 @@
           {
             "language": "zh",
             "value": "輪船"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "barcos"
+          },
+          {
+            "language": "es",
+            "value": "navío"
+          },
+          {
+            "language": "es",
+            "value": "navíos"
           }
         ]
       }

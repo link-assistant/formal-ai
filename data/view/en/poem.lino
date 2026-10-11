@@ -1,0 +1,9 @@
+view
+  id M-50ce3e394c54
+  lemma poem
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a composition written in metrical feet forming rhythmical lines"
+    provenance (wordnet)

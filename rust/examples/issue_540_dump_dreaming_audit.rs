@@ -2,7 +2,7 @@
 //!
 //! Runs the real agentic loop on `DREAMING_AUDIT_TASK` and prints either the
 //! session JSON or the generated gap-analysis document, exactly as
-//! `tests/unit/issue_540_agent_cli.rs` pins them:
+//! `tests/unit/agentic-coding/issue_540_agent_cli.rs` pins them:
 //!
 //! ```sh
 //! cargo run --example issue_540_dump_dreaming_audit -- session \

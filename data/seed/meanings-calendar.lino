@@ -3,632 +3,311 @@ meanings
     grounded-in Q105
     defined-by calendar_day
     role calendar_weekday
-    lexeme en
-      surface
-        text monday
-      surface
-        text mon
-    lexeme ru
-      surface
-        text понедельник
-      surface
-        text понедельника
-      surface
-        text понедельником
-      surface
-        text понедельнику
-      surface
-        text понедельнике
-    lexeme hi
-      surface
-        text सोमवार
-    lexeme zh
-      surface
-        text 星期一
-      surface
-        text 周一
+    lexeme en monday mon
+    lexeme ru понедельник понедельника понедельником понедельнику понедельнике
+    lexeme hi सोमवार
+    lexeme zh 星期一 周一
+    lexeme es lunes
   tuesday
     grounded-in Q127
     defined-by calendar_day
     role calendar_weekday
-    lexeme en
-      surface
-        text tuesday
-      surface
-        text tue
-      surface
-        text tues
-    lexeme ru
-      surface
-        text вторник
-      surface
-        text вторника
-      surface
-        text вторником
-      surface
-        text вторнику
-      surface
-        text вторнике
-    lexeme hi
-      surface
-        text मंगलवार
-    lexeme zh
-      surface
-        text 星期二
-      surface
-        text 周二
+    lexeme en tuesday tue tues
+    lexeme ru вторник вторника вторником вторнику вторнике
+    lexeme hi मंगलवार
+    lexeme zh 星期二 周二
+    lexeme es martes
   wednesday
     grounded-in Q128
     defined-by calendar_day
     role calendar_weekday
-    lexeme en
-      surface
-        text wednesday
-      surface
-        text wed
-    lexeme ru
-      surface
-        text среда
-      surface
-        text среды
-      surface
-        text среде
-      surface
-        text среду
-      surface
-        text средой
-    lexeme hi
-      surface
-        text बुधवार
-    lexeme zh
-      surface
-        text 星期三
-      surface
-        text 周三
+    lexeme en wednesday wed
+    lexeme ru среда среды среде среду средой
+    lexeme hi बुधवार
+    lexeme zh 星期三 周三
+    lexeme es miércoles miercoles
   thursday
     grounded-in Q129
     defined-by calendar_day
     role calendar_weekday
-    lexeme en
-      surface
-        text thursday
-      surface
-        text thu
-      surface
-        text thur
-      surface
-        text thurs
-    lexeme ru
-      surface
-        text четверг
-      surface
-        text четверга
-      surface
-        text четвергом
-      surface
-        text четвергу
-      surface
-        text четверге
-    lexeme hi
-      surface
-        text गुरुवार
-    lexeme zh
-      surface
-        text 星期四
-      surface
-        text 周四
+    lexeme en thursday thu thur thurs
+    lexeme ru четверг четверга четвергом четвергу четверге
+    lexeme hi गुरुवार
+    lexeme zh 星期四 周四
+    lexeme es jueves
   friday
     grounded-in Q130
     defined-by calendar_day
     role calendar_weekday
-    lexeme en
-      surface
-        text friday
-      surface
-        text fri
-    lexeme ru
-      surface
-        text пятница
-      surface
-        text пятницы
-      surface
-        text пятнице
-      surface
-        text пятницу
-      surface
-        text пятницей
-    lexeme hi
-      surface
-        text शुक्रवार
-    lexeme zh
-      surface
-        text 星期五
-      surface
-        text 周五
+    lexeme en friday fri
+    lexeme ru пятница пятницы пятнице пятницу пятницей
+    lexeme hi शुक्रवार
+    lexeme zh 星期五 周五
+    lexeme es viernes
   saturday
     grounded-in Q131
     defined-by calendar_day
     role calendar_weekday
-    lexeme en
-      surface
-        text saturday
-      surface
-        text sat
-    lexeme ru
-      surface
-        text суббота
-      surface
-        text субботы
-      surface
-        text субботе
-      surface
-        text субботу
-      surface
-        text субботой
-    lexeme hi
-      surface
-        text शनिवार
-    lexeme zh
-      surface
-        text 星期六
-      surface
-        text 周六
+    lexeme en saturday sat
+    lexeme ru суббота субботы субботе субботу субботой
+    lexeme hi शनिवार
+    lexeme zh 星期六 周六
+    lexeme es sábado sabado sábados
   sunday
     grounded-in Q132
     defined-by calendar_day
     role calendar_weekday
-    lexeme en
-      surface
-        text sunday
-      surface
-        text sun
-    lexeme ru
-      surface
-        text воскресенье
-      surface
-        text воскресенья
-      surface
-        text воскресенью
-      surface
-        text воскресеньем
-    lexeme hi
-      surface
-        text रविवार
-    lexeme zh
-      surface
-        text 星期日
-      surface
-        text 星期天
-      surface
-        text 周日
+    lexeme en sunday sun
+    lexeme ru воскресенье воскресенья воскресенью воскресеньем
+    lexeme hi रविवार
+    lexeme zh 星期日 星期天 周日
+    lexeme es domingo domingos
   calendar_day
     grounded-in Q573
     defined-by calendar_week
     defined-by calendar_date
     defined-by concept
     role calendar_day_reference
-    lexeme en
-      surface
-        text day
-      surface
-        text weekday
-      surface
-        text "week day"
-    lexeme ru
-      surface
-        text день
-      surface
-        text дня
-      surface
-        text дни
-      surface
-        text дней
-    lexeme hi
-      surface
-        text दिन
-    lexeme zh
-      surface
-        text 星期几
-      surface
-        text 日子
+    lexeme en day days weekday "week day"
+    lexeme ru день дня дни дней
+    lexeme hi दिन
+    lexeme zh 星期几 日子 天
+    lexeme es día días dia dias "día de la semana"
   calendar_date
     grounded-in Q205892
     defined-by calendar_day
     role calendar_day_reference
-    lexeme en
-      surface
-        text date
-    lexeme ru
-      surface
-        text дата
-      surface
-        text дату
-      surface
-        text число
-    lexeme hi
-      surface
-        text तारीख
-      surface
-        text दिनांक
-    lexeme zh
-      surface
-        text 日期
-      surface
-        text 几号
+    lexeme en date
+    lexeme ru дата дату число
+    lexeme hi तारीख दिनांक
+    lexeme zh 日期 几号
+    lexeme es fecha
+  calendar_weekday_query
+    defined-by calendar_day
+    role calendar_weekday_query
+    lexeme en "day of the week" weekday "what day" "which day"
+    lexeme ru "день недели" "какой день"
+    lexeme hi "सप्ताह का दिन" "कौन सा दिन"
+    lexeme zh 星期几 周几 礼拜几
+    lexeme es "día de la semana" "qué día"
   calendar_week
     grounded-in Q23387
     defined-by calendar_day
     role calendar_day_reference
-    lexeme en
-      surface
-        text week
-    lexeme ru
-      surface
-        text неделя
-      surface
-        text недели
-      surface
-        text неделе
-      surface
-        text неделю
-      surface
-        text неделей
-      surface
-        text недель
-    lexeme hi
-      surface
-        text सप्ताह
-    lexeme zh
-      surface
-        text 星期
-      surface
-        text 周
+    lexeme en week weeks
+    lexeme ru неделя недели неделе неделю неделей недель
+    lexeme hi सप्ताह
+    lexeme zh 星期 周
+    lexeme es semana semanas
+  calendar_month
+    grounded-in Q5151
+    defined-by calendar_day
+    role calendar_month_reference
+    lexeme en month months
+    lexeme ru месяц месяца месяцев месяцы месяцу
+    lexeme hi महीने महीना महीनों माह
+    lexeme zh 个月 個月
+    lexeme es mes meses
+  january
+    grounded-in Q108
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en January january jan
+    lexeme ru январь января январе январю январём январем
+    lexeme hi जनवरी
+    lexeme zh 一月
+    lexeme es enero
+  february
+    grounded-in Q109
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en February february feb
+    lexeme ru февраль февраля феврале февралю февралём февралем
+    lexeme hi फ़रवरी फरवरी
+    lexeme zh 二月
+    lexeme es febrero
+  march
+    grounded-in Q110
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en March march mar
+    lexeme ru март марта марте марту мартом
+    lexeme hi मार्च
+    lexeme zh 三月
+    lexeme es marzo
+  april
+    grounded-in Q118
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en April april apr
+    lexeme ru апрель апреля апреле апрелю апрелем
+    lexeme hi अप्रैल
+    lexeme zh 四月
+    lexeme es abril
+  may
+    grounded-in Q119
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en May may
+    lexeme ru май мая мае маю маем
+    lexeme hi मई
+    lexeme zh 五月
+    lexeme es mayo
+  june
+    grounded-in Q120
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en June june jun
+    lexeme ru июнь июня июне июню июнем
+    lexeme hi जून
+    lexeme zh 六月
+    lexeme es junio
+  july
+    grounded-in Q121
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en July july jul
+    lexeme ru июль июля июле июлю июлем
+    lexeme hi जुलाई
+    lexeme zh 七月
+    lexeme es julio
+  august
+    grounded-in Q122
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en August august aug
+    lexeme ru август августа августе августу августом
+    lexeme hi अगस्त
+    lexeme zh 八月
+    lexeme es agosto
+  september
+    grounded-in Q123
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en September september sep sept
+    lexeme ru сентябрь сентября сентябре сентябрю сентябрём сентябрем
+    lexeme hi सितंबर सितम्बर
+    lexeme zh 九月
+    lexeme es septiembre setiembre
+  october
+    grounded-in Q124
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en October october oct
+    lexeme ru октябрь октября октябре октябрю октябрём октябрем
+    lexeme hi अक्टूबर
+    lexeme zh 十月
+    lexeme es octubre
+  november
+    grounded-in Q125
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en November november nov
+    lexeme ru ноябрь ноября ноябре ноябрю ноябрём ноябрем
+    lexeme hi नवंबर नवम्बर
+    lexeme zh 十一月
+    lexeme es noviembre
+  december
+    grounded-in Q126
+    defined-by calendar_month
+    role calendar_month_name
+    lexeme en December december dec
+    lexeme ru декабрь декабря декабре декабрю декабрём декабрем
+    lexeme hi दिसंबर दिसम्बर
+    lexeme zh 十二月
+    lexeme es diciembre
   calendar_following
     defined-by calendar_day
     role calendar_direction_next
-    lexeme en
-      surface
-        text after
-      surface
-        text "comes after"
-      surface
-        text "day after"
-      surface
-        text "next day"
-      surface
-        text "following day"
-      surface
-        text "following weekday"
-      surface
-        text follows
-    lexeme ru
-      surface
-        text после
-      surface
-        text "наступает после"
-      surface
-        text "следующий день"
-      surface
-        text следующая
-      surface
-        text "следом за"
-    lexeme hi
-      surface
-        text "के बाद"
-      surface
-        text बाद
-      surface
-        text अगला
-      surface
-        text अगले
-    lexeme zh
-      surface
-        text 之后
-      surface
-        text 后
-      surface
-        text 下一个
-      surface
-        text 下一天
+    lexeme en after "comes after" "day after" "next day" "following day" "following weekday" follows
+    lexeme ru после "наступает после" "следующий день" следующая "следом за"
+    lexeme hi "के बाद" बाद अगला अगले
+    lexeme zh 之后 后 下一个 下一天
+    lexeme es "después de" "después del"
   calendar_preceding
     defined-by calendar_day
     role calendar_direction_previous
-    lexeme en
-      surface
-        text before
-      surface
-        text "comes before"
-      surface
-        text "day before"
-      surface
-        text "previous day"
-      surface
-        text "previous weekday"
-      surface
-        text precedes
-    lexeme ru
-      surface
-        text перед
-      surface
-        text "предыдущий день"
-      surface
-        text предыдущая
-      surface
-        text предшествует
-    lexeme hi
-      surface
-        text "से पहले"
-      surface
-        text "के पहले"
-      surface
-        text पहले
-      surface
-        text पिछला
-    lexeme zh
-      surface
-        text 之前
-      surface
-        text 前
-      surface
-        text 上一个
-      surface
-        text 上一天
+    lexeme en before "comes before" "day before" "previous day" "previous weekday" precedes
+    lexeme ru перед "предыдущий день" предыдущая предшествует
+    lexeme hi "से पहले" "के पहले" पहले पिछला
+    lexeme zh 之前 前 上一个 上一天
+    lexeme es "antes de" "antes del"
   calendar_today
     grounded-in Q3151690
     defined-by calendar_day
     role calendar_today
-    lexeme en
-      surface
-        text today
-    lexeme ru
-      surface
-        text сегодня
-    lexeme hi
-      surface
-        text आज
-    lexeme zh
-      surface
-        text 今天
+    lexeme en today
+    lexeme ru сегодня
+    lexeme hi आज
+    lexeme zh 今天
+    lexeme es hoy
   calendar_tomorrow
     grounded-in Q1209716
     defined-by calendar_day
     role calendar_relative_date
-    lexeme en
-      surface
-        text tomorrow
-      surface
-        text "the next day"
-    lexeme ru
-      surface
-        text завтра
-      surface
-        text "на завтра"
+    lexeme en tomorrow "the next day"
+    lexeme ru завтра "на завтра"
     lexeme hi
       surface
         text कल
       surface
         text आनेवाला कल
-    lexeme zh
-      surface
-        text 明天
-      surface
-        text 明日
+    lexeme zh 明天 明日
+    lexeme es mañana "el día siguiente"
   calendar_day_after_tomorrow
     grounded-in Q1036448
     defined-by calendar_day
     role calendar_relative_date
-    lexeme en
-      surface
-        text "day after tomorrow"
-      surface
-        text "the day after tomorrow"
-    lexeme ru
-      surface
-        text послезавтра
-    lexeme hi
-      surface
-        text परसों
-    lexeme zh
-      surface
-        text 后天
+    lexeme en "day after tomorrow" "the day after tomorrow"
+    lexeme ru послезавтра
+    lexeme hi परसों
+    lexeme zh 后天
+    lexeme es "pasado mañana"
   calendar_interrogative
     defined-by calendar_day
     role calendar_question
-    lexeme en
-      surface
-        text what
-      surface
-        text which
-      surface
-        text "tell me"
-      surface
-        text show
-      surface
-        text ?
-    lexeme ru
-      surface
-        text какой
-      surface
-        text какая
-      surface
-        text какое
-      surface
-        text скажи
-      surface
-        text покажи
-    lexeme hi
-      surface
-        text कौन
-      surface
-        text क्या
-      surface
-        text बताओ
-      surface
-        text दिखाओ
-    lexeme zh
-      surface
-        text 什么
-      surface
-        text 几
-      surface
-        text 告诉
-      surface
-        text 显示
+    lexeme en what which "tell me" show ?
+    lexeme ru какой какая какое скажи покажи
+    lexeme hi कौन क्या बताओ दिखाओ
+    lexeme zh 什么 几 告诉 显示
+    lexeme es qué cuál dime muestra muéstrame
   calendar_schedule_action
     defined-by calendar_day
     role calendar_schedule_action
     lexeme en
-      surface
-        text schedule
-      surface
-        text "schedule me"
-      surface
-        text "book"
-      surface
-        text "book on the"
-      surface
-        text "put on the calendar"
-      surface
-        text "put on my calendar"
-      surface
-        text "add to the calendar"
-      surface
-        text "add to my calendar"
+      words schedule "schedule me" "book" "book on the" "put on the calendar" "put on my calendar" "add to the calendar"
+      words "add to my calendar"
     lexeme ru
-      surface
-        text забей
-      surface
-        text "забей мне"
-      surface
-        text поставь
-      surface
-        text "поставь мне"
-      surface
-        text поставить
-      surface
-        text "поставить мне"
-      surface
-        text создай
-      surface
-        text "создай событие"
-      surface
-        text добавь
-      surface
-        text "добавь в календарь"
-      surface
-        text "на встречу"
-    lexeme hi
-      surface
-        text "शेड्यूल करें"
-      surface
-        text "कैलेंडर में जोड़ें"
-    lexeme zh
-      surface
-        text 安排
-      surface
-        text 添加到日历
+      words забей "забей мне" поставь "поставь мне" поставить "поставить мне" создай "создай событие" добавь
+      words "добавь в календарь" "на встречу"
+    lexeme hi "शेड्यूल करें" "कैलेंडर में जोड़ें"
+    lexeme zh 安排 添加到日历
+    lexeme es
+      words agenda agéndame agendar reserva resérvame "pon en el calendario" "pon en mi calendario"
+      words "añade al calendario" "añade a mi calendario" "agrega al calendario" "agrega a mi calendario"
+      words "crea un evento"
   calendar_event
     defined-by calendar_day
     role calendar_event
-    lexeme en
-      surface
-        text "meeting"
-      surface
-        text call
-      surface
-        text event
-    lexeme ru
-      surface
-        text встреча
-      surface
-        text встречи
-      surface
-        text встречу
-      surface
-        text событие
-      surface
-        text события
-      surface
-        text созвон
-      surface
-        text созвона
-      surface
-        text созвоны
-      surface
-        text созвону
-      surface
-        text звонок
-      surface
-        text звонка
-    lexeme hi
-      surface
-        text मीटिंग
-      surface
-        text "घटना"
-    lexeme zh
-      surface
-        text 会议
-      surface
-        text 事件
-      surface
-        text 通话
+    lexeme en "meeting" call event
+    lexeme ru встреча встречи встречу событие события созвон созвона созвоны созвону звонок звонка
+    lexeme hi मीटिंग "घटना"
+    lexeme zh 会议 事件 通话
+    lexeme es reunión reuniones llamada evento cita
   calendar_clock_time
     defined-by calendar_day
     role calendar_time
-    lexeme en
-      surface
-        text "17:00"
-      surface
-        text "5 pm"
-      surface
-        text "5pm"
-      surface
-        text "at 17:00"
-    lexeme ru
-      surface
-        text "17:00"
-      surface
-        text "в 17:00"
-      surface
-        text "17.00"
-      surface
-        text вечером
-      surface
-        text "в 17"
-    lexeme hi
-      surface
-        text "शाम 5 बजे"
-    lexeme zh
-      surface
-        text 下午5点
+    lexeme en "17:00" "5 pm" "5pm" "at 17:00"
+    lexeme ru "17:00" "в 17:00" "17.00" вечером "в 17"
+    lexeme hi "शाम 5 बजे"
+    lexeme zh 下午5点
+    lexeme es "17:00" "5 pm" "a las 17:00" "a las 5 de la tarde"
   calendar_hour
     grounded-in Q2746606
     defined-by calendar_day
     role calendar_hour_reference
-    lexeme en
-      surface
-        text hour
-      surface
-        text hours
-    lexeme ru
-      surface
-        text часа
-      surface
-        text часов
-      surface
-        text "час назад"
-    lexeme hi
-      surface
-        text घंटे
-      surface
-        text घंटा
-      surface
-        text घंटों
-    lexeme zh
-      surface
-        text 小时
-    lexeme es
-      surface
-        text hora
-      surface
-        text horas
+    lexeme en hour hours
+    lexeme ru часа часов "час назад"
+    lexeme hi घंटे घंटा घंटों
+    lexeme zh 小时
+    lexeme es hora horas

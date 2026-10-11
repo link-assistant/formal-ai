@@ -1,0 +1,141 @@
+>> read {"filePath":"rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs","file_path":"rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs","path":"rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs"}
+   <file>
+   00001| use formal_ai::agentic_coding::{
+   00002|     AgenticPlan, DRIVER_TOOLS, GOOGLE_TRENDS_CATALOG_PATH, GOOGLE_TRENDS_CATALOG_TASK,
+   00003|     PlannedToolCall, google_trends_catalog as recipe, is_google_trends_catalog_task,
+   00004|     plan_chat_step, run_agentic_task,
+   00005| };
+   00006| use formal_ai::{ChatMessage, ToolCall};
+   00007| use lino_objects_codec::format::parse_indented;
+   00008| 
+   00009| fn expect_single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
+   00010|     match plan_chat_step(messages, tools) {
+   00011|         Some(AgenticPlan::ToolCalls(mut calls)) => {
+   00012|             assert_eq!(calls.len(), 1, "the planner emits one call per step");
+   00013|             calls.remove(0)
+   00014|         }
+   00015|         other => panic!("expected a single tool call, got {other:?}"),
+   00016|     }
+   00017| }
+   00018| 
+   00019| fn answer_tool_call(messages: &mut Vec<ChatMessage>, call: &PlannedToolCall, result: &str) {
+   00020|     let id = format!("call_{}", messages.len());
+   00021|     messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00022|         id.clone(),
+   00023|         call.tool.clone(),
+   00024|         call.arguments.clone(),
+   00025|     )]));
+   00026|     messages.push(ChatMessage::tool_result(id, &call.tool, result));
+   00027| }
+   00028| 
+   00029| #[test]
+   00030| fn committed_google_trends_catalog_is_generated_by_the_recipe() {
+   00031|     let committed = include_str!("../../../../data/meta/google-trends-catalog.lino");
+   00032|     assert_eq!(
+   00033|         committed,
+   00034|         recipe::render_document(),
+   00035|         "the committed Trends catalog is stale; regenerate it from the issue-498 recipe",
+   00036|     );
+   00037|     parse_indented(committed).expect("the catalog should parse as Links Notation");
+   00038|     assert!(committed.contains("google_trends_catalog"));
+   00039|     assert!(committed.contains("topic_count \"10\""));
+   00040|     assert!(committed.contains("prompt_language \"ru\""));
+   00041|     assert!(committed.contains("prompt_language \"hi\""));
+   00042|     assert!(committed.contains("prompt_language \"zh\""));
+   00043| }
+   00044| 
+   00045| #[test]
+   00046| fn recognises_the_google_trends_catalog_task_without_colliding_with_siblings() {
+   00047|     assert!(is_google_trends_catalog_task(GOOGLE_TRENDS_CATALOG_TASK));
+   00048|     assert!(is_google_trends_catalog_task(
+   00049|         "Build a Google Trends catalog from the top searches and answer each request."
+   00050|     ));
+   00051|     assert!(is_google_trends_catalog_task(
+   00052|         "Convert trending searches into multilingual Formal AI test prompts."
+   00053|     ));
+   00054| 
+   00055|     assert!(!is_google_trends_catalog_task("what is formal ai?"));
+   00056|     assert!(!is_google_trends_catalog_task(
+   00057|         formal_ai::agentic_coding::QUESTION_CATALOG_TASK
+   00058|     ));
+   00059|     assert!(!formal_ai::agentic_coding::is_question_catalog_task(
+   00060|         GOOGLE_TRENDS_CATALOG_TASK
+   00061|     ));
+   00062| }
+   00063| 
+   00064| #[test]
+   00065| fn planner_walks_the_google_trends_catalog_recipe() {
+   00066|     let tools = ["web_search", "web_fetch", "write_file", "run_command"];
+   00067|     let mut messages = vec![ChatMessage::user(GOOGLE_TRENDS_CATALOG_TASK)];
+   00068| 
+   00069|     let call = expect_single_call(&messages, &tools);
+   00070|     assert_eq!(call.tool, "write_file");
+   00071|     assert!(call.arguments.contains(GOOGLE_TRENDS_CATALOG_PATH));
+   00072|     let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+   00073|     assert_eq!(written["content"], recipe::render_document());
+   00074|     answer_tool_call(&mut messages, &call, "wrote google-trends-catalog.lino");
+   00075| 
+   00076|     let call = expect_single_call(&messages, &tools);
+   00077|     assert_eq!(call.tool, "run_command");
+   00078|     assert!(call.arguments.contains(GOOGLE_TRENDS_CATALOG_PATH));
+   00079|     answer_tool_call(&mut messages, &call, &recipe::render_document());
+   00080| 
+   00081|     match plan_chat_step(&messages, &tools) {
+   00082|         Some(AgenticPlan::Final(answer)) => {
+   00083|             assert!(answer.contains(GOOGLE_TRENDS_CATALOG_PATH));
+   00084|             assert!(answer.contains("Google Trends"));
+   00085|         }
+   00086|         other => panic!("expected a final answer, got {other:?}"),
+   00087|     }
+   00088| }
+   00089| 
+   00090| #[test]
+   00091| fn committed_agent_cli_session_matches_a_fresh_google_trends_run() {
+   00092|     let committed = include_str!(
+   00093|         "../../../../docs/case-studies/issue-498/agent-cli-session-google-trends.json"
+   00094|     );
+   00095|     let fresh = run_agentic_task(GOOGLE_TRENDS_CATALOG_TASK).expect("workspace");
+   00096|     let rendered = format!(
+   00097|         "{}\n",
+   00098|         serde_json::to_string_pretty(&fresh.session_json()).unwrap()
+   00099|     );
+   00100|     assert_eq!(
+   00101|         committed, rendered,
+   00102|         "the committed Google Trends Agent CLI session is stale",
+   00103|     );
+   00104| }
+   00105| 
+   00106| #[test]
+   00107| fn driver_drives_the_google_trends_recipe_to_a_write() {
+   00108|     assert!(DRIVER_TOOLS.contains(&"write_file"));
+   00109|     let outcome = run_agentic_task(GOOGLE_TRENDS_CATALOG_TASK).expect("workspace");
+   00110|     assert!(!outcome.hit_turn_cap, "the loop must finish");
+   00111| 
+   00112|     let write = outcome
+   00113|         .steps
+   00114|         .iter()
+   00115|         .find(|step| step.tool == "write_file")
+   00116|         .expect("a write step");
+   00117|     let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
+   00118|     assert_eq!(written["content"], recipe::render_document());
+   00119|     assert_eq!(written["path"], GOOGLE_TRENDS_CATALOG_PATH);
+   00120| }
+   00121| 
+   
+   (End of file - total 121 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs","file_path":"rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs","new":"    let captured: serde_json::Value = serde_json::from_str(committed).expect(\"captured session JSON\");\n    let tools: Vec<&str> = captured[\"tools_advertised\"]\n        .as_array()\n        .expect(\"captured tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"captured tool name\"))\n        .collect();\n    let fresh = formal_ai::agentic_coding::run_agentic_task_with_tools(GOOGLE_TRENDS_CATALOG_TASK, &tools)\n        .expect(\"workspace under the captured tool schema\");","newString":"    let captured: serde_json::Value = serde_json::from_str(committed).expect(\"captured session JSON\");\n    let tools: Vec<&str> = captured[\"tools_advertised\"]\n        .as_array()\n        .expect(\"captured tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"captured tool name\"))\n        .collect();\n    let fresh = formal_ai::agentic_coding::run_agentic_task_with_tools(GOOGLE_TRENDS_CATALOG_TASK, &tools)\n        .expect(\"workspace under the captured tool schema\");","new_str":"    let captured: serde_json::Value = serde_json::from_str(committed).expect(\"captured session JSON\");\n    let tools: Vec<&str> = captured[\"tools_advertised\"]\n        .as_array()\n        .expect(\"captured tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"captured tool name\"))\n        .collect();\n    let fresh = formal_ai::agentic_coding::run_agentic_task_with_tools(GOOGLE_TRENDS_CATALOG_TASK, &tools)\n        .expect(\"workspace under the captured tool schema\");","new_string":"    let captured: serde_json::Value = serde_json::from_str(committed).expect(\"captured session JSON\");\n    let tools: Vec<&str> = captured[\"tools_advertised\"]\n        .as_array()\n        .expect(\"captured tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"captured tool name\"))\n        .collect();\n    let fresh = formal_ai::agentic_coding::run_agentic_task_with_tools(GOOGLE_TRENDS_CATALOG_TASK, &tools)\n        .expect(\"workspace under the captured tool schema\");","old":"    let fresh = run_agentic_task(GOOGLE_TRENDS_CATALOG_TASK).expect(\"workspace\");","oldString":"    let fresh = run_agentic_task(GOOGLE_TRENDS_CATALOG_TASK).expect(\"workspace\");","old_str":"    let fresh = run_agentic_task(GOOGLE_TRENDS_CATALOG_TASK).expect(\"workspace\");","old_string":"    let fresh = run_agentic_task(GOOGLE_TRENDS_CATALOG_TASK).expect(\"workspace\");","path":"rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs"}
+   Output: 865c2ae9b93eebe878fbb1bd900a9fd225c51f6dfb5cb522fabe62c42ca3ce65  rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    let fresh = run_agentic_task(GOOGLE_TRENDS_CATALOG_TASK).expect("workspace");` with `    let captured: serde_json::Value = serde_json::from_str(committed).expect("captured session JSON");
+    let tools: Vec<&str> = captured["tools_advertised"]
+        .as_array()
+        .expect("captured tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("captured tool name"))
+        .collect();
+    let fresh = formal_ai::agentic_coding::run_agentic_task_with_tools(GOOGLE_TRENDS_CATALOG_TASK, &tools)
+        .expect("workspace under the captured tool schema");` in `rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs` and observed the result.

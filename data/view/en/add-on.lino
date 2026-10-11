@@ -1,0 +1,17 @@
+view
+  id M-4c3c9d36b5a7
+  lemma add-on
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a software module that extends or enhances the capabilities of an existing application"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a component that is added to something to improve it"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a supplementary component that improves capability"
+    provenance (wordnet)

@@ -5,12 +5,14 @@ Q21546392
     zh ("蒜")
   descriptions
     en "culinary ingredient (for the species use Q23400)"
+    es "ingrediente culinario (para la planta usar Q23400)"
     hi "पाक सामग्री"
     ru "как пищевой продукт"
     zh "烹饪佐料"
   id Q21546392
   labels
     en garlic
+    es ajo
     hi "लहसुन"
     ru "чеснок"
     zh "大蒜"

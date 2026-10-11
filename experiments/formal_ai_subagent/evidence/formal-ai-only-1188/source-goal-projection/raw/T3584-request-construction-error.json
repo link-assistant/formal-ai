@@ -1,0 +1,7 @@
+{
+  "stage": "Neutral request assembly before T3584 invocation",
+  "failure": "SyntaxError: Unexpected identifier $ in nested template source expectation",
+  "sourceEffects": 0,
+  "formalAiInvocations": 0,
+  "repair": "Reconstructed valid neutral expected strings before physical Formal AI invocation; no manually written source"
+}

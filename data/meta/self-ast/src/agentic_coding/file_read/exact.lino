@@ -2,75 +2,82 @@ self_ast_census
   target src/agentic_coding/file_read/exact.rs
   language rust
   fidelity full_ast
-  byte_len 6709
-  line_count 176
-  content_id source_module_d61b227f7382fc85
+  byte_len 7423
+  line_count 191
+  content_id source_module_7439295832257d07
   symbol_count 2
   symbols
-    function plan_direct_file_reads 18 147
-    function exact_line_key 153 176
+    function plan_direct_file_reads 22 160
+    function exact_line_key 166 191
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4811
-    named_node_count 980
-    distinct_node_kinds 56
+    total_link_count 5226
+    named_node_count 1051
+    distinct_node_kinds 63
     node_kinds
-      arguments 106
+      arguments 107
       array_type 2
       binary_expression 12
       block 22
-      call_expression 106
+      boolean_literal 1
+      call_expression 107
       char_literal 3
       closure_expression 14
       closure_parameters 14
+      compound_assignment_expr 1
       continue_expression 2
       crate 2
       doc_comment 11
-      expression_statement 33
-      field_expression 68
-      field_identifier 76
+      else_clause 1
+      expression_statement 34
+      field_expression 71
+      field_identifier 82
       field_initializer 8
       field_initializer_list 4
+      field_pattern 4
       for_expression 2
       function_item 2
-      generic_type 4
-      identifier 255
-      if_expression 14
+      generic_type 3
+      identifier 286
+      if_expression 15
       inner_doc_comment_marker 1
       integer_literal 2
-      let_chain 5
+      let_chain 6
       let_condition 12
-      let_declaration 13
+      let_declaration 15
+      lifetime 1
       line_comment 15
       macro_invocation 2
-      mutable_specifier 2
+      mutable_specifier 4
       outer_doc_comment_marker 10
-      parameter 8
+      parameter 7
       parameters 2
       parenthesized_expression 1
-      primitive_type 5
+      primitive_type 2
       reference_expression 12
-      reference_type 8
+      reference_type 6
       return_expression 10
-      scoped_identifier 29
-      scoped_use_list 1
+      scoped_identifier 37
+      scoped_use_list 2
+      shorthand_field_identifier 1
       source_file 1
-      string_content 7
-      string_literal 7
+      string_content 9
+      string_literal 9
       struct_expression 4
-      super 10
+      struct_pattern 1
+      super 13
       token_tree 6
       try_expression 2
       tuple_expression 4
       tuple_pattern 2
       tuple_struct_pattern 12
-      type_arguments 4
-      type_identifier 13
-      unary_expression 3
+      type_arguments 3
+      type_identifier 14
+      unary_expression 4
       unit_expression 1
-      use_declaration 3
-      use_list 1
+      use_declaration 4
+      use_list 2
       visibility_modifier 2

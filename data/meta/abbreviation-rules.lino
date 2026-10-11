@@ -1,0 +1,55 @@
+# Names are full English words (PR #1188, R1188-U4): file names, variables
+# and functions, as the links notation we own already is (R1188-U6).
+#
+# The abbreviation list and the proper terms (ai, api, json and the other
+# established acronyms that are not abbreviations of a word the reader would
+# say) are stated once, in data/meta/notation-rules.lino; this file says where
+# the rule applies to code. scripts/measure-abbreviations.mjs measures it
+# against data/meta/abbreviation-ratchet.lino (gate check-abbreviations), and
+# its --propose prints the full-word spelling of every abbreviated file name,
+# which data/meta/rename-map.lino applies tree by tree.
+#
+# A file name is abbreviated when a word of its stem (the base name before
+# the first `.`, split at `-` and `_`) is on the list: formal_ai_worker_nl_tools
+# holds nl, natural-language. A binding is abbreviated when a word of a
+# declared name (split at `_` and at a lower-to-upper case change) is on the
+# list: `const args`, `let pos`, `fn calc_total`.
+abbreviation-rules
+  abbreviations-from data/meta/notation-rules.lino
+  file-names
+    excluded dev/log
+      reason "evidence logs, named by the run that wrote them"
+    excluded docs/case-studies
+      reason "captured evidence, named by the tool that captured it (pr-1188-review-comments.json)"
+    excluded changelog.d
+      reason "changelog fragments, named once by their author and removed at release"
+    excluded data/cache
+      reason "a cache keyed by the external word it describes (wordnet id, mb, spec)"
+    excluded data/view
+      reason "views keyed by the external word they describe, like data/cache"
+    excluded rust/embedded
+      reason "a byte mirror whose names follow the originals; the rename tool moves it with them"
+    excluded ts
+      reason "the generated twins of js/, renamed with their sources"
+    excluded data/meta/self-ast
+      reason "the census of rust/src, named for the source files"
+    excluded data/meta/worker-line-budget
+      reason "one shard per browser worker module, renamed with it"
+    excluded rust/tests/fixtures/js-rust-translation
+      reason "projections of js/agentic, named for the source modules"
+    excluded experiments/formal_ai_subagent/archive
+      reason "the coordination archive keeps its names as written"
+    excluded experiments/formal_ai_subagent/evidence
+      reason "immutable captured requests and results retain the original tool and run file names"
+    excluded data/meta/requirement-status-ledger
+      reason "generated, one file per requirement document and named for it"
+    excluded js/worker/formal_ai_worker_crate_*
+      reason "the browser worker's generated copies of js/agentic/crate modules (scripts/generate-worker-crate-modules.mjs), named and spelled as their sources"
+    fixed-name lib
+      reason "the stem of the crate root file Rust fixes (src/lib.rs), and of a script directory's lib.sh by the same convention"
+  bindings js
+    excluded js/vendor
+      reason "third-party code, kept byte for byte"
+    excluded js/worker/formal_ai_worker_crate_*
+      reason "generated copies of js/agentic/crate modules, whose names the sources already count"
+  bindings rust/src

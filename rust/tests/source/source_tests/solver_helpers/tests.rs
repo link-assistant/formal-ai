@@ -398,3 +398,48 @@ fn humanize_url_decodes_mixed_already_decoded_and_encoded_path() {
         "https://ru.wikipedia.org/wiki/Изумруд_(минерал)",
     );
 }
+
+#[test]
+fn courtesy_binds_one_directive_without_reclassifying_explicit_questions() {
+    for prompt in [
+        "Hello. Prove that 2 + 2 = 4",
+        "привет. докажи что простых бесконечно",
+        "नमस्ते. साबित करो कि अभाज्य संख्याएँ अनंत हैं",
+        "你好。证明素数有无穷多个",
+    ] {
+        let mut log = crate::event_log::EventLog::new();
+        assert_eq!(
+            super::record_decomposition(&mut log, prompt, 4),
+            [] as [crate::solver_helpers::DecomposedSubImpulse; 0]
+        );
+    }
+    for prompt in [
+        "What is 2 + 2? Who are you?",
+        "Привет, как подключить mysql к node js",
+    ] {
+        let mut log = crate::event_log::EventLog::new();
+        let parts = super::record_decomposition(&mut log, prompt, 4);
+        assert_eq!(parts.len(), 2);
+        assert!(parts.iter().all(|part| part.independent));
+    }
+}
+
+#[test]
+fn leading_courtesy_parser_preserves_actual_subject_and_clause_boundaries() {
+    assert_eq!(
+        super::request_after_leading_courtesy("Hey. Demonstrate an arbitrary claim"),
+        Some("Demonstrate an arbitrary claim")
+    );
+    assert_eq!(
+        super::request_after_leading_courtesy("你好。请证明任意命题"),
+        Some("请证明任意命题")
+    );
+    assert_eq!(
+        super::request_after_leading_courtesy("Hello.prove an arbitrary claim"),
+        None
+    );
+    assert_eq!(
+        super::request_after_leading_courtesy("Repository prose. Demonstrate an arbitrary claim"),
+        None
+    );
+}

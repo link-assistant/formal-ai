@@ -1,0 +1,17 @@
+view
+  id M-aa96e58834f4
+  lemma hertz
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "German physicist who was the first to produce electromagnetic waves artificially (1857-1894)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the unit of frequency; one hertz has a periodic interval of one second (named for Heinrich Rudolph Hertz)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "German physicist who with James Franck proved the existence of the stationary energy states postulated by Bohr (1887-1975)"
+    provenance (wordnet)

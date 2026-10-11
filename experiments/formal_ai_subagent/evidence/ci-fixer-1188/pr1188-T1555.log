@@ -1,0 +1,25 @@
+>> read {"filePath":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md","file_path":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md","path":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md"}
+   <file>
+   00001| ### Fixed
+   00002| 
+   00003| - Render removed lines and declarations as explicit lists while preserving backticks and placeholder text inside each value.
+   00004| - Substitute seeded editing summaries once so literal scalar and list content cannot become another template.
+   00005| 
+   
+   (End of file - total 5 lines)
+   </file>
+>> edit {"filePath":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md","file_path":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md","new":"### Fixed\n\n- Repair Rust test lints and pin complete scalar editing summaries.\n- Run macOS archived tests from the Cargo workspace source root and keep platform selection assertions current.\n- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.\n","newString":"### Fixed\n\n- Repair Rust test lints and pin complete scalar editing summaries.\n- Run macOS archived tests from the Cargo workspace source root and keep platform selection assertions current.\n- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.\n","new_str":"### Fixed\n\n- Repair Rust test lints and pin complete scalar editing summaries.\n- Run macOS archived tests from the Cargo workspace source root and keep platform selection assertions current.\n- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.\n","new_string":"### Fixed\n\n- Repair Rust test lints and pin complete scalar editing summaries.\n- Run macOS archived tests from the Cargo workspace source root and keep platform selection assertions current.\n- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.\n","old":"### Fixed\n\n- Render removed lines and declarations as explicit lists while preserving backticks and placeholder text inside each value.\n- Substitute seeded editing summaries once so literal scalar and list content cannot become another template.\n","oldString":"### Fixed\n\n- Render removed lines and declarations as explicit lists while preserving backticks and placeholder text inside each value.\n- Substitute seeded editing summaries once so literal scalar and list content cannot become another template.\n","old_str":"### Fixed\n\n- Render removed lines and declarations as explicit lists while preserving backticks and placeholder text inside each value.\n- Substitute seeded editing summaries once so literal scalar and list content cannot become another template.\n","old_string":"### Fixed\n\n- Render removed lines and declarations as explicit lists while preserving backticks and placeholder text inside each value.\n- Substitute seeded editing summaries once so literal scalar and list content cannot become another template.\n","path":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md"}
+>> bash {"command":"sha256sum -- changelog.d/20261009_045000_native-ci-and-macos-repairs.md"}
+   0b39af5079cce63de94e9fbe92eb92e4d7853cb594278ad1e5a8c89774dd19aa  changelog.d/20261009_045000_native-ci-and-macos-repairs.md
+   
+== answer ==
+Replaced `### Fixed
+
+- Render removed lines and declarations as explicit lists while preserving backticks and placeholder text inside each value.
+- Substitute seeded editing summaries once so literal scalar and list content cannot become another template.
+` with `### Fixed
+
+- Repair Rust test lints and pin complete scalar editing summaries.
+- Run macOS archived tests from the Cargo workspace source root and keep platform selection assertions current.
+- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.
+` in `changelog.d/20261009_045000_native-ci-and-macos-repairs.md` and observed the result.

@@ -1,0 +1,48 @@
+{
+  "lemma": "above",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06404303-n",
+      "partOfSpeech": "n",
+      "definition": "an earlier section of a written text",
+      "examples": [
+        "for instructions, refer to the above"
+      ]
+    },
+    {
+      "id": "oewn-00080266-r",
+      "partOfSpeech": "r",
+      "definition": "(in writing) at an earlier place",
+      "examples": [
+        "see above"
+      ],
+      "synonyms": [
+        "supra"
+      ]
+    },
+    {
+      "id": "oewn-00080519-r",
+      "partOfSpeech": "r",
+      "definition": "in or to a place that is higher",
+      "synonyms": [
+        "higher up",
+        "in a higher place",
+        "to a higher place"
+      ]
+    },
+    {
+      "id": "oewn-00126865-s",
+      "partOfSpeech": "s",
+      "definition": "appearing earlier in the same text",
+      "examples": [
+        "flaws in the above interpretation"
+      ]
+    }
+  ]
+}

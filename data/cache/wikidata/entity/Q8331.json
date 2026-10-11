@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "狐"
+        },
+        "es": {
+          "language": "es",
+          "value": "zorro"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "一些犬科动物的统称"
+        },
+        "es": {
+          "language": "es",
+          "value": "mamífero carnívoro de familia de los canidae"
         }
       },
       "aliases": {
@@ -72,6 +80,20 @@
           {
             "language": "zh",
             "value": "夢幻"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "raposo"
+          },
+          {
+            "language": "es",
+            "value": "raposa"
+          },
+          {
+            "language": "es",
+            "value": "zorra"
           }
         ]
       }

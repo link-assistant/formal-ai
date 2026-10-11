@@ -3,6 +3,9 @@
 use crate::engine::normalize_prompt;
 use crate::seed;
 
+/// The role naming a request to formalize a page (R1188-U18).
+const ROLE_PAGE_FORMALIZATION_ACTION: &str = "page_formalization_action";
+
 pub(super) fn extract_http_fetch_url(prompt: &str, normalized: &str) -> Option<String> {
     let (raw_candidate, url) = first_url_candidate(prompt)?;
     is_http_fetch_prompt(prompt, normalized, &raw_candidate).then_some(url)
@@ -118,6 +121,18 @@ fn is_http_fetch_prompt(prompt: &str, normalized: &str, _raw_candidate: &str) ->
     let raw = prompt.trim_start().to_lowercase();
     role_evidences_web_intent(
         seed::ROLE_HTTP_FETCH,
+        &[normalized_words.as_str(), normalized, raw.as_str()],
+    )
+}
+
+/// Whether the request asks for the page at its URL to be formalized
+/// (R1188-U18): the `page_formalization_action` role of
+/// `data/seed/meanings-web-navigation.lino`, read the way the fetch role is.
+pub(super) fn is_page_formalization_prompt(prompt: &str, normalized: &str) -> bool {
+    let normalized_words = normalize_prompt(prompt);
+    let raw = prompt.trim_start().to_lowercase();
+    role_evidences_web_intent(
+        ROLE_PAGE_FORMALIZATION_ACTION,
         &[normalized_words.as_str(), normalized, raw.as_str()],
     )
 }

@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "海"
+        },
+        "es": {
+          "language": "es",
+          "value": "mar"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "較大面積的鹹水區域"
+        },
+        "es": {
+          "language": "es",
+          "value": "masa de agua salada de tamaño inferior al océano"
         }
       },
       "aliases": {
@@ -56,6 +64,12 @@
           {
             "language": "zh",
             "value": "海域"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "mares"
           }
         ]
       }

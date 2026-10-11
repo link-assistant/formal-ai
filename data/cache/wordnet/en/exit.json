@@ -1,0 +1,95 @@
+{
+  "lemma": "exit",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03308910-n",
+      "partOfSpeech": "n",
+      "definition": "an opening that permits escape or release",
+      "examples": [
+        "he blocked the way out",
+        "the canyon had only one issue"
+      ],
+      "synonyms": [
+        "issue",
+        "outlet",
+        "way out"
+      ]
+    },
+    {
+      "id": "oewn-07348249-n",
+      "partOfSpeech": "n",
+      "definition": "euphemistic expressions for death",
+      "examples": [
+        "thousands mourned his passing"
+      ],
+      "synonyms": [
+        "passing",
+        "loss",
+        "departure",
+        "expiration",
+        "going",
+        "release"
+      ]
+    },
+    {
+      "id": "oewn-00059339-n",
+      "partOfSpeech": "n",
+      "definition": "the act of going out"
+    },
+    {
+      "id": "oewn-02019450-v",
+      "partOfSpeech": "v",
+      "definition": "move out of or depart from",
+      "examples": [
+        "leave the room",
+        "the fugitive has left the country"
+      ],
+      "synonyms": [
+        "go out",
+        "get out",
+        "leave"
+      ]
+    },
+    {
+      "id": "oewn-01081082-v",
+      "partOfSpeech": "v",
+      "definition": "lose the lead"
+    },
+    {
+      "id": "oewn-00359085-v",
+      "partOfSpeech": "v",
+      "definition": "pass from physical life and lose all bodily attributes and functions necessary to sustain life",
+      "examples": [
+        "She died from cancer",
+        "The children perished in the fire",
+        "The patient went peacefully",
+        "The old guy kicked the bucket at the age of 102"
+      ],
+      "synonyms": [
+        "die",
+        "decease",
+        "perish",
+        "go",
+        "pass away",
+        "expire",
+        "pass",
+        "kick the bucket",
+        "cash in one's chips",
+        "buy the farm",
+        "conk",
+        "give-up the ghost",
+        "drop dead",
+        "pop off",
+        "choke",
+        "croak",
+        "snuff it"
+      ]
+    }
+  ]
+}

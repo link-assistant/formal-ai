@@ -1,0 +1,218 @@
+>> read {"filePath":"js/agentic/mutating_action.mjs","file_path":"js/agentic/mutating_action.mjs","path":"js/agentic/mutating_action.mjs"}
+   <file>
+   00001| // Verified mutating filesystem actions (issues #824 and #944): the JavaScript
+   00002| // twin of rust/src/agentic_coding/mutating_action.rs.
+   00003| //
+   00004| // A mutating command is planned as the ordered recipe its seed intent declares
+   00005| // (preconditions, preparation, the action, postconditions), each step observed
+   00006| // before the next is planned.
+   00007| 
+   00008| import { Capability } from './capability.mjs';
+   00009| import { toolFor } from './capability_router.mjs';
+   00010| import { finalAnswer, jsonText, planOne } from './plan.mjs';
+   00011| import { Progress } from './progress.mjs';
+   00012| import { fill as fillSeededStep } from './work_item_steps.mjs';
+   00013| import { StepOutcome, render, reportedExitCode, responseLanguage, stepOutcome } from './tool_result.mjs';
+   00014| import { localizedResponse } from './crate/seed.mjs';
+   00015| import { effectIsDeclared, shellIntentVocabulary } from './crate/seed_shell_intents.mjs';
+   00016| import { maxByKey, replaceAllLiteral, rsplitOnce } from './crate/rust_str.mjs';
+   00017| 
+   00018| const PATH_PLACEHOLDER = '{path}';
+   00019| const SOURCE_PLACEHOLDER = '{source}';
+   00020| const DESTINATION_PLACEHOLDER = '{destination}';
+   00021| const DESTINATION_PARENT_PLACEHOLDER = '{destination_parent}';
+   00022| const ACTION_PLACEHOLDER = '{action}';
+   00023| const CHECK_PLACEHOLDER = '{check}';
+   00024| const CHECKS_PLACEHOLDER = '{checks}';
+   00025| const EXIT_CODE_PLACEHOLDER = '{exit_code}';
+   00026| const CURRENT_DIRECTORY = '.';
+   00027| 
+   00028| /**
+   00029|  * Mirrors `fn expand` in rust/src/agentic_coding/mutating_action.rs:
+   00030|  * `{steps, action}` (the action's index) or null.
+   00031|  * @param {string} command
+   00032|  */
+   00033| export function expand(command) {
+   00034|   return expandWith(command, shellIntentVocabulary());
+   00035| }
+   00036| 
+   00037| function expandWith(command, vocab) {
+   00038|   const candidates = vocab.intents.filter((intent) => effectIsDeclared(intent.effect)
+   00039|     && command.startsWith(intent.command + ' '));
+   00040|   const intent = maxByKey(candidates, (candidate) => candidate.command.length);
+   00041|   if (!intent) return null;
+   00042|   const parsed = effectOperands(command.slice(intent.command.length), intent.effect);
+   00043|   if (!parsed || !parsed.operands.length) return null;
+   00044|   const { operands, flags } = parsed;
+   00045|   const effect = intent.effect;
+   00046|   const before = flags.some((flag) => effect.reuse_options.includes(flag)) && effect.before_reuse.length
+   00047|     ? effect.before_reuse : effect.before;
+   00048|   const templates = [...before, ...effect.prepare, ...effect.after];
+   00049|   const fill = (template, bindings) => bindings.reduce((text, [key, value]) => replaceAllLiteral(text, key, value), template);
+   00050|   let groups;
+   00051|   if (templates.some((template) => template.includes(PATH_PLACEHOLDER))) {
+   00052|     groups = operands.map((path) => (template) => fill(template, [[PATH_PLACEHOLDER, path]]));
+   00053|   } else {
+   00054|     if (operands.length < 2 || (operands.length > 2 && !effect.directory_targets)) return null;
+   00055|     const destination = operands.at(-1);
+   00056|     const sources = operands.slice(0, -1);
+   00057|     if (!effect.directory_targets && sources.some(hasShellExpansion)) return null;
+   00058|     const collection = effect.directory_targets && (sources.length > 1
+   00059|       || sources.some(hasShellExpansion) || destination.replace(/^['"]|['"]$/gu, '').endsWith('/'));
+   00060|     if (collection) {
+   00061|       const setup = 'formal_ai_destination=' + destination + '; '
+   00062|         + 'if test -d "$formal_ai_destination" || [ "${formal_ai_destination%/}" != "$formal_ai_destination" ]; then '
+   00063|         + 'formal_ai_leaf="${formal_ai_source%/}"; formal_ai_destination="${formal_ai_destination%/}/${formal_ai_leaf##*/}"; fi; '
+   00064|         + 'formal_ai_parent="${formal_ai_destination%/*}"; '
+   00065|         + 'if [ "$formal_ai_parent" = "$formal_ai_destination" ]; then formal_ai_parent=.; fi; ';
+   00066|       const bindings = [[SOURCE_PLACEHOLDER, '"$formal_ai_source"'],
+   00067|         [DESTINATION_PARENT_PLACEHOLDER, '"$formal_ai_parent"'], [DESTINATION_PLACEHOLDER, '"$formal_ai_destination"']];
+   00068|       groups = [(template) => 'for formal_ai_source in ' + sources.join(' ') + '; do ' + setup
+   00069|         + fill(template, bindings) + ' || exit $?; done'];
+   00070|     } else {
+   00071|       groups = [(template) => fill(template, [[SOURCE_PLACEHOLDER, sources[0]],
+   00072|         [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]])];
+   00073|     }
+   00074|   }
+   00075|   const expandTemplates = (items) => items.flatMap((template) => groups.map((bind) => bind(template)));
+   00076|   const steps = [...expandTemplates(before), ...expandTemplates(effect.prepare)];
+   00077|   const action = steps.length;
+   00078|   steps.push(command, ...expandTemplates(effect.after));
+   00079|   return { steps, action };
+   00080| }
+   00081| 
+   00082| /** Preserve shell quoting while separating declared options from positional operands. */
+   00083| function effectOperands(text, effect) {
+   00084|   const words = shellWords(text);
+   00085|   if (words === null) return null;
+   00086|   const operands = [];
+   00087|   const flags = [];
+   00088|   let options = true;
+   00089|   for (let index = 0; index < words.length; index += 1) {
+   00090|     const raw = words[index];
+   00091|     const word = raw.replace(/^['"]|['"]$/gu, '');
+   00092|     if (options && word === '--') { options = false; continue; }
+   00093|     if (options && word.startsWith('-') && word !== '-') {
+   00094|       const valueOption = effect.value_options.find((option) => word === option || word.startsWith(option + '=')
+   00095|         || (!option.startsWith('--') && word.startsWith(option) && word.length > option.length));
+   00096|       if (valueOption) {
+   00097|         if (word === valueOption && ++index >= words.length) return null;
+   00098|         flags.push(valueOption);
+   00099|       } else if (effect.flags.includes(word)) flags.push(word);
+   00100|       else if (!word.startsWith('--') && [...word.slice(1)].every((letter) => effect.flags.includes('-' + letter))) {
+   00101|         flags.push(...[...word.slice(1)].map((letter) => '-' + letter));
+   00102|       } else return null;
+   00103|     } else operands.push(raw);
+   00104|   }
+   00105|   return { operands, flags };
+   00106| }
+   00107| 
+   00108| function shellWords(text) {
+   00109|   const words = [];
+   00110|   let start = null;
+   00111|   let quote = null;
+   00112|   let escaped = false;
+   00113|   for (let index = 0; index < text.length; index += 1) {
+   00114|     const character = text[index];
+   00115|     if (start === null && /\s/u.test(character)) continue;
+   00116|     if (start === null) start = index;
+   00117|     if (escaped) { escaped = false; continue; }
+   00118|     if (character === '\\' && quote !== "'") { escaped = true; continue; }
+   00119|     if (quote !== null) { if (character === quote) quote = null; continue; }
+   00120|     if (character === '"' || character === "'") { quote = character; continue; }
+   00121|     if (/\s/u.test(character)) { words.push(text.slice(start, index)); start = null; }
+   00122|     else if (';|&<>()`'.includes(character)) return null;
+   00123|   }
+   00124|   if (quote !== null || escaped) return null;
+   00125|   if (start !== null) words.push(text.slice(start));
+   00126|   return words;
+   00127| }
+   00128| 
+   00129| function hasShellExpansion(word) {
+   00130|   let quote = null;
+   00131|   let escaped = false;
+   00132|   for (const character of word) {
+   00133|     if (escaped) { escaped = false; continue; }
+   00134|     if (character === '\\' && quote !== "'") { escaped = true; continue; }
+   00135|     if (quote !== null) { if (character === quote) quote = null; continue; }
+   00136|     if (character === '"' || character === "'") quote = character;
+   00137|     else if ('*?[$'.includes(character)) return true;
+   00138|   }
+   00139|   return false;
+   00140| }
+   00141| 
+   00142| /** Mirrors `fn parent_of`. */
+   00143| function parentOf(path) {
+   00144|   if (/["']/u.test(path) || path.includes(String.fromCharCode(92))) return '"$(dirname -- ' + path + ')"';
+   00145|   const split = rsplitOnce(path, '/');
+   00146|   if (split === null) return CURRENT_DIRECTORY;
+   00147|   return split[0] === '' ? '/' : split[0];
+   00148| }
+   00149| 
+   00150| /**
+   00151|  * Mirrors `fn plan_step` in rust/src/agentic_coding/mutating_action.rs.
+   00152|  * @param {string} command
+   00153|  * @param {object[]} messages
+   00154|  * @param {string[]} toolNames
+   00155|  * @param {string} prompt
+   00156|  */
+   00157| export function planStep(command, messages, toolNames, prompt) {
+   00158|   const recipe = expand(command);
+   00159|   if (recipe === null) return null;
+   00160|   const tool = toolFor(toolNames, Capability.Run);
+   00161|   if (tool === null) return null;
+   00162|   const progress = Progress.scan(messages);
+   00163|   const taken = progress.run_outputs.length;
+   00164|   if (taken > 0) {
+   00165|     const index = taken - 1;
+   00166|     const observed = progress.run_outputs[index];
+   00167|     if (stepOutcome(observed) === StepOutcome.Failed) {
+   00168|       return finalAnswer(blockedReport(recipe, recipe.steps[index] ?? command, observed, prompt, index >= recipe.action));
+   00169|     }
+   00170|   }
+   00171|   if (taken < recipe.steps.length) return planOne(tool, jsonText({ command: recipe.steps[taken] }));
+   00172|   return finalAnswer(completedReport(recipe, prompt));
+   00173| }
+   00174| 
+   00175| function blockedReport(recipe, check, observed, prompt, attempted) {
+   00176|   const language = responseLanguage(prompt);
+   00177|   let answer = localizedResponse(attempted ? 'mutating-action-observed-failure' : 'mutating_action_blocked', language);
+   00178|   if (answer === null) return render(check, observed, prompt);
+   00179|   answer = replaceAllLiteral(answer, ACTION_PLACEHOLDER, recipe.steps[recipe.action]);
+   00180|   answer = replaceAllLiteral(answer, CHECK_PLACEHOLDER, check);
+   00181|   const code = reportedExitCode(observed);
+   00182|   return replaceAllLiteral(answer, EXIT_CODE_PLACEHOLDER, code === null ? '' : String(code));
+   00183| }
+   00184| 
+   00185| function completedReport(recipe, prompt) {
+   00186|   const language = responseLanguage(prompt);
+   00187|   const checks = recipe.steps.slice(recipe.action + 1).map((check) => `\`${check}\``).join(', ');
+   00188|   const answer = localizedResponse('mutating_action_completed', language);
+   00189|   if (answer === null) return recipe.steps[recipe.action];
+   00190|   return replaceAllLiteral(replaceAllLiteral(answer, ACTION_PLACEHOLDER, recipe.steps[recipe.action]), CHECKS_PLACEHOLDER, checks);
+   00191| }
+   00192| 
+   00193| /**
+   00194|  * Mirrors `fn verified_recipe` in rust/src/agentic_coding/mutating_action.rs.
+   00195|  * @param {string} command
+   00196|  * @returns {string[]|null}
+   00197|  */
+   00198| export function verifiedRecipe(command) {
+   00199|   return expand(command)?.steps ?? null;
+   00200| }
+   00201| 
+   
+   (End of file - total 201 lines)
+   </file>
+>> edit {"filePath":"js/agentic/mutating_action.mjs","file_path":"js/agentic/mutating_action.mjs","new":"      const setup = fillSeededStep('filesystem-collection-setup', [['{destination}', destination]]);\n","newString":"      const setup = fillSeededStep('filesystem-collection-setup', [['{destination}', destination]]);\n","new_str":"      const setup = fillSeededStep('filesystem-collection-setup', [['{destination}', destination]]);\n","new_string":"      const setup = fillSeededStep('filesystem-collection-setup', [['{destination}', destination]]);\n","old":"      const setup = 'formal_ai_destination=' + destination + '; '\n        + 'if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then '\n        + 'formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; '\n        + 'formal_ai_parent=\"${formal_ai_destination%/*}\"; '\n        + 'if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; ';\n","oldString":"      const setup = 'formal_ai_destination=' + destination + '; '\n        + 'if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then '\n        + 'formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; '\n        + 'formal_ai_parent=\"${formal_ai_destination%/*}\"; '\n        + 'if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; ';\n","old_str":"      const setup = 'formal_ai_destination=' + destination + '; '\n        + 'if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then '\n        + 'formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; '\n        + 'formal_ai_parent=\"${formal_ai_destination%/*}\"; '\n        + 'if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; ';\n","old_string":"      const setup = 'formal_ai_destination=' + destination + '; '\n        + 'if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then '\n        + 'formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; '\n        + 'formal_ai_parent=\"${formal_ai_destination%/*}\"; '\n        + 'if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; ';\n","path":"js/agentic/mutating_action.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/mutating_action.mjs"}
+   609c4dce8d3a0f3703ac0db0032ec4ebea3f145ee09f0753c0faf673586901f6  js/agentic/mutating_action.mjs
+   
+== answer ==
+Replaced `      const setup = 'formal_ai_destination=' + destination + '; '
+        + 'if test -d "$formal_ai_destination" || [ "${formal_ai_destination%/}" != "$formal_ai_destination" ]; then '
+        + 'formal_ai_leaf="${formal_ai_source%/}"; formal_ai_destination="${formal_ai_destination%/}/${formal_ai_leaf##*/}"; fi; '
+        + 'formal_ai_parent="${formal_ai_destination%/*}"; '
+        + 'if [ "$formal_ai_parent" = "$formal_ai_destination" ]; then formal_ai_parent=.; fi; ';
+` with `      const setup = fillSeededStep('filesystem-collection-setup', [['{destination}', destination]]);
+` in `js/agentic/mutating_action.mjs` and observed the result.

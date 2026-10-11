@@ -1,0 +1,30 @@
+{
+  "id": "T3507",
+  "stop": "final",
+  "answer": "The `node -e 'const fs=require('\\''fs'\\'');const changes=JSON.parse(fs.readFileSync('\\''/private/tmp/formal-ai-only-1188/T3507-request.json'\\'','\\''utf8'\\'')).changes;for(const change of changes){if((fs.existsSync(change.path)?fs.readFileSync(change.path,'\\''utf8'\\''):null)!==change.before)throw Error('\\''preimage changed '\\''+change.path);}for(const change of changes){fs.mkdirSync(require('\\''path'\\'').dirname(change.path),{recursive:true});fs.writeFileSync(change.path,change.expected);}console.log(JSON.stringify({writes:changes.map(change=>change.path)}));'` command completed. Output:\n\n```json\n{\n  \"writes\": [\n    \"js/agentic/progress.mjs\",\n    \"rust/src/agentic_coding/progress.rs\",\n    \"rust/tests/web/source-read-provenance.test.mjs\",\n    \"rust/tests/fixtures/source-read-provenance.rs\"\n  ]\n}\n```",
+  "calls": [
+    "bash"
+  ],
+  "matches": [
+    {
+      "path": "js/agentic/progress.mjs",
+      "exact": true,
+      "sha256": "f7951df64249a4951e6416b2bc512c32f3f953f5f7510096f3f660e1481339d5"
+    },
+    {
+      "path": "rust/src/agentic_coding/progress.rs",
+      "exact": true,
+      "sha256": "53f6347beb942f3a81c7dbfc9362b6b2bcfecbcd2630c6a549f58cea6122f8fd"
+    },
+    {
+      "path": "rust/tests/web/source-read-provenance.test.mjs",
+      "exact": true,
+      "sha256": "856ed35e3b8dec46e7c9ed442b4a197bb404af9d2d8bfa401030fadd04a89d2e"
+    },
+    {
+      "path": "rust/tests/fixtures/source-read-provenance.rs",
+      "exact": true,
+      "sha256": "7bcba1377f863d38214e5301ae3e72933be2df62f304c5661a5a266bd1ab7578"
+    }
+  ]
+}

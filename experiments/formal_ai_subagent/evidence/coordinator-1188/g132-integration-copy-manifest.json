@@ -1,0 +1,38 @@
+[
+  {
+    "from": "/private/tmp/spec-recurrence-1188/T2048-observation.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/authored-failure-exact-answer-pin/T2048-observation.json",
+    "bytes": 53,
+    "sha256": "81efe14e14fb8e8165f0e90430c0ce9605868958a232662e6ed141826d370547"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/T2048-prompt.txt",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/authored-failure-exact-answer-pin/T2048-prompt.txt",
+    "bytes": 70,
+    "sha256": "f5c5abde25816966bdf9ebbc37d59d37beb118247364df308440de5aca762027"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/T2048-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/authored-failure-exact-answer-pin/T2048-request.json",
+    "bytes": 179,
+    "sha256": "7ec81d4f3d3514b348b2d048f6e8ae36870e51b443f850fbcbcba66c1b1842aa"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/T2048.log",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/authored-failure-exact-answer-pin/T2048.log",
+    "bytes": 358,
+    "sha256": "7748deb582873328ba4170e88f14b05c8f6a529fe2fd3bfca3bab14a8be26203"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1931-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1931-request.json",
+    "bytes": 4324,
+    "sha256": "c24b083aef881c566aa2cf1bf7335dd3e1b2930092b5cad7f9126c9f7d0229df"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1931.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1931.json",
+    "bytes": 9400,
+    "sha256": "8a498242ab876ede991b14d2598212a5ab2a94f06dfa14145bd08c91a7f53d21"
+  }
+]

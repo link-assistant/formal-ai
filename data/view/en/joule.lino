@@ -1,0 +1,13 @@
+view
+  id M-839b283f9885
+  lemma joule
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "English physicist who established the mechanical theory of heat and discovered the first law of thermodynamics (1818-1889)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of electrical energy equal to the work done when a current of one ampere passes through a resistance of one ohm for one second"
+    provenance (wordnet)

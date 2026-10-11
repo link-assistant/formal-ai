@@ -1,0 +1,172 @@
+{
+  "entities": {
+    "Q649": {
+      "type": "item",
+      "id": "Q649",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Moscow"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Москва"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मास्को"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "莫斯科"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "莫斯科"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Moscow, Russia"
+          },
+          {
+            "language": "en",
+            "value": "Moskva Federal City, Russia"
+          },
+          {
+            "language": "en",
+            "value": "Moscow, USSR"
+          },
+          {
+            "language": "en",
+            "value": "Moskva, Russia"
+          },
+          {
+            "language": "en",
+            "value": "City of Moscow"
+          },
+          {
+            "language": "en",
+            "value": "Moscow, Russian Federation"
+          },
+          {
+            "language": "en",
+            "value": "Moscow, Soviet Union"
+          },
+          {
+            "language": "en",
+            "value": "Moscow, Russian SFSR"
+          },
+          {
+            "language": "en",
+            "value": "Москва"
+          },
+          {
+            "language": "en",
+            "value": "Moskva, Rossiya"
+          },
+          {
+            "language": "en",
+            "value": "Mosky"
+          },
+          {
+            "language": "en",
+            "value": "Moskovĭ"
+          },
+          {
+            "language": "en",
+            "value": "Moskvi"
+          },
+          {
+            "language": "en",
+            "value": "Moskve"
+          },
+          {
+            "language": "en",
+            "value": "Moskvë"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Первопрестольная"
+          },
+          {
+            "language": "ru",
+            "value": "Порт пяти морей"
+          },
+          {
+            "language": "ru",
+            "value": "Москва (город)"
+          },
+          {
+            "language": "ru",
+            "value": "Москва, Россия"
+          },
+          {
+            "language": "ru",
+            "value": "Москва (Россия)"
+          },
+          {
+            "language": "ru",
+            "value": "Третий Рим"
+          },
+          {
+            "language": "ru",
+            "value": "Нерезиновая"
+          },
+          {
+            "language": "ru",
+            "value": "МСК"
+          },
+          {
+            "language": "ru",
+            "value": "Златоглавая"
+          },
+          {
+            "language": "ru",
+            "value": "Белокаменная"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Moscow"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Москва"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "मास्को"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "莫斯科"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [],
+    "claim_ranks": "truthy"
+  }
+}

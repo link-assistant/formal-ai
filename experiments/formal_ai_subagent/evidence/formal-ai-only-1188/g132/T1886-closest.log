@@ -1,0 +1,207 @@
+TAP version 13
+# Subtest: an advertised multi_edit capability receives every explicitly named path
+ok 1 - an advertised multi_edit capability receives every explicitly named path
+  ---
+  duration_ms: 927.830917
+  ...
+# Subtest: G104: an edit naming files listed with `and` or commas is declined, naming every file
+    # Subtest: `In a.mjs and b.mjs, …` names both files and changes neither
+    ok 1 - `In a.mjs and b.mjs, …` names both files and changes neither
+      ---
+      duration_ms: 67.893042
+      ...
+    # Subtest: a comma list of three files names all three
+    ok 2 - a comma list of three files names all three
+      ---
+      duration_ms: 3.20725
+      ...
+    # Subtest: a path in a later sentence (the ladder leaf asking for evidence) is no edit target
+    ok 3 - a path in a later sentence (the ladder leaf asking for evidence) is no edit target
+      ---
+      duration_ms: 56.729208
+      ...
+    # Subtest: one file followed by a comma and the edit is still one edit
+    ok 4 - one file followed by a comma and the edit is still one edit
+      ---
+      duration_ms: 14.968209
+      ...
+    1..4
+ok 2 - G104: an edit naming files listed with `and` or commas is declined, naming every file
+  ---
+  duration_ms: 143.003709
+  type: 'suite'
+  ...
+# Subtest: G99: edits joined by a sequence cue are planned step by step
+    # Subtest: `…, then delete …` inserts and then deletes, each over the file the step before left
+    ok 1 - `…, then delete …` inserts and then deletes, each over the file the step before left
+      ---
+      duration_ms: 124.758792
+      ...
+    # Subtest: a step that names no file takes the file the other names
+    ok 2 - a step that names no file takes the file the other names
+      ---
+      duration_ms: 115.686583
+      ...
+    # Subtest: the Russian cue `затем` is a step too, answered in Russian
+    ok 3 - the Russian cue `затем` is a step too, answered in Russian
+      ---
+      duration_ms: 112.526792
+      ...
+    # Subtest: a cue that opens no clause, or a step without a quoted text, is no sequence
+    ok 4 - a cue that opens no clause, or a step without a quoted text, is no sequence
+      ---
+      duration_ms: 0.230875
+      ...
+    1..4
+ok 3 - G99: edits joined by a sequence cue are planned step by step
+  ---
+  duration_ms: 353.541292
+  type: 'suite'
+  ...
+# Subtest: G106: several Replaces apply all or decline, never drop one
+    # Subtest: `and then replace` applies both
+    ok 1 - `and then replace` applies both
+      ---
+      duration_ms: 201.963167
+      ...
+    # Subtest: a second clause that is no quoted replacement is named, and nothing changes
+    ok 2 - a second clause that is no quoted replacement is named, and nothing changes
+      ---
+      duration_ms: 3.825958
+      ...
+    1..2
+ok 4 - G106: several Replaces apply all or decline, never drop one
+  ---
+  duration_ms: 205.894375
+  type: 'suite'
+  ...
+# Subtest: G90: a quoted text holding its own quote mark is declined, naming the quote
+    # Subtest: single-quoted texts holding single quotes (T471)
+    ok 1 - single-quoted texts holding single quotes (T471)
+      ---
+      duration_ms: 1.47525
+      ...
+    # Subtest: double-quoted texts ending in a double quote of their own (T377)
+    ok 2 - double-quoted texts ending in a double quote of their own (T377)
+      ---
+      duration_ms: 1.852792
+      ...
+    # Subtest: the same texts in «» are edited
+    ok 3 - the same texts in «» are edited
+      ---
+      duration_ms: 24.326917
+      ...
+    1..3
+ok 5 - G90: a quoted text holding its own quote mark is declined, naming the quote
+  ---
+  duration_ms: 27.89075
+  type: 'suite'
+  ...
+# Subtest: G107: a backticked payload whose inner spans pair runs to its own close
+    # Subtest: a sentence end inside the payload keeps the whole replacement
+    ok 1 - a sentence end inside the payload keeps the whole replacement
+      ---
+      duration_ms: 27.638167
+      ...
+    # Subtest: the T794 shape: paths, a semicolon and a sentence end inside the payload
+    ok 2 - the T794 shape: paths, a semicolon and a sentence end inside the payload
+      ---
+      duration_ms: 32.355416
+      ...
+    # Subtest: the payload ends where its own mark closes, before a later sentence
+    ok 3 - the payload ends where its own mark closes, before a later sentence
+      ---
+      duration_ms: 0.207083
+      ...
+    1..3
+ok 6 - G107: a backticked payload whose inner spans pair runs to its own close
+  ---
+  duration_ms: 60.30225
+  type: 'suite'
+  ...
+# Subtest: G102: a file described rather than given is never written from a failed or refused step
+    # Subtest: a create request whose names and values are «» fragments writes nothing
+    ok 1 - a create request whose names and values are «» fragments writes nothing
+      ---
+      duration_ms: 731.463166
+      ...
+    1..1
+ok 7 - G102: a file described rather than given is never written from a failed or refused step
+  ---
+  duration_ms: 731.516625
+  type: 'suite'
+  ...
+# Subtest: G109: copy then comma-joined replacements preserves the source
+ok 8 - G109: copy then comma-joined replacements preserves the source
+  ---
+  duration_ms: 2792.872542
+  ...
+# Subtest: G109: move then a quoted edit runs in order
+ok 9 - G109: move then a quoted edit runs in order
+  ---
+  duration_ms: 2690.186583
+  ...
+# Subtest: G108: scalar payload code spans keep comma-separated backticks whole
+ok 10 - G108: scalar payload code spans keep comma-separated backticks whole
+  ---
+  duration_ms: 0.250833
+  ...
+# Subtest: G110: payload file paths and cues cannot become the creation target
+ok 11 - G110: payload file paths and cues cannot become the creation target
+  ---
+  duration_ms: 30.019125
+  ...
+# Subtest: G113: exact quoted content retains indentation and terminal newline
+ok 12 - G113: exact quoted content retains indentation and terminal newline
+  ---
+  duration_ms: 49.646708
+  ...
+# Subtest: G114: an objective label in quoted source is data
+ok 13 - G114: an objective label in quoted source is data
+  ---
+  duration_ms: 0.298667
+  ...
+# Subtest: G115: replacement preserves a new-only source newline escape
+ok 14 - G115: replacement preserves a new-only source newline escape
+  ---
+  duration_ms: 28.235875
+  ...
+# Subtest: formal rewrite queries validate escaped literals before the prose quote guard
+ok 15 - formal rewrite queries validate escaped literals before the prose quote guard
+  ---
+  duration_ms: 24.119208
+  ...
+# Subtest: G132: an underspecified test stays a clarification and creates no evidence
+ok 16 - G132: an underspecified test stays a clarification and creates no evidence
+  ---
+  duration_ms: 11.693708
+  ...
+# Subtest: G132: an observed file finding can still be delivered
+ok 17 - G132: an observed file finding can still be delivered
+  ---
+  duration_ms: 241.424291
+  ...
+# Subtest: G132: another sentence acceptance command is no test-authoring question
+ok 18 - G132: another sentence acceptance command is no test-authoring question
+  ---
+  duration_ms: 0.574708
+  ...
+# Subtest: G132: unknown finals and observed failures cannot be delivery findings
+ok 19 - G132: unknown finals and observed failures cannot be delivery findings
+  ---
+  duration_ms: 8.063666
+  ...
+# Subtest: G132: a certificate belongs only to its selected final bytes
+ok 20 - G132: a certificate belongs only to its selected final bytes
+  ---
+  duration_ms: 0.082916
+  ...
+1..20
+# tests 31
+# suites 6
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8455.472583

@@ -1,0 +1,1 @@
+Run `node scripts/check-prompt-specialization.mjs --list`

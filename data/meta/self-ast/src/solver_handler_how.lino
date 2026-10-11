@@ -2,40 +2,44 @@ self_ast_census
   target src/solver_handler_how.rs
   language rust
   fidelity signature
-  byte_len 41068
-  line_count 930
-  content_id source_module_9c2ce2411f0efb16
-  symbol_count 32
+  byte_len 33089
+  line_count 831
+  content_id source_module_68147ac30feaa7d8
+  symbol_count 36
   symbols
     struct HowItWorksQuery 13 15
     struct ProceduralHowToTask 17 22
     struct SpellingCorrection 25 28
-    function try_how_to_procedure 35 130
-    function procedural_how_to_task 140 142
-    function try_procedural_how_to_followup 159 188
-    function is_procedural_elaboration_request 197 201
-    function try_how_it_works 208 288
-    function extract_how_it_works_query 290 302
-    function is_bare_how_it_works 310 322
-    function extract_how_it_works_subject 342 366
-    function subject_after_prefix 368 372
-    function subject_before_suffix 374 378
-    function subject_between 380 394
-    function strip_mechanism_tail 403 415
-    function clean_mechanism_fragment 417 429
-    function clean_mechanism_subject 442 466
-    function record_mechanism_query 468 485
-    function render_mechanism_discovery_answer 487 525
-    function extract_procedural_how_to_task 537 560
-    function extract_elided_procedural_how_to_task 562 586
-    function procedural_search_query 588 598
-    function split_known_procedural_action_object 600 625
-    function build_procedural_task 627 649
-    function split_procedural_action_object 651 659
-    function clean_procedural_fragment 661 682
-    function correct_common_procedural_typos 684 713
-    function wikihow_page_title 715 721
-    function is_word_character 734 743
-    function render_procedural_how_to_body 745 892
-    function capitalize_word 894 900
-    function extract_topic_from_prior_reply 904 930
+    function try_how_to_procedure 37 139
+    function procedural_how_to_task 149 151
+    function try_procedural_how_to_followup 168 197
+    function is_procedural_elaboration_request 206 210
+    function try_how_it_works 217 293
+    function extract_how_it_works_query 295 307
+    function names_mechanism_subject 313 315
+    function mechanism_subject_term 319 321
+    function is_bare_how_it_works 329 341
+    function extract_how_it_works_subject 361 385
+    function subject_after_prefix 387 391
+    function subject_before_suffix 393 397
+    function subject_between 399 413
+    function strip_mechanism_tail 422 434
+    function clean_mechanism_fragment 436 448
+    function clean_mechanism_subject 461 485
+    function record_mechanism_query 487 507
+    function render_mechanism_discovery_answer 509 516
+    function extract_procedural_how_to_task 528 551
+    function extract_elided_procedural_how_to_task 553 577
+    function procedural_search_query 579 593
+    function split_known_procedural_action_object 595 620
+    function build_procedural_task 622 644
+    function split_procedural_action_object 646 654
+    function clean_procedural_fragment 656 677
+    function correct_common_procedural_typos 679 708
+    function wikihow_page_title 710 716
+    function is_word_character 729 738
+    function render_procedural_how_to_body 740 776
+    function how_response 782 784
+    function how_policy 788 793
+    function capitalize_word 795 801
+    function extract_topic_from_prior_reply 805 831

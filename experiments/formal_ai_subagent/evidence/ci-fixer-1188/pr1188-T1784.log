@@ -1,0 +1,495 @@
+>> read {"filePath":"rust/src/agentic_coding/mutating_action.rs","file_path":"rust/src/agentic_coding/mutating_action.rs","path":"rust/src/agentic_coding/mutating_action.rs"}
+   <file>
+   00001| //! Verified mutating filesystem actions (issues #824 and #944).
+   00002| //!
+   00003| //! Issue #824 reported a request to *move* a directory being refused outright.
+   00004| //! The routing half of that was answered by the seed `mv` intent: the request
+   00005| //! now lowers to a concrete `mv SOURCE DESTINATION`. What issue #944 asks for is
+   00006| //! the other half — that the action be **verified** rather than merely issued.
+   00007| //!
+   00008| //! A read-only command answers by what it prints, so running it and reporting
+   00009| //! its output is the whole job. A mutating command answers by what the workspace
+   00010| //! *holds afterwards*, and a zero exit status is not that: `mv a b` exits zero
+   00011| //! whether or not `b` was something the user wanted overwritten, and exits
+   00012| //! non-zero for a missing parent directory that the request plainly implied
+   00013| //! should exist. So the action is planned as an ordered recipe —
+   00014| //!
+   00015| //! 1. the preconditions the intent declares (the source is there, the
+   00016| //!    destination is free),
+   00017| //! 2. the preparation the intent declares (`mkdir -p` on the destination's
+   00018| //!    parent, which is what makes a deep target path work at all),
+   00019| //! 3. the action itself,
+   00020| //! 4. the postconditions the intent declares (the destination is there, and for
+   00021| //!    a move, the source is not),
+   00022| //!
+   00023| //! — with each step observed before the next is planned. A step that exits
+   00024| //! non-zero ends the recipe and is reported as itself, so a blocked move says
+   00025| //! which check blocked it and that nothing changed, instead of claiming a
+   00026| //! completion the workspace would contradict.
+   00027| //!
+   00028| //! None of those predicates are written here. They are declared per intent in
+   00029| //! `data/seed/shell-intents.lino` as [`crate::seed::ShellIntentEffect`], so a
+   00030| //! maintainer teaches a new mutating verb its pre/post conditions by editing
+   00031| //! seed data — the same rule every other trigger vocabulary on this project
+   00032| //! follows, and the reason this module works for `cp` without naming `cp`.
+   00033| 
+   00034| use serde_json::json;
+   00035| 
+   00036| use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
+   00037| use super::progress::Progress;
+   00038| use super::tool_result;
+   00039| use crate::protocol::ChatMessage;
+   00040| use crate::seed::{self, ShellIntentVocabulary};
+   00041| 
+   00042| const PATH_PLACEHOLDER: &str = concat!("{", "path", "}");
+   00043| const SOURCE_PLACEHOLDER: &str = concat!("{", "source", "}");
+   00044| const SOURCES_PLACEHOLDER: &str = concat!("{", "sources", "}");
+   00045| const SETUP_PLACEHOLDER: &str = concat!("{", "setup", "}");
+   00046| const DESTINATION_PLACEHOLDER: &str = concat!("{", "destination", "}");
+   00047| const DESTINATION_PARENT_PLACEHOLDER: &str = concat!("{", "destination_parent", "}");
+   00048| const ACTION_PLACEHOLDER: &str = concat!("{", "action", "}");
+   00049| const CHECK_PLACEHOLDER: &str = concat!("{", "check", "}");
+   00050| const CHECKS_PLACEHOLDER: &str = concat!("{", "checks", "}");
+   00051| const EXIT_CODE_PLACEHOLDER: &str = concat!("{", "exit_code", "}");
+   00052| 
+   00053| /// The directory component used when the destination names no directory at all.
+   00054| const CURRENT_DIRECTORY: &str = ".";
+   00055| 
+   00056| /// One mutating action expanded into the ordered steps that carry it out.
+   00057| pub(super) struct VerifiedAction {
+   00058|     /// Every step in order: preconditions, preparation, the action, postconditions.
+   00059|     steps: Vec<String>,
+   00060|     /// The index of the action itself within [`Self::steps`].
+   00061|     action: usize,
+   00062| }
+   00063| 
+   00064| impl VerifiedAction {
+   00065|     /// The steps in the order they are run.
+   00066|     pub(super) fn steps(&self) -> &[String] {
+   00067|         &self.steps
+   00068|     }
+   00069| 
+   00070|     /// The mutating command itself, the one step that is not a check.
+   00071|     pub(super) fn action(&self) -> &str {
+   00072|         self.steps[self.action].as_str()
+   00073|     }
+   00074| 
+   00075|     /// The checks that ran after the action, which is what the completion claim
+   00076|     /// rests on.
+   00077|     pub(super) fn postconditions(&self) -> &[String] {
+   00078|         &self.steps[self.action + 1..]
+   00079|     }
+   00080| }
+   00081| 
+   00082| /// Expand `command` into its verified recipe, or `None` when no seed intent
+   00083| /// declares an effect for it.
+   00084| ///
+   00085| /// The command was assembled by [`super::shell_command`] as the intent's own
+   00086| /// command followed by its operands, so it is taken apart the same way: the
+   00087| /// longest declared command that prefixes it wins. Declared options are consumed
+   00088| /// before positional paths are bound to scalar or collection effect templates.
+   00089| pub(super) fn expand(command: &str) -> Option<VerifiedAction> {
+   00090|     expand_with(command, &seed::shell_intent_vocabulary())
+   00091| }
+   00092| 
+   00093| fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedAction> {
+   00094|     let intent = vocab
+   00095|         .intents
+   00096|         .iter()
+   00097|         .filter(|intent| intent.effect.is_declared())
+   00098|         .filter(|intent| {
+   00099|             command
+   00100|                 .strip_prefix(intent.command.as_str())
+   00101|                 .is_some_and(|rest| rest.starts_with(' '))
+   00102|         })
+   00103|         .max_by_key(|intent| intent.command.len())?;
+   00104|     let effect = &intent.effect;
+   00105|     let (operands, flags) = effect_operands(&command[intent.command.len()..], effect)?;
+   00106|     if operands.is_empty() {
+   00107|         return None;
+   00108|     }
+   00109|     let before = if flags.iter().any(|flag| effect.reuse_options.contains(flag))
+   00110|         && !effect.before_reuse.is_empty()
+   00111|     {
+   00112|         &effect.before_reuse
+   00113|     } else {
+   00114|         &effect.before
+   00115|     };
+   00116|     let has_path = before
+   00117|         .iter()
+   00118|         .chain(&effect.prepare)
+   00119|         .chain(&effect.after)
+   00120|         .any(|template| template.contains(PATH_PLACEHOLDER));
+   00121|     let mut groups: Vec<Vec<(&str, String)>> = Vec::new();
+   00122|     let mut collection = None;
+   00123|     if has_path {
+   00124|         groups.extend(
+   00125|             operands
+   00126|                 .iter()
+   00127|                 .map(|path| vec![(PATH_PLACEHOLDER, (*path).to_owned())]),
+   00128|         );
+   00129|     } else {
+   00130|         if operands.len() < 2 || (operands.len() > 2 && !effect.directory_targets) {
+   00131|             return None;
+   00132|         }
+   00133|         let destination = *operands.last()?;
+   00134|         let sources = &operands[..operands.len() - 1];
+   00135|         if !effect.directory_targets && sources.iter().any(|source| has_shell_expansion(source)) {
+   00136|             return None;
+   00137|         }
+   00138|         if effect.directory_targets
+   00139|             && (sources.len() > 1
+   00140|                 || sources.iter().any(|source| has_shell_expansion(source))
+   00141|                 || destination.trim_matches(['\'', '"']).ends_with('/'))
+   00142|         {
+   00143|             collection = Some((sources.join(" "), destination));
+   00144|             groups.push(vec![
+   00145|                 (SOURCE_PLACEHOLDER, String::from("\"$formal_ai_source\"")),
+   00146|                 (
+   00147|                     DESTINATION_PARENT_PLACEHOLDER,
+   00148|                     String::from("\"$formal_ai_parent\""),
+   00149|                 ),
+   00150|                 (
+   00151|                     DESTINATION_PLACEHOLDER,
+   00152|                     String::from("\"$formal_ai_destination\""),
+   00153|                 ),
+   00154|             ]);
+   00155|         } else {
+   00156|             groups.push(vec![
+   00157|                 (SOURCE_PLACEHOLDER, sources[0].to_owned()),
+   00158|                 (DESTINATION_PARENT_PLACEHOLDER, parent_of(destination)),
+   00159|                 (DESTINATION_PLACEHOLDER, destination.to_owned()),
+   00160|             ]);
+   00161|         }
+   00162|     }
+   00163|     let fill = |template: &String| -> Vec<String> {
+   00164|         groups
+   00165|             .iter()
+   00166|             .map(|bindings| {
+   00167|                 let check = bind_template(template, bindings);
+   00168|                 if let Some((sources, destination)) = &collection {
+   00169|                     collection_check(sources, destination, &check)
+   00170|                 } else {
+   00171|                     check
+   00172|                 }
+   00173|             })
+   00174|             .collect()
+   00175|     };
+   00176|     let mut steps: Vec<String> = before
+   00177|         .iter()
+   00178|         .chain(&effect.prepare)
+   00179|         .flat_map(fill)
+   00180|         .collect();
+   00181|     let action = steps.len();
+   00182|     steps.push(command.to_owned());
+   00183|     steps.extend(effect.after.iter().flat_map(fill));
+   00184|     Some(VerifiedAction { steps, action })
+   00185| }
+   00186| 
+   00187| fn collection_check(sources: &str, destination: &str, check: &str) -> String {
+   00188|     let setup = super::work_item_steps::fill(
+   00189|         "filesystem-collection-setup",
+   00190|         &[("{destination}", destination)],
+   00191|     );
+   00192|     super::work_item_steps::fill(
+   00193|         "filesystem-collection-check",
+   00194|         &[
+   00195|             ("{sources}", sources),
+   00196|             ("{setup}", &setup),
+   00197|             ("{check}", check),
+   00198|         ],
+   00199|     )
+   00200| }
+   00201| 
+   00202| fn bind_template(template: &str, bindings: &[(&str, String)]) -> String {
+   00203|     bindings
+   00204|         .iter()
+   00205|         .fold(template.to_owned(), |text, (key, value)| {
+   00206|             text.replace(key, value)
+   00207|         })
+   00208| }
+   00209| 
+   00210| /// Separate declared options from shell words while preserving operand quoting.
+   00211| fn effect_operands<'a>(
+   00212|     text: &'a str,
+   00213|     effect: &seed::ShellIntentEffect,
+   00214| ) -> Option<(Vec<&'a str>, Vec<String>)> {
+   00215|     let words = shell_words(text)?;
+   00216|     let mut operands = Vec::new();
+   00217|     let mut flags = Vec::new();
+   00218|     let mut options = true;
+   00219|     let mut index = 0;
+   00220|     while index < words.len() {
+   00221|         let raw = words[index];
+   00222|         let word = raw.trim_matches(['\'', '"']);
+   00223|         if options && word == "--" {
+   00224|             options = false;
+   00225|         } else if options && word.starts_with('-') && word != "-" {
+   00226|             if let Some(option) = effect.value_options.iter().find(|option| {
+   00227|                 word == option.as_str()
+   00228|                     || word.strip_prefix(option.as_str()).is_some_and(|suffix| {
+   00229|                         suffix.starts_with('=') || (!option.starts_with("--") && !suffix.is_empty())
+   00230|                     })
+   00231|             }) {
+   00232|                 if word == option.as_str() {
+   00233|                     index += 1;
+   00234|                     if index >= words.len() {
+   00235|                         return None;
+   00236|                     }
+   00237|                 }
+   00238|                 flags.push(option.clone());
+   00239|             } else if effect.flags.iter().any(|flag| flag == word) {
+   00240|                 flags.push(word.to_owned());
+   00241|             } else if !word.starts_with("--") {
+   00242|                 let bundled: Vec<String> = word[1..]
+   00243|                     .chars()
+   00244|                     .map(|letter| format!("-{letter}"))
+   00245|                     .collect();
+   00246|                 if !bundled.iter().all(|flag| effect.flags.contains(flag)) {
+   00247|                     return None;
+   00248|                 }
+   00249|                 flags.extend(bundled);
+   00250|             } else {
+   00251|                 return None;
+   00252|             }
+   00253|         } else {
+   00254|             operands.push(raw);
+   00255|         }
+   00256|         index += 1;
+   00257|     }
+   00258|     Some((operands, flags))
+   00259| }
+   00260| 
+   00261| fn shell_words(text: &str) -> Option<Vec<&str>> {
+   00262|     let mut words = Vec::new();
+   00263|     let mut start = None;
+   00264|     let mut quote = None;
+   00265|     let mut escaped = false;
+   00266|     for (index, character) in text.char_indices() {
+   00267|         if start.is_none() && character.is_whitespace() {
+   00268|             continue;
+   00269|         }
+   00270|         if start.is_none() {
+   00271|             start = Some(index);
+   00272|         }
+   00273|         if escaped {
+   00274|             escaped = false;
+   00275|             continue;
+   00276|         }
+   00277|         if character == '\\' && quote != Some('\'') {
+   00278|             escaped = true;
+   00279|             continue;
+   00280|         }
+   00281|         if let Some(delimiter) = quote {
+   00282|             if character == delimiter {
+   00283|                 quote = None;
+   00284|             }
+   00285|             continue;
+   00286|         }
+   00287|         if character == '"' || character == '\'' {
+   00288|             quote = Some(character);
+   00289|             continue;
+   00290|         }
+   00291|         if character.is_whitespace() {
+   00292|             words.push(&text[start.take()?..index]);
+   00293|         } else if ";|&<>()`".contains(character) {
+   00294|             return None;
+   00295|         }
+   00296|     }
+   00297|     if quote.is_some() || escaped {
+   00298|         return None;
+   00299|     }
+   00300|     if let Some(start) = start {
+   00301|         words.push(&text[start..]);
+   00302|     }
+   00303|     Some(words)
+   00304| }
+   00305| 
+   00306| fn has_shell_expansion(word: &str) -> bool {
+   00307|     let mut quote = None;
+   00308|     let mut escaped = false;
+   00309|     for character in word.chars() {
+   00310|         if escaped {
+   00311|             escaped = false;
+   00312|             continue;
+   00313|         }
+   00314|         if character == '\\' && quote != Some('\'') {
+   00315|             escaped = true;
+   00316|             continue;
+   00317|         }
+   00318|         if let Some(delimiter) = quote {
+   00319|             if character == delimiter {
+   00320|                 quote = None;
+   00321|             }
+   00322|             continue;
+   00323|         }
+   00324|         if character == '"' || character == '\'' {
+   00325|             quote = Some(character);
+   00326|         } else if "*?[$".contains(character) {
+   00327|             return true;
+   00328|         }
+   00329|     }
+   00330|     false
+   00331| }
+   00332| 
+   00333| /// The directory component of `path`, or `.` when it names no directory.
+   00334| ///
+   00335| /// Written as text rather than through [`std::path::Path`] on purpose: the
+   00336| /// operand is a shell word that may still be rooted at `~`, and `Path` would
+   00337| /// happily hand back a `~` that the shell then declines to expand once it is no
+   00338| /// longer the first character of the word.
+   00339| fn parent_of(path: &str) -> String {
+   00340|     if path.contains(['"', '\'', '\\']) {
+   00341|         return format!("\"$(dirname -- {path})\"");
+   00342|     }
+   00343|     match path.rsplit_once('/') {
+   00344|         Some(("", _)) => String::from("/"),
+   00345|         Some((parent, _)) => parent.to_owned(),
+   00346|         None => String::from(CURRENT_DIRECTORY),
+   00347|     }
+   00348| }
+   00349| 
+   00350| /// Plan the next step of the verified recipe for `command`.
+   00351| ///
+   00352| /// Returns `None` when the command declares no effect (every read-only intent),
+   00353| /// or when the client advertised no shell tool — in which case the caller's
+   00354| /// single-shot path still produces the honest "I can run this when you give me a
+   00355| /// shell" answer rather than this module inventing a second one.
+   00356| pub(super) fn plan_step(
+   00357|     command: &str,
+   00358|     messages: &[ChatMessage],
+   00359|     tool_names: &[&str],
+   00360|     prompt: &str,
+   00361| ) -> Option<AgenticPlan> {
+   00362|     let recipe = expand(command)?;
+   00363|     let tool = tool_for(tool_names, Capability::Run)?;
+   00364|     let progress = Progress::scan(messages);
+   00365|     let taken = progress.run_outputs.len();
+   00366| 
+   00367|     // The workspace gets the last word before anything else is planned: a step
+   00368|     // that exited non-zero ends the recipe where it stopped.
+   00369|     if let Some(index) = taken.checked_sub(1) {
+   00370|         let observed = &progress.run_outputs[index];
+   00371|         if tool_result::step_outcome(observed) == tool_result::StepOutcome::Failed {
+   00372|             return Some(AgenticPlan::Final(blocked_report(
+   00373|                 &recipe,
+   00374|                 recipe.steps().get(index).map_or(command, String::as_str),
+   00375|                 observed,
+   00376|                 prompt,
+   00377|                 index >= recipe.action,
+   00378|             )));
+   00379|         }
+   00380|     }
+   00381|     if let Some(step) = recipe.steps().get(taken) {
+   00382|         return Some(plan_one(tool, json!({ "command": step }).to_string()));
+   00383|     }
+   00384|     Some(AgenticPlan::Final(completed_report(&recipe, prompt)))
+   00385| }
+   00386| 
+   00387| /// The report for a recipe that stopped: which check stopped it, with what
+   00388| /// status, and the fact that the action did not run.
+   00389| ///
+   00390| /// A blocked move is not a failed move, and saying so is the point. Issue #824
+   00391| /// is the record of what over-refusal costs and issue #916 rung `R916-01` is the
+   00392| /// record of what a false completion claim costs; a recipe that names the check
+   00393| /// it stopped on avoids both.
+   00394| fn blocked_report(
+   00395|     recipe: &VerifiedAction,
+   00396|     check: &str,
+   00397|     observed: &str,
+   00398|     prompt: &str,
+   00399|     attempted: bool,
+   00400| ) -> String {
+   00401|     let language = tool_result::response_language(prompt);
+   00402|     let intent = if attempted {
+   00403|         "mutating-action-observed-failure"
+   00404|     } else {
+   00405|         "mutating_action_blocked"
+   00406|     };
+   00407|     let Some(mut answer) = seed::localized_response(intent, language) else {
+   00408|         return tool_result::render(check, observed, prompt);
+   00409|     };
+   00410|     answer = answer.replace(ACTION_PLACEHOLDER, recipe.action());
+   00411|     answer = answer.replace(CHECK_PLACEHOLDER, check);
+   00412|     answer = answer.replace(
+   00413|         EXIT_CODE_PLACEHOLDER,
+   00414|         &tool_result::reported_exit_code(observed)
+   00415|             .map_or_else(String::new, |code| code.to_string()),
+   00416|     );
+   00417|     answer
+   00418| }
+   00419| 
+   00420| /// The report for a recipe that finished: the action that ran, and the checks
+   00421| /// that were observed to hold afterwards.
+   00422| ///
+   00423| /// The claim rests on those checks and names them, because a claim the reader
+   00424| /// cannot re-run is the narration issue #916 rung `R916-01` was written against.
+   00425| fn completed_report(recipe: &VerifiedAction, prompt: &str) -> String {
+   00426|     let language = tool_result::response_language(prompt);
+   00427|     let checks = recipe
+   00428|         .postconditions()
+   00429|         .iter()
+   00430|         .map(|check| format!("`{check}`"))
+   00431|         .collect::<Vec<_>>()
+   00432|         .join(", ");
+   00433|     seed::localized_response("mutating_action_completed", language).map_or_else(
+   00434|         || recipe.action().to_owned(),
+   00435|         |answer| {
+   00436|             answer
+   00437|                 .replace(ACTION_PLACEHOLDER, recipe.action())
+   00438|                 .replace(CHECKS_PLACEHOLDER, &checks)
+   00439|         },
+   00440|     )
+   00441| }
+   00442| 
+   00443| /// The ordered steps `command` is carried out as.
+   00444| ///
+   00445| /// `None` when no seed intent declares an effect for it — every read-only
+   00446| /// intent, and every mutating one whose operands are not the source/destination
+   00447| /// pair the effect is written against.
+   00448| ///
+   00449| /// Read-only intents keep their single-shot path, which is why this is the same
+   00450| /// question the planner asks: a caller that wants to know whether a command is
+   00451| /// carried out as a recipe asks for the recipe.
+   00452| #[must_use]
+   00453| pub fn verified_recipe(command: &str) -> Option<Vec<String>> {
+   00454|     expand(command).map(|recipe| recipe.steps)
+   00455| }
+   00456| 
+   
+   (End of file - total 456 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/mutating_action.rs","file_path":"rust/src/agentic_coding/mutating_action.rs","new":"fn collection_check(sources: &str, destination: &str, check: &str) -> String {\n    let setup = super::work_item_steps::fill(\n        \"filesystem-collection-setup\",\n        &[(DESTINATION_PLACEHOLDER, destination)],\n    );\n    super::work_item_steps::fill(\n        \"filesystem-collection-check\",\n        &[\n            (SOURCES_PLACEHOLDER, sources),\n            (SETUP_PLACEHOLDER, &setup),\n            (CHECK_PLACEHOLDER, check),\n        ],\n    )\n}\n","newString":"fn collection_check(sources: &str, destination: &str, check: &str) -> String {\n    let setup = super::work_item_steps::fill(\n        \"filesystem-collection-setup\",\n        &[(DESTINATION_PLACEHOLDER, destination)],\n    );\n    super::work_item_steps::fill(\n        \"filesystem-collection-check\",\n        &[\n            (SOURCES_PLACEHOLDER, sources),\n            (SETUP_PLACEHOLDER, &setup),\n            (CHECK_PLACEHOLDER, check),\n        ],\n    )\n}\n","new_str":"fn collection_check(sources: &str, destination: &str, check: &str) -> String {\n    let setup = super::work_item_steps::fill(\n        \"filesystem-collection-setup\",\n        &[(DESTINATION_PLACEHOLDER, destination)],\n    );\n    super::work_item_steps::fill(\n        \"filesystem-collection-check\",\n        &[\n            (SOURCES_PLACEHOLDER, sources),\n            (SETUP_PLACEHOLDER, &setup),\n            (CHECK_PLACEHOLDER, check),\n        ],\n    )\n}\n","new_string":"fn collection_check(sources: &str, destination: &str, check: &str) -> String {\n    let setup = super::work_item_steps::fill(\n        \"filesystem-collection-setup\",\n        &[(DESTINATION_PLACEHOLDER, destination)],\n    );\n    super::work_item_steps::fill(\n        \"filesystem-collection-check\",\n        &[\n            (SOURCES_PLACEHOLDER, sources),\n            (SETUP_PLACEHOLDER, &setup),\n            (CHECK_PLACEHOLDER, check),\n        ],\n    )\n}\n","old":"fn collection_check(sources: &str, destination: &str, check: &str) -> String {\n    let setup = super::work_item_steps::fill(\n        \"filesystem-collection-setup\",\n        &[(\"{destination}\", destination)],\n    );\n    super::work_item_steps::fill(\n        \"filesystem-collection-check\",\n        &[\n            (\"{sources}\", sources),\n            (\"{setup}\", &setup),\n            (\"{check}\", check),\n        ],\n    )\n}\n","oldString":"fn collection_check(sources: &str, destination: &str, check: &str) -> String {\n    let setup = super::work_item_steps::fill(\n        \"filesystem-collection-setup\",\n        &[(\"{destination}\", destination)],\n    );\n    super::work_item_steps::fill(\n        \"filesystem-collection-check\",\n        &[\n            (\"{sources}\", sources),\n            (\"{setup}\", &setup),\n            (\"{check}\", check),\n        ],\n    )\n}\n","old_str":"fn collection_check(sources: &str, destination: &str, check: &str) -> String {\n    let setup = super::work_item_steps::fill(\n        \"filesystem-collection-setup\",\n        &[(\"{destination}\", destination)],\n    );\n    super::work_item_steps::fill(\n        \"filesystem-collection-check\",\n        &[\n            (\"{sources}\", sources),\n            (\"{setup}\", &setup),\n            (\"{check}\", check),\n        ],\n    )\n}\n","old_string":"fn collection_check(sources: &str, destination: &str, check: &str) -> String {\n    let setup = super::work_item_steps::fill(\n        \"filesystem-collection-setup\",\n        &[(\"{destination}\", destination)],\n    );\n    super::work_item_steps::fill(\n        \"filesystem-collection-check\",\n        &[\n            (\"{sources}\", sources),\n            (\"{setup}\", &setup),\n            (\"{check}\", check),\n        ],\n    )\n}\n","path":"rust/src/agentic_coding/mutating_action.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/mutating_action.rs"}
+   b8799b54f2ae008c856286d4387a347b4ce1e120f571c4607e4985ef8359ca25  rust/src/agentic_coding/mutating_action.rs
+   
+== answer ==
+Replaced `fn collection_check(sources: &str, destination: &str, check: &str) -> String {
+    let setup = super::work_item_steps::fill(
+        "filesystem-collection-setup",
+        &[("{destination}", destination)],
+    );
+    super::work_item_steps::fill(
+        "filesystem-collection-check",
+        &[
+            ("{sources}", sources),
+            ("{setup}", &setup),
+            ("{check}", check),
+        ],
+    )
+}
+` with `fn collection_check(sources: &str, destination: &str, check: &str) -> String {
+    let setup = super::work_item_steps::fill(
+        "filesystem-collection-setup",
+        &[(DESTINATION_PLACEHOLDER, destination)],
+    );
+    super::work_item_steps::fill(
+        "filesystem-collection-check",
+        &[
+            (SOURCES_PLACEHOLDER, sources),
+            (SETUP_PLACEHOLDER, &setup),
+            (CHECK_PLACEHOLDER, check),
+        ],
+    )
+}
+` in `rust/src/agentic_coding/mutating_action.rs` and observed the result.

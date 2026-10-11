@@ -3,11 +3,13 @@ Q8495
     zh ("乳" "乳汁")
   descriptions
     en "white liquid produced by the mammary glands of mammals"
+    es "líquido nutriente producido por las glándulas mamentarias de los mamíferos"
     ru "питательная жидкость, вырабатываемая молочными железами самок млекопитающих"
     zh "哺乳類生物的乳房分泌出來的液體"
   id Q8495
   labels
     en milk
+    es leche
     hi "दूध"
     ru "молоко"
     zh "奶"

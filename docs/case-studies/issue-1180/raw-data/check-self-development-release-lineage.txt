@@ -1,0 +1,6 @@
+33451d012 2026-09-12T14:06:27+07:00 fix(self-hosting): let the floor answer the question a pull request can answer
+9efeb735c 2026-09-12T13:41:25+07:00 fix(self-hosting): unblock self-authoring and relax the floor after a day
+aa6a5d085 2026-08-29T02:57:45+07:00 fix(ci): remove the release deferral budget
+96f405e0d 2026-08-28T20:04:54+07:00 fix(ci): bound how long a release may stay silently deferred
+02f590106 2026-08-21T04:37:25Z chore: move the crate to Rust edition 2024
+88d368a5b 2026-08-15T15:24:02Z fix(ci): resolve diagnostic failures

@@ -1,0 +1,25 @@
+view
+  id M-718a3138c4ab
+  lemma weigh
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have a certain weight"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "show consideration for; take into account"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "determine the weight of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have weight; have import, carry weight"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "to be oppressive or burdensome"
+    provenance (wordnet)

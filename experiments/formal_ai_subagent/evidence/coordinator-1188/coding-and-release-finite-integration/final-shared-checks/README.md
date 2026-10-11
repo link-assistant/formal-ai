@@ -1,0 +1,3 @@
+# Verified final shared checks
+
+Actual T2764 completed the exact17shared gate command and original T3857 nine-file95-case production command, with all17gates and95tests passing and no skipped tests. Current source/derived roots retain original assertions and no existing ceilings increased. Complete actual request, output and logs are preserved losslessly. These portable outcomes do not certify native compilation/runtime, whole-current census, complete specifications, autonomous coding, cold release timing or production publication. The independent missing Cargo watched-path/doctest timeout repair is a subsequent finite cohort and requires new nativeCI. This sealer result lies beyond the preserved cutoff.

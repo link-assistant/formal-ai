@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_cargo_lock_is_synchronized
+ci_gate check-cargo-lock-is-synchronized
   stage rust
   description "Cargo.lock matches Cargo.toml, so a release build resolves the versions that were tested."
   run "cargo metadata --manifest-path rust/Cargo.toml --locked --format-version 1 > /dev/null"
+  justification "A committed Cargo.lock that diverges from Cargo.toml means reproducible builds fail silently; `cargo metadata --locked` has guarded lock-file consistency since the initial CI setup (commit 6f8d4a8a0), preventing build drift after dependency edits."

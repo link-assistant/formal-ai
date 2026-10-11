@@ -1,0 +1,163 @@
+TAP version 13
+# Subtest: both actual GHCR workflow settings preserve the original cache contract
+ok 1 - both actual GHCR workflow settings preserve the original cache contract
+  ---
+  duration_ms: 1.008084
+  ...
+# Subtest: actual Node cacheenv 0 retains every full-image Docker CLI operand
+ok 2 - actual Node cacheenv 0 retains every full-image Docker CLI operand
+  ---
+  duration_ms: 3668.496167
+  ...
+# Subtest: actual Node cacheenv 1 retains every full-image Docker CLI operand
+ok 3 - actual Node cacheenv 1 retains every full-image Docker CLI operand
+  ---
+  duration_ms: 5034.705334
+  ...
+# Subtest: actual invalid empty cacheenv refuses before any Dockerprocess
+ok 4 - actual invalid empty cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2570.448
+  ...
+# Subtest: actual invalid missing export cacheenv refuses before any Dockerprocess
+ok 5 - actual invalid missing export cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2568.658875
+  ...
+# Subtest: actual invalid duplicate key cacheenv refuses before any Dockerprocess
+ok 6 - actual invalid duplicate key cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2406.53725
+  ...
+# Subtest: actual invalid unknown key cacheenv refuses before any Dockerprocess
+ok 7 - actual invalid unknown key cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2176.27575
+  ...
+# Subtest: actual invalid different writer scope cacheenv refuses before any Dockerprocess
+ok 8 - actual invalid different writer scope cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2813.905209
+  ...
+# Subtest: actual invalid different export mode cacheenv refuses before any Dockerprocess
+ok 9 - actual invalid different export mode cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2792.871417
+  ...
+# Subtest: actual invalid registry substitution cacheenv refuses before any Dockerprocess
+ok 10 - actual invalid registry substitution cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2314.426791
+  ...
+# Subtest: actual invalid extra flag cacheenv refuses before any Dockerprocess
+ok 11 - actual invalid extra flag cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2448.142875
+  ...
+# Subtest: actual invalid third writer cacheenv refuses before any Dockerprocess
+ok 12 - actual invalid third writer cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2328.831792
+  ...
+# fatal: ambiguous argument 'refs/tags/v1.2.4^{commit}': unknown revision or path not in the working tree.
+# Use '--' to separate paths from revisions, like this:
+# 'git <command> [<revision>...] -- [<file>...]'
+# Subtest: actual Node producer binds the single existing build and source under push
+ok 13 - actual Node producer binds the single existing build and source under push
+  ---
+  duration_ms: 3431.839708
+  ...
+# Subtest: actual Node producer binds the single existing build and source under workflow_dispatch
+ok 14 - actual Node producer binds the single existing build and source under workflow_dispatch
+  ---
+  duration_ms: 3785.437417
+  ...
+# Subtest: actual controlled build-failed cannot produce a completed build receipt
+ok 15 - actual controlled build-failed cannot produce a completed build receipt
+  ---
+  duration_ms: 1843.104042
+  ...
+# Subtest: actual controlled source-mutated cannot produce a completed build receipt
+ok 16 - actual controlled source-mutated cannot produce a completed build receipt
+  ---
+  duration_ms: 2349.537459
+  ...
+# Subtest: untrusted event/branch, version, tag and build overrides refuse before controlled build
+ok 17 - untrusted event/branch, version, tag and build overrides refuse before controlled build
+  ---
+  duration_ms: 917.696583
+  ...
+# Subtest: actual Node Docker stand-in builds prebuilt once, preserves immutable full observations and mirrors without compilation
+ok 18 - actual Node Docker stand-in builds prebuilt once, preserves immutable full observations and mirrors without compilation
+  ---
+  duration_ms: 6093.254708
+  ...
+# Subtest: actual docker-failed observation cannot certify an image publication
+ok 19 - actual docker-failed observation cannot certify an image publication
+  ---
+  duration_ms: 2839.99075
+  ...
+# Subtest: actual wrong-version observation cannot certify an image publication
+ok 20 - actual wrong-version observation cannot certify an image publication
+  ---
+  duration_ms: 3208.235917
+  ...
+# Subtest: actual wrong-binary observation cannot certify an image publication
+ok 21 - actual wrong-binary observation cannot certify an image publication
+  ---
+  duration_ms: 3235.816333
+  ...
+# Subtest: actual runtime-failed observation cannot certify an image publication
+ok 22 - actual runtime-failed observation cannot certify an image publication
+  ---
+  duration_ms: 3137.13725
+  ...
+# Subtest: altered producer bytes, source fields and status veto before any Docker process
+ok 23 - altered producer bytes, source fields and status veto before any Docker process
+  ---
+  duration_ms: 6371.989333
+  ...
+# Subtest: anonymous transport failure and altered manifest bytes refuse image receipts
+ok 24 - anonymous transport failure and altered manifest bytes refuse image receipts
+  ---
+  duration_ms: 3585.292167
+  ...
+# Subtest: optional mirror cannot target another registry or disagree with configured opt-in target
+ok 25 - optional mirror cannot target another registry or disagree with configured opt-in target
+  ---
+  duration_ms: 1076.364917
+  ...
+# Subtest: Docker Hub canonical digest spelling accepts configured docker.io alias without another build
+ok 26 - Docker Hub canonical digest spelling accepts configured docker.io alias without another build
+  ---
+  duration_ms: 3451.542333
+  ...
+# Subtest: missing actual GHA cache environment refuses before any image process
+ok 27 - missing actual GHA cache environment refuses before any image process
+  ---
+  duration_ms: 3002.029417
+  ...
+# Subtest: altered actual destination config refuses mirror receipt
+ok 28 - altered actual destination config refuses mirror receipt
+  ---
+  duration_ms: 3029.364333
+  ...
+# Subtest: both guarded publication jobs bind the same producer, full factory, optional mirror and original slim order
+ok 29 - both guarded publication jobs bind the same producer, full factory, optional mirror and original slim order
+  ---
+  duration_ms: 0.506084
+  ...
+# Subtest: a mirror cannot substitute the source repository or independent source selection in its full-image receipt
+ok 30 - a mirror cannot substitute the source repository or independent source selection in its full-image receipt
+  ---
+  duration_ms: 8080.42875
+  ...
+1..30
+# tests 30
+# suites 0
+# pass 30
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 59491.389834

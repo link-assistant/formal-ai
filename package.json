@@ -3,9 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:web": "bun build ./js/vendor-entry.js --outfile ./js/vendor.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./js/web-search-component-entry.js --outfile ./js/web-search-component.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./js/ocr-entry.js --outfile ./js/ocr.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./js/app/main.jsx --outfile ./js/app.js --target browser --format iife --production --minify-whitespace --minify-syntax",
-    "test:web": "node --test rust/tests/web/*.test.mjs",
-    "coverage:web": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=coverage/browser-lcov.info --test-reporter=spec --test-reporter-destination=stdout rust/tests/web/*.test.mjs",
+    "build:web": "bun build ./js/vendor-entry.js --outfile ./js/vendor.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./js/web-search-component-entry.js --outfile ./js/web-search-component.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./js/ocr-entry.js --outfile ./js/ocr.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./js/mermaid-entry.js --outfile ./js/mermaid.bundle.js --target browser --format iife --production --minify-whitespace --minify-syntax && bun build ./js/app/main.jsx --outfile ./js/app.js --target browser --format iife --production --minify-whitespace --minify-syntax && python3 scripts/generate-web-distribution.py",
+    "serve:js": "node js/server/main.mjs",
+    "check:server-parity": "node scripts/check-server-parity.mjs --list",
+    "test:web": "node --test --test-concurrency=1 rust/tests/web/*.test.mjs",
+    "coverage:web": "node scripts/run-browser-coverage.mjs",
     "coverage:ratchet": "rust-script scripts/check-coverage-ratchet.rs",
     "desktop:dev": "npm --prefix desktop run dev",
     "desktop:build": "npm --prefix desktop run build",
@@ -16,14 +18,19 @@
     "vscode:test": "npm --prefix vscode run test"
   },
   "dependencies": {
-    "@link-assistant/web-search": "0.11.0",
+    "@link-assistant/web-search": "0.11.1",
     "@chakra-ui/react": "^3.37.0",
     "@emotion/react": "^11.14.0",
-    "dompurify": "3.4.14",
-    "lino-i18n": "0.2.0",
-    "marked": "18.0.11",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
+    "dompurify": "3.4.16",
+    "lino-i18n": "0.3.0",
+    "marked": "18.1.0",
+    "mermaid": "12.1.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "tesseract.js": "7.0.0"
+  },
+  "overrides": {
+    "proxy-addr": "^2.0.8",
+    "katex": "^0.19.0"
   }
 }

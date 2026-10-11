@@ -81,5 +81,109 @@
       "trace:"
     ],
     "expectedTraceFragments": ["text_substitution_trace"]
+  },
+  {
+    "id": "e1174_summarization_free_text",
+    "prompt": "Summarize this paragraph: The Halley research station, opened in 1956, is used to study the Antarctic ice shelf. It provides year-round measurements of ozone and sea temperature. The crew rotates every summer. Supplies arrive by ship in February. Radar masts surround the living quarters.",
+    "expectedIntent": "summarization_free_text",
+    "expectedAnswerFragments": [
+      "is used to study the Antarctic ice shelf",
+      "The Halley research station"
+    ],
+    "forbiddenAnswerFragments": ["Radar masts"],
+    "forbiddenEvidenceFragments": ["summarization_statement:kept Radar masts"],
+    "expectedEvidencePrefixes": [
+      "summarization_statement:",
+      "summarization_bound:",
+      "summarization_selected:",
+      "intent:summarization_free_text",
+      "response:summarization_free_text"
+    ],
+    "expectedTraceFragments": ["summarization_free_text"],
+    "browserExpectedEvidencePrefixes": [
+      "summarization_statement:",
+      "summarization_bound:",
+      "summarization_selected:",
+      "response:summarization_free_text"
+    ]
+  },
+  {
+    "id": "e1176_statistics_mean_median",
+    "prompt": "Given the values 4, 8, 15, 16, 23, 42, what are the mean and the median?",
+    "expectedIntent": "statistics",
+    "expectedAnswerFragments": [
+      "mean: 18 (108 / 6 = 18)",
+      "median: 15.5 ((15 + 16) / 2 = 15.5)"
+    ],
+    "forbiddenAnswerFragments": [],
+    "expectedEvidencePrefixes": [
+      "statistics:values:",
+      "statistics:count:",
+      "statistics:mean:",
+      "statistics:median:",
+      "intent:statistics",
+      "response:statistics"
+    ],
+    "expectedTraceFragments": ["statistics"],
+    "browserExpectedEvidencePrefixes": [
+      "statistics:values:",
+      "statistics:count:",
+      "statistics:mean:",
+      "statistics:median:",
+      "response:statistics"
+    ]
+  },
+  {
+    "id": "e1186_formalization_first_order",
+    "prompt": "Formalize in first-order logic: Every student who studies passes the exam.",
+    "expectedIntent": "formalization",
+    "expectedAnswerFragments": [
+      "∀x (Student(x) ∧ Studies(x) → Passes(x, exam))",
+      "No theorem prover was invoked"
+    ],
+    "forbiddenAnswerFragments": ["Web search requested"],
+    "expectedEvidencePrefixes": ["intent:formalization", "response:formalization"],
+    "expectedTraceFragments": ["formalization"],
+    "browserExpectedEvidencePrefixes": ["response:formalization"]
+  },
+  {
+    "id": "e1172_seeded_capital_subject_gate",
+    "prompt": "What is the capital of the USA?",
+    "expectedIntent": "fact_lookup",
+    "expectedAnswerFragments": ["The capital of the United States is Washington, D.C."],
+    "forbiddenAnswerFragments": ["Canberra"],
+    "expectedEvidencePrefixes": ["fact_lookup:hit:", "fact_lookup:subject_gate:", "wikidata:"],
+    "expectedTraceFragments": ["fact_lookup"]
+  },
+  {
+    "id": "e1163_supplied_page_command_query",
+    "prompt": "The command in the paragraph that mentions compiler:\n\nThe compiler turns hello.kt into a runnable jar with this line.\n\nkotlinc hello.kt -include-runtime -d hello.jar\n\nThe launcher starts that jar with this line.\n\njava -jar hello.jar",
+    "expectedIntent": "page_query",
+    "expectedAnswerFragments": ["kotlinc hello.kt -include-runtime -d hello.jar"],
+    "forbiddenAnswerFragments": [],
+    "expectedEvidencePrefixes": ["page_query:", "page_query_page:", "page_query_answer:", "intent:page_query", "response:page_query"],
+    "expectedTraceFragments": ["page_query"],
+    "browserExpectedEvidencePrefixes": ["page_query:", "page_query_page:", "page_query_answer:", "response:page_query"]
+  },
+  {
+    "id": "e1164_supplied_page_code_example_parts",
+    "prompt": "The parts of the code example:\nThe program below prints a greeting.\n\n```rust\nfn main() {\n    println!(\"Greetings, reader!\");\n}\n```\n\nCompile it with this line.\n\nrustc hello.rs",
+    "expectedIntent": "code_example_decomposition",
+    "expectedAnswerFragments": ["entry_point main", "output_operation println!", "string_literal Greetings, reader!"],
+    "forbiddenAnswerFragments": [],
+    "expectedEvidencePrefixes": ["code_example_decomposition:code_example_decomposition_", "code_example_part:code_example_part_", "intent:code_example_decomposition", "response:code_example_decomposition"],
+    "expectedTraceFragments": ["code_example_decomposition"],
+    "browserExpectedEvidencePrefixes": ["code_example_decomposition:rust parts=3", "code_example_part:rust entry_point main", "response:code_example_decomposition"]
+  },
+  {
+    "id": "e1184_derivation_answer_id",
+    "prompt": "Uppercase and reverse words: 'every answer derivation'",
+    "expectedIntent": "text_manipulation",
+    "expectedAnswerFragments": ["DERIVATION ANSWER EVERY"],
+    "forbiddenAnswerFragments": [],
+    "expectedEvidencePrefixes": ["text_operation:uppercase", "text_operation:reverse_words", "derivation:answer_"],
+    "expectedTraceFragments": ["text_substitution_trace", "answer_id"],
+    "expectedDerivationEvidence": "derivation:answer_bd135b956ecb31f1",
+    "browserExpectedEvidencePrefixes": ["text_operation:uppercase", "text_operation:reverse_words", "text_result:DERIVATION ANSWER EVERY"]
   }
 ]

@@ -1,0 +1,9 @@
+view
+  id M-cf7317e309b1
+  lemma unzip
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "open the zipper of"
+    provenance (wordnet)

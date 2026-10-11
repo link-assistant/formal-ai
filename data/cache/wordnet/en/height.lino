@@ -1,0 +1,29 @@
+language en
+lemma height
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the vertical dimension of extension; distance from the base of something to the top"
+    id oewn-05144430-n
+    partOfSpeech n
+    synonyms (tallness)
+  entry
+    definition "the highest level or degree attainable; the highest stage of development"
+    examples ("his landscapes were deemed the acme of beauty" "the artist's gifts are at their acme" "at the height of her career" "the peak of perfection" "summer was at its peak" "… catapulted Einstein to the pinnacle of fame" "the summit of his ambition" "so many highest superlatives achieved by man" "at the top of his profession")
+    id oewn-13963489-n
+    partOfSpeech n
+    synonyms (acme elevation peak pinnacle summit superlative meridian tiptop top)
+  entry
+    definition "(of a standing person) the distance from head to foot"
+    id oewn-05009517-n
+    partOfSpeech n
+    synonyms (stature)
+  entry
+    definition "elevation especially above sea level or above the earth's surface"
+    examples ("the altitude gave her a headache")
+    id oewn-05138912-n
+    partOfSpeech n
+    synonyms (altitude)
+source "oewn:2024"

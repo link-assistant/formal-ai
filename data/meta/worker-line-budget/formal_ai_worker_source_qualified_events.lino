@@ -1,0 +1,4 @@
+worker-module-budget
+  module "formal_ai_worker_source_qualified_events.js"
+  ceiling 16
+  rationale "Observed source-qualified outcome events mirror native formalization/source_qualified_definition.rs and source_fetch.rs capture recording; exact helper source-frame length."

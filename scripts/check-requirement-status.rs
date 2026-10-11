@@ -11,8 +11,10 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 const LEDGER_DIRECTORY: &str = "data/meta/requirement-status-ledger";
+/// The assembled register, split into parts under the 1500-line cap.
+const REQUIREMENT_PARTS: &str = "docs/requirements/assembled";
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 struct Row {
     shard: String,
     verdict: String,
@@ -39,6 +41,27 @@ fn requirement_ids(text: &str) -> BTreeSet<String> {
         rest = &tail[1..];
     }
     ids
+}
+
+/// The requirements the register defines: the id leading a table row
+/// (`| R12 |`), a heading (`### R12`) or a list item (`- R12`). Every other id
+/// is a reference — a range endpoint (`R97-R100`), a case-study
+/// sub-requirement (`R649-01 … R649-14`) or a cross-reference ("R379-clean").
+fn defined_requirement_ids(text: &str) -> BTreeSet<String> {
+    text.lines()
+        .map(str::trim_start)
+        .filter(|line| line.starts_with("| R") || line.starts_with("### R") || line.starts_with("- R"))
+        .filter_map(|line| {
+            let index = line.find('R')?;
+            let id: String = line[index..]
+                .chars()
+                .take_while(|character| {
+                    character.is_ascii_alphanumeric() || matches!(character, '-' | '_')
+                })
+                .collect();
+            requirement_ids(&id).contains(&id).then_some(id)
+        })
+        .collect()
 }
 
 fn unquote(value: &str) -> String {
@@ -103,20 +126,30 @@ fn ledger_rows(root: &Path, failures: &mut Vec<String>) -> BTreeMap<String, Row>
     for path in paths {
         let source = fs::read_to_string(&path)
             .unwrap_or_else(|error| panic!("{} readable: {error}", path.display()));
+        // A field stated before the first record is the file's value, which
+        // a record inherits unless it states its own (`render_shard` in
+        // scripts/generate-requirement-status.rs).
+        let mut defaults = Row::default();
         let mut id = String::new();
         let mut row = Row::default();
+        let mut in_record = false;
         for line in source.lines() {
             let trimmed = line.trim();
             if trimmed == "requirement" {
                 close_row(&mut id, &mut row, &mut rows, failures);
-            } else if let Some(value) = trimmed.strip_prefix("id ") {
+                row = defaults.clone();
+                in_record = true;
+                continue;
+            }
+            let target = if in_record { &mut row } else { &mut defaults };
+            if let Some(value) = trimmed.strip_prefix("id ") {
                 id = unquote(value);
             } else if let Some(value) = trimmed.strip_prefix("shard ") {
-                row.shard = unquote(value);
+                target.shard = unquote(value);
             } else if let Some(value) = trimmed.strip_prefix("verdict ") {
-                row.verdict = unquote(value);
+                target.verdict = unquote(value);
             } else if let Some(value) = trimmed.strip_prefix("automated_test ") {
-                row.automated_test = unquote(value);
+                target.automated_test = unquote(value);
             }
         }
         close_row(&mut id, &mut row, &mut rows, failures);
@@ -124,11 +157,40 @@ fn ledger_rows(root: &Path, failures: &mut Vec<String>) -> BTreeMap<String, Row>
     rows
 }
 
+/// The assembled requirement register: `REQUIREMENTS.md` is an index, and the
+/// register itself is `docs/requirements/assembled/<area>.md`, read in name
+/// order (`scripts/assemble-requirements.rs` writes both).
+fn read_register(root: &Path) -> Result<String, String> {
+    let directory = root.join(REQUIREMENT_PARTS);
+    let mut parts: Vec<PathBuf> = fs::read_dir(&directory)
+        .map_err(|error| format!("cannot read {REQUIREMENT_PARTS}: {error}"))?
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| {
+            path.file_name()
+                .and_then(|name| name.to_str())
+                .is_some_and(|name| name.ends_with(".md"))
+        })
+        .collect();
+    parts.sort();
+    if parts.is_empty() {
+        return Err(format!("{REQUIREMENT_PARTS} holds no assembled area files"));
+    }
+    let mut register = String::new();
+    for part in parts {
+        register.push_str(
+            &fs::read_to_string(&part)
+                .map_err(|error| format!("cannot read {}: {error}", part.display()))?,
+        );
+        register.push('\n');
+    }
+    Ok(register)
+}
+
 fn main() {
     let root = std::env::current_dir().expect("current directory");
-    let requirements =
-        fs::read_to_string(root.join("REQUIREMENTS.md")).expect("REQUIREMENTS.md readable");
-    let expected = requirement_ids(&requirements);
+    let requirements = read_register(&root).unwrap_or_else(|error| panic!("{error}"));
+    let expected = defined_requirement_ids(&requirements);
     let mut failures = Vec::new();
     let rows = ledger_rows(&root, &mut failures);
     let actual: BTreeSet<String> = rows.keys().cloned().collect();
@@ -137,7 +199,7 @@ fn main() {
         failures.push(format!("{missing}: absent from the status ledger"));
     }
     for stale in actual.difference(&expected) {
-        failures.push(format!("{stale}: absent from REQUIREMENTS.md"));
+        failures.push(format!("{stale}: absent from the assembled REQUIREMENTS.md parts"));
     }
     let allowed = [
         "implemented",

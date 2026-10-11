@@ -1,0 +1,12 @@
+{
+  "id": "T2313",
+  "dir": "/private/tmp/formal-ai-only-1188/composition-fixtures",
+  "prompt": "In this selected-file scratch workspace, add exported selectedSummary(selection) to repair-summary.mjs. Return the compact canonical summary of the candidate chosen by the selection, or null when no candidate is selected. Discover and compose existing exports from the observed solver_formalization.mjs and translation_formalization.mjs source modules; reuse their semantics through imports rather than copying their implementations. Read the source modules and destination before authoring. Produce a bounded repair plan identifying actual declaration spans/content identities, arguments/results, import bindings/dependencies, the optional-value guard and effects. Run the supplied selected-summary.test.mjs acceptance command, node --test selected-summary.test.mjs, and report the real result; do not modify source modules or tests, commit, or push. If safe composition cannot be established, record the exact missing capability before any output write.",
+  "original": "T1804",
+  "before": {
+    "solver_formalization.mjs": "46d2b2b7b006935a1a1cb03d180faf63ba71dfa1f758cb16ca1cc925286d7c8c",
+    "translation_formalization.mjs": "f4161079a1e37708915bef76e0ddab96a4104745668c051a3d0b0f7330db822b",
+    "selected-summary.test.mjs": "fffe6e3f5fc510f0a84ece6d75885431d413c3ed420c0b6928c370c4fed30656",
+    "repair-summary.mjs": null
+  }
+}

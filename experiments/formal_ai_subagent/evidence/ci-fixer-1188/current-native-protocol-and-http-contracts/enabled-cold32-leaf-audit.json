@@ -1,0 +1,177 @@
+{
+  "run": 37870809771,
+  "artifact": 11597665941,
+  "source": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+  "parameters": "ladder_result\n  requested_depth \"5\"\n  node_filter \"none\"\n  authored_rules_enabled \"true\"\n  source_commit \"4a560cdb5a47dd3d175ca16adf6d521619437a4e\"\n  source_tree \"2ddcb2797fe522f4c9335e445d8d3c37e5406ba8\"\n  tree_sha256 \"b94ba79a97ac470afd8ec8fb01306dc6301ed19b85b81e0736acc95952a3b80d\"\n  leaves_sha256 \"2d21038e7c16de397357f69786424060a6233adf0db796e276843d1af1300920\"\n  selected_nodes \"32\"\n  failures \"13\"\n  deepest_passing_level \"none\"\n  leaf_nodes_selected \"32\"\n  leaf_nodes_passing \"19\"\n",
+  "nodes": [
+    {
+      "node": "1.1.1.1.1",
+      "status": "FAIL",
+      "reason": "missing_proof"
+    },
+    {
+      "node": "1.1.1.1.2",
+      "status": "FAIL",
+      "reason": "missing_proof"
+    },
+    {
+      "node": "1.1.1.2.1",
+      "status": "FAIL",
+      "reason": "missing_proof"
+    },
+    {
+      "node": "1.1.1.2.2",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "1.1.2.1.1",
+      "status": "FAIL",
+      "reason": "missing_proof"
+    },
+    {
+      "node": "1.1.2.1.2",
+      "status": "FAIL",
+      "reason": "missing_proof"
+    },
+    {
+      "node": "1.1.2.2.1",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "1.1.2.2.2",
+      "status": "FAIL",
+      "reason": "missing_proof"
+    },
+    {
+      "node": "1.2.1.1.1",
+      "status": "FAIL",
+      "reason": "missing_proof"
+    },
+    {
+      "node": "1.2.1.1.2",
+      "status": "FAIL",
+      "reason": "missing_proof"
+    },
+    {
+      "node": "1.2.1.2.1",
+      "status": "FAIL",
+      "reason": "missing_proof"
+    },
+    {
+      "node": "1.2.1.2.2",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "1.2.2.1.1",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "1.2.2.1.2",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "1.2.2.2.1",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "1.2.2.2.2",
+      "status": "FAIL",
+      "reason": "failing_leaf_tests"
+    },
+    {
+      "node": "2.1.1.1.1",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "2.1.1.1.2",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "2.1.1.2.1",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "2.1.1.2.2",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "2.1.2.1.1",
+      "status": "FAIL",
+      "reason": "missing_effect"
+    },
+    {
+      "node": "2.1.2.1.2",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "2.1.2.2.1",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "2.1.2.2.2",
+      "status": "FAIL",
+      "reason": "failing_leaf_tests"
+    },
+    {
+      "node": "2.2.1.1.1",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "2.2.1.1.2",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "2.2.1.2.1",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "2.2.1.2.2",
+      "status": "FAIL",
+      "reason": "uncompilable_leaf_change"
+    },
+    {
+      "node": "2.2.2.1.1",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "2.2.2.1.2",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "2.2.2.2.1",
+      "status": "PASS",
+      "reason": "depth=5"
+    },
+    {
+      "node": "2.2.2.2.2",
+      "status": "PASS",
+      "reason": "depth=5"
+    }
+  ],
+  "pass": 19,
+  "failure_classes": {
+    "missing_proof": 9,
+    "failing_leaf_tests": 2,
+    "missing_effect": 1,
+    "uncompilable_leaf_change": 1
+  },
+  "disabled_outcomes_equal": true,
+  "all63_join_pending": true
+}

@@ -19,12 +19,13 @@ function parseRegistry(source) {
   for (const line of source.split(/\r?\n/)) {
     const handler = /^  handler\s+(\S+)\s*$/.exec(line);
     if (handler) {
-      current = { name: handler[1], contextBinding: "" };
+      current = { name: handler[1], contextBinding: "", ruleSet: false };
       records.push(current);
       continue;
     }
     const binding = /^    context_binding_(\S+)\s*$/.exec(line);
     if (binding && current) current.contextBinding = binding[1];
+    if (/^    rule[-_]set\s*$/.test(line) && current) current.ruleSet = true;
   }
   return records;
 }
@@ -53,7 +54,14 @@ for (const [file, source] of sources) {
 }
 
 const allWorkerSource = sources.map(([, source]) => source).join("\n");
+const handlerRules = readFileSync(path.join(root, "data/seed/handler-rules.lino"), "utf8");
 for (const record of records) {
+  if (record.ruleSet) {
+    if (!handlerRules.split(/\r?\n/).includes(`  handler ${record.name}`)) {
+      fail(`seed rule-set row ${record.name} names no handler block of data/seed/handler-rules.lino`);
+    }
+    continue;
+  }
   if (record.contextBinding) continue;
   const escaped = record.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   if (!new RegExp(`function\\s+${escaped}\\s*\\(`).test(allWorkerSource)) {

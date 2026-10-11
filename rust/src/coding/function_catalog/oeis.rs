@@ -140,6 +140,20 @@ fn discover_query<T: SourceTransport>(
     Ok((programs, diagnostics))
 }
 
+/// The statements an OEIS record payload carries -- each record's name, its
+/// data terms and its comment lines -- the bespoke side of the issue #1163 R3
+/// comparison with the generic page formalizer.
+#[must_use]
+pub fn record_statements(bytes: &[u8]) -> Vec<String> {
+    serde_json::from_slice::<Vec<Record>>(bytes)
+        .or_else(|_| serde_json::from_slice::<Record>(bytes).map(|record| vec![record]))
+        .unwrap_or_default()
+        .into_iter()
+        .flat_map(|record| [record.name, record.data].into_iter().chain(record.comment))
+        .filter(|statement| !statement.trim().is_empty())
+        .collect()
+}
+
 fn parse_records(capture: &SourceCapture) -> Result<Vec<Record>, FetchError> {
     if let Ok(records) = serde_json::from_slice::<Vec<Record>>(capture.bytes()) {
         return Ok(records);

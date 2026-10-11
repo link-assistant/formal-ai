@@ -1,0 +1,17 @@
+>> bash {"command":"node /private/tmp/pr1188-history-observation-check.mjs"}
+   Output: {"originalInvocation":"T3277","actualCases":201,"actualPassed":201,"actualFailed":0,"unsupportedRetained":977,"wrapperMistake":"checked nonexistent results field instead of actual carried/passing/failures"}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/pr1188-history-observation-check.mjs` command completed. Output:
+
+```json
+{
+  "actualCases": 201,
+  "actualFailed": 0,
+  "actualPassed": 201,
+  "originalInvocation": "T3277",
+  "unsupportedRetained": 977,
+  "wrapperMistake": "checked nonexistent results field instead of actual carried/passing/failures"
+}
+```

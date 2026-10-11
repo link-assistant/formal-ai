@@ -1,7 +1,7 @@
 //! Measure the capability-routing corpus (issue #1138 B10, plan 10 leaves 1-3).
 //!
-//! `data/meta/capability-routing-ratchet.lino` records `cross_tool_misroutes`
-//! and `silent_unknowns` as *measurements*. This example is what produces them:
+//! `data/meta/capability-routing-ratchet.lino` records `cross-tool-misroutes`
+//! and `silent-unknowns` as *measurements*. This example is what produces them:
 //! it runs every committed case of `data/benchmarks/capability-routing/`
 //! through `formal_ai::capability_routing::route` and prints the counts, so a
 //! number in the ledger is one a run produced rather than one an author chose.
@@ -172,11 +172,11 @@ fn main() {
         }
     }
     println!(
-        "capability_routing_cases_passing {passing} / {}",
+        "capability-routing-cases-passing {passing} / {}",
         cases.len()
     );
-    println!("cross_tool_misroutes {misroutes}");
-    println!("silent_unknowns {silent}");
+    println!("cross-tool-misroutes {misroutes}");
+    println!("silent-unknowns {silent}");
     for (cell, failures) in &per_cell {
         println!("  failing {}/{} {failures}", cell.0, cell.1);
     }

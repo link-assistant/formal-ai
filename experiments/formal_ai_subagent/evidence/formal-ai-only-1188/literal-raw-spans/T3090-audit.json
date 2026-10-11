@@ -1,0 +1,15 @@
+{
+  "id": "T3090",
+  "tools": [
+    "bash"
+  ],
+  "reviewedRepair": true,
+  "authoredRepositoryEffects": 3,
+  "paths": [
+    "rust/src/agentic_coding/write_request.rs",
+    "rust/tests/web/literal-write-request-scope.test.mjs",
+    "rust/tests/fixtures/literal-obligation-transaction.rs"
+  ],
+  "receipt": "Output: {\"writes\":[\"rust/src/agentic_coding/write_request.rs\",\"rust/tests/web/literal-write-request-scope.test.mjs\",\"rust/tests/fixtures/literal-obligation-transaction.rs\"]}\n\nExit Code: 0",
+  "manualRepositoryEffects": 0
+}

@@ -1,0 +1,4 @@
+>> read {"filePath":"b.lino","file_path":"b.lino","path":"b.lino"}
+   Error: ENOENT: no such file or directory, open '/tmp/formal-ai-only-1188/b.lino'
+== answer ==
+Verification failed for `b.lino`: the observed bytes differ from the planned workspace effect.

@@ -30,6 +30,18 @@ use crate::learning_ledger::HumanApproval;
 use crate::self_improvement::BenchmarkGateReport;
 use crate::self_source_links::owned_manifest;
 
+/// The owned manifest's `content_id` of `path` (`SourceModuleDigest::content_id`),
+/// or `None` when the repository does not ship that module.
+///
+/// Mirrored by `ownedContentId` in `js/agentic/crate/change_request.mjs`.
+#[must_use]
+pub fn owned_content_id(path: &str) -> Option<String> {
+    owned_manifest()
+        .into_iter()
+        .find(|digest| digest.path == path)
+        .map(|digest| digest.content_id)
+}
+
 /// A natural-language request to change Formal AI itself, turned into a structured,
 /// reviewable, human-gated proposal.
 ///
@@ -69,10 +81,7 @@ impl ChangeRequest {
             !trimmed.is_empty(),
             "a change request must carry a non-empty request"
         );
-        let Some(digest) = owned_manifest()
-            .into_iter()
-            .find(|digest| digest.path == target_module)
-        else {
+        let Some(target_content_id) = owned_content_id(target_module) else {
             panic!(
                 "a change request targets a module that is not in the owned manifest: {target_module}"
             )
@@ -83,13 +92,13 @@ impl ChangeRequest {
         let patch_plan = patch_plan(target_module, &proposed_test, &derived_requirement);
         let id = stable_id(
             "change_request",
-            &format!("{trimmed}:{target_module}:{}", digest.content_id),
+            &format!("{trimmed}:{target_module}:{target_content_id}"),
         );
         Self {
             id,
             request: trimmed.to_owned(),
             target_module: target_module.to_owned(),
-            target_content_id: digest.content_id,
+            target_content_id,
             derived_requirement,
             proposed_test,
             patch_plan,

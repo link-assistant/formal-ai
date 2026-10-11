@@ -2,9 +2,9 @@ self_ast_census
   target src/sequences/inference.rs
   language rust
   fidelity signature
-  byte_len 8631
+  byte_len 8658
   line_count 238
-  content_id source_module_80a34b78bc5de2ce
+  content_id source_module_4dac1d240afcb725
   symbol_count 12
   symbols
     struct SequencePatternReport 22 37

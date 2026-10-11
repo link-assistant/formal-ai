@@ -24,6 +24,13 @@ env:
   CARGO_HTTP_MULTIPLEXING: 'false'
   CARGO_TERM_COLOR: always
   RUSTFLAGS: -Dwarnings
+  # The platform archive pays its compilation cost once; retain runtime checks.
+  # Actual cold compile and selected-case durations remain measured CI obligations.
+  CARGO_PROFILE_TEST_OPT_LEVEL: '1'
+  CARGO_PROFILE_TEST_DEBUG: '0'
+  CARGO_PROFILE_TEST_DEBUG_ASSERTIONS: 'true'
+  CARGO_PROFILE_TEST_OVERFLOW_CHECKS: 'true'
+  CARGO_PROFILE_TEST_INCREMENTAL: 'false'
   FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
 
 jobs:
@@ -49,7 +56,7 @@ jobs:
     # Issue #1081 gave the doc-test step below a budget of its own, which makes
     # the arithmetic a sum: two steps that both run in this job now claim
     # their budgets together against the 70% share
-    # `tests/unit/ci-cd/issue_1081.rs` enforces.
+    # `tests/unit/ci-cd/job_budget_fit.rs` enforces.
     #
     # Issue #1085: run 33994570842 (2026-09-05, main) was killed at the full
     # 1400s of the archive budget with a 93% sccache hit rate -- not a cold
@@ -103,9 +110,13 @@ jobs:
           mkdir -p "$RUNNER_TEMP/macos-core-tests"
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "macOS test archive build" \
-            cargo nextest --manifest-path rust/Cargo.toml archive --lib --bins --tests --all-features \
+            cargo nextest --manifest-path rust/Cargo.toml archive --tests --all-features \
             --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst"
           git rev-parse 'HEAD^{tree}' > "$RUNNER_TEMP/macos-core-tests/tree"
+          printf 'profile test\nfeatures all\nopt-level %s\ndebug %s\ndebug-assertions %s\noverflow-checks %s\nincremental %s\nrustflags %s\n' \
+            "$CARGO_PROFILE_TEST_OPT_LEVEL" "$CARGO_PROFILE_TEST_DEBUG" \
+            "$CARGO_PROFILE_TEST_DEBUG_ASSERTIONS" "$CARGO_PROFILE_TEST_OVERFLOW_CHECKS" \
+            "$CARGO_PROFILE_TEST_INCREMENTAL" "$RUSTFLAGS" > "$RUNNER_TEMP/macos-core-tests/profile.lino"
       # Issue #1047: computed once here rather than on each of the eight
       # slices, so the plan costs one rust-script install instead of eight and
       # every slice reads the same file -- a plan recomputed per machine could
@@ -182,7 +193,7 @@ jobs:
     # The download is a 941MB artifact whose transfer time depends on runner
     # throughput, so its budget has to cover a slow runner rather than a typical
     # one.
-    # `issue_1039::the_download_retry_is_bounded_to_fit_the_job_cap` recomputes
+    # `artifact_download_retry::the_download_retry_is_bounded_to_fit_the_job_cap` recomputes
     # this from the workflow, so the numbers cannot drift out of agreement.
     #
     # Issue #1081 kept that arithmetic and widened the margin it leaves. The
@@ -192,7 +203,7 @@ jobs:
     # setup slower than the 133s that was measured would put the cap ahead of
     # the budgets again and turn a real overrun back into a grey `cancelled`.
     # 30 minutes holds the budgets at 66.1%, under the 70% share
-    # `tests/unit/ci-cd/issue_1081.rs` now enforces for every job in the
+    # `tests/unit/ci-cd/job_budget_fit.rs` now enforces for every job in the
     # repository. Nothing runs longer for it -- a backstop only costs time when
     # it fires, and this one is now sized never to fire first.
     timeout-minutes: 30
@@ -269,7 +280,13 @@ jobs:
             "$RUNNER_TEMP/macos-core-tests"
       - name: Verify archive source tree
         if: ${{ needs.build-archive.outputs.already-green != 'true' }}
-        run: test "$(git rev-parse 'HEAD^{tree}')" = "$(cat "$RUNNER_TEMP/macos-core-tests/tree")"
+        run: |
+          test "$(git rev-parse 'HEAD^{tree}')" = "$(cat "$RUNNER_TEMP/macos-core-tests/tree")"
+          printf 'profile test\nfeatures all\nopt-level %s\ndebug %s\ndebug-assertions %s\noverflow-checks %s\nincremental %s\nrustflags %s\n' \
+            "$CARGO_PROFILE_TEST_OPT_LEVEL" "$CARGO_PROFILE_TEST_DEBUG" \
+            "$CARGO_PROFILE_TEST_DEBUG_ASSERTIONS" "$CARGO_PROFILE_TEST_OVERFLOW_CHECKS" \
+            "$CARGO_PROFILE_TEST_INCREMENTAL" "$RUSTFLAGS" > "$RUNNER_TEMP/macos-core-tests/expected-profile.lino"
+          cmp "$RUNNER_TEMP/macos-core-tests/profile.lino" "$RUNNER_TEMP/macos-core-tests/expected-profile.lino"
       # Issue #1059: macOS runs the tests whose behaviour can differ from
       # Linux, not the whole suite. `data/meta/macos-platform-tests.lino` names
       # the modules and says why each is listed. One runner, because those tests
@@ -287,5 +304,5 @@ jobs:
             "$TEST_BUDGET_SECONDS" "macOS platform tests" \
             cargo nextest --manifest-path rust/Cargo.toml run --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst" \
             --extract-to "$GITHUB_WORKSPACE" \
-            --workspace-remap "$GITHUB_WORKSPACE" \
+            --workspace-remap "$GITHUB_WORKSPACE/rust" \
             -E "($PLATFORM) & not (test(data_files::) | test(self_ast_census) | test(specification::))"

@@ -1,0 +1,123 @@
+# Code example part vocabulary (issue #1164, E129).
+#
+# The decomposer (rust/src/code_example_knowledge.rs) assigns meanings to
+# code parts from two inputs only — the CST node kinds the meta-language
+# parse produced, and the per-language vocabulary recorded here. No
+# per-language meaning table lives in Rust (R1164-3) -- every language
+# fact below is data, so growing language coverage means growing this file.
+# No program text lives here (R1164-6), recomposition reads the aligned
+# parts of the decomposed examples.
+code_example_parts
+  part_language rust
+    output_call println!
+    output_call print!
+    output_call eprintln!
+    entry_name main
+    bare_output_call print!
+  part_language kotlin
+    output_call println
+    output_call print
+    entry_name main
+    bare_output_call print
+  part_language scala
+    output_call println
+    output_call print
+    entry_name main
+    bare_output_call print
+    entry_container object
+  part_language swift
+    output_call print
+    entry_name none
+  part_language go
+    output_call fmt.Println
+    output_call fmt.Print
+    output_call println
+    entry_name main
+    bare_output_call fmt.Print
+  part_language java
+    output_call System.out.println
+    output_call System.out.print
+    entry_name main
+    bare_output_call System.out.print
+    entry_container class
+  part_language csharp
+    output_call Console.WriteLine
+    output_call Console.Write
+    entry_name Main
+    bare_output_call Console.Write
+  part_language c
+    output_call printf
+    output_call puts
+    entry_name main
+    bare_output_call printf
+  part_language cpp
+    output_call "std::cout"
+    output_call printf
+    output_call puts
+    entry_name main
+    bare_output_call "std::cout"
+    bare_output_call printf
+    newline_token "std::endl"
+  part_language javascript
+    output_call console.log
+    entry_name none
+  part_language typescript
+    output_call console.log
+    entry_name none
+  part_language python
+    output_call print
+    entry_name none
+  part_language ruby
+    output_call puts
+    output_call print
+    entry_name none
+    bare_output_call print
+  part_language php
+    output_call echo
+    entry_name none
+    bare_output_call echo
+    newline_token PHP_EOL
+  part_language "lua"
+    output_call print
+    entry_name none
+  part_language r
+    output_call print
+    output_call cat
+    entry_name none
+    bare_output_call cat
+  # Pascal is held out (R1164-9). Its grammar row is registered in
+  # program-cst-grammars.lino (meta-language ships tree-sitter-pascal), but
+  # on purpose no Pascal vocabulary and no Pascal program sits here. The
+  # output call is learned from the Free Pascal documentation's own prose
+  # (the print relation below), and the program body from the
+  # documentation's decomposed example, never from stored text.
+  entry_hint_kind function
+  entry_hint_kind func
+  entry_hint_kind method
+  call_hint_kind call
+  string_kind_hint string
+  import_kind_hint import
+  assert_kind_hint assert
+  prose_relation
+    relation compile_with
+    kind build_command
+  prose_relation
+    relation build_with
+    kind build_command
+  prose_relation
+    relation run_with
+    kind run_command
+  # A documentation page that says which call prints to standard output
+  # teaches the decomposer that call for the page's language, so a held-out
+  # language needs no output_call row above.
+  prose_relation
+    relation print
+    kind print_stdout
+  # A bare_output_call prints its argument with no line break, and a
+  # newline_token on the same line supplies one; together they tell the
+  # documentation route when a documented program prints its text without
+  # the trailing newline (issue #1165). An entry_container keyword is
+  # followed by the name a run contract invokes (a Java class or a Scala
+  # object), the name a documented program binds in the file it is saved
+  # as and in its commands.
+  note "Recomposition builds every program from a decomposed example's own body with its output literal slotted, so this file stores no program templates. A language with no contributing example cannot be recomposed."

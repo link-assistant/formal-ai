@@ -14,6 +14,9 @@ fn task(
     CodingTaskSpec {
         language: "python".to_owned(),
         artifact_shape: ArtifactShape::Function,
+        callable_binding_origin: formal_ai::coding_task_spec::CallableBindingOrigin::Declared {
+            signature: String::new(),
+        },
         name: name.to_owned(),
         parameters: parameters
             .iter()

@@ -1,0 +1,13 @@
+view
+  id M-f22c8bf3ec65
+  lemma manuscript
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the form of a literary work submitted for publication"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "handwritten book or document"
+    provenance (wordnet)

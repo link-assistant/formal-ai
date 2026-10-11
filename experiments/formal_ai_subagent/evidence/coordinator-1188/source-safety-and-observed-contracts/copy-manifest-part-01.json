@@ -1,0 +1,605 @@
+[
+  {
+    "from": "/private/tmp/pr1188-root-T1998.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T1998-transcript.json",
+    "bytes": 20539,
+    "sha256": "f2fd4803ba85b401f5b9a6122ee3c6581ae07542d4cef0dd0132b96e5483dfaa"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1998-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T1998-request.json",
+    "bytes": 4938,
+    "sha256": "5a1810e7c9ba4e3c631c0de38c41ed36d027165cac9210803b33defa7a885fbd"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1999.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T1999-transcript.json",
+    "bytes": 6787,
+    "sha256": "3b711dc959f9f0ea618beaf0f09a45502625c920fe9558d093ebdbb38b81847f"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1999-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T1999-request.json",
+    "bytes": 2153,
+    "sha256": "db018f08f1cf72bb197b80ec2cdd5261ab11abda79ce6bcc0cc647e2403de8c5"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2500.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2500-transcript.json",
+    "bytes": 11253,
+    "sha256": "0fd673d75131efa3af0f8572c1a56109aaa1b4b6e239c4818046e8fd0565dc6e"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2500-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2500-request.json",
+    "bytes": 3642,
+    "sha256": "7166d3a57e41d18676de926fc0fde6094a9f763b43e7e89203760a92872c57d8"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2501.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2501-transcript.json",
+    "bytes": 14805,
+    "sha256": "9d2dfbc00a5b68e768b22336773cc1e7abe80334a0423e159d94119e4088c933"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2501-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2501-request.json",
+    "bytes": 2007,
+    "sha256": "18120546ed1a11a0d79700ac614df675824668df8164d1c0cbaba7d5e6b740d0"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2502.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2502-transcript.json",
+    "bytes": 26529,
+    "sha256": "78eb5753b19da0a310c73a354bdc70c12eaef137bbe687e19aeabe6c22c5071a"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2502-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2502-request.json",
+    "bytes": 3241,
+    "sha256": "0c1b559d5a9bec9ee180f51145f8f1563c55e75618209ddfb898eab8715ee028"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2503.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2503-transcript.json",
+    "bytes": 12709,
+    "sha256": "e0475dc634641a02a77a350abc3c8b961e637ab646d6a117854c9a86c4a43b5e"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2503-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2503-request.json",
+    "bytes": 2605,
+    "sha256": "99934d6fd03abf70c1f020c6d53b081836b282fe55c9bfb3b1fd2613fc9c7730"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2504.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2504-transcript.json",
+    "bytes": 17010,
+    "sha256": "f370e1560c15ff59cd860b6e34fd868cf3ec5740b28a89f4c4b90122cd49c9d1"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2504-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2504-request.json",
+    "bytes": 3161,
+    "sha256": "d8a9dd000b2a940ff0b78eb359ba7d8f60bdbe4207e2db98c539e36adff58b9e"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2505.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2505-transcript.json",
+    "bytes": 3325,
+    "sha256": "08a2bc87577a34646fa40a97cc351bcfdf571ba08fbfb8760845bb17fe5a4696"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2505-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2505-request.json",
+    "bytes": 898,
+    "sha256": "a6fad9df90a635a90be2b617444b3f872570d75723c3a5c7758c168a6a76f8bc"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2506.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2506-transcript.json",
+    "bytes": 27253,
+    "sha256": "5663b25c207e57c5da87112beb562d133113c9d8c2b7d96bed7f5c2c87866287"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2506-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2506-request.json",
+    "bytes": 8412,
+    "sha256": "cd62c84fecb114a935ab085cbcafbd91e4bdd405c332ec6790c744d88da8991f"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2507.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2507-transcript.json",
+    "bytes": 16553,
+    "sha256": "9bf64468e6800fae29097ed710b91017283a83112acabea61e525f7e7d7ae569"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2507-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2507-request.json",
+    "bytes": 3076,
+    "sha256": "2556d25cfc91dd58d7d1d0ba2e81e8d7ffaeb87073641412da4addaa034cfd20"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2508.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2508-transcript.json",
+    "bytes": 36907,
+    "sha256": "9cc4f2a8e37a0945ec711ebb81f4500c942ca40ad1946744a3ad1419c8e64c83"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2508-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2508-request.json",
+    "bytes": 5404,
+    "sha256": "d2b8f4e69eea1d47f4af0a774c76685099f73fcb644f31f257dffe0c40ef1eaa"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2509.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2509-transcript.json",
+    "bytes": 15179,
+    "sha256": "b58e048491f5b04d752d04e9bf81bc04b67b8c29a58eb753285fb7079ca38e58"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2509-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2509-request.json",
+    "bytes": 2795,
+    "sha256": "6c3e32708e7c5d47d0257a269cfd583d789290eb3d837de3c03bcc1e78735f20"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2510.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2510-transcript.json",
+    "bytes": 8111,
+    "sha256": "a53f9e060c101b4734d10006b100bdbc677b84a3a74784d119951e0085cd31a2"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2510-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2510-request.json",
+    "bytes": 2595,
+    "sha256": "1d0a74e9439bfef0a84f5a1f5ea3425d98dabb0f741e7008bc51dc0114b6e15c"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2511.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2511-transcript.json",
+    "bytes": 79838,
+    "sha256": "e8e250c713d016f1aa343d47c3c60d4bb992ef5b63a1412c11c1e1e3759f8b2b"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2511-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2511-request.json",
+    "bytes": 14821,
+    "sha256": "2e4a9148d73f6abed9d9cef09448e86f408d362e5b399aa06dc6850fe7b1fd57"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2512.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2512-transcript.json",
+    "bytes": 11881,
+    "sha256": "ab164fc134eb54c4c3bb73e8385f489278bfe1930ef9b385d4acc81be4452cb3"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2512-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2512-request.json",
+    "bytes": 1105,
+    "sha256": "a4f32f461f19607e89e72120e84bb658767d95a43be5a554c84e1ed5316d05b7"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2513.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2513-transcript.json",
+    "bytes": 40173,
+    "sha256": "4462f3a062a01ca98cb02685b4184ab66594fd1e486a6a5ae480f44e460f01f4"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2513-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2513-request.json",
+    "bytes": 7792,
+    "sha256": "0cea29f0307b852844aba54ef3b3a004d5e81230ffaa6cf2692b5c1891d53815"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2514.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2514-transcript.json",
+    "bytes": 41820,
+    "sha256": "5866fe6a0eefc964c55842c8a5d670c1b39106a6ffed11bd0bd15ddb3bf63b55"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2514-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2514-request.json",
+    "bytes": 7928,
+    "sha256": "c96a32629dc286a7244368a972a40f8b64a2c1bea5b52ec63cae2794941b9650"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2515.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2515-transcript.json",
+    "bytes": 12813,
+    "sha256": "c48b6f6015275ed23169090d19dad4ad86ca1291e7ca33d2fdc168086269a2c5"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2515-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2515-request.json",
+    "bytes": 3292,
+    "sha256": "ad83d73fc48867ba1fbb5a3c59afc3ff86f711278898d30ad7c7d5627e0c8b93"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2516.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2516-transcript.json",
+    "bytes": 6359,
+    "sha256": "ac6d84fa7826242dea6e59a50bbd6322bb1223b90e25d95ab905ae4b2d9a4fdd"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2516-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2516-request.json",
+    "bytes": 1908,
+    "sha256": "3de5d4e2c3f2bfec6a9660f4a59a0cfb49a5683a3b622ef8758ac96c160af4a9"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2517.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2517-transcript.json",
+    "bytes": 16269,
+    "sha256": "bb91c6c4de05349c04156a374447adc1bc822a1b81bf16692a502d9f32ed3aae"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2517-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2517-request.json",
+    "bytes": 4012,
+    "sha256": "878da4af0b383a400a19977f7f9c5d418967509c33da9aa4541a3d5ef8b835fa"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2518.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2518-transcript.json",
+    "bytes": 48723,
+    "sha256": "bc9c5ca0d92afc26a41e3a56c79b42fb0cc9e8bd540b48e6b04a2bac34e366df"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2518-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2518-request.json",
+    "bytes": 16131,
+    "sha256": "21c23550345d5b64fc09d2c8d47f3831fa325ea9a6eab617135a39a1703cb07c"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2519.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2519-transcript.json",
+    "bytes": 20741,
+    "sha256": "3fc6142721adfa7751a935c3a445913f57c7eaa96fde2e6db5d210f830cce8b7"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2519-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2519-request.json",
+    "bytes": 6806,
+    "sha256": "524bf1557053014d8840fa5cb57a22f8199b7516f92e4a78a2c8da7d11434958"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2520.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2520-transcript.json",
+    "bytes": 52045,
+    "sha256": "92a808441090b1ca2de572e7402214de756f383a2c1cbb6774a3c155c65538bd"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2520-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2520-request.json",
+    "bytes": 11757,
+    "sha256": "42650c65fe69aa5305b2d1322f76db289ace375e45a5e946619703f6a06cb69d"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2521.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2521-transcript.json",
+    "bytes": 69895,
+    "sha256": "6167127ba3f7b1cfaa5e4ba0449bebfc54c57c72573f5bfd5c4897611279e7ee"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2521-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2521-request.json",
+    "bytes": 11761,
+    "sha256": "79988bbd90fbe2b02e3cb11b3bd80f5c56013fb20a4b32a69dc587cb7b5b6260"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2522.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2522-transcript.json",
+    "bytes": 9612,
+    "sha256": "3debe27817a3d8bf85fc0e1da10ebb2518edacaf33f78bc9f2715e300541e78e"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2522-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2522-request.json",
+    "bytes": 1085,
+    "sha256": "ba42e4b8560c9c737dbffe776281d18368d5732b8e500a6d67c2eecf86bd0248"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2523.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2523-transcript.json",
+    "bytes": 8284,
+    "sha256": "92dd1b5915b2e4dbb0d9f75543492b72a540f6cd4f5533a2d58ec93d8eced2ca"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2523-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2523-request.json",
+    "bytes": 826,
+    "sha256": "b84e58fe5359767b4c31215ea1ab81c3d10740da416938d9555d246019dd8239"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2524.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2524-transcript.json",
+    "bytes": 15713,
+    "sha256": "9e350e30a52c86ff4fb8862652dd7d52a1e0c167686217977ab06c8592c084ba"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2524-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2524-request.json",
+    "bytes": 3941,
+    "sha256": "4aeb6c8f012f8c826531e7c4ab1856f7982114c37376b0ca0e2e3e303ad30a19"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2525.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2525-transcript.json",
+    "bytes": 60834,
+    "sha256": "060da4730a9654bbea0c090c353dfa05dcd64b793b681092ff6c584f937d5c44"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2525-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2525-request.json",
+    "bytes": 2959,
+    "sha256": "5e3be04f79571242775c57fb02da3fd26ea138c5225d4e402b5b38ea082985d0"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2526.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2526-transcript.json",
+    "bytes": 12505,
+    "sha256": "ed42f6f08e952d228173b29617ecd7e063c147178e66569f9c1e0248a3645a86"
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T2526-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/T2526-request.json",
+    "bytes": 3456,
+    "sha256": "5ff9057618bcecdb089433941baea1b85292086258062cf4957e545addb2cf8a"
+  },
+  {
+    "from": "/private/tmp/pr1188-first-plan-observed-protocol.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/actual-first-plan-protocols.json",
+    "bytes": 15088,
+    "sha256": "6f30b3b88be819cb2773bc1b801ead1ac89fcd9ff3f057fba230bae9345e8de7"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2514-native-shell-replacement-failure.rs",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/failed-native-replacement-preimage.rs.gz",
+    "bytes": 79646,
+    "sha256": "a4d04bf97804c4f1d049feb0252eccf3bc9bdfbf32c5c89d677a7831361446b0",
+    "encoding": "gzip",
+    "archiveBytes": 23192,
+    "archiveSha256": "d73ae62cdddd07d4f2cda06e233c301ac6eaf6e811c68dea7c04c79a803b6490"
+  },
+  {
+    "from": "/private/tmp/pr1188-native-first-plan-fixture-draft.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/historical-first-plan-failure-inventory.json",
+    "bytes": 9860,
+    "sha256": "816862b809974c82be060f23e93e06ac08e8927af3c06b7ae0ac37ed46bcc7b6"
+  },
+  {
+    "from": "/private/tmp/pr1188-native-first-plan-fixture-pattern.md",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/observed-auxiliary-fixture-pattern.md",
+    "bytes": 2420,
+    "sha256": "631bd679e4e4b26b770033920a3c271ef2e2fc2d812e9669882b0a0c38e9ad69"
+  },
+  {
+    "from": "/private/tmp/pr1188-ladder-disabled-all63-outcomes.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/disabled-all63-outcomes.json",
+    "bytes": 7257,
+    "sha256": "0bb55119b48dc3bfe715b8038f3e66c215b70a415edc4328cf9da3ce572e2dd1"
+  },
+  {
+    "from": "/private/tmp/pr1188-ladder-disabled-cold-all63-timing.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/disabled-all63-cold-timing.json",
+    "bytes": 7589,
+    "sha256": "cdd7c6ac2f5b2c0e21af5921dd0e9422e480b8c4ae26d74de9ae6df04417b93e"
+  },
+  {
+    "from": "/private/tmp/pr1188-upstream-218-unmet-requirements-9438.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/source-safety-and-observed-contracts/upstream-218-unmet-requirements-9438.json",
+    "bytes": 26049,
+    "sha256": "815b70cf3e73bfa2cc78198ee2544e595379ef9031ea47f3627c1ac84c1aa0ff"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2636.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2636-raw.log",
+    "bytes": 31066,
+    "sha256": "15801ff55250c5fdac817f44de637a79fbad1de12d8c620c724d65362d17bd38"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2637.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2637-raw.log",
+    "bytes": 30039,
+    "sha256": "d7c850ff6787b4cc816f34ae60e835e07288239f84bf2524fbd880baa4c735a2"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2638.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2638-raw.log",
+    "bytes": 33117,
+    "sha256": "3afd0efa04da5bbd2acb50540c3778686f8fcc2bbc20f071d0a2b9c0084f2364"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2639.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2639-raw.log",
+    "bytes": 33909,
+    "sha256": "17f96ad5aba30c8611a5762dd549819ac7610e2a5b8aa41820e0b0dc1618eeb7"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2640.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2640-raw.log",
+    "bytes": 31280,
+    "sha256": "9bcf35c5fe2b42c9b12aab173d0ed5747f0742eb45c5101299d02a1411b378a4"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2641.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2641-raw.log",
+    "bytes": 32202,
+    "sha256": "2629853eb600ced2f49b506bb5d2aca817b68689017a982975852b494bfef737"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2642.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2642-raw.log",
+    "bytes": 32282,
+    "sha256": "78aafc1d4d4bb1c4aa6afd687333c95f853df042081214cc7854339bae775ed2"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2643.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2643-raw.log",
+    "bytes": 32194,
+    "sha256": "5cde9c07477dd38c08b651d944dc099d0874e7652128de397e8cb39f1b9e8289"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2644.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2644-raw.log",
+    "bytes": 32707,
+    "sha256": "1464c1992b4ddb76fedc331a54d605d52703e361fa17958ddee6bbff256e7941"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2645.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2645-raw.log",
+    "bytes": 10317,
+    "sha256": "69ee1e6af093ac6eb70e04b5936fe0f17b254ab20a2eb40068b8b5e01940fa78"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2646.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2646-raw.log",
+    "bytes": 37469,
+    "sha256": "a852d390d9d3b096d8917f818c358a8afcf9cde830eb7f85d6c6470864ef26f9"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2647.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2647-raw.log",
+    "bytes": 6271,
+    "sha256": "c1fd909a352bf62bc15d0c5c422814f155aff317ec70a167087057dc5afb7f9a"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2648.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2648-raw.log",
+    "bytes": 4775,
+    "sha256": "bb49384e1478b7f6b7ee60ca39da8a206775cc97daff49f9d30d573f3bfbb6ae"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2649.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2649-raw.log",
+    "bytes": 39354,
+    "sha256": "faf11fd22ef5e876fa166603922d2896f169e4eb6c9d5963695bc4491fd09a33"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2650.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2650-raw.log",
+    "bytes": 8576,
+    "sha256": "a7fa354cb5f2cacc7a2b67d85b8d27f077cdcc8ded09ed490767da267d3a629b"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2651.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2651-raw.log",
+    "bytes": 9254,
+    "sha256": "827ad0b81c7e7ecb84a843d926e09f2d7bb8ea977a5f47736da931f9a0315bd9"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2652.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2652-raw.log",
+    "bytes": 37099,
+    "sha256": "09d58852a83566f3c698b61767f8b4646c382fb58188729448b0319aaa84b418"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2653.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2653-raw.log",
+    "bytes": 34985,
+    "sha256": "cda21d845c2eeaa75b63697ab499388834b83772296bb4968aba0722c3e8f289"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2654.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2654-raw.log",
+    "bytes": 17972,
+    "sha256": "e1fa310d37a53dbfb716b120d0c99a998150a9f4af574e5a718745100ff661ff"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2655.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2655-raw.log",
+    "bytes": 16973,
+    "sha256": "68019ff7c23c334502cfce0d19b317d08322c960464e06a1d0e4cb01e4de4090"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2656.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2656-raw.log",
+    "bytes": 16429,
+    "sha256": "6e01ba0b38d58ca58b40115a0e9b495a48f2bb0a3986b71ede3062c854f60689"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2657.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2657-raw.log",
+    "bytes": 16503,
+    "sha256": "2ee507be02044ed846a4f38172180953da4587f3a88f6001626e42d6c66ae21c"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2658.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2658-raw.log",
+    "bytes": 16457,
+    "sha256": "79d2f58ba4b40cd47e572432e8852b6ecaf7c1196949c321562297cb9cc77b78"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2659.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2659-raw.log",
+    "bytes": 16136,
+    "sha256": "ce054d05f32ceaf0bf6cad981483e28eaae4976692d03ea82253d6a92d6e651f"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2660.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2660-raw.log",
+    "bytes": 886,
+    "sha256": "f92c873b4ac790f2976d56779256d2a90b444a2d597bab9c507e0fdd6c5502b3"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2661.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2661-raw.log",
+    "bytes": 16590,
+    "sha256": "90b914934888382d12cbf75c2241c91082025af0cf79c33cbcf8e863a8944054"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2662.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2662-raw.log",
+    "bytes": 36085,
+    "sha256": "e81c579b1c094f096d90fa9c78e833aaf6c5b36cbfacf03dd883e140ad0773ff"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2663.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2663-raw.log",
+    "bytes": 47441,
+    "sha256": "e9881a75a1798011af07d39a2921d1ad8370460ba121b0ea41d1cb80a9b3c878"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2664.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2664-raw.log",
+    "bytes": 379,
+    "sha256": "691b618f61387d0fefdc1f455968aed9ba44fd5ef7e9221335a24b0abedcb960"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2665.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2665-raw.log",
+    "bytes": 29666,
+    "sha256": "41bad5b979b3dc0a9dafa3fe7637a4d2f6a413e9f1410a4f55aeb5a8516e01d5"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2666.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2666-raw.log",
+    "bytes": 28586,
+    "sha256": "376069d274b69783d5ca63aeaea7b839fc5ed403eebf947c9ad15b90975d3d64"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2667.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2667-raw.log",
+    "bytes": 26998,
+    "sha256": "84a9ecc3effcdaef645782c7e0a489b2ad71864305c7f8b9f5e604d1a3b47085"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2668.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2668-raw.log",
+    "bytes": 186,
+    "sha256": "7aa51279da9420d4021fe0dccbff245448322a66cc07f6008e39388c391c54cb"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2669.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2669-raw.log",
+    "bytes": 10679,
+    "sha256": "22c8c24a816ae5d77af34a2198ada980844e3a24738d610237bbccf4ff8cf7c7"
+  },
+  {
+    "from": "/private/tmp/pr1188-T2670.log",
+    "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/current-native-protocol-and-http-contracts/T2670-raw.log",
+    "bytes": 15930,
+    "sha256": "755e0246788b162f7b8ce5d56a8c48b691ef47a0e320f5acb018b2837b9ca2ed"
+  }
+]

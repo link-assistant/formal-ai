@@ -1,12 +1,15 @@
 Q160464
   aliases
+    es (botonadura boton)
     zh ("纽扣" "扣子")
   descriptions
     en "small fastener used in clothing"
+    es "elemento utilizado para abrochar o ajustar vestimentas"
     ru "предмет одежды"
   id Q160464
   labels
     en button
+    es "botón"
     hi "बटन"
     ru "пуговица"
     zh "鈕扣"

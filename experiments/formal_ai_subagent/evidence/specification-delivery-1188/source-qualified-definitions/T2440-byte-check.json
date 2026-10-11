@@ -1,0 +1,5 @@
+{
+  "taskId": "T2440",
+  "target": "rust/src/source_fetch/seed_captures.rs",
+  "byteEqual": true
+}

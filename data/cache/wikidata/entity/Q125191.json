@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "相片"
+        },
+        "es": {
+          "language": "es",
+          "value": "fotografía"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "攝影得出的影像"
+        },
+        "es": {
+          "language": "es",
+          "value": "imagen creada por un fotógrafo"
         }
       },
       "aliases": {
@@ -90,6 +98,36 @@
           {
             "language": "zh",
             "value": "照片"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "foto"
+          },
+          {
+            "language": "es",
+            "value": "fotoperiodicidad"
+          },
+          {
+            "language": "es",
+            "value": "fotografias"
+          },
+          {
+            "language": "es",
+            "value": "fotografia"
+          },
+          {
+            "language": "es",
+            "value": "retrato"
+          },
+          {
+            "language": "es",
+            "value": "fotografías"
+          },
+          {
+            "language": "es",
+            "value": "fotos"
           }
         ]
       }

@@ -1,0 +1,25 @@
+{
+  "id": "T3508",
+  "stop": "final",
+  "answer": "The `node -e 'const fs=require('\\''fs'\\'');const changes=JSON.parse(fs.readFileSync('\\''/private/tmp/formal-ai-only-1188/T3508-request.json'\\'','\\''utf8'\\'')).changes;for(const change of changes){if(fs.readFileSync(change.path,'\\''utf8'\\'')!==change.before)throw Error('\\''preimage changed '\\''+change.path);}for(const change of changes)fs.writeFileSync(change.path,change.expected);console.log(JSON.stringify({writes:changes.map(change=>change.path)}));'` command completed. Output:\n\n```json\n{\n  \"writes\": [\n    \"rust/tests/web/source-read-provenance.test.mjs\",\n    \"rust/tests/fixtures/source-read-provenance.rs\",\n    \"docs/case-studies/pull-request-1188/source-read-observations.md\"\n  ]\n}\n```",
+  "calls": [
+    "bash"
+  ],
+  "matches": [
+    {
+      "path": "rust/tests/web/source-read-provenance.test.mjs",
+      "exact": true,
+      "sha256": "fa25299b7bb0e7594d392dfd6b495e6b7d4619906efb94462205eb035be0b9b1"
+    },
+    {
+      "path": "rust/tests/fixtures/source-read-provenance.rs",
+      "exact": true,
+      "sha256": "72dff907c40d1fb9db7e7b962488a9d743428651e4d2da6370adb2498b0e71b8"
+    },
+    {
+      "path": "docs/case-studies/pull-request-1188/source-read-observations.md",
+      "exact": true,
+      "sha256": "2c3778176d9c77a8be86330511edbcfc7b4cc4d80bc1ba63fce5205db7975a85"
+    }
+  ]
+}

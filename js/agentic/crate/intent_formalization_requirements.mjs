@@ -1,0 +1,191 @@
+// Ordered, source-grounded requirement spans: a port of
+// rust/src/intent_formalization/requirements.rs (`ordered_requirement_spans`,
+// `requirement_operand_spans`, `requirement_list_spans`).
+//
+// Rust works in UTF-8 byte offsets. This port scans in UTF-16 indices (whose
+// order agrees with byte order inside one string) and converts only the
+// reported `source_span` to UTF-8 byte offsets, so spans match Rust exactly.
+
+import { quotedSegmentSpans } from './normal_markov.mjs';
+import { isAlphanumeric, isNumeric, trim, trimStart, utf8Len } from './rust_str.mjs';
+
+const PUNCTUATION = new Set([',', ';', ':', '.', '!', '?', '，', '、', '；', '。', '！', '？', '।']);
+
+/** The character starting at UTF-16 index `index` of `text`, or undefined. */
+const charAt = (text, index) => (index < text.length ? String.fromCodePoint(text.codePointAt(index)) : undefined);
+
+/** The character ending just before UTF-16 index `index` of `text`, or undefined. */
+function charBefore(text, index) {
+  if (index <= 0) return undefined;
+  const low = text.charCodeAt(index - 1);
+  if (low >= 0xdc00 && low <= 0xdfff && index >= 2) {
+    const high = text.charCodeAt(index - 2);
+    if (high >= 0xd800 && high <= 0xdbff) return text.slice(index - 2, index);
+  }
+  return text[index - 1];
+}
+
+/** Every UTF-16 index where `needle` occurs in `hay`, non-overlapping: Rust built-in `str::match_indices`. */
+export function matchIndices(hay, needle) {
+  const out = [];
+  if (needle === '') return out;
+  let from = 0;
+  for (;;) {
+    const at = hay.indexOf(needle, from);
+    if (at < 0) return out;
+    out.push(at);
+    from = at + needle.length;
+  }
+}
+
+/** Mirrors `char::to_lowercase` per character, recording each lowered unit's source index. */
+function lowerWithOffsets(text) {
+  let lower = '';
+  const offsets = [];
+  let index = 0;
+  for (const character of text) {
+    const lowered = character.toLowerCase();
+    for (let unit = 0; unit < lowered.length; unit += 1) offsets.push(index);
+    lower += lowered;
+    index += character.length;
+  }
+  offsets.push(text.length);
+  return [lower, offsets];
+}
+
+/**
+ * Mirrors `fn requirement_operand_spans`: literal slots and source addresses
+ * as UTF-16 `[start, end)` ranges of `text`.
+ * @param {string} text
+ * @returns {Array<[number, number]>}
+ */
+export function requirementOperandSpans(text) {
+  const spans = quotedSegmentSpans(text).map((slot) => [slot.start, slot.end]);
+  let cursor = 0;
+  for (const token of text.split(/\p{White_Space}+/u).filter(Boolean)) {
+    const found = text.indexOf(token, cursor);
+    const start = found < 0 ? cursor : found;
+    cursor = start + token.length;
+    const separator = token.indexOf('://');
+    if (separator < 0) continue;
+    const scheme = token.slice(0, separator);
+    const address = token.slice(separator + 3);
+    if (address !== '' && /^[A-Za-z]/.test(scheme) && /^[A-Za-z0-9+\-.]*$/.test(scheme)) {
+      const operand = token.replace(/[.,;!?。；]+$/u, '');
+      spans.push([start, start + operand.length]);
+    }
+  }
+  return spans;
+}
+
+/** Mirrors `fn list_marker_end`: the UTF-16 length of a Markdown list marker, or null. */
+function listMarkerEnd(line) {
+  const item = line.replace(/^[ \t]+/, '');
+  let markerLength;
+  if (/^[-*+]/.test(item)) {
+    markerLength = 1;
+  } else {
+    const digits = /^[0-9]*/.exec(item)[0].length;
+    if (digits === 0 || !/^[.)]/.test(item.slice(digits))) return null;
+    markerLength = digits + 1;
+  }
+  return /^[ \t]/.test(item.slice(markerLength)) ? line.length - item.length + markerLength + 1 : null;
+}
+
+/**
+ * Mirrors `fn requirement_list_spans`: Markdown list markers as UTF-16 ranges.
+ * @param {string} text
+ * @returns {Array<[number, number]>}
+ */
+export function requirementListSpans(text) {
+  const spans = [];
+  let lineStart = 0;
+  for (const line of text.match(/[^\n]*\n|[^\n]+$/g) || []) {
+    const prefix = listMarkerEnd(line);
+    if (prefix !== null) spans.push([lineStart, lineStart + prefix]);
+    lineStart += line.length;
+  }
+  return spans;
+}
+
+/** Mirrors `fn surrounded_by_numeric_characters`. */
+function surroundedByNumericCharacters(text, start, separatorLength) {
+  const before = charBefore(text, start);
+  const after = charAt(text, start + separatorLength);
+  return before !== undefined && isNumeric(before) && after !== undefined && isNumeric(after);
+}
+
+const IDEOGRAPHIC = /[㐀-鿿豈-﫿]/u;
+
+/** Mirrors `fn standalone_surface`. */
+function standaloneSurface(lower, start, end) {
+  if (IDEOGRAPHIC.test(lower.slice(start, end))) return true;
+  const before = charBefore(lower, start);
+  const after = charAt(lower, end);
+  return !(before !== undefined && isAlphanumeric(before)) && !(after !== undefined && isAlphanumeric(after));
+}
+
+/** Mirrors `fn push_requirement_span`. */
+function pushRequirementSpan(lower, start, end, spans) {
+  const slice = lower.slice(start, end);
+  const trimmed = trim(slice);
+  if (trimmed === '') return;
+  const offset = start + (slice.length - trimStart(slice).length);
+  spans.push([offset, offset + trimmed.length]);
+}
+
+/**
+ * Mirrors `fn ordered_requirement_spans`: decompose `text` on language-neutral
+ * punctuation and the caller's coordinating surfaces, keeping original spans.
+ * `source_span` is a UTF-8 byte range of `text`, as in Rust.
+ * @param {string} text
+ * @param {Array<string>} coordinatingSurfaces
+ * @returns {Array<{source_text: string, source_span: [number, number]}>}
+ */
+export function orderedRequirementSpans(text, coordinatingSurfaces) {
+  const [lower, offsets] = lowerWithOffsets(text);
+  const operands = requirementOperandSpans(text);
+  const outsideOperand = (index) => !operands.some(([start, end]) => offsets[index] >= start && offsets[index] < end);
+  const sourceBoundary = (index) => index === 0 || offsets[index] !== offsets[index - 1];
+  const cuts = [];
+  for (let index = 0; index < lower.length;) {
+    const character = charAt(lower, index);
+    if (PUNCTUATION.has(character)
+      && !surroundedByNumericCharacters(lower, index, character.length)
+      && !(character === '.' && charAt(lower, index + 1) !== undefined && isAlphanumeric(charAt(lower, index + 1)))
+      && outsideOperand(index)) {
+      cuts.push([index, index + character.length]);
+    }
+    index += character.length;
+  }
+  for (const raw of coordinatingSurfaces) {
+    const surface = raw.toLowerCase();
+    if (surface === '') continue;
+    for (const start of matchIndices(lower, surface)) {
+      const end = start + surface.length;
+      if (sourceBoundary(start) && sourceBoundary(end) && standaloneSurface(lower, start, end) && outsideOperand(start)) {
+        cuts.push([start, end]);
+      }
+    }
+  }
+  for (const [start, end] of requirementListSpans(lower)) {
+    if (outsideOperand(end - 1)) cuts.push([start, end]);
+  }
+  cuts.sort((left, right) => (left[0] - right[0]) || (right[1] - left[1]));
+  const lowerSpans = [];
+  let cursor = 0;
+  for (const [start, end] of cuts) {
+    if (start < cursor) continue;
+    pushRequirementSpan(lower, cursor, start, lowerSpans);
+    cursor = end;
+  }
+  pushRequirementSpan(lower, cursor, lower.length, lowerSpans);
+  return lowerSpans.map(([start, end]) => {
+    const sourceStart = offsets[start];
+    const sourceEnd = offsets[end];
+    return {
+      source_text: text.slice(sourceStart, sourceEnd),
+      source_span: [utf8Len(text.slice(0, sourceStart)), utf8Len(text.slice(0, sourceEnd))],
+    };
+  });
+}

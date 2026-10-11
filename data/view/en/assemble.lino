@@ -1,0 +1,17 @@
+view
+  id M-79e450f2cf62
+  lemma assemble
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "create by putting components or members together"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "collect in one place"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "get people together"
+    provenance (wordnet)

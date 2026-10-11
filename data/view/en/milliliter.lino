@@ -1,0 +1,9 @@
+view
+  id M-cdfe6e25cd23
+  lemma milliliter
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a metric unit of volume equal to one thousandth of a liter"
+    provenance (wordnet)

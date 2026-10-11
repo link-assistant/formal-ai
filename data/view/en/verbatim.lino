@@ -1,0 +1,13 @@
+view
+  id M-14ecba622487
+  lemma verbatim
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "using exactly the same words"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "in precisely the same words used by a writer or speaker"
+    provenance (wordnet)

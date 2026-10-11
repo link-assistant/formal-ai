@@ -1,0 +1,31 @@
+quantity	cantidad
+unit	unidad
+cardinal_number	número cardinal	número
+length	longitud
+data_storage	almacenamiento de datos
+mass	masa
+time	tiempo
+temperature	temperatura
+meter	metro	metros
+kilometer	kilómetro	kilómetros	km
+centimeter	centímetro	centímetros	cm
+millimeter	milímetro	milímetros	mm
+byte	byte	bytes
+kilobyte	kilobyte	kilobytes	kb
+megabyte	megabyte	megabytes	mb
+gigabyte	gigabyte	gigabytes	gb
+terabyte	terabyte	terabytes	tb
+bit	bit	bits
+kilogram	kilogramo	kilogramos	kilo	kilos	kg
+gram	gramo	gramos
+pound	libra	libras
+ton	tonelada	toneladas
+second	segundo	segundos
+minute	minuto	minutos
+hour	hora	horas
+millisecond	milisegundo	milisegundos	ms
+day	día	días
+month	mes	meses
+celsius	celsius	grados celsius
+fahrenheit	fahrenheit
+kelvin	kelvin

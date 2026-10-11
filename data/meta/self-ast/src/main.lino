@@ -2,10 +2,10 @@ self_ast_census
   target src/main.rs
   language rust
   fidelity signature
-  byte_len 33522
-  line_count 942
-  content_id source_module_4c4acac6833684ed
-  symbol_count 42
+  byte_len 35341
+  line_count 981
+  content_id source_module_4cdbef1caecdbc8d
+  symbol_count 44
   symbols
     module cli_algorithm 7 7
     module cli_benchmark 8 8
@@ -15,37 +15,39 @@ self_ast_census
     module cli_computer_use 12 12
     module cli_context 13 13
     module cli_environments 14 14
-    module cli_file_legality 15 15
-    module cli_github_logs 16 16
-    module cli_import 17 17
-    module cli_improve 18 18
-    module cli_learn 19 19
-    module cli_local_transport 20 20
-    module cli_memory 21 21
-    module cli_orchestration 22 22
-    module cli_paths 23 23
-    module cli_procedure 24 24
-    module cli_report 25 25
-    module cli_shared_dialog 26 26
-    module cli_statement_audit 27 27
-    module cli_summarization 28 28
-    module cli_telegram 29 29
-    module cli_translate 30 30
-    const DEFAULT_AGENT_TASK 66 86
-    struct Args 75 86
-    enum Command 89 388
-    enum MemoryAction 391 541
-    enum BundleAction 544 568
-    enum OutputFormat 571 575
-    enum DefinitionFusionMode 578 581
-    enum TelegramMode 584 587
-    function fmt 590 596
-    function fmt 600 605
-    function fmt 609 614
-    function main 617 790
-    function run_agent 792 816
-    struct TelegramRunArgs 818 827
-    function solver_for_chat 829 846
-    function print_thinking_trace 859 877
-    function run_chat 879 932
-    function read_input 934 942
+    module cli_explain 15 15
+    module cli_file_legality 16 16
+    module cli_github_logs 17 17
+    module cli_import 18 18
+    module cli_improve 19 19
+    module cli_learn 20 20
+    module cli_local_transport 21 21
+    module cli_memory 22 22
+    module cli_orchestration 23 23
+    module cli_paths 24 24
+    module cli_procedure 25 25
+    module cli_report 26 26
+    module cli_repository_history 27 27
+    module cli_shared_dialog 28 28
+    module cli_statement_audit 29 29
+    module cli_summarization 30 30
+    module cli_telegram 31 31
+    module cli_translate 32 32
+    const DEFAULT_AGENT_TASK 70 99
+    struct Args 79 99
+    enum Command 102 422
+    enum MemoryAction 425 575
+    enum BundleAction 578 602
+    enum OutputFormat 605 609
+    enum DefinitionFusionMode 612 615
+    enum TelegramMode 618 621
+    function fmt 624 630
+    function fmt 634 639
+    function fmt 643 648
+    function main 651 829
+    function run_agent 831 855
+    struct TelegramRunArgs 857 866
+    function solver_for_chat 868 885
+    function print_thinking_trace 898 916
+    function run_chat 918 971
+    function read_input 973 981

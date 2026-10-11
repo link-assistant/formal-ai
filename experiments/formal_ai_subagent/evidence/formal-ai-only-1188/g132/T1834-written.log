@@ -1,0 +1,14 @@
+Правило поведения скомпилировано для этого диалога.
+
+Когда пользователь говорит `planChatStep`, ответь `read`.
+
+```links
+behavior_rule_runtime_e703d24f7aa500b0
+  type "behavior_rule_runtime"
+  match_prompt "planChatStep"
+  answer "read"
+  when_then "Когда пользователь говорит `planChatStep`, ответь `read`."
+  source "user_message"
+```
+
+Отправьте `planChatStep` сейчас, и я отвечу настроенным ответом. Экспортируйте память, чтобы сохранить это правило вместе с диалогом.

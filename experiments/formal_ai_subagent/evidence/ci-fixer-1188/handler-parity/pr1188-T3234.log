@@ -1,0 +1,369 @@
+>> read {"filePath":"js/worker/formal_ai_worker_coreference.js","file_path":"js/worker/formal_ai_worker_coreference.js","path":"js/worker/formal_ai_worker_coreference.js"}
+   <file>
+   00001| // Seeded conversation references, bounded normalized surfaces and typed resolution events.
+   00002| // Mirrors `try_coreference_request` in
+   00003| // `src/solver_handlers/benchmark_prompts.rs` for fact-style follow-ups.
+   00004| function replaceBoundedToken(text, token, replacement) {
+   00005|   if (!text || !token || !replacement) return null;
+   00006|   const pattern = new RegExp(
+   00007|     `(^|[^\\p{L}\\p{N}_])${escapeRegExp(token)}(?=$|[^\\p{L}\\p{N}_])`,
+   00008|     "gu",
+   00009|   );
+   00010|   let changed = false;
+   00011|   const rewritten = String(text).replace(pattern, (match, prefix) => {
+   00012|     changed = true;
+   00013|     return `${prefix}${replacement}`;
+   00014|   });
+   00015|   return changed ? rewritten : null;
+   00016| }
+   00017| 
+   00018| function matchingCoreferencePronoun(normalized) {
+   00019|   const pronouns = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.pronouns)
+   00020|     ? COREFERENCE_SEEDS.pronouns
+   00021|     : [];
+   00022|   return pronouns.find((pronoun) => {
+   00023|     const contexts = Array.isArray(pronoun && pronoun.contexts)
+   00024|       ? pronoun.contexts
+   00025|       : [];
+   00026|     const startsWith = Array.isArray(pronoun && pronoun.startsWith)
+   00027|       ? pronoun.startsWith
+   00028|       : [];
+   00029|     return contexts.some((context) => surfacePresent(normalized, normalizePrompt(context))) ||
+   00030|       startsWith.some((prefix) => {
+   00031|         const surface = normalizePrompt(prefix);
+   00032|         return normalized.startsWith(surface) && surfacePresent(normalized, surface);
+   00033|       });
+   00034|   }) || null;
+   00035| }
+   00036| 
+   00037| function matchingCoreferenceAntecedent(previous) {
+   00038|   const antecedents = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.antecedents)
+   00039|     ? COREFERENCE_SEEDS.antecedents
+   00040|     : [];
+   00041|   return antecedents.find((antecedent) => {
+   00042|     const aliases = Array.isArray(antecedent && antecedent.aliases)
+   00043|       ? antecedent.aliases
+   00044|       : [];
+   00045|     return aliases.some((alias) => alias && previous.includes(alias));
+   00046|   }) || null;
+   00047| }
+   00048| 
+   00049| function matchingAntecedentFactAlias(record, antecedent, previous) {
+   00050|   const factAliases = (record && record.subjectAliases) || [];
+   00051|   const antecedentAliases = (antecedent && antecedent.aliases) || [];
+   00052|   // Issue #1172: word-boundary match (see tryFactLookup) so the alias "us"
+   00053|   // counts only when the previous turn literally mentions it.
+   00054|   return factAliases.find((alias) =>
+   00055|     alias &&
+   00056|     surfacePresent(previous, normalizePrompt(alias)) &&
+   00057|     antecedentAliases.includes(String(alias).toLowerCase()),
+   00058|   ) || "";
+   00059| }
+   00060| 
+   00061| // Rust `resolve_coreference_antecedent`: the nearest earlier user turn naming an antecedent of the seed
+   00062| // (assistant turns name none, and a later unrelated user turn leaves an earlier antecedent visible).
+   00063| function nearestCoreferenceAntecedent(history) {
+   00064|   const turns = Array.isArray(history) ? history : [];
+   00065|   for (let index = turns.length - 1; index >= 0; index -= 1) {
+   00066|     const turn = turns[index];
+   00067|     if (!turn || turn.role !== "user") continue;
+   00068|     const antecedent = matchingCoreferenceAntecedent(String(turn.content || "").toLowerCase());
+   00069|     if (antecedent) return { antecedent, previous: normalizePrompt(String(turn.content || "")) };
+   00070|   }
+   00071|   return null;
+   00072| }
+   00073| 
+   00074| function tryCoreferenceFactLookup(prompt, normalized, history) {
+   00075|   const pronoun = matchingCoreferencePronoun(normalized);
+   00076|   if (!pronoun || !pronoun.token) return null;
+   00077| 
+   00078|   const resolved = nearestCoreferenceAntecedent(history);
+   00079|   if (!resolved) return null;
+   00080|   const { antecedent, previous } = resolved;
+   00081| 
+   00082|   for (const record of FACTS) {
+   00083|     // Issue #1172: word-boundary keyword prefilter (see tryFactLookup).
+   00084|     if (!record || !(record.questionKeywords || []).some((keyword) => surfacePresent(normalized, normalizePrompt(keyword)))) continue;
+   00085| 
+   00086|     const alias = matchingAntecedentFactAlias(record, antecedent, previous);
+   00087|     if (!alias) continue;
+   00088| 
+   00089|     const rewritten = replaceBoundedToken(normalized, pronoun.token, alias);
+   00090|     if (!rewritten) continue;
+   00091| 
+   00092|     const hit = tryFactLookup(prompt, rewritten);
+   00093|     if (!hit) continue;
+   00094| 
+   00095|     const subject = antecedent.displayName || record.subjectLabel || alias;
+   00096|     return Object.assign({}, hit, {
+   00097|       solverEvents: [
+   00098|         { kind: "coreference:resolved", payload: `${pronoun.token}=${subject}` },
+   00099|         ...(antecedent.wikidata ? [{ kind: "wikidata", payload: antecedent.wikidata }] : []),
+   00100|         { kind: "coreference:rewrite", payload: rewritten },
+   00101|         ...(Array.isArray(hit.solverEvents) ? hit.solverEvents : []),
+   00102|       ],
+   00103|       evidence: [
+   00104|         `coreference:resolved:${pronoun.token}=${subject}`,
+   00105|         `coreference:rewrite:${rewritten}`,
+   00106|         ...(Array.isArray(hit.evidence) ? hit.evidence : []),
+   00107|       ],
+   00108|     });
+   00109|   }
+   00110| 
+   00111|   // Rust `try_coreference_request`: no fact answers the rewritten question, so the antecedent's seeded body does.
+   00112|   if (!antecedent.body) return null;
+   00113|   const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];
+   00114|   if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);
+   00115|   const solverEvents = [{ kind: "coreference:resolved", payload: `${pronoun.token}=${antecedent.displayName}` }];
+   00116|   if (antecedent.wikidata) solverEvents.push({ kind: "wikidata", payload: antecedent.wikidata });
+   00117|   return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, solverEvents, evidence: [...evidence, "response:coreference"] };
+   00118| }
+   00119| 
+   00120| 
+   
+   (End of file - total 120 lines)
+   </file>
+>> edit {"filePath":"js/worker/formal_ai_worker_coreference.js","file_path":"js/worker/formal_ai_worker_coreference.js","new":"// Seeded conversation references, bounded normalized surfaces and typed resolution events.\n// Mirrors `try_coreference_request` in\n// `src/solver_handlers/benchmark_prompts.rs` for fact-style follow-ups.\nfunction replaceBoundedToken(text, token, replacement) {\n  if (!text || !token || !replacement) return null;\n  const pattern = new RegExp(\n    `(^|[^\\\\p{L}\\\\p{N}_])${escapeRegExp(token)}(?=$|[^\\\\p{L}\\\\p{N}_])`,\n    \"gu\",\n  );\n  let changed = false;\n  const rewritten = String(text).replace(pattern, (match, prefix) => {\n    changed = true;\n    return `${prefix}${replacement}`;\n  });\n  return changed ? rewritten : null;\n}\n\nfunction matchingCoreferencePronoun(normalized) {\n  const pronouns = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.pronouns)\n    ? COREFERENCE_SEEDS.pronouns\n    : [];\n  return pronouns.find((pronoun) => {\n    const contexts = Array.isArray(pronoun && pronoun.contexts)\n      ? pronoun.contexts\n      : [];\n    const startsWith = Array.isArray(pronoun && pronoun.startsWith)\n      ? pronoun.startsWith\n      : [];\n    return contexts.some((context) => surfacePresent(normalized, normalizePrompt(context))) ||\n      startsWith.some((prefix) => {\n        const surface = normalizePrompt(prefix);\n        return normalized.startsWith(surface) && surfacePresent(normalized, surface);\n      });\n  }) || null;\n}\n\nfunction matchingCoreferenceAntecedent(previous) {\n  const antecedents = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.antecedents)\n    ? COREFERENCE_SEEDS.antecedents\n    : [];\n  return antecedents.find((antecedent) => {\n    const aliases = Array.isArray(antecedent && antecedent.aliases)\n      ? antecedent.aliases\n      : [];\n    return aliases.some((alias) => alias && previous.includes(alias));\n  }) || null;\n}\n\nfunction matchingAntecedentFactAlias(record, antecedent, previous) {\n  const factAliases = (record && record.subjectAliases) || [];\n  const antecedentAliases = (antecedent && antecedent.aliases) || [];\n  // Issue #1172: word-boundary match (see tryFactLookup) so the alias \"us\"\n  // counts only when the previous turn literally mentions it.\n  return factAliases.find((alias) =>\n    alias &&\n    surfacePresent(previous, normalizePrompt(alias)) &&\n    antecedentAliases.includes(String(alias).toLowerCase()),\n  ) || \"\";\n}\n\n// Rust `resolve_coreference_antecedent`: the nearest earlier user turn naming an antecedent of the seed\n// (assistant turns name none, and a later unrelated user turn leaves an earlier antecedent visible).\nfunction nearestCoreferenceAntecedent(history) {\n  const turns = Array.isArray(history) ? history : [];\n  for (let index = turns.length - 1; index >= 0; index -= 1) {\n    const turn = turns[index];\n    if (!turn || turn.role !== \"user\") continue;\n    const antecedent = matchingCoreferenceAntecedent(String(turn.content || \"\").toLowerCase());\n    if (antecedent) return { antecedent, previous: normalizePrompt(String(turn.content || \"\")) };\n  }\n  return null;\n}\n\nfunction tryCoreferenceFactLookup(prompt, normalized, history) {\n  const pronoun = matchingCoreferencePronoun(normalized);\n  if (!pronoun || !pronoun.token) return null;\n\n  const resolved = nearestCoreferenceAntecedent(history);\n  if (!resolved) return null;\n  const { antecedent, previous } = resolved;\n\n  for (const record of FACTS) {\n    // Issue #1172: word-boundary keyword prefilter (see tryFactLookup).\n    if (!record || !(record.questionKeywords || []).some((keyword) => surfacePresent(normalized, normalizePrompt(keyword)))) continue;\n\n    const alias = matchingAntecedentFactAlias(record, antecedent, previous);\n    if (!alias) continue;\n\n    const rewritten = replaceBoundedToken(normalized, pronoun.token, alias);\n    if (!rewritten) continue;\n\n    const hit = tryFactLookup(prompt, rewritten);\n    if (!hit) continue;\n\n    const subject = antecedent.displayName || record.subjectLabel || alias;\n    return Object.assign({}, hit, {\n      solverEvents: [\n        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        ...(antecedent.wikidata ? [{ kind: \"wikidata\", payload: antecedent.wikidata }] : []),\n        { kind: \"coreference:rewrite\", payload: rewritten },\n        ...(Array.isArray(hit.solverEvents) ? hit.solverEvents : []),\n      ],\n      evidence: [\n        `coreference:resolved:${pronoun.token}=${subject}`,\n        `coreference:rewrite:${rewritten}`,\n        ...(Array.isArray(hit.evidence) ? hit.evidence : []),\n      ],\n    });\n  }\n\n  // Rust `try_coreference_request`: no fact answers the rewritten question, so the antecedent's seeded body does.\n  if (!antecedent.body) return null;\n  const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];\n  if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);\n  const solverEvents = [{ kind: \"coreference:resolved\", payload: `${pronoun.token}=${antecedent.displayName}` }];\n  if (antecedent.wikidata) solverEvents.push({ kind: \"wikidata\", payload: antecedent.wikidata });\n  return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, solverEvents, evidence: [...evidence, \"response:coreference\"] };\n}\n","newString":"// Seeded conversation references, bounded normalized surfaces and typed resolution events.\n// Mirrors `try_coreference_request` in\n// `src/solver_handlers/benchmark_prompts.rs` for fact-style follow-ups.\nfunction replaceBoundedToken(text, token, replacement) {\n  if (!text || !token || !replacement) return null;\n  const pattern = new RegExp(\n    `(^|[^\\\\p{L}\\\\p{N}_])${escapeRegExp(token)}(?=$|[^\\\\p{L}\\\\p{N}_])`,\n    \"gu\",\n  );\n  let changed = false;\n  const rewritten = String(text).replace(pattern, (match, prefix) => {\n    changed = true;\n    return `${prefix}${replacement}`;\n  });\n  return changed ? rewritten : null;\n}\n\nfunction matchingCoreferencePronoun(normalized) {\n  const pronouns = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.pronouns)\n    ? COREFERENCE_SEEDS.pronouns\n    : [];\n  return pronouns.find((pronoun) => {\n    const contexts = Array.isArray(pronoun && pronoun.contexts)\n      ? pronoun.contexts\n      : [];\n    const startsWith = Array.isArray(pronoun && pronoun.startsWith)\n      ? pronoun.startsWith\n      : [];\n    return contexts.some((context) => surfacePresent(normalized, normalizePrompt(context))) ||\n      startsWith.some((prefix) => {\n        const surface = normalizePrompt(prefix);\n        return normalized.startsWith(surface) && surfacePresent(normalized, surface);\n      });\n  }) || null;\n}\n\nfunction matchingCoreferenceAntecedent(previous) {\n  const antecedents = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.antecedents)\n    ? COREFERENCE_SEEDS.antecedents\n    : [];\n  return antecedents.find((antecedent) => {\n    const aliases = Array.isArray(antecedent && antecedent.aliases)\n      ? antecedent.aliases\n      : [];\n    return aliases.some((alias) => alias && previous.includes(alias));\n  }) || null;\n}\n\nfunction matchingAntecedentFactAlias(record, antecedent, previous) {\n  const factAliases = (record && record.subjectAliases) || [];\n  const antecedentAliases = (antecedent && antecedent.aliases) || [];\n  // Issue #1172: word-boundary match (see tryFactLookup) so the alias \"us\"\n  // counts only when the previous turn literally mentions it.\n  return factAliases.find((alias) =>\n    alias &&\n    surfacePresent(previous, normalizePrompt(alias)) &&\n    antecedentAliases.includes(String(alias).toLowerCase()),\n  ) || \"\";\n}\n\n// Rust `resolve_coreference_antecedent`: the nearest earlier user turn naming an antecedent of the seed\n// (assistant turns name none, and a later unrelated user turn leaves an earlier antecedent visible).\nfunction nearestCoreferenceAntecedent(history) {\n  const turns = Array.isArray(history) ? history : [];\n  for (let index = turns.length - 1; index >= 0; index -= 1) {\n    const turn = turns[index];\n    if (!turn || turn.role !== \"user\") continue;\n    const antecedent = matchingCoreferenceAntecedent(String(turn.content || \"\").toLowerCase());\n    if (antecedent) return { antecedent, previous: normalizePrompt(String(turn.content || \"\")) };\n  }\n  return null;\n}\n\nfunction tryCoreferenceFactLookup(prompt, normalized, history) {\n  const pronoun = matchingCoreferencePronoun(normalized);\n  if (!pronoun || !pronoun.token) return null;\n\n  const resolved = nearestCoreferenceAntecedent(history);\n  if (!resolved) return null;\n  const { antecedent, previous } = resolved;\n\n  for (const record of FACTS) {\n    // Issue #1172: word-boundary keyword prefilter (see tryFactLookup).\n    if (!record || !(record.questionKeywords || []).some((keyword) => surfacePresent(normalized, normalizePrompt(keyword)))) continue;\n\n    const alias = matchingAntecedentFactAlias(record, antecedent, previous);\n    if (!alias) continue;\n\n    const rewritten = replaceBoundedToken(normalized, pronoun.token, alias);\n    if (!rewritten) continue;\n\n    const hit = tryFactLookup(prompt, rewritten);\n    if (!hit) continue;\n\n    const subject = antecedent.displayName || record.subjectLabel || alias;\n    return Object.assign({}, hit, {\n      solverEvents: [\n        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        ...(antecedent.wikidata ? [{ kind: \"wikidata\", payload: antecedent.wikidata }] : []),\n        { kind: \"coreference:rewrite\", payload: rewritten },\n        ...(Array.isArray(hit.solverEvents) ? hit.solverEvents : []),\n      ],\n      evidence: [\n        `coreference:resolved:${pronoun.token}=${subject}`,\n        `coreference:rewrite:${rewritten}`,\n        ...(Array.isArray(hit.evidence) ? hit.evidence : []),\n      ],\n    });\n  }\n\n  // Rust `try_coreference_request`: no fact answers the rewritten question, so the antecedent's seeded body does.\n  if (!antecedent.body) return null;\n  const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];\n  if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);\n  const solverEvents = [{ kind: \"coreference:resolved\", payload: `${pronoun.token}=${antecedent.displayName}` }];\n  if (antecedent.wikidata) solverEvents.push({ kind: \"wikidata\", payload: antecedent.wikidata });\n  return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, solverEvents, evidence: [...evidence, \"response:coreference\"] };\n}\n","new_str":"// Seeded conversation references, bounded normalized surfaces and typed resolution events.\n// Mirrors `try_coreference_request` in\n// `src/solver_handlers/benchmark_prompts.rs` for fact-style follow-ups.\nfunction replaceBoundedToken(text, token, replacement) {\n  if (!text || !token || !replacement) return null;\n  const pattern = new RegExp(\n    `(^|[^\\\\p{L}\\\\p{N}_])${escapeRegExp(token)}(?=$|[^\\\\p{L}\\\\p{N}_])`,\n    \"gu\",\n  );\n  let changed = false;\n  const rewritten = String(text).replace(pattern, (match, prefix) => {\n    changed = true;\n    return `${prefix}${replacement}`;\n  });\n  return changed ? rewritten : null;\n}\n\nfunction matchingCoreferencePronoun(normalized) {\n  const pronouns = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.pronouns)\n    ? COREFERENCE_SEEDS.pronouns\n    : [];\n  return pronouns.find((pronoun) => {\n    const contexts = Array.isArray(pronoun && pronoun.contexts)\n      ? pronoun.contexts\n      : [];\n    const startsWith = Array.isArray(pronoun && pronoun.startsWith)\n      ? pronoun.startsWith\n      : [];\n    return contexts.some((context) => surfacePresent(normalized, normalizePrompt(context))) ||\n      startsWith.some((prefix) => {\n        const surface = normalizePrompt(prefix);\n        return normalized.startsWith(surface) && surfacePresent(normalized, surface);\n      });\n  }) || null;\n}\n\nfunction matchingCoreferenceAntecedent(previous) {\n  const antecedents = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.antecedents)\n    ? COREFERENCE_SEEDS.antecedents\n    : [];\n  return antecedents.find((antecedent) => {\n    const aliases = Array.isArray(antecedent && antecedent.aliases)\n      ? antecedent.aliases\n      : [];\n    return aliases.some((alias) => alias && previous.includes(alias));\n  }) || null;\n}\n\nfunction matchingAntecedentFactAlias(record, antecedent, previous) {\n  const factAliases = (record && record.subjectAliases) || [];\n  const antecedentAliases = (antecedent && antecedent.aliases) || [];\n  // Issue #1172: word-boundary match (see tryFactLookup) so the alias \"us\"\n  // counts only when the previous turn literally mentions it.\n  return factAliases.find((alias) =>\n    alias &&\n    surfacePresent(previous, normalizePrompt(alias)) &&\n    antecedentAliases.includes(String(alias).toLowerCase()),\n  ) || \"\";\n}\n\n// Rust `resolve_coreference_antecedent`: the nearest earlier user turn naming an antecedent of the seed\n// (assistant turns name none, and a later unrelated user turn leaves an earlier antecedent visible).\nfunction nearestCoreferenceAntecedent(history) {\n  const turns = Array.isArray(history) ? history : [];\n  for (let index = turns.length - 1; index >= 0; index -= 1) {\n    const turn = turns[index];\n    if (!turn || turn.role !== \"user\") continue;\n    const antecedent = matchingCoreferenceAntecedent(String(turn.content || \"\").toLowerCase());\n    if (antecedent) return { antecedent, previous: normalizePrompt(String(turn.content || \"\")) };\n  }\n  return null;\n}\n\nfunction tryCoreferenceFactLookup(prompt, normalized, history) {\n  const pronoun = matchingCoreferencePronoun(normalized);\n  if (!pronoun || !pronoun.token) return null;\n\n  const resolved = nearestCoreferenceAntecedent(history);\n  if (!resolved) return null;\n  const { antecedent, previous } = resolved;\n\n  for (const record of FACTS) {\n    // Issue #1172: word-boundary keyword prefilter (see tryFactLookup).\n    if (!record || !(record.questionKeywords || []).some((keyword) => surfacePresent(normalized, normalizePrompt(keyword)))) continue;\n\n    const alias = matchingAntecedentFactAlias(record, antecedent, previous);\n    if (!alias) continue;\n\n    const rewritten = replaceBoundedToken(normalized, pronoun.token, alias);\n    if (!rewritten) continue;\n\n    const hit = tryFactLookup(prompt, rewritten);\n    if (!hit) continue;\n\n    const subject = antecedent.displayName || record.subjectLabel || alias;\n    return Object.assign({}, hit, {\n      solverEvents: [\n        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        ...(antecedent.wikidata ? [{ kind: \"wikidata\", payload: antecedent.wikidata }] : []),\n        { kind: \"coreference:rewrite\", payload: rewritten },\n        ...(Array.isArray(hit.solverEvents) ? hit.solverEvents : []),\n      ],\n      evidence: [\n        `coreference:resolved:${pronoun.token}=${subject}`,\n        `coreference:rewrite:${rewritten}`,\n        ...(Array.isArray(hit.evidence) ? hit.evidence : []),\n      ],\n    });\n  }\n\n  // Rust `try_coreference_request`: no fact answers the rewritten question, so the antecedent's seeded body does.\n  if (!antecedent.body) return null;\n  const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];\n  if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);\n  const solverEvents = [{ kind: \"coreference:resolved\", payload: `${pronoun.token}=${antecedent.displayName}` }];\n  if (antecedent.wikidata) solverEvents.push({ kind: \"wikidata\", payload: antecedent.wikidata });\n  return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, solverEvents, evidence: [...evidence, \"response:coreference\"] };\n}\n","new_string":"// Seeded conversation references, bounded normalized surfaces and typed resolution events.\n// Mirrors `try_coreference_request` in\n// `src/solver_handlers/benchmark_prompts.rs` for fact-style follow-ups.\nfunction replaceBoundedToken(text, token, replacement) {\n  if (!text || !token || !replacement) return null;\n  const pattern = new RegExp(\n    `(^|[^\\\\p{L}\\\\p{N}_])${escapeRegExp(token)}(?=$|[^\\\\p{L}\\\\p{N}_])`,\n    \"gu\",\n  );\n  let changed = false;\n  const rewritten = String(text).replace(pattern, (match, prefix) => {\n    changed = true;\n    return `${prefix}${replacement}`;\n  });\n  return changed ? rewritten : null;\n}\n\nfunction matchingCoreferencePronoun(normalized) {\n  const pronouns = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.pronouns)\n    ? COREFERENCE_SEEDS.pronouns\n    : [];\n  return pronouns.find((pronoun) => {\n    const contexts = Array.isArray(pronoun && pronoun.contexts)\n      ? pronoun.contexts\n      : [];\n    const startsWith = Array.isArray(pronoun && pronoun.startsWith)\n      ? pronoun.startsWith\n      : [];\n    return contexts.some((context) => surfacePresent(normalized, normalizePrompt(context))) ||\n      startsWith.some((prefix) => {\n        const surface = normalizePrompt(prefix);\n        return normalized.startsWith(surface) && surfacePresent(normalized, surface);\n      });\n  }) || null;\n}\n\nfunction matchingCoreferenceAntecedent(previous) {\n  const antecedents = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.antecedents)\n    ? COREFERENCE_SEEDS.antecedents\n    : [];\n  return antecedents.find((antecedent) => {\n    const aliases = Array.isArray(antecedent && antecedent.aliases)\n      ? antecedent.aliases\n      : [];\n    return aliases.some((alias) => alias && previous.includes(alias));\n  }) || null;\n}\n\nfunction matchingAntecedentFactAlias(record, antecedent, previous) {\n  const factAliases = (record && record.subjectAliases) || [];\n  const antecedentAliases = (antecedent && antecedent.aliases) || [];\n  // Issue #1172: word-boundary match (see tryFactLookup) so the alias \"us\"\n  // counts only when the previous turn literally mentions it.\n  return factAliases.find((alias) =>\n    alias &&\n    surfacePresent(previous, normalizePrompt(alias)) &&\n    antecedentAliases.includes(String(alias).toLowerCase()),\n  ) || \"\";\n}\n\n// Rust `resolve_coreference_antecedent`: the nearest earlier user turn naming an antecedent of the seed\n// (assistant turns name none, and a later unrelated user turn leaves an earlier antecedent visible).\nfunction nearestCoreferenceAntecedent(history) {\n  const turns = Array.isArray(history) ? history : [];\n  for (let index = turns.length - 1; index >= 0; index -= 1) {\n    const turn = turns[index];\n    if (!turn || turn.role !== \"user\") continue;\n    const antecedent = matchingCoreferenceAntecedent(String(turn.content || \"\").toLowerCase());\n    if (antecedent) return { antecedent, previous: normalizePrompt(String(turn.content || \"\")) };\n  }\n  return null;\n}\n\nfunction tryCoreferenceFactLookup(prompt, normalized, history) {\n  const pronoun = matchingCoreferencePronoun(normalized);\n  if (!pronoun || !pronoun.token) return null;\n\n  const resolved = nearestCoreferenceAntecedent(history);\n  if (!resolved) return null;\n  const { antecedent, previous } = resolved;\n\n  for (const record of FACTS) {\n    // Issue #1172: word-boundary keyword prefilter (see tryFactLookup).\n    if (!record || !(record.questionKeywords || []).some((keyword) => surfacePresent(normalized, normalizePrompt(keyword)))) continue;\n\n    const alias = matchingAntecedentFactAlias(record, antecedent, previous);\n    if (!alias) continue;\n\n    const rewritten = replaceBoundedToken(normalized, pronoun.token, alias);\n    if (!rewritten) continue;\n\n    const hit = tryFactLookup(prompt, rewritten);\n    if (!hit) continue;\n\n    const subject = antecedent.displayName || record.subjectLabel || alias;\n    return Object.assign({}, hit, {\n      solverEvents: [\n        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        ...(antecedent.wikidata ? [{ kind: \"wikidata\", payload: antecedent.wikidata }] : []),\n        { kind: \"coreference:rewrite\", payload: rewritten },\n        ...(Array.isArray(hit.solverEvents) ? hit.solverEvents : []),\n      ],\n      evidence: [\n        `coreference:resolved:${pronoun.token}=${subject}`,\n        `coreference:rewrite:${rewritten}`,\n        ...(Array.isArray(hit.evidence) ? hit.evidence : []),\n      ],\n    });\n  }\n\n  // Rust `try_coreference_request`: no fact answers the rewritten question, so the antecedent's seeded body does.\n  if (!antecedent.body) return null;\n  const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];\n  if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);\n  const solverEvents = [{ kind: \"coreference:resolved\", payload: `${pronoun.token}=${antecedent.displayName}` }];\n  if (antecedent.wikidata) solverEvents.push({ kind: \"wikidata\", payload: antecedent.wikidata });\n  return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, solverEvents, evidence: [...evidence, \"response:coreference\"] };\n}\n","old":"// Seeded conversation references, bounded normalized surfaces and typed resolution events.\n// Mirrors `try_coreference_request` in\n// `src/solver_handlers/benchmark_prompts.rs` for fact-style follow-ups.\nfunction replaceBoundedToken(text, token, replacement) {\n  if (!text || !token || !replacement) return null;\n  const pattern = new RegExp(\n    `(^|[^\\\\p{L}\\\\p{N}_])${escapeRegExp(token)}(?=$|[^\\\\p{L}\\\\p{N}_])`,\n    \"gu\",\n  );\n  let changed = false;\n  const rewritten = String(text).replace(pattern, (match, prefix) => {\n    changed = true;\n    return `${prefix}${replacement}`;\n  });\n  return changed ? rewritten : null;\n}\n\nfunction matchingCoreferencePronoun(normalized) {\n  const pronouns = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.pronouns)\n    ? COREFERENCE_SEEDS.pronouns\n    : [];\n  return pronouns.find((pronoun) => {\n    const contexts = Array.isArray(pronoun && pronoun.contexts)\n      ? pronoun.contexts\n      : [];\n    const startsWith = Array.isArray(pronoun && pronoun.startsWith)\n      ? pronoun.startsWith\n      : [];\n    return contexts.some((context) => surfacePresent(normalized, normalizePrompt(context))) ||\n      startsWith.some((prefix) => {\n        const surface = normalizePrompt(prefix);\n        return normalized.startsWith(surface) && surfacePresent(normalized, surface);\n      });\n  }) || null;\n}\n\nfunction matchingCoreferenceAntecedent(previous) {\n  const antecedents = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.antecedents)\n    ? COREFERENCE_SEEDS.antecedents\n    : [];\n  return antecedents.find((antecedent) => {\n    const aliases = Array.isArray(antecedent && antecedent.aliases)\n      ? antecedent.aliases\n      : [];\n    return aliases.some((alias) => alias && previous.includes(alias));\n  }) || null;\n}\n\nfunction matchingAntecedentFactAlias(record, antecedent, previous) {\n  const factAliases = (record && record.subjectAliases) || [];\n  const antecedentAliases = (antecedent && antecedent.aliases) || [];\n  // Issue #1172: word-boundary match (see tryFactLookup) so the alias \"us\"\n  // counts only when the previous turn literally mentions it.\n  return factAliases.find((alias) =>\n    alias &&\n    surfacePresent(previous, normalizePrompt(alias)) &&\n    antecedentAliases.includes(String(alias).toLowerCase()),\n  ) || \"\";\n}\n\n// Rust `resolve_coreference_antecedent`: the nearest earlier user turn naming an antecedent of the seed\n// (assistant turns name none, and a later unrelated user turn leaves an earlier antecedent visible).\nfunction nearestCoreferenceAntecedent(history) {\n  const turns = Array.isArray(history) ? history : [];\n  for (let index = turns.length - 1; index >= 0; index -= 1) {\n    const turn = turns[index];\n    if (!turn || turn.role !== \"user\") continue;\n    const antecedent = matchingCoreferenceAntecedent(String(turn.content || \"\").toLowerCase());\n    if (antecedent) return { antecedent, previous: normalizePrompt(String(turn.content || \"\")) };\n  }\n  return null;\n}\n\nfunction tryCoreferenceFactLookup(prompt, normalized, history) {\n  const pronoun = matchingCoreferencePronoun(normalized);\n  if (!pronoun || !pronoun.token) return null;\n\n  const resolved = nearestCoreferenceAntecedent(history);\n  if (!resolved) return null;\n  const { antecedent, previous } = resolved;\n\n  for (const record of FACTS) {\n    // Issue #1172: word-boundary keyword prefilter (see tryFactLookup).\n    if (!record || !(record.questionKeywords || []).some((keyword) => surfacePresent(normalized, normalizePrompt(keyword)))) continue;\n\n    const alias = matchingAntecedentFactAlias(record, antecedent, previous);\n    if (!alias) continue;\n\n    const rewritten = replaceBoundedToken(normalized, pronoun.token, alias);\n    if (!rewritten) continue;\n\n    const hit = tryFactLookup(prompt, rewritten);\n    if (!hit) continue;\n\n    const subject = antecedent.displayName || record.subjectLabel || alias;\n    return Object.assign({}, hit, {\n      solverEvents: [\n        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        ...(antecedent.wikidata ? [{ kind: \"wikidata\", payload: antecedent.wikidata }] : []),\n        { kind: \"coreference:rewrite\", payload: rewritten },\n        ...(Array.isArray(hit.solverEvents) ? hit.solverEvents : []),\n      ],\n      evidence: [\n        `coreference:resolved:${pronoun.token}=${subject}`,\n        `coreference:rewrite:${rewritten}`,\n        ...(Array.isArray(hit.evidence) ? hit.evidence : []),\n      ],\n    });\n  }\n\n  // Rust `try_coreference_request`: no fact answers the rewritten question, so the antecedent's seeded body does.\n  if (!antecedent.body) return null;\n  const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];\n  if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);\n  const solverEvents = [{ kind: \"coreference:resolved\", payload: `${pronoun.token}=${antecedent.displayName}` }];\n  if (antecedent.wikidata) solverEvents.push({ kind: \"wikidata\", payload: antecedent.wikidata });\n  return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, solverEvents, evidence: [...evidence, \"response:coreference\"] };\n}\n\n","oldString":"// Seeded conversation references, bounded normalized surfaces and typed resolution events.\n// Mirrors `try_coreference_request` in\n// `src/solver_handlers/benchmark_prompts.rs` for fact-style follow-ups.\nfunction replaceBoundedToken(text, token, replacement) {\n  if (!text || !token || !replacement) return null;\n  const pattern = new RegExp(\n    `(^|[^\\\\p{L}\\\\p{N}_])${escapeRegExp(token)}(?=$|[^\\\\p{L}\\\\p{N}_])`,\n    \"gu\",\n  );\n  let changed = false;\n  const rewritten = String(text).replace(pattern, (match, prefix) => {\n    changed = true;\n    return `${prefix}${replacement}`;\n  });\n  return changed ? rewritten : null;\n}\n\nfunction matchingCoreferencePronoun(normalized) {\n  const pronouns = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.pronouns)\n    ? COREFERENCE_SEEDS.pronouns\n    : [];\n  return pronouns.find((pronoun) => {\n    const contexts = Array.isArray(pronoun && pronoun.contexts)\n      ? pronoun.contexts\n      : [];\n    const startsWith = Array.isArray(pronoun && pronoun.startsWith)\n      ? pronoun.startsWith\n      : [];\n    return contexts.some((context) => surfacePresent(normalized, normalizePrompt(context))) ||\n      startsWith.some((prefix) => {\n        const surface = normalizePrompt(prefix);\n        return normalized.startsWith(surface) && surfacePresent(normalized, surface);\n      });\n  }) || null;\n}\n\nfunction matchingCoreferenceAntecedent(previous) {\n  const antecedents = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.antecedents)\n    ? COREFERENCE_SEEDS.antecedents\n    : [];\n  return antecedents.find((antecedent) => {\n    const aliases = Array.isArray(antecedent && antecedent.aliases)\n      ? antecedent.aliases\n      : [];\n    return aliases.some((alias) => alias && previous.includes(alias));\n  }) || null;\n}\n\nfunction matchingAntecedentFactAlias(record, antecedent, previous) {\n  const factAliases = (record && record.subjectAliases) || [];\n  const antecedentAliases = (antecedent && antecedent.aliases) || [];\n  // Issue #1172: word-boundary match (see tryFactLookup) so the alias \"us\"\n  // counts only when the previous turn literally mentions it.\n  return factAliases.find((alias) =>\n    alias &&\n    surfacePresent(previous, normalizePrompt(alias)) &&\n    antecedentAliases.includes(String(alias).toLowerCase()),\n  ) || \"\";\n}\n\n// Rust `resolve_coreference_antecedent`: the nearest earlier user turn naming an antecedent of the seed\n// (assistant turns name none, and a later unrelated user turn leaves an earlier antecedent visible).\nfunction nearestCoreferenceAntecedent(history) {\n  const turns = Array.isArray(history) ? history : [];\n  for (let index = turns.length - 1; index >= 0; index -= 1) {\n    const turn = turns[index];\n    if (!turn || turn.role !== \"user\") continue;\n    const antecedent = matchingCoreferenceAntecedent(String(turn.content || \"\").toLowerCase());\n    if (antecedent) return { antecedent, previous: normalizePrompt(String(turn.content || \"\")) };\n  }\n  return null;\n}\n\nfunction tryCoreferenceFactLookup(prompt, normalized, history) {\n  const pronoun = matchingCoreferencePronoun(normalized);\n  if (!pronoun || !pronoun.token) return null;\n\n  const resolved = nearestCoreferenceAntecedent(history);\n  if (!resolved) return null;\n  const { antecedent, previous } = resolved;\n\n  for (const record of FACTS) {\n    // Issue #1172: word-boundary keyword prefilter (see tryFactLookup).\n    if (!record || !(record.questionKeywords || []).some((keyword) => surfacePresent(normalized, normalizePrompt(keyword)))) continue;\n\n    const alias = matchingAntecedentFactAlias(record, antecedent, previous);\n    if (!alias) continue;\n\n    const rewritten = replaceBoundedToken(normalized, pronoun.token, alias);\n    if (!rewritten) continue;\n\n    const hit = tryFactLookup(prompt, rewritten);\n    if (!hit) continue;\n\n    const subject = antecedent.displayName || record.subjectLabel || alias;\n    return Object.assign({}, hit, {\n      solverEvents: [\n        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        ...(antecedent.wikidata ? [{ kind: \"wikidata\", payload: antecedent.wikidata }] : []),\n        { kind: \"coreference:rewrite\", payload: rewritten },\n        ...(Array.isArray(hit.solverEvents) ? hit.solverEvents : []),\n      ],\n      evidence: [\n        `coreference:resolved:${pronoun.token}=${subject}`,\n        `coreference:rewrite:${rewritten}`,\n        ...(Array.isArray(hit.evidence) ? hit.evidence : []),\n      ],\n    });\n  }\n\n  // Rust `try_coreference_request`: no fact answers the rewritten question, so the antecedent's seeded body does.\n  if (!antecedent.body) return null;\n  const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];\n  if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);\n  const solverEvents = [{ kind: \"coreference:resolved\", payload: `${pronoun.token}=${antecedent.displayName}` }];\n  if (antecedent.wikidata) solverEvents.push({ kind: \"wikidata\", payload: antecedent.wikidata });\n  return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, solverEvents, evidence: [...evidence, \"response:coreference\"] };\n}\n\n","old_str":"// Seeded conversation references, bounded normalized surfaces and typed resolution events.\n// Mirrors `try_coreference_request` in\n// `src/solver_handlers/benchmark_prompts.rs` for fact-style follow-ups.\nfunction replaceBoundedToken(text, token, replacement) {\n  if (!text || !token || !replacement) return null;\n  const pattern = new RegExp(\n    `(^|[^\\\\p{L}\\\\p{N}_])${escapeRegExp(token)}(?=$|[^\\\\p{L}\\\\p{N}_])`,\n    \"gu\",\n  );\n  let changed = false;\n  const rewritten = String(text).replace(pattern, (match, prefix) => {\n    changed = true;\n    return `${prefix}${replacement}`;\n  });\n  return changed ? rewritten : null;\n}\n\nfunction matchingCoreferencePronoun(normalized) {\n  const pronouns = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.pronouns)\n    ? COREFERENCE_SEEDS.pronouns\n    : [];\n  return pronouns.find((pronoun) => {\n    const contexts = Array.isArray(pronoun && pronoun.contexts)\n      ? pronoun.contexts\n      : [];\n    const startsWith = Array.isArray(pronoun && pronoun.startsWith)\n      ? pronoun.startsWith\n      : [];\n    return contexts.some((context) => surfacePresent(normalized, normalizePrompt(context))) ||\n      startsWith.some((prefix) => {\n        const surface = normalizePrompt(prefix);\n        return normalized.startsWith(surface) && surfacePresent(normalized, surface);\n      });\n  }) || null;\n}\n\nfunction matchingCoreferenceAntecedent(previous) {\n  const antecedents = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.antecedents)\n    ? COREFERENCE_SEEDS.antecedents\n    : [];\n  return antecedents.find((antecedent) => {\n    const aliases = Array.isArray(antecedent && antecedent.aliases)\n      ? antecedent.aliases\n      : [];\n    return aliases.some((alias) => alias && previous.includes(alias));\n  }) || null;\n}\n\nfunction matchingAntecedentFactAlias(record, antecedent, previous) {\n  const factAliases = (record && record.subjectAliases) || [];\n  const antecedentAliases = (antecedent && antecedent.aliases) || [];\n  // Issue #1172: word-boundary match (see tryFactLookup) so the alias \"us\"\n  // counts only when the previous turn literally mentions it.\n  return factAliases.find((alias) =>\n    alias &&\n    surfacePresent(previous, normalizePrompt(alias)) &&\n    antecedentAliases.includes(String(alias).toLowerCase()),\n  ) || \"\";\n}\n\n// Rust `resolve_coreference_antecedent`: the nearest earlier user turn naming an antecedent of the seed\n// (assistant turns name none, and a later unrelated user turn leaves an earlier antecedent visible).\nfunction nearestCoreferenceAntecedent(history) {\n  const turns = Array.isArray(history) ? history : [];\n  for (let index = turns.length - 1; index >= 0; index -= 1) {\n    const turn = turns[index];\n    if (!turn || turn.role !== \"user\") continue;\n    const antecedent = matchingCoreferenceAntecedent(String(turn.content || \"\").toLowerCase());\n    if (antecedent) return { antecedent, previous: normalizePrompt(String(turn.content || \"\")) };\n  }\n  return null;\n}\n\nfunction tryCoreferenceFactLookup(prompt, normalized, history) {\n  const pronoun = matchingCoreferencePronoun(normalized);\n  if (!pronoun || !pronoun.token) return null;\n\n  const resolved = nearestCoreferenceAntecedent(history);\n  if (!resolved) return null;\n  const { antecedent, previous } = resolved;\n\n  for (const record of FACTS) {\n    // Issue #1172: word-boundary keyword prefilter (see tryFactLookup).\n    if (!record || !(record.questionKeywords || []).some((keyword) => surfacePresent(normalized, normalizePrompt(keyword)))) continue;\n\n    const alias = matchingAntecedentFactAlias(record, antecedent, previous);\n    if (!alias) continue;\n\n    const rewritten = replaceBoundedToken(normalized, pronoun.token, alias);\n    if (!rewritten) continue;\n\n    const hit = tryFactLookup(prompt, rewritten);\n    if (!hit) continue;\n\n    const subject = antecedent.displayName || record.subjectLabel || alias;\n    return Object.assign({}, hit, {\n      solverEvents: [\n        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        ...(antecedent.wikidata ? [{ kind: \"wikidata\", payload: antecedent.wikidata }] : []),\n        { kind: \"coreference:rewrite\", payload: rewritten },\n        ...(Array.isArray(hit.solverEvents) ? hit.solverEvents : []),\n      ],\n      evidence: [\n        `coreference:resolved:${pronoun.token}=${subject}`,\n        `coreference:rewrite:${rewritten}`,\n        ...(Array.isArray(hit.evidence) ? hit.evidence : []),\n      ],\n    });\n  }\n\n  // Rust `try_coreference_request`: no fact answers the rewritten question, so the antecedent's seeded body does.\n  if (!antecedent.body) return null;\n  const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];\n  if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);\n  const solverEvents = [{ kind: \"coreference:resolved\", payload: `${pronoun.token}=${antecedent.displayName}` }];\n  if (antecedent.wikidata) solverEvents.push({ kind: \"wikidata\", payload: antecedent.wikidata });\n  return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, solverEvents, evidence: [...evidence, \"response:coreference\"] };\n}\n\n","old_string":"// Seeded conversation references, bounded normalized surfaces and typed resolution events.\n// Mirrors `try_coreference_request` in\n// `src/solver_handlers/benchmark_prompts.rs` for fact-style follow-ups.\nfunction replaceBoundedToken(text, token, replacement) {\n  if (!text || !token || !replacement) return null;\n  const pattern = new RegExp(\n    `(^|[^\\\\p{L}\\\\p{N}_])${escapeRegExp(token)}(?=$|[^\\\\p{L}\\\\p{N}_])`,\n    \"gu\",\n  );\n  let changed = false;\n  const rewritten = String(text).replace(pattern, (match, prefix) => {\n    changed = true;\n    return `${prefix}${replacement}`;\n  });\n  return changed ? rewritten : null;\n}\n\nfunction matchingCoreferencePronoun(normalized) {\n  const pronouns = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.pronouns)\n    ? COREFERENCE_SEEDS.pronouns\n    : [];\n  return pronouns.find((pronoun) => {\n    const contexts = Array.isArray(pronoun && pronoun.contexts)\n      ? pronoun.contexts\n      : [];\n    const startsWith = Array.isArray(pronoun && pronoun.startsWith)\n      ? pronoun.startsWith\n      : [];\n    return contexts.some((context) => surfacePresent(normalized, normalizePrompt(context))) ||\n      startsWith.some((prefix) => {\n        const surface = normalizePrompt(prefix);\n        return normalized.startsWith(surface) && surfacePresent(normalized, surface);\n      });\n  }) || null;\n}\n\nfunction matchingCoreferenceAntecedent(previous) {\n  const antecedents = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.antecedents)\n    ? COREFERENCE_SEEDS.antecedents\n    : [];\n  return antecedents.find((antecedent) => {\n    const aliases = Array.isArray(antecedent && antecedent.aliases)\n      ? antecedent.aliases\n      : [];\n    return aliases.some((alias) => alias && previous.includes(alias));\n  }) || null;\n}\n\nfunction matchingAntecedentFactAlias(record, antecedent, previous) {\n  const factAliases = (record && record.subjectAliases) || [];\n  const antecedentAliases = (antecedent && antecedent.aliases) || [];\n  // Issue #1172: word-boundary match (see tryFactLookup) so the alias \"us\"\n  // counts only when the previous turn literally mentions it.\n  return factAliases.find((alias) =>\n    alias &&\n    surfacePresent(previous, normalizePrompt(alias)) &&\n    antecedentAliases.includes(String(alias).toLowerCase()),\n  ) || \"\";\n}\n\n// Rust `resolve_coreference_antecedent`: the nearest earlier user turn naming an antecedent of the seed\n// (assistant turns name none, and a later unrelated user turn leaves an earlier antecedent visible).\nfunction nearestCoreferenceAntecedent(history) {\n  const turns = Array.isArray(history) ? history : [];\n  for (let index = turns.length - 1; index >= 0; index -= 1) {\n    const turn = turns[index];\n    if (!turn || turn.role !== \"user\") continue;\n    const antecedent = matchingCoreferenceAntecedent(String(turn.content || \"\").toLowerCase());\n    if (antecedent) return { antecedent, previous: normalizePrompt(String(turn.content || \"\")) };\n  }\n  return null;\n}\n\nfunction tryCoreferenceFactLookup(prompt, normalized, history) {\n  const pronoun = matchingCoreferencePronoun(normalized);\n  if (!pronoun || !pronoun.token) return null;\n\n  const resolved = nearestCoreferenceAntecedent(history);\n  if (!resolved) return null;\n  const { antecedent, previous } = resolved;\n\n  for (const record of FACTS) {\n    // Issue #1172: word-boundary keyword prefilter (see tryFactLookup).\n    if (!record || !(record.questionKeywords || []).some((keyword) => surfacePresent(normalized, normalizePrompt(keyword)))) continue;\n\n    const alias = matchingAntecedentFactAlias(record, antecedent, previous);\n    if (!alias) continue;\n\n    const rewritten = replaceBoundedToken(normalized, pronoun.token, alias);\n    if (!rewritten) continue;\n\n    const hit = tryFactLookup(prompt, rewritten);\n    if (!hit) continue;\n\n    const subject = antecedent.displayName || record.subjectLabel || alias;\n    return Object.assign({}, hit, {\n      solverEvents: [\n        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        ...(antecedent.wikidata ? [{ kind: \"wikidata\", payload: antecedent.wikidata }] : []),\n        { kind: \"coreference:rewrite\", payload: rewritten },\n        ...(Array.isArray(hit.solverEvents) ? hit.solverEvents : []),\n      ],\n      evidence: [\n        `coreference:resolved:${pronoun.token}=${subject}`,\n        `coreference:rewrite:${rewritten}`,\n        ...(Array.isArray(hit.evidence) ? hit.evidence : []),\n      ],\n    });\n  }\n\n  // Rust `try_coreference_request`: no fact answers the rewritten question, so the antecedent's seeded body does.\n  if (!antecedent.body) return null;\n  const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];\n  if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);\n  const solverEvents = [{ kind: \"coreference:resolved\", payload: `${pronoun.token}=${antecedent.displayName}` }];\n  if (antecedent.wikidata) solverEvents.push({ kind: \"wikidata\", payload: antecedent.wikidata });\n  return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, solverEvents, evidence: [...evidence, \"response:coreference\"] };\n}\n\n","path":"js/worker/formal_ai_worker_coreference.js"}
+>> bash {"command":"sha256sum -- js/worker/formal_ai_worker_coreference.js"}
+   Output: e4e8cfa5e08e48a02b188ba6024025b992224e4336fd98b3b97dc8b95a55d575  js/worker/formal_ai_worker_coreference.js
+   
+   Exit Code: 0
+== answer ==
+Replaced ``// Seeded conversation references, bounded normalized surfaces and typed resolution events.
+// Mirrors `try_coreference_request` in
+// `src/solver_handlers/benchmark_prompts.rs` for fact-style follow-ups.
+function replaceBoundedToken(text, token, replacement) {
+  if (!text || !token || !replacement) return null;
+  const pattern = new RegExp(
+    `(^|[^\\p{L}\\p{N}_])${escapeRegExp(token)}(?=$|[^\\p{L}\\p{N}_])`,
+    "gu",
+  );
+  let changed = false;
+  const rewritten = String(text).replace(pattern, (match, prefix) => {
+    changed = true;
+    return `${prefix}${replacement}`;
+  });
+  return changed ? rewritten : null;
+}
+
+function matchingCoreferencePronoun(normalized) {
+  const pronouns = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.pronouns)
+    ? COREFERENCE_SEEDS.pronouns
+    : [];
+  return pronouns.find((pronoun) => {
+    const contexts = Array.isArray(pronoun && pronoun.contexts)
+      ? pronoun.contexts
+      : [];
+    const startsWith = Array.isArray(pronoun && pronoun.startsWith)
+      ? pronoun.startsWith
+      : [];
+    return contexts.some((context) => surfacePresent(normalized, normalizePrompt(context))) ||
+      startsWith.some((prefix) => {
+        const surface = normalizePrompt(prefix);
+        return normalized.startsWith(surface) && surfacePresent(normalized, surface);
+      });
+  }) || null;
+}
+
+function matchingCoreferenceAntecedent(previous) {
+  const antecedents = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.antecedents)
+    ? COREFERENCE_SEEDS.antecedents
+    : [];
+  return antecedents.find((antecedent) => {
+    const aliases = Array.isArray(antecedent && antecedent.aliases)
+      ? antecedent.aliases
+      : [];
+    return aliases.some((alias) => alias && previous.includes(alias));
+  }) || null;
+}
+
+function matchingAntecedentFactAlias(record, antecedent, previous) {
+  const factAliases = (record && record.subjectAliases) || [];
+  const antecedentAliases = (antecedent && antecedent.aliases) || [];
+  // Issue #1172: word-boundary match (see tryFactLookup) so the alias "us"
+  // counts only when the previous turn literally mentions it.
+  return factAliases.find((alias) =>
+    alias &&
+    surfacePresent(previous, normalizePrompt(alias)) &&
+    antecedentAliases.includes(String(alias).toLowerCase()),
+  ) || "";
+}
+
+// Rust `resolve_coreference_antecedent`: the nearest earlier user turn naming an antecedent of the seed
+// (assistant turns name none, and a later unrelated user turn leaves an earlier antecedent visible).
+function nearestCoreferenceAntecedent(history) {
+  const turns = Array.isArray(history) ? history : [];
+  for (let index = turns.length - 1; index >= 0; index -= 1) {
+    const turn = turns[index];
+    if (!turn || turn.role !== "user") continue;
+    const antecedent = matchingCoreferenceAntecedent(String(turn.content || "").toLowerCase());
+    if (antecedent) return { antecedent, previous: normalizePrompt(String(turn.content || "")) };
+  }
+  return null;
+}
+
+function tryCoreferenceFactLookup(prompt, normalized, history) {
+  const pronoun = matchingCoreferencePronoun(normalized);
+  if (!pronoun || !pronoun.token) return null;
+
+  const resolved = nearestCoreferenceAntecedent(history);
+  if (!resolved) return null;
+  const { antecedent, previous } = resolved;
+
+  for (const record of FACTS) {
+    // Issue #1172: word-boundary keyword prefilter (see tryFactLookup).
+    if (!record || !(record.questionKeywords || []).some((keyword) => surfacePresent(normalized, normalizePrompt(keyword)))) continue;
+
+    const alias = matchingAntecedentFactAlias(record, antecedent, previous);
+    if (!alias) continue;
+
+    const rewritten = replaceBoundedToken(normalized, pronoun.token, alias);
+    if (!rewritten) continue;
+
+    const hit = tryFactLookup(prompt, rewritten);
+    if (!hit) continue;
+
+    const subject = antecedent.displayName || record.subjectLabel || alias;
+    return Object.assign({}, hit, {
+      solverEvents: [
+        { kind: "coreference:resolved", payload: `${pronoun.token}=${subject}` },
+        ...(antecedent.wikidata ? [{ kind: "wikidata", payload: antecedent.wikidata }] : []),
+        { kind: "coreference:rewrite", payload: rewritten },
+        ...(Array.isArray(hit.solverEvents) ? hit.solverEvents : []),
+      ],
+      evidence: [
+        `coreference:resolved:${pronoun.token}=${subject}`,
+        `coreference:rewrite:${rewritten}`,
+        ...(Array.isArray(hit.evidence) ? hit.evidence : []),
+      ],
+    });
+  }
+
+  // Rust `try_coreference_request`: no fact answers the rewritten question, so the antecedent's seeded body does.
+  if (!antecedent.body) return null;
+  const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];
+  if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);
+  const solverEvents = [{ kind: "coreference:resolved", payload: `${pronoun.token}=${antecedent.displayName}` }];
+  if (antecedent.wikidata) solverEvents.push({ kind: "wikidata", payload: antecedent.wikidata });
+  return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, solverEvents, evidence: [...evidence, "response:coreference"] };
+}
+
+`` with ``// Seeded conversation references, bounded normalized surfaces and typed resolution events.
+// Mirrors `try_coreference_request` in
+// `src/solver_handlers/benchmark_prompts.rs` for fact-style follow-ups.
+function replaceBoundedToken(text, token, replacement) {
+  if (!text || !token || !replacement) return null;
+  const pattern = new RegExp(
+    `(^|[^\\p{L}\\p{N}_])${escapeRegExp(token)}(?=$|[^\\p{L}\\p{N}_])`,
+    "gu",
+  );
+  let changed = false;
+  const rewritten = String(text).replace(pattern, (match, prefix) => {
+    changed = true;
+    return `${prefix}${replacement}`;
+  });
+  return changed ? rewritten : null;
+}
+
+function matchingCoreferencePronoun(normalized) {
+  const pronouns = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.pronouns)
+    ? COREFERENCE_SEEDS.pronouns
+    : [];
+  return pronouns.find((pronoun) => {
+    const contexts = Array.isArray(pronoun && pronoun.contexts)
+      ? pronoun.contexts
+      : [];
+    const startsWith = Array.isArray(pronoun && pronoun.startsWith)
+      ? pronoun.startsWith
+      : [];
+    return contexts.some((context) => surfacePresent(normalized, normalizePrompt(context))) ||
+      startsWith.some((prefix) => {
+        const surface = normalizePrompt(prefix);
+        return normalized.startsWith(surface) && surfacePresent(normalized, surface);
+      });
+  }) || null;
+}
+
+function matchingCoreferenceAntecedent(previous) {
+  const antecedents = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.antecedents)
+    ? COREFERENCE_SEEDS.antecedents
+    : [];
+  return antecedents.find((antecedent) => {
+    const aliases = Array.isArray(antecedent && antecedent.aliases)
+      ? antecedent.aliases
+      : [];
+    return aliases.some((alias) => alias && previous.includes(alias));
+  }) || null;
+}
+
+function matchingAntecedentFactAlias(record, antecedent, previous) {
+  const factAliases = (record && record.subjectAliases) || [];
+  const antecedentAliases = (antecedent && antecedent.aliases) || [];
+  // Issue #1172: word-boundary match (see tryFactLookup) so the alias "us"
+  // counts only when the previous turn literally mentions it.
+  return factAliases.find((alias) =>
+    alias &&
+    surfacePresent(previous, normalizePrompt(alias)) &&
+    antecedentAliases.includes(String(alias).toLowerCase()),
+  ) || "";
+}
+
+// Rust `resolve_coreference_antecedent`: the nearest earlier user turn naming an antecedent of the seed
+// (assistant turns name none, and a later unrelated user turn leaves an earlier antecedent visible).
+function nearestCoreferenceAntecedent(history) {
+  const turns = Array.isArray(history) ? history : [];
+  for (let index = turns.length - 1; index >= 0; index -= 1) {
+    const turn = turns[index];
+    if (!turn || turn.role !== "user") continue;
+    const antecedent = matchingCoreferenceAntecedent(String(turn.content || "").toLowerCase());
+    if (antecedent) return { antecedent, previous: normalizePrompt(String(turn.content || "")) };
+  }
+  return null;
+}
+
+function tryCoreferenceFactLookup(prompt, normalized, history) {
+  const pronoun = matchingCoreferencePronoun(normalized);
+  if (!pronoun || !pronoun.token) return null;
+
+  const resolved = nearestCoreferenceAntecedent(history);
+  if (!resolved) return null;
+  const { antecedent, previous } = resolved;
+
+  for (const record of FACTS) {
+    // Issue #1172: word-boundary keyword prefilter (see tryFactLookup).
+    if (!record || !(record.questionKeywords || []).some((keyword) => surfacePresent(normalized, normalizePrompt(keyword)))) continue;
+
+    const alias = matchingAntecedentFactAlias(record, antecedent, previous);
+    if (!alias) continue;
+
+    const rewritten = replaceBoundedToken(normalized, pronoun.token, alias);
+    if (!rewritten) continue;
+
+    const hit = tryFactLookup(prompt, rewritten);
+    if (!hit) continue;
+
+    const subject = antecedent.displayName || record.subjectLabel || alias;
+    return Object.assign({}, hit, {
+      solverEvents: [
+        { kind: "coreference:resolved", payload: `${pronoun.token}=${subject}` },
+        ...(antecedent.wikidata ? [{ kind: "wikidata", payload: antecedent.wikidata }] : []),
+        { kind: "coreference:rewrite", payload: rewritten },
+        ...(Array.isArray(hit.solverEvents) ? hit.solverEvents : []),
+      ],
+      evidence: [
+        `coreference:resolved:${pronoun.token}=${subject}`,
+        `coreference:rewrite:${rewritten}`,
+        ...(Array.isArray(hit.evidence) ? hit.evidence : []),
+      ],
+    });
+  }
+
+  // Rust `try_coreference_request`: no fact answers the rewritten question, so the antecedent's seeded body does.
+  if (!antecedent.body) return null;
+  const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];
+  if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);
+  const solverEvents = [{ kind: "coreference:resolved", payload: `${pronoun.token}=${antecedent.displayName}` }];
+  if (antecedent.wikidata) solverEvents.push({ kind: "wikidata", payload: antecedent.wikidata });
+  return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, solverEvents, evidence: [...evidence, "response:coreference"] };
+}
+`` in `js/worker/formal_ai_worker_coreference.js` and observed the result.

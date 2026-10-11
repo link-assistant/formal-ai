@@ -1,0 +1,68 @@
+>> bash {"command":"node --test rust/tests/web/native-test-artifact.test.mjs"}
+   Output: TAP version 13
+   # Subtest: same build identity and bytes execute the exact registered testcase
+   ok 1 - same build identity and bytes execute the exact registered testcase
+     ---
+     duration_ms: 902.367958
+     ...
+   # Subtest: foreign source tree and build variants refuse before executing artifact bytes
+   ok 2 - foreign source tree and build variants refuse before executing artifact bytes
+     ---
+     duration_ms: 4.135458
+     ...
+   # Subtest: tampered unit or runtime binary bytes are rejected before execution
+   ok 3 - tampered unit or runtime binary bytes are rejected before execution
+     ---
+     duration_ms: 2.844125
+     ...
+   # Subtest: missing testcase and noncanonical receipt cannot silently run a different test
+   ok 4 - missing testcase and noncanonical receipt cannot silently run a different test
+     ---
+     duration_ms: 163.270584
+     ...
+   1..4
+   # tests 4
+   # suites 0
+   # pass 4
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 1110.152
+   
+   Exit Code: 0
+== answer ==
+The `node --test rust/tests/web/native-test-artifact.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: same build identity and bytes execute the exact registered testcase
+ok 1 - same build identity and bytes execute the exact registered testcase
+  ---
+  duration_ms: 902.367958
+  ...
+# Subtest: foreign source tree and build variants refuse before executing artifact bytes
+ok 2 - foreign source tree and build variants refuse before executing artifact bytes
+  ---
+  duration_ms: 4.135458
+  ...
+# Subtest: tampered unit or runtime binary bytes are rejected before execution
+ok 3 - tampered unit or runtime binary bytes are rejected before execution
+  ---
+  duration_ms: 2.844125
+  ...
+# Subtest: missing testcase and noncanonical receipt cannot silently run a different test
+ok 4 - missing testcase and noncanonical receipt cannot silently run a different test
+  ---
+  duration_ms: 163.270584
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1110.152
+```

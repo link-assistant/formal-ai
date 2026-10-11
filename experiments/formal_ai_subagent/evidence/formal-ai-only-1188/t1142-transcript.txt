@@ -1,0 +1,340 @@
+>> read {"filePath":"data/seed/handler-promotions.lino","file_path":"data/seed/handler-promotions.lino","path":"data/seed/handler-promotions.lino"}
+   <file>
+   00001| handler_promotions
+   00002|   issue 1138
+   00003|   purpose "Which handlers a prompt hoists ahead of data/seed/handler-precedence.lino. Conditions use the handler-rules grammar and are evaluated by the same interpreter, so a promotion is a seed edit, never a Rust edit."
+   00004|   promotion conversation_control
+   00005|     rank 10
+   00006|     when
+   00007|       any
+   00008|         role conversation_preference_avoid forms of cleaned
+   00009|         role unauthorized_mutation_correction forms of cleaned
+   00010|     because "conversation preferences and action corrections must bind before ordinary task routing"
+   00011|   promotion execution_failure
+   00012|     rank 20
+   00013|     when
+   00014|       any
+   00015|         substring undefined_function of lowercase
+   00016|         all
+   00017|           substring undefined of cleaned
+   00018|           substring function of cleaned
+   00019|         evidence undefined_call
+   00020|     because "an explicit execution failure must be explained before source text is treated as a new task; issue 1173 R3: a request whose program calls a function nothing defines (the undefined_call operand) fails the same way whatever the function is named"
+   00021|   promotion calendar_create_event
+   00022|     rank 30
+   00023|     when
+   00024|       all
+   00025|         any
+   00026|           role calendar_day_reference of padded
+   00027|           shape digit of trimmed
+   00028|         any
+   00029|           role calendar_schedule_action of padded
+   00030|           role calendar_event of padded
+   00031|           all
+   00032|             role calendar_hour_reference of padded
+   00033|             shape digit of trimmed
+   00034|           all
+   00035|             role calendar-date-marker of padded
+   00036|             any
+   00037|               role temporal-preposition of padded
+   00038|               shape time-separator of trimmed
+   00039|     because "issue 869 and issue 595 — a date signal conjoined with a scheduling act, or an elliptical clock hour that only the calendar handler's entity context can ground"
+   00040|   promotion program_synthesis
+   00041|     rank 40
+   00042|     when
+   00043|       all
+   00044|         role program_synthesis_subject of cleaned
+   00045|         role program_synthesis_domain of cleaned
+   00046|         role program_synthesis_action of cleaned
+   00047|     because "issue 710: a structural coding task is resolved before arithmetic and concepts inside its examples"
+   00048|   promotion web_search
+   00049|     rank 50
+   00050|     when
+   00051|       any
+   00052|         role web_search_action of cleaned
+   00053|         all
+   00054|           role web_search_news_subject of padded
+   00055|           role web_search_news_recency of padded
+   00056|         all
+   00057|           role web_search_records_subject of padded
+   00058|           role web_search_topic_marker of padded
+   00059|     because "issue 745: an explicit search act, a news request, or a records request"
+   00060|   promotion arithmetic
+   00061|     rank 60
+   00062|     when
+   00063|       all
+   00064|         shape digit of trimmed
+   00065|         any
+   00066|           substring + of lowercase
+   00067|           substring - of lowercase
+   00068|           substring * of lowercase
+   00069|           substring / of lowercase
+   00070|           substring plus of lowercase
+   00071|           substring minus of lowercase
+   00072|           substring times of lowercase
+   00073|           substring divided of lowercase
+   00074|           role arithmetic_operator_word of lowercase
+   00075|     because "a digit and an arithmetic operator form an executable arithmetic expression"
+   00076|   promotion statistics
+   00077|     rank 65
+   00078|     when
+   00079|       all
+   00080|         role statistics_operation of cleaned
+   00081|         shape digit of trimmed
+   00082|         substring "," of lowercase
+   00083|         any
+   00084|           substring "?" of lowercase
+   00085|           substring "？" of lowercase
+   00086|     because "issue 1176: a question naming a statistic over a stated list of values is computed from that list before a search or a measurement lookup reads the statistic as a term to look up"
+   00087|   promotion task_decomposition
+   00088|     rank 70
+   00089|     when
+   00090|       any
+   00091|         all
+   00092|           role task_atomicity_predicate forms of cleaned
+   00093|           any
+   00094|             role decomposable_task_noun forms of cleaned
+   00095|             role subtask_unit_noun forms of cleaned
+   00096|         all
+   00097|           role task_first_step_cue forms of cleaned
+   00098|           role decomposable_task_noun forms of cleaned
+   00099|         all
+   00100|           any
+   00101|             role task_decomposition_action forms of cleaned
+   00102|             role task_decomposition_action separated of cleaned
+   00103|           any
+   00104|             role decomposable_task_noun forms of cleaned
+   00105|             role subtask_unit_noun forms of cleaned
+   00106|         all
+   00107|           role subtask_enumeration_cue forms of cleaned
+   00108|           role subtask_unit_noun forms of cleaned
+   00109|           role decomposable_task_noun forms of cleaned
+   00110|     because "issue 847: questions about task structure rank before a how-to reading of the same verbs"
+   00111|   promotion procedural_how_to
+   00112|     rank 80
+   00113|     when
+   00114|       any
+   00115|         role-prefix procedural_request of cleaned
+   00116|         all
+   00117|           role-prefix procedural_request_elided_lead of cleaned
+   00118|           role procedural_action_verb forms of cleaned
+   00119|     because "a seeded procedural request with a concrete action reaches procedure discovery"
+   00120|   promotion proof_request
+   00121|     rank 90
+   00122|     when
+   00123|       any
+   00124|         role proof_directive of cleaned
+   00125|         role proof_request_lead of cleaned
+   00126|     because "an explicit request for proof reaches formal proof handling before opinion routing"
+   00127|   promotion fact_checking
+   00128|     rank 100
+   00129|     when
+   00130|       role fact_check_current_dialogue_query raw of cleaned
+   00131|     because "a claim-check request is evaluated against the current dialogue"
+   00132|   promotion world_state
+   00133|     rank 110
+   00134|     when
+   00135|       cue_set world_state_query of normalized
+   00136|     because "a remaining-goal question reads the dialogue world model when that mode is enabled; the cue lexicon holds the multilingual remaining-goal leads so this row cannot drift out of sync with recognition"
+   00137|   promotion installation_conversion
+   00138|     rank 120
+   00139|     when
+   00140|       all
+   00141|         any
+   00142|           substring convert of cleaned
+   00143|           substring transform of cleaned
+   00144|           substring translate of cleaned
+   00145|           substring конверт of cleaned
+   00146|           substring преобраз of cleaned
+   00147|           substring बदल of cleaned
+   00148|           substring 转换 of cleaned
+   00149|         any
+   00150|           substring readme of cleaned
+   00151|           substring markdown of cleaned
+   00152|           substring install of cleaned
+   00153|           substring deploy of cleaned
+   00154|           substring установ of cleaned
+   00155|           substring स्थापना of cleaned
+   00156|           substring 安装 of cleaned
+   00157|         any
+   00158|           substring script of cleaned
+   00159|           substring shell of cleaned
+   00160|           substring bash of cleaned
+   00161|           substring powershell of cleaned
+   00162|           substring скрипт of cleaned
+   00163|           substring 脚本 of cleaned
+   00164|     because "issue 932: guide-to-script conversion wins over generic script and project readings"
+   00165|   promotion write_script
+   00166|     rank 130
+   00167|     when
+   00168|       all
+   00169|         role script_authoring_verb of cleaned
+   00170|         role script_or_code_artifact of cleaned
+   00171|         none
+   00172|           role program_genus of cleaned
+   00173|           role hello_world_reference of cleaned
+   00174|     because "a script authoring act paired with a script artifact reaches the minimal script route"
+   00175|   promotion write_program
+   00176|     rank 140
+   00177|     when
+   00178|       all
+   00179|         role program_request of cleaned
+   00180|         role program_kind of cleaned
+   00181|     because "a program request is parameterized from seeded task and language meanings"
+   00182|   promotion text_manipulation
+   00183|     rank 150
+   00184|     when
+   00185|       any
+   00186|         substring uppercase of cleaned
+   00187|         substring lowercase of cleaned
+   00188|         substring replace of cleaned
+   00189|         substring append of cleaned
+   00190|         substring prepend of cleaned
+   00191|         substring extract of cleaned
+   00192|         substring deduplicate of cleaned
+   00193|         substring sort of cleaned
+   00194|         substring trim of cleaned
+   00195|         substring normalize of cleaned
+   00196|         substring reverse of cleaned
+   00197|     because "text transformations are selected by their operation, while operands remain data"
+   00198|   promotion software_project
+   00199|     rank 160
+   00200|     when
+   00201|       role software_authoring_action of cleaned
+   00202|     because "a software authoring action reaches project planning before a generic concept response"
+   00203|   promotion meta_explanation
+   00204|     rank 170
+   00205|     when
+   00206|       role assistant_mechanism_inquiry raw of cleaned
+   00207|     because "a question about the assistant mechanism is answered from its architecture trace"
+   00208|   promotion verifiable_task
+   00209|     rank 180
+   00210|     when
+   00211|       any
+   00212|         role verifiable_expectation of lowercase
+   00213|         role verifiable_expectation_pattern of lowercase
+   00214|     because "issues 531 and 1138: every seeded checkable expectation, the pattern expectation the data-gated pattern arm reads included, outranks generic retrieval; slot-backed paraphrases remain data and are interpreted by the shared rule grammar; the verifiable_spec claim still denies a pattern word with no run of atoms or grid, so a definition question falls through to concept_lookup"
+   00215|   promotion concept_lookup
+   00216|     rank 190
+   00217|     when
+   00218|       cue_set concept_lookup of normalized
+   00219|     because "a definition question opens with the pinned concept_lookup lead cues (data/meta/cue-lexicon.lino), so the cue class routes by prefix instead of an exact-route enumeration that cannot cover the open class"
+   00220|   promotion document_generation_plan
+   00221|     rank 200
+   00222|     when
+   00223|       all
+   00224|         none
+   00225|           substring "http://" of lowercase
+   00226|           substring "https://" of lowercase
+   00227|           substring "www." of lowercase
+   00228|         any
+   00229|           substring "make me" of lowercase
+   00230|           substring "make a" of lowercase
+   00231|           substring "make an" of lowercase
+   00232|           substring create of lowercase
+   00233|           substring generate of lowercase
+   00234|           substring produce of lowercase
+   00235|           substring compile of lowercase
+   00236|           substring prepare of lowercase
+   00237|           substring assemble of lowercase
+   00238|           substring draft of lowercase
+   00239|           substring "build me" of lowercase
+   00240|           substring export of lowercase
+   00241|           substring "give me" of lowercase
+   00242|           substring "i need" of lowercase
+   00243|           substring "i want" of lowercase
+   00244|           substring "put together" of lowercase
+   00245|           substring сдела of lowercase
+   00246|           substring созда of lowercase
+   00247|           substring сгенерир of lowercase
+   00248|           substring подготов of lowercase
+   00249|           substring сформир of lowercase
+   00250|           substring состав of lowercase
+   00251|           substring собери of lowercase
+   00252|           substring собрать of lowercase
+   00253|           substring оформ of lowercase
+   00254|           substring выгрузи of lowercase
+   00255|           substring экспортир of lowercase
+   00256|           substring сверста of lowercase
+   00257|           substring बना of lowercase
+   00258|           substring तैयार of lowercase
+   00259|           substring उत्पन्न of lowercase
+   00260|           substring चाहिए of lowercase
+   00261|           substring 做 of lowercase
+   00262|           substring 制作 of lowercase
+   00263|           substring 生成 of lowercase
+   00264|           substring 创建 of lowercase
+   00265|           substring 编写 of lowercase
+   00266|           substring 整理 of lowercase
+   00267|         any
+   00268|           substring pdf of lowercase
+   00269|           substring пдф of lowercase
+   00270|           substring docx of lowercase
+   00271|           substring ".doc" of lowercase
+   00272|           substring "word document" of lowercase
+   00273|           substring ворд of lowercase
+   00274|           substring xlsx of lowercase
+   00275|           substring csv of lowercase
+   00276|           substring spreadsheet of lowercase
+   00277|           substring excel of lowercase
+   00278|           substring эксель of lowercase
+   00279|           substring табличк of lowercase
+   00280|           substring 电子表格 of lowercase
+   00281|           substring 表格 of lowercase
+   00282|           substring स्प्रेडशीट of lowercase
+   00283|           substring pptx of lowercase
+   00284|           substring powerpoint of lowercase
+   00285|           substring "slide deck" of lowercase
+   00286|           substring презентаци of lowercase
+   00287|           substring слайд of lowercase
+   00288|           substring 演示 of lowercase
+   00289|           substring 幻灯片 of lowercase
+   00290|           substring प्रस्तुति of lowercase
+   00291|           substring document of lowercase
+   00292|           substring документ of lowercase
+   00293|           substring report of lowercase
+   00294|           substring отчет of lowercase
+   00295|           substring отчёт of lowercase
+   00296|           substring dossier of lowercase
+   00297|           substring досье of lowercase
+   00298|           substring brochure of lowercase
+   00299|           substring брошюр of lowercase
+   00300|           substring booklet of lowercase
+   00301|           substring буклет of lowercase
+   00302|           substring memo of lowercase
+   00303|           substring записку of lowercase
+   00304|           substring записка of lowercase
+   00305|           substring दस्तावेज़ of lowercase
+   00306|           substring दस्तावेज of lowercase
+   00307|           substring रिपोर्ट of lowercase
+   00308|           substring 文档 of lowercase
+   00309|           substring 文件 of lowercase
+   00310|           substring 报告 of lowercase
+   00311|     because "issue 425 and issue 1138: an authoring verb over a named document artifact is the document-generation recipe to plan. The mirrors are the recognizer in src/solver_handlers/document_request.rs until issue 1085 migrates that handler to rules, and the promotion exists because the capability table reads the output artifact as a workspace path and gaps it before rank 550 runs"
+   00312| 
+   00313| 
+   
+   (End of file - total 313 lines)
+   </file>
+>> edit {"filePath":"data/seed/handler-promotions.lino","file_path":"data/seed/handler-promotions.lino","new":"  promotion proof_request\n    rank 90\n    when\n      any\n        role-prefix proof_directive of cleaned\n        role proof_request_lead of cleaned","newString":"  promotion proof_request\n    rank 90\n    when\n      any\n        role-prefix proof_directive of cleaned\n        role proof_request_lead of cleaned","new_str":"  promotion proof_request\n    rank 90\n    when\n      any\n        role-prefix proof_directive of cleaned\n        role proof_request_lead of cleaned","new_string":"  promotion proof_request\n    rank 90\n    when\n      any\n        role-prefix proof_directive of cleaned\n        role proof_request_lead of cleaned","old":"  promotion proof_request\n    rank 90\n    when\n      any\n        role proof_directive of cleaned\n        role proof_request_lead of cleaned","oldString":"  promotion proof_request\n    rank 90\n    when\n      any\n        role proof_directive of cleaned\n        role proof_request_lead of cleaned","old_str":"  promotion proof_request\n    rank 90\n    when\n      any\n        role proof_directive of cleaned\n        role proof_request_lead of cleaned","old_string":"  promotion proof_request\n    rank 90\n    when\n      any\n        role proof_directive of cleaned\n        role proof_request_lead of cleaned","path":"data/seed/handler-promotions.lino"}
+>> bash {"command":"sha256sum -- data/seed/handler-promotions.lino"}
+   2c47bc6125e69c8768820e98ff6364263f911d531d8cb83f16b41aef1f222367  data/seed/handler-promotions.lino
+   
+== answer ==
+Replaced `  promotion proof_request
+    rank 90
+    when
+      any
+        role proof_directive of cleaned
+        role proof_request_lead of cleaned` with `  promotion proof_request
+    rank 90
+    when
+      any
+        role-prefix proof_directive of cleaned
+        role proof_request_lead of cleaned` in `data/seed/handler-promotions.lino` and observed the result.
+>> bash {"command":"cp -f data/seed/meanings-conversation.lino rust/embedded/data/seed/meanings-conversation.lino"}
+== answer ==
+The command completed successfully without output.
+>> bash {"command":"cp -f data/seed/handler-promotions.lino rust/embedded/data/seed/handler-promotions.lino"}
+== answer ==
+The command completed successfully without output.

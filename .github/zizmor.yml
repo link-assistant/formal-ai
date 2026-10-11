@@ -44,6 +44,7 @@ rules:
       - agentic-cli-matrix.yml
       - coverage.yml
       - desktop-release.yml
+      - docker-slim.yml
       - external-benchmarks.yml
       - issue-1028-agent-ladder.yml
       - macos-core-tests.yml

@@ -1,0 +1,17 @@
+view
+  id M-e9ac39c436b2
+  lemma append
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "add to the very end"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "fix to; attach"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "state or say further"
+    provenance (wordnet)

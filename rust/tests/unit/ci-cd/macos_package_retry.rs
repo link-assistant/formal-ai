@@ -95,6 +95,14 @@ case "$FORMAL_AI_TEST_MODE" in
       exit 40
     fi
     ;;
+  transient-eject-then-success)
+    # Desktop Release run 37534053151 (Build macos-x64): the finished image
+    # stayed busy when dmgbuild detached it.
+    if [ "$attempt" -eq 1 ]; then
+      echo "dmgbuild.core.DMGError: Unable to detach device cleanly: hdiutil: couldn't eject \"disk4\" - Resource busy" >&2
+      exit 1
+    fi
+    ;;
   nonempty-shrink-diagnostic)
     echo 'dmgbuild.core.DMGError: Unable to shrink: image layout is invalid' >&2
     exit 41
@@ -221,6 +229,21 @@ fn retries_explicit_hdiutil_resize_device_failure() {
     assert!(
         output.status.success(),
         "the explicit hosted-runner resize failure should recover; stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(count, "2", "the successful retry should be attempt two");
+}
+
+#[test]
+fn retries_hdiutil_eject_busy_failure() {
+    let root = sandbox("eject-retry");
+    let output = run_wrapper(&root, "transient-eject-then-success");
+    let count = attempt_count(&root);
+    fs::remove_dir_all(&root).expect("sandbox must be removed");
+
+    assert!(
+        output.status.success(),
+        "a busy image at detach should recover; stderr: {}",
         String::from_utf8_lossy(&output.stderr)
     );
     assert_eq!(count, "2", "the successful retry should be attempt two");

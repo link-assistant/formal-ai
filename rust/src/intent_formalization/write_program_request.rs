@@ -49,7 +49,18 @@ pub(super) fn requested_write_program_parameters(
     if quotes_carry_the_task {
         return None;
     }
-    write_program_parameters(normalized)
+    let mut parameters = write_program_parameters(normalized)?;
+    // Issue #1173 R1173-3: a request that names no catalogued task but text to
+    // print names the operand task (`print_text`), unless the minimal-script
+    // route answers it. The JavaScript twin is `requestedWriteProgramParameters`.
+    let minimal_script = crate::solver_helpers::is_write_script_request(raw, normalized)
+        && crate::engine::hello_world_program_by_alias(normalized).is_some();
+    if !(parameters.contains_key("task") || minimal_script)
+        && let Some(task) = crate::coding::operand_program::operand_task(raw)
+    {
+        parameters.insert(String::from("task"), task.slug.to_owned());
+    }
+    Some(parameters)
 }
 
 /// Does the request name a program *as its artefact*?
@@ -68,6 +79,23 @@ fn asks_for_program(normalized: &str) -> bool {
 
 /// The `write_program` parameters — task and language — that `normalized` names.
 pub(super) fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>> {
+    // Catalog aliases bind a coding task; container-scoped enumeration with
+    // no program artefact or implementation language is a workspace act.
+    let lexicon = crate::seed::lexicon();
+    let enumerates_container = [
+        crate::seed::ROLE_CAPABILITY_CONTAINER_SCOPE,
+        crate::seed::ROLE_CAPABILITY_ACT_ENUMERATE,
+    ]
+    .into_iter()
+    .all(|role| {
+        lexicon.mentions_role(role, normalized) || lexicon.mentions_role_raw(role, normalized)
+    });
+    if enumerates_container
+        && !lexicon.mentions_role(crate::seed::ROLE_PROGRAM_KIND, normalized)
+        && requested_program_language(normalized).is_none()
+    {
+        return None;
+    }
     let task = crate::coding::program_task_by_alias(normalized);
     let language = requested_program_language(normalized);
     let mentions_program_request =

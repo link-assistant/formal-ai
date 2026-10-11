@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_creative_writing.js"
+  ceiling 649
+  rationale "Creative composition, part two (issue #1178): constrained verse and itinerary planning, browser twin (PR #1188 JavaScript-first parity). JavaScript-first twin of native handler keys (creative_writing, planning_request), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth."

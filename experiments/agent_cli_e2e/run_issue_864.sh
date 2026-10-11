@@ -68,7 +68,13 @@ config="$(
     --prompt "$TASK"
 ) >"$OUT/agent-stream.raw.log" 2>"$OUT/agent-stderr.log"
 
-"$ROOT/scripts/classify-agent-cli-stderr.sh" "$OUT/agent-stderr.log"
+# Agent emits intentional failed-tool results on stderr as structured events.
+# Keep the raw evidence, remove only this fixture's exact expected error event,
+# then run the same strict warning policy on everything else.
+python3 "$ROOT/scripts/filter-expected-agent-tool-failure.py" \
+  "$OUT/agent-stderr.log" "$OUT/agent-stderr-policy.log" \
+  issue_864_command_that_does_not_exist
+"$ROOT/scripts/classify-agent-cli-stderr.sh" "$OUT/agent-stderr-policy.log"
 grep -E '^\{' "$OUT/agent-stream.raw.log" >"$OUT/agent-stream.jsonl"
 node "$ROOT/experiments/issue_750_tool_results/extract-final.mjs" \
   "$OUT/agent-stream.jsonl" "$OUT/final-answer.txt"

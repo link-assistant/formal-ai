@@ -1,16 +1,19 @@
 Q8502
   aliases
     en (mount mt. mtn.)
+    es (cerro monte cerros montes "montañas")
     ru ("вершина")
     zh ("山地" "山峰")
   descriptions
     en "large natural elevation of the Earth's surface"
+    es "elevación natural del terreno que se destaca sobre el entorno"
     hi "विशाल भू-आकृति जो एक सीमित क्षेत्र में आसपास की भूमि से काफी ऊपर उठती है"
     ru "местное возвышение земной поверхности"
     zh "特定的区域内，地形陡峭上升的地貌"
   id Q8502
   labels
     en mountain
+    es "montaña"
     hi "पर्वत"
     ru "гора"
     zh "山"

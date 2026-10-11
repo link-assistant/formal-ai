@@ -1,0 +1,69 @@
+view
+  id M-fe1be4accbd9
+  lemma mean
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an average of n numbers computed by adding some function of the numbers and dividing by some function of n"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "approximating the statistical norm or average or expected value"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "characterized by malice"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "having or showing an ignoble lack of honor or morality"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "marked by poverty befitting a beggar"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(used of persons or behavior) characterized by or indicative of lack of generosity"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(used of sums of money) so small in amount as to deserve contempt"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of no value or worth"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "very good; of the highest quality"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "mean or intend to express or convey"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have as a logical consequence"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "denote or connote"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have in mind as a purpose"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have a specified degree of importance"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "intend to refer to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "destine or designate for a certain purpose"
+    provenance (wordnet)

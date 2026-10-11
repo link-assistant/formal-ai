@@ -1,0 +1,39 @@
+{
+  "lemma": "food",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00021445-n",
+      "partOfSpeech": "n",
+      "definition": "any substance that can be metabolized by an animal to give energy and build tissue",
+      "synonyms": [
+        "nutrient"
+      ]
+    },
+    {
+      "id": "oewn-07571428-n",
+      "partOfSpeech": "n",
+      "definition": "any solid substance (as opposed to liquid) that is used as a source of nourishment",
+      "examples": [
+        "food and drink"
+      ],
+      "synonyms": [
+        "solid food"
+      ]
+    },
+    {
+      "id": "oewn-05819240-n",
+      "partOfSpeech": "n",
+      "definition": "anything that provides mental stimulus for thinking",
+      "synonyms": [
+        "food for thought",
+        "intellectual nourishment"
+      ]
+    }
+  ]
+}

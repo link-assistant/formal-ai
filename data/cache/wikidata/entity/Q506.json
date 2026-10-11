@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "花"
+        },
+        "es": {
+          "language": "es",
+          "value": "flor"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "被子植物的生殖器官"
+        },
+        "es": {
+          "language": "es",
+          "value": "estructura reproductiva de las plantas fanerógamas"
         }
       },
       "aliases": {

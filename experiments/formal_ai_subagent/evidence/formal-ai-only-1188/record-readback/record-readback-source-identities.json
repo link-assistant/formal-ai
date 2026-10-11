@@ -1,0 +1,32 @@
+[
+  {
+    "path": "js/agentic/evidence_record.mjs",
+    "bytes": 21269,
+    "sha256": "ca8182563fa0ce0c41e16b0ea04b6f3d186a02e22264a7b296baab03ef2af631"
+  },
+  {
+    "path": "js/agentic/evidence_record/record_observation.mjs",
+    "bytes": 3704,
+    "sha256": "f5c4fc906079cc5172425ab81f590332f4172ec2f2cbf1ec3272e1d5f17685c0"
+  },
+  {
+    "path": "js/agentic/progress.mjs",
+    "bytes": 21093,
+    "sha256": "631dc456728b72c44ad0882ef2e3cf8145efc531638dc6850ea2f7575b30d473"
+  },
+  {
+    "path": "rust/src/agentic_coding/evidence_record.rs",
+    "bytes": 41274,
+    "sha256": "761957e0796217fc2fc9a2432519bce01c787966b737479ff06b907345d12660"
+  },
+  {
+    "path": "rust/src/agentic_coding/evidence_record/record_observation.rs",
+    "bytes": 5289,
+    "sha256": "e128410bf2f7534f06add4d02dbe410d6190401e3b8ec1071f4c144ec049a2ef"
+  },
+  {
+    "path": "rust/src/agentic_coding/progress.rs",
+    "bytes": 36180,
+    "sha256": "6287d4089aeb8704fdd308f9fdf510f6272049909784a94cc9e0b9f7052e8c5b"
+  }
+]

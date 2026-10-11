@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "肺"
+        },
+        "es": {
+          "language": "es",
+          "value": "pulmón"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "器官"
+        },
+        "es": {
+          "language": "es",
+          "value": "órgano del sistema respiratorio"
         }
       },
       "aliases": {
@@ -56,6 +64,16 @@
           {
             "language": "zh",
             "value": "人體肺部"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "pulmon"
+          },
+          {
+            "language": "es",
+            "value": "pulmones"
           }
         ]
       }

@@ -1,0 +1,62 @@
+{
+  "lemma": "on",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01655638-a",
+      "partOfSpeech": "a",
+      "definition": "in operation or operational",
+      "examples": [
+        "left the oven on",
+        "the switch is in the on position"
+      ]
+    },
+    {
+      "id": "oewn-01656183-a",
+      "partOfSpeech": "a",
+      "definition": "(of events) planned or scheduled",
+      "examples": [
+        "the picnic is on, rain or shine",
+        "we have nothing on for Friday night"
+      ]
+    },
+    {
+      "id": "oewn-00068768-r",
+      "partOfSpeech": "r",
+      "definition": "with a forward motion",
+      "examples": [
+        "we drove along admiring the view",
+        "the horse trotted along at a steady pace",
+        "the circus traveled on to the next city",
+        "move along",
+        "march on"
+      ],
+      "synonyms": [
+        "along"
+      ]
+    },
+    {
+      "id": "oewn-00069746-r",
+      "partOfSpeech": "r",
+      "definition": "indicates continuity or persistence or concentration",
+      "examples": [
+        "his spirit lives on",
+        "shall I read on?"
+      ]
+    },
+    {
+      "id": "oewn-00069872-r",
+      "partOfSpeech": "r",
+      "definition": "in a state required for something to function or be effective",
+      "examples": [
+        "turn the lights on",
+        "get a load on"
+      ]
+    }
+  ]
+}

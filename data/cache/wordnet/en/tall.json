@@ -1,0 +1,72 @@
+{
+  "lemma": "tall",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02393670-a",
+      "partOfSpeech": "a",
+      "definition": "great in vertical dimension; high in stature",
+      "examples": [
+        "tall people",
+        "tall buildings",
+        "tall trees",
+        "tall ships"
+      ]
+    },
+    {
+      "id": "oewn-05104540-n",
+      "partOfSpeech": "n",
+      "definition": "a garment size for a tall person"
+    },
+    {
+      "id": "oewn-02024935-s",
+      "partOfSpeech": "s",
+      "definition": "lofty in style",
+      "examples": [
+        "he engages in so much tall talk, one never really realizes what he is saying"
+      ],
+      "synonyms": [
+        "grandiloquent",
+        "magniloquent"
+      ]
+    },
+    {
+      "id": "oewn-02394294-s",
+      "partOfSpeech": "s",
+      "definition": "having a specified height",
+      "examples": [
+        "five feet tall",
+        "five feet in height"
+      ],
+      "synonyms": [
+        "in height"
+      ]
+    },
+    {
+      "id": "oewn-00752176-s",
+      "partOfSpeech": "s",
+      "definition": "impressively difficult",
+      "examples": [
+        "a tall order"
+      ]
+    },
+    {
+      "id": "oewn-00649139-s",
+      "partOfSpeech": "s",
+      "definition": "too improbable to admit of belief",
+      "examples": [
+        "a tall story"
+      ],
+      "synonyms": [
+        "improbable",
+        "marvelous",
+        "marvellous"
+      ]
+    }
+  ]
+}

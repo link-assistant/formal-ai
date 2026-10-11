@@ -1,0 +1,393 @@
+>> read {"filePath":"rust/src/seed/shell_intents.rs","file_path":"rust/src/seed/shell_intents.rs","path":"rust/src/seed/shell_intents.rs"}
+   <file>
+   00001| //! Semantic shell-intent vocabulary loaded from `data/seed/shell-intents.lino`
+   00002| //! (issue #680).
+   00003| //!
+   00004| //! The terminal-command vocabulary in [`super::terminal_commands`] only reaches a
+   00005| //! command when the prompt *names* it after a run verb (`run pwd`) or asks, in
+   00006| //! prose, to list a directory. That leaves the common case the issue calls out —
+   00007| //! *"Print the current working directory"*, *"How much disk space is free?"*,
+   00008| //! *"What is my username?"* — unrouted: the user expresses an **intent** without
+   00009| //! ever naming the command. This vocabulary maps each such intent to its concrete
+   00010| //! command through multilingual cue phrases, so a request routes on meaning rather
+   00011| //! than on the exact tool word.
+   00012| //!
+   00013| //! Like every other trigger vocabulary the natural language lives in seed data, not
+   00014| //! in the planner, so a maintainer retunes coverage by editing a `.lino` file and
+   00015| //! the project rule against hardcoded natural language in the solver is upheld. The
+   00016| //! JavaScript worker loads the synced deployment copy through
+   00017| //! `js/seed_loader.js`.
+   00018| 
+   00019| use super::SHELL_INTENTS_LINO;
+   00020| use super::parser::{LinoNode, parse_lino};
+   00021| 
+   00022| /// How a matched intent recovers the command's argument from the prompt.
+   00023| #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+   00024| pub enum ShellIntentArgument {
+   00025|     /// The command takes no argument (`pwd`, `whoami`, `df -h`).
+   00026|     #[default]
+   00027|     None,
+   00028|     /// The command takes a file path recovered from a filename-looking token
+   00029|     /// (`wc -l Cargo.toml`).
+   00030|     Path,
+   00031|     /// The command takes a name introduced by a name-lead cue such as
+   00032|     /// *called*/*named* (`mkdir build`).
+   00033|     NameLead,
+   00034|     /// One path/name recovered from the request (`rm old.txt`).
+   00035|     OnePath,
+   00036|     /// Two path/name operands recovered in request order (`cp a.txt b.txt`).
+   00037|     TwoPaths,
+   00038|     /// The command takes the text after the matched intent cue (`rg QUERY .`).
+   00039|     Remainder,
+   00040|     /// A local-code search query, with local-scope words removed.
+   00041|     SearchQuery,
+   00042| }
+   00043| 
+   00044| /// The observable effect a mutating intent has on the filesystem, declared as
+   00045| /// shell predicates rather than as branches in the planner (issues #824, #944).
+   00046| ///
+   00047| /// A command such as `mv` changes the workspace, so the interesting question is
+   00048| /// not whether the process exited zero but whether the workspace now holds what
+   00049| /// the request asked for. Each template is a `/bin/sh` predicate over the
+   00050| /// operands: `{source}`, `{destination}`, and `{destination_parent}` (the
+   00051| /// directory component of the destination, or `.` when it has none).
+   00052| ///
+   00053| /// The templates live here, in seed data, for the same reason every other
+   00054| /// trigger vocabulary does: a maintainer teaches a new mutating verb its
+   00055| /// pre/post conditions by editing a `.lino` file, and the planner keeps working
+   00056| /// for verbs it has never heard of.
+   00057| #[derive(Debug, Clone, Default)]
+   00058| pub struct ShellIntentEffect {
+   00059|     /// Flags, value-taking options, and options explicitly allowing reuse.
+   00060|     pub flags: Vec<String>,
+   00061|     pub value_options: Vec<String>,
+   00062|     pub reuse_options: Vec<String>,
+   00063|     /// Preconditions for the explicitly requested reuse mode.
+   00064|     pub before_reuse: Vec<String>,
+   00065|     /// Source collections may target a directory, with one target per basename.
+   00066|     pub directory_targets: bool,
+   00067|     /// Predicates that must hold *before* the action runs, in order.
+   00068|     pub before: Vec<String>,
+   00069|     /// Commands that make the workspace ready for the action (`mkdir -p`).
+   00070|     pub prepare: Vec<String>,
+   00071|     /// Predicates that must hold *after* the action ran, in order.
+   00072|     pub after: Vec<String>,
+   00073| }
+   00074| 
+   00075| impl ShellIntentEffect {
+   00076|     /// Whether this intent declared any effect at all. An intent with no
+   00077|     /// declared effect is read-only as far as the planner is concerned.
+   00078|     #[must_use]
+   00079|     pub const fn is_declared(&self) -> bool {
+   00080|         !self.before.is_empty() || !self.prepare.is_empty() || !self.after.is_empty()
+   00081|     }
+   00082| }
+   00083| 
+   00084| /// One intent → command mapping: the command to emit, how to fill its argument, and
+   00085| /// the multilingual cue phrases (lowercased) that signal the intent.
+   00086| #[derive(Debug, Clone, Default)]
+   00087| pub struct ShellIntent {
+   00088|     /// The concrete command to emit, e.g. `pwd`, `df -h`, `wc -l`.
+   00089|     pub command: String,
+   00090|     /// How the command's argument (if any) is recovered from the prompt.
+   00091|     pub argument: ShellIntentArgument,
+   00092|     /// Cue phrases, pooled across languages and lowercased for substring matching.
+   00093|     pub cues: Vec<String>,
+   00094|     /// The pre/post conditions this intent's command must satisfy, empty for the
+   00095|     /// read-only intents that only report what they observe.
+   00096|     pub effect: ShellIntentEffect,
+   00097|     /// `destructive true`: the command destroys its operand (`rm`, `rmdir`), so
+   00098|     /// it is never composed for a request about text inside a file.
+   00099|     pub destructive: bool,
+   00100| }
+   00101| 
+   00102| /// Commands selected from a workspace's package-manager marker file.
+   00103| #[derive(Debug, Clone, Default)]
+   00104| pub struct WorkspaceCommands {
+   00105|     /// File whose presence identifies the workspace toolchain.
+   00106|     pub marker: String,
+   00107|     /// Test command for this workspace.
+   00108|     pub test: String,
+   00109|     /// Dependency-install command for this workspace.
+   00110|     pub install: String,
+   00111|     /// Build command for this workspace.
+   00112|     pub build: String,
+   00113| }
+   00114| 
+   00115| /// One local filesystem scope and the shell root searched for that scope.
+   00116| #[derive(Debug, Clone, Default)]
+   00117| pub struct LocalPathSearchScope {
+   00118|     /// Stable scope key (`desktop`, `home`, `current`) used to select the
+   00119|     /// location-aware, command-free narration phrasing.
+   00120|     pub name: String,
+   00121|     /// Shell expression used as the first `find` operand.
+   00122|     pub root: String,
+   00123|     /// Multilingual phrases that identify this as a local filesystem request.
+   00124|     pub cues: Vec<String>,
+   00125| }
+   00126| 
+   00127| /// One requested filesystem object kind and its portable `find` predicate.
+   00128| #[derive(Debug, Clone, Default)]
+   00129| pub struct LocalPathSearchKind {
+   00130|     /// Predicate such as `-type d` or `-type f`.
+   00131|     pub predicate: String,
+   00132|     /// Multilingual nouns that identify the requested kind.
+   00133|     pub cues: Vec<String>,
+   00134| }
+   00135| 
+   00136| /// The parts a prose directory-listing request is composed of.
+   00137| ///
+   00138| /// Issue #865 reported *"List me files here"* reaching web search: the listing
+   00139| /// detector matched whole phrases, and no phrase had that word order. The parts
+   00140| /// are declared separately so any request that combines a listing verb (or a
+   00141| /// question word) with a file/directory object and a local scope is recognised,
+   00142| /// in whatever order the user writes them.
+   00143| #[derive(Debug, Clone, Default)]
+   00144| pub struct DirectoryListingVocabulary {
+   00145|     /// Verbs that ask for something to be listed or shown.
+   00146|     pub verbs: Vec<String>,
+   00147|     /// Question words that open a *which files are here?* request.
+   00148|     pub questions: Vec<String>,
+   00149|     /// Nouns naming what is listed: files, contents, a directory.
+   00150|     pub objects: Vec<String>,
+   00151|     /// Phrases that scope the request to the current place.
+   00152|     pub scopes: Vec<String>,
+   00153| }
+   00154| 
+   00155| /// The semantic shell-intent vocabulary: the ordered intent table plus the
+   00156| /// name-lead cue words that introduce a `NameLead` argument.
+   00157| #[derive(Debug, Clone, Default)]
+   00158| pub struct ShellIntentVocabulary {
+   00159|     /// Name-lead cue words (*called*, *named*, …), lowercased, pooled across
+   00160|     /// languages.
+   00161|     pub name_leads: Vec<String>,
+   00162|     /// Natural-language glue ignored while recovering path and search operands.
+   00163|     pub argument_noise: Vec<String>,
+   00164|     /// Words a speaker inserts inside a cue phrase without changing it
+   00165|     /// (*"show **me** git status"*), lowercased, pooled across languages.
+   00166|     pub cue_fillers: Vec<String>,
+   00167|     /// Phrases that distinguish repository/file search from internet search.
+   00168|     pub local_search_scopes: Vec<String>,
+   00169|     /// Seed-defined portable command with root, predicate, and pattern slots.
+   00170|     pub local_path_search_command_template: String,
+   00171|     /// Verbs that ask to discover a path by name.
+   00172|     pub local_path_search_actions: Vec<String>,
+   00173|     /// Local filesystem scope phrases and the roots they map to.
+   00174|     pub local_path_search_scopes: Vec<LocalPathSearchScope>,
+   00175|     /// File/folder kind phrases and their `find` predicates.
+   00176|     pub local_path_search_kinds: Vec<LocalPathSearchKind>,
+   00177|     /// Workspace marker → test/install/build mappings in preference order.
+   00178|     pub workspace_commands: Vec<WorkspaceCommands>,
+   00179|     /// Nouns that name the filesystem object a path argument refers to.
+   00180|     ///
+   00181|     /// A cue carrying one of these (*"copy the file"*) says what its operands
+   00182|     /// are, so a plain name (`build`) is a legitimate operand. A cue that
+   00183|     /// carries none (*"copy"*) says nothing, so its operands must look like
+   00184|     /// paths — see `shell_command::collect_path_arguments` (issue #863).
+   00185|     pub path_objects: Vec<String>,
+   00186|     /// Parts that compose a prose directory-listing request.
+   00187|     pub directory_listing: DirectoryListingVocabulary,
+   00188|     /// Intent → command mappings in declaration (most-specific-first) order.
+   00189|     pub intents: Vec<ShellIntent>,
+   00190| }
+   00191| 
+   00192| /// Parse `data/seed/shell-intents.lino` into the semantic shell-intent vocabulary.
+   00193| #[must_use]
+   00194| pub fn shell_intent_vocabulary() -> ShellIntentVocabulary {
+   00195|     let tree = parse_lino(SHELL_INTENTS_LINO);
+   00196|     let mut vocab = ShellIntentVocabulary::default();
+   00197|     let Some(root) = tree.children.first() else {
+   00198|         return vocab;
+   00199|     };
+   00200|     for group in &root.children {
+   00201|         match group.name.as_str() {
+   00202|             "name_leads" => vocab.name_leads = collect_language_values(group, "lead"),
+   00203|             "argument_noise" => {
+   00204|                 vocab.argument_noise = collect_language_values(group, "word");
+   00205|             }
+   00206|             "cue_fillers" => {
+   00207|                 vocab.cue_fillers = collect_language_values(group, "word")
+   00208|                     .into_iter()
+   00209|                     .map(|word| word.to_lowercase())
+   00210|                     .collect();
+   00211|             }
+   00212|             "local_search_scopes" => {
+   00213|                 vocab.local_search_scopes = collect_language_values(group, "scope");
+   00214|             }
+   00215|             "local_path_search" => {
+   00216|                 group
+   00217|                     .find_child_value("command_template")
+   00218|                     .clone_into(&mut vocab.local_path_search_command_template);
+   00219|                 vocab.local_path_search_actions = group
+   00220|                     .children
+   00221|                     .iter()
+   00222|                     .find(|child| child.name == "actions")
+   00223|                     .map(|node| collect_language_values(node, "action"))
+   00224|                     .unwrap_or_default();
+   00225|                 vocab.local_path_search_scopes = group
+   00226|                     .children
+   00227|                     .iter()
+   00228|                     .find(|child| child.name == "scopes")
+   00229|                     .map(|node| {
+   00230|                         node.children
+   00231|                             .iter()
+   00232|                             .filter(|child| child.name == "scope")
+   00233|                             .map(|scope| LocalPathSearchScope {
+   00234|                                 name: scope.id.clone(),
+   00235|                                 root: scope.find_child_value("root").to_owned(),
+   00236|                                 cues: collect_language_values(scope, "cue")
+   00237|                                     .into_iter()
+   00238|                                     .map(|cue| cue.to_lowercase())
+   00239|                                     .collect(),
+   00240|                             })
+   00241|                             .collect()
+   00242|                     })
+   00243|                     .unwrap_or_default();
+   00244|                 vocab.local_path_search_kinds = group
+   00245|                     .children
+   00246|                     .iter()
+   00247|                     .find(|child| child.name == "kinds")
+   00248|                     .map(|node| {
+   00249|                         node.children
+   00250|                             .iter()
+   00251|                             .filter(|child| child.name == "kind")
+   00252|                             .map(|kind| LocalPathSearchKind {
+   00253|                                 predicate: kind.find_child_value("predicate").to_owned(),
+   00254|                                 cues: collect_language_values(kind, "cue")
+   00255|                                     .into_iter()
+   00256|                                     .map(|cue| cue.to_lowercase())
+   00257|                                     .collect(),
+   00258|                             })
+   00259|                             .collect()
+   00260|                     })
+   00261|                     .unwrap_or_default();
+   00262|             }
+   00263|             "workspace_commands" => {
+   00264|                 vocab.workspace_commands = group
+   00265|                     .children
+   00266|                     .iter()
+   00267|                     .filter(|child| child.name == "workspace")
+   00268|                     .map(|node| WorkspaceCommands {
+   00269|                         marker: node.find_child_value("marker").to_owned(),
+   00270|                         test: node.find_child_value("test").to_owned(),
+   00271|                         install: node.find_child_value("install").to_owned(),
+   00272|                         build: node.find_child_value("build").to_owned(),
+   00273|                     })
+   00274|                     .collect();
+   00275|             }
+   00276|             "path_objects" => {
+   00277|                 vocab.path_objects = collect_language_values(group, "object")
+   00278|                     .into_iter()
+   00279|                     .map(|object| object.to_lowercase())
+   00280|                     .collect();
+   00281|             }
+   00282|             "directory_listing" => {
+   00283|                 let part = |name: &str, child: &str| {
+   00284|                     group
+   00285|                         .children
+   00286|                         .iter()
+   00287|                         .find(|node| node.name == name)
+   00288|                         .map(|node| {
+   00289|                             collect_language_values(node, child)
+   00290|                                 .into_iter()
+   00291|                                 .map(|value| value.to_lowercase())
+   00292|                                 .collect()
+   00293|                         })
+   00294|                         .unwrap_or_default()
+   00295|                 };
+   00296|                 vocab.directory_listing = DirectoryListingVocabulary {
+   00297|                     verbs: part("verbs", "verb"),
+   00298|                     questions: part("questions", "question"),
+   00299|                     objects: part("objects", "object"),
+   00300|                     scopes: part("scopes", "scope"),
+   00301|                 };
+   00302|             }
+   00303|             "intents" => {
+   00304|                 vocab.intents = group
+   00305|                     .children
+   00306|                     .iter()
+   00307|                     .filter(|c| c.name == "intent")
+   00308|                     .map(parse_intent)
+   00309|                     .collect();
+   00310|             }
+   00311|             _ => {}
+   00312|         }
+   00313|     }
+   00314|     vocab
+   00315| }
+   00316| 
+   00317| /// Parse a single `intent` node into a [`ShellIntent`].
+   00318| fn parse_intent(node: &LinoNode) -> ShellIntent {
+   00319|     ShellIntent {
+   00320|         command: node.find_child_value("command").to_owned(),
+   00321|         argument: match node.find_child_value("argument") {
+   00322|             "path" => ShellIntentArgument::Path,
+   00323|             "name_lead" => ShellIntentArgument::NameLead,
+   00324|             "one_path" => ShellIntentArgument::OnePath,
+   00325|             "two_paths" => ShellIntentArgument::TwoPaths,
+   00326|             "remainder" => ShellIntentArgument::Remainder,
+   00327|             "search_query" => ShellIntentArgument::SearchQuery,
+   00328|             _ => ShellIntentArgument::None,
+   00329|         },
+   00330|         cues: collect_language_values(node, "cue")
+   00331|             .into_iter()
+   00332|             .map(|cue| cue.to_lowercase())
+   00333|             .collect(),
+   00334|         effect: node
+   00335|             .children
+   00336|             .iter()
+   00337|             .find(|child| child.name == "effect")
+   00338|             .map(parse_intent_effect)
+   00339|             .unwrap_or_default(),
+   00340|         destructive: node.find_child_value("destructive") == "true",
+   00341|     }
+   00342| }
+   00343| 
+   00344| /// Read the ordered `before` / `prepare` / `after` templates of one `effect` block.
+   00345| fn parse_intent_effect(node: &LinoNode) -> ShellIntentEffect {
+   00346|     let templates = |name: &str| -> Vec<String> {
+   00347|         node.children
+   00348|             .iter()
+   00349|             .filter(|child| child.name == name)
+   00350|             .map(|child| child.id.clone())
+   00351|             .collect()
+   00352|     };
+   00353|     ShellIntentEffect {
+   00354|         before: templates("before"),
+   00355|         prepare: templates("prepare"),
+   00356|         after: templates("after"),
+   00357|     }
+   00358| }
+   00359| 
+   00360| /// Collect every `<child_name>` id nested under the `language` children of `group`,
+   00361| /// pooled across all languages (intent detection is language-agnostic).
+   00362| fn collect_language_values(group: &LinoNode, child_name: &str) -> Vec<String> {
+   00363|     group
+   00364|         .children
+   00365|         .iter()
+   00366|         .filter(|c| c.name == "language")
+   00367|         .flat_map(|lang| {
+   00368|             lang.children
+   00369|                 .iter()
+   00370|                 .filter(|c| c.name == child_name)
+   00371|                 .map(|c| c.id.clone())
+   00372|         })
+   00373|         .collect()
+   00374| }
+   00375| 
+   
+   (End of file - total 375 lines)
+   </file>
+>> edit {"filePath":"rust/src/seed/shell_intents.rs","file_path":"rust/src/seed/shell_intents.rs","new":"ShellIntentEffect {\n        flags: templates(\"flag\"),\n        value_options: templates(\"value_option\"),\n        reuse_options: templates(\"reuse_option\"),\n        before_reuse: templates(\"before_reuse\"),\n        directory_targets: node.find_child_value(\"directory_targets\") == \"true\",\n        before: templates(\"before\"),","newString":"ShellIntentEffect {\n        flags: templates(\"flag\"),\n        value_options: templates(\"value_option\"),\n        reuse_options: templates(\"reuse_option\"),\n        before_reuse: templates(\"before_reuse\"),\n        directory_targets: node.find_child_value(\"directory_targets\") == \"true\",\n        before: templates(\"before\"),","new_str":"ShellIntentEffect {\n        flags: templates(\"flag\"),\n        value_options: templates(\"value_option\"),\n        reuse_options: templates(\"reuse_option\"),\n        before_reuse: templates(\"before_reuse\"),\n        directory_targets: node.find_child_value(\"directory_targets\") == \"true\",\n        before: templates(\"before\"),","new_string":"ShellIntentEffect {\n        flags: templates(\"flag\"),\n        value_options: templates(\"value_option\"),\n        reuse_options: templates(\"reuse_option\"),\n        before_reuse: templates(\"before_reuse\"),\n        directory_targets: node.find_child_value(\"directory_targets\") == \"true\",\n        before: templates(\"before\"),","old":"ShellIntentEffect {\n        before: templates(\"before\"),","oldString":"ShellIntentEffect {\n        before: templates(\"before\"),","old_str":"ShellIntentEffect {\n        before: templates(\"before\"),","old_string":"ShellIntentEffect {\n        before: templates(\"before\"),","path":"rust/src/seed/shell_intents.rs"}
+>> bash {"command":"sha256sum -- rust/src/seed/shell_intents.rs"}
+   c0f8482bf439761632ba06a9236aa430d964d370b173b7d150a852b44fdc48c1  rust/src/seed/shell_intents.rs
+   
+== answer ==
+Replaced `ShellIntentEffect {
+        before: templates("before"),` with `ShellIntentEffect {
+        flags: templates("flag"),
+        value_options: templates("value_option"),
+        reuse_options: templates("reuse_option"),
+        before_reuse: templates("before_reuse"),
+        directory_targets: node.find_child_value("directory_targets") == "true",
+        before: templates("before"),` in `rust/src/seed/shell_intents.rs` and observed the result.

@@ -1,0 +1,261 @@
+>> read {"filePath":"js/agentic/code_artifact.mjs","file_path":"js/agentic/code_artifact.mjs","path":"js/agentic/code_artifact.mjs"}
+   <file>
+   00001| // Workspace source artifacts and bounded rewrites of them
+   00002| // (rust/src/agentic_coding/code_artifact.rs).
+   00003| 
+   00004| import { Capability } from './capability.mjs';
+   00005| import { classifyTool, toolFor } from './capability_router.mjs';
+   00006| import { plainText } from './content.mjs';
+   00007| import { agenticMessage } from './messages.mjs';
+   00008| import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
+   00009| import { programLanguageByAlias, programSaveAs, programTaskByAlias, programTemplate } from './crate/coding_catalog.mjs';
+   00010| import { escapeReference } from './crate/links_format.mjs';
+   00011| import { parseSubstitutionQuery, renderSubstitutionQuery, substitutionEffect } from './crate/links_substitution_query.mjs';
+   00012| import {
+   00013|   executeRewrite, quotedSegments, rewriteProgram, rewriteRule, unwrapTransportQuotes,
+   00014| } from './crate/normal_markov.mjs';
+   00015| import { isAsciiDigit, lines, trim, trimEnd } from './write_str.mjs';
+   00016| 
+   00017| const MAX_REWRITE_STEPS = 100000;
+   00018| const RENDERED_TRACE_EDGE_STEPS = 32;
+   00019| 
+   00020| const eqIgnoreAsciiCase = (left, right) => left.replace(/[A-Z]/g, (c) => c.toLowerCase()) === right.replace(/[A-Z]/g, (c) => c.toLowerCase());
+   00021| 
+   00022| /** Rust `Debug` of `RewriteHalt`. */
+   00023| function haltDebug(halt) {
+   00024|   if (halt.kind === 'terminal_rule') return `TerminalRule(${halt.index})`;
+   00025|   return halt.kind === 'step_limit' ? 'StepLimit' : 'NoApplicableRule';
+   00026| }
+   00027| 
+   00028| function linkField(indent, name, value) {
+   00029|   return `${' '.repeat(indent)}${name} ${escapeReference(value)}\n`;
+   00030| }
+   00031| 
+   00032| /** Mirrors `WorkspaceRewrite::links_notation`. */
+   00033| function rewriteLinksNotation(rewrite, outcome) {
+   00034|   let links = 'normal_markov_program\n';
+   00035|   links += linkField(2, 'target', rewrite.target);
+   00036|   links += linkField(2, 'substitution_query', renderSubstitutionQuery(rewrite.program));
+   00037|   links += linkField(2, 'max_steps', String(rewrite.program.max_steps));
+   00038|   rewrite.program.rules.forEach((rule, index) => {
+   00039|     links += `  rewrite_rule "${index}"\n`;
+   00040|     links += linkField(4, 'effect', substitutionEffect(rule));
+   00041|     links += linkField(4, 'pattern', rule.pattern);
+   00042|     links += linkField(4, 'replacement', rule.replacement);
+   00043|     links += linkField(4, 'terminal', String(rule.terminal));
+   00044|   });
+   00045|   if (outcome) {
+   00046|     links += '  execution\n';
+   00047|     links += linkField(4, 'halt', haltDebug(outcome.halt));
+   00048|     links += linkField(4, 'steps', String(outcome.trace.length));
+   00049|     const omitted = Math.max(0, outcome.trace.length - RENDERED_TRACE_EDGE_STEPS * 2);
+   00050|     outcome.trace.forEach((step, index) => {
+   00051|       if (omitted > 0 && index === RENDERED_TRACE_EDGE_STEPS) links += linkField(4, 'omitted_steps', String(omitted));
+   00052|       if (omitted > 0 && index >= RENDERED_TRACE_EDGE_STEPS && index < outcome.trace.length - RENDERED_TRACE_EDGE_STEPS) return;
+   00053|       links += `    applied rule=${step.rule_index} byte_offset=${step.byte_offset}\n`;
+   00054|     });
+   00055|   }
+   00056|   return links;
+   00057| }
+   00058| 
+   00059| /**
+   00060|  * Mirrors `fn plan_code_artifact_step`.
+   00061|  * @param {string} rawTask
+   00062|  * @param {Array<object>} messages
+   00063|  * @param {Array<string>} toolNames
+   00064|  */
+   00065| export function planCodeArtifactStep(rawTask, messages, toolNames) {
+   00066|   const task = unwrapTransportQuotes(rawTask);
+   00067|   const writeTool = toolFor(toolNames, Capability.Write);
+   00068|   if (!writeTool) return null;
+   00069|   let latestUser = -1;
+   00070|   for (let index = messages.length - 1; index >= 0; index -= 1) {
+   00071|     if (eqIgnoreAsciiCase(messages[index].role, 'user')) {
+   00072|       latestUser = index;
+   00073|       break;
+   00074|     }
+   00075|   }
+   00076|   if (latestUser < 0) return null;
+   00077|   const current = messages.slice(latestUser + 1);
+   00078|   const artifact = latestWorkspaceArtifact(messages.slice(0, latestUser));
+   00079|   if (artifact) {
+   00080|     const rewrite = requestedRewrite(task, artifact);
+   00081|     if (!rewrite) return null;
+   00082|     const result = latestResult(current, Capability.Write);
+   00083|     if (result !== null) {
+   00084|       const read = latestResult(current, Capability.Read);
+   00085|       const outcome = read === null ? null : executeRewrite(rewrite.program, sourceFromReadResult(read));
+   00086|       return finalAnswer(agenticMessage('code_artifact_updated', {
+   00087|         path: artifact.path, links: rewriteLinksNotation(rewrite, outcome), result: trim(result),
+   00088|       }));
+   00089|     }
+   00090|     const readSource = latestResult(current, Capability.Read);
+   00091|     if (readSource !== null) {
+   00092|       const currentSource = sourceFromReadResult(readSource);
+   00093|       const outcome = executeRewrite(rewrite.program, currentSource);
+   00094|       if (outcome.halt.kind === 'step_limit') {
+   00095|         return finalAnswer(agenticMessage('code_artifact_step_limit', {
+   00096|           path: artifact.path, max_steps: MAX_REWRITE_STEPS, links: rewriteLinksNotation(rewrite, outcome),
+   00097|         }));
+   00098|       }
+   00099|       if (outcome.output === currentSource) return finalAnswer(agenticMessage('code_artifact_no_match', { path: artifact.path }));
+   00100|       return planOne(writeTool, writeArguments(artifact.path, outcome.output));
+   00101|     }
+   00102|     const readTool = toolFor(toolNames, Capability.Read);
+   00103|     return readTool ? planOne(readTool, readArguments(artifact.path)) : null;
+   00104|   }
+   00105|   if (toolFor(toolNames, Capability.Run)) return null;
+   00106|   const generated = generatedArtifact(task);
+   00107|   if (!generated) return null;
+   00108|   if (latestResult(current, Capability.Write) !== null) {
+   00109|     return finalAnswer(agenticMessage('code_artifact_created', { path: generated.path }));
+   00110|   }
+   00111|   return planOne(writeTool, writeArguments(generated.path, generated.content));
+   00112| }
+   00113| 
+   00114| /** Mirrors `fn catalog_claims`. */
+   00115| export function catalogClaims(task) {
+   00116|   return generatedArtifact(task) !== null;
+   00117| }
+   00118| 
+   00119| function generatedArtifact(task) {
+   00120|   const normalized = task.toLowerCase();
+   00121|   const language = programLanguageByAlias(normalized);
+   00122|   if (!language) return null;
+   00123|   const programTask = programTaskByAlias(normalized);
+   00124|   if (!programTask) return null;
+   00125|   const template = programTemplate(programTask.slug, language.slug);
+   00126|   if (!template) return null;
+   00127|   return { path: programSaveAs(programTask.slug, language), content: `${trimEnd(template.code)}\n` };
+   00128| }
+   00129| 
+   00130| function requestedRewrite(task, artifact) {
+   00131|   const explicit = explicitSubstitutionQuery(task);
+   00132|   if (explicit) return { target: artifact.path, program: explicit };
+   00133|   if (task.includes('?') || task.includes('？')) return null;
+   00134|   const quoted = quotedSegments(task);
+   00135|   let pairs;
+   00136|   if (quoted.length === 1) {
+   00137|     const last = lastStringLiteral(artifact.content);
+   00138|     if (last === null) return null;
+   00139|     pairs = [[last, quoted[0]]];
+   00140|   } else if (quoted.length && quoted.length % 2 === 0) {
+   00141|     pairs = [];
+   00142|     for (let index = 0; index < quoted.length; index += 2) pairs.push([quoted[index], quoted[index + 1]]);
+   00143|   } else return null;
+   00144|   if (pairs.some(([old, next]) => old === next)) return null;
+   00145|   const single = pairs.length === 1;
+   00146|   const rules = pairs.map(([old, next]) => rewriteRule(old, next, single || old === ''));
+   00147|   return { target: artifact.path, program: rewriteProgram(rules, MAX_REWRITE_STEPS) };
+   00148| }
+   00149| 
+   00150| function explicitSubstitutionQuery(task) {
+   00151|   const trimmed = trim(task);
+   00152|   if (!trimmed.startsWith('(')) return null;
+   00153|   const program = parseSubstitutionQuery(trimmed, MAX_REWRITE_STEPS);
+   00154|   return program && program.rules.length ? program : null;
+   00155| }
+   00156| 
+   00157| function parseArguments(text) {
+   00158|   try {
+   00159|     return JSON.parse(text);
+   00160|   } catch {
+   00161|     return null;
+   00162|   }
+   00163| }
+   00164| 
+   00165| function argumentString(value, keys) {
+   00166|   if (value === null || typeof value !== 'object' || Array.isArray(value)) return null;
+   00167|   for (const key of keys) {
+   00168|     if (typeof value[key] === 'string') return value[key];
+   00169|   }
+   00170|   return null;
+   00171| }
+   00172| 
+   00173| function latestWorkspaceArtifact(messages) {
+   00174|   for (let index = messages.length - 1; index >= 0; index -= 1) {
+   00175|     const calls = messages[index].tool_calls || [];
+   00176|     for (let at = calls.length - 1; at >= 0; at -= 1) {
+   00177|       const call = calls[at];
+   00178|       if (classifyTool(call.function.name) !== Capability.Write) continue;
+   00179|       const args = parseArguments(call.function.arguments);
+   00180|       const path = argumentString(args, ['path', 'filePath', 'file_path']);
+   00181|       const content = argumentString(args, ['content']);
+   00182|       if (path !== null && content !== null) return { path, content };
+   00183|     }
+   00184|   }
+   00185|   return null;
+   00186| }
+   00187| 
+   00188| /** Mirrors `fn latest_result`: the latest `capability` tool result text, or null. */
+   00189| export function latestResult(messages, capability) {
+   00190|   for (let index = messages.length - 1; index >= 0; index -= 1) {
+   00191|     const message = messages[index];
+   00192|     if (!eqIgnoreAsciiCase(message.role, 'tool')) continue;
+   00193|     const callId = message.tool_call_id;
+   00194|     if (callId === null || callId === undefined) continue;
+   00195|     let call = null;
+   00196|     for (const prior of messages.slice(0, index)) {
+   00197|       call = (prior.tool_calls || []).find((candidate) => candidate.id === callId) ?? null;
+   00198|       if (call) break;
+   00199|     }
+   00200|     if (!call) continue;
+   00201|     if (classifyTool(call.function.name) === capability) return plainText(message.content);
+   00202|   }
+   00203|   return null;
+   00204| }
+   00205| 
+   00206| /** Mirrors `fn source_from_read_result`: the file bytes a read tool printed. */
+   00207| export function sourceFromReadResult(result) {
+   00208|   const agent = sourceFromAgentReadResult(result);
+   00209|   if (agent !== null) return agent;
+   00210|   const open = result.indexOf('<content>\n');
+   00211|   if (open < 0) return result;
+   00212|   const afterOpen = result.slice(open + '<content>\n'.length);
+   00213|   const close = afterOpen.lastIndexOf('\n</content>');
+   00214|   if (close < 0) return result;
+   00215|   let decoded = '';
+   00216|   for (const line of lines(afterOpen.slice(0, close))) {
+   00217|     if (line.startsWith('(End of file - total ')) break;
+   00218|     const split = line.indexOf(': ');
+   00219|     const numbered = split >= 0 && Array.from(line.slice(0, split)).every(isAsciiDigit);
+   00220|     decoded += `${numbered ? line.slice(split + 2) : line}\n`;
+   00221|   }
+   00222|   while (decoded.endsWith('\n\n')) decoded = decoded.slice(0, -1);
+   00223|   return decoded;
+   00224| }
+   00225| 
+   00226| export function sourceFromAgentReadResult(result) {
+   00227|   if (!result.startsWith('<file>\n')) return null;
+   00228|   const afterOpen = result.slice('<file>\n'.length);
+   00229|   const marker = '\n\n(End of file - total ';
+   00230|   const at = afterOpen.lastIndexOf(marker);
+   00231|   if (at < 0) return null;
+   00232|   if (!afterOpen.slice(at + marker.length).endsWith('</file>')) return null;
+   00233|   const out = [];
+   00234|   for (const line of lines(afterOpen.slice(0, at))) {
+   00235|     const split = line.indexOf('| ');
+   00236|     if (split < 0 || !Array.from(line.slice(0, split)).every(isAsciiDigit)) return null;
+   00237|     out.push(line.slice(split + 2));
+   00238|   }
+   00239|   return out.join('\n');
+   00240| }
+   00241| 
+   00242| function readArguments(path) {
+   00243|   return jsonText({ path, filePath: path, file_path: path });
+   00244| }
+   00245| 
+   00246| function lastStringLiteral(source) {
+   00247|   const segments = quotedSegments(source);
+   00248|   return segments.length ? segments[segments.length - 1] : null;
+   00249| }
+   00250| 
+   
+   (End of file - total 250 lines)
+   </file>
+>> edit {"filePath":"js/agentic/code_artifact.mjs","file_path":"js/agentic/code_artifact.mjs","new":"export function explicitSubstitutionQuery(task) {","newString":"export function explicitSubstitutionQuery(task) {","new_str":"export function explicitSubstitutionQuery(task) {","new_string":"export function explicitSubstitutionQuery(task) {","old":"function explicitSubstitutionQuery(task) {","oldString":"function explicitSubstitutionQuery(task) {","old_str":"function explicitSubstitutionQuery(task) {","old_string":"function explicitSubstitutionQuery(task) {","path":"js/agentic/code_artifact.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/code_artifact.mjs"}
+   947773349db1a878a11dd28fc8762f856e4aeaccc18370f4430898291ebd0e0f  js/agentic/code_artifact.mjs
+   
+== answer ==
+Replaced `function explicitSubstitutionQuery(task) {` with `export function explicitSubstitutionQuery(task) {` in `js/agentic/code_artifact.mjs` and observed the result.

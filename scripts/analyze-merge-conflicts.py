@@ -50,7 +50,7 @@ CAUSES: list[tuple[str, "re.Pattern[str]"]] = [
         "derived-artifact",
         re.compile(
             r"^(data/meta/self-ast/|data/meta/self-ast\.lino$"
-            r"|data/seed/closure-generated-|data/meta/seed-metadata-gaps-)"
+            r"|data/seed/closure-generated-|data/meta/seed-metadata-gaps/)"
         ),
     ),
     (
@@ -69,6 +69,10 @@ CAUSES: list[tuple[str, "re.Pattern[str]"]] = [
         re.compile(
             r"^(REQUIREMENTS|README|ARCHITECTURE|CHANGELOG|ROADMAP|GOALS|VISION"
             r"|NON-GOALS|CONTRIBUTING)\.md$"
+            # The split halves of two of these: the assembled requirement
+            # register's parts and the changelog's archive.
+            r"|^docs/requirements/assembled/[^/]+\.md$"
+            r"|^docs/changelog/releases-from-[\d.]+\.md$"
         ),
     ),
     ("sequential-file-name", re.compile(r"^js/worker/formal_ai_worker_\d+\.js$")),

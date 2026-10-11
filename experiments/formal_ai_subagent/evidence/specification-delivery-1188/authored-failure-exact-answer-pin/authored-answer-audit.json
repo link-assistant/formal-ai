@@ -1,0 +1,97 @@
+{
+  "cutoff": "T2047",
+  "invocations": 8,
+  "failed": 1,
+  "scratchWriteCalls": 4,
+  "repositoryWriteCalls": 2,
+  "repositorySourceRestoringBashCalls": 1,
+  "actualCapabilityMutations": 7,
+  "excludedPlanHistoryAppendBashCalls": 5,
+  "manualRepositoryMutations": 0,
+  "nativeCompilation": false,
+  "originalPayloadTokensPreserved": true,
+  "closestJsPassed": 1,
+  "closestJsFiltered": 10,
+  "generalRepairOwner": "/root/formal_ai_only",
+  "generalRepairTasks": [
+    "T1871",
+    "T1872"
+  ],
+  "rows": [
+    {
+      "id": "T2040",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "scratch initial previous bytes applied through FA"
+    },
+    {
+      "id": "T2041",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "exact unchanged native Error diagnostic request; bytes preserved; complete successful final answer observed"
+    },
+    {
+      "id": "T2042",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "second scratch initial previous bytes applied through FA"
+    },
+    {
+      "id": "T2043",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "exact unchanged native compact JSON request; bytes preserved; complete successful final answer observed"
+    },
+    {
+      "id": "T2044",
+      "outcome": "Fail",
+      "calls": [
+        "write",
+        "bash"
+      ],
+      "detail": "full12-backtick authored Rust Set request misrouted and wrote unrelated modulo-by-zero test stub; byte mismatch caught; original incorrect bytes preserved"
+    },
+    {
+      "id": "T2045",
+      "outcome": "Pass",
+      "calls": [
+        "bash"
+      ],
+      "detail": "closest JS literal verification test passed1/1;10 other tests explicitly filtered out"
+    },
+    {
+      "id": "T2046",
+      "outcome": "Pass",
+      "calls": [
+        "bash"
+      ],
+      "detail": "changed explicit FA Node copier restored complete desired native source; recovery is not original literal retry"
+    },
+    {
+      "id": "T2047",
+      "outcome": "Pass",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "detail": "exact unchanged T2044 source request passed byte-equal after original agent general fence-header repairT1871/T1872"
+    }
+  ]
+}

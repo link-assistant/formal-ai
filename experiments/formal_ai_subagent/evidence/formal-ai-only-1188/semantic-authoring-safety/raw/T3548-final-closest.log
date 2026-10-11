@@ -1,0 +1,235 @@
+TAP version 13
+# Subtest: the catalog write_program arm records the native obligation_gap events
+ok 1 - the catalog write_program arm records the native obligation_gap events
+  ---
+  duration_ms: 5566.819209
+  ...
+# Subtest: a non-program answer records no obligation_gap event
+ok 2 - a non-program answer records no obligation_gap event
+  ---
+  duration_ms: 82.75075
+  ...
+# Subtest: the worker reports the shared fixture gap lines
+ok 3 - the worker reports the shared fixture gap lines
+  ---
+  duration_ms: 4.240084
+  ...
+# Subtest: the worker gap lines and plan reader agree with the agentic root
+ok 4 - the worker gap lines and plan reader agree with the agentic root
+  ---
+  duration_ms: 554.199167
+  ...
+# Subtest: the mirrored data/meta decisions equal the files
+ok 5 - the mirrored data/meta decisions equal the files
+  ---
+  duration_ms: 0.183416
+  ...
+# Subtest: semantic goals stay unsupported without overwriting prose Implement a resolver in output.mjs with meaningful tests.
+ok 6 - semantic goals stay unsupported without overwriting prose Implement a resolver in output.mjs with meaningful tests.
+  ---
+  duration_ms: 940.851917
+  ...
+# Subtest: semantic goals stay unsupported without overwriting prose Implement a resolver in output.mjs with meaningful tests. Note «meaningful tests.» elsewhere.
+ok 7 - semantic goals stay unsupported without overwriting prose Implement a resolver in output.mjs with meaningful tests. Note «meaningful tests.» elsewhere.
+  ---
+  duration_ms: 34.825041
+  ...
+# Subtest: semantic goals stay unsupported without overwriting prose Implement a helper in folder/方法-α.mjs with source-backed symlinks initially.
+ok 8 - semantic goals stay unsupported without overwriting prose Implement a helper in folder/方法-α.mjs with source-backed symlinks initially.
+  ---
+  duration_ms: 504.625625
+  ...
+# Subtest: semantic goals stay unsupported without overwriting prose Implement a helper in output.mjs. Do not invent source links.
+ok 9 - semantic goals stay unsupported without overwriting prose Implement a helper in output.mjs. Do not invent source links.
+  ---
+  duration_ms: 18.709833
+  ...
+# Subtest: worker/root literal bytes agree Create output.mjs with exactly this content: hello
+ok 10 - worker/root literal bytes agree Create output.mjs with exactly this content: hello
+  ---
+  duration_ms: 84.994958
+  ...
+# Subtest: worker/root literal bytes agree Implement a resolver in output.mjs with «const x = 1;».
+ok 11 - worker/root literal bytes agree Implement a resolver in output.mjs with «const x = 1;».
+  ---
+  duration_ms: 3.0745
+  ...
+# Subtest: worker/root literal bytes agree Implement a resolver in output.mjs with exactly this content: hello
+ok 12 - worker/root literal bytes agree Implement a resolver in output.mjs with exactly this content: hello
+  ---
+  duration_ms: 2.376792
+  ...
+# Subtest: worker/root literal bytes agree Note İK𐐷 😀 café.\\nCreate file x.txt containing «hello».
+ok 13 - worker/root literal bytes agree Note İK𐐷 😀 café.\\nCreate file x.txt containing «hello».
+  ---
+  duration_ms: 2.604875
+  ...
+# Subtest: worker/root literal bytes agree Create rows.txt with content «  seed\\n    row true\\n».
+ok 14 - worker/root literal bytes agree Create rows.txt with content «  seed\\n    row true\\n».
+  ---
+  duration_ms: 2.190791
+  ...
+# Subtest: worker/root literal bytes agree Create punctuation.txt containing exactly: symbols \#!?
+ok 15 - worker/root literal bytes agree Create punctuation.txt containing exactly: symbols \#!?
+  ---
+  duration_ms: 2.119666
+  ...
+# Subtest: positive owned recipe survives Translate the entire source code of our system to the links / meta language and back to source, and record the whole-repository source-to-links projection in Links Notation so we can recompile ourselves.
+ok 16 - positive owned recipe survives Translate the entire source code of our system to the links / meta language and back to source, and record the whole-repository source-to-links projection in Links Notation so we can recompile ourselves.
+  ---
+  duration_ms: 0.944709
+  ...
+# Subtest: positive owned recipe survives recompile yourself: project the whole source graph to links
+ok 17 - positive owned recipe survives recompile yourself: project the whole source graph to links
+  ---
+  duration_ms: 0.1365
+  ...
+# Subtest: positive owned recipe survives translate the entire source of the system to links and back
+ok 18 - positive owned recipe survives translate the entire source of the system to links and back
+  ---
+  duration_ms: 0.5285
+  ...
+# Subtest: positive owned recipe survives source links
+ok 19 - positive owned recipe survives source links
+  ---
+  duration_ms: 0.276209
+  ...
+# Subtest: positive owned recipe survives Create a source graph report.
+ok 20 - positive owned recipe survives Create a source graph report.
+  ---
+  duration_ms: 0.397958
+  ...
+# Subtest: positive owned recipe survives Translate all source to links and back without overwriting source.
+ok 21 - positive owned recipe survives Translate all source to links and back without overwriting source.
+  ---
+  duration_ms: 0.46525
+  ...
+# Subtest: positive owned recipe survives Пересобери исходный код.
+ok 22 - positive owned recipe survives Пересобери исходный код.
+  ---
+  duration_ms: 0.230833
+  ...
+# Subtest: positive owned recipe survives पुनः संकलित करो स्रोत।
+ok 23 - positive owned recipe survives पुनः संकलित करो स्रोत।
+  ---
+  duration_ms: 0.131958
+  ...
+# Subtest: positive owned recipe survives 重新编译源码。
+ok 24 - positive owned recipe survives 重新编译源码。
+  ---
+  duration_ms: 0.203833
+  ...
+# Subtest: positive owned recipe survives Recompila el código fuente.
+ok 25 - positive owned recipe survives Recompila el código fuente.
+  ---
+  duration_ms: 0.812333
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe Initially inspect source-backed symlinks.
+ok 26 - unowned quote/path/negative/identifier cue refuses recipe Initially inspect source-backed symlinks.
+  ---
+  duration_ms: 0.579875
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe Inspect callback links in all-source.mjs.
+ok 27 - unowned quote/path/negative/identifier cue refuses recipe Inspect callback links in all-source.mjs.
+  ---
+  duration_ms: 0.368542
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe Read source-links.mjs.
+ok 28 - unowned quote/path/negative/identifier cue refuses recipe Read source-links.mjs.
+  ---
+  duration_ms: 0.279417
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe Read tools/source-links/manifest.txt.
+ok 29 - unowned quote/path/negative/identifier cue refuses recipe Read tools/source-links/manifest.txt.
+  ---
+  duration_ms: 0.349041
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe Implement a resolver in output.mjs using source links.
+ok 30 - unowned quote/path/negative/identifier cue refuses recipe Implement a resolver in output.mjs using source links.
+  ---
+  duration_ms: 0.93975
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe Implement source links support in output.mjs.
+ok 31 - unowned quote/path/negative/identifier cue refuses recipe Implement source links support in output.mjs.
+  ---
+  duration_ms: 1.405792
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe Create file x.txt containing «source links».
+ok 32 - unowned quote/path/negative/identifier cue refuses recipe Create file x.txt containing «source links».
+  ---
+  duration_ms: 0.306125
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe Create file x.txt containing «Translate all source to links and back».
+ok 33 - unowned quote/path/negative/identifier cue refuses recipe Create file x.txt containing «Translate all source to links and back».
+  ---
+  duration_ms: 0.373125
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe Translate all source. Links and back are discussed separately.
+ok 34 - unowned quote/path/negative/identifier cue refuses recipe Translate all source. Links and back are discussed separately.
+  ---
+  duration_ms: 0.647166
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe Do not invent fetch timestamps, source links or topic-specific records.
+ok 35 - unowned quote/path/negative/identifier cue refuses recipe Do not invent fetch timestamps, source links or topic-specific records.
+  ---
+  duration_ms: 0.362542
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe Never recompile the source.
+ok 36 - unowned quote/path/negative/identifier cue refuses recipe Never recompile the source.
+  ---
+  duration_ms: 0.322209
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe Не создавай source links.
+ok 37 - unowned quote/path/negative/identifier cue refuses recipe Не создавай source links.
+  ---
+  duration_ms: 0.389625
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe 不要生成 source links。
+ok 38 - unowned quote/path/negative/identifier cue refuses recipe 不要生成 source links。
+  ---
+  duration_ms: 0.52675
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe No crees source links.
+ok 39 - unowned quote/path/negative/identifier cue refuses recipe No crees source links.
+  ---
+  duration_ms: 0.366708
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe source linksHelper
+ok 40 - unowned quote/path/negative/identifier cue refuses recipe source linksHelper
+  ---
+  duration_ms: 0.261625
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe RecompileHelper reads a source graph.
+ok 41 - unowned quote/path/negative/identifier cue refuses recipe RecompileHelper reads a source graph.
+  ---
+  duration_ms: 0.369667
+  ...
+# Subtest: unowned quote/path/negative/identifier cue refuses recipe Explain what recompile means.
+ok 42 - unowned quote/path/negative/identifier cue refuses recipe Explain what recompile means.
+  ---
+  duration_ms: 0.310541
+  ...
+# Subtest: negation elsewhere does not erase real positive instruction
+ok 43 - negation elsewhere does not erase real positive instruction
+  ---
+  duration_ms: 0.613792
+  ...
+# Subtest: a source read is independent of semantic implementation
+ok 44 - a source read is independent of semantic implementation
+  ---
+  duration_ms: 295.693916
+  ...
+# Subtest: raw literal source physically preserves semicolon and quoted cues
+ok 45 - raw literal source physically preserves semicolon and quoted cues
+  ---
+  duration_ms: 64.753959
+  ...
+1..45
+# tests 45
+# suites 0
+# pass 45
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6525.031125

@@ -1,14 +1,17 @@
 Q9174
   aliases
     en ("religious tradition" spirituality "spiritual tradition")
+    es (religion culto fe doctrina "sistema de creencias" "creencias sagradas" "prácticas espirituales" "tradición religiosa" "espiritualidad organizada" "adoración" ritos "confesión religiosa" "filosofía religiosa" credo "teología" "cosmovisión espiritual" religiones cultos "teologías" teologias rito)
   descriptions
     en "social-cultural system"
+    es "sistema de creencias, prácticas y valores que vinculan a los seres humanos con lo sagrado, lo divino o lo trascendental"
     hi "सम्प्रदाय , पंथ , रिलीजिन"
     ru "система взглядов, обусловленная верой в сверхъестественное"
     zh "信仰體系"
   id Q9174
   labels
     en religion
+    es "religión"
     hi "धर्म"
     ru "религия"
     zh "宗教"

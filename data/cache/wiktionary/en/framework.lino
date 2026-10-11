@@ -1,0 +1,31 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A support structure comprising joined parts or conglomerated particles and intervening open spaces of similar or larger size."
+        entry
+          definition "The arrangement of support beams that represent a building's general shape and size."
+        entry
+          definition "The larger branches of a tree that determine its shape."
+        entry
+          definition "A basic conceptual structure."
+          example "These ‘three principles of connexion’ compose the framework of principles in Hume's account of the association of ideas."
+        entry
+          definition "A reusable piece of code (and, sometimes, other utilities) providing a standard environment within which an application can be implemented."
+        entry
+          definition "The identification and categorisation of processes or steps that constitute a complex task or mindset in order to render explicit the tacit and implicit."
+      partOfSpeech noun
+  phonetic "/ˈfɹeɪm.wɜːk/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈfɹeɪm.wɜːk/"
+    entry
+      audio ""
+      text "/ˈfɹeɪm.wɝk/"
+  sourceUrls ("https://en.wiktionary.org/wiki/framework")
+  word framework

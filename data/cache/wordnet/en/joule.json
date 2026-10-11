@@ -1,0 +1,28 @@
+{
+  "lemma": "joule",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-11112730-n",
+      "partOfSpeech": "n",
+      "definition": "English physicist who established the mechanical theory of heat and discovered the first law of thermodynamics (1818-1889)",
+      "synonyms": [
+        "James Prescott Joule"
+      ]
+    },
+    {
+      "id": "oewn-13748184-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of electrical energy equal to the work done when a current of one ampere passes through a resistance of one ohm for one second",
+      "synonyms": [
+        "J",
+        "watt second"
+      ]
+    }
+  ]
+}

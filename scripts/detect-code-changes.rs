@@ -29,13 +29,19 @@
 //! Environment variables (set by GitHub Actions):
 //!   - `GITHUB_EVENT_NAME`: `pull_request` or `push`
 //!   - `GITHUB_EVENT_BEFORE`: pre-push SHA from the event payload
+//!   - `GITHUB_REF`: the pushed ref
+//!   - `RELEASE_PIPELINE`: `true` in the release workflow, whose Auto Release
+//!     job needs lint, test and the binary build on a push that has a
+//!     changelog fragment waiting (see `release_pending`)
 //!
 //! Outputs (written to `GITHUB_OUTPUT`):
 //!   - rs-changed: 'true' if any .rs files changed
 //!   - toml-changed: 'true' if any .toml files changed
 //!   - docs-changed: 'true' if any .md files changed
 //!   - workflow-changed: 'true' if any .github/workflows/ files changed
-//!   - any-code-changed: 'true' if any non-ignored code files changed
+//!   - any-code-changed: 'true' if any non-ignored code files changed, or a
+//!     release is pending on a push to main in the release workflow
+//!   - release-pending: 'true' when that push has a changelog fragment waiting
 //!   - agentic-routing-changed: 'true' if agentic routing source changed
 //!   - js-changed: 'true' if the js tier's inputs changed (plan 16 L4)
 //!   - ts-changed: 'true' if the ts tier's inputs changed (plan 16 L4)
@@ -72,6 +78,13 @@ const CI_IGNORED_PATH_PREFIXES: &[&str] = &["experiments/", "dev/log/", "docs/ca
 // an edit to the gating rules re-runs the tiers they gate.
 const LAYERED_WORKFLOW: &str = ".github/workflows/layered-ci.yml";
 const LAYER_CLASSIFIER: &str = "scripts/detect-code-changes.rs";
+// The JavaScript suites the js tier runs (`node --test rust/tests/web/`).
+// They are the js tier's own tests, so a change to one re-runs that tier; the
+// ts tree does not consume them, so the ts tier stands. Before this, an edited
+// suite file -- the thing a requirement row names as its pinning test -- woke
+// the rust tier (it sits under `rust/`) but never the tier that executes it,
+// and merged unexecuted: issue #1017's false-negative class.
+const JS_SUITES: &str = "rust/tests/web/";
 
 fn exec(command: &str, args: &[&str]) -> String {
     match Command::new(command).args(args).output() {
@@ -220,6 +233,36 @@ struct ChangeFlags {
     rust_changed: bool,
 }
 
+/// A release is pending when a push to `main` finds a changelog fragment in
+/// `changelog.d/`: the Auto Release job then has a version to cut, and it
+/// runs only after lint, test and the binary build pass. Those jobs are gated
+/// on `any-code-changed`, so a push that changed no code (the docs-and-workflow
+/// merge of #1150, carrying `20260926_215107_issue-1149-coverage-budget.md`)
+/// skipped them, skipped the release, and still reported a green pipeline --
+/// the silent deferral of issue #1064, which the no-deferral rule forbids.
+fn release_pending(event_name: &str, git_ref: &str, fragments: &[String]) -> bool {
+    event_name == "push"
+        && git_ref == "refs/heads/main"
+        && fragments.iter().any(|name| {
+            Path::new(name)
+                .extension()
+                .is_some_and(|extension| extension.eq_ignore_ascii_case("md"))
+                && name != "README.md"
+        })
+}
+
+/// The file names in `changelog.d/` (empty when the folder is absent).
+fn changelog_fragments() -> Vec<String> {
+    fs::read_dir("changelog.d")
+        .map(|entries| {
+            entries
+                .filter_map(Result::ok)
+                .map(|entry| entry.file_name().to_string_lossy().into_owned())
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
 fn classify_changes(changed_files: &[String]) -> ChangeFlags {
     let relevant_files: Vec<&String> = changed_files
         .iter()
@@ -241,6 +284,16 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
     let js_tier_input = |file: &str| {
         file.starts_with("js/")
             || file.starts_with("data/seed/")
+            // The JavaScript server's route table, wording and parity corpus
+            // (R1013) are js-tier inputs read by every tier below it.
+            || file.starts_with("data/meta/server-")
+            || file.starts_with("rust/tests/fixtures/server-parity/")
+            || file == "scripts/check-server-parity.mjs"
+            // The js -> rust leg's translator driver, its pinned ledger and
+            // the committed translation (R1000): the js-rust job checks them.
+            || file == "scripts/translate-js-rust.mjs"
+            || file == "data/meta/js-rust-translation.lino"
+            || file.starts_with("rust/tests/fixtures/js-rust-translation/")
             || file == LAYERED_WORKFLOW
             || file == LAYER_CLASSIFIER
     };
@@ -283,7 +336,9 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
         agentic_routing_changed: relevant_files
             .iter()
             .any(|file| file.starts_with("rust/src/agentic_coding/")),
-        js_changed: relevant_files.iter().any(|file| js_tier_input(file)),
+        js_changed: relevant_files
+            .iter()
+            .any(|file| js_tier_input(file) || file.starts_with(JS_SUITES)),
         ts_changed: relevant_files.iter().any(|file| ts_tier_input(file)),
         rust_changed: relevant_files.iter().any(|file| rust_tier_input(file)),
         any_code_changed: relevant_files
@@ -376,6 +431,18 @@ fn main() {
     }
     println!();
 
+    let pending = env::var("RELEASE_PIPELINE").is_ok_and(|value| value == "true")
+        && release_pending(
+            &env::var("GITHUB_EVENT_NAME").unwrap_or_default(),
+            &env::var("GITHUB_REF").unwrap_or_default(),
+            &changelog_fragments(),
+        );
+    if pending && !flags.any_code_changed {
+        println!(
+            "A changelog fragment is waiting on main: the release needs lint, test and the build."
+        );
+    }
+    set_output("release-pending", if pending { "true" } else { "false" });
     // Check if any code files changed (.rs, .toml, .mjs, .cjs, .js, .lino, .yml,
     // .yaml, or workflow files). .cjs covers the Electron desktop and VS Code
     // extension host sources (extension.*.cjs, lib/*.cjs) so changes there still
@@ -384,7 +451,7 @@ fn main() {
     // those files, so editing one must run lint/test that enforces the guard.
     set_output(
         "any-code-changed",
-        if flags.any_code_changed {
+        if flags.any_code_changed || pending {
             "true"
         } else {
             "false"
@@ -398,7 +465,31 @@ fn main() {
 mod tests {
     use super::{
         ChangeFlags, LAYER_CLASSIFIER, LAYERED_WORKFLOW, classify_changes, comparison_for_event,
+        release_pending,
     };
+
+    #[test]
+    fn a_waiting_fragment_on_main_makes_the_release_pending() {
+        let fragments = |names: &[&str]| {
+            names
+                .iter()
+                .map(|name| (*name).to_string())
+                .collect::<Vec<_>>()
+        };
+        let waiting = fragments(&["README.md", "20260926_215107_issue-1149-coverage-budget.md"]);
+        assert!(release_pending("push", "refs/heads/main", &waiting));
+        assert!(!release_pending(
+            "push",
+            "refs/heads/main",
+            &fragments(&["README.md"])
+        ));
+        assert!(!release_pending(
+            "pull_request",
+            "refs/heads/main",
+            &waiting
+        ));
+        assert!(!release_pending("push", "refs/heads/feature", &waiting));
+    }
 
     #[test]
     fn pull_requests_compare_the_complete_base_to_head_range() {
@@ -553,6 +644,18 @@ mod tests {
             "a rust change lets the js and ts tiers carry their last green runs forward"
         );
 
+        for path in [
+            "data/meta/server-routes.lino",
+            "scripts/check-server-parity.mjs",
+            "rust/tests/fixtures/server-parity/requests.lino",
+        ] {
+            let flags = classify_changes(&[path.to_string()]);
+            assert!(
+                flags.js_changed && flags.ts_changed && flags.rust_changed,
+                "{path} is a server-parity input, so every tier re-runs"
+            );
+        }
+
         let js_only = classify_changes(&["js/app.js".to_string()]);
         assert!(
             js_only.js_changed && js_only.ts_changed && js_only.rust_changed,
@@ -605,6 +708,19 @@ mod tests {
         assert!(
             !binary_action.js_changed && !binary_action.ts_changed,
             "the binary action feeds only the rust tier"
+        );
+    }
+
+    /// A JavaScript suite is the js tier's own test, so editing one re-runs
+    /// that tier (issue #1017: a pinning test that never ran is a false
+    /// negative) without regenerating the ts tree, which does not consume it.
+    #[test]
+    fn a_javascript_suite_change_reruns_the_tier_that_executes_it() {
+        let suite = classify_changes(&["rust/tests/web/translate-es.test.mjs".to_string()]);
+        assert!(suite.js_changed, "the js tier runs the suite that changed");
+        assert!(
+            !suite.ts_changed,
+            "the ts tree is a function of js/, not of its tests"
         );
     }
 }

@@ -1,0 +1,514 @@
+TAP version 13
+# Subtest: formalize (rust/tests/unit/agentic-coding/agentic_coding.rs)
+    # Subtest: canonical_synopsis_covers_all_nine_primitives
+    ok 1 - canonical_synopsis_covers_all_nine_primitives
+      ---
+      duration_ms: 6.670375
+      ...
+    # Subtest: every_output_record_is_links_notation / grounded_svo_extraction_is_faithful
+    ok 2 - every_output_record_is_links_notation / grounded_svo_extraction_is_faithful
+      ---
+      duration_ms: 2.853667
+      ...
+    # Subtest: formalization_is_deterministic
+    ok 3 - formalization_is_deterministic
+      ---
+      duration_ms: 5.541875
+      ...
+    # Subtest: arbitrary_text_still_produces_a_valid_knowledge_base
+    ok 4 - arbitrary_text_still_produces_a_valid_knowledge_base
+      ---
+      duration_ms: 295.733083
+      ...
+    # Subtest: explicit_doc_id_overrides_the_default
+    ok 5 - explicit_doc_id_overrides_the_default
+      ---
+      duration_ms: 0.908416
+      ...
+    # Subtest: lexicon resolves titles by identity and aliases
+    ok 6 - lexicon resolves titles by identity and aliases
+      ---
+      duration_ms: 0.138417
+      ...
+    1..6
+ok 1 - formalize (rust/tests/unit/agentic-coding/agentic_coding.rs)
+  ---
+  duration_ms: 481.775792
+  type: 'suite'
+  ...
+# Subtest: formalization segmentation and needs (rust/src/formalization)
+    # Subtest: segments with exact byte spans and the decimal-point rule
+    ok 1 - segments with exact byte spans and the decimal-point rule
+      ---
+      duration_ms: 0.200708
+      ...
+    # Subtest: unknown surfaces skip quoted spans and seeded words
+    ok 2 - unknown surfaces skip quoted spans and seeded words
+      ---
+      duration_ms: 0.433375
+      ...
+    # Subtest: an offline deep pass reports every need unsatisfiable with the empty-structure identity
+    ok 3 - an offline deep pass reports every need unsatisfiable with the empty-structure identity
+      ---
+      duration_ms: 0.921958
+      ...
+    1..3
+ok 2 - formalization segmentation and needs (rust/src/formalization)
+  ---
+  duration_ms: 1.844584
+  type: 'suite'
+  ...
+# Subtest: formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_formalization_subject.rs)
+    # Subtest: recognises formalization tasks in every language
+    ok 1 - recognises formalization tasks in every language
+      ---
+      duration_ms: 1.856417
+      ...
+    # Subtest: the acceptance walk: search query, then the canonical fetch, then the final report
+    ok 2 - the acceptance walk: search query, then the canonical fetch, then the final report
+      ---
+      duration_ms: 169.256834
+      ...
+    # Subtest: planner_walks_the_full_search_fetch_write_run_recipe
+    ok 3 - planner_walks_the_full_search_fetch_write_run_recipe
+      ---
+      duration_ms: 7.189042
+      ...
+    # Subtest: planner_skips_capabilities_no_advertised_tool_provides / completes without tools
+    ok 4 - planner_skips_capabilities_no_advertised_tool_provides / completes without tools
+      ---
+      duration_ms: 2.419166
+      ...
+    # Subtest: planner_formalizes_the_fetched_text_when_fetch_succeeds
+    ok 5 - planner_formalizes_the_fetched_text_when_fetch_succeeds
+      ---
+      duration_ms: 1.273083
+      ...
+    # Subtest: planner_falls_back_to_the_synopsis_when_fetch_errors
+    ok 6 - planner_falls_back_to_the_synopsis_when_fetch_errors
+      ---
+      duration_ms: 1.797291
+      ...
+    # Subtest: issue 956: a quoted custom source is formalized itself
+    ok 7 - issue 956: a quoted custom source is formalized itself
+      ---
+      duration_ms: 3.455292
+      ...
+    1..7
+ok 3 - formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_formalization_subject.rs)
+  ---
+  duration_ms: 187.520833
+  type: 'suite'
+  ...
+# Subtest: meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+    # Subtest: recognises_the_meaning_detail_task / routes concepts
+    ok 1 - recognises_the_meaning_detail_task / routes concepts
+      ---
+      duration_ms: 0.212667
+      ...
+    # Subtest: enriched blocks match the seed byte for byte, fetched or not
+    ok 2 - enriched blocks match the seed byte for byte, fetched or not
+      ---
+      duration_ms: 2.092166
+      ...
+    # Subtest: replays the committed agent-cli-session.json step for step
+    ok 3 - replays the committed agent-cli-session.json step for step
+      ---
+      duration_ms: 16.220583
+      ...
+    # Subtest: replays the committed agent-cli-session-potato.json step for step
+    ok 4 - replays the committed agent-cli-session-potato.json step for step
+      ---
+      duration_ms: 3.013334
+      ...
+    1..4
+ok 4 - meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+  ---
+  duration_ms: 21.676583
+  type: 'suite'
+  ...
+# Subtest: diagram (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+    # Subtest: recognises_the_diagram_task
+    ok 1 - recognises_the_diagram_task
+      ---
+      duration_ms: 0.204833
+      ...
+    # Subtest: committed_diagram_is_generated (docs/diagrams/agentic-recipes.md)
+    ok 2 - committed_diagram_is_generated (docs/diagrams/agentic-recipes.md)
+      ---
+      duration_ms: 0.507458
+      ...
+    # Subtest: replays the committed diagram Agent CLI session
+    ok 3 - replays the committed diagram Agent CLI session
+      ---
+      duration_ms: 1.518875
+      ...
+    1..3
+ok 5 - diagram (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+  ---
+  duration_ms: 2.311958
+  type: 'suite'
+  ...
+# Subtest: issue-558 self-referential recipes (rust/tests/unit/issue_558_*.rs)
+    # Subtest: task predicates route each canonical task to exactly its recipe
+    ok 1 - task predicates route each canonical task to exactly its recipe
+      ---
+      duration_ms: 3.083917
+      ...
+    # Subtest: committed documents render byte for byte with their final answers
+    ok 2 - committed documents render byte for byte with their final answers
+      ---
+      duration_ms: 0.971083
+      ...
+    # Subtest: the change request and rebuild plan are derived from the canonical request
+    ok 3 - the change request and rebuild plan are derived from the canonical request
+      ---
+      duration_ms: 5.380792
+      ...
+    # Subtest: document recipes walk write -> verify -> final
+    ok 4 - document recipes walk write -> verify -> final
+      ---
+      duration_ms: 1.157292
+      ...
+    1..4
+ok 6 - issue-558 self-referential recipes (rust/tests/unit/issue_558_*.rs)
+  ---
+  duration_ms: 10.696083
+  type: 'suite'
+  ...
+# Subtest: issue \#558 owned manifest, self-explanation and source links (rust/tests/unit/issue_558_*.rs)
+    # Subtest: owned_manifest_content_addresses_every_source_file
+    ok 1 - owned_manifest_content_addresses_every_source_file
+      ---
+      duration_ms: 120.026166
+      ...
+    # Subtest: content ids equal the Rust-generated self-AST census for every undrifted module
+    ok 2 - content ids equal the Rust-generated self-AST census for every undrifted module
+      ---
+      duration_ms: 17.678459
+      ...
+    # Subtest: the fast FNV-1a equals crate::engine::stable_id
+    ok 3 - the fast FNV-1a equals crate::engine::stable_id
+      ---
+      duration_ms: 1.059417
+      ...
+    # Subtest: owned_manifest_renders_valid_links_notation
+    ok 4 - owned_manifest_renders_valid_links_notation
+      ---
+      duration_ms: 0.086833
+      ...
+    # Subtest: coverage_is_integer_permille_and_flags_unfaithful_modules
+    ok 5 - coverage_is_integer_permille_and_flags_unfaithful_modules
+      ---
+      duration_ms: 0.110666
+      ...
+    # Subtest: every source citation is grounded and a fabricated one cannot be constructed
+    ok 6 - every source citation is grounded and a fabricated one cannot be constructed
+      ---
+      duration_ms: 0.500209
+      ...
+    # Subtest: the explanation document matches the committed Agent CLI evidence modulo the live ids
+    ok 7 - the explanation document matches the committed Agent CLI evidence modulo the live ids
+      ---
+      duration_ms: 2.084291
+      ...
+    # Subtest: the source-links document reports the whole repo over the representative slice
+    ok 8 - the source-links document reports the whole repo over the representative slice
+      ---
+      duration_ms: 1.563666
+      ...
+    # Subtest: the explain and source-links recipes walk write -> verify -> final
+    ok 9 - the explain and source-links recipes walk write -> verify -> final
+      ---
+      duration_ms: 2.312334
+      ...
+    1..9
+ok 7 - issue \#558 owned manifest, self-explanation and source links (rust/tests/unit/issue_558_*.rs)
+  ---
+  duration_ms: 145.669542
+  type: 'suite'
+  ...
+# Subtest: failed Fetch preserves requested URL and failure without making the body a goal
+ok 8 - failed Fetch preserves requested URL and failure without making the body a goal
+  ---
+  duration_ms: 809.961167
+  ...
+# Subtest: successful Fetch keeps its source text and only the call URL establishes identity
+ok 9 - successful Fetch keeps its source text and only the call URL establishes identity
+  ---
+  duration_ms: 2.074833
+  ...
+# Subtest: source JSON cannot override the outer failed provider or its requested URL
+ok 10 - source JSON cannot override the outer failed provider or its requested URL
+  ---
+  duration_ms: 0.7735
+  ...
+# Subtest: mixed Fetch and shell read failures retain their own ordered reasons
+ok 11 - mixed Fetch and shell read failures retain their own ordered reasons
+  ---
+  duration_ms: 3.831459
+  ...
+# Subtest: a real successful retry supersedes a prior failed retrieval of that URL
+ok 12 - a real successful retry supersedes a prior failed retrieval of that URL
+  ---
+  duration_ms: 0.8505
+  ...
+# Subtest: the unchanged original missing issue with failed provider performs no writes or false completion
+ok 13 - the unchanged original missing issue with failed provider performs no writes or false completion
+  ---
+  duration_ms: 631.913625
+  ...
+# Subtest: the original no-artifact fetched source verifies only auxiliary history and stays exactly Planned
+ok 14 - the original no-artifact fetched source verifies only auxiliary history and stays exactly Planned
+  ---
+  duration_ms: 128.272708
+  ...
+# Subtest: the unchanged client without Read or Run cannot claim a persisted auxiliary write
+ok 15 - the unchanged client without Read or Run cannot claim a persisted auxiliary write
+  ---
+  duration_ms: 24.490084
+  ...
+# Subtest: successful Fetch JSON error and status keys are document bytes, never provider status
+ok 16 - successful Fetch JSON error and status keys are document bytes, never provider status
+  ---
+  duration_ms: 0.385459
+  ...
+# Subtest: explicit failed Fetch retains the exact JSON body as failure and never uses it as source
+ok 17 - explicit failed Fetch retains the exact JSON body as failure and never uses it as source
+  ---
+  duration_ms: 0.221833
+  ...
+# Subtest: legacy Fetch diagnostic uses failure evidence while successful JSON remains source bytes
+ok 18 - legacy Fetch diagnostic uses failure evidence while successful JSON remains source bytes
+  ---
+  duration_ms: 1.436916
+  ...
+# Subtest: a quoted first-line fixture remains the exact authored file content
+ok 19 - a quoted first-line fixture remains the exact authored file content
+  ---
+  duration_ms: 661.907708
+  ...
+# Subtest: an actual first-line constraint outside the literal still applies
+ok 20 - an actual first-line constraint outside the literal still applies
+  ---
+  duration_ms: 3.554083
+  ...
+# Subtest: explicit successful receipts preserve exact JSON, Unicode, whitespace and authored error narratives
+ok 21 - explicit successful receipts preserve exact JSON, Unicode, whitespace and authored error narratives
+  ---
+  duration_ms: 580.947333
+  ...
+# Subtest: matching bytes cannot erase missing status, failure status or typed harness errors
+ok 22 - matching bytes cannot erase missing status, failure status or typed harness errors
+  ---
+  duration_ms: 0.259
+  ...
+# Subtest: lookup binds exact command, nearest call identity and latest matching result
+ok 23 - lookup binds exact command, nearest call identity and latest matching result
+  ---
+  duration_ms: 0.840333
+  ...
+# Subtest: whole rewrite without Edit accepts actual exact shell and typed JSON observations
+ok 24 - whole rewrite without Edit accepts actual exact shell and typed JSON observations
+  ---
+  duration_ms: 485.654333
+  ...
+# Subtest: whole rewrite without Edit rejects failed matching observation even after correct physical write
+ok 25 - whole rewrite without Edit rejects failed matching observation even after correct physical write
+  ---
+  duration_ms: 44.553959
+  ...
+# Subtest: whole rewrite without Edit ignores unrelated commands and obeys newest failed target receipt
+ok 26 - whole rewrite without Edit ignores unrelated commands and obeys newest failed target receipt
+  ---
+  duration_ms: 19.596792
+  ...
+# Subtest: whole rewrite without Edit rejects a successful wrong hash while physical source bytes remain exact
+ok 27 - whole rewrite without Edit rejects a successful wrong hash while physical source bytes remain exact
+  ---
+  duration_ms: 15.0845
+  ...
+# Subtest: structured list insertion accepts actual exact shell and typed JSON observations
+ok 28 - structured list insertion accepts actual exact shell and typed JSON observations
+  ---
+  duration_ms: 15.961
+  ...
+# Subtest: structured list insertion rejects failed matching observation even after correct physical write
+ok 29 - structured list insertion rejects failed matching observation even after correct physical write
+  ---
+  duration_ms: 20.703833
+  ...
+# Subtest: structured list insertion ignores unrelated commands and obeys newest failed target receipt
+ok 30 - structured list insertion ignores unrelated commands and obeys newest failed target receipt
+  ---
+  duration_ms: 7.823667
+  ...
+# Subtest: structured list insertion rejects a successful wrong hash while physical source bytes remain exact
+ok 31 - structured list insertion rejects a successful wrong hash while physical source bytes remain exact
+  ---
+  duration_ms: 6.993
+  ...
+# Subtest: generated source accepts actual exact shell and typed JSON observations
+ok 32 - generated source accepts actual exact shell and typed JSON observations
+  ---
+  duration_ms: 17.648875
+  ...
+# Subtest: generated source rejects failed matching observation even after correct physical write
+ok 33 - generated source rejects failed matching observation even after correct physical write
+  ---
+  duration_ms: 24.043667
+  ...
+# Subtest: generated source ignores unrelated commands and obeys newest failed target receipt
+ok 34 - generated source ignores unrelated commands and obeys newest failed target receipt
+  ---
+  duration_ms: 9.107958
+  ...
+# Subtest: presentation or ambiguous transport cannot certify unobserved byte strings
+ok 35 - presentation or ambiguous transport cannot certify unobserved byte strings
+  ---
+  duration_ms: 0.398417
+  ...
+# Subtest: composite source and whole registration require independent exact actual receipts
+ok 36 - composite source and whole registration require independent exact actual receipts
+  ---
+  duration_ms: 27.439
+  ...
+# Subtest: either failed composite receipt blocks completion while preserving actual file assertions
+ok 37 - either failed composite receipt blocks completion while preserving actual file assertions
+  ---
+  duration_ms: 19.847084
+  ...
+# Subtest: complete provider Read retains every JSON source byte 169
+ok 38 - complete provider Read retains every JSON source byte 169
+  ---
+  duration_ms: 88.841667
+  ...
+# Subtest: bare same JSON stays available Unknown and cannot own transport role 169
+ok 39 - bare same JSON stays available Unknown and cannot own transport role 169
+  ---
+  duration_ms: 0.740375
+  ...
+# Subtest: complete provider Read retains every JSON source byte 127
+ok 40 - complete provider Read retains every JSON source byte 127
+  ---
+  duration_ms: 0.33125
+  ...
+# Subtest: bare same JSON stays available Unknown and cannot own transport role 127
+ok 41 - bare same JSON stays available Unknown and cannot own transport role 127
+  ---
+  duration_ms: 0.282167
+  ...
+# Subtest: actual ordinary full planner and filesystem provider preserve exact JSON bytes
+ok 42 - actual ordinary full planner and filesystem provider preserve exact JSON bytes
+  ---
+  duration_ms: 637.834583
+  ...
+# Subtest: explicit provider failure wins over successful Read metadata
+ok 43 - explicit provider failure wins over successful Read metadata
+  ---
+  duration_ms: 75.870959
+  ...
+# Subtest: partial source does not gain complete Finding metadata
+ok 44 - partial source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.426875
+  ...
+# Subtest: truncated source does not gain complete Finding metadata
+ok 45 - truncated source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.265416
+  ...
+# Subtest: wrong metadata path source does not gain complete Finding metadata
+ok 46 - wrong metadata path source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.261458
+  ...
+# Subtest: timed out actual provider metadata remains Failure
+ok 47 - timed out actual provider metadata remains Failure
+  ---
+  duration_ms: 0.405667
+  ...
+# Subtest: aborted actual provider metadata remains Failure
+ok 48 - aborted actual provider metadata remains Failure
+  ---
+  duration_ms: 0.219792
+  ...
+# Subtest: signalled actual provider metadata remains Failure
+ok 49 - signalled actual provider metadata remains Failure
+  ---
+  duration_ms: 0.315166
+  ...
+# Subtest: wrong call cannot bind the original file
+ok 50 - wrong call cannot bind the original file
+  ---
+  duration_ms: 0.183875
+  ...
+# Subtest: wrong tool cannot bind the original file
+ok 51 - wrong tool cannot bind the original file
+  ---
+  duration_ms: 0.35875
+  ...
+# Subtest: new user window cannot bind the original file
+ok 52 - new user window cannot bind the original file
+  ---
+  duration_ms: 0.11575
+  ...
+# Subtest: conflicting paths cannot bind the original file
+ok 53 - conflicting paths cannot bind the original file
+  ---
+  duration_ms: 0.204208
+  ...
+# Subtest: latest source observation supersedes older bytes and provider refusal
+ok 54 - latest source observation supersedes older bytes and provider refusal
+  ---
+  duration_ms: 0.627958
+  ...
+# Subtest: every multi-read source uses typed provider observations
+ok 55 - every multi-read source uses typed provider observations
+  ---
+  duration_ms: 0.568875
+  ...
+# Subtest: partial multi-read JSON input does not become an error before the remaining Read
+ok 56 - partial multi-read JSON input does not become an error before the remaining Read
+  ---
+  duration_ms: 0.269042
+  ...
+# Subtest: list then read preserves JSON source and real shell listing receipt
+ok 57 - list then read preserves JSON source and real shell listing receipt
+  ---
+  duration_ms: 0.741125
+  ...
+# Subtest: discovery hashes exact JSON source without treating its keys as a failed Read
+ok 58 - discovery hashes exact JSON source without treating its keys as a failed Read
+  ---
+  duration_ms: 3.057125
+  ...
+# Subtest: discovery bare input cannot certify a source contract
+ok 59 - discovery bare input cannot certify a source contract
+  ---
+  duration_ms: 0.399042
+  ...
+# Subtest: discovery partial input cannot certify a source contract
+ok 60 - discovery partial input cannot certify a source contract
+  ---
+  duration_ms: 0.314083
+  ...
+# Subtest: discovery wrong metadata path input cannot certify a source contract
+ok 61 - discovery wrong metadata path input cannot certify a source contract
+  ---
+  duration_ms: 0.264792
+  ...
+# Subtest: discovery genuine outer failure is Failure; authored ENOENT data is not absence
+ok 62 - discovery genuine outer failure is Failure; authored ENOENT data is not absence
+  ---
+  duration_ms: 0.872625
+  ...
+1..62
+# tests 91
+# suites 7
+# pass 91
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1816.701542

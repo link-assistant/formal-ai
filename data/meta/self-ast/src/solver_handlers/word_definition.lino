@@ -1,0 +1,21 @@
+self_ast_census
+  target src/solver_handlers/word_definition.rs
+  language rust
+  fidelity signature
+  byte_len 13116
+  line_count 346
+  content_id source_module_b6ea686324ba2a71
+  symbol_count 12
+  symbols
+    const INTENT 22 22
+    const MAX_SENSES 23 23
+    function patterns 26 36
+    function definition_term 41 88
+    function compact 90 92
+    function respelling 95 105
+    function is_heading 107 109
+    function title_of 112 114
+    function read_senses 120 227
+    function render 230 236
+    function try_word_definition_with_client 244 331
+    function try_word_definition_with_offline 335 346

@@ -1,0 +1,63 @@
+>> read {"filePath":"rust/tests/web/source-network-workers.test.mjs","file_path":"rust/tests/web/source-network-workers.test.mjs","path":"rust/tests/web/source-network-workers.test.mjs"}
+   <file>
+   00001| import assert from 'node:assert/strict';
+   00002| import test from 'node:test';
+   00003| import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+   00004| import { tmpdir } from 'node:os';
+   00005| import { join } from 'node:path';
+   00006| import { pathToFileURL } from 'node:url';
+   00007| import { mapSourceNetworks } from '../../../scripts/lib/source-network-workers.mjs';
+   00008| 
+   00009| async function withWorker(body, check) {
+   00010|   const directory = mkdtempSync(join(tmpdir(), 'source-network-pool-'));
+   00011|   try {
+   00012|     const path = join(directory, 'worker.mjs');
+   00013|     writeFileSync(path, "import {parentPort} from 'node:worker_threads';\n" + body);
+   00014|     await check(pathToFileURL(path));
+   00015|   } finally { rmSync(directory, { recursive: true, force: true }); }
+   00016| }
+   00017| 
+   00018| test('bounded pool preserves complete input order across actual asynchronous workers', async () => {
+   00019|   await withWorker(`parentPort.on('message', ({index,path}) => {
+   00020|     parentPort.postMessage({event:'start',path});
+   00021|     setTimeout(() => {
+   00022|       parentPort.postMessage({event:'finish',path});
+   00023|       parentPort.postMessage({index,receipt:{path}});
+   00024|     }, (12-index)*3);
+   00025|   });`, async (url) => {
+   00026|     const paths = Array.from({ length: 12 }, (_, index) => 'source-' + index);
+   00027|     const started = [], active = new Set();
+   00028|     let peak = 0;
+   00029|     const receipts = await mapSourceNetworks(paths, url, {}, (message) => {
+   00030|       if (message.event === 'start') { started.push(message.path); active.add(message.path); }
+   00031|       else active.delete(message.path);
+   00032|       peak = Math.max(peak, active.size);
+   00033|     });
+   00034|     assert.deepEqual(receipts.map((receipt) => receipt.path), paths);
+   00035|     assert.equal(started.length, paths.length);
+   00036|     assert.equal(new Set(started).size, paths.length);
+   00037|   });
+   00038| });
+   00039| 
+   00040| test('worker errors, early exits and mismatched receipt identity never produce complete reports', async () => {
+   00041|   for (const body of [
+   00042|     "parentPort.on('message',()=>parentPort.postMessage({error:'actual parse failure'}));",
+   00043|     "parentPort.on('message',()=>process.exit(0));",
+   00044|     "parentPort.on('message',({index})=>parentPort.postMessage({index,receipt:{path:'wrong-source'}}));",
+   00045|   ]) await withWorker(body, async (url) => {
+   00046|     await assert.rejects(mapSourceNetworks(['expected-source','second-source'], url, {}));
+   00047|   });
+   00048| });
+   00049| 
+   
+   (End of file - total 49 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/source-network-workers.test.mjs","file_path":"rust/tests/web/source-network-workers.test.mjs","new":"    assert.equal(new Set(started).size, paths.length);\n    assert.ok(peak > 0 && peak <= 4);\n    assert.equal(active.size, 0);","newString":"    assert.equal(new Set(started).size, paths.length);\n    assert.ok(peak > 0 && peak <= 4);\n    assert.equal(active.size, 0);","new_str":"    assert.equal(new Set(started).size, paths.length);\n    assert.ok(peak > 0 && peak <= 4);\n    assert.equal(active.size, 0);","new_string":"    assert.equal(new Set(started).size, paths.length);\n    assert.ok(peak > 0 && peak <= 4);\n    assert.equal(active.size, 0);","old":"    assert.equal(new Set(started).size, paths.length);","oldString":"    assert.equal(new Set(started).size, paths.length);","old_str":"    assert.equal(new Set(started).size, paths.length);","old_string":"    assert.equal(new Set(started).size, paths.length);","path":"rust/tests/web/source-network-workers.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/source-network-workers.test.mjs"}
+   Output: 69dc0883a3cc3902de15ac27fee7ea58d433dd097f0dc53c383a5091c202c3fc  rust/tests/web/source-network-workers.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    assert.equal(new Set(started).size, paths.length);` with `    assert.equal(new Set(started).size, paths.length);
+    assert.ok(peak > 0 && peak <= 4);
+    assert.equal(active.size, 0);` in `rust/tests/web/source-network-workers.test.mjs` and observed the result.

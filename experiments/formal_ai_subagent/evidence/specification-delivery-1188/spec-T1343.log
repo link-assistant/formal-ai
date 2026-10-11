@@ -1,0 +1,285 @@
+>> read {"filePath":"js/agentic/crate/normal_markov.mjs","file_path":"js/agentic/crate/normal_markov.mjs","path":"js/agentic/crate/normal_markov.mjs"}
+   <file>
+   00001| // Bounded normal (Markov) string-rewrite algorithms and literal-slot readers
+   00002| // (rust/src/normal_markov.rs). Spans are JavaScript string indices; the
+   00003| // execution trace reports UTF-8 byte offsets, as Rust does.
+   00004| 
+   00005| import { isAsciiAlphanumeric, trim, trimEnd, utf8Len } from '../write_str.mjs';
+   00006| 
+   00007| /** Mirrors `RewriteRule::new` (plus `.terminal()` through `terminal`). */
+   00008| export function rewriteRule(pattern, replacement, terminal = false) {
+   00009|   return { pattern, replacement, terminal };
+   00010| }
+   00011| 
+   00012| /** Mirrors `RewriteProgram::new`. */
+   00013| export function rewriteProgram(rules, maxSteps) {
+   00014|   return { rules, max_steps: maxSteps };
+   00015| }
+   00016| 
+   00017| /**
+   00018|  * Mirrors `RewriteProgram::execute`: `{output, trace: [{rule_index,
+   00019|  * byte_offset}], halt: {kind: 'no_applicable_rule'|'terminal_rule'|'step_limit', index?}}`.
+   00020|  */
+   00021| export function executeRewrite(program, input) {
+   00022|   let output = input;
+   00023|   const trace = [];
+   00024|   for (let step = 0; step < program.max_steps; step += 1) {
+   00025|     let ruleIndex = -1;
+   00026|     let at = -1;
+   00027|     for (let index = 0; index < program.rules.length; index += 1) {
+   00028|       const found = output.indexOf(program.rules[index].pattern);
+   00029|       if (found >= 0) {
+   00030|         ruleIndex = index;
+   00031|         at = found;
+   00032|         break;
+   00033|       }
+   00034|     }
+   00035|     if (ruleIndex < 0) return { output, trace, halt: { kind: 'no_applicable_rule' } };
+   00036|     const rule = program.rules[ruleIndex];
+   00037|     const byteOffset = utf8Len(output.slice(0, at));
+   00038|     output = output.slice(0, at) + rule.replacement + output.slice(at + rule.pattern.length);
+   00039|     trace.push({ rule_index: ruleIndex, byte_offset: byteOffset });
+   00040|     if (rule.terminal) return { output, trace, halt: { kind: 'terminal_rule', index: ruleIndex } };
+   00041|   }
+   00042|   return { output, trace, halt: { kind: 'step_limit' } };
+   00043| }
+   00044| 
+   00045| /** Mirrors `fn quoted_segments`. @param {string} text @returns {Array<string>} */
+   00046| export function quotedSegments(text) {
+   00047|   return quotedSegmentSpans(text).map((segment) => segment.text);
+   00048| }
+   00049| 
+   00050| /**
+   00051|  * Mirrors `fn quoted_segment_spans`: `{text, start, end}` with `start` at the
+   00052|  * opening delimiter and `end` just past the closing one.
+   00053|  * @param {string} text
+   00054|  */
+   00055| export function quotedSegmentSpans(text) {
+   00056|   const result = [];
+   00057|   let cursor = 0;
+   00058|   while (cursor < text.length) {
+   00059|     const next = nextDelimiter(text, cursor);
+   00060|     if (!next) break;
+   00061|     const [openAt, open, close] = next;
+   00062|     const contentStart = openAt + open.length;
+   00063|     const contentEnd = closingDelimiter(text, contentStart, open, close);
+   00064|     if (contentEnd === null) break;
+   00065|     const segmentEnd = contentEnd + close.length;
+   00066|     result.push({ text: text.slice(contentStart, contentEnd), start: openAt, end: segmentEnd });
+   00067|     cursor = segmentEnd;
+   00068|   }
+   00069|   return result;
+   00070| }
+   00071| 
+   00072| const ASCII_QUOTES = ["'", '"', '`'];
+   00073| const OPEN_ONLY = ['«', '“', '‘', '「', '『', '《'];
+   00074| const CLOSE_FOLLOWERS = '.,;:!?)]}';
+   00075| const FAULT_FRAGMENT_CHARS = 32;
+   00076| 
+   00077| /**
+   00078|  * Mirrors `fn quote_fault`: the first place a request's quotes stop pairing
+   00079|  * (PR #1188 G71), as `{kind, at, fragment}`, or null when every quote pairs.
+   00080|  * `escaped` is a backslash before a quote that opens a literal, or before one
+   00081|  * that closes it with a word straight after; `unpaired` is an opening quote
+   00082|  * no literal holds. An apostrophe (a quote after a letter or digit) is never
+   00083|  * an opening quote.
+   00084|  * @param {string} text
+   00085|  */
+   00086| export function quoteFault(text) {
+   00087|   const faults = [];
+   00088|   let gapStart = 0;
+   00089|   const gap = (from, to) => {
+   00090|     for (let index = from; index < to; index += 1) {
+   00091|       const character = text[index];
+   00092|       const ascii = ASCII_QUOTES.includes(character);
+   00093|       if (ascii && text[index - 1] === '\\') faults.push(['escaped', index - 1]);
+   00094|       else if ((ascii && !wordInternalMark(character, previousChar(text, index))) || OPEN_ONLY.includes(character)) {
+   00095|         faults.push(['unpaired', index]);
+   00096|       }
+   00097|     }
+   00098|   };
+   00099|   for (const segment of quotedSegmentSpans(text)) {
+   00100|     gap(gapStart, segment.start);
+   00101|     gapStart = segment.end;
+   00102|     if (text.startsWith('```', segment.start) || !ASCII_QUOTES.includes(text[segment.start])) continue;
+   00103|     if (text[segment.start - 1] === '\\') faults.push(['escaped', segment.start - 1]);
+   00104|     const after = text[segment.end];
+   00105|     if (segment.end - segment.start > 2 && text[segment.end - 2] === '\\'
+   00106|       && after !== undefined && !/\s/u.test(after) && !CLOSE_FOLLOWERS.includes(after)) {
+   00107|       faults.push(['escaped', segment.end - 2]);
+   00108|     }
+   00109|   }
+   00110|   gap(gapStart, text.length);
+   00111|   if (faults.length === 0) return null;
+   00112|   const [kind, at] = faults.reduce((first, fault) => (fault[1] < first[1] ? fault : first));
+   00113|   return { kind, at, fragment: trimEnd(Array.from(text.slice(at)).slice(0, FAULT_FRAGMENT_CHARS).join('')) };
+   00114| }
+   00115| 
+   00116| /**
+   00117|  * Mirrors `fn word_internal_mark`: whether an unpaired ASCII quote belongs to
+   00118|  * the word before it -- an apostrophe after a letter or digit (`it's`), an
+   00119|  * inch mark after a digit (`5"`) -- rather than opening a quote that never
+   00120|  * closes (`say "hi" in` with an odd count of `"`, U17).
+   00121|  * @param {string} character
+   00122|  * @param {string|undefined} before
+   00123|  */
+   00124| function wordInternalMark(character, before) {
+   00125|   if (before === undefined) return false;
+   00126|   return character === "'" ? isAsciiAlphanumeric(before) : character === '"' && /[0-9]/u.test(before);
+   00127| }
+   00128| 
+   00129| /** Mirrors `fn unwrap_transport_quotes`. @param {string} text */
+   00130| export function unwrapTransportQuotes(text) {
+   00131|   const trimmed = trim(text);
+   00132|   for (const quote of ['"', "'"]) {
+   00133|     // A lone quote has no inner text: `strip_prefix` then `strip_suffix` fails.
+   00134|     if (trimmed.length >= 2 && trimmed.startsWith(quote) && trimmed.endsWith(quote)) {
+   00135|       const inner = trimmed.slice(1, -1);
+   00136|       if (!inner.includes(quote)) return inner;
+   00137|     }
+   00138|   }
+   00139|   return trimmed;
+   00140| }
+   00141| 
+   00142| const PAIRS = [
+   00143|   ['```', '```'], ["'", "'"], ['"', '"'], ['`', '`'], ['«', '»'],
+   00144|   ['“', '”'], ['‘', '’'], ['「', '」'], ['『', '』'], ['《', '》'],
+   00145| ];
+   00146| 
+   00147| /**
+   00148|  * Mirrors `fn wrapped_in_quote_pair`: whether `text`, trimmed, opens with a
+   00149|  * quote and closes with that quote's pair, so it is one literal however the
+   00150|  * quotes inside it pair (PR #1188 G63).
+   00151|  * @param {string} text
+   00152|  */
+   00153| export function wrappedInQuotePair(text) {
+   00154|   const trimmed = trim(text);
+   00155|   return PAIRS.some(([open, close]) => trimmed.length >= open.length + close.length
+   00156|     && trimmed.startsWith(open) && trimmed.endsWith(close));
+   00157| }
+   00158| 
+   00159| /**
+   00160|  * Mirrors `fn quotes_whole`: whether `text` holds `literal` inside one quote
+   00161|  * pair, however the quotes inside `literal` pair (PR #1188 G63).
+   00162|  * @param {string} text
+   00163|  * @param {string} literal
+   00164|  */
+   00165| export function quotesWhole(text, literal) {
+   00166|   return literal !== '' && PAIRS.some(([open, close]) => text.includes(`${open}${literal}${close}`));
+   00167| }
+   00168| 
+   00169| function nextDelimiter(text, cursor) {
+   00170|   let best = null;
+   00171|   for (const [open, close] of PAIRS) {
+   00172|     const found = nextCompletePair(text, cursor, open, close);
+   00173|     if (!found) continue;
+   00174|     if (best === null || found[0] < best[0] || (found[0] === best[0] && found[1].length > best[1].length)) best = found;
+   00175|   }
+   00176|   return best;
+   00177| }
+   00178| 
+   00179| function previousChar(text, index) {
+   00180|   const before = Array.from(text.slice(0, index));
+   00181|   return before[before.length - 1];
+   00182| }
+   00183| 
+   00184| function nextCompletePair(text, cursor, open, close) {
+   00185|   let from = cursor;
+   00186|   for (;;) {
+   00187|     const openAt = text.indexOf(open, from);
+   00188|     if (openAt < 0) return null;
+   00189|     const previousIsAsciiWord = open === "'" && isAsciiAlphanumeric(previousChar(text, openAt));
+   00190|     const contentStart = openAt + open.length;
+   00191|     if (!previousIsAsciiWord && closingDelimiter(text, contentStart, open, close) !== null) return [openAt, open, close];
+   00192|     from = contentStart;
+   00193|   }
+   00194| }
+   00195| 
+   00196| /**
+   00197|  * Mirrors `fn closing_delimiter`: the first close that is not an apostrophe
+   00198|  * inside a word, or, for a single quote, the one that closes a payload quoting
+   00199|  * a single-quoted literal of its own (`'- G1 "Delete the line 'x'." -'`,
+   00200|  * PR #1188 G61): a quote with a space before it and a word character after it
+   00201|  * opens a nested literal there, and the payload closes after that literal
+   00202|  * does. When such nesting never closes, the first close stands.
+   00203|  */
+   00204| function closingDelimiter(text, cursor, open, close) {
+   00205|   if (close === "'") return nestedClosingDelimiter(text, cursor) ?? plainClosingDelimiter(text, cursor, close);
+   00206|   return open === close ? plainClosingDelimiter(text, cursor, close) : stackedClosingDelimiter(text, cursor, open, close);
+   00207| }
+   00208| 
+   00209| /**
+   00210|  * Mirrors `fn stacked_closing_delimiter`: the close of a pair whose marks
+   00211|  * differ (`«…»`, `“…”`, `「…」`), counted as a stack -- an inner `«…»` is part
+   00212|  * of the payload (PR #1188 G86) -- or null when the stack never empties.
+   00213|  */
+   00214| function stackedClosingDelimiter(text, cursor, open, close) {
+   00215|   let depth = 0;
+   00216|   let from = cursor;
+   00217|   for (;;) {
+   00218|     const closeAt = text.indexOf(close, from);
+   00219|     if (closeAt < 0) return null;
+   00220|     const openAt = text.indexOf(open, from);
+   00221|     if (openAt >= 0 && openAt < closeAt) {
+   00222|       depth += 1;
+   00223|       from = openAt + open.length;
+   00224|     } else if (depth === 0) {
+   00225|       return closeAt;
+   00226|     } else {
+   00227|       depth -= 1;
+   00228|       from = closeAt + close.length;
+   00229|     }
+   00230|   }
+   00231| }
+   00232| 
+   00233| function plainClosingDelimiter(text, cursor, close) {
+   00234|   let from = cursor;
+   00235|   for (;;) {
+   00236|     const closeAt = text.indexOf(close, from);
+   00237|     if (closeAt < 0) return null;
+   00238|     const afterClose = closeAt + close.length;
+   00239|     const isAsciiApostrophe = close === "'"
+   00240|       && isAsciiAlphanumeric(previousChar(text, closeAt))
+   00241|       && isAsciiAlphanumeric(Array.from(text.slice(afterClose, afterClose + 2))[0]);
+   00242|     if (!isAsciiApostrophe) return closeAt;
+   00243|     from = afterClose;
+   00244|   }
+   00245| }
+   00246| 
+   00247| /** Mirrors `fn nested_closing_delimiter`. */
+   00248| function nestedClosingDelimiter(text, cursor) {
+   00249|   let depth = 0;
+   00250|   let from = cursor;
+   00251|   for (;;) {
+   00252|     const closeAt = text.indexOf("'", from);
+   00253|     if (closeAt < 0) return null;
+   00254|     from = closeAt + 1;
+   00255|     const before = previousChar(text, closeAt);
+   00256|     const after = Array.from(text.slice(from, from + 2))[0];
+   00257|     if (isAsciiAlphanumeric(before) && isAsciiAlphanumeric(after)) continue;
+   00258|     if (before !== undefined && /\s/u.test(before) && isAsciiAlphanumeric(after)) depth += 1;
+   00259|     else if (depth === 0) return closeAt;
+   00260|     else depth -= 1;
+   00261|   }
+   00262| }
+   00263| 
+   
+   (End of file - total 263 lines)
+   </file>
+>> edit {"filePath":"js/agentic/crate/normal_markov.mjs","file_path":"js/agentic/crate/normal_markov.mjs","new":"  if (best && best[1] === '```') {\n    const fence = /^`{3,}/u.exec(text.slice(best[0]))[0];\n    if (closingDelimiter(text, best[0] + fence.length, fence, fence) === null) return null;\n    return [best[0], fence, fence];\n  }\n  return best;\n}\n\nfunction previousChar","newString":"  if (best && best[1] === '```') {\n    const fence = /^`{3,}/u.exec(text.slice(best[0]))[0];\n    if (closingDelimiter(text, best[0] + fence.length, fence, fence) === null) return null;\n    return [best[0], fence, fence];\n  }\n  return best;\n}\n\nfunction previousChar","new_str":"  if (best && best[1] === '```') {\n    const fence = /^`{3,}/u.exec(text.slice(best[0]))[0];\n    if (closingDelimiter(text, best[0] + fence.length, fence, fence) === null) return null;\n    return [best[0], fence, fence];\n  }\n  return best;\n}\n\nfunction previousChar","new_string":"  if (best && best[1] === '```') {\n    const fence = /^`{3,}/u.exec(text.slice(best[0]))[0];\n    if (closingDelimiter(text, best[0] + fence.length, fence, fence) === null) return null;\n    return [best[0], fence, fence];\n  }\n  return best;\n}\n\nfunction previousChar","old":"  return best;\n}\n\nfunction previousChar","oldString":"  return best;\n}\n\nfunction previousChar","old_str":"  return best;\n}\n\nfunction previousChar","old_string":"  return best;\n}\n\nfunction previousChar","path":"js/agentic/crate/normal_markov.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/crate/normal_markov.mjs"}
+   a6af27c82925febbe84a1c5a9af55c940095c73be93a0b227ec40bf31c087350  js/agentic/crate/normal_markov.mjs
+   
+== answer ==
+Replaced `  return best;
+}
+
+function previousChar` with ````  if (best && best[1] === '```') {
+    const fence = /^`{3,}/u.exec(text.slice(best[0]))[0];
+    if (closingDelimiter(text, best[0] + fence.length, fence, fence) === null) return null;
+    return [best[0], fence, fence];
+  }
+  return best;
+}
+
+function previousChar```` in `js/agentic/crate/normal_markov.mjs` and observed the result.

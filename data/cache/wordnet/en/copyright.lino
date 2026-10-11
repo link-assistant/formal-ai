@@ -1,0 +1,17 @@
+language en
+lemma copyright
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a document granting exclusive right to publish and sell literary or musical or artistic work"
+    id oewn-06484839-n
+    partOfSpeech n
+    synonyms ("right of first publication")
+  entry
+    definition "secure a copyright on a written work"
+    examples ("did you copyright your manuscript?")
+    id oewn-02244315-v
+    partOfSpeech v
+source "oewn:2024"

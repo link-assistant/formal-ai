@@ -1,0 +1,21 @@
+{
+  "schema": "neutral-selfseal/v1",
+  "priorManifestSha256": "79d5e7dcc49142002e59983e0cc8bdda089df33c4fece4a52e6f44f17761310e",
+  "raw": [
+    {
+      "path": "raw/T3859-request.json.gz",
+      "sha256": "367e1b466d13cc2aef15b96f88a5aaf65e00582eb6073e6a5bbc77c7525850e5"
+    },
+    {
+      "path": "raw/T3859-transcript.json.gz",
+      "sha256": "f6eafafe2d00bcfcaea875e056a549c694f84e5f79f2389a3fb22235fe319b83"
+    },
+    {
+      "path": "raw/T3859.log.gz",
+      "sha256": "f6eafafe2d00bcfcaea875e056a549c694f84e5f79f2389a3fb22235fe319b83"
+    }
+  ],
+  "documentationWrites": 1,
+  "neutralCopies": 3,
+  "manualSourceWrites": 0
+}

@@ -1,0 +1,6 @@
+{
+  "task": "T1949",
+  "prompt": "Run node --input-type=module -e 'const fs=await import('\\''node:fs'\\''),cp=await import('\\''node:child_process'\\'');const file='\\''rust/tests/web/dogfood-driver-grep.test.mjs'\\'';let text=fs.readFileSync(file,'\\''utf8'\\'');const anchor='\\''const search ='\\'';if(text.split(anchor).length!==2)throw Error('\\''fixture initialization anchor'\\'');text=text.replace(anchor,'\\''await installNodeHost(new WorkerHost());\\n\\n'\\''+anchor);const old='\\''assert.equal(observedPayload(result), \\'\\''{\"error\":\"authored value\"}\\'\\'');'\\'';const replacement='\\''assert.ok(result.includes(\\'\\''Output: {\"error\":\"authored value\"}\\\\nExit Code: 0\\'\\''));\\n  assert.equal(observedPayload(result), JSON.stringify({ error: \"authored value\" }, null, 2));'\\'';if(text.split(old).length!==2)throw Error('\\''payload presentation preimage'\\'');text=text.replace(old,replacement);fs.writeFileSync(file,text);cp.execFileSync('\\''node'\\'',['\\''--test'\\'',file],{stdio:'\\''inherit'\\''});console.log('\\''PR1188_T1949_DRIVER_FIXTURE_PASS'\\'');'",
+  "marker": "PR1188_T1949_DRIVER_FIXTURE_PASS",
+  "steps": 16
+}

@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_language_test_coverage
+ci_gate check-language-test-coverage
   stage web
   description "Every registered language is exercised by the end-to-end suite."
   run "npm run --prefix rust/tests/e2e check:language-test-coverage"
+  justification "A natural language could be added to the catalog without a corresponding test, leaving translation quality unverifiable; the coverage check was introduced in commit 54bf94f6a to ensure every supported language has test coverage."

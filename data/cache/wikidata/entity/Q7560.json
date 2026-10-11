@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "母親"
+        },
+        "es": {
+          "language": "es",
+          "value": "madre"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "女性親屬"
+        },
+        "es": {
+          "language": "es",
+          "value": "ser vivo femenino que ha tenido descendencia directa"
         }
       },
       "aliases": {
@@ -168,6 +176,24 @@
           {
             "language": "zh",
             "value": "媽"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "mamá"
+          },
+          {
+            "language": "es",
+            "value": "mama"
+          },
+          {
+            "language": "es",
+            "value": "mami"
+          },
+          {
+            "language": "es",
+            "value": "ma"
           }
         ]
       }

@@ -1,0 +1,61 @@
+>> bash {"command":"mkdir -p -- .formal-ai && (lock='.formal-ai/general-change-plan.lino.lock'; tries=0; until mkdir -- \"$lock\" 2>/dev/null; do tries=$((tries + 1)); [ \"$tries\" -lt 40 ] || exit 75; sleep 0.025; done; cleanup(){ rmdir -- \"$lock\"; }; trap cleanup EXIT; if [ -f '.formal-ai/general-change-plan.lino' ]; then grep -Fqx -- '  id \"general_change_plan_0cb42d3f8675056f\"' '.formal-ai/general-change-plan.lino'; status=$?; [ \"$status\" -le 1 ] || exit \"$status\"; else status=1; fi; if [ \"$status\" -eq 1 ]; then printf \"\n%s\" 'general_change_plan\n  id \"general_change_plan_0cb42d3f8675056f\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Set the contents of changelog.d/20261010_001000_source-callable-body-read-binding.md to exactly this content:\\n````````````text\\n---\\nbump: patch\\n---\\n\\n### Fixed\\n\\n- Count source callable input coverage from the authoritative recurrence expression body, so declaration-only names cannot outrank a program that reads its inputs. Keep the existing cost and candidate comparator unchanged.\\n- Retain whether a callable signature was provisional, explicitly declared or observed in assertions. Preserve source identity for provisional requests, structurally bind explicit parameters and recursive calls, and reject incompatible or shadowed self-call bindings.\\n- Verify that each recurrence body contract matches the callable and source being evaluated; preserve explicit signatures and imported annotations in the rendered program.\\n````````````\"\n  target \"changelog.d/20261010_001000_source-callable-body-read-binding.md\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_c5913c59fc339ae8\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to changelog.d/20261010_001000_source-callable-body-read-binding.md\"\n    expected_evidence \"workspace file changelog.d/20261010_001000_source-callable-body-read-binding.md\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"---\\nbump: patch\\n---\\n\\n### Fixed\\n\\n- Count source callable input coverage from the authoritative recurrence expression body, so declaration-only names cannot outrank a program that reads its inputs. Keep the existing cost and candidate comparator unchanged.\\n- Retain whether a callable signature was provisional, explicitly declared or observed in assertions. Preserve source identity for provisional requests, structurally bind explicit parameters and recursive calls, and reject incompatible or shadowed self-call bindings.\\n- Verify that each recurrence body contract matches the callable and source being evaluated; preserve explicit signatures and imported annotations in the rendered program.\\n\"\n    command \"cat changelog.d/20261010_001000_source-callable-body-read-binding.md\"\n  verification_command \"cat changelog.d/20261010_001000_source-callable-body-read-binding.md\"\n' >> '.formal-ai/general-change-plan.lino' || exit $?; fi; awk -v identity='  id \"general_change_plan_0cb42d3f8675056f\"' \"\\$0==\\\"general_change_plan\\\" {if(record)exit; header=\\$0; next} \\$0==identity {record=1; print header} record && NF {print}\" '.formal-ai/general-change-plan.lino')"}
+   general_change_plan
+     id "general_change_plan_0cb42d3f8675056f"
+     execution_mode "literal_file"
+     terminal_state "executed"
+     goal "Set the contents of changelog.d/20261010_001000_source-callable-body-read-binding.md to exactly this content:\n````````````text\n---\nbump: patch\n---\n\n### Fixed\n\n- Count source callable input coverage from the authoritative recurrence expression body, so declaration-only names cannot outrank a program that reads its inputs. Keep the existing cost and candidate comparator unchanged.\n- Retain whether a callable signature was provisional, explicitly declared or observed in assertions. Preserve source identity for provisional requests, structurally bind explicit parameters and recursive calls, and reject incompatible or shadowed self-call bindings.\n- Verify that each recurrence body contract matches the callable and source being evaluated; preserve explicit signatures and imported annotations in the rendered program.\n````````````"
+     target "changelog.d/20261010_001000_source-callable-body-read-binding.md"
+     step 1
+       capability "Write"
+       action "append the composed plan to .formal-ai/general-change-plan.lino"
+       expected_evidence "written plan event impulse_c5913c59fc339ae8"
+     step 2
+       capability "Write"
+       action "write the requested content to changelog.d/20261010_001000_source-callable-body-read-binding.md"
+       expected_evidence "workspace file changelog.d/20261010_001000_source-callable-body-read-binding.md"
+     step 3
+       capability "Run"
+       action "run the request-derived verification command"
+       expected_evidence "---\nbump: patch\n---\n\n### Fixed\n\n- Count source callable input coverage from the authoritative recurrence expression body, so declaration-only names cannot outrank a program that reads its inputs. Keep the existing cost and candidate comparator unchanged.\n- Retain whether a callable signature was provisional, explicitly declared or observed in assertions. Preserve source identity for provisional requests, structurally bind explicit parameters and recursive calls, and reject incompatible or shadowed self-call bindings.\n- Verify that each recurrence body contract matches the callable and source being evaluated; preserve explicit signatures and imported annotations in the rendered program.\n"
+       command "cat changelog.d/20261010_001000_source-callable-body-read-binding.md"
+     verification_command "cat changelog.d/20261010_001000_source-callable-body-read-binding.md"
+   
+>> write {"content":"---\nbump: patch\n---\n\n### Fixed\n\n- Count source callable input coverage from the authoritative recurrence expression body, so declaration-only names cannot outrank a program that reads its inputs. Keep the existing cost and candidate comparator unchanged.\n- Retain whether a callable signature was provisional, explicitly declared or observed in assertions. Preserve source identity for provisional requests, structurally bind explicit parameters and recursive calls, and reject incompatible or shadowed self-call bindings.\n- Verify that each recurrence body contract matches the callable and source being evaluated; preserve explicit signatures and imported annotations in the rendered program.\n","filePath":"changelog.d/20261010_001000_source-callable-body-read-binding.md","file_path":"changelog.d/20261010_001000_source-callable-body-read-binding.md","path":"changelog.d/20261010_001000_source-callable-body-read-binding.md"}
+>> bash {"command":"cat changelog.d/20261010_001000_source-callable-body-read-binding.md"}
+   ---
+   bump: patch
+   ---
+   
+   ### Fixed
+   
+   - Count source callable input coverage from the authoritative recurrence expression body, so declaration-only names cannot outrank a program that reads its inputs. Keep the existing cost and candidate comparator unchanged.
+   - Retain whether a callable signature was provisional, explicitly declared or observed in assertions. Preserve source identity for provisional requests, structurally bind explicit parameters and recursive calls, and reject incompatible or shadowed self-call bindings.
+   - Verify that each recurrence body contract matches the callable and source being evaluated; preserve explicit signatures and imported annotations in the rendered program.
+   
+== answer ==
+Completed the general change request for changelog.d/20261010_001000_source-callable-body-read-binding.md and verified it with `cat changelog.d/20261010_001000_source-callable-body-read-binding.md`.
+
+Plan event (.formal-ai/general-change-plan.lino):
+
+`````````````lino
+general_change_plan
+  id "general_change_plan_0cb42d3f8675056f"
+  execution_mode "literal_file"
+  terminal_state "executed"
+  goal "Set the contents of changelog.d/20261010_001000_source-callable-body-read-binding.md to exactly this content:\n````````````text\n---\nbump: patch\n---\n\n### Fixed\n\n- Count source callable input coverage from the authoritative recurrence expression body, so declaration-only names cannot outrank a program that reads its inputs. Keep the existing cost and candidate comparator unchanged.\n- Retain whether a callable signature was provisional, explicitly declared or observed in assertions. Preserve source identity for provisional requests, structurally bind explicit parameters and recursive calls, and reject incompatible or shadowed self-call bindings.\n- Verify that each recurrence body contract matches the callable and source being evaluated; preserve explicit signatures and imported annotations in the rendered program.\n````````````"
+  target "changelog.d/20261010_001000_source-callable-body-read-binding.md"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_c5913c59fc339ae8"
+  step 2
+    capability "Write"
+    action "write the requested content to changelog.d/20261010_001000_source-callable-body-read-binding.md"
+    expected_evidence "workspace file changelog.d/20261010_001000_source-callable-body-read-binding.md"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "---\nbump: patch\n---\n\n### Fixed\n\n- Count source callable input coverage from the authoritative recurrence expression body, so declaration-only names cannot outrank a program that reads its inputs. Keep the existing cost and candidate comparator unchanged.\n- Retain whether a callable signature was provisional, explicitly declared or observed in assertions. Preserve source identity for provisional requests, structurally bind explicit parameters and recursive calls, and reject incompatible or shadowed self-call bindings.\n- Verify that each recurrence body contract matches the callable and source being evaluated; preserve explicit signatures and imported annotations in the rendered program.\n"
+    command "cat changelog.d/20261010_001000_source-callable-body-read-binding.md"
+  verification_command "cat changelog.d/20261010_001000_source-callable-body-read-binding.md"
+`````````````

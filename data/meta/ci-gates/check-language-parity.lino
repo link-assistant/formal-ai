@@ -1,4 +1,5 @@
-ci_gate check_language_parity
+ci_gate check-language-parity
   stage rust
   description "Derive every lexeme-owning meaning from Links Notation structure, require en/ru/hi/zh/es parity or one exact dated uncovered_behavior row, and reject missing, duplicate, or stale debt rows; data/meta/debt-ratchet.lino independently ratchets the live gap count."
   run "rust-script --test scripts/check-language-parity.rs && rust-script scripts/check-language-parity.rs"
+  justification "Missing, duplicate or stale language-coverage debt rows cause the parity check to report a false green; the strict gate was introduced in #1138 (commit 9c31b0530) to require en/ru/hi/zh/es parity or an exact dated uncovered_behavior row."

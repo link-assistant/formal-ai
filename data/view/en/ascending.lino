@@ -1,0 +1,13 @@
+view
+  id M-52238c22a4f3
+  lemma ascending
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "moving or going or growing upward"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of changing location in an upward direction"
+    provenance (wordnet)

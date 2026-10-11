@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
+import { expandConciseLexemes } from '../../../../js/server/lino.mjs';
 import {
   parseLinoEntry,
   parseLinoField,
@@ -20,6 +21,8 @@ const repoRoot = path.resolve(scriptDir, '../../../..');
 function readRepoFile(relativePath) {
   const filePath = path.join(repoRoot, relativePath);
   const sources = [fs.readFileSync(filePath, 'utf8')];
+  // A seed is scanned line by line, so its concise lexemes are written out long.
+  if (relativePath.endsWith('.lino')) return expandConciseLexemes(sources[0]);
   if (!relativePath.endsWith('.rs')) return sources[0];
 
   // Rust test modules may be split into a same-named directory to satisfy the
@@ -41,6 +44,22 @@ function readRepoFile(relativePath) {
     }
   }
   return sources.join('\n');
+}
+
+// The browser multilingual suite is split across `multilingual-*.spec.js`
+// (plus their shared `support/multilingual.js`) to satisfy the repository line
+// budget. Coverage belongs to the suite, not to one physical file.
+const browserMultilingualSpecGlob = 'rust/tests/e2e/tests/multilingual-*.spec.js';
+function readBrowserMultilingualTests() {
+  const testsDirectory = path.join(repoRoot, 'rust/tests/e2e/tests');
+  const files = fs
+    .readdirSync(testsDirectory)
+    .filter((name) => /^multilingual-.*\.spec\.js$/u.test(name))
+    .sort()
+    .map((name) => path.join(testsDirectory, name));
+  assert(files.length > 0, `no browser multilingual specs match ${browserMultilingualSpecGlob}`);
+  files.push(path.join(testsDirectory, 'support/multilingual.js'));
+  return files.map((file) => fs.readFileSync(file, 'utf8')).join('\n');
 }
 
 function readWorkerSource() {
@@ -134,7 +153,7 @@ function parseMeaningsRoleInventories() {
     let language = null;
     let inSurface = false;
 
-    for (const line of fs.readFileSync(path.join(seedDir, file), 'utf8').split(/\r?\n/)) {
+    for (const line of expandConciseLexemes(fs.readFileSync(path.join(seedDir, file), 'utf8')).split(/\r?\n/)) {
       const meaningHeader = line.match(/^ {2}([a-z0-9_]+)$/);
       if (meaningHeader) {
         if (meaning) flushMeaning(meaning);
@@ -354,8 +373,8 @@ function parseContextRecords() {
 
 function parseFeatureCapabilitySlugs() {
   return [
-    ...readRepoFile('rust/src/solver_handlers/feature_capability.rs').matchAll(
-      /slug:\s*"([^"]+)"/g,
+    ...readRepoFile('data/seed/feature-capabilities.lino').matchAll(
+      /^  feature feature_capability_(\S+)$/gm,
     ),
   ].map((match) => match[1]);
 }
@@ -375,15 +394,38 @@ function parseFeatureCapabilityTestMatrix() {
   return matrix;
 }
 
+// R1188-U1: the browser's offline phrase registry is the `translation_phrase`
+// meanings of data/seed/meanings-translation-phrases.lino, which the worker
+// reads by role. A meaning's first surface in a language is its primary form;
+// every surface of the language is a phrasing it recognizes.
 function parseBrowserTranslationRegistry() {
-  const source = readWorkerSource();
-  const match = source.match(
-    /const TRANSLATION_MEANING_REGISTRY = (\[[\s\S]*?\n\]);/,
-  );
-  if (!match) {
-    throw new Error('the split web worker source is missing TRANSLATION_MEANING_REGISTRY');
+  const entries = [];
+  let entry = null;
+  let language = null;
+  for (const line of readRepoFile('data/seed/meanings-translation-phrases.lino').split(/\r?\n/)) {
+    const head = /^ {2}(\S+)$/.exec(line);
+    if (head) {
+      entry = { token: head[1], role: false, primary: {}, aliases: {} };
+      entries.push(entry);
+      language = null;
+      continue;
+    }
+    if (!entry) continue;
+    if (/^ {4}role translation_phrase$/.test(line)) entry.role = true;
+    const lexeme = /^ {4}lexeme (\S+)$/.exec(line);
+    if (lexeme) language = lexeme[1];
+    const text = /^ {8}text (?:"(.*)"|(\S+))$/.exec(line);
+    if (text && language) {
+      const surface = text[1] ?? text[2];
+      entry.primary[language] ??= surface;
+      (entry.aliases[language] ??= []).push(surface);
+    }
   }
-  return vm.runInNewContext(`(${match[1]})`);
+  const phrases = entries.filter((candidate) => candidate.role);
+  if (phrases.length === 0) {
+    throw new Error('data/seed/meanings-translation-phrases.lino holds no translation_phrase meaning');
+  }
+  return phrases;
 }
 
 const supportedLanguages = parseSupportedLanguages();
@@ -641,7 +683,7 @@ assertBalancedLanguageCaseCounts(
 assertPromptPatternCoverageGroups('wikipedia_article_question');
 
 {
-  const browserMultilingualTests = readRepoFile('rust/tests/e2e/tests/multilingual.spec.js');
+  const browserMultilingualTests = readBrowserMultilingualTests();
   for (const [language, entries] of Object.entries(wikipediaArticleQuestionCases)) {
     for (const entry of entries) {
       assert(
@@ -658,7 +700,7 @@ assertPromptPatternCoverageGroups('wikipedia_article_question');
       assert(
         browserMultilingualTests.includes(entry.prompt) &&
           browserMultilingualTests.includes(entry.expectedTitle),
-        `tests/e2e/tests/multilingual.spec.js must cover ${language} wikipedia_article_question prompt ${JSON.stringify(entry.prompt)} and expected title ${JSON.stringify(entry.expectedTitle)}`,
+        `${browserMultilingualSpecGlob} must cover ${language} wikipedia_article_question prompt ${JSON.stringify(entry.prompt)} and expected title ${JSON.stringify(entry.expectedTitle)}`,
       );
     }
   }
@@ -713,7 +755,7 @@ assertBalancedLanguageCaseCounts(
 );
 
 {
-  const browserMultilingualTests = readRepoFile('rust/tests/e2e/tests/multilingual.spec.js');
+  const browserMultilingualTests = readBrowserMultilingualTests();
   for (const [language, entries] of Object.entries(definitionStyleDisambiguationCases)) {
     for (const entry of entries) {
       assert(
@@ -722,7 +764,7 @@ assertBalancedLanguageCaseCounts(
           browserMultilingualTests.includes(entry.expectedText) &&
           browserMultilingualTests.includes(entry.expectedHost) &&
           browserMultilingualTests.includes(entry.rejectedText),
-        `tests/e2e/tests/multilingual.spec.js must cover ${language} definition-style disambiguation prompt ${JSON.stringify(entry.prompt)} with expected Wikipedia title ${JSON.stringify(entry.expectedTitle)} before Wikidata fallback`,
+        `${browserMultilingualSpecGlob} must cover ${language} definition-style disambiguation prompt ${JSON.stringify(entry.prompt)} with expected Wikipedia title ${JSON.stringify(entry.expectedTitle)} before Wikidata fallback`,
       );
     }
   }
@@ -775,7 +817,7 @@ assertBalancedLanguageCaseCounts(
 
 for (const [language, entries] of Object.entries(webSearchSourceMarkerCases)) {
   const rustWebRequestTests = readRepoFile('rust/tests/unit/web_requests.rs');
-  const browserSearchTests = readRepoFile('rust/tests/e2e/tests/issue-153.spec.js');
+  const browserSearchTests = readRepoFile('rust/tests/e2e/tests/search-menu-and-deduplication.spec.js');
   for (const entry of entries) {
     assert(
       entry.prompt.trim() && entry.query.trim(),
@@ -789,7 +831,7 @@ for (const [language, entries] of Object.entries(webSearchSourceMarkerCases)) {
     assert(
       browserSearchTests.includes(entry.prompt) &&
         browserSearchTests.includes(entry.query),
-      `tests/e2e/tests/issue-153.spec.js must cover ${language} web-search source-marker prompt ${JSON.stringify(entry.prompt)}`,
+      `tests/e2e/tests/search-menu-and-deduplication.spec.js must cover ${language} web-search source-marker prompt ${JSON.stringify(entry.prompt)}`,
     );
   }
 }
@@ -836,7 +878,7 @@ assertBalancedLanguageCaseCounts(
 
 {
   const rustWebRequestTests = readRepoFile('rust/tests/unit/web_requests.rs');
-  const browserIssue228Tests = readRepoFile('rust/tests/e2e/tests/issue-228.spec.js');
+  const browserIssue228Tests = readRepoFile('rust/tests/e2e/tests/enumeration-research-web-search.spec.js');
   for (const [language, entries] of Object.entries(webSearchEnumerationResearchCases)) {
     for (const entry of entries) {
       assert(
@@ -853,7 +895,7 @@ assertBalancedLanguageCaseCounts(
       assert(
         browserIssue228Tests.includes(entry.prompt) &&
           browserIssue228Tests.includes(entry.browserRequest),
-        `tests/e2e/tests/issue-228.spec.js must cover ${language} enumeration-research prompt ${JSON.stringify(entry.prompt)}`,
+        `tests/e2e/tests/enumeration-research-web-search.spec.js must cover ${language} enumeration-research prompt ${JSON.stringify(entry.prompt)}`,
       );
     }
   }
@@ -877,7 +919,7 @@ assertBalancedLanguageCaseCounts(
 
 {
   const rustReasoningTests = readRepoFile('rust/tests/unit/specification/reasoning_paths.rs');
-  const browserMultilingualTests = readRepoFile('rust/tests/e2e/tests/multilingual.spec.js');
+  const browserMultilingualTests = readBrowserMultilingualTests();
   for (const [language, prompts] of Object.entries(currentDayCalendarCases)) {
     for (const prompt of prompts) {
       assert(
@@ -886,7 +928,7 @@ assertBalancedLanguageCaseCounts(
       );
       assert(
         browserMultilingualTests.includes(prompt),
-        `tests/e2e/tests/multilingual.spec.js must cover ${language} current-day calendar prompt ${JSON.stringify(prompt)}`,
+        `${browserMultilingualSpecGlob} must cover ${language} current-day calendar prompt ${JSON.stringify(prompt)}`,
       );
     }
   }
@@ -911,7 +953,7 @@ assertBalancedLanguageCaseCounts(
 
 {
   const rustReasoningTests = readRepoFile('rust/tests/unit/specification/reasoning_paths.rs');
-  const browserMultilingualTests = readRepoFile('rust/tests/e2e/tests/multilingual.spec.js');
+  const browserMultilingualTests = readBrowserMultilingualTests();
   for (const [language, prompts] of Object.entries(calendarCreateEventCases)) {
     for (const prompt of prompts) {
       assert(
@@ -920,7 +962,7 @@ assertBalancedLanguageCaseCounts(
       );
       assert(
         browserMultilingualTests.includes(prompt),
-        `tests/e2e/tests/multilingual.spec.js must cover ${language} calendar create event prompt ${JSON.stringify(prompt)}`,
+        `${browserMultilingualSpecGlob} must cover ${language} calendar create event prompt ${JSON.stringify(prompt)}`,
       );
     }
   }
@@ -964,7 +1006,7 @@ assertBalancedLanguageCaseCounts(
 
 {
   const rustProofTests = readRepoFile('rust/tests/unit/proof_request.rs');
-  const browserIssue209Tests = readRepoFile('rust/tests/e2e/tests/issue-209.spec.js');
+  const browserIssue209Tests = readRepoFile('rust/tests/e2e/tests/prime-proof-prompts.spec.js');
   for (const [language, entries] of Object.entries(primeInfinitudeProofCases)) {
     for (const entry of entries) {
       assert(
@@ -975,7 +1017,7 @@ assertBalancedLanguageCaseCounts(
       assert(
         browserIssue209Tests.includes(entry.prompt) &&
           browserIssue209Tests.includes(entry.expectedStatement),
-        `tests/e2e/tests/issue-209.spec.js must cover ${language} prime-infinitude proof prompt ${JSON.stringify(entry.prompt)}`,
+        `tests/e2e/tests/prime-proof-prompts.spec.js must cover ${language} prime-infinitude proof prompt ${JSON.stringify(entry.prompt)}`,
       );
     }
   }
@@ -997,7 +1039,7 @@ const requiredLocalizedResponseIntents = [
   'unknown_reasoning_question',
   'unknown_reasoning_trace',
   'meta_explanation',
-  'inappropriate_content',
+  'inappropriate-content',
 ];
 
 for (const intent of requiredLocalizedResponseIntents) {
@@ -1080,24 +1122,24 @@ for (const feature of featureCapabilitySlugs) {
 }
 
 for (const entry of browserTranslationRegistry) {
-  assert(entry.token, 'TRANSLATION_MEANING_REGISTRY entries must define token');
+  assert(entry.token, 'translation_phrase meanings must define a slug');
   assertMatrixMatchesSupportedLanguages(
-    `TRANSLATION_MEANING_REGISTRY ${entry.token} primary`,
+    `translation_phrase ${entry.token} primary`,
     entry.primary || {},
   );
   assertMatrixMatchesSupportedLanguages(
-    `TRANSLATION_MEANING_REGISTRY ${entry.token} aliases`,
+    `translation_phrase ${entry.token} aliases`,
     entry.aliases || {},
   );
 
   for (const language of supportedLanguages) {
     assert(
       entry.primary?.[language]?.trim(),
-      `TRANSLATION_MEANING_REGISTRY ${entry.token} primary.${language} must be non-empty`,
+      `translation_phrase ${entry.token} primary.${language} must be non-empty`,
     );
     assert(
       Array.isArray(entry.aliases?.[language]) && entry.aliases[language].length > 0,
-      `TRANSLATION_MEANING_REGISTRY ${entry.token} aliases.${language} must be a non-empty array`,
+      `translation_phrase ${entry.token} aliases.${language} must be a non-empty array`,
     );
   }
 }

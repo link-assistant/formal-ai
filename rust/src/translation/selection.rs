@@ -388,10 +388,21 @@ fn clarifying_question(
     if let Some(question) = predicate_clarifying_question(top, runner_up) {
         return question;
     }
-    format!(
-        "Which interpretation did you mean: {} or {}?",
-        top.compact_summary(),
-        runner_up.compact_summary()
+    let (top_summary, other_summary) = (top.compact_summary(), runner_up.compact_summary());
+    clarification_text(
+        "translation_clarify_interpretation",
+        &[
+            ("top", top_summary.as_str()),
+            ("other", other_summary.as_str()),
+        ],
+    )
+}
+
+/// A seeded English `translation_clarify_*` question with each slot filled once.
+fn clarification_text(intent: &str, values: &[(&str, &str)]) -> String {
+    crate::seed::fill_template_once(
+        &crate::seed::localized_response(intent, "en").unwrap_or_default(),
+        values,
     )
 }
 
@@ -413,14 +424,20 @@ fn predicate_clarifying_question(
         return None;
     }
 
-    Some(format!(
-        "Should I read \"{}\" as \"{} {} {}\" or \"{} {} {}\"?",
-        top.source_text,
-        top_subject.surface,
-        top_predicate.anchor.label,
-        top_object.surface,
-        other_subject.surface,
-        other_predicate.anchor.label,
-        other_object.surface
+    let reading = format!(
+        "{} {} {}",
+        top_subject.surface, top_predicate.anchor.label, top_object.surface
+    );
+    let other_reading = format!(
+        "{} {} {}",
+        other_subject.surface, other_predicate.anchor.label, other_object.surface
+    );
+    Some(clarification_text(
+        "translation_clarify_reading",
+        &[
+            ("text", top.source_text.as_str()),
+            ("top", reading.as_str()),
+            ("other", other_reading.as_str()),
+        ],
     ))
 }

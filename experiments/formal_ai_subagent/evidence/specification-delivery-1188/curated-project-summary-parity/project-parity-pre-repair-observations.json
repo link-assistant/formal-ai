@@ -1,0 +1,1482 @@
+[
+  {
+    "id": "rust/tests/unit/specification/project_lookups.rs::russian_hive_mind_prompt_prefers_link_assistant_project",
+    "asks": [
+      {
+        "binding": "response",
+        "prompt": "Что такое Hive Mind?"
+      }
+    ],
+    "responses": {
+      "response": {
+        "intent": "project_lookup",
+        "content": "В контексте репозиториев link-assistant, link-foundation, linksplatform под `Hive Mind` я прежде всего имею в виду [link-assistant/hive-mind](https://github.com/link-assistant/hive-mind) — Hive Mind — это ИИ, который управляет другими ИИ для автоматизации автоматизации. Hive Mind координирует нескольких агентов и распределяет задачи между ними. Hive Mind предоставляет единый интерфейс для делегирования работы разным ИИ.\n\nДругие найденные в интернете репозитории и сущности:\n\nНе получены результаты веб-поиска с поддержкой CORS для `Hive Mind`.\n\nПопробованы провайдеры: DuckDuckGo Instant Answer, Internet Archive (archive.org), Wikipedia REST, Wikidata entities, Wiktionary opensearch, Wikinews opensearch.",
+        "confidence": 0.9,
+        "evidence": [
+          "project:promoted:link-assistant/hive-mind",
+          "source:https://github.com/link-assistant/hive-mind",
+          "summarization:mode:short",
+          "summarization:language:ru",
+          "web_search:request:Hive Mind",
+          "web_search:language:ru",
+          "web_search:provider:duckduckgo",
+          "web_search:provider:internet-archive",
+          "web_search:provider:wikipedia",
+          "web_search:provider:wikidata",
+          "web_search:provider:wiktionary",
+          "web_search:provider:wikinews",
+          "web_search:combined:rrf:k=60",
+          "web_search:provider:duckduckgo:error:no_results",
+          "web_search:provider:internet-archive:error:no_results",
+          "web_search:provider:wikipedia:error:no_results",
+          "web_search:provider:wikidata:error:no_results",
+          "web_search:provider:wiktionary:error:no_results",
+          "web_search:provider:wikinews:error:no_results",
+          "web_search:component_error:@link-assistant/web-search:unavailable",
+          "trace:impulse:Что такое Hive Mind?",
+          "trace:formalization:(@USER OP:define ?hive mind)",
+          "trace:language:ru",
+          "trace:meta:explain:open",
+          "trace:handler:project_lookup",
+          "trace:deformalize:(@USER OP:define ?hive mind):project_lookup",
+          "prompt:prompt_cc742703d00861d2",
+          "impulse:impulse_301f97f899d0342f",
+          "language:ru",
+          "candidate:candidate_f1648c32491ca23e",
+          "statement_weight:formalization:0 weight=1.000000 subject=wikipedia:ru:hive_mind",
+          "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc",
+          "formalization:formalization_6cf51c7633a81d07",
+          "formalization:fallback:wikipedia:ru:hive_mind",
+          "intent_formalization_cache:miss:impulse_ce9dcfe7f4c006c2",
+          "intent_formalization:intent_formalization_554ec109d7df954c",
+          "intent_formalization:kind:question",
+          "search:local:search:local_68c5f1b40b115b4c",
+          "selected_rule:selected_rule_8b06fb2d3be676be",
+          "intent:project_lookup",
+          "validation:validation_7a450cd36c0aaaf2",
+          "response:project_lookup",
+          "trace:simplification:trace:simplification_5678fc761ff1398b",
+          "trace:trace_c0e79fbb75234b4b"
+        ],
+        "steps": [
+          {
+            "step": "impulse",
+            "detail": "Что такое Hive Mind?",
+            "level": "high"
+          },
+          {
+            "step": "formalize",
+            "detail": "Что такое Hive Mind? -> (@USER OP:define ?hive mind)",
+            "formalization": {
+              "raw": "Что такое Hive Mind?",
+              "subject": "@USER",
+              "verb": "OP:define",
+              "object": "?hive mind",
+              "tuple": "(@USER OP:define ?hive mind)",
+              "interpretations": []
+            },
+            "level": "detailed"
+          },
+          {
+            "step": "detect_language",
+            "detail": "ru",
+            "level": "high"
+          },
+          {
+            "step": "meta_reason",
+            "detail": "explain open",
+            "derivation": "derivation\n  goal explain\n  status open\n  unknown \"такое\"\n    status open\n    origin none\n  unknown \"hive\"\n    status open\n    origin none\n  unknown \"mind\"\n    status open\n    origin none\n  event 1\n    kind impulse\n    detail \"Что такое Hive Mind?\"\n  event 2\n    kind formalize\n    detail \"goal explain; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"такое, hive, mind\"\n  event 4\n    kind impasse\n    detail \"такое: unknown, lookup needed\"\n  event 5\n    kind impasse\n    detail \"hive: unknown, lookup needed\"\n  event 6\n    kind impasse\n    detail \"mind: unknown, lookup needed\"",
+            "level": "detailed"
+          },
+          {
+            "step": "invoke_tool",
+            "detail": "response_language_followup",
+            "level": "detailed"
+          },
+          {
+            "step": "invoke_tool",
+            "detail": "project_lookup",
+            "level": "detailed"
+          },
+          {
+            "step": "dispatch_handler",
+            "detail": "tryProjectLookup",
+            "level": "high"
+          },
+          {
+            "step": "deformalize",
+            "detail": "(@USER OP:define ?hive mind) ⇒ project_lookup: В контексте репозиториев link-assistant, link-foundation, linksplatform под `Hive Mind` я прежде…",
+            "projection": {
+              "tuple": "(@USER OP:define ?hive mind)",
+              "intent": "project_lookup",
+              "contentChars": 710,
+              "evidenceCount": 20,
+              "language": "ru",
+              "summary": "(@USER OP:define ?hive mind) ⇒ project_lookup: В контексте репозиториев link-assistant, link-foundation, linksplatform под `Hive Mind` я прежде…"
+            },
+            "answer": "В контексте репозиториев link-assistant, link-foundation, linksplatform под `Hive Mind` я прежде всего имею в виду [link-assistant/hive-mind](https://github.com/link-assistant/hive-mind) — Hive Mind — это ИИ, который управляет другими ИИ для автоматизации автоматизации. Hive Mind координирует нескольких агентов и распределяет задачи между ними. Hive Mind предоставляет единый интерфейс для делегирования работы разным ИИ.",
+            "level": "high"
+          }
+        ],
+        "toolCalls": [
+          {
+            "tool": "project_lookup",
+            "inputs": {
+              "prompt": "Что такое Hive Mind?",
+              "language": "ru"
+            },
+            "outputs": {
+              "intent": "project_lookup",
+              "confidence": 0.9
+            }
+          }
+        ],
+        "derivationId": "answer_ccbc0e119864e5a3",
+        "rawSolverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "Что такое Hive Mind?"
+          },
+          {
+            "kind": "language",
+            "payload": "ru"
+          },
+          {
+            "kind": "intent",
+            "payload": "project_lookup"
+          },
+          {
+            "kind": "candidate",
+            "payload": "project_lookup"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:project_lookup"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "project_lookup"
+          }
+        ],
+        "solverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "Что такое Hive Mind?"
+          },
+          {
+            "kind": "language",
+            "payload": "ru"
+          },
+          {
+            "kind": "candidate",
+            "payload": "formalization:0 score=520 probability=1.000000 subject=wikipedia:ru:hive_mind"
+          },
+          {
+            "kind": "statement_weight",
+            "payload": "formalization:0 weight=1.000000 subject=wikipedia:ru:hive_mind"
+          },
+          {
+            "kind": "policy:temperature_selection",
+            "payload": "selected=formalization:0 probability=1.000000 margin=1.000000 epsilon=0.112000 reason=only_candidate"
+          },
+          {
+            "kind": "formalization",
+            "payload": "subject=wikipedia:ru:hive_mind"
+          },
+          {
+            "kind": "formalization:fallback",
+            "payload": "wikipedia:ru:hive_mind"
+          },
+          {
+            "kind": "intent_formalization_cache",
+            "payload": "miss impulse_ce9dcfe7f4c006c2"
+          },
+          {
+            "kind": "intent_formalization",
+            "payload": "intent_formalization impulse_ce9dcfe7f4c006c2\n  impulse_id \"impulse_ce9dcfe7f4c006c2\"\n  source_text \"Что такое Hive Mind?\"\n  normalized_text \"что такое hive mind\"\n  language \"ru\"\n  kind \"question\"\n  known \"impulse:impulse_ce9dcfe7f4c006c2\"\n  known \"language:ru\"\n  known \"formalization:fallback:wikipedia:ru:hive_mind\"\n"
+          },
+          {
+            "kind": "intent_formalization:kind",
+            "payload": "question"
+          },
+          {
+            "kind": "search:local",
+            "payload": "Что такое Hive Mind?"
+          },
+          {
+            "kind": "selected_rule",
+            "payload": "initial unknown reason no_seed_route next try_rule_synthesis"
+          },
+          {
+            "kind": "intent",
+            "payload": "project_lookup"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:project_lookup"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "project_lookup"
+          }
+        ],
+        "derivation": "derivation\n  goal explain\n  status open\n  unknown \"такое\"\n    status open\n    origin none\n  unknown \"hive\"\n    status open\n    origin none\n  unknown \"mind\"\n    status open\n    origin none\n  event 1\n    kind impulse\n    detail \"Что такое Hive Mind?\"\n  event 2\n    kind formalize\n    detail \"goal explain; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"такое, hive, mind\"\n  event 4\n    kind impasse\n    detail \"такое: unknown, lookup needed\"\n  event 5\n    kind impasse\n    detail \"hive: unknown, lookup needed\"\n  event 6\n    kind impasse\n    detail \"mind: unknown, lookup needed\""
+      }
+    },
+    "checks": [
+      {
+        "check": {
+          "binding": "response",
+          "field": "intent",
+          "value": "project_lookup",
+          "lower": false,
+          "op": "equals"
+        },
+        "failure": null
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "content",
+          "value": "В контексте репозиториев link-assistant, link-foundation, linksplatform под `Hive Mind` я прежде всего имею в виду [link-assistant/hive-mind](https://github.com/link-assistant/hive-mind) — Hive Mind — это ИИ, который управляет другими ИИ для автоматизации автоматизации.\n\nДругие найденные в интернете репозитории и сущности должна показывать браузерная демо-версия через поиск по запросу `Hive Mind`. Провайдеры: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Ранжирование: reciprocal rank fusion (k = 60). Продвижение ассоциативных репозиториев можно отключить, тогда ответ пойдет по обычному поиску GitHub, GitLab и Bitbucket.",
+          "lower": false,
+          "op": "equals"
+        },
+        "failure": "content equals \"В контексте репозиториев link-assistant, link-foundation, linksplatform под `Hive Mind` я прежде всего имею в виду [link-assistant/hive-mind](https://github.com/link-assistant/hive-mind) — Hive Mind — это ИИ, который управляет другими ИИ для автоматизации автоматизации.\\n\\nДругие найденные в интернете репозитории и сущности должна показывать браузерная демо-версия через поиск по запросу `Hive Mind`. Провайдеры: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Ранжирование: reciprocal rank fusion (k = 60). Продвижение ассоциативных репозиториев можно отключить, тогда ответ пойдет по обычному поиску GitHub, GitLab и Bitbucket.\"; got \"В контексте репозиториев link-assistant, link-foundation, linksplatform под `Hive Mind` я прежде всего имею в виду [link-assistant/hive-mind](https://github.com\""
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "content",
+          "value": "link-assistant/hive-mind",
+          "lower": false,
+          "op": "includes"
+        },
+        "failure": null
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "content",
+          "value": "ИИ",
+          "lower": false,
+          "op": "includes"
+        },
+        "failure": null
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "evidence",
+          "value": "project:promoted:",
+          "lower": false,
+          "op": "has-evidence-prefix"
+        },
+        "failure": null
+      }
+    ]
+  },
+  {
+    "id": "rust/tests/unit/specification/project_lookups.rs::curated_project_concept_prompt_routes_to_project_lookup",
+    "asks": [
+      {
+        "binding": "response",
+        "prompt": "What is link-cli?"
+      }
+    ],
+    "responses": {
+      "response": {
+        "intent": "project_lookup",
+        "content": "In the link-assistant, link-foundation, linksplatform repository context, `link-cli` should first mean [link-foundation/link-cli](https://github.com/link-foundation/link-cli) — link-cli is the command-line entry point for working with Links Notation files. link-cli wraps the same parsers used by formal-ai and hive-mind.\n\nOther repositories and entities found online:\n\nNo CORS-enabled web search results were returned for `link-cli`.\n\nProviders tried: DuckDuckGo Instant Answer, Internet Archive (archive.org), Wikipedia REST, Wikidata entities, Wiktionary opensearch, Wikinews opensearch.",
+        "confidence": 0.9,
+        "evidence": [
+          "project:promoted:link-foundation/link-cli",
+          "source:https://github.com/link-foundation/link-cli",
+          "summarization:mode:short",
+          "summarization:language:en",
+          "web_search:request:link-cli",
+          "web_search:language:en",
+          "web_search:provider:duckduckgo",
+          "web_search:provider:internet-archive",
+          "web_search:provider:wikipedia",
+          "web_search:provider:wikidata",
+          "web_search:provider:wiktionary",
+          "web_search:provider:wikinews",
+          "web_search:combined:rrf:k=60",
+          "web_search:provider:duckduckgo:error:no_results",
+          "web_search:provider:internet-archive:error:no_results",
+          "web_search:provider:wikipedia:error:no_results",
+          "web_search:provider:wikidata:error:no_results",
+          "web_search:provider:wiktionary:error:no_results",
+          "web_search:provider:wikinews:error:no_results",
+          "web_search:component_error:@link-assistant/web-search:unavailable",
+          "trace:impulse:What is link-cli?",
+          "trace:formalization:(@USER OP:define ?link cli)",
+          "trace:language:en",
+          "trace:meta:explain:open",
+          "trace:handler:project_lookup",
+          "trace:deformalize:(@USER OP:define ?link cli):project_lookup",
+          "prompt:prompt_0b20a1097d72cde9",
+          "impulse:impulse_59773089f7ef0dba",
+          "language:en",
+          "candidate:candidate_5f0594e7e9e9abf0",
+          "statement_weight:formalization:0 weight=1.000000 subject=wiktionary:en:link-cli",
+          "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc",
+          "formalization:formalization_dcc598dac5e17641",
+          "formalization:fallback:wiktionary:en:link-cli",
+          "intent_formalization_cache:miss:impulse_3cb87d9047e1a835",
+          "intent_formalization:intent_formalization_8285b360ac4dea12",
+          "intent_formalization:kind:question",
+          "search:local:search:local_a35399f0c0bfc0bb",
+          "selected_rule:selected_rule_8b06fb2d3be676be",
+          "intent:project_lookup",
+          "validation:validation_7a450cd36c0aaaf2",
+          "response:project_lookup",
+          "trace:simplification:trace:simplification_5678fc761ff1398b",
+          "trace:trace_c0e79fbb75234b4b"
+        ],
+        "steps": [
+          {
+            "step": "impulse",
+            "detail": "What is link-cli?",
+            "level": "high"
+          },
+          {
+            "step": "formalize",
+            "detail": "What is link-cli? -> (@USER OP:define ?link cli)",
+            "formalization": {
+              "raw": "What is link-cli?",
+              "subject": "@USER",
+              "verb": "OP:define",
+              "object": "?link cli",
+              "tuple": "(@USER OP:define ?link cli)",
+              "interpretations": []
+            },
+            "level": "detailed"
+          },
+          {
+            "step": "detect_language",
+            "detail": "en",
+            "level": "high"
+          },
+          {
+            "step": "meta_reason",
+            "detail": "explain open",
+            "derivation": "derivation\n  goal explain\n  status open\n  unknown \"what\"\n    status open\n    origin none\n  unknown \"link\"\n    status open\n    origin none\n  unknown \"cli\"\n    status open\n    origin none\n  event 1\n    kind impulse\n    detail \"What is link-cli?\"\n  event 2\n    kind formalize\n    detail \"goal explain; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"what, link, cli\"\n  event 4\n    kind impasse\n    detail \"what: unknown, lookup needed\"\n  event 5\n    kind impasse\n    detail \"link: unknown, lookup needed\"\n  event 6\n    kind impasse\n    detail \"cli: unknown, lookup needed\"",
+            "level": "detailed"
+          },
+          {
+            "step": "invoke_tool",
+            "detail": "response_language_followup",
+            "level": "detailed"
+          },
+          {
+            "step": "invoke_tool",
+            "detail": "project_lookup",
+            "level": "detailed"
+          },
+          {
+            "step": "dispatch_handler",
+            "detail": "tryProjectLookup",
+            "level": "high"
+          },
+          {
+            "step": "deformalize",
+            "detail": "(@USER OP:define ?link cli) ⇒ project_lookup: In the link-assistant, link-foundation, linksplatform repository context, `link-cli` should firs…",
+            "projection": {
+              "tuple": "(@USER OP:define ?link cli)",
+              "intent": "project_lookup",
+              "contentChars": 590,
+              "evidenceCount": 20,
+              "language": "en",
+              "summary": "(@USER OP:define ?link cli) ⇒ project_lookup: In the link-assistant, link-foundation, linksplatform repository context, `link-cli` should firs…"
+            },
+            "answer": "In the link-assistant, link-foundation, linksplatform repository context, `link-cli` should first mean [link-foundation/link-cli](https://github.com/link-foundation/link-cli) — link-cli is the command-line entry point for working with Links Notation files. link-cli wraps the same parsers used by formal-ai and hive-mind.",
+            "level": "high"
+          }
+        ],
+        "toolCalls": [
+          {
+            "tool": "project_lookup",
+            "inputs": {
+              "prompt": "What is link-cli?",
+              "language": "en"
+            },
+            "outputs": {
+              "intent": "project_lookup",
+              "confidence": 0.9
+            }
+          }
+        ],
+        "derivationId": "answer_a780ddd734f0dfac",
+        "rawSolverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "What is link-cli?"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "intent",
+            "payload": "project_lookup"
+          },
+          {
+            "kind": "candidate",
+            "payload": "project_lookup"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:project_lookup"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "project_lookup"
+          }
+        ],
+        "solverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "What is link-cli?"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "candidate",
+            "payload": "formalization:0 score=560 probability=1.000000 subject=wiktionary:en:link-cli"
+          },
+          {
+            "kind": "statement_weight",
+            "payload": "formalization:0 weight=1.000000 subject=wiktionary:en:link-cli"
+          },
+          {
+            "kind": "policy:temperature_selection",
+            "payload": "selected=formalization:0 probability=1.000000 margin=1.000000 epsilon=0.112000 reason=only_candidate"
+          },
+          {
+            "kind": "formalization",
+            "payload": "subject=wiktionary:en:link-cli"
+          },
+          {
+            "kind": "formalization:fallback",
+            "payload": "wiktionary:en:link-cli"
+          },
+          {
+            "kind": "intent_formalization_cache",
+            "payload": "miss impulse_3cb87d9047e1a835"
+          },
+          {
+            "kind": "intent_formalization",
+            "payload": "intent_formalization impulse_3cb87d9047e1a835\n  impulse_id \"impulse_3cb87d9047e1a835\"\n  source_text \"What is link-cli?\"\n  normalized_text \"what is link cli\"\n  language \"en\"\n  kind \"question\"\n  known \"impulse:impulse_3cb87d9047e1a835\"\n  known \"language:en\"\n  known \"formalization:fallback:wiktionary:en:link-cli\"\n"
+          },
+          {
+            "kind": "intent_formalization:kind",
+            "payload": "question"
+          },
+          {
+            "kind": "search:local",
+            "payload": "What is link-cli?"
+          },
+          {
+            "kind": "selected_rule",
+            "payload": "initial unknown reason no_seed_route next try_rule_synthesis"
+          },
+          {
+            "kind": "intent",
+            "payload": "project_lookup"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:project_lookup"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "project_lookup"
+          }
+        ],
+        "derivation": "derivation\n  goal explain\n  status open\n  unknown \"what\"\n    status open\n    origin none\n  unknown \"link\"\n    status open\n    origin none\n  unknown \"cli\"\n    status open\n    origin none\n  event 1\n    kind impulse\n    detail \"What is link-cli?\"\n  event 2\n    kind formalize\n    detail \"goal explain; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"what, link, cli\"\n  event 4\n    kind impasse\n    detail \"what: unknown, lookup needed\"\n  event 5\n    kind impasse\n    detail \"link: unknown, lookup needed\"\n  event 6\n    kind impasse\n    detail \"cli: unknown, lookup needed\""
+      }
+    },
+    "checks": [
+      {
+        "check": {
+          "binding": "response",
+          "field": "intent",
+          "value": "project_lookup",
+          "lower": false,
+          "op": "equals"
+        },
+        "failure": null
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "content",
+          "value": "In the link-assistant, link-foundation, linksplatform repository context, `link-cli` should first mean [link-foundation/link-cli](https://github.com/link-foundation/link-cli) — link-cli is the command-line entry point for working with Links Notation files.\n\nOther repositories and entities found online are shown by the browser demo through a web search for `link-cli`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path.",
+          "lower": false,
+          "op": "equals"
+        },
+        "failure": "content equals \"In the link-assistant, link-foundation, linksplatform repository context, `link-cli` should first mean [link-foundation/link-cli](https://github.com/link-foundation/link-cli) — link-cli is the command-line entry point for working with Links Notation files.\\n\\nOther repositories and entities found online are shown by the browser demo through a web search for `link-cli`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path.\"; got \"In the link-assistant, link-foundation, linksplatform repository context, `link-cli` should first mean [link-foundation/link-cli](https://github.com/link-founda\""
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "content",
+          "value": "link-foundation/link-cli",
+          "lower": false,
+          "op": "includes"
+        },
+        "failure": null
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "evidence",
+          "value": "project:promoted:",
+          "lower": false,
+          "op": "has-evidence-prefix"
+        },
+        "failure": null
+      }
+    ]
+  },
+  {
+    "id": "rust/tests/unit/specification/project_lookups.rs::linksplatform_repository_is_promoted_by_default",
+    "asks": [
+      {
+        "binding": "response",
+        "prompt": "What is https://github.com/linksplatform/Documentation?"
+      }
+    ],
+    "responses": {
+      "response": {
+        "intent": "project_lookup",
+        "content": "In the link-assistant, link-foundation, linksplatform repository context, `LinksPlatform Documentation` should first mean [linksplatform/Documentation](https://github.com/linksplatform/Documentation) — LinksPlatform Documentation is the documentation and support root repository for all LinksPlatform projects. LinksPlatform Documentation anchors shared project support material for the linksplatform organization.\n\nOther repositories and entities found online:\n\nNo CORS-enabled web search results were returned for `LinksPlatform Documentation`.\n\nProviders tried: DuckDuckGo Instant Answer, Internet Archive (archive.org), Wikipedia REST, Wikidata entities, Wiktionary opensearch, Wikinews opensearch.",
+        "confidence": 0.9,
+        "evidence": [
+          "project:promoted:linksplatform/Documentation",
+          "source:https://github.com/linksplatform/Documentation",
+          "summarization:mode:short",
+          "summarization:language:en",
+          "web_search:request:LinksPlatform Documentation",
+          "web_search:language:en",
+          "web_search:provider:duckduckgo",
+          "web_search:provider:internet-archive",
+          "web_search:provider:wikipedia",
+          "web_search:provider:wikidata",
+          "web_search:provider:wiktionary",
+          "web_search:provider:wikinews",
+          "web_search:combined:rrf:k=60",
+          "web_search:provider:duckduckgo:error:no_results",
+          "web_search:provider:internet-archive:error:no_results",
+          "web_search:provider:wikipedia:error:no_results",
+          "web_search:provider:wikidata:error:no_results",
+          "web_search:provider:wiktionary:error:no_results",
+          "web_search:provider:wikinews:error:no_results",
+          "web_search:component_error:@link-assistant/web-search:unavailable",
+          "trace:impulse:What is https://github.com/linksplatform/Documentation?",
+          "trace:formalization:(@USER OP:define ?https github com linksplatform documentation)",
+          "trace:language:en",
+          "trace:meta:explain:open",
+          "trace:handler:project_lookup",
+          "trace:deformalize:(@USER OP:define ?https github com linksplatform documentation):project_lookup",
+          "prompt:prompt_63264dd805d9841d",
+          "impulse:impulse_bddc4ed05dcf5a8a",
+          "language:en",
+          "candidate:candidate_1d9ddc0ae1c3557e",
+          "statement_weight:formalization:0 weight=1.000000 subject=raw:https://github.com/linksplatform/documentation unresolved=https://github.com/linksplatform/documentation",
+          "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc",
+          "formalization:formalization_f9c4d4de1420ff0a",
+          "formalization:raw:raw:https://github.com/linksplatform/documentation",
+          "formalization_unresolved:https://github.com/linksplatform/documentation",
+          "intent_formalization_cache:miss:impulse_47b5d51a7ab4f6ba",
+          "intent_formalization:intent_formalization_a087040ba6f12911",
+          "intent_formalization:kind:question",
+          "search:local:search:local_b57f7b2611acc694",
+          "selected_rule:selected_rule_ce5caaea146cef39",
+          "intent:project_lookup",
+          "validation:validation_7e06b71fceb2038d",
+          "response:project_lookup",
+          "trace:simplification:trace:simplification_154113fa5084a216",
+          "trace:trace_fe830f39076ab4a6"
+        ],
+        "steps": [
+          {
+            "step": "impulse",
+            "detail": "What is https://github.com/linksplatform/Documentation?",
+            "level": "high"
+          },
+          {
+            "step": "formalize",
+            "detail": "What is https://github.com/linksplatform/Documentation? -> (@USER OP:define ?https github com linksplatform documentation)",
+            "formalization": {
+              "raw": "What is https://github.com/linksplatform/Documentation?",
+              "subject": "@USER",
+              "verb": "OP:define",
+              "object": "?https github com linksplatform documentation",
+              "tuple": "(@USER OP:define ?https github com linksplatform documentation)",
+              "interpretations": []
+            },
+            "level": "detailed"
+          },
+          {
+            "step": "detect_language",
+            "detail": "en",
+            "level": "high"
+          },
+          {
+            "step": "meta_reason",
+            "detail": "explain open",
+            "derivation": "derivation\n  goal explain\n  status open\n  unknown \"what\"\n    status open\n    origin none\n  unknown \"https\"\n    status open\n    origin none\n  unknown \"github\"\n    status open\n    origin none\n  unknown \"com\"\n    status grounded\n    origin documentation\n    operation reverse_text\n  unknown \"linksplatform\"\n    status open\n    origin none\n  unknown \"documentation\"\n    status open\n    origin none\n  event 1\n    kind impulse\n    detail \"What is https://github.com/linksplatform/Documentation?\"\n  event 2\n    kind formalize\n    detail \"goal explain; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"what, https, github, com, linksplatform, documentation\"\n  event 4\n    kind impasse\n    detail \"what: unknown, lookup needed\"\n  event 5\n    kind impasse\n    detail \"https: unknown, lookup needed\"\n  event 6\n    kind impasse\n    detail \"github: unknown, lookup needed\"\n  event 7\n    kind hypothesis\n    detail \"com → reverse_text:1.00 (documentation)\"\n  event 8\n    kind impasse\n    detail \"linksplatform: unknown, lookup needed\"\n  event 9\n    kind impasse\n    detail \"documentation: unknown, lookup needed\"",
+            "level": "detailed"
+          },
+          {
+            "step": "invoke_tool",
+            "detail": "response_language_followup",
+            "level": "detailed"
+          },
+          {
+            "step": "invoke_tool",
+            "detail": "project_lookup",
+            "level": "detailed"
+          },
+          {
+            "step": "dispatch_handler",
+            "detail": "tryProjectLookup",
+            "level": "high"
+          },
+          {
+            "step": "deformalize",
+            "detail": "(@USER OP:define ?https github com linksplatform documentation) ⇒ project_lookup: In the link-assistant, link-foundation, linksplatform repository context, `LinksPlatform Documen…",
+            "projection": {
+              "tuple": "(@USER OP:define ?https github com linksplatform documentation)",
+              "intent": "project_lookup",
+              "contentChars": 702,
+              "evidenceCount": 20,
+              "language": "en",
+              "summary": "(@USER OP:define ?https github com linksplatform documentation) ⇒ project_lookup: In the link-assistant, link-foundation, linksplatform repository context, `LinksPlatform Documen…"
+            },
+            "answer": "In the link-assistant, link-foundation, linksplatform repository context, `LinksPlatform Documentation` should first mean [linksplatform/Documentation](https://github.com/linksplatform/Documentation) — LinksPlatform Documentation is the documentation and support root repository for all LinksPlatform projects. LinksPlatform Documentation anchors shared project support material for the linksplatform organization.",
+            "level": "high"
+          }
+        ],
+        "toolCalls": [
+          {
+            "tool": "project_lookup",
+            "inputs": {
+              "prompt": "What is https://github.com/linksplatform/Documentation?",
+              "language": "en"
+            },
+            "outputs": {
+              "intent": "project_lookup",
+              "confidence": 0.9
+            }
+          }
+        ],
+        "derivationId": "answer_f1df91dbe7868f8f",
+        "rawSolverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "What is https://github.com/linksplatform/Documentation?"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "intent",
+            "payload": "project_lookup"
+          },
+          {
+            "kind": "candidate",
+            "payload": "project_lookup"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:project_lookup"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "project_lookup"
+          }
+        ],
+        "solverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "What is https://github.com/linksplatform/Documentation?"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "candidate",
+            "payload": "formalization:0 score=0 probability=1.000000 subject=raw:https://github.com/linksplatform/documentation unresolved=https://github.com/linksplatform/documentation"
+          },
+          {
+            "kind": "statement_weight",
+            "payload": "formalization:0 weight=1.000000 subject=raw:https://github.com/linksplatform/documentation unresolved=https://github.com/linksplatform/documentation"
+          },
+          {
+            "kind": "policy:temperature_selection",
+            "payload": "selected=formalization:0 probability=1.000000 margin=1.000000 epsilon=0.112000 reason=only_candidate"
+          },
+          {
+            "kind": "formalization",
+            "payload": "subject=raw:https://github.com/linksplatform/documentation unresolved=https://github.com/linksplatform/documentation"
+          },
+          {
+            "kind": "formalization:raw",
+            "payload": "raw:https://github.com/linksplatform/documentation"
+          },
+          {
+            "kind": "formalization_unresolved",
+            "payload": "https://github.com/linksplatform/documentation"
+          },
+          {
+            "kind": "intent_formalization_cache",
+            "payload": "miss impulse_47b5d51a7ab4f6ba"
+          },
+          {
+            "kind": "intent_formalization",
+            "payload": "intent_formalization impulse_47b5d51a7ab4f6ba\n  impulse_id \"impulse_47b5d51a7ab4f6ba\"\n  source_text \"What is https://github.com/linksplatform/Documentation?\"\n  normalized_text \"what is https github com linksplatform documentation\"\n  language \"en\"\n  kind \"question\"\n  known \"impulse:impulse_47b5d51a7ab4f6ba\"\n  known \"language:en\"\n  known \"formalization:raw:raw:https://github.com/linksplatform/documentation\"\n  known \"formalization_unresolved:https://github.com/linksplatform/documentation\"\n"
+          },
+          {
+            "kind": "intent_formalization:kind",
+            "payload": "question"
+          },
+          {
+            "kind": "search:local",
+            "payload": "What is https://github.com/linksplatform/Documentation?"
+          },
+          {
+            "kind": "selected_rule",
+            "payload": "initial unknown reason no_seed_route next try_rule_synthesis"
+          },
+          {
+            "kind": "intent",
+            "payload": "project_lookup"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:project_lookup"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "project_lookup"
+          }
+        ],
+        "derivation": "derivation\n  goal explain\n  status open\n  unknown \"what\"\n    status open\n    origin none\n  unknown \"https\"\n    status open\n    origin none\n  unknown \"github\"\n    status open\n    origin none\n  unknown \"com\"\n    status grounded\n    origin documentation\n    operation reverse_text\n  unknown \"linksplatform\"\n    status open\n    origin none\n  unknown \"documentation\"\n    status open\n    origin none\n  event 1\n    kind impulse\n    detail \"What is https://github.com/linksplatform/Documentation?\"\n  event 2\n    kind formalize\n    detail \"goal explain; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"what, https, github, com, linksplatform, documentation\"\n  event 4\n    kind impasse\n    detail \"what: unknown, lookup needed\"\n  event 5\n    kind impasse\n    detail \"https: unknown, lookup needed\"\n  event 6\n    kind impasse\n    detail \"github: unknown, lookup needed\"\n  event 7\n    kind hypothesis\n    detail \"com → reverse_text:1.00 (documentation)\"\n  event 8\n    kind impasse\n    detail \"linksplatform: unknown, lookup needed\"\n  event 9\n    kind impasse\n    detail \"documentation: unknown, lookup needed\""
+      }
+    },
+    "checks": [
+      {
+        "check": {
+          "binding": "response",
+          "field": "intent",
+          "value": "project_lookup",
+          "lower": false,
+          "op": "equals"
+        },
+        "failure": null
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "content",
+          "value": "In the link-assistant, link-foundation, linksplatform repository context, `LinksPlatform Documentation` should first mean [linksplatform/Documentation](https://github.com/linksplatform/Documentation) — LinksPlatform Documentation is the documentation and support root repository for all LinksPlatform projects.\n\nOther repositories and entities found online are shown by the browser demo through a web search for `LinksPlatform Documentation`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path.",
+          "lower": false,
+          "op": "equals"
+        },
+        "failure": "content equals \"In the link-assistant, link-foundation, linksplatform repository context, `LinksPlatform Documentation` should first mean [linksplatform/Documentation](https://github.com/linksplatform/Documentation) — LinksPlatform Documentation is the documentation and support root repository for all LinksPlatform projects.\\n\\nOther repositories and entities found online are shown by the browser demo through a web search for `LinksPlatform Documentation`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path.\"; got \"In the link-assistant, link-foundation, linksplatform repository context, `LinksPlatform Documentation` should first mean [linksplatform/Documentation](https://\""
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "content",
+          "value": "linksplatform/Documentation",
+          "lower": false,
+          "op": "includes"
+        },
+        "failure": null
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "evidence",
+          "value": "project:promoted:linksplatform/Documentation",
+          "lower": false,
+          "op": "has-evidence-prefix"
+        },
+        "failure": null
+      }
+    ]
+  },
+  {
+    "id": "rust/tests/unit/specification/project_lookups.rs::explicit_formal_ai_repository_url_still_routes_to_project_lookup",
+    "asks": [
+      {
+        "binding": "response",
+        "prompt": "What is https://github.com/link-assistant/formal-ai?"
+      }
+    ],
+    "responses": {
+      "response": {
+        "intent": "project_lookup",
+        "content": "In the link-assistant, link-foundation, linksplatform repository context, `formal-ai` should first mean [link-assistant/formal-ai](https://github.com/link-assistant/formal-ai) — formal-ai is a deterministic symbolic AI that answers without any neural-network inference. formal-ai runs the same universal solver loop in Rust, on the CLI, in a browser worker, on Telegram, and on the HTTP server. formal-ai is written in Rust and ships a WebAssembly build for the browser demo.\n\nOther repositories and entities found online:\n\nNo CORS-enabled web search results were returned for `formal-ai`.\n\nProviders tried: DuckDuckGo Instant Answer, Internet Archive (archive.org), Wikipedia REST, Wikidata entities, Wiktionary opensearch, Wikinews opensearch.",
+        "confidence": 0.9,
+        "evidence": [
+          "project:promoted:link-assistant/formal-ai",
+          "source:https://github.com/link-assistant/formal-ai",
+          "summarization:mode:short",
+          "summarization:language:en",
+          "web_search:request:formal-ai",
+          "web_search:language:en",
+          "web_search:provider:duckduckgo",
+          "web_search:provider:internet-archive",
+          "web_search:provider:wikipedia",
+          "web_search:provider:wikidata",
+          "web_search:provider:wiktionary",
+          "web_search:provider:wikinews",
+          "web_search:combined:rrf:k=60",
+          "web_search:provider:duckduckgo:error:no_results",
+          "web_search:provider:internet-archive:error:no_results",
+          "web_search:provider:wikipedia:error:no_results",
+          "web_search:provider:wikidata:error:no_results",
+          "web_search:provider:wiktionary:error:no_results",
+          "web_search:provider:wikinews:error:no_results",
+          "web_search:component_error:@link-assistant/web-search:unavailable",
+          "trace:impulse:What is https://github.com/link-assistant/formal-ai?",
+          "trace:formalization:(@USER OP:define ?https github com link assistant formal ai)",
+          "trace:language:en",
+          "trace:meta:explain:open",
+          "trace:handler:project_lookup",
+          "trace:deformalize:(@USER OP:define ?https github com link assistant formal ai):project_lookup",
+          "prompt:prompt_6bfc1a146a29a774",
+          "impulse:impulse_d3140076f6c897b9",
+          "language:en",
+          "candidate:candidate_888bc285d8bd2a42",
+          "statement_weight:formalization:0 weight=1.000000 subject=raw:https://github.com/link-assistant/formal-ai unresolved=https://github.com/link-assistant/formal-ai",
+          "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc",
+          "formalization:formalization_0cd1487a236fb7ee",
+          "formalization:raw:raw:https://github.com/link-assistant/formal-ai",
+          "formalization_unresolved:https://github.com/link-assistant/formal-ai",
+          "intent_formalization_cache:miss:impulse_58a2f4cbd1a0d535",
+          "intent_formalization:intent_formalization_bdd0007735e8bf13",
+          "intent_formalization:kind:question",
+          "intent_formalization:route:identity",
+          "intent_formalization:relevant:route:identity",
+          "search:local:search:local_f487d29a723e7da9",
+          "intent:project_lookup",
+          "validation:validation_246454f9461b7c50",
+          "response:project_lookup",
+          "trace:simplification:trace:simplification_c0aa1c077f5b5335",
+          "trace:trace_84694c7a69fbe96d"
+        ],
+        "steps": [
+          {
+            "step": "impulse",
+            "detail": "What is https://github.com/link-assistant/formal-ai?",
+            "level": "high"
+          },
+          {
+            "step": "formalize",
+            "detail": "What is https://github.com/link-assistant/formal-ai? -> (@USER OP:define ?https github com link assistant formal ai)",
+            "formalization": {
+              "raw": "What is https://github.com/link-assistant/formal-ai?",
+              "subject": "@USER",
+              "verb": "OP:define",
+              "object": "?https github com link assistant formal ai",
+              "tuple": "(@USER OP:define ?https github com link assistant formal ai)",
+              "interpretations": []
+            },
+            "level": "detailed"
+          },
+          {
+            "step": "detect_language",
+            "detail": "en",
+            "level": "high"
+          },
+          {
+            "step": "meta_reason",
+            "detail": "explain open",
+            "derivation": "derivation\n  goal explain\n  status open\n  unknown \"what\"\n    status open\n    origin none\n  unknown \"https\"\n    status open\n    origin none\n  unknown \"github\"\n    status open\n    origin none\n  unknown \"com\"\n    status grounded\n    origin documentation\n    operation reverse_text\n  unknown \"link\"\n    status open\n    origin none\n  unknown \"assistant\"\n    status open\n    origin none\n  unknown \"formal\"\n    status open\n    origin none\n  unknown \"ai\"\n    status open\n    origin none\n  event 1\n    kind impulse\n    detail \"What is https://github.com/link-assistant/formal-ai?\"\n  event 2\n    kind formalize\n    detail \"goal explain; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"what, https, github, com, link, assistant, formal, ai\"\n  event 4\n    kind impasse\n    detail \"what: unknown, lookup needed\"\n  event 5\n    kind impasse\n    detail \"https: unknown, lookup needed\"\n  event 6\n    kind impasse\n    detail \"github: unknown, lookup needed\"\n  event 7\n    kind hypothesis\n    detail \"com → reverse_text:1.00 (documentation)\"\n  event 8\n    kind impasse\n    detail \"link: unknown, lookup needed\"\n  event 9\n    kind impasse\n    detail \"assistant: unknown, lookup needed\"\n  event 10\n    kind impasse\n    detail \"formal: unknown, lookup needed\"\n  event 11\n    kind impasse\n    detail \"ai: unknown, lookup needed\"",
+            "level": "detailed"
+          },
+          {
+            "step": "invoke_tool",
+            "detail": "response_language_followup",
+            "level": "detailed"
+          },
+          {
+            "step": "invoke_tool",
+            "detail": "project_lookup",
+            "level": "detailed"
+          },
+          {
+            "step": "dispatch_handler",
+            "detail": "tryProjectLookup",
+            "level": "high"
+          },
+          {
+            "step": "deformalize",
+            "detail": "(@USER OP:define ?https github com link assistant formal ai) ⇒ project_lookup: In the link-assistant, link-foundation, linksplatform repository context, `formal-ai` should fir…",
+            "projection": {
+              "tuple": "(@USER OP:define ?https github com link assistant formal ai)",
+              "intent": "project_lookup",
+              "contentChars": 745,
+              "evidenceCount": 20,
+              "language": "en",
+              "summary": "(@USER OP:define ?https github com link assistant formal ai) ⇒ project_lookup: In the link-assistant, link-foundation, linksplatform repository context, `formal-ai` should fir…"
+            },
+            "answer": "In the link-assistant, link-foundation, linksplatform repository context, `formal-ai` should first mean [link-assistant/formal-ai](https://github.com/link-assistant/formal-ai) — formal-ai is a deterministic symbolic AI that answers without any neural-network inference. formal-ai runs the same universal solver loop in Rust, on the CLI, in a browser worker, on Telegram, and on the HTTP server. formal-ai is written in Rust and ships a WebAssembly build for the browser demo.",
+            "level": "high"
+          }
+        ],
+        "toolCalls": [
+          {
+            "tool": "project_lookup",
+            "inputs": {
+              "prompt": "What is https://github.com/link-assistant/formal-ai?",
+              "language": "en"
+            },
+            "outputs": {
+              "intent": "project_lookup",
+              "confidence": 0.9
+            }
+          }
+        ],
+        "derivationId": "answer_6447101d9b9f5637",
+        "rawSolverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "What is https://github.com/link-assistant/formal-ai?"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "intent_formalization:route",
+            "payload": "identity"
+          },
+          {
+            "kind": "intent",
+            "payload": "project_lookup"
+          },
+          {
+            "kind": "candidate",
+            "payload": "project_lookup"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:project_lookup"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "project_lookup"
+          }
+        ],
+        "solverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "What is https://github.com/link-assistant/formal-ai?"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "candidate",
+            "payload": "formalization:0 score=0 probability=1.000000 subject=raw:https://github.com/link-assistant/formal-ai unresolved=https://github.com/link-assistant/formal-ai"
+          },
+          {
+            "kind": "statement_weight",
+            "payload": "formalization:0 weight=1.000000 subject=raw:https://github.com/link-assistant/formal-ai unresolved=https://github.com/link-assistant/formal-ai"
+          },
+          {
+            "kind": "policy:temperature_selection",
+            "payload": "selected=formalization:0 probability=1.000000 margin=1.000000 epsilon=0.112000 reason=only_candidate"
+          },
+          {
+            "kind": "formalization",
+            "payload": "subject=raw:https://github.com/link-assistant/formal-ai unresolved=https://github.com/link-assistant/formal-ai"
+          },
+          {
+            "kind": "formalization:raw",
+            "payload": "raw:https://github.com/link-assistant/formal-ai"
+          },
+          {
+            "kind": "formalization_unresolved",
+            "payload": "https://github.com/link-assistant/formal-ai"
+          },
+          {
+            "kind": "intent_formalization_cache",
+            "payload": "miss impulse_58a2f4cbd1a0d535"
+          },
+          {
+            "kind": "intent_formalization",
+            "payload": "intent_formalization impulse_58a2f4cbd1a0d535\n  impulse_id \"impulse_58a2f4cbd1a0d535\"\n  source_text \"What is https://github.com/link-assistant/formal-ai?\"\n  normalized_text \"what is https github com link assistant formal ai\"\n  language \"en\"\n  kind \"question\"\n  route \"identity\"\n  response_link \"response:identity\"\n  known \"impulse:impulse_58a2f4cbd1a0d535\"\n  known \"language:en\"\n  known \"formalization:raw:raw:https://github.com/link-assistant/formal-ai\"\n  known \"formalization_unresolved:https://github.com/link-assistant/formal-ai\"\n  relevant \"route:identity\"\n"
+          },
+          {
+            "kind": "intent_formalization:kind",
+            "payload": "question"
+          },
+          {
+            "kind": "intent_formalization:route",
+            "payload": "identity"
+          },
+          {
+            "kind": "intent_formalization:relevant",
+            "payload": "route:identity"
+          },
+          {
+            "kind": "search:local",
+            "payload": "What is https://github.com/link-assistant/formal-ai?"
+          },
+          {
+            "kind": "intent",
+            "payload": "project_lookup"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:project_lookup"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "project_lookup"
+          }
+        ],
+        "derivation": "derivation\n  goal explain\n  status open\n  unknown \"what\"\n    status open\n    origin none\n  unknown \"https\"\n    status open\n    origin none\n  unknown \"github\"\n    status open\n    origin none\n  unknown \"com\"\n    status grounded\n    origin documentation\n    operation reverse_text\n  unknown \"link\"\n    status open\n    origin none\n  unknown \"assistant\"\n    status open\n    origin none\n  unknown \"formal\"\n    status open\n    origin none\n  unknown \"ai\"\n    status open\n    origin none\n  event 1\n    kind impulse\n    detail \"What is https://github.com/link-assistant/formal-ai?\"\n  event 2\n    kind formalize\n    detail \"goal explain; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"what, https, github, com, link, assistant, formal, ai\"\n  event 4\n    kind impasse\n    detail \"what: unknown, lookup needed\"\n  event 5\n    kind impasse\n    detail \"https: unknown, lookup needed\"\n  event 6\n    kind impasse\n    detail \"github: unknown, lookup needed\"\n  event 7\n    kind hypothesis\n    detail \"com → reverse_text:1.00 (documentation)\"\n  event 8\n    kind impasse\n    detail \"link: unknown, lookup needed\"\n  event 9\n    kind impasse\n    detail \"assistant: unknown, lookup needed\"\n  event 10\n    kind impasse\n    detail \"formal: unknown, lookup needed\"\n  event 11\n    kind impasse\n    detail \"ai: unknown, lookup needed\""
+      }
+    },
+    "checks": [
+      {
+        "check": {
+          "binding": "response",
+          "field": "intent",
+          "value": "project_lookup",
+          "lower": false,
+          "op": "equals"
+        },
+        "failure": null
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "content",
+          "value": "In the link-assistant, link-foundation, linksplatform repository context, `formal-ai` should first mean [link-assistant/formal-ai](https://github.com/link-assistant/formal-ai) — formal-ai is a deterministic symbolic AI that answers without any neural-network inference.\n\nOther repositories and entities found online are shown by the browser demo through a web search for `formal-ai`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path.",
+          "lower": false,
+          "op": "equals"
+        },
+        "failure": "content equals \"In the link-assistant, link-foundation, linksplatform repository context, `formal-ai` should first mean [link-assistant/formal-ai](https://github.com/link-assistant/formal-ai) — formal-ai is a deterministic symbolic AI that answers without any neural-network inference.\\n\\nOther repositories and entities found online are shown by the browser demo through a web search for `formal-ai`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path.\"; got \"In the link-assistant, link-foundation, linksplatform repository context, `formal-ai` should first mean [link-assistant/formal-ai](https://github.com/link-assis\""
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "content",
+          "value": "link-assistant/formal-ai",
+          "lower": false,
+          "op": "includes"
+        },
+        "failure": null
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "evidence",
+          "value": "project:promoted:link-assistant/formal-ai",
+          "lower": false,
+          "op": "has-evidence-prefix"
+        },
+        "failure": null
+      }
+    ]
+  },
+  {
+    "id": "rust/tests/unit/specification/project_lookups.rs::http_fetch_of_curated_github_url_describes_project_via_summarization",
+    "asks": [
+      {
+        "binding": "response",
+        "prompt": "fetch https://github.com/link-assistant/hive-mind"
+      }
+    ],
+    "responses": {
+      "response": {
+        "intent": "http_fetch",
+        "content": "Could not fetch `https://github.com/link-assistant/hive-mind` directly (network error).\n\nI suggest opening this in a new tab: [https://github.com/link-assistant/hive-mind](https://github.com/link-assistant/hive-mind).\n\nI could not verify that this page allows embedding here because the frame-policy service returned HTTP 404.\nBrowser JavaScript also cannot read the page content directly unless the site allows CORS, so the direct external link is the reliable option.",
+        "confidence": 0.75,
+        "evidence": [
+          "http_fetch:request:https://github.com/link-assistant/hive-mind",
+          "http_fetch:component_error:unavailable",
+          "http_fetch:error:network",
+          "url_preview:frame_policy_check:https://api.microlink.io/",
+          "url_preview:frame_policy_status:404",
+          "url_preview:frame_policy:unknown",
+          "url_preview:external_link:https://github.com/link-assistant/hive-mind",
+          "trace:impulse:fetch https://github.com/link-assistant/hive-mind",
+          "trace:formalization:(@USER OP:express ?fetch https github com link assistant hive mind)",
+          "trace:language:en",
+          "trace:meta:understand:open",
+          "trace:handler:http_fetch",
+          "trace:deformalize:(@USER OP:express ?fetch https github com link assistant hive mind):http_fetch",
+          "prompt:prompt_825ad2a7b591a04c",
+          "impulse:impulse_b6d5f89a1e75d173",
+          "language:en",
+          "candidate:candidate_b92e28af9cf6ccc4",
+          "statement_weight:formalization:0 weight=1.000000 subject=raw:fetch https://github.com/link-assistant/hive-mind unresolved=fetch https://github.com/link-assistant/hive-mind",
+          "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc",
+          "formalization:formalization_9962c3a682338f10",
+          "formalization:raw:raw:fetch https://github.com/link-assistant/hive-mind",
+          "formalization_unresolved:fetch https://github.com/link-assistant/hive-mind",
+          "intent_formalization_cache:miss:impulse_017c3f45a08aaa8e",
+          "intent_formalization:intent_formalization_6cd6441edec5bd61",
+          "intent_formalization:kind:statement",
+          "search:local:search:local_a5d4941241c171a5",
+          "selected_rule:selected_rule_ce5caaea146cef39",
+          "intent:http_fetch",
+          "validation:validation_7e06b71fceb2038d",
+          "response:http_fetch",
+          "trace:simplification:trace:simplification_154113fa5084a216",
+          "trace:trace_d6ce301fa959c6c5"
+        ],
+        "steps": [
+          {
+            "step": "impulse",
+            "detail": "fetch https://github.com/link-assistant/hive-mind",
+            "level": "high"
+          },
+          {
+            "step": "formalize",
+            "detail": "fetch https://github.com/link-assistant/hive-mind -> (@USER OP:express ?fetch https github com link assistant hive mind)",
+            "formalization": {
+              "raw": "fetch https://github.com/link-assistant/hive-mind",
+              "subject": "@USER",
+              "verb": "OP:express",
+              "object": "?fetch https github com link assistant hive mind",
+              "tuple": "(@USER OP:express ?fetch https github com link assistant hive mind)",
+              "interpretations": []
+            },
+            "level": "detailed"
+          },
+          {
+            "step": "detect_language",
+            "detail": "en",
+            "level": "high"
+          },
+          {
+            "step": "meta_reason",
+            "detail": "understand open",
+            "derivation": "derivation\n  goal understand\n  status open\n  event 1\n    kind impulse\n    detail \"fetch https://github.com/link-assistant/hive-mind\"\n  event 2\n    kind formalize\n    detail \"goal understand; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"fetch, https, github, com, link, assistant, hive, mind\"",
+            "level": "detailed"
+          },
+          {
+            "step": "invoke_tool",
+            "detail": "response_language_followup",
+            "level": "detailed"
+          },
+          {
+            "step": "invoke_tool",
+            "detail": "project_lookup",
+            "level": "detailed"
+          },
+          {
+            "step": "invoke_tool",
+            "detail": "wikipedia_article_question",
+            "level": "detailed"
+          },
+          {
+            "step": "invoke_tool",
+            "detail": "fact_query",
+            "level": "detailed"
+          },
+          {
+            "step": "invoke_tool",
+            "detail": "http_fetch",
+            "level": "detailed"
+          },
+          {
+            "step": "dispatch_handler",
+            "detail": "tryFetch",
+            "level": "high"
+          },
+          {
+            "step": "deformalize",
+            "detail": "(@USER OP:express ?fetch https github com link assistant hive mind) ⇒ http_fetch: Could not fetch `https://github.com/link-assistant/hive-mind` directly (network error).",
+            "projection": {
+              "tuple": "(@USER OP:express ?fetch https github com link assistant hive mind)",
+              "intent": "http_fetch",
+              "contentChars": 469,
+              "evidenceCount": 7,
+              "language": "en",
+              "summary": "(@USER OP:express ?fetch https github com link assistant hive mind) ⇒ http_fetch: Could not fetch `https://github.com/link-assistant/hive-mind` directly (network error)."
+            },
+            "answer": "Could not fetch `https://github.com/link-assistant/hive-mind` directly (network error).",
+            "level": "high"
+          }
+        ],
+        "toolCalls": [
+          {
+            "tool": "http_fetch",
+            "inputs": {
+              "prompt": "fetch https://github.com/link-assistant/hive-mind"
+            },
+            "outputs": {
+              "intent": "http_fetch",
+              "confidence": 0.75,
+              "iframeUrl": null
+            }
+          }
+        ],
+        "derivationId": "answer_d35e8fbecc7a3bf4",
+        "rawSolverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "fetch https://github.com/link-assistant/hive-mind"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "intent",
+            "payload": "http_fetch"
+          },
+          {
+            "kind": "candidate",
+            "payload": "http_fetch"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:http_fetch"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "http_fetch"
+          }
+        ],
+        "solverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "fetch https://github.com/link-assistant/hive-mind"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "candidate",
+            "payload": "formalization:0 score=0 probability=1.000000 subject=raw:fetch https://github.com/link-assistant/hive-mind unresolved=fetch https://github.com/link-assistant/hive-mind"
+          },
+          {
+            "kind": "statement_weight",
+            "payload": "formalization:0 weight=1.000000 subject=raw:fetch https://github.com/link-assistant/hive-mind unresolved=fetch https://github.com/link-assistant/hive-mind"
+          },
+          {
+            "kind": "policy:temperature_selection",
+            "payload": "selected=formalization:0 probability=1.000000 margin=1.000000 epsilon=0.112000 reason=only_candidate"
+          },
+          {
+            "kind": "formalization",
+            "payload": "subject=raw:fetch https://github.com/link-assistant/hive-mind unresolved=fetch https://github.com/link-assistant/hive-mind"
+          },
+          {
+            "kind": "formalization:raw",
+            "payload": "raw:fetch https://github.com/link-assistant/hive-mind"
+          },
+          {
+            "kind": "formalization_unresolved",
+            "payload": "fetch https://github.com/link-assistant/hive-mind"
+          },
+          {
+            "kind": "intent_formalization_cache",
+            "payload": "miss impulse_017c3f45a08aaa8e"
+          },
+          {
+            "kind": "intent_formalization",
+            "payload": "intent_formalization impulse_017c3f45a08aaa8e\n  impulse_id \"impulse_017c3f45a08aaa8e\"\n  source_text \"fetch https://github.com/link-assistant/hive-mind\"\n  normalized_text \"fetch https github com link assistant hive mind\"\n  language \"en\"\n  kind \"statement\"\n  known \"impulse:impulse_017c3f45a08aaa8e\"\n  known \"language:en\"\n  known \"formalization:raw:raw:fetch https://github.com/link-assistant/hive-mind\"\n  known \"formalization_unresolved:fetch https://github.com/link-assistant/hive-mind\"\n"
+          },
+          {
+            "kind": "intent_formalization:kind",
+            "payload": "statement"
+          },
+          {
+            "kind": "search:local",
+            "payload": "fetch https://github.com/link-assistant/hive-mind"
+          },
+          {
+            "kind": "selected_rule",
+            "payload": "initial unknown reason no_seed_route next try_rule_synthesis"
+          },
+          {
+            "kind": "intent",
+            "payload": "http_fetch"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:http_fetch"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "http_fetch"
+          }
+        ],
+        "derivation": "derivation\n  goal understand\n  status open\n  event 1\n    kind impulse\n    detail \"fetch https://github.com/link-assistant/hive-mind\"\n  event 2\n    kind formalize\n    detail \"goal understand; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"fetch, https, github, com, link, assistant, hive, mind\""
+      }
+    },
+    "checks": [
+      {
+        "check": {
+          "binding": "response",
+          "field": "intent",
+          "value": "http_fetch",
+          "lower": false,
+          "op": "equals"
+        },
+        "failure": null
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "content",
+          "value": "HTTP fetch requested for `https://github.com/link-assistant/hive-mind`.\n\nThis URL matches a curated promoted project. README summary (through the formalize → summarize → deformalize pipeline): Hive Mind is the AI that controls AIs to do the automation of automation. Hive Mind orchestrates multiple AI agents to coordinate complex tasks. Hive Mind provides a unified interface for delegating work between AI models.\n\nSource: [https://github.com/link-assistant/hive-mind](https://github.com/link-assistant/hive-mind)",
+          "lower": false,
+          "op": "equals"
+        },
+        "failure": "content equals \"HTTP fetch requested for `https://github.com/link-assistant/hive-mind`.\\n\\nThis URL matches a curated promoted project. README summary (through the formalize → summarize → deformalize pipeline): Hive Mind is the AI that controls AIs to do the automation of automation. Hive Mind orchestrates multiple AI agents to coordinate complex tasks. Hive Mind provides a unified interface for delegating work between AI models.\\n\\nSource: [https://github.com/link-assistant/hive-mind](https://github.com/link-assistant/hive-mind)\"; got \"Could not fetch `https://github.com/link-assistant/hive-mind` directly (network error).\\n\\nI suggest opening this in a new tab: [https://github.com/link-assistant\""
+      },
+      {
+        "check": {
+          "op": "any",
+          "checks": [
+            {
+              "binding": "response",
+              "field": "content",
+              "value": "link-assistant/hive-mind",
+              "lower": false,
+              "op": "includes"
+            },
+            {
+              "binding": "response",
+              "field": "content",
+              "value": "the ai",
+              "lower": true,
+              "op": "includes"
+            },
+            {
+              "binding": "response",
+              "field": "content",
+              "value": "hive mind",
+              "lower": true,
+              "op": "includes"
+            }
+          ]
+        },
+        "failure": null
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "evidence",
+          "value": "http_fetch:curated_project",
+          "lower": false,
+          "op": "has-evidence-prefix"
+        },
+        "failure": "evidence has-evidence-prefix \"http_fetch:curated_project\"; got [\"http_fetch:request:https://github.com/link-assistant/hive-mind\",\"http_fetch:component_error:unavailable\",\"http_fetch:error:network\",\"url_preview:frame_policy_check:https://api.microlink.io/\",\"url_preview:frame_policy_status:404\",\"url_preview:frame_policy:unknown\",\"url_preview:external_link:https://github.com/link-assistant/hive-mind\",\"trace:impulse:fetch https://github.com/link-assistant/hive-mind\",\"trace:formalization:(@USER OP:express ?fetch https github com link assistant hive mind)\",\"trace:language:en\",\"trace:meta:understand:open\",\"trace:handler:http_fetch\",\"trace:deformalize:(@USER OP:express ?fetch https github com link assistant hive mind):http_fetch\",\"prompt:prompt_825ad2a7b591a04c\",\"impulse:impulse_b6d5f89a1e75d173\",\"language:en\",\"candidate:candidate_b92e28af9cf6ccc4\",\"statement_weight:formalization:0 weight=1.000000 subject=raw:fetch https://github.com/link-assistant/hive-mind unresolved=fetch https://github.com/link-assistant/hive-mind\",\"policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc\",\"formalization:formalization_9962c3a682338f10\",\"formalization:raw:raw:fetch https://github.com/link-assistant/hive-mind\",\"formalization_unresolved:fetch https://github.com/link-assistant/hive-mind\",\"intent_formalization_cache:miss:impulse_017c3f45a08aaa8e\",\"intent_formalization:intent_formalization_6cd6441edec5bd61\",\"intent_formalization:kind:statement\",\"search:local:search:local_a5d4941241c171a5\",\"selected_rule:selected_rule_ce5caaea146cef39\",\"intent:http_fetch\",\"validation:validation_7e06b71fceb2038d\",\"response:http_fetch\",\"trace:simplification:trace:simplification_154113fa5084a216\",\"trace:trace_d6ce301fa959c6c5\"]"
+      },
+      {
+        "check": {
+          "binding": "response",
+          "field": "evidence",
+          "value": "summarization:mode",
+          "lower": false,
+          "op": "has-evidence-prefix"
+        },
+        "failure": "evidence has-evidence-prefix \"summarization:mode\"; got [\"http_fetch:request:https://github.com/link-assistant/hive-mind\",\"http_fetch:component_error:unavailable\",\"http_fetch:error:network\",\"url_preview:frame_policy_check:https://api.microlink.io/\",\"url_preview:frame_policy_status:404\",\"url_preview:frame_policy:unknown\",\"url_preview:external_link:https://github.com/link-assistant/hive-mind\",\"trace:impulse:fetch https://github.com/link-assistant/hive-mind\",\"trace:formalization:(@USER OP:express ?fetch https github com link assistant hive mind)\",\"trace:language:en\",\"trace:meta:understand:open\",\"trace:handler:http_fetch\",\"trace:deformalize:(@USER OP:express ?fetch https github com link assistant hive mind):http_fetch\",\"prompt:prompt_825ad2a7b591a04c\",\"impulse:impulse_b6d5f89a1e75d173\",\"language:en\",\"candidate:candidate_b92e28af9cf6ccc4\",\"statement_weight:formalization:0 weight=1.000000 subject=raw:fetch https://github.com/link-assistant/hive-mind unresolved=fetch https://github.com/link-assistant/hive-mind\",\"policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc\",\"formalization:formalization_9962c3a682338f10\",\"formalization:raw:raw:fetch https://github.com/link-assistant/hive-mind\",\"formalization_unresolved:fetch https://github.com/link-assistant/hive-mind\",\"intent_formalization_cache:miss:impulse_017c3f45a08aaa8e\",\"intent_formalization:intent_formalization_6cd6441edec5bd61\",\"intent_formalization:kind:statement\",\"search:local:search:local_a5d4941241c171a5\",\"selected_rule:selected_rule_ce5caaea146cef39\",\"intent:http_fetch\",\"validation:validation_7e06b71fceb2038d\",\"response:http_fetch\",\"trace:simplification:trace:simplification_154113fa5084a216\",\"trace:trace_d6ce301fa959c6c5\"]"
+      }
+    ]
+  }
+]

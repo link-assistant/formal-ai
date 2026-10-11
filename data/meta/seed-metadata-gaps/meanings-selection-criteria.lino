@@ -1,0 +1,9 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-selection-criteria.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-8b11af848a8881e0
+    record "selection_criterion_brevity"
+  gap seed-metadata-gap-5c154bdb7c908cc3
+    record "selection_criterion_completeness"

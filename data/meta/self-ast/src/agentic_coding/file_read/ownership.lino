@@ -1,0 +1,113 @@
+self_ast_census
+  target src/agentic_coding/file_read/ownership.rs
+  language rust
+  fidelity full_ast
+  byte_len 23781
+  line_count 640
+  content_id source_module_d01d6500a436533b
+  symbol_count 21
+  symbols
+    const FUNCTION_ROLES 6 6
+    const OBJECT_ROLE 7 7
+    const READ_ROLE 8 8
+    struct SourceSpan 10 13
+    struct PathSpan 14 17
+    struct OwnedSpan 18 21
+    function role_spans 22 57
+    function covered 58 81
+    function ownership_local_file_path 82 95
+    function path_spans 96 113
+    function policy_starts 114 122
+    function pending_read_condition 123 158
+    function negative_read_objects 159 222
+    function unbound_effect_operation 223 263
+    function conflicts 264 272
+    function bound_read_paths 274 380
+    function owned_read_paths 381 388
+    function read_policy_blocks_plan 389 436
+    function mode_paths_for_clause 438 560
+    function instruction_sentence_texts 563 591
+    function read_precedes_owned_authoring 594 640
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 19461
+    named_node_count 3985
+    distinct_node_kinds 74
+    node_kinds
+      arguments 373
+      array_expression 26
+      array_type 6
+      assignment_expression 4
+      attribute 1
+      attribute_item 1
+      binary_expression 88
+      block 140
+      boolean_literal 27
+      break_expression 1
+      call_expression 373
+      char_literal 13
+      closure_expression 57
+      closure_parameters 57
+      const_item 3
+      continue_expression 29
+      crate 14
+      doc_comment 4
+      else_clause 10
+      escape_sequence 1
+      expression_statement 158
+      field_declaration 6
+      field_declaration_list 3
+      field_expression 401
+      field_identifier 414
+      field_initializer 7
+      field_initializer_list 6
+      for_expression 24
+      function_item 15
+      generic_function 5
+      generic_type 16
+      identifier 888
+      if_expression 55
+      index_expression 26
+      inner_doc_comment_marker 1
+      integer_literal 4
+      let_chain 1
+      let_condition 1
+      let_declaration 82
+      lifetime 1
+      line_comment 4
+      macro_invocation 5
+      mutable_specifier 24
+      outer_doc_comment_marker 3
+      parameter 26
+      parameters 15
+      parenthesized_expression 3
+      primitive_type 34
+      range_expression 23
+      raw_string_literal 1
+      reference_expression 91
+      reference_type 31
+      return_expression 27
+      scoped_identifier 82
+      scoped_type_identifier 2
+      scoped_use_list 2
+      shorthand_field_initializer 5
+      source_file 1
+      string_content 49
+      string_literal 47
+      struct_expression 6
+      struct_item 3
+      super 8
+      token_tree 12
+      try_expression 5
+      tuple_expression 4
+      tuple_pattern 2
+      tuple_struct_pattern 21
+      type_arguments 21
+      type_identifier 47
+      unary_expression 29
+      use_declaration 4
+      use_list 2
+      visibility_modifier 4

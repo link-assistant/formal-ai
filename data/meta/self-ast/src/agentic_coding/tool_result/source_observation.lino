@@ -1,0 +1,92 @@
+self_ast_census
+  target src/agentic_coding/tool_result/source_observation.rs
+  language rust
+  fidelity full_ast
+  byte_len 8390
+  line_count 232
+  content_id source_module_51fd4551d87c6159
+  symbol_count 11
+  symbols
+    function observed_bytes_match 10 55
+    function observed_digest_matches 57 64
+    function reported_exit_code 67 69
+    function harness_reported_failure 72 74
+    function shell_step 77 82
+    function normalized_payload 85 90
+    function observed_payload 93 121
+    function incomplete_receipt 124 138
+    enum SourceReadStatus 142 146
+    struct SourceReadObservation 150 155
+    function source_read_observation 159 232
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 7323
+    named_node_count 1530
+    distinct_node_kinds 63
+    node_kinds
+      arguments 166
+      array_expression 7
+      attribute 3
+      attribute_item 3
+      binary_expression 38
+      block 26
+      boolean_literal 13
+      call_expression 166
+      char_literal 2
+      closure_expression 37
+      closure_parameters 37
+      crate 8
+      doc_comment 11
+      else_clause 3
+      enum_item 1
+      enum_variant 3
+      enum_variant_list 1
+      escape_sequence 5
+      expression_statement 15
+      field_declaration 4
+      field_declaration_list 1
+      field_expression 141
+      field_identifier 146
+      field_initializer 1
+      field_initializer_list 2
+      function_item 9
+      generic_function 6
+      generic_type 8
+      identifier 318
+      if_expression 9
+      inner_doc_comment_marker 1
+      integer_literal 7
+      let_chain 2
+      let_condition 6
+      let_declaration 22
+      line_comment 11
+      outer_doc_comment_marker 10
+      parameter 14
+      parameters 9
+      parenthesized_expression 4
+      primitive_type 21
+      reference_expression 1
+      reference_type 13
+      return_expression 9
+      scoped_identifier 32
+      scoped_use_list 1
+      shorthand_field_initializer 4
+      source_file 1
+      string_content 38
+      string_literal 38
+      struct_expression 2
+      struct_item 1
+      super 4
+      token_tree 2
+      try_expression 1
+      tuple_pattern 8
+      tuple_struct_pattern 10
+      type_arguments 14
+      type_identifier 24
+      unary_expression 12
+      use_declaration 2
+      use_list 1
+      visibility_modifier 15

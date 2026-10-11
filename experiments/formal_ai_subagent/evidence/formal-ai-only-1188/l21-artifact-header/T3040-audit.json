@@ -1,0 +1,34 @@
+{
+  "id": "T3040",
+  "originalId": "T2396",
+  "promptUnchanged": true,
+  "steps": 8,
+  "sourceExact": true,
+  "effectBytes": "node_path=2.1.2.1.1\nnode_depth=5\nnode_kind=leaf\nresult=Replaced `FORMAL_AI_SOURCE_CACHE_DIR` with `FORMAL_AI_HOW_SOURCE_CACHE_DIR` in `rust/src/solver_handler_how_synthesis.rs` and observed the result.\n",
+  "proofBytes": "node_path=2.1.2.1.1\n\nReplaced `FORMAL_AI_SOURCE_CACHE_DIR` with `FORMAL_AI_HOW_SOURCE_CACHE_DIR` in `rust/src/solver_handler_how_synthesis.rs` and observed the result.\n",
+  "fieldsExact": true,
+  "resultWords": 10,
+  "resultToken": true,
+  "proofFirstLine": true,
+  "effectReceipt": false,
+  "proofReceipt": false,
+  "tools": [
+    "read",
+    "edit",
+    "bash",
+    "write",
+    "write"
+  ],
+  "answer": "node_path=2.1.2.1.1\nnode_depth=5\nnode_kind=leaf\nresult=Replaced `FORMAL_AI_SOURCE_CACHE_DIR` with `FORMAL_AI_HOW_SOURCE_CACHE_DIR` in `rust/src/solver_handler_how_synthesis.rs` and observed the result.",
+  "stop": "final",
+  "gitDiff": [
+    "rust/src/solver_handler_how_synthesis.rs"
+  ],
+  "cat": [
+    {
+      "command": "sha256sum -- rust/src/solver_handler_how_synthesis.rs",
+      "payload": "dda0405c8561fccfd35733acce3ffd7f56ca9bbebd4c028b5d22954c05248504  rust/src/solver_handler_how_synthesis.rs\n"
+    }
+  ],
+  "pass": false
+}

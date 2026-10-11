@@ -664,6 +664,7 @@ pub fn describe_project(project: &ProjectRecord, config: &SummarizationConfig) -
 
 pub mod context;
 pub mod dedup;
+pub mod dependency;
 mod dialog;
 mod file;
 pub mod gathering;

@@ -1,0 +1,23 @@
+{
+  "lemma": "pixel",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03958553-n",
+      "partOfSpeech": "n",
+      "definition": "(computer science) the smallest discrete component of an image or picture on a CRT screen (usually a colored dot)",
+      "examples": [
+        "the greater the number of pixels per inch, the greater the resolution"
+      ],
+      "synonyms": [
+        "pel",
+        "picture element"
+      ]
+    }
+  ]
+}

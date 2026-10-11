@@ -1,0 +1,74 @@
+Set the contents of rust/tests/web/source-callable-read-contracts.test.mjs to exactly this content:
+````````````text
+import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import test from 'node:test';
+import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
+
+const worker = createWorkerContext();
+await evaluate(worker, 'loadSeed()');
+const invoke = (name, ...arguments_) => plain(evaluate(worker, name + '(' + arguments_.map(argument => JSON.stringify(argument)).join(',') + ')'));
+const bindCallableReadCoverage = (...arguments_) => invoke('bindCallableReadCoverage', ...arguments_);
+const readFormalParameterPositions = (...arguments_) => invoke('readFormalParameterPositions', ...arguments_);
+const record = plain(evaluate(worker, 'recurrenceSourceRecords().find(record => codingChildValue(record, "identifier") === "factorial")'));
+const expression = record.children.find(node => node.name === 'expression').children[0];
+const contract = { name: record.children.find(node => node.name === 'identifier').value, parameters: [record.children.find(node => node.name === 'parameter').value], expression };
+const literal = value => ({ name: 'literal', value, children: [] });
+const parameter = value => ({ name: 'parameter', value, children: [] });
+
+test('actual committed body reads its source formal slot despite anonymous task spelling', () => {
+  const bound = bindCallableReadCoverage(contract, { origin: 'provisional', name: 'discovered_function', parameters: ['input'] });
+  assert.equal(bound.name, contract.name);
+  assert.deepEqual(bound.parameters, contract.parameters);
+  assert.deepEqual(bound.readParameterPositions, [0]);
+  assert.deepEqual(bound.expression, expression);
+});
+
+test('literal contents and declaration-only names do not read an input', () => {
+  assert.deepEqual(readFormalParameterPositions(literal('n'), ['n']), []);
+  const bound = bindCallableReadCoverage({ name: 'constant', parameters: ['n'], expression: literal('1') }, { origin: 'provisional' });
+  assert.equal(bound.referencedParameters, 0);
+});
+
+test('repeated body reads are distinct positional inputs, never declaration counts', () => {
+  const body = { name: 'add', value: '', children: [parameter('right'), parameter('left'), parameter('right')] };
+  assert.deepEqual(readFormalParameterPositions(body, ['left', 'right']), [0, 1]);
+});
+
+test('explicit signature binds AST parameters and recursive callable before actual execution', () => {
+  const bound = bindCallableReadCoverage(contract, { origin: 'declared', name: 'chosen', parameters: ['x'] });
+  const rendered = evaluate(worker, 'renderRecurrenceExpression(' + JSON.stringify(bound.expression) + ', ' + JSON.stringify(bound.name) + ')');
+  const source = 'def ' + bound.name + '(' + bound.parameters.join(', ') + '):\n    return ' + rendered;
+  const script = 'import math\n' + source + '\nfor value in range(21):\n    assert chosen(value) == math.factorial(value)\n';
+  assert.equal(execFileSync('python3', ['-c', script], { encoding: 'utf8', timeout: 5000, env: { PATH: process.env.PATH } }), '');
+  assert.equal(contract.parameters[0], 'n');
+  assert.deepEqual(readFormalParameterPositions(expression, ['n']), [0]);
+});
+
+test('explicit incompatible arity, duplicates and unresolved parameters reject honestly', () => {
+  assert.equal(bindCallableReadCoverage(contract, { origin: 'declared', name: 'chosen', parameters: ['x', 'y'] }), null);
+  assert.equal(readFormalParameterPositions(parameter('missing'), ['n']), null);
+  assert.equal(readFormalParameterPositions(parameter('n'), ['n', 'n']), null);
+  assert.equal(bindCallableReadCoverage(contract, { origin: 'declared', name: 'discovered_function', parameters: ['input'] }).name, 'discovered_function');
+});
+
+test('actual source requests retain declared identity and reject unsupported signatures', () => {
+  const result = invoke('trySourceRecurrenceSynthesis', 'Write a Python function discovered_function(input) that returns the factorial of input');
+  assert.equal(result.intent, 'write_program');
+  assert.ok(result.content.includes('def discovered_function(input):'));
+  assert.ok(result.content.includes('input * discovered_function(input - 1)'));
+  assert.ok(result.evidence.includes('synthesis:callable_binding_origin:declared'));
+  const annotated = invoke('trySourceRecurrenceSynthesis', 'def chosen(x: int) -> int:\n    """Return the factorial of x."""');
+  assert.ok(annotated.content.includes('def chosen(x: int) -> int:'));
+  for (const signature of ['chosen(x, y)', 'chosen(*x)', 'chosen(x=3)', 'chosen(x, /)', 'chosen(chosen)']) {
+    assert.equal(invoke('trySourceRecurrenceSynthesis', 'def ' + signature + ':\n    """Return the factorial of x."""'), null, signature);
+  }
+});
+
+test('an assertion names the callable without turning its literal argument into a formal name', () => {
+  const result = invoke('trySourceRecurrenceSynthesis', 'Return the factorial.\nassert chosen(3) == 6');
+  assert.ok(result.content.includes('def chosen(n):'));
+  assert.ok(result.content.includes('n * chosen(n - 1)'));
+  assert.ok(result.evidence.includes('synthesis:callable_binding_origin:observed'));
+});
+````````````

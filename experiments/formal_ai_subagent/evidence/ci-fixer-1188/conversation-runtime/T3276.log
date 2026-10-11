@@ -1,0 +1,83 @@
+>> read {"filePath":"js/worker/formal_ai_worker_conversation_followups.js","file_path":"js/worker/formal_ai_worker_conversation_followups.js","path":"js/worker/formal_ai_worker_conversation_followups.js"}
+   <file>
+   00001| // Conversation follow-ups from supplied history; mirrors try_how_it_works and
+   00002| // extract_topic_from_prior_reply in rust/src/solver_handler_how.rs.
+   00003| /**
+   00004|  * The bare question's answer: the prior reply's topic through the concept
+   00005|  * lookup, the seeded "no record yet" answer naming that topic, or — with no
+   00006|  * prior reply — the seeded explanation of how to ask.
+   00007|  * @param {object[]} history
+   00008|  * @returns {object}
+   00009|  */
+   00010| function howItWorksFromHistory(prompt, history) {
+   00011|   const solverEvents = [{ kind: "followup:how_it_works", payload: normalizePrompt(prompt) }];
+   00012|   const prior = lastHistoryTurn(history, "assistant");
+   00013|   if (prior) solverEvents.push({ kind: "followup:prior_turn", payload: "assistant" });
+   00014|   const term = prior ? howItWorksPriorTopic(prior) : null;
+   00015|   if (term) {
+   00016|     const concept = tryConceptLookup(howPolicy("how_it_works", "concept-query", { term }));
+   00017|     if (concept) {
+   00018|       concept.evidence = [`followup:subject:prior_reply:${term}`, ...concept.evidence];
+   00019|       concept.solverEvents = [
+   00020|         ...solverEvents, { kind: "followup:subject", payload: `prior_reply:${term}` },
+   00021|         ...(Array.isArray(concept.solverEvents) ? concept.solverEvents : []),
+   00022|       ];
+   00023|       return concept;
+   00024|     }
+   00025|     return {
+   00026|       intent: "concept_elaboration_missing",
+   00027|       content: nativeLaneRender(answerFor("how_it_works_prior_topic", "en"), { term }),
+   00028|       confidence: 0.3,
+   00029|       solverEvents: [...solverEvents, { kind: "followup:subject", payload: `prior_reply_no_record:${term}` }],
+   00030|       evidence: ["followup:prior_turn:assistant", `followup:subject:prior_reply_no_record:${term}`, "response:concept_elaboration_missing"],
+   00031|     };
+   00032|   }
+   00033|   return {
+   00034|     intent: "meta_explanation",
+   00035|     content: answerFor("how_it_works_no_context", "en"),
+   00036|     confidence: 0.5,
+   00037|     solverEvents: [...solverEvents, { kind: "how_it_works:refusal", payload: "no subject and no prior reply" }],
+   00038|     evidence: ["how_it_works:refusal:no subject and no prior reply", "response:meta_explanation"],
+   00039|   };
+   00040| }
+   00041| 
+   00042| /**
+   00043|  * The topic of a prior assistant reply: the term before "(" on its first line
+   00044|  * ("Term (category): …"), else its first capitalised token of two or more
+   00045|  * bytes that is not a topic_scan_stop_word. Mirrors extract_topic_from_prior_reply.
+   00046|  * @param {string} reply
+   00047|  * @returns {string|null}
+   00048|  */
+   00049| function howItWorksPriorTopic(reply) {
+   00050|   const firstLine = String(reply).split(/\r?\n/u)[0].trim();
+   00051|   const paren = firstLine.indexOf("(");
+   00052|   if (paren >= 0 && firstLine.slice(0, paren).trim()) return firstLine.slice(0, paren).trim().toLowerCase();
+   00053|   const stopWords = roleWordForms("topic_scan_stop_word").map((form) => form.text);
+   00054|   for (const word of String(reply).split(/\s+/u).filter(Boolean)) {
+   00055|     const clean = word.replace(/^[^\p{Alphabetic}\p{N}]+|[^\p{Alphabetic}\p{N}]+$/gu, "");
+   00056|     if (new TextEncoder().encode(clean).length < 2 || !/^\p{Uppercase}/u.test(clean)) continue;
+   00057|     if (!stopWords.includes(clean.toLowerCase())) return clean.toLowerCase();
+   00058|   }
+   00059|   return null;
+   00060| }
+   00061| 
+   00062| 
+   
+   (End of file - total 62 lines)
+   </file>
+>> edit {"filePath":"js/worker/formal_ai_worker_conversation_followups.js","file_path":"js/worker/formal_ai_worker_conversation_followups.js","new":"    if (!stopWords.includes(clean.toLowerCase())) return clean.toLowerCase();\n  }\n  return null;\n}\n","newString":"    if (!stopWords.includes(clean.toLowerCase())) return clean.toLowerCase();\n  }\n  return null;\n}\n","new_str":"    if (!stopWords.includes(clean.toLowerCase())) return clean.toLowerCase();\n  }\n  return null;\n}\n","new_string":"    if (!stopWords.includes(clean.toLowerCase())) return clean.toLowerCase();\n  }\n  return null;\n}\n","old":"    if (!stopWords.includes(clean.toLowerCase())) return clean.toLowerCase();\n  }\n  return null;\n}\n\n","oldString":"    if (!stopWords.includes(clean.toLowerCase())) return clean.toLowerCase();\n  }\n  return null;\n}\n\n","old_str":"    if (!stopWords.includes(clean.toLowerCase())) return clean.toLowerCase();\n  }\n  return null;\n}\n\n","old_string":"    if (!stopWords.includes(clean.toLowerCase())) return clean.toLowerCase();\n  }\n  return null;\n}\n\n","path":"js/worker/formal_ai_worker_conversation_followups.js"}
+>> bash {"command":"sha256sum -- js/worker/formal_ai_worker_conversation_followups.js"}
+   Output: 11bcba8f05a04bc7e45a8bc5d86297e2f0ea19322d4fe2412fe98377350d4083  js/worker/formal_ai_worker_conversation_followups.js
+   
+   Exit Code: 0
+== answer ==
+Replaced `    if (!stopWords.includes(clean.toLowerCase())) return clean.toLowerCase();
+  }
+  return null;
+}
+
+` with `    if (!stopWords.includes(clean.toLowerCase())) return clean.toLowerCase();
+  }
+  return null;
+}
+` in `js/worker/formal_ai_worker_conversation_followups.js` and observed the result.

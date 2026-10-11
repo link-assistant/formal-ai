@@ -154,7 +154,7 @@ requireIncludes("lib/service-control.cjs", read("lib/service-control.cjs"), [
 // CLI, and agent-commander so the desktop install health check can verify all
 // three inside the container.
 requireIncludes("Dockerfile", readRepo("Dockerfile"), [
-  "konard/box-dind:2.1.1",
+  "konard/box-dind:2.10.2",
   "apt-get install -y --no-install-recommends nodejs",
   "node --version",
   "@link-assistant/agent",

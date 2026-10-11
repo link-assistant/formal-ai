@@ -2,11 +2,13 @@ self_ast_census
   target src/solver_handlers/web_requests/live_search.rs
   language rust
   fidelity signature
-  byte_len 3464
-  line_count 87
-  content_id source_module_91591f46a4eada40
-  symbol_count 3
+  byte_len 5392
+  line_count 138
+  content_id source_module_2908f5ee033e2824
+  symbol_count 5
   symbols
-    function try_web_search_with_client 22 64
-    function try_web_search_with_offline 68 78
-    function answer_executed_web_search 80 87
+    function live_fetch_enabled 25 32
+    function execute_web_search_answer 43 94
+    function try_web_search_with_client 101 115
+    function try_web_search_with_offline 119 129
+    function answer_executed_web_search 131 138

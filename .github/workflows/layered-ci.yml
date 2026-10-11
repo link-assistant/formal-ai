@@ -6,10 +6,19 @@
 #
 #   js   -- `node --check` over every committed js/**/*.js. Measured green on
 #           the whole 63-file corpus on 2026-09-25, so this tier is a real
-#           parse gate, not ceremony.
+#           parse gate, not ceremony. It also runs the JavaScript suites
+#           (rust/tests/web/), in four budgeted shards, and an edit to a suite
+#           wakes it (issue #1017).
 #   ts   -- the js<->ts file-set parity: every .js has its .ts sibling and
 #           the ts tree holds no extras. The fast tier-2 rung; it fails in
 #           seconds before the rust tier spends minutes.
+#   js-rust -- beside the ts tier: the js -> rust leg through
+#           link-foundation/meta-language's self-translation at a pinned
+#           main commit (R1000). The committed translation must re-render
+#           byte for byte, compile with rustc, and agree on calls.lino.
+#   server-parity -- beside the rust tier, on the same cached binary: the
+#           JavaScript server (js/server/) and `formal-ai serve` answer the
+#           corpus in rust/tests/fixtures/server-parity/ alike (R1013).
 #   rust -- the plan 16 L3 dogfood gate in CI, not only in the unit suite:
 #           delete ts/**/*.ts, regenerate with
 #           `formal-ai translate --from js --to ts --write`, then
@@ -49,9 +58,28 @@
 name: Layered CI
 
 on:
+  # Issue #1187 R2: a bot pull request pushed with github.token gets its
+  # checks through dispatch (.github/actions/dispatch-checks), which needs no
+  # approval; the inputs are the ones that action passes.
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'checks: run the pull-request checks on the dispatched branch'
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request the dispatched checks report for'
+        required: false
+        default: ''
+        type: string
   push:
     branches: [main]
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
 
 permissions:
@@ -85,22 +113,90 @@ jobs:
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
         run: rust-script scripts/detect-code-changes.rs
 
-  js:
-    name: js tier (node --check over js)
-    needs: [changes]
-    # Only this tier's own predicate and no `always()`: another tier's
-    # folder changing alone must let this tier stand on its last green run.
-    if: needs.changes.outputs.js-changed == 'true'
+
+  source-networks:
+    name: Full source network serialization (${{ matrix.shard }}/8)
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-js
+      group: check-${{ github.workflow }}-${{ github.ref }}-source-networks-${{ matrix.shard }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Check out the shared pinned meta-language serializer
+        uses: actions/checkout@v7
+        with:
+          repository: link-foundation/meta-language
+          ref: eb0574d5528babd3b4aadece81590d8e2230b99b
+          path: .meta-language
+          persist-credentials: false
+      - name: Install serializer runtime dependencies
+        run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
+      - name: Serialize and reconstruct every source in this shard
+        env:
+          SOURCE_SHARD: ${{ matrix.shard }}
+          SOURCE_NETWORK_OUTPUT: ${{ runner.temp }}/source-networks
+          TEST_BUDGET_SECONDS: 600
+          TEST_WARN_RATIO_PERCENT: 75
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "complete source network serialization" \
+            node scripts/check-source-networks.mjs --write \
+              --meta-language .meta-language --shard-count 8 \
+              --shard-index "$SOURCE_SHARD" --output "$SOURCE_NETWORK_OUTPUT"
+      - name: Upload complete serialized source packets and receipts
+        uses: actions/upload-artifact@v7
+        with:
+          name: source-networks-${{ matrix.shard }}
+          path: ${{ runner.temp }}/source-networks
+          if-no-files-found: error
+          retention-days: 7
+
+  js:
+    name: js tier (node --check over js, suites ${{ matrix.shard }}/4)
+    needs: [changes]
+    # Only this tier's own predicate and no `always()`: another tier's
+    # folder changing alone must let this tier stand on its last green run.
+    if: needs.changes.outputs.js-changed == 'true'
+    runs-on: ubuntu-latest
+    # Issue #1017: `timeout-minutes` is a backstop, never the deadline. The
+    # suites ran as one unbudgeted step that took 378s of this 600s cap
+    # (63%, run 37652295664, 2026-10-07) and grows with every pull request,
+    # so only the cap stood between a hung test and a `cancelled` tier. Two
+    # shards on parallel runners each run part of the files -- the plan
+    # (scripts/plan-test-shards.mjs) splits them longest-first, so the shards together run
+    # every file exactly once -- and each owns a 360s budget (60% of the
+    # cap) that fails with an `::error` instead of being cancelled. Run
+    # 37706284975 (2026-10-08) had shard 2/2 terminated at that budget once
+    # the requirement audit added 54 suites, so the files now split four ways.
+    timeout-minutes: 10
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-js-${{ matrix.shard }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Regenerate canonical seed projection for JavaScript consumers
+        timeout-minutes: 1
+        run: bash scripts/sync-seed.sh
+      # The tier's seconds-long checks run once, on the first shard.
       - name: Syntax-check every committed js file
+        if: matrix.shard == 1
         shell: bash
         run: |
           set -euo pipefail
@@ -114,6 +210,177 @@ jobs:
             node --check "$file"
           done
           echo "all ${#files[@]} js files parse"
+      - name: Native-only handler rows only fall (R998)
+        if: matrix.shard == 1
+        run: node scripts/check-js-parity.mjs --list
+      - name: Syntax-check the JavaScript server and its parity runner (R1013)
+        if: matrix.shard == 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in js/server/*.mjs scripts/check-server-parity.mjs; do
+            node --check "$file"
+          done
+      - name: Natural-language literals in the worker and server only fall (R1010, R1013)
+        if: matrix.shard == 1
+        run: node scripts/check-js-literals.mjs --list
+      # Issue #1186 R4/R6: the relative-meta-logic crate is unpublished
+      # (link-foundation/relative-meta-logic#185), so its `rml` exporter is
+      # checked out at a pinned commit and named by RML_BIN; the suite's
+      # issue-1186-rml-export test runs `rml export lean` on the rendered
+      # clause and requires exit status 0.
+      - name: Check out relative-meta-logic for the rml export step (R1186-4)
+        uses: actions/checkout@v7
+        with:
+          repository: link-foundation/relative-meta-logic
+          ref: c5513f2b958a8bd160b58c7054d408d4c446bf98
+          path: .rml
+          persist-credentials: false
+      - name: Install rml and name it in RML_BIN (R1186-6)
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci --prefix .rml/js --no-audit --no-fund
+          rml_script="$(realpath .rml/js/src/rml-links.mjs)"
+          printf '#!/bin/sh\nexec node "%s" "$@"\n' "$rml_script" > "$RUNNER_TEMP/rml"
+          chmod +x "$RUNNER_TEMP/rml"
+          echo "RML_BIN=$RUNNER_TEMP/rml" >> "$GITHUB_ENV"
+      # Renamed with the split: the step-budget audit joins measurements to
+      # budgets by step name, and the unsharded history (whole suite, 378s)
+      # would read as an overrun of this shard's budget until it aged out.
+      - name: Setup the pinned web dependency installer
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install actual locked UI test dependencies
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Provision the real agentic search adapter
+        run: bash scripts/install-agentic-search-tools.sh
+      - name: Run this shard of the JavaScript suites
+        env:
+          SHARD: ${{ matrix.shard }}
+          SHARDS: 4
+          TEST_BUDGET_SECONDS: 360
+          TEST_WARN_RATIO_PERCENT: 75
+        # PR #1188: the suite files are planned longest-first from
+        # data/meta/javascript-test-durations.lino by scripts/plan-test-shards.mjs
+        # (dealing the sorted files out by index gave shards of 3.4, 2.4, 1.1 and
+        # 1.0 minutes, run 37753750847); `--check` proves every file runs in
+        # exactly one shard, and a shard's files run on every core, longest first.
+        run: |
+          set -euo pipefail
+          suites="$RUNNER_TEMP/javascript-suites.txt"
+          printf '%s\n' rust/tests/web/*.test.mjs > "$suites"
+          node scripts/plan-test-shards.mjs --of "$SHARDS" --durations data/meta/javascript-test-durations.lino --check < "$suites"
+          mapfile -t files < <(node scripts/plan-test-shards.mjs --shard "$SHARD" --of "$SHARDS" --durations data/meta/javascript-test-durations.lino < "$suites")
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "JavaScript suites shard $SHARD/$SHARDS" \
+            node --test --test-concurrency="$(nproc)" "${files[@]}"
+
+  # Issue #1186 R4: the Lean and Rocq texts a formalization answer renders
+  # must compile when the provers are present. The js tier pins the prover
+  # step with stand-in executables; this job installs the real ones (Lean
+  # from its pinned release archive, Rocq from the runner's packages) and
+  # runs rust/tests/provers/, which fails when either is missing.
+  provers:
+    name: provers (real Lean 4 and Rocq compile, R1186-4)
+    needs: [changes]
+    if: needs.changes.outputs.js-changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-provers
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    env:
+      LEAN_VERSION: 4.34.1
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      # Each fetch owns its deadline (issue #1017): a hung mirror fails the
+      # step with an ::error instead of burning the job cap into `cancelled`.
+      # Budgets 250 + 90 + 120 = 460s stay under 70% of the 720s cap.
+      - name: Install Rocq
+        env:
+          TEST_BUDGET_SECONDS: 250
+          FORMAL_AI_APT_ATTEMPTS: 2
+          FORMAL_AI_APT_ATTEMPT_SECONDS: 120
+          FORMAL_AI_APT_RETRY_DELAY_SECONDS: 5
+        run: >-
+          scripts/run-with-budget-warning.sh
+          "$TEST_BUDGET_SECONDS" "Install Rocq"
+          scripts/apt-install-with-retry.sh coq zstd
+      - name: Download Lean 4
+        env:
+          TEST_BUDGET_SECONDS: 90
+        run: >-
+          scripts/run-with-budget-warning.sh
+          "$TEST_BUDGET_SECONDS" "Download Lean 4"
+          curl -fsSL --retry 3 -o "$RUNNER_TEMP/lean.tar.zst"
+          "https://github.com/leanprover/lean4/releases/download/v${LEAN_VERSION}/lean-${LEAN_VERSION}-linux.tar.zst"
+      - name: Put Lean 4 on PATH
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar --zstd -xf "$RUNNER_TEMP/lean.tar.zst" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/lean-${LEAN_VERSION}-linux/bin" >> "$GITHUB_PATH"
+      - name: Report the prover versions
+        run: |
+          lean --version
+          coqc --version
+      - name: Compile the rendered Lean and Rocq units
+        env:
+          TEST_BUDGET_SECONDS: 120
+        run: >-
+          scripts/run-with-budget-warning.sh
+          "$TEST_BUDGET_SECONDS" "Compile the rendered Lean and Rocq units"
+          node --test rust/tests/provers/issue-1186-real-provers.test.mjs
+
+  js-rust:
+    name: js -> rust leg (meta-language self-translation)
+    needs: [changes, js]
+    # R994/R1000/R1012: the js -> rust leg runs the upstream translator,
+    # link-foundation/meta-language's self-translation (PR #196, merged
+    # 2026-10-06, unreleased), at the commit data/meta/js-rust-translation.lino
+    # pins. It re-translates every module in scope, requires the committed
+    # projections (rust/tests/fixtures/js-rust-translation/) and the ledger
+    # byte for byte, refuses a module whose translated count fell, compiles
+    # every projection with rustc and runs the calls of calls.lino in the
+    # translated Rust. Same gate as the ts tier: js green or carried first.
+    if: needs.changes.outputs.js-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-js-rust
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      # The pin is the ledger's `commit`; `--verify` (the check_js_rust_translation
+      # gate) fails when this ref and the ledger disagree.
+      - name: Check out meta-language at the pinned main commit (R1000)
+        uses: actions/checkout@v7
+        with:
+          repository: link-foundation/meta-language
+          ref: eb0574d5528babd3b4aadece81590d8e2230b99b
+          path: .meta-language
+          persist-credentials: false
+      - name: Install meta-language's runtime dependencies
+        run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
+      - name: Setup Rust (rustc compiles the translated Rust)
+        uses: dtolnay/rust-toolchain@stable
+      - name: The committed js -> rust translation is what meta-language renders, and it compiles
+        env:
+          TEST_BUDGET_SECONDS: 540
+          TEST_WARN_RATIO_PERCENT: 75
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "js -> rust translation" \
+            node scripts/translate-js-rust.mjs --check --compile --meta-language .meta-language
 
   ts:
     name: ts tier (js<->ts file-set parity)
@@ -147,6 +414,17 @@ jobs:
               exit 1
             }
           echo "the ts tree mirrors the js tree file for file"
+      - name: The ts tree is what the JavaScript translator renders
+        shell: bash
+        run: |
+          set -euo pipefail
+          # scripts/translate-es.mjs is the js-first twin of the native
+          # js -> ts leg (es_tokenizer.rs + es_meta.rs write_source); it
+          # checks every file's bytes in well under a second, no build.
+          node scripts/translate-es.mjs --check || {
+            echo "::error::ts/ drifted from js/; regenerate with: node scripts/translate-es.mjs --write"
+            exit 1
+          }
 
   rust:
     name: rust tier (dogfood regeneration gate)
@@ -176,7 +454,39 @@ jobs:
           # diffing over the stale committed tree would report green. With
           # the tree deleted, a refusal leaves the deletions in place and
           # the diff below is the full red.
-          find ts -name '*.ts' -type f -delete
+          # The agentic .mts twins are part of the native write set too
+          # (issue #1180 R11), so they are deleted and regenerated with it.
+          find ts \( -name '*.ts' -o -name '*.mts' \) -type f -delete
           rust/target/release/formal-ai translate --from js --to ts --write
           git diff --exit-code -- ts/
           echo "the committed ts tree regenerates byte-for-byte from js"
+      - name: The JavaScript translator agrees with the native one
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The tree was just regenerated natively; the js twin must render
+          # the same bytes, so the two translators cannot drift apart.
+          node scripts/translate-es.mjs --check
+
+  server-parity:
+    name: server parity (JavaScript server vs Rust server)
+    needs: [changes, js, ts]
+    # The JavaScript server (js/server/) must answer every route in
+    # data/meta/server-routes.lino exactly as the Rust server does (R1013).
+    # The same gate as the rust tier: it wakes on any js, seed, server-manifest
+    # or rust change, and js and ts must be green or carried first.
+    if: needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-server-parity
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      # The same cached release binary the rust tier builds: one build per
+      # source change, shared by both jobs.
+      - uses: ./.github/actions/formal-ai-binary
+      - name: Both servers answer the parity corpus alike (R1013)
+        run: node scripts/check-server-parity.mjs --rust-binary rust/target/release/formal-ai --list

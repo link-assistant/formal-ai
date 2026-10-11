@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_ordered_lists_are_canonical
+ci_gate check-ordered-lists-are-canonical
   stage rust
   description "Every union-merged list is back in its canonical order with no repeats (issue #991)."
   run "rust-script --test scripts/normalize-ordered-lists.rs && rust-script scripts/normalize-ordered-lists.rs"
+  justification "normalize-ordered-lists.rs was introduced in #991 to ensure ordered-list files use a canonical one-entry-per-line format that merges without conflicts; without it, two branches renaming entries produce spurious merge conflicts."

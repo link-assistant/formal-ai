@@ -8,32 +8,8 @@ use crate::language::detect as detect_language;
 use crate::proof_engine::{
     ProofOutcome, ProofRenderConfig, attempt_proof_with_config, render_outcome_with_config,
 };
-use crate::seed::{self, Slot, WordForm};
+use crate::seed;
 use crate::solver_handlers::finalize_simple;
-
-/// The literal lead-in (text before the `…` slot) of every prefix-slot form of
-/// a role, in lexicon declaration order. Lets the proof and who-is recognisers
-/// reason about a role's opening surfaces without baking the words into code.
-fn prefix_literals(role: &str) -> Vec<&'static str> {
-    seed::lexicon()
-        .role_word_forms(role)
-        .into_iter()
-        .filter(|form| form.slot() == Slot::Prefix)
-        .map(WordForm::before_slot)
-        .collect()
-}
-
-/// The surface text of every bare-slot form of a role, in lexicon declaration
-/// order. A meaning's roles apply to all its forms, so we keep only the bare
-/// detection tokens and drop any prefix/suffix surfaces the meaning also owns.
-fn bare_literals(role: &str) -> Vec<&'static str> {
-    seed::lexicon()
-        .role_word_forms(role)
-        .into_iter()
-        .filter(|form| form.slot() == Slot::Bare)
-        .map(|form| form.text.as_str())
-        .collect()
-}
 
 /// Issue #185: catch "prove …" / "show that …" / "доказать …" / "साबित कर
 /// …" / "证明 …" prompts and route them through the universal proof
@@ -73,6 +49,9 @@ pub fn try_proof_request_with_config(
     log: &mut EventLog,
     config: ProofRenderConfig,
 ) -> Option<SymbolicAnswer> {
+    let directed = crate::solver_helpers::request_after_leading_courtesy(prompt)
+        .map(crate::engine::normalize_prompt);
+    let normalized = directed.as_deref().unwrap_or(normalized);
     // A proof verb may be followed by whitespace or punctuation (",", ":",
     // "!", "."). Avoid false positives on longer words that just happen to
     // start with the verb (e.g. "prover" or "proven") by checking the
@@ -88,10 +67,12 @@ pub fn try_proof_request_with_config(
     // (`proof_directive`, with the verb-boundary check above), a request-frame
     // lead in any language that needs no `that` clause (`proof_request_lead`),
     // or a mid-prompt proof assertion marker in any language (`proof_marker`).
-    let is_proof_request = bare_literals(seed::ROLE_PROOF_DIRECTIVE)
+    let is_proof_request = seed::lexicon()
+        .bare_literals_for_role(seed::ROLE_PROOF_DIRECTIVE)
         .iter()
         .any(|&verb| starts_with_verb(verb))
-        || prefix_literals(seed::ROLE_PROOF_REQUEST_LEAD)
+        || seed::lexicon()
+            .prefix_literals_for_role(seed::ROLE_PROOF_REQUEST_LEAD)
             .iter()
             .any(|&lead| normalized.starts_with(lead))
         || seed::lexicon().mentions_role_raw(seed::ROLE_PROOF_MARKER, normalized);
@@ -123,6 +104,9 @@ pub fn try_proof_request_with_config(
     }
     log.append("pipeline:planned", "relative-meta-logic".to_owned());
     let claim = extract_claim_from_prompt(normalized);
+    if !crate::capability_routing::content_beyond_roles(&claim, PROOF_SCAFFOLD_ROLES) {
+        log.append("proof_request:refusal", "no stated claim".to_owned());
+    }
     let outcome = attempt_proof_with_config(
         prompt,
         &claim,
@@ -160,6 +144,25 @@ pub fn try_proof_request_with_config(
     ))
 }
 
+/// The seed roles whose surfaces frame a proof request rather than state its claim.
+const PROOF_SCAFFOLD_ROLES: &[&str] = &[
+    seed::ROLE_PROOF_DIRECTIVE,
+    seed::ROLE_PROOF_REQUEST_LEAD,
+    seed::ROLE_PROOF_CLAIM_SCAFFOLD,
+    seed::ROLE_PROOF_MARKER,
+];
+
+/// Whether the proof request states a claim beyond its directive and scaffold.
+///
+/// The `stated_claim` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_stated_claim(normalized: &str) -> bool {
+    crate::capability_routing::content_beyond_roles(
+        &extract_claim_from_prompt(normalized),
+        PROOF_SCAFFOLD_ROLES,
+    )
+}
+
 fn is_known_unsolved_bounded_proof_request(normalized: &str) -> bool {
     let asks_for_terse_final_proof = normalized.contains("in two sentences")
         || normalized.contains("in 2 sentences")
@@ -184,7 +187,7 @@ fn extract_claim_from_prompt(normalized: &str) -> String {
     // ahead of its shorter sibling in the lexicon. Comma variants such as
     // `докажи, что` are intentionally absent: `normalize_prompt` rewrites the
     // comma to a space, so they are unreachable here.
-    let prefixes = prefix_literals(seed::ROLE_PROOF_CLAIM_SCAFFOLD);
+    let prefixes = seed::lexicon().prefix_literals_for_role(seed::ROLE_PROOF_CLAIM_SCAFFOLD);
     for prefix in &prefixes {
         if let Some(rest) = trimmed.strip_prefix(prefix) {
             return strip_claim_prefix_noise(rest).to_owned();

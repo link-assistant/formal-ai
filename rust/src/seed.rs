@@ -31,6 +31,7 @@ mod coreference;
 mod draft_strategies;
 mod embedded;
 mod entity_names;
+mod fact_derivation;
 mod facts;
 mod grounding_overrides;
 mod handler_precedence;
@@ -43,8 +44,10 @@ pub(crate) mod parser;
 mod personas;
 mod planner_precedence;
 mod projects;
+mod proof_library;
 mod proof_programs;
 mod release_timelines;
+mod reports;
 mod roles;
 mod shell_intents;
 mod sources;
@@ -55,9 +58,13 @@ mod tool_resource_scopes;
 use std::collections::BTreeMap;
 
 use parser::{
-    LinoNode, escape_value, find_closing_quote, parse_codepoint, parse_lino, split_pipe_list,
-    unescape_value,
+    LinoNode, escape_value, find_closing_quote, parse_codepoint, split_pipe_list, unescape_value,
 };
+/// The local seed parser, re-exported for the issue #1182 conformance
+/// harness that compares it against `links_notation` until it is deleted,
+/// with the concise lexeme expansion both parsers read through.
+pub use parser::{expand_concise_lexemes, parse_lino};
+pub use reports::{fill_slots, report_text};
 
 pub use agentic_tool_capabilities::{AgenticToolCapability, agentic_tool_capabilities};
 pub use brainstorm::{BrainstormCategory, BrainstormSeeds, brainstorm_seeds};
@@ -95,7 +102,7 @@ pub use embedded::{
     PROMPT_PATTERNS_LINO, PROOF_PROGRAM_TEMPLATES_LINO, QUESTION_NECESSITY_LINO,
     RELEASE_TIMELINES_LINO, RESPONSE_FILES, SELF_IMPROVEMENT_LOOP_LINO, SENTENCE_PUNCTUATION_LINO,
     SHELL_INTENTS_LINO, SOURCES_REGISTRY_LINO, SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO,
-    TOOL_RESOURCE_SCOPES_LINO, TOOLS_LINO, seed_files,
+    TEXT_FORMALIZATION_LINO, TOOL_RESOURCE_SCOPES_LINO, TOOLS_LINO, seed_files,
 };
 pub use entity_names::{EntityName, entity_names};
 pub use facts::{FactRecord, LocalizedFact, facts};
@@ -103,15 +110,17 @@ pub use grounding_overrides::{
     OverrideFact, cache_contains, override_facts, override_reason, parse_record, resolve,
 };
 pub use handler_precedence::{
-    HANDLER_PRECEDENCE_PATH, browser_only_handlers, handler_precedence, handler_precedence_from,
+    HANDLER_PRECEDENCE_PATH, before_promotion_handlers, browser_only_handlers, handler_precedence,
+    handler_precedence_from,
 };
 pub use intent_routing::{
-    INTENT_ROUTING_PATH, IntentRoute, IntentRouting, intent_routing, intent_routing_from,
+    INTENT_ROUTING_PATH, IntentRoute, IntentRouting, intent_examples, intent_routing,
+    intent_routing_from,
 };
 pub use market_price_references::{MarketPriceAsset, MarketPricePeriod, market_price_assets};
 pub use meanings::{
     ArithmeticOperator, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm, lexicon,
-    parse_lexicon_text,
+    parse_lexicon_text, surface_present,
 };
 pub use model_aliases::{
     ModelAliasRegistry, canonical_model_id, model_aliases, resolve_model_id, try_resolve_model_id,
@@ -125,6 +134,10 @@ pub use planner_precedence::{
 };
 pub use projects::{
     LocalizedProject, ProjectRecord, ProjectStatement, ProjectsRegistry, projects_registry,
+};
+pub use proof_library::{
+    LocalizedText, ProofLibrary, ProofLibraryEntry, ProofLibraryStep, ProofTemplate,
+    parse_proof_library, proof_library,
 };
 pub use proof_programs::{ProofLanguageTemplates, ProofProgramTemplates, proof_program_templates};
 pub use release_timelines::{
@@ -364,6 +377,46 @@ pub fn response_variant_for(intent: &str, language: &str, prompt: &str) -> Optio
         })
 }
 
+/// Look up one localized response and fill its `{name}` slots in one pass.
+///
+/// The lookup is [`localized_response`]'s; filling once means a value that
+/// itself contains braces — a user's task text, a quoted list item — is never
+/// re-filled (issue #918).
+#[must_use]
+pub fn render_localized_once(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
+    fill_template_once(
+        &localized_response(intent, language).unwrap_or_default(),
+        values,
+    )
+}
+
+/// Fill the `{name}` slots of `template` in a single left-to-right pass;
+/// a slot whose name is not among `values` stays as written.
+#[must_use]
+pub fn fill_template_once(template: &str, values: &[(&str, &str)]) -> String {
+    let mut out = String::with_capacity(template.len());
+    let mut rest = template;
+    while let Some(open) = rest.find('{') {
+        out.push_str(&rest[..open]);
+        let after = &rest[open + 1..];
+        let filled = after.find('}').and_then(|close| {
+            values
+                .iter()
+                .find(|(name, _)| after.get(..close) == Some(*name))
+                .map(|(_, value)| (close, *value))
+        });
+        if let Some((close, value)) = filled {
+            out.push_str(value);
+            rest = &after[close + 1..];
+        } else {
+            out.push('{');
+            rest = after;
+        }
+    }
+    out.push_str(rest);
+    out
+}
+
 /// Look up one response and substitute its named template fields.
 #[must_use]
 pub fn render_response(intent: &str, language: &str, values: &[(&str, &str)]) -> Option<String> {
@@ -422,6 +475,14 @@ pub fn agent_info() -> BTreeMap<String, String> {
         }
     }
     out
+}
+
+/// One `agent-info.lino` field (`agent_info().remove(key)`), or `None`.
+///
+/// Mirrored by `agentInfoValue` in `js/agentic/crate/seed_agent_info.mjs`.
+#[must_use]
+pub fn agent_info_value(key: &str) -> Option<String> {
+    agent_info().remove(key)
 }
 
 /// The languages the agent answers in, declared by `agent-info.lino`.

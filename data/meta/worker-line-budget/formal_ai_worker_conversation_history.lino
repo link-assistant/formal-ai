@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_conversation_history.js"
+  ceiling 66
+  rationale "Conversation recall uses actual supplied history and native role-based queries; response language and text come from shared seed. Native recall matching and event semantics are retained."

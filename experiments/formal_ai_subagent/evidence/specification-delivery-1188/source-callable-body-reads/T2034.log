@@ -1,0 +1,216 @@
+>> read {"filePath":"js/worker/formal_ai_worker_recurrence.js","file_path":"js/worker/formal_ai_worker_recurrence.js","path":"js/worker/formal_ai_worker_recurrence.js"}
+   <file>
+   00001| // Trusted-source recurrence discovery for the browser worker.
+   00002| //
+   00003| // This module consumes a rebuildable cache generated from captured
+   00004| // Wikifunctions abstract definitions, testers, and Wikidata aliases. The cache
+   00005| // is procedure memory rather than semantic seed knowledge: deleting it and
+   00006| // running `cargo run --example generate_recurrence_source_cache -- --write`
+   00007| // reconstructs it byte-for-byte.
+   00008| 
+   00009| let cachedRecurrenceSourceRecords;
+   00010| 
+   00011| async function hydrateLinoSeedAndSourceCaches(raw) {
+   00012|   hydrateLinoSeedText(raw);
+   00013|   self.FORMAL_AI_RECURRENCE_SOURCE_CACHE_LINO = "";
+   00014|   try {
+   00015|     const response = await fetch(
+   00016|       withAssetVersion("source-cache/wikifunctions-recurrences.lino"),
+   00017|     );
+   00018|     if (response && response.ok) {
+   00019|       self.FORMAL_AI_RECURRENCE_SOURCE_CACHE_LINO = await response.text();
+   00020|     }
+   00021|   } catch (_error) {
+   00022|     self.FORMAL_AI_RECURRENCE_SOURCE_CACHE_LINO = "";
+   00023|   }
+   00024|   cachedRecurrenceSourceRecords = undefined;
+   00025| }
+   00026| 
+   00027| function recurrenceSourceRecords() {
+   00028|   if (cachedRecurrenceSourceRecords !== undefined) {
+   00029|     return cachedRecurrenceSourceRecords;
+   00030|   }
+   00031|   const root = parseLinoTree(
+   00032|     String(self.FORMAL_AI_RECURRENCE_SOURCE_CACHE_LINO || ""),
+   00033|   );
+   00034|   const catalog = root.children.find(
+   00035|     (node) => node.name === "recurrence_source_cache",
+   00036|   );
+   00037|   cachedRecurrenceSourceRecords = catalog
+   00038|     ? catalog.children.filter((node) => node.name === "recurrence")
+   00039|     : [];
+   00040|   return cachedRecurrenceSourceRecords;
+   00041| }
+   00042| 
+   00043| function recurrenceFold(value) {
+   00044|   return String(value || "")
+   00045|     .toLowerCase()
+   00046|     .normalize("NFD")
+   00047|     .replace(/\p{M}/gu, "")
+   00048|     .replace(/[^\p{L}\p{N}!]+/gu, " ")
+   00049|     .trim();
+   00050| }
+   00051| 
+   00052| function recurrenceSourceMatch(prompt) {
+   00053|   const folded = recurrenceFold(prompt);
+   00054|   let best = null;
+   00055|   for (const record of recurrenceSourceRecords()) {
+   00056|     const forms = [codingChildValue(record, "label")].concat(
+   00057|       record.children
+   00058|         .filter((child) => child.name === "alias")
+   00059|         .map((alias) => codingChildValue(alias, "text")),
+   00060|     );
+   00061|     const matched = forms
+   00062|       .map(recurrenceFold)
+   00063|       .filter((form) => form.length >= 3 && folded.includes(form))
+   00064|       .sort((left, right) => right.length - left.length)[0];
+   00065|     if (matched && (!best || matched.length > best.length)) {
+   00066|       best = { record, length: matched.length };
+   00067|     }
+   00068|   }
+   00069|   return best ? best.record : null;
+   00070| }
+   00071| 
+   00072| function recurrenceExpressionNode(record) {
+   00073|   const container = codingFindChild(record, "expression");
+   00074|   return container && container.children.length === 1
+   00075|     ? container.children[0]
+   00076|     : null;
+   00077| }
+   00078| 
+   00079| function renderRecurrenceExpression(node, functionName) {
+   00080|   if (!node) return null;
+   00081|   const rendered = node.children.map((child) =>
+   00082|     renderRecurrenceExpression(child, functionName),
+   00083|   );
+   00084|   if (rendered.some((value) => value === null)) return null;
+   00085|   if (node.name === "parameter") return node.value;
+   00086|   if (node.name === "literal") return node.value;
+   00087|   if (node.name === "recur" && rendered.length === 1) {
+   00088|     const argument =
+   00089|       rendered[0].startsWith("(") && rendered[0].endsWith(")")
+   00090|         ? rendered[0].slice(1, -1)
+   00091|         : rendered[0];
+   00092|     return `${functionName}(${argument})`;
+   00093|   }
+   00094|   if (node.name === "conditional" && rendered.length === 3) {
+   00095|     return `${rendered[1]} if ${rendered[0]} else ${rendered[2]}`;
+   00096|   }
+   00097|   const binary = {
+   00098|     less_equal: "<=",
+   00099|     equal: "==",
+   00100|     add: "+",
+   00101|     multiply: "*",
+   00102|     subtract: "-",
+   00103|   }[node.name];
+   00104|   if (binary && rendered.length === 2) {
+   00105|     return `(${rendered[0]} ${binary} ${rendered[1]})`;
+   00106|   }
+   00107|   if (node.name === "subtract_one" && rendered.length === 1) {
+   00108|     return `${rendered[0]} - 1`;
+   00109|   }
+   00110|   return null;
+   00111| }
+   00112| 
+   00113| function evaluateRecurrenceExpression(node, root, parameter, value, depth) {
+   00114|   if (!node || depth > 10000) return null;
+   00115|   if (node.name === "parameter") return node.value === parameter ? value : null;
+   00116|   if (node.name === "literal") {
+   00117|     const literal = Number(node.value);
+   00118|     return Number.isFinite(literal) ? literal : null;
+   00119|   }
+   00120|   if (node.name === "recur" && node.children.length === 1) {
+   00121|     const argument = evaluateRecurrenceExpression(
+   00122|       node.children[0],
+   00123|       root,
+   00124|       parameter,
+   00125|       value,
+   00126|       depth + 1,
+   00127|     );
+   00128|     if (!Number.isInteger(argument) || argument < 0) return null;
+   00129|     return evaluateRecurrenceExpression(
+   00130|       root,
+   00131|       root,
+   00132|       parameter,
+   00133|       argument,
+   00134|       depth + 1,
+   00135|     );
+   00136|   }
+   00137|   if (node.name === "conditional" && node.children.length === 3) {
+   00138|     const condition = evaluateRecurrenceExpression(
+   00139|       node.children[0],
+   00140|       root,
+   00141|       parameter,
+   00142|       value,
+   00143|       depth + 1,
+   00144|     );
+   00145|     if (condition === null) return null;
+   00146|     return evaluateRecurrenceExpression(
+   00147|       condition ? node.children[1] : node.children[2],
+   00148|       root,
+   00149|       parameter,
+   00150|       value,
+   00151|       depth + 1,
+   00152|     );
+   00153|   }
+   00154|   const operands = node.children.map((child) =>
+   00155|     evaluateRecurrenceExpression(child, root, parameter, value, depth + 1),
+   00156|   );
+   00157|   if (operands.some((operand) => operand === null)) return null;
+   00158|   if (node.name === "less_equal" && operands.length === 2) {
+   00159|     return operands[0] <= operands[1];
+   00160|   }
+   00161|   if (node.name === "equal" && operands.length === 2) {
+   00162|     return operands[0] === operands[1];
+   00163|   }
+   00164|   if (node.name === "add" && operands.length === 2) {
+   00165|     return operands[0] + operands[1];
+   00166|   }
+   00167|   if (node.name === "multiply" && operands.length === 2) {
+   00168|     return operands[0] * operands[1];
+   00169|   }
+   00170|   if (node.name === "subtract" && operands.length === 2) {
+   00171|     return operands[0] - operands[1];
+   00172|   }
+   00173|   if (node.name === "subtract_one" && operands.length === 1) {
+   00174|     return operands[0] - 1;
+   00175|   }
+   00176|   return null;
+   00177| }
+   00178| 
+   00179| function verifiedRecurrenceRecord(record) {
+   00180|   const root = recurrenceExpressionNode(record);
+   00181|   const parameter = codingChildValue(record, "parameter");
+   00182|   const tests = record.children.filter((child) => child.name === "source_test");
+   00183|   return (
+   00184|     root &&
+   00185|     parameter &&
+   00186|     tests.length > 0 &&
+   00187|     tests.every((test) => {
+   00188|       const argument = Number(codingChildValue(test, "argument"));
+   00189|       const expected = Number(codingChildValue(test, "expected"));
+   00190|       return (
+   00191|         Number.isFinite(argument) &&
+   00192|         Number.isFinite(expected) &&
+   00193|         evaluateRecurrenceExpression(root, root, parameter, argument, 0) === expected
+   00194|       );
+   00195|     })
+   00196|   );
+   00197| }
+   00198| 
+   00199| function recurrenceObservation(prompt) {
+   00200|   const match = String(prompt || "").match(/\b(\d+)(?:st|nd|rd|th)?\b/i);
+   00201|   // Shared policy for a bounded demonstration when no observation was asked.
+   00202|   return match ? Number(match[1]) : 10;
+   00203| }
+   00204| 
+   00205| 
+   
+   (End of file - total 205 lines)
+   </file>
+>> edit {"filePath":"js/worker/formal_ai_worker_recurrence.js","file_path":"js/worker/formal_ai_worker_recurrence.js","new":"meaningful regression for a cached source callable competing with typed IR under an anonymous task signature","newString":"meaningful regression for a cached source callable competing with typed IR under an anonymous task signature","new_str":"meaningful regression for a cached source callable competing with typed IR under an anonymous task signature","new_string":"meaningful regression for a cached source callable competing with typed IR under an anonymous task signature","old":"candidate cost or ranking rules. Add","oldString":"candidate cost or ranking rules. Add","old_str":"candidate cost or ranking rules. Add","old_string":"candidate cost or ranking rules. Add","path":"js/worker/formal_ai_worker_recurrence.js"}
+   Error: oldString not found in content
+== answer ==
+The command failed: Error: oldString not found in content
+
+I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.

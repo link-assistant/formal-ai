@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "頸"
+        },
+        "es": {
+          "language": "es",
+          "value": "cuello"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "часть тела позвоночных, соединяющая голову с туловищем"
+        },
+        "es": {
+          "language": "es",
+          "value": "área de transición entre el cráneo, el tronco y las extremidades superiores"
         }
       },
       "aliases": {

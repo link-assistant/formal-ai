@@ -473,9 +473,11 @@ fn count_scripts(prompt: &str, rules: &[Rule]) -> ScriptCounts {
 /// Whether a marker occurs in `normalized` at a position that counts.
 ///
 /// A marker written in the shared fallback script only counts where it begins
-/// a word: Spanish "escribe" must not claim English "describe". Markers in a
-/// script of their own may sit inside native morphology — Chinese "什么"
-/// following "是" — so they match anywhere, the way their languages write them.
+/// a word: Spanish "escribe" must not claim English "describe", and a word of
+/// a path or an identifier is no language's word (Spanish "formaliza" must not
+/// claim `intent_formalization.mjs`, PR #1188 G97). Markers in a script of
+/// their own may sit inside native morphology — Chinese "什么" following "是" —
+/// so they match anywhere, the way their languages write them.
 fn marker_present(normalized: &str, marker: &str, rules: &[Rule], fallback_script: &str) -> bool {
     let Some(first) = marker.chars().next() else {
         return false;
@@ -492,12 +494,36 @@ fn marker_present(normalized: &str, marker: &str, rules: &[Rule], fallback_scrip
             .chars()
             .next_back()
             .is_none_or(|previous| !previous.is_alphabetic());
-        if word_start || !needs_word_start {
+        if !needs_word_start || (word_start && !in_identifier(normalized, start)) {
             return true;
         }
         from = start + marker.len();
     }
     false
+}
+
+/// Whether the whitespace-delimited token around byte `at` of `text` is a path
+/// or an identifier: it holds `_`, `/` or `\`, or a `.` before a letter or a
+/// digit (a file extension). Mirrored by `inIdentifier` in
+/// `js/agentic/crate/language.mjs`.
+fn in_identifier(text: &str, at: usize) -> bool {
+    let start = text[..at]
+        .char_indices()
+        .rev()
+        .find(|(_, character)| character.is_whitespace())
+        .map_or(0, |(index, character)| index + character.len_utf8());
+    let end = text[at..]
+        .find(char::is_whitespace)
+        .map_or(text.len(), |index| at + index);
+    let token = &text[start..end];
+    token.contains(['_', '/', '\\'])
+        || token.char_indices().any(|(index, character)| {
+            character == '.'
+                && token[index + 1..]
+                    .chars()
+                    .next()
+                    .is_some_and(char::is_alphanumeric)
+        })
 }
 
 /// The language whose markers appear in the prompt, preferring the one whose

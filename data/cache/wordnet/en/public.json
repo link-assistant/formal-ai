@@ -1,0 +1,55 @@
+{
+  "lemma": "public",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01867145-a",
+      "partOfSpeech": "a",
+      "definition": "not private; open to or concerning the people as a whole",
+      "examples": [
+        "the public good",
+        "public libraries",
+        "public funds",
+        "public parks",
+        "a public scandal",
+        "public gardens",
+        "performers and members of royal families are public figures"
+      ]
+    },
+    {
+      "id": "oewn-08196607-n",
+      "partOfSpeech": "n",
+      "definition": "people in general considered as a whole",
+      "examples": [
+        "he is a hero in the eyes of the public"
+      ],
+      "synonyms": [
+        "populace",
+        "world"
+      ]
+    },
+    {
+      "id": "oewn-07982431-n",
+      "partOfSpeech": "n",
+      "definition": "a body of people sharing some common interest",
+      "examples": [
+        "the reading public"
+      ]
+    },
+    {
+      "id": "oewn-00495342-s",
+      "partOfSpeech": "s",
+      "definition": "affecting the people or community as a whole",
+      "examples": [
+        "the public welfare",
+        "Public interests",
+        "Public leaders"
+      ]
+    }
+  ]
+}

@@ -11,11 +11,55 @@ name: Regenerate self-AST census
 
 on:
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     paths:
       - 'rust/src/**/*.rs'
       - 'rust/examples/regenerate_self_ast_census.rs'
       - '.github/workflows/regenerate-self-ast-census.yml'
+      - ".cargo"
+      - ".cargo/**"
+      - "data/seed/api-cache"
+      - "data/seed/api-cache/**"
+      - "rust/.cargo"
+      - "rust/.cargo/**"
+      - "rust/Cargo.lock"
+      - "rust/Cargo.lock/**"
+      - "rust/Cargo.toml"
+      - "rust/Cargo.toml/**"
+      - "rust/build.rs"
+      - "rust/build.rs/**"
+      - "rust/embedded"
+      - "rust/embedded/**"
+      - "rust/src"
+      - "rust/src/**"
+      - "rust/tests/web/census-source-selectors.test.mjs"
+      - "scripts/collect-qualified-native-data-artifacts.mjs"
+      - "scripts/generate-census-source-selectors.mjs"
+      - "scripts/github-artifact-by-identifier.mjs"
+      - "scripts/lib/native-response-capture.mjs"
+      - "scripts/lib/native-session-projections.mjs"
+      - "scripts/lib/native-test-module-graph.mjs"
+      - "scripts/lib/qualified-native-data-collector.mjs"
+      - "scripts/lib/rust-specification-cases.mjs"
+      - "scripts/lib/rust-specification-values.mjs"
+      - "scripts/qualified-data-artifact-profiles.mjs"
+  # Issue #1187 R2: a bot pull request's checks start through dispatch
+  # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'checks: run the pull-request checks on the dispatched branch'
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request the dispatched checks report for'
+        required: false
+        default: ''
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -33,7 +77,7 @@ jobs:
   regenerate:
     name: Build the census and upload it
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
         with:
@@ -46,7 +90,7 @@ jobs:
           restore-only: 'true'
       - name: Regenerate the census
         env:
-          TEST_BUDGET_SECONDS: 2400
+          TEST_BUDGET_SECONDS: 1200
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           scripts/run-with-budget-warning.sh \

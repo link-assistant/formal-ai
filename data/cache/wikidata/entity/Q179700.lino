@@ -1,14 +1,17 @@
 Q179700
   aliases
+    es (estatuario estatuas estatuaria)
     ru ("статуи")
     zh ("銅像" "雕塑像" "雕像" "神像" "铸像")
   descriptions
     en "sculpture primarily conceived as a representational figure"
+    es "figura escultórica en tres dimensiones que representa una persona o un animal"
     ru "скульптура, представляющая собой фигуру"
     zh "主要關注作為代表人物的雕塑"
   id Q179700
   labels
     en statue
+    es estatua
     hi "प्रतिमा"
     ru "статуя"
     zh "塑像"

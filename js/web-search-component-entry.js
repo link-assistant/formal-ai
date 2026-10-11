@@ -4,7 +4,7 @@ import {
 } from "@link-assistant/web-search";
 
 const PACKAGE = "@link-assistant/web-search";
-const VERSION = "0.10.3";
+const VERSION = "0.11.1";
 const WEB_CAPTURE_BASE_URL = "http://localhost:3000";
 const DEFAULT_TIMEOUT_MS = 2000;
 const defaultProviderIds = Object.freeze(getDefaultProviderIds());

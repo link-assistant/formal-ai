@@ -1,12 +1,15 @@
 Q7368
   aliases
+    es ("oveja doméstica" "Ovis orientalis aries" "oveja domestica")
     ru ("домашняя овца" "баран" "ярка" "ягнёнок" "овцы")
   descriptions
     en "domesticated ruminant bred for meat, wool, and milk"
+    es "subespecie de mamíferos"
     ru "парнокопытное млекопитающее из рода баранов семейства полорогих"
   id Q7368
   labels
     en sheep
+    es oveja
     hi "भेड़"
     ru "овца"
     zh "羊"

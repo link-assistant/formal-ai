@@ -1,0 +1,9 @@
+{
+  "id": "T3073",
+  "pass": true,
+  "physicalRepositoryEffects": 0,
+  "testFixtureFiles": 2,
+  "fullLadderClaim": false,
+  "nativeExecutionClaim": false,
+  "independentRecordReadback": "open"
+}

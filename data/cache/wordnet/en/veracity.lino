@@ -1,0 +1,11 @@
+language en
+lemma veracity
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "unwillingness to tell lies"
+    id oewn-04879609-n
+    partOfSpeech n
+source "oewn:2024"

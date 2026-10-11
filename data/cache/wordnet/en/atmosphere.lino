@@ -1,0 +1,40 @@
+language en
+lemma atmosphere
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a particular environment or surrounding influence"
+    examples ("there was an atmosphere of excitement")
+    id oewn-14548451-n
+    partOfSpeech n
+    synonyms (ambiance ambience)
+  entry
+    definition "a unit of pressure: the pressure that will support a column of mercury 760 mm high at sea level and 0 degrees centigrade"
+    id oewn-13733165-n
+    partOfSpeech n
+    synonyms ("standard atmosphere" atm "standard pressure")
+  entry
+    definition "the mass of air surrounding the Earth"
+    examples ("there was great heat as the comet entered the atmosphere" "it was exposed to the air")
+    id oewn-08516085-n
+    partOfSpeech n
+    synonyms (air)
+  entry
+    definition "the weather or climate at some place"
+    examples ("the atmosphere was thick with fog")
+    id oewn-14543880-n
+    partOfSpeech n
+    synonyms ("atmospheric state")
+  entry
+    definition "the envelope of gases surrounding any celestial body"
+    id oewn-09233511-n
+    partOfSpeech n
+  entry
+    definition "a distinctive but intangible quality surrounding a person or thing"
+    examples ("an air of mystery" "the house had a neglected air" "an atmosphere of defeat pervaded the candidate's headquarters" "the place had an aura of romance")
+    id oewn-04734472-n
+    partOfSpeech n
+    synonyms (air aura)
+source "oewn:2024"

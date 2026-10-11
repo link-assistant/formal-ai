@@ -1,0 +1,16 @@
+[
+  "scripts/release-source-freshness.mjs",
+  "scripts/version-and-commit.rs",
+  "rust/tests/web/release-source-freshness.test.mjs",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/raw/T4199.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/raw/T4200.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/raw/T4201.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/raw/T4202.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/original-version-and-commit.rs.txt",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/sourceguards.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/controls.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/delivery.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/README.md",
+  "changelog.d/1188-release-source-freshness.md",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/owned-paths.json"
+]

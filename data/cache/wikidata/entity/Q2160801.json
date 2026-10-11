@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "裙"
+        },
+        "es": {
+          "language": "es",
+          "value": "falda"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "服飾"
+        },
+        "es": {
+          "language": "es",
+          "value": "prenda de vestir"
         }
       },
       "aliases": {
@@ -48,6 +56,20 @@
           {
             "language": "zh",
             "value": "半裙"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Jalda"
+          },
+          {
+            "language": "es",
+            "value": "polleras"
+          },
+          {
+            "language": "es",
+            "value": "pollera"
           }
         ]
       }

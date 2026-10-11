@@ -1,0 +1,40 @@
+language en
+lemma submission
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "something (manuscripts or architectural plans and models or estimates or works of art of all genres etc.) submitted for the judgment of others (as in a competition)"
+    examples ("several of his submissions were rejected by publishers" "what was the date of submission of your proposal?")
+    id oewn-07182229-n
+    partOfSpeech n
+    synonyms (entry)
+  entry
+    definition "the act of submitting; usually surrendering power to another"
+    id oewn-01169416-n
+    partOfSpeech n
+    synonyms (compliance)
+  entry
+    definition "the condition of having submitted to control by someone or something else"
+    examples ("the union was brought into submission" "his submission to the will of God")
+    id oewn-14603635-n
+    partOfSpeech n
+  entry
+    definition "the feeling of patient, submissive humbleness"
+    id oewn-07524564-n
+    partOfSpeech n
+    synonyms (meekness)
+  entry
+    definition "a legal document summarizing an agreement between parties in a dispute to abide by the decision of an arbiter"
+    id oewn-06784895-n
+    partOfSpeech n
+  entry
+    definition "an agreement between parties in a dispute to abide by the decision of an arbiter"
+    id oewn-06784758-n
+    partOfSpeech n
+  entry
+    definition "(law) a contention presented by a lawyer to a judge or jury as part of the case they are arguing"
+    id oewn-06744259-n
+    partOfSpeech n
+source "oewn:2024"

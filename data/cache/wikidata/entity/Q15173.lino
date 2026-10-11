@@ -5,10 +5,12 @@ Q15173
     zh ("唇结节")
   descriptions
     en "visible body part at the mouth"
+    es "parte externa de la boca"
     ru "кожно-мышечные складки, окружающие вход в полость рта"
   id Q15173
   labels
     en lip
+    es labio
     hi "होंठ"
     ru "губы"
     zh "唇"

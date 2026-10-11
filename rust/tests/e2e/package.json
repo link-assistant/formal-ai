@@ -14,10 +14,13 @@
     "test:pages": "playwright test --config=playwright.pages.config.js"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.1",
+    "@playwright/test": "^1.64.0",
     "serve": "^14.2.6"
   },
   "dependencies": {
-    "lino-i18n": "0.2.0"
+    "lino-i18n": "0.3.0"
+  },
+  "overrides": {
+    "compression": "^1.8.2"
   }
 }

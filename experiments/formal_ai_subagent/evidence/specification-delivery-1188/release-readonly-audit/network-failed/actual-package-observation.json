@@ -1,0 +1,5 @@
+{
+  "status": "unavailable",
+  "message": "Command failed: gh api repos/link-assistant/formal-ai/actions/artifacts/11591197149/zip\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+  "stderr": "error connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n"
+}

@@ -1,0 +1,17 @@
+view
+  id M-29663abdaff4
+  lemma invariant
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a feature (quantity or property or function) that remains unchanged when a particular transformation is applied to it"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "unaffected by a designated operation or transformation"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "unvarying in nature"
+    provenance (wordnet)

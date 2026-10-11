@@ -1,0 +1,11 @@
+language en
+lemma insomnia
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an inability to sleep; chronic sleeplessness"
+    id oewn-14046845-n
+    partOfSpeech n
+source "oewn:2024"

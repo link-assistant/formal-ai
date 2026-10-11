@@ -1,0 +1,22 @@
+language en
+lemma symmetry
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "(mathematics) an attribute of a shape or relation; exact reflection of form on opposite sides of a dividing line or plane"
+    id oewn-05071996-n
+    partOfSpeech n
+    synonyms (symmetricalness correspondence balance)
+  entry
+    definition "balance among the parts of something"
+    id oewn-13921008-n
+    partOfSpeech n
+    synonyms (proportion)
+  entry
+    definition "(physics) the property of being isotropic; having the same value when measured in different directions"
+    id oewn-04924616-n
+    partOfSpeech n
+    synonyms (isotropy)
+source "oewn:2024"

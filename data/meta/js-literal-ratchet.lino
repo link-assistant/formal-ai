@@ -1,0 +1,19 @@
+# Natural-language literal ratchet for the JavaScript worker (R1010,
+# 2026-10-06 meta-algorithm doctrine).
+#
+# The ceilings on string literals and template chunks in js/worker/*.js that
+# read as natural language (three or more words, no code punctuation),
+# counted by scripts/check-js-literals.mjs with the ts twin's tokenizer.
+# Wording belongs in seed data, where every language can carry it. The meta
+# reasoner's modules (formal_ai_worker_meta_*) hold none — their answers come
+# from `response` records and their trace from `note` records in
+# data/seed/meta-reasoning.lino. The JavaScript server (js/server/*.mjs)
+# holds none either - its wording is data/meta/server-messages.lino (R1013) -
+# and neither does the agentic planner port (js/agentic/**/*.mjs), whose
+# wording is data/meta/agentic-messages.lino and the seed responses (R1015).
+# Every number only falls.
+js-literal-ratchet
+  worker-ceiling 431
+  meta-ceiling 0
+  server-ceiling 0
+  agentic-ceiling 0

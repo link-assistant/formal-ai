@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_statement_verification.js"
+  ceiling 832
+  rationale "Relative-meta-logic mirror of `rust/src/relative_meta_logic.rs` and `rust/src/statement_verification.rs`. Ceiling moved 692 to 829 with the terminal parity mirror arms that keep shell task recognition in the browser. Ceiling moved to 832 for issue #1175 R3 (follow-up round, 2026-10-08): the dialogue fact check and the originality check record their refusal events when there is no statement or no supplied document."

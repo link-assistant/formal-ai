@@ -1,0 +1,28 @@
+language en
+lemma procedure
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a particular course of action intended to achieve a result"
+    examples ("the procedure of obtaining a driver's license" "it was a process of trial and error")
+    id oewn-01025762-n
+    partOfSpeech n
+    synonyms (process)
+  entry
+    definition "a process or series of acts especially of a practical or mechanical nature involved in a particular form of work"
+    examples ("the operations in building a house" "certain machine tool operations")
+    id oewn-00578105-n
+    partOfSpeech n
+    synonyms (operation)
+  entry
+    definition "a set sequence of steps, part of larger computer program"
+    id oewn-06594579-n
+    partOfSpeech n
+    synonyms (routine subroutine subprogram function)
+  entry
+    definition "a mode of conducting legal and parliamentary proceedings"
+    id oewn-01025578-n
+    partOfSpeech n
+source "oewn:2024"

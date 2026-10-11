@@ -158,7 +158,10 @@ fn an_unsplittable_failure_is_reported_irreducible_instead_of_split_forever() {
         "an irreducible task is recorded as such, and that is what justifies \
          extending the tool"
     );
-    assert!(executor.productive_splits().is_empty());
+    assert_eq!(
+        executor.productive_splits(),
+        [] as [&formal_ai::task_decomposition::RecordedSplit; 0]
+    );
 }
 
 #[test]
@@ -197,7 +200,10 @@ fn a_bound_of_zero_reproduces_the_plan_driven_protocol_exactly() {
     let run = solve_recursively_within(&root, &mut executor, 0);
 
     assert_eq!(run.status, RecursiveExecution::Blocked);
-    assert!(run.children.is_empty());
+    assert_eq!(
+        run.children,
+        [] as [formal_ai::recursive_execution::RecursiveRun; 0]
+    );
     assert_eq!(run.split_depth_reached(), 0);
     assert!(
         executor.splits().is_empty(),

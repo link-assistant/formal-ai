@@ -2,136 +2,142 @@ self_ast_census
   target src/agentic_coding/evidence_record.rs
   language rust
   fidelity full_ast
-  byte_len 41553
-  line_count 931
-  content_id source_module_fa2897d8d1f95338
-  symbol_count 35
+  byte_len 41743
+  line_count 970
+  content_id source_module_1903603b37c9042f
+  symbol_count 40
   symbols
-    struct DeliveryBinding 59 68
-    function parse_obligation 92 147
-    function exact_field_lines 150 183
-    function work_before_delivery 199 203
-    function without_trailing_separator 216 226
-    function plan_evidence_record_step 237 351
-    const DELIVERY_PROBE_TURNS 360 360
-    function later_route_delivering 386 407
-    function settled_route_delivers 411 433
-    static DELIVERY_PROBE_ANSWERS 438 439
-    const DELIVERY_PROBE_MEMO_CAPACITY 443 443
-    function probe_settled_routes 445 466
-    function planned_destination 470 472
-    function planned_command_output_path 483 492
-    const OUTPUT_OPTION 495 495
-    function planned_write_path 498 508
-    function render_obligation 511 537
-    function exact_field_values 544 552
-    function combined_observation 555 570
-    function non_hollow_result 579 591
-    function written_observation 597 608
-    function substantive_result_line 618 677
-    function relevance_score 679 745
-    function looks_like_condition 753 765
-    function looks_like_instance_condition 771 776
-    function looks_like_local_binding 781 786
-    function looks_like_exposed_declaration 791 796
-    function looks_like_declaration 804 820
-    function source_text 822 826
-    function is_quoted_or_commented_source 828 838
-    function is_match_count 840 844
-    function looks_like_result_path_heading 846 848
-    function source_authority 853 860
-    function symbolic_answer 886 900
-    function with_residual_request 911 931
+    module artifact_header 6 6
+    module record_observation 7 7
+    struct DeliveryBinding 31 40
+    function masked_multi_word_quotes 51 74
+    function has_typed_evidence_delivery 98 102
+    function parse_obligation 107 180
+    function exact_field_lines 183 216
+    function work_before_delivery 232 236
+    function without_trailing_separator 249 259
+    function plan_evidence_record_step 270 381
+    const DELIVERY_PROBE_TURNS 390 390
+    function later_route_delivering 416 437
+    function settled_route_delivers 441 463
+    static DELIVERY_PROBE_ANSWERS 468 469
+    const DELIVERY_PROBE_MEMO_CAPACITY 473 473
+    function probe_settled_routes 475 497
+    function planned_destination 501 503
+    function planned_command_output_path 514 519
+    const OUTPUT_OPTION 522 522
+    function planned_write_path 525 535
+    function render_obligation 538 564
+    function exact_field_values 571 579
+    function combined_observation 582 597
+    function non_hollow_result 606 618
+    function written_observation 624 635
+    function substantive_result_line 645 704
+    function relevance_score 706 772
+    function looks_like_condition 780 792
+    function looks_like_instance_condition 798 803
+    function looks_like_local_binding 808 813
+    function looks_like_exposed_declaration 818 823
+    function looks_like_declaration 831 847
+    function source_text 849 853
+    function is_quoted_or_commented_source 855 865
+    function is_match_count 867 871
+    function looks_like_result_path_heading 873 875
+    function source_authority 880 887
+    function symbolic_answer 913 935
+    const GAP_INTENT_SUFFIX 938 938
+    function with_residual_request 949 970
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21557
-    named_node_count 4587
-    distinct_node_kinds 84
+    total_link_count 23042
+    named_node_count 4882
+    distinct_node_kinds 85
     node_kinds
-      arguments 386
+      arguments 422
       array_expression 10
       array_type 8
       assignment_expression 8
-      binary_expression 62
-      block 89
+      binary_expression 67
+      block 100
       boolean_literal 8
-      call_expression 386
-      captured_pattern 1
+      call_expression 422
       char_literal 34
-      closure_expression 64
-      closure_parameters 64
-      const_item 3
+      closure_expression 67
+      closure_parameters 67
+      const_item 4
       continue_expression 4
-      crate 16
-      doc_comment 233
-      else_clause 5
+      crate 17
+      doc_comment 212
+      else_clause 7
       escape_sequence 6
-      expression_statement 86
+      expression_statement 94
       field_declaration 4
       field_declaration_list 1
-      field_expression 310
-      field_identifier 314
-      field_initializer_list 1
-      for_expression 6
-      function_item 30
-      generic_function 6
-      generic_type 20
-      identifier 907
-      if_expression 26
-      index_expression 7
-      inner_doc_comment_marker 38
+      field_expression 352
+      field_identifier 360
+      field_initializer 4
+      field_initializer_list 2
+      for_expression 7
+      function_item 32
+      generic_function 5
+      generic_type 21
+      identifier 1012
+      if_expression 31
+      index_expression 9
+      inner_doc_comment_marker 4
       integer_literal 17
       let_chain 1
-      let_condition 6
-      let_declaration 74
+      let_condition 8
+      let_declaration 81
       lifetime 4
       lifetime_parameter 1
-      line_comment 307
-      macro_invocation 11
-      match_arm 11
-      match_block 4
-      match_expression 4
-      match_pattern 11
+      line_comment 266
+      macro_invocation 12
+      match_arm 8
+      match_block 3
+      match_expression 3
+      match_pattern 8
+      mod_item 2
       mut_pattern 1
-      mutable_specifier 14
+      mutable_specifier 18
       or_pattern 1
-      outer_doc_comment_marker 195
-      parameter 53
-      parameters 30
+      outer_doc_comment_marker 208
+      parameter 56
+      parameters 32
       parenthesized_expression 5
-      primitive_type 76
-      range_expression 5
-      reference_expression 46
+      primitive_type 80
+      range_expression 9
+      reference_expression 52
       reference_pattern 1
-      reference_type 59
+      reference_type 63
       remaining_field_pattern 3
-      return_expression 17
-      scoped_identifier 101
-      scoped_type_identifier 5
-      scoped_use_list 3
-      shorthand_field_initializer 4
+      return_expression 18
+      scoped_identifier 113
+      scoped_type_identifier 4
+      scoped_use_list 5
+      shorthand_field_initializer 5
       slice_pattern 2
       source_file 1
-      string_content 82
-      string_literal 84
-      struct_expression 1
+      string_content 83
+      string_literal 85
+      struct_expression 2
       struct_item 1
       struct_pattern 3
-      super 14
-      token_tree 19
-      try_expression 12
+      super 18
+      token_tree 20
+      try_expression 10
       tuple_expression 5
       tuple_pattern 10
-      tuple_struct_pattern 15
+      tuple_struct_pattern 14
       tuple_type 1
       type_arguments 26
-      type_identifier 55
+      type_identifier 59
       type_parameters 1
-      unary_expression 26
+      unary_expression 30
       unit_expression 1
-      use_declaration 11
-      use_list 3
-      visibility_modifier 1
+      use_declaration 14
+      use_list 5
+      visibility_modifier 2

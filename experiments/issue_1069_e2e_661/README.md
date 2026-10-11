@@ -47,4 +47,4 @@ produces the requested file, but `probe_settled_routes` only recognised a
 *write* call naming it, never a *command* naming it with `--output`. Reading a
 planned command's destination the same way `src/agentic_coding/driver.rs`
 already does restores the decline. The regression test lives in
-`tests/unit/issue_661_agentic_statement_audit.rs`.
+`tests/unit/agentic-coding/issue_661_agentic_statement_audit.rs`.

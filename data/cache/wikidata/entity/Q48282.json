@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "学生"
+        },
+        "es": {
+          "language": "es",
+          "value": "estudiante"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "學習者或參加教育機構的人"
+        },
+        "es": {
+          "language": "es",
+          "value": "educando o alumno dentro del ámbito académico"
         }
       },
       "aliases": {
@@ -88,6 +96,24 @@
           {
             "language": "zh",
             "value": "學生"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "discente"
+          },
+          {
+            "language": "es",
+            "value": "alumno"
+          },
+          {
+            "language": "es",
+            "value": "alumna"
+          },
+          {
+            "language": "es",
+            "value": "alumnado"
           }
         ]
       }

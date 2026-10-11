@@ -1,0 +1,9 @@
+{
+  "id": "T3578",
+  "dir": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations",
+  "prompt": "Implement a reusable source-read consumer repair in scratch only. Actual provider is_error and exact bound source_read metadata own transport status; file JSON keys and prose never own it. Reuse current Progress observations in full-source Read and callable discovery, retain exact bytes and current request/call/path identity, and preserve unknown completeness. Add independent positive raw JSON source and explicit failed/partial/wrong-path/window controls. Preserve ordinary complete Reads and source-backed-design MissingContract behavior. Do not implement native repository task requirements or run Cargo or Rust compilation.",
+  "taskUtf8Bytes": 630,
+  "productionWritesPermitted": false,
+  "provenance": "Original generic source-read consumer capability ask, no implementation literal",
+  "unchangedOriginal": "T3567"
+}

@@ -1,0 +1,1861 @@
+{
+  "ui_jsx_character_ceiling": 306259,
+  "strict_target": 2499,
+  "classification": "provisional lexical inventory; names and DOM references are evidence, not semantic proof",
+  "legacy_functions": {
+    "js/app/agent-plan.jsx": [
+      "isAgentFormattingDirective",
+      "extractAgentQuotedPhrases",
+      "agentResearchCommandPrefix",
+      "agentComparisonFocus",
+      "expandAgentResearchStep",
+      "decomposeAgentTask"
+    ],
+    "js/app/application-constants.js": [
+      "withAssetVersion"
+    ],
+    "js/app/application-conversation-hooks.jsx": [
+      "useConversationMessages",
+      "useInterfaceCommands"
+    ],
+    "js/app/application-desktop-hooks.jsx": [
+      "useDesktopIntegration",
+      "useDesktopCommands"
+    ],
+    "js/app/application-layout-hooks.jsx": [
+      "useDocumentEnvironment",
+      "useContextPanelResize"
+    ],
+    "js/app/application-memory-hooks.jsx": [
+      "useMemoryActions",
+      "useMemoryOperation"
+    ],
+    "js/app/application-worker-hooks.jsx": [
+      "browserRuntimeStatusKey",
+      "useFormalAiWorker",
+      "useLatestValueRefs",
+      "useAnswerRequest"
+    ],
+    "js/app/application.jsx": [],
+    "js/app/attachments.jsx": [
+      "isImageAttachment",
+      "isTextAttachment",
+      "formatFileSize",
+      "readFileAsDataUrl",
+      "readFileAsText",
+      "sampleTextAttachmentContent",
+      "loadOcrBundle",
+      "attachmentMemoryRecord",
+      "attachmentOnlyPrompt",
+      "attachmentContextText",
+      "buildPromptWithAttachments",
+      "useAttachments"
+    ],
+    "js/app/autocomplete.js": [
+      "normalizeForMatch",
+      "rankSuggestions",
+      "createAutocompleteController",
+      "storage",
+      "recallInputValues",
+      "rememberInputValue",
+      "examplePromptSuggestions",
+      "historySuggestions"
+    ],
+    "js/app/conversations.jsx": [
+      "randomItem",
+      "generateConversationId",
+      "deriveConversationTitle",
+      "groupConversations",
+      "resizeComposerInput",
+      "localizeTool",
+      "messagesForConversation",
+      "conversationToMarkdown",
+      "randomInt",
+      "timeLabel",
+      "createMessage"
+    ],
+    "js/app/debugger-view.jsx": [],
+    "js/app/demo-mode.jsx": [
+      "demoGreetings",
+      "demoFeaturePrompts",
+      "createDemoTurns",
+      "wait",
+      "useDemoPlayback"
+    ],
+    "js/app/desktop-bridge.jsx": [
+      "desktopBridge",
+      "desktopServiceBridge",
+      "normalizeAppVersion",
+      "desktopAppVersionLabel",
+      "normalizeDesktopUpdaterStatus",
+      "mergeDesktopUpdateStatus",
+      "desktopUpdaterStateLabel",
+      "desktopUpdaterBusy",
+      "serviceStateLabel",
+      "vscodeInstallStateLabel",
+      "normalizeDataMigration",
+      "shouldShowDataMigrationNotice",
+      "normalizeDesktopStatus",
+      "compactUrl",
+      "desktopSurfaceLabel",
+      "desktopStatusLabel",
+      "desktopAgentEventLabel",
+      "desktopMessages",
+      "syncDesktopToolGrants",
+      "ensureDesktopAgentServer",
+      "requestDesktopToolCall",
+      "requestDesktopAgentProvider",
+      "chatAnswerFromAgentProviderResult",
+      "terminalCommandFromAnswer",
+      "desktopShellCommand",
+      "shellOutputMarkdown",
+      "desktopToolResultReason",
+      "syncDesktopMemory",
+      "normalizeApiThinkingStep",
+      "requestDesktopAnswer"
+    ],
+    "js/app/desktop-read-only-tools.js": [
+      "nativeRequest",
+      "enhanceWithDesktopReadOnlyTool"
+    ],
+    "js/app/detected-failure.js": [
+      "normalizedStatus",
+      "statusIsFailure",
+      "structuredResultHasFailure",
+      "answerHasDetectedFailure"
+    ],
+    "js/app/glyphs.jsx": [],
+    "js/app/interface-commands.jsx": [
+      "normalizeMemoryPrompt",
+      "recognizeMemoryAction",
+      "includesAnyText",
+      "matchesAnyPattern",
+      "containsThemeObject",
+      "detectToggleCommand",
+      "isExplicitUiLanguageCommand",
+      "commandNumberValue",
+      "sanitizeAssistantNameInput",
+      "normalizeAssistantName",
+      "extractAssistantNameCommand",
+      "commandValueLabel",
+      "interfaceCommandResponse",
+      "recognizeSeedInterfaceCommand",
+      "recognizeInterfaceCommand"
+    ],
+    "js/app/issue-report.js": [
+      "turnPrefix",
+      "renderCount",
+      "pickFence",
+      "pushFields",
+      "pushCodeBlock",
+      "pushDialog",
+      "renderReportBody",
+      "normalizeSingleLine",
+      "titleSubjects",
+      "truncateWords",
+      "issueTitle",
+      "indentOf",
+      "joinedLength",
+      "truncateLines",
+      "documentLines",
+      "runsAt",
+      "longestRecordRun",
+      "truncateRecords"
+    ],
+    "js/app/issue-reporting.jsx": [
+      "reportTurns",
+      "truncateSingleLine",
+      "truncateMessageContent",
+      "compactReportTraceValue",
+      "appendLimitedTraceItems",
+      "reasoningTraceLines",
+      "buildIssueUrl",
+      "buildIssueUrlForMessages",
+      "fitIssueUrl",
+      "shortText",
+      "promptBeforeMessage",
+      "lastUnknownAssistantMessage",
+      "createIssueTitle",
+      "formatVersionWithWorker",
+      "reportLabels",
+      "environmentFields",
+      "createIssueReportBody",
+      "createIssueUrl",
+      "shouldOfferMessageReport"
+    ],
+    "js/app/main.jsx": [],
+    "js/app/markdown-render.jsx": [
+      "escapeHtml",
+      "isHttpExternalLink",
+      "enhanceMarkdownLinks",
+      "markdownHtml",
+      "copyTextToClipboard",
+      "flashCopied",
+      "enhanceCodeBlocks"
+    ],
+    "js/app/memory-events.jsx": [
+      "recordMemoryEvent",
+      "waitForMemoryWrites",
+      "downloadTextFile"
+    ],
+    "js/app/message-view.jsx": [
+      "formatHttpExchangeAsLinks",
+      "usePrefersReducedMotion",
+      "useMessageReveal",
+      "usePendingThinkingPhases",
+      "thinkingNarrative"
+    ],
+    "js/app/preferences.jsx": [
+      "settingIsDefault",
+      "readStoredPreferencesRecord",
+      "migrateStoredSidebarCollapsePreferences",
+      "loadPreferences",
+      "persistPreferences",
+      "clampNumber",
+      "normalizeSliderPreference",
+      "formatSliderValue",
+      "contextPanelMaxWidth",
+      "normalizeContextPanelWidth",
+      "normalizeThemePreference",
+      "normalizeUiSkin",
+      "normalizeChatStyle",
+      "normalizeComposerStyle",
+      "normalizeComposerAction",
+      "normalizeToolbarIconPack",
+      "normalizeDefinitionFusion",
+      "normalizeBlueprintComposition",
+      "normalizeThinkingDetailLevel",
+      "normalizeAnimationBudgetMs",
+      "normalizeResponseLanguageMode",
+      "normalizeMode",
+      "normalizeDesktopToolGrants",
+      "serializeDesktopToolGrants",
+      "desktopToolRouterGrants",
+      "desktopToolGrantCount",
+      "desktopToolGrantState",
+      "normalizePreferredLanguage"
+    ],
+    "js/app/recall-query.jsx": [
+      "stripRecallTerm",
+      "recoverOriginalRange",
+      "recognizeRecallQuery",
+      "buildRecallReport"
+    ],
+    "js/app/rust-ui-bridge.js": [
+      "createRustUiBridge"
+    ],
+    "js/app/sidebar-section.jsx": [],
+    "js/app/theme.js": [],
+    "js/app/thinking-steps.jsx": [
+      "formatDiagnosticPayload",
+      "truncateDiagnosticDetail",
+      "summarizeToolCall",
+      "humanizeThinkingIdentifier",
+      "thinkingLanguageLabel",
+      "thinkingRouteLabel",
+      "thinkingRuleLabel",
+      "thinkingToolLabel",
+      "truncateThinkingSummary",
+      "summarizeThinkingDetail",
+      "thinkingDetailText",
+      "thinkingIndefiniteArticle",
+      "formalizationOpLabel",
+      "naturalizeThinkingStep",
+      "thinkingStepKey",
+      "normalizeStepLevel",
+      "appendStepLevelEvent",
+      "projectStepLevels",
+      "filterThinkingEntriesForDetail",
+      "filterThinkingSummariesForDetail",
+      "buildThinkingPreviewSteps",
+      "buildMessageThinkingPreviewSteps"
+    ],
+    "js/app/toolbar-icons.jsx": [
+      "toolbarIconFontName",
+      "toolbarIconFontClass"
+    ],
+    "js/app/user-context.jsx": [
+      "i18nApi",
+      "normalizeUiLanguagePreference",
+      "detectUiLanguage",
+      "translateUi",
+      "browserLanguagesList",
+      "currentColorScheme",
+      "resolvedLocale",
+      "resolvedTimeZone",
+      "collectUserContext",
+      "formatUiLanguagesField",
+      "formatUiField",
+      "formatLocaleField",
+      "formatThemeField",
+      "userContextFields"
+    ]
+  },
+  "functions": [
+    {
+      "name": "demoGreetings",
+      "line": 161,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "demoFeaturePrompts",
+      "line": 165,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeMemoryPrompt",
+      "line": 234,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "recognizeMemoryAction",
+      "line": 242,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "includesAnyText",
+      "line": 257,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "matchesAnyPattern",
+      "line": 261,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "containsThemeObject",
+      "line": 265,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "detectToggleCommand",
+      "line": 306,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "isExplicitUiLanguageCommand",
+      "line": 369,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "commandNumberValue",
+      "line": 375,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "sanitizeAssistantNameInput",
+      "line": 387,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeAssistantName",
+      "line": 393,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "extractAssistantNameCommand",
+      "line": 401,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "commandValueLabel",
+      "line": 449,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "interfaceCommandResponse",
+      "line": 458,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "recognizeSeedInterfaceCommand",
+      "line": 468,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "recognizeInterfaceCommand",
+      "line": 503,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "stripRecallTerm",
+      "line": 900,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "recoverOriginalRange",
+      "line": 914,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "recognizeRecallQuery",
+      "line": 945,
+      "category": "Rust-name candidate; verify duplication before migration",
+      "rust_name_candidates": [
+        "rust/src/solver_handlers/conversation_memory/mod.rs"
+      ]
+    },
+    {
+      "name": "buildRecallReport",
+      "line": 987,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "settingIsDefault",
+      "line": 1225,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "withAssetVersion",
+      "line": 1322,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "recordMemoryEvent",
+      "line": 1330,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "waitForMemoryWrites",
+      "line": 1345,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "downloadTextFile",
+      "line": 1352,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "isImageAttachment",
+      "line": 1367,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "isTextAttachment",
+      "line": 1376,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "formatFileSize",
+      "line": 1398,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "readFileAsDataUrl",
+      "line": 1406,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "readFileAsText",
+      "line": 1415,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "sampleTextAttachmentContent",
+      "line": 1427,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "loadOcrBundle",
+      "line": 1446,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "attachmentMemoryRecord",
+      "line": 1480,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "attachmentOnlyPrompt",
+      "line": 1499,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "attachmentContextText",
+      "line": 1507,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "buildPromptWithAttachments",
+      "line": 1532,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "readStoredPreferencesRecord",
+      "line": 1539,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "migrateStoredSidebarCollapsePreferences",
+      "line": 1557,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "loadPreferences",
+      "line": 1571,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "persistPreferences",
+      "line": 1584,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "clampNumber",
+      "line": 1595,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeSliderPreference",
+      "line": 1601,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "formatSliderValue",
+      "line": 1605,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "contextPanelMaxWidth",
+      "line": 1609,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeContextPanelWidth",
+      "line": 1626,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeThemePreference",
+      "line": 1637,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeUiSkin",
+      "line": 1641,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeChatStyle",
+      "line": 1645,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeComposerStyle",
+      "line": 1649,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeComposerAction",
+      "line": 1653,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeToolbarIconPack",
+      "line": 1659,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeDefinitionFusion",
+      "line": 1665,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeBlueprintComposition",
+      "line": 1671,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeThinkingDetailLevel",
+      "line": 1677,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeAnimationBudgetMs",
+      "line": 1688,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeResponseLanguageMode",
+      "line": 1697,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeMode",
+      "line": 1706,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeDesktopToolGrants",
+      "line": 1717,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "serializeDesktopToolGrants",
+      "line": 1752,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "desktopToolRouterGrants",
+      "line": 1760,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "desktopToolGrantCount",
+      "line": 1770,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "desktopToolGrantState",
+      "line": 1775,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizePreferredLanguage",
+      "line": 1782,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "toolbarIconFontName",
+      "line": 1990,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "toolbarIconFontClass",
+      "line": 1999,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "ToolbarIcon",
+      "line": 2010,
+      "category": "React component",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "ToolbarButton",
+      "line": 2042,
+      "category": "React component",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "i18nApi",
+      "line": 2094,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeUiLanguagePreference",
+      "line": 2100,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "detectUiLanguage",
+      "line": 2109,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "translateUi",
+      "line": 2117,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "browserLanguagesList",
+      "line": 2125,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "currentColorScheme",
+      "line": 2133,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "resolvedLocale",
+      "line": 2145,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "resolvedTimeZone",
+      "line": 2153,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "collectUserContext",
+      "line": 2161,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "formatUiLanguagesField",
+      "line": 2234,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "formatUiField",
+      "line": 2258,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "formatLocaleField",
+      "line": 2267,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "formatThemeField",
+      "line": 2276,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "userContextFields",
+      "line": 2286,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "randomItem",
+      "line": 2333,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "generateConversationId",
+      "line": 2341,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "deriveConversationTitle",
+      "line": 2349,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "groupConversations",
+      "line": 2364,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "resizeComposerInput",
+      "line": 2441,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localizeTool",
+      "line": 2458,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "isAgentFormattingDirective",
+      "line": 2499,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "extractAgentQuotedPhrases",
+      "line": 2508,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "agentResearchCommandPrefix",
+      "line": 2517,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "agentComparisonFocus",
+      "line": 2526,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "expandAgentResearchStep",
+      "line": 2543,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "decomposeAgentTask",
+      "line": 2559,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "messagesForConversation",
+      "line": 2589,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "conversationToMarkdown",
+      "line": 2623,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "randomInt",
+      "line": 2661,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "timeLabel",
+      "line": 2665,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "formatDiagnosticPayload",
+      "line": 2677,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "truncateDiagnosticDetail",
+      "line": 2687,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "summarizeToolCall",
+      "line": 2693,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "humanizeThinkingIdentifier",
+      "line": 2710,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "thinkingLanguageLabel",
+      "line": 2722,
+      "category": "Rust-name candidate; verify duplication before migration",
+      "rust_name_candidates": [
+        "rust/src/thinking.rs"
+      ]
+    },
+    {
+      "name": "thinkingRouteLabel",
+      "line": 2730,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "thinkingRuleLabel",
+      "line": 2739,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "thinkingToolLabel",
+      "line": 2748,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "truncateThinkingSummary",
+      "line": 2753,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "summarizeThinkingDetail",
+      "line": 2759,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "thinkingDetailText",
+      "line": 2787,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "thinkingIndefiniteArticle",
+      "line": 2799,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "formalizationOpLabel",
+      "line": 2820,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "naturalizeThinkingStep",
+      "line": 2838,
+      "category": "Rust-name candidate; verify duplication before migration",
+      "rust_name_candidates": [
+        "rust/src/thinking.rs"
+      ]
+    },
+    {
+      "name": "thinkingStepKey",
+      "line": 3045,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeStepLevel",
+      "line": 3058,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "appendStepLevelEvent",
+      "line": 3067,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "projectStepLevels",
+      "line": 3077,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "filterThinkingEntriesForDetail",
+      "line": 3089,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "filterThinkingSummariesForDetail",
+      "line": 3150,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "buildThinkingPreviewSteps",
+      "line": 3163,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "buildMessageThinkingPreviewSteps",
+      "line": 3194,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "createMessage",
+      "line": 3220,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "browserRuntimeStatusKey",
+      "line": 3231,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "FormalizationView",
+      "line": 3243,
+      "category": "React component",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "escapeHtml",
+      "line": 3248,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "isHttpExternalLink",
+      "line": 3257,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "enhanceMarkdownLinks",
+      "line": 3266,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "markdownHtml",
+      "line": 3287,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "copyTextToClipboard",
+      "line": 3304,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "flashCopied",
+      "line": 3337,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "enhanceCodeBlocks",
+      "line": 3359,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizePrompt",
+      "line": 3428,
+      "category": "Rust-name candidate; verify duplication before migration",
+      "rust_name_candidates": [
+        "rust/src/web_engine_core.rs",
+        "rust/src/engine.rs"
+      ]
+    },
+    {
+      "name": "isIdentityPrompt",
+      "line": 3435,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "isLocalAssistantFreeTimePrompt",
+      "line": 3491,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localPromptLanguage",
+      "line": 3511,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "isAssistantNamePrompt",
+      "line": 3519,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localAssistantNameAnswer",
+      "line": 3547,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localBehaviorRuleId",
+      "line": 3574,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localCodeSpans",
+      "line": 3584,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localLooksLikeRuntimeRuleUpdate",
+      "line": 3611,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localRuntimeRuleFromText",
+      "line": 3640,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localBehaviorRuleRecords",
+      "line": 3654,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localLocalizedText",
+      "line": 3721,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localBehaviorRuleTopicLabel",
+      "line": 3725,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localBehaviorRuleListIntro",
+      "line": 3756,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localRuntimeRuleWhenThen",
+      "line": 3765,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localRuleResponse",
+      "line": 3772,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localRuleLabel",
+      "line": 3797,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localRuleMatches",
+      "line": 3833,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localRuleWhenThen",
+      "line": 3869,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localBehaviorRuleListFooter",
+      "line": 3899,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localBehaviorRulesList",
+      "line": 3936,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localBehaviorRulesCount",
+      "line": 3973,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localBehaviorRuleDetail",
+      "line": 4004,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localAssistantNameStatus",
+      "line": 4034,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localLinoEscape",
+      "line": 4039,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localModeStatus",
+      "line": 4052,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localDefinitionFusionStatus",
+      "line": 4056,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localBlueprintCompositionStatus",
+      "line": 4060,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localSelfFacts",
+      "line": 4064,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localKnownFacts",
+      "line": 4128,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localContainsAny",
+      "line": 4189,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localIsSelfFactQuery",
+      "line": 4193,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localIsSelfIntroductionQuery",
+      "line": 4202,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localSelfAwarenessLanguage",
+      "line": 4231,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localSelfIntroductionContent",
+      "line": 4241,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localCleanConversationTopic",
+      "line": 4251,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localConversationTopic",
+      "line": 4257,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localConversationTopicContent",
+      "line": 4287,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localIsKnownFactQuery",
+      "line": 4300,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localIsArchitectureQuestion",
+      "line": 4347,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localArchitectureExplanation",
+      "line": 4390,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localCleanRuleQuery",
+      "line": 4398,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localDetailQuery",
+      "line": 4405,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localFindBehaviorRule",
+      "line": 4416,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localRuntimeRuleForPrompt",
+      "line": 4428,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localCollectRuntimeRules",
+      "line": 4442,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "tryLocalBehaviorRules",
+      "line": 4457,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "matchesLocalBehaviorRulesListPattern",
+      "line": 4558,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localIsBehaviorRulesList",
+      "line": 4565,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localIsBehaviorRulesCount",
+      "line": 4576,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localPriorBehaviorRulesListContext",
+      "line": 4601,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "isSupportedLanguageBehaviorRulesListQuery",
+      "line": 4615,
+      "category": "Rust-name candidate; verify duplication before migration",
+      "rust_name_candidates": [
+        "rust/src/solver_handlers/behavior_rule_matching.rs"
+      ]
+    },
+    {
+      "name": "isEnglishBehaviorRulesListQuery",
+      "line": 4624,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "isRussianBehaviorRulesListQuery",
+      "line": 4644,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "isHindiBehaviorRulesListQuery",
+      "line": 4663,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "isChineseBehaviorRulesListQuery",
+      "line": 4683,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "chooseVariant",
+      "line": 4704,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "shouldIncludeCourtesyFollowUp",
+      "line": 4710,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "courtesyResponseContent",
+      "line": 4721,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "desktopBridge",
+      "line": 4735,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "desktopServiceBridge",
+      "line": 4745,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeAppVersion",
+      "line": 4753,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "desktopAppVersionLabel",
+      "line": 4761,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeDesktopUpdaterStatus",
+      "line": 4768,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "mergeDesktopUpdateStatus",
+      "line": 4793,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "desktopUpdaterStateLabel",
+      "line": 4810,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "desktopUpdaterBusy",
+      "line": 4838,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "serviceStateLabel",
+      "line": 4844,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "vscodeInstallStateLabel",
+      "line": 4863,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeDataMigration",
+      "line": 4886,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "shouldShowDataMigrationNotice",
+      "line": 4908,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "DataMigrationNotice",
+      "line": 4915,
+      "category": "React component",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeDesktopStatus",
+      "line": 4967,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "compactUrl",
+      "line": 5021,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "desktopSurfaceLabel",
+      "line": 5038,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "desktopStatusLabel",
+      "line": 5042,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "desktopAgentEventLabel",
+      "line": 5058,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "desktopMessages",
+      "line": 5069,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "syncDesktopToolGrants",
+      "line": 5087,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "ensureDesktopAgentServer",
+      "line": 5094,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "requestDesktopToolCall",
+      "line": 5104,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "requestDesktopAgentProvider",
+      "line": 5124,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "chatAnswerFromAgentProviderResult",
+      "line": 5141,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "terminalCommandFromAnswer",
+      "line": 5148,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "desktopShellCommand",
+      "line": 5162,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "shellOutputMarkdown",
+      "line": 5170,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "desktopToolResultReason",
+      "line": 5179,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "syncDesktopMemory",
+      "line": 5202,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "normalizeApiThinkingStep",
+      "line": 5213,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "requestDesktopAnswer",
+      "line": 5233,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localFallbackAnswer",
+      "line": 5305,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localSelectUnknownOpener",
+      "line": 5383,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "localUnknownAnswerWithVariation",
+      "line": 5392,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "createDemoTurns",
+      "line": 5408,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "reportTurns",
+      "line": 5430,
+      "category": "Rust-name candidate; verify duplication before migration",
+      "rust_name_candidates": [
+        "rust/src/cli_report.rs"
+      ]
+    },
+    {
+      "name": "truncateSingleLine",
+      "line": 5451,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "truncateMessageContent",
+      "line": 5469,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "compactReportTraceValue",
+      "line": 5487,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "appendLimitedTraceItems",
+      "line": 5496,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "reasoningTraceLines",
+      "line": 5518,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "buildIssueUrl",
+      "line": 5574,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "buildIssueUrlForMessages",
+      "line": 5579,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "fitIssueUrl",
+      "line": 5584,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "shortText",
+      "line": 5691,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "promptBeforeMessage",
+      "line": 5700,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "lastUnknownAssistantMessage",
+      "line": 5713,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "createIssueTitle",
+      "line": 5722,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "formatVersionWithWorker",
+      "line": 5737,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "reportLabels",
+      "line": 5761,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "environmentFields",
+      "line": 5779,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "createIssueReportBody",
+      "line": 5799,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "createIssueUrl",
+      "line": 5816,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "shouldOfferMessageReport",
+      "line": 5820,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "formatHttpExchangeAsLinks",
+      "line": 5827,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "DiagnosticsHttpPanel",
+      "line": 5855,
+      "category": "React component",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "usePrefersReducedMotion",
+      "line": 5902,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "useMessageReveal",
+      "line": 5947,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "usePendingThinkingPhases",
+      "line": 6003,
+      "category": "Port logic to Rust/WASM",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "PendingAssistantBubble",
+      "line": 6035,
+      "category": "React component",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "thinkingNarrative",
+      "line": 6096,
+      "category": "Rust-name candidate; verify duplication before migration",
+      "rust_name_candidates": [
+        "rust/src/thinking.rs"
+      ]
+    },
+    {
+      "name": "ThinkingPreview",
+      "line": 6106,
+      "category": "React component",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "DesktopPermissionPanel",
+      "line": 6130,
+      "category": "React component",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "CommandApprovalPanel",
+      "line": 6168,
+      "category": "React component",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "StepHierarchyMenu",
+      "line": 6192,
+      "category": "React component",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "Message",
+      "line": 6213,
+      "category": "React component",
+      "rust_name_candidates": [
+        "rust/src/memory/upgrade.rs"
+      ]
+    },
+    {
+      "name": "CollapsibleSection",
+      "line": 6369,
+      "category": "React component",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "App",
+      "line": 6411,
+      "category": "React component",
+      "rust_name_candidates": []
+    },
+    {
+      "name": "wait",
+      "line": 9418,
+      "category": "UI boundary candidate; audit mixed business logic",
+      "rust_name_candidates": []
+    }
+  ]
+}

@@ -1,0 +1,717 @@
+{
+  "phase": "source-read-consumers",
+  "ids": "T3567-T3579",
+  "generatedAt": "2026-10-09T16:42:53.368Z",
+  "parentPush": "8abb066dbe9895ba843ca690e0d9e9f21c12e571",
+  "copies": [
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3567-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3567-request.json",
+      "sha256": "2eefcdfcbd7a183cb7053928ebc1c29c92509840c772209b61d19ba68d816a53"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3567-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3567-transcript.json",
+      "sha256": "9a6b07acc12d1b5f4f5de7c894785a8958359976bc5c2eb3d8d204ee6b136243"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3567.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3567.log",
+      "sha256": "fdd2273c8bb484cb4f04f895e8d69c8023e2323ad60caaeb1c2694b26fb0027a"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3568-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3568-request.json",
+      "sha256": "e34d565cd791a98d2516f9b8956c60177e8cd755e7887c561ebab9747f79bd1f"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3568-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3568-transcript.json",
+      "sha256": "aabad6ca6324fb8aec10f03316fa25cc0beb7efc924dc8d781ab9797e0a9fe74"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3568.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3568.log",
+      "sha256": "fbc1c636243642a07355ca0c2acf71fe6fbc67c5c0654fbcca53f09f99489b9a"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3569-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3569-request.json",
+      "sha256": "fa27a363ea3b95489a62e3a638c323f8bb2152cfd09ef42abff918e74d9892f0"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3569-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3569-transcript.json",
+      "sha256": "2358193e93a9b0141e5990d8417b722ae92a3fda31e2e62c29a6f7fe6462cf80"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3569.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3569.log",
+      "sha256": "9fd7199c008331fe62703d812b41531dab4593bb6db31dc0255bec7e95bd7178"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3569-audit.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3569-audit.json",
+      "sha256": "cee40e2988a3e2217be372c0b320762f8d619d14f8894d87f4711cb4b49ca6b8"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3570-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3570-request.json",
+      "sha256": "86f88108c2a4c8abdceefa4f001c86bc11f6c1dec4665b3862eb1842e1bd5561"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3570-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3570-transcript.json",
+      "sha256": "3d1979e6fcefd08b5d40da8b9c0d1e762a2e0091f4b34469d290b47138a314c6"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3570.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3570.log",
+      "sha256": "9da412f8d8af859921ee621b7967d3248537c76742b9eae634da557be3966bb4"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3570-audit.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3570-audit.json",
+      "sha256": "68229239a9c7241df948ff4e4042342ac8a3ab909a31ed3e895b7ce6b054eca5"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3571-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3571-request.json",
+      "sha256": "b06572a89bfa683850200901f08923f1bf87b12b176cfa640ca026c9b133c017"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3571-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3571-transcript.json",
+      "sha256": "ec0bf15f198d0385b0166c58db7be96ceff925387a9b2e1e0bc652bab92826d8"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3571.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3571.log",
+      "sha256": "0e8e822c45cf63063051bf5d756be470c61391bf161dd34a3ced0c1aff186f87"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3571-closest-before.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3571-closest-before.log",
+      "sha256": "70733137b26d35aaaa96abe7369d464f14be9e07f1564226634587a00695e89d"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3572-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3572-request.json",
+      "sha256": "a0d06ac965fa3a022788c00444b5b630849ef8dba509755ee718c3b083326542"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3572-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3572-transcript.json",
+      "sha256": "b40ed6d025897a94153b4ea4781c6bdf56da2100b002419418fbc2f71c1119bc"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3572.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3572.log",
+      "sha256": "6ae9012caf592b200e315c824561f3070bc885c789bf617873ed36d9136658de"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3572-tests.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3572-tests.log",
+      "sha256": "73731a798cdf2cb3b1e8ad1002cc13da7e045446740abde87441510e7ef7538a"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3573-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3573-request.json",
+      "sha256": "72fd2447bf3de9e1fd3365b0ee89566455c98a6a5ed7da97f935a7f2448274b7"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3573-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3573-transcript.json",
+      "sha256": "cf6313a24317b986dc22a253a411026d4f763323de76a526853d0b0323580c0f"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3573.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3573.log",
+      "sha256": "d75e00fb5aaa4c2ffc0a7ad5d74054410f98ecb8d38736abd38e94a2684e5456"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3573-tests.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3573-tests.log",
+      "sha256": "14b4bb6e0aaafdf515556ed182ba27c3512eadd86a39d04d8aaacb1484c9b16b"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3574-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3574-request.json",
+      "sha256": "4b7eebaa40fb5b76378e261007374a0cabbddca5dcca735c560e69d4a8983862"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3574-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3574-transcript.json",
+      "sha256": "bf7f83da58bd748c1c557d0f89957dc1e02362fcc82c0e244a6757d8cc05c0f7"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3574.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3574.log",
+      "sha256": "bf7f83da58bd748c1c557d0f89957dc1e02362fcc82c0e244a6757d8cc05c0f7"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3574-audit.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3574-audit.json",
+      "sha256": "b478a5702958ac0f06177e989992a763de49af25a3a451774091e1e59d7ba508"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3575-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3575-request.json",
+      "sha256": "22ccdfc31a0c6f3690527548834d604c5db1da8f958db91cbc2194a27881dad5"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3575-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3575-transcript.json",
+      "sha256": "51c245ae3deccce2a2568bdd9a8a017a04ee1e4a4b1019b2e0f4d1a60e75545e"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3575.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3575.log",
+      "sha256": "51c245ae3deccce2a2568bdd9a8a017a04ee1e4a4b1019b2e0f4d1a60e75545e"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3575-audit.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3575-audit.json",
+      "sha256": "3c1860ee55e622906a4a90dbbc521a1764ed78e0f5db134583b81c5dc27ef88b"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3576-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3576-request.json",
+      "sha256": "0677d56abf54ababa4211008916fe25639fcd4f7627a0826d41a809f8c2949e3"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3576-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3576-transcript.json",
+      "sha256": "5b9881fa7c8eee667c7a6597cd1f787d9fbc89648637eb620f913e3cd0aca8c4"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3576.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3576.log",
+      "sha256": "5b9881fa7c8eee667c7a6597cd1f787d9fbc89648637eb620f913e3cd0aca8c4"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3576-tests.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3576-tests.log",
+      "sha256": "628d4c8de0dee8c459e6f9774e1aa7b0cd3f580a009c146e97d4ef7638b694f8"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3577-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3577-request.json",
+      "sha256": "d02303252dff55d127c624d76750ee336232a05a5ef2cf45289fb566100722de"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3577-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3577-transcript.json",
+      "sha256": "3d1979e6fcefd08b5d40da8b9c0d1e762a2e0091f4b34469d290b47138a314c6"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3577.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3577.log",
+      "sha256": "3d1979e6fcefd08b5d40da8b9c0d1e762a2e0091f4b34469d290b47138a314c6"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3578-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3578-request.json",
+      "sha256": "31edba30130510e3275132a51e0b234df0ef0e4ef108bebb6873a476b665f35c"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3578-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3578-transcript.json",
+      "sha256": "9a6b07acc12d1b5f4f5de7c894785a8958359976bc5c2eb3d8d204ee6b136243"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3578.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3578.log",
+      "sha256": "9a6b07acc12d1b5f4f5de7c894785a8958359976bc5c2eb3d8d204ee6b136243"
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "js/agentic/file_read/records.mjs",
+      "originalSha256": null,
+      "sha256": "8d61b2e83afded6d758db55e6b4ec5d401ad3fcb757d8c85deb0c363fb4857bb",
+      "bytes": 4362,
+      "lines": 108
+    },
+    {
+      "path": "js/agentic/file_read/source.mjs",
+      "originalSha256": null,
+      "sha256": "a448ab9e063f566949601c244c9bb2e7e3ff089110cf44be5e191fac1a906afc",
+      "bytes": 1594,
+      "lines": 26
+    },
+    {
+      "path": "js/agentic/file_read.mjs",
+      "originalSha256": "f1d301f88bfbd9622ea3ecebd2131033601381d5ae5fd8ab6529d47048e43c56",
+      "sha256": "0861484ea3df6cc908a850c1b981a4e86cd1ec31414b39db78306805ef6b26fc",
+      "bytes": 19229,
+      "lines": 443
+    },
+    {
+      "path": "js/agentic/file_read/exact.mjs",
+      "originalSha256": "34e23c539b0437dd56ff5fe7873e20be8b44e265a83731c73a2590707dc913ec",
+      "sha256": "4bebaf8ad6b3410ddba12c6fab732b810e29953bc7c7ee021483d5c9450d6772",
+      "bytes": 4948,
+      "lines": 110
+    },
+    {
+      "path": "js/agentic/module_function/discovery.mjs",
+      "originalSha256": "ed78763f9bddc87563a3612de09ab422b8d5eb899058d1073cf4e233e51974a3",
+      "sha256": "a1fc1b0b5ba4b9cf20bc21e10fc0ec2781f4e245d327751721616156067e1a99",
+      "bytes": 3268,
+      "lines": 55
+    },
+    {
+      "path": "rust/src/agentic_coding/file_read/records.rs",
+      "originalSha256": null,
+      "sha256": "f1caeed38fdbfadf78e59634fb6d0fd84fcb09d33178b94044a3db4b6c4647a4",
+      "bytes": 5787,
+      "lines": 155
+    },
+    {
+      "path": "rust/src/agentic_coding/file_read/source.rs",
+      "originalSha256": null,
+      "sha256": "e9ba58106d1857a9a657557c417692559e22e0b75cd6f0c80ccffd8d40db4dd3",
+      "bytes": 2515,
+      "lines": 72
+    },
+    {
+      "path": "rust/src/agentic_coding/file_read.rs",
+      "originalSha256": "e697d6e7beee20c5c2a0d3ebf3293efc9bdecdcef0773ecf89ca528e334c2782",
+      "sha256": "dd66e91ac6533da7346fbd3425c7b1d241322f429fc15afc3f18a22a0f8ef089",
+      "bytes": 25395,
+      "lines": 777
+    },
+    {
+      "path": "rust/src/agentic_coding/file_read/exact.rs",
+      "originalSha256": "5b1e09ed769282a5c61c333da0628c1dfcee48385c3f3a61aaeb90f2630b05d8",
+      "sha256": "9593f2c7176760de04395dd4fa9a0362988aa9472c7c657d90c44c99f613d1df",
+      "bytes": 7292,
+      "lines": 189
+    },
+    {
+      "path": "rust/src/agentic_coding/module_function/discovery.rs",
+      "originalSha256": "35edeaec305021ecd3a4d2bf54dca76b0bac58f4b6894ba2397372767a6cb0a9",
+      "sha256": "168f633378aa1cdc52e689d060c64c40c1ad2fb42f8cf4b5ceaa0265d11d2bf8",
+      "bytes": 9190,
+      "lines": 239
+    },
+    {
+      "path": "rust/tests/web/observed-callable-discovery.test.mjs",
+      "originalSha256": "8a6819dc20be919ce1ca3679324452a137b317ffc46395525aafc8ebb6e06490",
+      "sha256": "287e6e441e186dbd797e6cfbc95e50915e6caebbadb1f06ae9644499ff26fcc0",
+      "bytes": 10604,
+      "lines": 179
+    },
+    {
+      "path": "rust/tests/web/source-read-consumers.test.mjs",
+      "originalSha256": null,
+      "sha256": "e9d9fa8fab3cf4b925a07cfdaf15dbe0959b3cd48cdf90822ee54a17297b0d33",
+      "bytes": 10287,
+      "lines": 125
+    },
+    {
+      "path": "rust/tests/fixtures/source-read-provenance.rs",
+      "originalSha256": "72dff907c40d1fb9db7e7b962488a9d743428651e4d2da6370adb2498b0e71b8",
+      "sha256": "a8692fa899ff565c80a6efece1e5734138ba0ae4eed54b9ede19678eccfb1bc6",
+      "bytes": 5536,
+      "lines": 108
+    },
+    {
+      "path": "rust/tests/fixtures/observed-callable-discovery.rs",
+      "originalSha256": "07ec55ca855828b76c02dc8960849eb0d20999a0983df6d2cd2fd3451851173f",
+      "sha256": "5b03fd06afe5d78d96d9f3bec47433af39f68cb179554708252d74a90a231f03",
+      "bytes": 5896,
+      "lines": 135
+    },
+    {
+      "path": "changelog.d/20261010_173000_source-read-consumers.md",
+      "originalSha256": null,
+      "sha256": "4d42049d614bc09b5d759c068b10da705bf3ca660f767e5ba18c5a61515c6e5b",
+      "bytes": 335,
+      "lines": 1
+    },
+    {
+      "path": "rust/tests/web/observed-callable-contracts.test.mjs",
+      "originalSha256": "eb78110f5bdffb57c8a94da4d9adce7cea0a8b6c059e01c392a5a9c45ea5f29d",
+      "sha256": "2bfcc2d84af14e97f5f518d561ce98dcf1df74cbd42b9ff6c30b85149af71390",
+      "bytes": 13106,
+      "lines": 211
+    }
+  ],
+  "mutationCounts": {
+    "reviewedRepositoryFileWrites": 20,
+    "uniqueRepositoryPaths": 16,
+    "authoredScratchDataFiles": 2,
+    "neutralSelectedSourceCopies": 1,
+    "neutralTestLogWrites": 3,
+    "packetNeutralCopies": 44,
+    "packetAuthoredEvidenceDocs": 2,
+    "packetManifest": 1,
+    "manualPhysicalSourceRepairs": 0,
+    "autonomousImplementationEffects": 0
+  },
+  "invocationInputs": [
+    {
+      "id": "T3567",
+      "taskUtf8Bytes": 630,
+      "suppliedReviewedSourceSidecarBytes": 0,
+      "sourceInputByteAccounting": "Sidecar bytes are referenced reviewed physical-application inputs, not autonomous model output"
+    },
+    {
+      "id": "T3568",
+      "taskUtf8Bytes": 628,
+      "suppliedReviewedSourceSidecarBytes": 254,
+      "sourceInputByteAccounting": "Sidecar bytes are referenced reviewed physical-application inputs, not autonomous model output"
+    },
+    {
+      "id": "T3569",
+      "taskUtf8Bytes": 21,
+      "suppliedReviewedSourceSidecarBytes": 0,
+      "sourceInputByteAccounting": "Sidecar bytes are referenced reviewed physical-application inputs, not autonomous model output"
+    },
+    {
+      "id": "T3570",
+      "taskUtf8Bytes": 23,
+      "suppliedReviewedSourceSidecarBytes": 0,
+      "sourceInputByteAccounting": "Sidecar bytes are referenced reviewed physical-application inputs, not autonomous model output"
+    },
+    {
+      "id": "T3571",
+      "taskUtf8Bytes": 1000,
+      "suppliedReviewedSourceSidecarBytes": 162525,
+      "sourceInputByteAccounting": "Sidecar bytes are referenced reviewed physical-application inputs, not autonomous model output"
+    },
+    {
+      "id": "T3572",
+      "taskUtf8Bytes": 1227,
+      "suppliedReviewedSourceSidecarBytes": 68755,
+      "sourceInputByteAccounting": "Sidecar bytes are referenced reviewed physical-application inputs, not autonomous model output"
+    },
+    {
+      "id": "T3573",
+      "taskUtf8Bytes": 952,
+      "suppliedReviewedSourceSidecarBytes": 58691,
+      "sourceInputByteAccounting": "Sidecar bytes are referenced reviewed physical-application inputs, not autonomous model output"
+    },
+    {
+      "id": "T3574",
+      "taskUtf8Bytes": 21,
+      "suppliedReviewedSourceSidecarBytes": 0,
+      "sourceInputByteAccounting": "Sidecar bytes are referenced reviewed physical-application inputs, not autonomous model output"
+    },
+    {
+      "id": "T3575",
+      "taskUtf8Bytes": 21,
+      "suppliedReviewedSourceSidecarBytes": 0,
+      "sourceInputByteAccounting": "Sidecar bytes are referenced reviewed physical-application inputs, not autonomous model output"
+    },
+    {
+      "id": "T3576",
+      "taskUtf8Bytes": 1081,
+      "suppliedReviewedSourceSidecarBytes": 37100,
+      "sourceInputByteAccounting": "Sidecar bytes are referenced reviewed physical-application inputs, not autonomous model output"
+    },
+    {
+      "id": "T3577",
+      "taskUtf8Bytes": 23,
+      "suppliedReviewedSourceSidecarBytes": 0,
+      "sourceInputByteAccounting": "Sidecar bytes are referenced reviewed physical-application inputs, not autonomous model output"
+    },
+    {
+      "id": "T3578",
+      "taskUtf8Bytes": 630,
+      "suppliedReviewedSourceSidecarBytes": 0,
+      "sourceInputByteAccounting": "Sidecar bytes are referenced reviewed physical-application inputs, not autonomous model output"
+    }
+  ],
+  "diffStats": [
+    {
+      "path": "js/agentic/file_read/records.mjs",
+      "added": 108,
+      "deleted": 0
+    },
+    {
+      "path": "js/agentic/file_read/source.mjs",
+      "added": 26,
+      "deleted": 0
+    },
+    {
+      "path": "js/agentic/file_read.mjs",
+      "added": 19,
+      "deleted": 129
+    },
+    {
+      "path": "js/agentic/file_read/exact.mjs",
+      "added": 13,
+      "deleted": 8
+    },
+    {
+      "path": "js/agentic/module_function/discovery.mjs",
+      "added": 9,
+      "deleted": 32
+    },
+    {
+      "path": "rust/src/agentic_coding/file_read/records.rs",
+      "added": 155,
+      "deleted": 0
+    },
+    {
+      "path": "rust/src/agentic_coding/file_read/source.rs",
+      "added": 72,
+      "deleted": 0
+    },
+    {
+      "path": "rust/src/agentic_coding/file_read.rs",
+      "added": 34,
+      "deleted": 171
+    },
+    {
+      "path": "rust/src/agentic_coding/file_read/exact.rs",
+      "added": 16,
+      "deleted": 9
+    },
+    {
+      "path": "rust/src/agentic_coding/module_function/discovery.rs",
+      "added": 11,
+      "deleted": 48
+    },
+    {
+      "path": "rust/tests/web/observed-callable-discovery.test.mjs",
+      "added": 3,
+      "deleted": 1
+    },
+    {
+      "path": "rust/tests/web/source-read-consumers.test.mjs",
+      "added": 125,
+      "deleted": 0
+    },
+    {
+      "path": "rust/tests/fixtures/source-read-provenance.rs",
+      "added": 29,
+      "deleted": 0
+    },
+    {
+      "path": "rust/tests/fixtures/observed-callable-discovery.rs",
+      "added": 39,
+      "deleted": 0
+    },
+    {
+      "path": "changelog.d/20261010_173000_source-read-consumers.md",
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "path": "rust/tests/web/observed-callable-contracts.test.mjs",
+      "added": 2,
+      "deleted": 1
+    }
+  ],
+  "diffTotals": {
+    "added": 662,
+    "deleted": 399
+  },
+  "validation": {
+    "focused": {
+      "tests": 141,
+      "pass": 140,
+      "fail": 0,
+      "todo": 1
+    },
+    "native": "standalone rustfmt only; compilation CI pending",
+    "plannerTwinsMissing": 0,
+    "ownedFileSizeWarnings": 0,
+    "ownedFileSizeViolations": 0
+  },
+  "open": [
+    "G112 autonomous source synthesis",
+    "Goal-bound source-query composition",
+    "Native compilation and fresh changed-source census"
+  ],
+  "artifacts": [
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3567-request.json",
+      "sha256": "2eefcdfcbd7a183cb7053928ebc1c29c92509840c772209b61d19ba68d816a53"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3567-transcript.json",
+      "sha256": "9a6b07acc12d1b5f4f5de7c894785a8958359976bc5c2eb3d8d204ee6b136243"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3567.log",
+      "sha256": "fdd2273c8bb484cb4f04f895e8d69c8023e2323ad60caaeb1c2694b26fb0027a"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3568-request.json",
+      "sha256": "e34d565cd791a98d2516f9b8956c60177e8cd755e7887c561ebab9747f79bd1f"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3568-transcript.json",
+      "sha256": "aabad6ca6324fb8aec10f03316fa25cc0beb7efc924dc8d781ab9797e0a9fe74"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3568.log",
+      "sha256": "fbc1c636243642a07355ca0c2acf71fe6fbc67c5c0654fbcca53f09f99489b9a"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3569-request.json",
+      "sha256": "fa27a363ea3b95489a62e3a638c323f8bb2152cfd09ef42abff918e74d9892f0"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3569-transcript.json",
+      "sha256": "2358193e93a9b0141e5990d8417b722ae92a3fda31e2e62c29a6f7fe6462cf80"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3569.log",
+      "sha256": "9fd7199c008331fe62703d812b41531dab4593bb6db31dc0255bec7e95bd7178"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3569-audit.json",
+      "sha256": "cee40e2988a3e2217be372c0b320762f8d619d14f8894d87f4711cb4b49ca6b8"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3570-request.json",
+      "sha256": "86f88108c2a4c8abdceefa4f001c86bc11f6c1dec4665b3862eb1842e1bd5561"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3570-transcript.json",
+      "sha256": "3d1979e6fcefd08b5d40da8b9c0d1e762a2e0091f4b34469d290b47138a314c6"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3570.log",
+      "sha256": "9da412f8d8af859921ee621b7967d3248537c76742b9eae634da557be3966bb4"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3570-audit.json",
+      "sha256": "68229239a9c7241df948ff4e4042342ac8a3ab909a31ed3e895b7ce6b054eca5"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3571-request.json",
+      "sha256": "b06572a89bfa683850200901f08923f1bf87b12b176cfa640ca026c9b133c017"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3571-transcript.json",
+      "sha256": "ec0bf15f198d0385b0166c58db7be96ceff925387a9b2e1e0bc652bab92826d8"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3571.log",
+      "sha256": "0e8e822c45cf63063051bf5d756be470c61391bf161dd34a3ced0c1aff186f87"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3571-closest-before.log",
+      "sha256": "70733137b26d35aaaa96abe7369d464f14be9e07f1564226634587a00695e89d"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3572-request.json",
+      "sha256": "a0d06ac965fa3a022788c00444b5b630849ef8dba509755ee718c3b083326542"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3572-transcript.json",
+      "sha256": "b40ed6d025897a94153b4ea4781c6bdf56da2100b002419418fbc2f71c1119bc"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3572.log",
+      "sha256": "6ae9012caf592b200e315c824561f3070bc885c789bf617873ed36d9136658de"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3572-tests.log",
+      "sha256": "73731a798cdf2cb3b1e8ad1002cc13da7e045446740abde87441510e7ef7538a"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3573-request.json",
+      "sha256": "72fd2447bf3de9e1fd3365b0ee89566455c98a6a5ed7da97f935a7f2448274b7"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3573-transcript.json",
+      "sha256": "cf6313a24317b986dc22a253a411026d4f763323de76a526853d0b0323580c0f"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3573.log",
+      "sha256": "d75e00fb5aaa4c2ffc0a7ad5d74054410f98ecb8d38736abd38e94a2684e5456"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3573-tests.log",
+      "sha256": "14b4bb6e0aaafdf515556ed182ba27c3512eadd86a39d04d8aaacb1484c9b16b"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3574-request.json",
+      "sha256": "4b7eebaa40fb5b76378e261007374a0cabbddca5dcca735c560e69d4a8983862"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3574-transcript.json",
+      "sha256": "bf7f83da58bd748c1c557d0f89957dc1e02362fcc82c0e244a6757d8cc05c0f7"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3574.log",
+      "sha256": "bf7f83da58bd748c1c557d0f89957dc1e02362fcc82c0e244a6757d8cc05c0f7"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3574-audit.json",
+      "sha256": "b478a5702958ac0f06177e989992a763de49af25a3a451774091e1e59d7ba508"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3575-request.json",
+      "sha256": "22ccdfc31a0c6f3690527548834d604c5db1da8f958db91cbc2194a27881dad5"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3575-transcript.json",
+      "sha256": "51c245ae3deccce2a2568bdd9a8a017a04ee1e4a4b1019b2e0f4d1a60e75545e"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3575.log",
+      "sha256": "51c245ae3deccce2a2568bdd9a8a017a04ee1e4a4b1019b2e0f4d1a60e75545e"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3575-audit.json",
+      "sha256": "3c1860ee55e622906a4a90dbbc521a1764ed78e0f5db134583b81c5dc27ef88b"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3576-request.json",
+      "sha256": "0677d56abf54ababa4211008916fe25639fcd4f7627a0826d41a809f8c2949e3"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3576-transcript.json",
+      "sha256": "5b9881fa7c8eee667c7a6597cd1f787d9fbc89648637eb620f913e3cd0aca8c4"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3576.log",
+      "sha256": "5b9881fa7c8eee667c7a6597cd1f787d9fbc89648637eb620f913e3cd0aca8c4"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3576-tests.log",
+      "sha256": "628d4c8de0dee8c459e6f9774e1aa7b0cd3f580a009c146e97d4ef7638b694f8"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3577-request.json",
+      "sha256": "d02303252dff55d127c624d76750ee336232a05a5ef2cf45289fb566100722de"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3577-transcript.json",
+      "sha256": "3d1979e6fcefd08b5d40da8b9c0d1e762a2e0091f4b34469d290b47138a314c6"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3577.log",
+      "sha256": "3d1979e6fcefd08b5d40da8b9c0d1e762a2e0091f4b34469d290b47138a314c6"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3578-request.json",
+      "sha256": "31edba30130510e3275132a51e0b234df0ef0e4ef108bebb6873a476b665f35c"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3578-transcript.json",
+      "sha256": "9a6b07acc12d1b5f4f5de7c894785a8958359976bc5c2eb3d8d204ee6b136243"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/raw/T3578.log",
+      "sha256": "9a6b07acc12d1b5f4f5de7c894785a8958359976bc5c2eb3d8d204ee6b136243"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/ledger.md",
+      "sha256": "3c2f3bcc2fe7d5edb6c3ab7a2a399fb4c4a4cd26a3d4719c4d9a25ea48fd0356"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/source-read-consumers/report.md",
+      "sha256": "820e4457cba2f1a070d3a494e026d2471c08ed9ea316c7b97df8d4832632d169"
+    }
+  ]
+}

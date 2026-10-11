@@ -5,12 +5,14 @@ Q7949
     zh ("真理理论")
   descriptions
     en "what is in accord with fact or reality"
+    es "conformidad entre lo que se manifiesta y la realidad"
     hi satya
     ru "утверждение, соответствующее действительности, фактам или тому, что является или считается верным"
     zh "符合事實或現實的東西"
   id Q7949
   labels
     en truth
+    es verdad
     hi "हक़ीक़ा"
     ru "истина"
     zh "真理"

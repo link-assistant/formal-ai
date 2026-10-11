@@ -1,0 +1,7 @@
+{
+  "taskId": "T2435",
+  "encoding": "utf8",
+  "sha256": "9d71a2959e08e21c354011b244a9f955143544f296e236230adf741534204581",
+  "byteLength": 602,
+  "rawUtf8": ">> bash {\"command\":\"node scripts/check-hardcoded-language.mjs\"}\n   Output: \n   Checking rust/src/ for hardcoded user-facing natural language (R379)...\n   \n   Detected prose literals: 695 | allowlisted: 695\n   \n   No new hardcoded natural language; allowlist is in sync (695 entries).\n   \n   \n   Exit Code: 0\n== answer ==\nThe `node scripts/check-hardcoded-language.mjs` command completed. Output:\n\n```text\nChecking rust/src/ for hardcoded user-facing natural language (R379)...\n\nDetected prose literals: 695 | allowlisted: 695\n\nNo new hardcoded natural language; allowlist is in sync (695 entries).\n```\n"
+}

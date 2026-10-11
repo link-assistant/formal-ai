@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "黑猩猩屬"
+        },
+        "es": {
+          "language": "es",
+          "value": "chimpancé"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "猩猩科的一属哺乳动物"
+        },
+        "es": {
+          "language": "es",
+          "value": "género de primates homínidos"
         }
       },
       "aliases": {
@@ -80,6 +88,16 @@
           {
             "language": "hi",
             "value": "चिम्पैंजी"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "chimpance"
+          },
+          {
+            "language": "es",
+            "value": "Pan"
           }
         ]
       }

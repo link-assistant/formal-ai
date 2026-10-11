@@ -1,0 +1,13 @@
+es	код испанского языка
+full	полный статус языкового протокола
+partial	частичный статус языкового протокола
+explicit_gap	политика явного языкового пробела
+explicit_language_context	явное определение языкового контекста
+language_gap	пробел в языковом покрытии
+response_greeting_es	испанский ответ на приветствие
+response_identity_es	испанский ответ о себе
+response_language_gap_en	английский ответ о языковом пробеле
+response_language_gap_ru	русский ответ о языковом пробеле
+response_language_gap_hi	ответ на хинди о языковом пробеле
+response_language_gap_zh	китайский ответ о языковом пробеле
+response_language_gap_es	испанский ответ о языковом пробеле

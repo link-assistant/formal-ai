@@ -1,0 +1,19 @@
+{
+  "transcript": [
+    {
+      "tool": "bash",
+      "arguments": "{\"command\":\"node -e 'const fs=require('\\\\''fs'\\\\''),path=require('\\\\''path'\\\\'');const r=JSON.parse(fs.readFileSync('\\\\''/private/tmp/formal-ai-only-1188/T3014-request.json'\\\\'','\\\\''utf8'\\\\''));for(const c of r.changes)if(fs.readFileSync(c.path,'\\\\''utf8'\\\\'')!==c.before)throw Error('\\\\''preimage changed'\\\\'');if(fs.existsSync(r.setup.root))throw Error('\\\\''fixture exists'\\\\'');for(const c of r.changes)fs.writeFileSync(c.path,c.expected);const target=path.join(r.setup.root,r.setup.path);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,r.setup.expected);console.log('\\\\''1 native external fixture update; 1 selected scratch preimage write'\\\\'');'\"}",
+      "result": "Output: 1 native external fixture update; 1 selected scratch preimage write\n\nExit Code: 0"
+    }
+  ],
+  "answer": "The `node -e 'const fs=require('\\''fs'\\''),path=require('\\''path'\\'');const r=JSON.parse(fs.readFileSync('\\''/private/tmp/formal-ai-only-1188/T3014-request.json'\\'','\\''utf8'\\''));for(const c of r.changes)if(fs.readFileSync(c.path,'\\''utf8'\\'')!==c.before)throw Error('\\''preimage changed'\\'');if(fs.existsSync(r.setup.root))throw Error('\\''fixture exists'\\'');for(const c of r.changes)fs.writeFileSync(c.path,c.expected);const target=path.join(r.setup.root,r.setup.path);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,r.setup.expected);console.log('\\''1 native external fixture update; 1 selected scratch preimage write'\\'');'` command completed. Output:\n\n```text\n1 native external fixture update; 1 selected scratch preimage write\n```",
+  "stop": "final",
+  "toolsAdvertised": [
+    "bash",
+    "edit",
+    "grep",
+    "list",
+    "read",
+    "write"
+  ]
+}

@@ -1,0 +1,272 @@
+# Formalization-target grammar for the user-facing formalization task
+# (issue #1186, E150).
+#
+# The `cues` records trigger the handler — `command_*` roles carry the
+# formalize/deformalize verbs per request language (the role name's suffix
+# is the language the answer renders in), and the `target` role lists the
+# alias surfaces that name a formal target inside the prompt.
+#
+# The `formal_language` records hold each target's rendering grammar —
+# atom templates, join symbols, quantifier symbols, and the two clause
+# shapes (conditional for universal readings, conjunctive for existential
+# and negative readings; an optional `clause_negative` overrides the
+# conjunctive shape for `no` when the target's precedence needs it). The `natural_language` records hold the surfaces
+# the parser recognizes (quantifier words, join words, relative markers,
+# object-introducing articles, droppable words) and the deformalization
+# templates. A `verb_final` language puts the object before its verb, so the
+# last word of the main phrase is the predicate and the words before it are
+# the object (Hindi object-verb order reads as a two-place relation). A
+# head-final language without a `都` boundary separates the head noun from
+# its predicate with a space, which the Chinese conjunctive template renders.
+# The `export_target` record is the typed fragment the relative-meta-logic
+# exporter reads (`rml export lean`), one template per declaration shape, so
+# a universal conditional clause is exported as data, not as Rust text.
+# The `prover` records make a rendered target a self-contained compile unit
+# for its theorem prover: the declarations of the domain, of every predicate
+# and of every object constant the clause names precede the rendered
+# theorem, and the unit is written with the prover's file extension and
+# checked by running `binary` on it when that binary is found in PATH. The
+# domain is the `export_target rml` record's `domain`, which the Lean and
+# Rocq clause templates bind their variable over.
+# Nothing here is keyed to a particular probe sentence — predicate symbols
+# derive from the sentence's own words at parse time.
+#
+# Read by `rust/src/solver_handlers/formalization_task.rs` through
+# `include_str!` of the embedded mirror.
+formal_targets
+  cues
+    intent formalization
+      role command_en
+        phrase "formalize"
+        phrase "formalise"
+      role command_ru
+        phrase "формализуй"
+        phrase "формализовать"
+        phrase "формализуй в"
+      role command_hi
+        phrase "औपचारिक बनाओ"
+      role command_zh
+        phrase "形式化"
+      role command_es
+        phrase "formaliza en"
+        phrase "formaliza esto"
+      role direction_en
+        phrase "deformalize"
+        phrase "back to plain english"
+        phrase "in plain english"
+      role direction_ru
+        phrase "деформализуй"
+        phrase "верни в естественном языке"
+      role direction_hi
+        phrase "सहज भाषा में"
+      role direction_zh
+        phrase "自然语言"
+      role direction_es
+        phrase "en lenguaje natural"
+  variable
+    name "x"
+  formal_language fol
+    name "First-order logic"
+    alias "fol"
+    alias "first-order logic"
+    alias "predicate logic"
+    alias "логика первого порядка"
+    alias "логике первого порядка"
+    alias "प्रथम-कोटि तर्क"
+    alias "一阶逻辑"
+    alias "lógica de primer orden"
+    atom "{predicate}({variable})"
+    atom_with_object "{predicate}({variable}, {object})"
+    join and
+      text " ∧ "
+    join or
+      text " ∨ "
+    quantifier forall
+      text "∀"
+    quantifier exists
+      text "∃"
+    quantifier no
+      text "¬∃"
+    clause_conditional "{quantifier}{variable} ({antecedent} → {consequent})"
+    clause_conjunctive "{quantifier}{variable} ({joined})"
+  formal_language lean
+    name "Lean 4"
+    alias "lean"
+    alias "lean 4"
+    identifier_quoted "«{name}»"
+    identifier_plain ascii
+    clause_conditional "theorem formalized : ∀ ({variable} : U), {antecedent} → {consequent} := by sorry"
+    clause_conjunctive "theorem formalized : {quantifier} ({variable} : U), {joined} := by sorry"
+    atom "{predicate} {variable}"
+    atom_with_object "{predicate} {variable} {object}"
+    join and
+      text " ∧ "
+    join or
+      text " ∨ "
+    quantifier forall
+      text "∀"
+    quantifier exists
+      text "∃"
+    quantifier no
+      text "¬∃"
+  formal_language rocq
+    name "Rocq"
+    alias "rocq"
+    alias "coq"
+    alias "rocq proof"
+    clause_conditional "Theorem formalized : forall ({variable} : U), {antecedent} -> {consequent}.\nProof.\nAdmitted."
+    clause_conjunctive "Theorem formalized : {quantifier} ({variable} : U), {joined}.\nProof.\nAdmitted."
+    clause_negative "Theorem formalized : ~ (exists ({variable} : U), {joined}).\nProof.\nAdmitted."
+    atom "{predicate} {variable}"
+    atom_with_object "{predicate} {variable} {object}"
+    join and
+      text " /\\ "
+    join or
+      text " \\\/ "
+    quantifier forall
+      text "forall"
+    quantifier exists
+      text "exists"
+    quantifier no
+      text "~ exists"
+  formal_language lino
+    name "Links Notation"
+    alias "links notation"
+    alias "lino"
+    alias "линксы"
+    clause_conditional "formal_clause\n  quantifier forall\n  variable {variable}\n  antecedent\n{antecedent}  implies\n  consequent\n{consequent}"
+    clause_conjunctive "formal_clause\n  quantifier {quantifier_word}\n  variable {variable}\n  conjuncts\n{joined}"
+    atom "    predicate {predicate}\n      holds_of {variable}\n"
+    atom_with_object "    predicate {predicate}\n      holds_of {variable}\n      object {object}\n"
+    join and
+      text ""
+    quantifier forall
+      text "forall"
+    quantifier exists
+      text "exists"
+    quantifier no
+      text "no"
+  export_target rml
+    name "Relative Meta-Logic"
+    domain "U"
+    domain_declaration "({domain}: (Type 0) {domain})"
+    predicate "({name}: (Pi ({domain} {variable}) Prop))"
+    predicate_with_object "({name}: (Pi ({domain} {variable}) (Pi ({domain} {second}) Prop)))"
+    constant "({constant}: {domain} {constant})"
+    atom "({name} {variable})"
+    atom_with_object "({name} {variable} {object})"
+    hypothesis "(Pi ({atom} h{index}) {body})"
+    clause "(formalized: (Pi ({domain} {variable}) {body}))"
+  prover lean
+    target "lean"
+    binary "lean"
+    label "lean"
+    extension "lean"
+    domain_declaration "axiom {domain} : Type"
+    predicate "axiom {name} : {domain} → Prop"
+    predicate_with_object "axiom {name} : {domain} → {domain} → Prop"
+    constant "axiom {constant} : {domain}"
+  prover rocq
+    target "rocq"
+    binary "coqc"
+    label "coqc"
+    extension "v"
+    domain_declaration "Parameter {domain} : Type."
+    predicate "Parameter {name} : {domain} -> Prop."
+    predicate_with_object "Parameter {name} : {domain} -> {domain} -> Prop."
+    constant "Parameter {constant} : {domain}."
+  natural_language en
+    quantifier forall
+      text "every"
+    quantifier exists
+      text "some"
+    quantifier no
+      text "no"
+    join and
+      text "and"
+    join or
+      text "or"
+    rel_marker
+      text "that"
+    rel_marker
+      text "who"
+    rel_marker
+      text "which"
+    object_introducer "the"
+    object_introducer "a"
+    object_introducer "an"
+    clause_conditional "{quantifier} {head} {rel_marker} {relatives} {main}"
+    clause_conjunctive "{quantifier} {head} {rel_marker} {relatives} {main}"
+  natural_language ru
+    quantifier forall
+      text "каждый"
+    quantifier exists
+      text "некоторый"
+    quantifier no
+      text "никакой"
+    join and
+      text "и"
+    join or
+      text "или"
+    rel_marker
+      text "который"
+    rel_marker
+      text "которая"
+    rel_marker
+      text "которое"
+    clause_conditional "{quantifier} {head}, {rel_marker} {relatives}, {main}"
+    clause_conjunctive "{quantifier} {head}, {rel_marker} {relatives}, {main}"
+  natural_language hi
+    quantifier forall
+      text "हर"
+    quantifier forall
+      text "प्रत्येक"
+    quantifier exists
+      text "कोई"
+    quantifier no
+      text "कोई नहीं"
+    join and
+      text "और"
+    join or
+      text "या"
+    rel_marker
+      text "जो"
+    copula_drop "है"
+    verb_final true
+    clause_conditional "{quantifier} {head} {rel_marker} {relatives}, {main}"
+    clause_conjunctive "{quantifier} {head} {rel_marker} {relatives}, {main}"
+  natural_language zh
+    quantifier forall
+      text "每个"
+    quantifier exists
+      text "某个"
+    quantifier no
+      text "没有"
+    join and
+      text "且"
+    join or
+      text "或"
+    rel_marker
+      text "的"
+    head_final true
+    clause_conditional "{quantifier}{relatives}的{head}都{main}"
+    clause_conjunctive "{quantifier}{relatives}的{head} {main}"
+  natural_language es
+    quantifier forall
+      text "todo"
+    quantifier exists
+      text "algún"
+    quantifier no
+      text "ningún"
+    join and
+      text "y"
+    join or
+      text "o"
+    rel_marker
+      text "que"
+    object_introducer "el"
+    object_introducer "la"
+    object_introducer "un"
+    object_introducer "una"
+    clause_conditional "{quantifier} {head} {rel_marker} {relatives} {main}"
+    clause_conjunctive "{quantifier} {head} {rel_marker} {relatives} {main}"

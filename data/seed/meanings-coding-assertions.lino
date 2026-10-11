@@ -1,0 +1,28 @@
+# Assertion concepts (PR #1188 G13): adding one assertion of a stated call
+# and value to a named test file. Split from meanings-coding-tasks.lino so
+# every reviewable Links Notation source stays below the repository line bound.
+meanings
+  coding_assertion
+    defined-by code
+    role coding_assertion_kind
+    precondition "a coding request asks to add this concept to a named test file"
+    effect "one assertion is written in the test file's own assertion form and the file is run (PR #1188 G13)"
+    unit "not applicable"
+    example "assertion"
+    lexeme en "assertion"
+    lexeme ru утверждение проверку
+    lexeme hi अभिकथन
+    lexeme zh 断言
+    lexeme es aserción
+  coding_assertion_equality
+    defined-by relation
+    role coding_assertion_equality_cue
+    precondition "an assertion request states a call, then this cue, then the call's expected value"
+    effect "the text before the cue is the asserted call and the text after it the expected value"
+    unit "not applicable"
+    example "equals"
+    lexeme en "is equal to" equals returns
+    lexeme ru равно возвращает
+    lexeme hi "के बराबर है" "लौटाता है"
+    lexeme zh 等于 返回
+    lexeme es "es igual a" devuelve

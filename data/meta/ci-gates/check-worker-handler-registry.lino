@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_worker_handler_registry
+ci_gate check-worker-handler-registry
   stage web
   description "The browser worker derives synchronous handler membership and order from seed data, and the debt scanner discovers the real dispatch module."
   run "node scripts/check-worker-handler-registry.mjs && node --test rust/tests/web/handler-registry.test.mjs"
+  justification "Without this gate the dispatch module that the debt scanner discovers can diverge from the seed-derived handler membership, causing silent routing failures; introduced in #1138 (commit 9c31b0530)."

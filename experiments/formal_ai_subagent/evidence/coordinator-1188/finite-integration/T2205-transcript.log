@@ -1,0 +1,8 @@
+>> bash {"command":"test -e data/seed/learned-program-rules.lino"}
+>> bash {"command":"test ! -e experiments/issue_1028_agent_cli_ladder/import-children.py"}
+>> bash {"command":"mkdir -p -- experiments/issue_1028_agent_cli_ladder"}
+>> bash {"command":"cp data/seed/learned-program-rules.lino experiments/issue_1028_agent_cli_ladder/import-children.py"}
+>> bash {"command":"test -e experiments/issue_1028_agent_cli_ladder/import-children.py"}
+>> bash {"command":"test -e data/seed/learned-program-rules.lino"}
+== answer ==
+Completed the action `cp data/seed/learned-program-rules.lino experiments/issue_1028_agent_cli_ladder/import-children.py` and verified it with `test -e experiments/issue_1028_agent_cli_ladder/import-children.py`, `test -e data/seed/learned-program-rules.lino`.

@@ -134,7 +134,7 @@ pub fn response_arguments_for_tool(
         }
     }
     let projected = Value::Object(projected).to_string();
-    if std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1") && projected != arguments {
+    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") && projected != arguments {
         eprintln!(
             "[trace] tool_schema_projection: tool={tool_name} planned={arguments} emitted={projected}"
         );

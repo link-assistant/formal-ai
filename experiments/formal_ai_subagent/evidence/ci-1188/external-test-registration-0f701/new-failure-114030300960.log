@@ -1,0 +1,1847 @@
+﻿2026-10-09T22:03:05.1744241Z Current runner version: '2.337.0'
+2026-10-09T22:03:05.1771851Z ##[group]Runner Image Provisioner
+2026-10-09T22:03:05.1772720Z Hosted Compute Agent
+2026-10-09T22:03:05.1773420Z Version: 20261002.596
+2026-10-09T22:03:05.1774129Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-09T22:03:05.1774974Z Build Date: 2026-10-02T22:28:27Z
+2026-10-09T22:03:05.1775734Z Worker ID: {7c159522-3daa-4d5b-aed7-65357d618f69}
+2026-10-09T22:03:05.1776452Z Region: eastus
+2026-10-09T22:03:05.1777080Z Cloud: Azure
+2026-10-09T22:03:05.1777622Z ##[endgroup]
+2026-10-09T22:03:05.1779553Z ##[group]Operating System
+2026-10-09T22:03:05.1780286Z Ubuntu
+2026-10-09T22:03:05.1780815Z 24.04.5
+2026-10-09T22:03:05.1781391Z LTS
+2026-10-09T22:03:05.1781955Z ##[endgroup]
+2026-10-09T22:03:05.1782580Z ##[group]Runner Image
+2026-10-09T22:03:05.1783246Z Image: ubuntu-24.04
+2026-10-09T22:03:05.1783827Z Version: 20261004.327.1
+2026-10-09T22:03:05.1785194Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-09T22:03:05.1786845Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-09T22:03:05.1788196Z ##[endgroup]
+2026-10-09T22:03:05.1789407Z ##[group]GITHUB_TOKEN Permissions
+2026-10-09T22:03:05.1791656Z Contents: read
+2026-10-09T22:03:05.1792274Z Metadata: read
+2026-10-09T22:03:05.1792981Z ##[endgroup]
+2026-10-09T22:03:05.1795141Z Secret source: Actions
+2026-10-09T22:03:05.1796232Z Cache mode: write
+2026-10-09T22:03:05.1797411Z Prepare workflow directory
+2026-10-09T22:03:05.2364315Z Prepare all required actions
+2026-10-09T22:03:05.2415277Z Getting action download info
+2026-10-09T22:03:05.4809524Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-09T22:03:05.5874173Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:686976e191b89faba57d3206551f0f330d8cb249)
+2026-10-09T22:03:05.6911204Z Download action repository 'actions/download-artifact@v8' (SHA:9000827ccba6bdab643e8b6fd33ac0654aef8333)
+2026-10-09T22:03:05.8554208Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+2026-10-09T22:03:06.1868243Z Complete job name: Coverage shard 7
+2026-10-09T22:03:06.2727243Z ##[group]Run actions/checkout@v7
+2026-10-09T22:03:06.2728756Z with:
+2026-10-09T22:03:06.2729393Z   persist-credentials: false
+2026-10-09T22:03:06.2730032Z   repository: link-assistant/formal-ai
+2026-10-09T22:03:06.2734232Z   token: ***
+2026-10-09T22:03:06.2734721Z   ssh-strict: true
+2026-10-09T22:03:06.2735221Z   ssh-user: git
+2026-10-09T22:03:06.2735700Z   clean: true
+2026-10-09T22:03:06.2736203Z   sparse-checkout-cone-mode: true
+2026-10-09T22:03:06.2736778Z   fetch-depth: 1
+2026-10-09T22:03:06.2737260Z   fetch-tags: false
+2026-10-09T22:03:06.2737943Z   show-progress: true
+2026-10-09T22:03:06.2738468Z   lfs: false
+2026-10-09T22:03:06.2738950Z   submodules: false
+2026-10-09T22:03:06.2739459Z   set-safe-directory: true
+2026-10-09T22:03:06.2740018Z   allow-unsafe-pr-checkout: false
+2026-10-09T22:03:06.2740924Z env:
+2026-10-09T22:03:06.2741395Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:06.2741923Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:06.2742488Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:06.2743082Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:06.2743611Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:06.2744147Z ##[endgroup]
+2026-10-09T22:03:06.3844153Z Syncing repository: link-assistant/formal-ai
+2026-10-09T22:03:06.3846998Z ##[group]Getting Git version info
+2026-10-09T22:03:06.3848347Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+2026-10-09T22:03:06.3849610Z [command]/usr/bin/git version
+2026-10-09T22:03:06.3910702Z git version 2.55.0
+2026-10-09T22:03:06.3940781Z ##[endgroup]
+2026-10-09T22:03:06.3951935Z Temporarily overriding HOME='/home/runner/work/_temp/4c2a03f6-5813-4e80-9b69-299d357895b7' before making global git config changes
+2026-10-09T22:03:06.3960696Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-09T22:03:06.3963089Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+2026-10-09T22:03:06.4022536Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+2026-10-09T22:03:06.4026822Z ##[group]Determining repository object format
+2026-10-09T22:03:06.4029093Z ##[endgroup]
+2026-10-09T22:03:06.4030567Z ##[group]Initializing the repository
+2026-10-09T22:03:06.4034411Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+2026-10-09T22:03:06.4170768Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-09T22:03:06.4173317Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-09T22:03:06.4176042Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-09T22:03:06.4178218Z hint: call:
+2026-10-09T22:03:06.4179069Z hint:
+2026-10-09T22:03:06.4179946Z hint: 	git config --global init.defaultBranch <name>
+2026-10-09T22:03:06.4180966Z hint:
+2026-10-09T22:03:06.4182004Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-09T22:03:06.4183942Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-09T22:03:06.4185945Z hint:
+2026-10-09T22:03:06.4186695Z hint: 	git branch -m <name>
+2026-10-09T22:03:06.4187427Z hint:
+2026-10-09T22:03:06.4188687Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-09T22:03:06.4190211Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+2026-10-09T22:03:06.4204234Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+2026-10-09T22:03:06.4305153Z ##[endgroup]
+2026-10-09T22:03:06.4306533Z ##[group]Disabling automatic garbage collection
+2026-10-09T22:03:06.4308530Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-09T22:03:06.4355047Z ##[endgroup]
+2026-10-09T22:03:06.4356466Z ##[group]Setting up auth
+2026-10-09T22:03:06.4357286Z Removing SSH command configuration
+2026-10-09T22:03:06.4362744Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-09T22:03:06.4404661Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-09T22:03:06.4849822Z Removing HTTP extra header
+2026-10-09T22:03:06.4855526Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-09T22:03:06.4904778Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-09T22:03:06.5137285Z Removing includeIf entries pointing to credentials config files
+2026-10-09T22:03:06.5142610Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-09T22:03:06.5181550Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-09T22:03:06.5417326Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-990fbea3-5071-497a-b6d4-f5fd3fd29b6f.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-09T22:03:06.5460880Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-990fbea3-5071-497a-b6d4-f5fd3fd29b6f.config
+2026-10-09T22:03:06.5496591Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-990fbea3-5071-497a-b6d4-f5fd3fd29b6f.config
+2026-10-09T22:03:06.5535778Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-990fbea3-5071-497a-b6d4-f5fd3fd29b6f.config
+2026-10-09T22:03:06.5573329Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-990fbea3-5071-497a-b6d4-f5fd3fd29b6f.config
+2026-10-09T22:03:06.5606489Z ##[endgroup]
+2026-10-09T22:03:06.5608358Z ##[group]Fetching the repository
+2026-10-09T22:03:06.5615947Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +b3953871e7aa9a10936447fd3a64b30903c9e852:refs/remotes/pull/1188/merge
+2026-10-09T22:03:21.6136292Z From https://github.com/link-assistant/formal-ai
+2026-10-09T22:03:21.6137332Z  * [new ref]           b3953871e7aa9a10936447fd3a64b30903c9e852 -> pull/1188/merge
+2026-10-09T22:03:21.6141368Z ##[endgroup]
+2026-10-09T22:03:21.6142227Z ##[group]Determining the checkout info
+2026-10-09T22:03:21.6142932Z ##[endgroup]
+2026-10-09T22:03:21.6149158Z [command]/usr/bin/git sparse-checkout disable
+2026-10-09T22:03:21.6208821Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-09T22:03:21.6243350Z ##[group]Checking out the ref
+2026-10-09T22:03:21.6247249Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/1188/merge
+2026-10-09T22:03:22.6925532Z Updating files:  25% (9036/35115)
+2026-10-09T22:03:22.7301022Z Updating files:  26% (9130/35115)
+2026-10-09T22:03:23.0059327Z Updating files:  27% (9482/35115)
+2026-10-09T22:03:23.2913535Z Updating files:  28% (9833/35115)
+2026-10-09T22:03:23.6396750Z Updating files:  29% (10184/35115)
+2026-10-09T22:03:23.6582023Z Updating files:  30% (10535/35115)
+2026-10-09T22:03:23.6744748Z Updating files:  30% (10706/35115)
+2026-10-09T22:03:23.7455850Z Updating files:  31% (10886/35115)
+2026-10-09T22:03:23.8829134Z Updating files:  32% (11237/35115)
+2026-10-09T22:03:23.9245697Z Updating files:  33% (11588/35115)
+2026-10-09T22:03:23.9905164Z Updating files:  34% (11940/35115)
+2026-10-09T22:03:24.0295266Z Updating files:  35% (12291/35115)
+2026-10-09T22:03:24.0546537Z Updating files:  36% (12642/35115)
+2026-10-09T22:03:24.0887260Z Updating files:  37% (12993/35115)
+2026-10-09T22:03:24.1892917Z Updating files:  38% (13344/35115)
+2026-10-09T22:03:24.2236091Z Updating files:  39% (13695/35115)
+2026-10-09T22:03:24.2580997Z Updating files:  40% (14046/35115)
+2026-10-09T22:03:24.3459038Z Updating files:  41% (14398/35115)
+2026-10-09T22:03:24.4281060Z Updating files:  42% (14749/35115)
+2026-10-09T22:03:24.5589356Z Updating files:  43% (15100/35115)
+2026-10-09T22:03:24.6143020Z Updating files:  44% (15451/35115)
+2026-10-09T22:03:24.6581987Z Updating files:  45% (15802/35115)
+2026-10-09T22:03:24.6588438Z Updating files:  45% (16142/35115)
+2026-10-09T22:03:24.7043385Z Updating files:  46% (16153/35115)
+2026-10-09T22:03:24.7473803Z Updating files:  47% (16505/35115)
+2026-10-09T22:03:24.7847167Z Updating files:  48% (16856/35115)
+2026-10-09T22:03:24.8121616Z Updating files:  49% (17207/35115)
+2026-10-09T22:03:24.8582304Z Updating files:  50% (17558/35115)
+2026-10-09T22:03:24.9007041Z Updating files:  51% (17909/35115)
+2026-10-09T22:03:24.9376703Z Updating files:  52% (18260/35115)
+2026-10-09T22:03:24.9933236Z Updating files:  53% (18611/35115)
+2026-10-09T22:03:25.0297765Z Updating files:  54% (18963/35115)
+2026-10-09T22:03:25.1796233Z Updating files:  55% (19314/35115)
+2026-10-09T22:03:25.2015994Z Updating files:  56% (19665/35115)
+2026-10-09T22:03:25.2401187Z Updating files:  57% (20016/35115)
+2026-10-09T22:03:25.2547680Z Updating files:  58% (20367/35115)
+2026-10-09T22:03:25.2701067Z Updating files:  59% (20718/35115)
+2026-10-09T22:03:25.2856064Z Updating files:  60% (21069/35115)
+2026-10-09T22:03:25.3324188Z Updating files:  61% (21421/35115)
+2026-10-09T22:03:25.3451448Z Updating files:  62% (21772/35115)
+2026-10-09T22:03:25.3598594Z Updating files:  63% (22123/35115)
+2026-10-09T22:03:25.3724101Z Updating files:  64% (22474/35115)
+2026-10-09T22:03:25.3853135Z Updating files:  65% (22825/35115)
+2026-10-09T22:03:25.3987442Z Updating files:  66% (23176/35115)
+2026-10-09T22:03:25.4119597Z Updating files:  67% (23528/35115)
+2026-10-09T22:03:25.4561127Z Updating files:  68% (23879/35115)
+2026-10-09T22:03:25.4792338Z Updating files:  69% (24230/35115)
+2026-10-09T22:03:25.5030587Z Updating files:  70% (24581/35115)
+2026-10-09T22:03:25.5245244Z Updating files:  71% (24932/35115)
+2026-10-09T22:03:25.5491442Z Updating files:  72% (25283/35115)
+2026-10-09T22:03:25.6016445Z Updating files:  73% (25634/35115)
+2026-10-09T22:03:25.6359800Z Updating files:  74% (25986/35115)
+2026-10-09T22:03:25.6580263Z Updating files:  75% (26337/35115)
+2026-10-09T22:03:25.6627194Z Updating files:  75% (26599/35115)
+2026-10-09T22:03:25.7069978Z Updating files:  76% (26688/35115)
+2026-10-09T22:03:25.7332885Z Updating files:  77% (27039/35115)
+2026-10-09T22:03:25.7837835Z Updating files:  78% (27390/35115)
+2026-10-09T22:03:25.9191257Z Updating files:  79% (27741/35115)
+2026-10-09T22:03:25.9564648Z Updating files:  80% (28092/35115)
+2026-10-09T22:03:25.9986737Z Updating files:  81% (28444/35115)
+2026-10-09T22:03:26.0227367Z Updating files:  82% (28795/35115)
+2026-10-09T22:03:26.0588546Z Updating files:  83% (29146/35115)
+2026-10-09T22:03:26.0818697Z Updating files:  84% (29497/35115)
+2026-10-09T22:03:26.1025118Z Updating files:  85% (29848/35115)
+2026-10-09T22:03:26.1263150Z Updating files:  86% (30199/35115)
+2026-10-09T22:03:26.1593062Z Updating files:  87% (30551/35115)
+2026-10-09T22:03:26.1930051Z Updating files:  88% (30902/35115)
+2026-10-09T22:03:26.2196198Z Updating files:  89% (31253/35115)
+2026-10-09T22:03:26.2486913Z Updating files:  90% (31604/35115)
+2026-10-09T22:03:26.2819559Z Updating files:  91% (31955/35115)
+2026-10-09T22:03:26.3159021Z Updating files:  92% (32306/35115)
+2026-10-09T22:03:26.3366944Z Updating files:  93% (32657/35115)
+2026-10-09T22:03:26.3667804Z Updating files:  94% (33009/35115)
+2026-10-09T22:03:26.3979238Z Updating files:  95% (33360/35115)
+2026-10-09T22:03:26.4248941Z Updating files:  96% (33711/35115)
+2026-10-09T22:03:26.4542338Z Updating files:  97% (34062/35115)
+2026-10-09T22:03:26.4796920Z Updating files:  98% (34413/35115)
+2026-10-09T22:03:26.5128408Z Updating files:  99% (34764/35115)
+2026-10-09T22:03:26.5128860Z Updating files: 100% (35115/35115)
+2026-10-09T22:03:26.5129319Z Updating files: 100% (35115/35115), done.
+2026-10-09T22:03:26.6476857Z Note: switching to 'refs/remotes/pull/1188/merge'.
+2026-10-09T22:03:26.6477564Z 
+2026-10-09T22:03:26.6478697Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-09T22:03:26.6479648Z changes and commit them, and you can discard any commits you make in this
+2026-10-09T22:03:26.6480545Z state without impacting any branches by switching back to a branch.
+2026-10-09T22:03:26.6481054Z 
+2026-10-09T22:03:26.6481393Z If you want to create a new branch to retain commits you create, you may
+2026-10-09T22:03:26.6482221Z do so (now or later) by using -c with the switch command. Example:
+2026-10-09T22:03:26.6482696Z 
+2026-10-09T22:03:26.6482886Z   git switch -c <new-branch-name>
+2026-10-09T22:03:26.6483204Z 
+2026-10-09T22:03:26.6483374Z Or undo this operation with:
+2026-10-09T22:03:26.6483659Z 
+2026-10-09T22:03:26.6483805Z   git switch -
+2026-10-09T22:03:26.6484021Z 
+2026-10-09T22:03:26.6484417Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-09T22:03:26.6484987Z 
+2026-10-09T22:03:26.6485519Z HEAD is now at b3953871 Merge 0f701bd8d4bc7a525fccc8d5c9a8fd0d4b340c84 into d209aac6461b355f1a527831202af3423135f7e6
+2026-10-09T22:03:26.7001065Z ##[endgroup]
+2026-10-09T22:03:26.7057559Z [command]/usr/bin/git log -1 --format=%H
+2026-10-09T22:03:26.7087985Z b3953871e7aa9a10936447fd3a64b30903c9e852
+2026-10-09T22:03:26.7118720Z ##[group]Removing auth
+2026-10-09T22:03:26.7119160Z Removing SSH command configuration
+2026-10-09T22:03:26.7119733Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-09T22:03:26.7138489Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-09T22:03:26.7393158Z Removing HTTP extra header
+2026-10-09T22:03:26.7397953Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-09T22:03:26.7438718Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-09T22:03:26.7688300Z Removing includeIf entries pointing to credentials config files
+2026-10-09T22:03:26.7700152Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-09T22:03:26.7733399Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+2026-10-09T22:03:26.7734401Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+2026-10-09T22:03:26.7735282Z includeif.gitdir:/github/workspace/.git.path
+2026-10-09T22:03:26.7735964Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-09T22:03:26.7744522Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+2026-10-09T22:03:26.7774190Z /home/runner/work/_temp/git-credentials-990fbea3-5071-497a-b6d4-f5fd3fd29b6f.config
+2026-10-09T22:03:26.7783320Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-990fbea3\-5071\-497a\-b6d4\-f5fd3fd29b6f\.config
+2026-10-09T22:03:26.7839289Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+2026-10-09T22:03:26.7858380Z /home/runner/work/_temp/git-credentials-990fbea3-5071-497a-b6d4-f5fd3fd29b6f.config
+2026-10-09T22:03:26.7869572Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-990fbea3\-5071\-497a\-b6d4\-f5fd3fd29b6f\.config
+2026-10-09T22:03:26.7913849Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-09T22:03:26.7943258Z /github/runner_temp/git-credentials-990fbea3-5071-497a-b6d4-f5fd3fd29b6f.config
+2026-10-09T22:03:26.7952607Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-990fbea3\-5071\-497a\-b6d4\-f5fd3fd29b6f\.config
+2026-10-09T22:03:26.7988725Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-09T22:03:26.8014900Z /github/runner_temp/git-credentials-990fbea3-5071-497a-b6d4-f5fd3fd29b6f.config
+2026-10-09T22:03:26.8022497Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-990fbea3\-5071\-497a\-b6d4\-f5fd3fd29b6f\.config
+2026-10-09T22:03:26.8058880Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-09T22:03:26.8306941Z Removing credentials config '/home/runner/work/_temp/git-credentials-990fbea3-5071-497a-b6d4-f5fd3fd29b6f.config'
+2026-10-09T22:03:26.8316753Z ##[endgroup]
+2026-10-09T22:03:26.8680068Z ##[group]Run dtolnay/rust-toolchain@stable
+2026-10-09T22:03:26.8680400Z with:
+2026-10-09T22:03:26.8680620Z   components: llvm-tools-preview
+2026-10-09T22:03:26.8680893Z   targets: wasm32-unknown-unknown
+2026-10-09T22:03:26.8681152Z   toolchain: stable
+2026-10-09T22:03:26.8681358Z env:
+2026-10-09T22:03:26.8681543Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:26.8681781Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:26.8682030Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:26.8682265Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:26.8682502Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:26.8682741Z ##[endgroup]
+2026-10-09T22:03:26.8746069Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+2026-10-09T22:03:26.8808386Z ##[group]Run if [[ -z $toolchain ]]; then
+2026-10-09T22:03:26.8808774Z [36;1mif [[ -z $toolchain ]]; then[0m
+2026-10-09T22:03:26.8809403Z [36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070[0m
+2026-10-09T22:03:26.8810200Z [36;1m  echo "'toolchain' is a required input" >&2[0m
+2026-10-09T22:03:26.8810499Z [36;1m  exit 1[0m
+2026-10-09T22:03:26.8810834Z [36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then[0m
+2026-10-09T22:03:26.8811269Z [36;1m  if [[ Linux == macOS ]]; then[0m
+2026-10-09T22:03:26.8811816Z [36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+2026-10-09T22:03:26.8812345Z [36;1m  else[0m
+2026-10-09T22:03:26.8812755Z [36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+2026-10-09T22:03:26.8813216Z [36;1m  fi[0m
+2026-10-09T22:03:26.8813513Z [36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then[0m
+2026-10-09T22:03:26.8814084Z [36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT[0m
+2026-10-09T22:03:26.8814600Z [36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then[0m
+2026-10-09T22:03:26.8815131Z [36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT[0m
+2026-10-09T22:03:26.8815634Z [36;1melse[0m
+2026-10-09T22:03:26.8815839Z [36;1m  delimiter=EOF[0m
+2026-10-09T22:03:26.8816151Z [36;1m  while [[ $toolchain == *$delimiter* ]]; do delimiter+=_; done[0m
+2026-10-09T22:03:26.8816668Z [36;1m  printf 'toolchain<<%s\n%s\n%s\n' "$delimiter" "$toolchain" "$delimiter" >> $GITHUB_OUTPUT[0m
+2026-10-09T22:03:26.8817092Z [36;1mfi[0m
+2026-10-09T22:03:26.9113323Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-09T22:03:26.9114298Z env:
+2026-10-09T22:03:26.9114764Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:26.9115285Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:26.9115882Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:26.9116232Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:26.9116587Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:26.9116942Z   toolchain: stable
+2026-10-09T22:03:26.9117234Z ##[endgroup]
+2026-10-09T22:03:26.9261835Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=51]
+2026-10-09T22:03:26.9266178Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+2026-10-09T22:03:26.9302827Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV
+2026-10-09T22:03:26.9303300Z [36;1mecho CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV[0m
+2026-10-09T22:03:26.9365183Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-09T22:03:26.9365562Z env:
+2026-10-09T22:03:26.9365771Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:26.9366024Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:26.9366313Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:26.9366570Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:26.9366828Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:26.9367087Z ##[endgroup]
+2026-10-09T22:03:26.9461237Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=19]
+2026-10-09T22:03:26.9463543Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+2026-10-09T22:03:26.9515615Z ##[group]Run if ! command -v rustup &>/dev/null; then
+2026-10-09T22:03:26.9515985Z [36;1mif ! command -v rustup &>/dev/null; then[0m
+2026-10-09T22:03:26.9516759Z [36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y[0m
+2026-10-09T22:03:26.9517527Z [36;1m  echo "$CARGO_HOME/bin" >> $GITHUB_PATH[0m
+2026-10-09T22:03:26.9518108Z [36;1mfi[0m
+2026-10-09T22:03:26.9583144Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-09T22:03:26.9583530Z env:
+2026-10-09T22:03:26.9583752Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:26.9584012Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:26.9584300Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:26.9584769Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:26.9585022Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:26.9585305Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:26.9585582Z ##[endgroup]
+2026-10-09T22:03:26.9683184Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=success;conclusion=success;duration_ms=21]
+2026-10-09T22:03:26.9685886Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+2026-10-09T22:03:26.9695266Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-10-09T22:03:26.9709926Z ##[start-action display=rustup toolchain install stable;id=__dtolnay_rust-toolchain.__run_4]
+2026-10-09T22:03:26.9738207Z ##[group]Run set -f  # split targets and components on commas and whitespace, without glob expansion
+2026-10-09T22:03:26.9738894Z [36;1mset -f  # split targets and components on commas and whitespace, without glob expansion[0m
+2026-10-09T22:03:26.9739337Z [36;1mflags=()[0m
+2026-10-09T22:03:26.9739644Z [36;1mfor t in ${targets//,/ }; do flags+=(--target "$t"); done[0m
+2026-10-09T22:03:26.9740075Z [36;1mfor c in ${components//,/ }; do flags+=(--component "$c"); done[0m
+2026-10-09T22:03:26.9740598Z [36;1mif [[ $toolchain == nightly && -n $components ]]; then flags+=(--allow-downgrade); fi[0m
+2026-10-09T22:03:26.9741020Z [36;1mlog=$(mktemp)[0m
+2026-10-09T22:03:26.9741254Z [36;1mtrap 'rm -f "$log"' EXIT[0m
+2026-10-09T22:03:26.9741524Z [36;1mfor attempt in 1 2 3 4 5; do[0m
+2026-10-09T22:03:26.9742104Z [36;1m  if rustup toolchain install "$toolchain" "${flags[@]}" --profile minimal --no-self-update --force-non-host 2>&1 | tee "$log"; then[0m
+2026-10-09T22:03:26.9742695Z [36;1m    break[0m
+2026-10-09T22:03:26.9742903Z [36;1m  else[0m
+2026-10-09T22:03:26.9743103Z [36;1m    status=$?[0m
+2026-10-09T22:03:26.9743320Z [36;1m  fi[0m
+2026-10-09T22:03:26.9743614Z [36;1m  if [[ $attempt == 5 ]] || ! grep -Fq 'checksum failed for ' "$log" \[0m
+2026-10-09T22:03:26.9744190Z [36;1m      || ! grep -Fq 'this is likely due to an ongoing update of the official release server' "$log"; then[0m
+2026-10-09T22:03:26.9744657Z [36;1m    exit "$status"[0m
+2026-10-09T22:03:26.9744884Z [36;1m  fi[0m
+2026-10-09T22:03:26.9745241Z [36;1m  echo "Retrying rustup toolchain install in 30 seconds (retry $attempt of 4)" >&2[0m
+2026-10-09T22:03:26.9745665Z [36;1m  sleep 30[0m
+2026-10-09T22:03:26.9745869Z [36;1mdone[0m
+2026-10-09T22:03:26.9813013Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-09T22:03:26.9813362Z env:
+2026-10-09T22:03:26.9813552Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:26.9813818Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:26.9814123Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:26.9814354Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:26.9814580Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:26.9814826Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:26.9815078Z   toolchain: stable
+2026-10-09T22:03:26.9815306Z   targets: wasm32-unknown-unknown
+2026-10-09T22:03:26.9815770Z   components: llvm-tools-preview
+2026-10-09T22:03:26.9816052Z   RUSTUP_PERMIT_COPY_RENAME: 1
+2026-10-09T22:03:26.9816297Z ##[endgroup]
+2026-10-09T22:03:27.1948055Z info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+2026-10-09T22:03:27.3189622Z info: latest update on 2026-10-01 for version 1.99.0 (b940084d7 2026-09-28)
+2026-10-09T22:03:27.3332997Z info: downloading 2 components
+2026-10-09T22:03:31.4257415Z 
+2026-10-09T22:03:31.4337648Z   stable-x86_64-unknown-linux-gnu updated - rustc 1.99.0 (b940084d7 2026-09-28) (from rustc 1.99.0 (b940084d7 2026-09-28))
+2026-10-09T22:03:31.4338869Z 
+2026-10-09T22:03:31.4416496Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=4470]
+2026-10-09T22:03:31.4425108Z ##[start-action display=rustup default stable;id=__dtolnay_rust-toolchain.__run_5]
+2026-10-09T22:03:31.4458175Z ##[group]Run rustup default "$toolchain" --force-non-host
+2026-10-09T22:03:31.4458868Z [36;1mrustup default "$toolchain" --force-non-host[0m
+2026-10-09T22:03:31.4541031Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-09T22:03:31.4541595Z env:
+2026-10-09T22:03:31.4541904Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:31.4542290Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:31.4542731Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:31.4543118Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:31.4543515Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:31.4543936Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:31.4544361Z   toolchain: stable
+2026-10-09T22:03:31.4544703Z ##[endgroup]
+2026-10-09T22:03:31.4671456Z info: using existing install for stable-x86_64-unknown-linux-gnu
+2026-10-09T22:03:31.4677489Z info: default toolchain set to stable-x86_64-unknown-linux-gnu
+2026-10-09T22:03:31.4678221Z 
+2026-10-09T22:03:31.4753935Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.99.0 (b940084d7 2026-09-28)
+2026-10-09T22:03:31.4754654Z 
+2026-10-09T22:03:31.4774159Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=34]
+2026-10-09T22:03:31.4778451Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+2026-10-09T22:03:31.4813789Z ##[group]Run DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+2026-10-09T22:03:31.4815172Z [36;1mDATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')[0m
+2026-10-09T22:03:31.4816418Z [36;1mHASH=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-hash: //p')[0m
+2026-10-09T22:03:31.4828093Z [36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT[0m
+2026-10-09T22:03:31.4909304Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-09T22:03:31.4909858Z env:
+2026-10-09T22:03:31.4910161Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:31.4910537Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:31.4910955Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:31.4911362Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:31.4911742Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:31.4912158Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:31.4912573Z   toolchain: stable
+2026-10-09T22:03:31.4912903Z ##[endgroup]
+2026-10-09T22:03:31.5312713Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=53]
+2026-10-09T22:03:31.5316585Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+2026-10-09T22:03:31.5348601Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+2026-10-09T22:03:31.5349258Z [36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then[0m
+2026-10-09T22:03:31.5349827Z [36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV[0m
+2026-10-09T22:03:31.5350322Z [36;1mfi[0m
+2026-10-09T22:03:31.5432610Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-09T22:03:31.5433176Z env:
+2026-10-09T22:03:31.5433491Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:31.5433883Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:31.5434557Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:31.5434963Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:31.5435352Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:31.5435776Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:31.5436199Z ##[endgroup]
+2026-10-09T22:03:31.5546545Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=22]
+2026-10-09T22:03:31.5550181Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+2026-10-09T22:03:31.5573927Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+2026-10-09T22:03:31.5574358Z [36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then[0m
+2026-10-09T22:03:31.5574749Z [36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV[0m
+2026-10-09T22:03:31.5575096Z [36;1mfi[0m
+2026-10-09T22:03:31.5633815Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-09T22:03:31.5634169Z env:
+2026-10-09T22:03:31.5634367Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:31.5634782Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:31.5635042Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:31.5635276Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:31.5635513Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:31.5635778Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:31.5636032Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:03:31.5636240Z ##[endgroup]
+2026-10-09T22:03:31.5718394Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=16]
+2026-10-09T22:03:31.5723182Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+2026-10-09T22:03:31.5754683Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+2026-10-09T22:03:31.5755557Z [36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70[0m
+2026-10-09T22:03:31.5756812Z [36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then[0m
+2026-10-09T22:03:31.5758414Z [36;1m  if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[89]\.'; then[0m
+2026-10-09T22:03:31.5759463Z [36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+2026-10-09T22:03:31.5760424Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV[0m
+2026-10-09T22:03:31.5761355Z [36;1m  elif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[67]\.'; then[0m
+2026-10-09T22:03:31.5762397Z [36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+2026-10-09T22:03:31.5763328Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV[0m
+2026-10-09T22:03:31.5763957Z [36;1m  fi[0m
+2026-10-09T22:03:31.5764277Z [36;1mfi[0m
+2026-10-09T22:03:31.5835890Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-09T22:03:31.5836446Z env:
+2026-10-09T22:03:31.5836760Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:31.5837158Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:31.5837616Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:31.5838248Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:31.5838630Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:31.5839046Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:31.5839472Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:03:31.5839838Z   toolchain: stable
+2026-10-09T22:03:31.5840190Z ##[endgroup]
+2026-10-09T22:03:31.6184737Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=46]
+2026-10-09T22:03:31.6190159Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+2026-10-09T22:03:31.6222449Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+2026-10-09T22:03:31.6223749Z [36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation[0m
+2026-10-09T22:03:31.6224874Z [36;1mif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.7[01]\.'; then[0m
+2026-10-09T22:03:31.6225929Z [36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV[0m
+2026-10-09T22:03:31.6226474Z [36;1mfi[0m
+2026-10-09T22:03:31.6307902Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-09T22:03:31.6308469Z env:
+2026-10-09T22:03:31.6308784Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:31.6323869Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:31.6324360Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:31.6324759Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:31.6325139Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:31.6325557Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:31.6325977Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:03:31.6326330Z   toolchain: stable
+2026-10-09T22:03:31.6326671Z ##[endgroup]
+2026-10-09T22:03:31.6589208Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=39]
+2026-10-09T22:03:31.6595465Z ##[start-action display=rustc +stable --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+2026-10-09T22:03:31.6627089Z ##[group]Run rustc +"$toolchain" --version --verbose
+2026-10-09T22:03:31.6627952Z [36;1mrustc +"$toolchain" --version --verbose[0m
+2026-10-09T22:03:31.6710856Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-09T22:03:31.6711411Z env:
+2026-10-09T22:03:31.6711721Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:31.6712100Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:31.6712524Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:31.6712907Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:31.6713283Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:31.6713694Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:31.6714114Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:03:31.6714470Z   toolchain: stable
+2026-10-09T22:03:31.6714800Z ##[endgroup]
+2026-10-09T22:03:31.6970803Z rustc 1.99.0 (b940084d7 2026-09-28)
+2026-10-09T22:03:31.6978745Z binary: rustc
+2026-10-09T22:03:31.6979425Z commit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4
+2026-10-09T22:03:31.6980238Z commit-date: 2026-09-28
+2026-10-09T22:03:31.6980801Z host: x86_64-unknown-linux-gnu
+2026-10-09T22:03:31.6981382Z release: 1.99.0
+2026-10-09T22:03:31.6981934Z LLVM version: 23.1.1
+2026-10-09T22:03:31.6997333Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=40]
+2026-10-09T22:03:31.7125451Z Prepare all required actions
+2026-10-09T22:03:31.7126244Z Getting action download info
+2026-10-09T22:03:31.7950631Z Download action repository 'mozilla-actions/sccache-action@v0.0.11' (SHA:fc920bf0ec8de6ee65d409111f7ec508035751ba)
+2026-10-09T22:03:32.2391678Z ##[group]Run ./.github/actions/setup-sccache
+2026-10-09T22:03:32.2392029Z env:
+2026-10-09T22:03:32.2392249Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:32.2392502Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:32.2392786Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:32.2393048Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:32.2393303Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:32.2393579Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:32.2393855Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:03:32.2394107Z ##[endgroup]
+2026-10-09T22:03:32.2399450Z ##[start-action display=Install sccache;id=__self.__mozilla-actions_sccache-action]
+2026-10-09T22:03:32.3469381Z ##[group]Run mozilla-actions/sccache-action@v0.0.11
+2026-10-09T22:03:32.3469782Z with:
+2026-10-09T22:03:32.3469983Z   version: v0.16.0
+2026-10-09T22:03:32.3472741Z   token: ***
+2026-10-09T22:03:32.3472953Z   disable_annotations: false
+2026-10-09T22:03:32.3473192Z env:
+2026-10-09T22:03:32.3473388Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:32.3473616Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:32.3473869Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:32.3474100Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:32.3474327Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:32.3474574Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:32.3474818Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:03:32.3475026Z ##[endgroup]
+2026-10-09T22:03:32.4410771Z try to setup sccache version: v0.16.0
+2026-10-09T22:03:32.4433543Z sccache download from url: https://github.com/mozilla/sccache/releases/download/v0.16.0/sccache-v0.16.0-x86_64-unknown-linux-musl.tar.gz
+2026-10-09T22:03:32.6405465Z Correct checksum: aec995a83ad3dff3d14b6314e08858b7b73d35ca85a5bcf3d3a9ec07dee35588
+2026-10-09T22:03:32.6539255Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/eeb45cb9-ffc5-4686-af0a-dd002d502006 -f /home/runner/work/_temp/9a7d8071-3efc-4527-bde0-8306b031ae3c
+2026-10-09T22:03:32.8271536Z sccache extracted to: /home/runner/work/_temp/eeb45cb9-ffc5-4686-af0a-dd002d502006
+2026-10-09T22:03:32.8447601Z sccache cached to: /opt/hostedtoolcache/sccache/0.16.0/x64
+2026-10-09T22:03:32.8546707Z ##[end-action id=__self.__mozilla-actions_sccache-action;outcome=success;conclusion=success;duration_ms=614]
+2026-10-09T22:03:32.8550608Z ##[start-action display=Enable sccache for Rust;id=__self.__run]
+2026-10-09T22:03:32.9310668Z ##[group]Run echo "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"
+2026-10-09T22:03:32.9311856Z [36;1mecho "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"[0m
+2026-10-09T22:03:32.9313050Z [36;1mecho "RUSTC_WRAPPER=$RUSTC_WRAPPER" >> "$GITHUB_ENV"[0m
+2026-10-09T22:03:32.9388442Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-09T22:03:32.9388805Z env:
+2026-10-09T22:03:32.9389000Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:32.9389236Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:32.9389496Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:32.9389730Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:32.9389959Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:32.9390208Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:32.9390459Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:03:32.9390759Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2026-10-09T22:03:32.9391301Z   ACTIONS_CACHE_SERVICE_V2: on
+2026-10-09T22:03:32.9391725Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2026-10-09T22:03:32.9443472Z   ACTIONS_RUNTIME_TOKEN: ***
+2026-10-09T22:03:32.9443761Z   SCCACHE_GHA_ENABLED: true
+2026-10-09T22:03:32.9444004Z   RUSTC_WRAPPER: sccache
+2026-10-09T22:03:32.9444234Z ##[endgroup]
+2026-10-09T22:03:32.9945992Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=139]
+2026-10-09T22:03:32.9949006Z ##[start-action display=Enable opt-in sccache diagnostics;id=__self.__run_2]
+2026-10-09T22:03:32.9956154Z ##[end-action id=__self.__run_2;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-10-09T22:03:32.9959195Z ##[start-action display=Start the sccache server;id=__self.__run_3]
+2026-10-09T22:03:32.9993360Z ##[group]Run sccache --start-server || true
+2026-10-09T22:03:32.9993927Z [36;1msccache --start-server || true[0m
+2026-10-09T22:03:32.9994722Z [36;1m# No `| head`: an early-closing reader makes sccache exit on[0m
+2026-10-09T22:03:32.9995565Z [36;1m# `Broken pipe (os error 32)`, which fails the step. The same trap is[0m
+2026-10-09T22:03:32.9996366Z [36;1m# documented in experiments/agentic_cli_matrix/lib.sh.[0m
+2026-10-09T22:03:32.9997163Z [36;1msccache --show-stats[0m
+2026-10-09T22:03:33.0060339Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-09T22:03:33.0060682Z env:
+2026-10-09T22:03:33.0060871Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:33.0061112Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:33.0061383Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:33.0061620Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:33.0061852Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:33.0062098Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:33.0062339Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:03:33.0062622Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2026-10-09T22:03:33.0062963Z   ACTIONS_CACHE_SERVICE_V2: on
+2026-10-09T22:03:33.0063356Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2026-10-09T22:03:33.0113761Z   ACTIONS_RUNTIME_TOKEN: ***
+2026-10-09T22:03:33.0114029Z   SCCACHE_GHA_ENABLED: true
+2026-10-09T22:03:33.0114266Z   RUSTC_WRAPPER: sccache
+2026-10-09T22:03:33.0114484Z ##[endgroup]
+2026-10-09T22:03:33.0423342Z sccache: Starting the server...
+2026-10-09T22:03:33.2124216Z sccache: Listening on address 127.0.0.1:4226
+2026-10-09T22:03:33.2143588Z Compile requests                      0
+2026-10-09T22:03:33.2144173Z Compile requests executed             0
+2026-10-09T22:03:33.2144509Z Cache hits                            0
+2026-10-09T22:03:33.2144847Z Cache misses                          0
+2026-10-09T22:03:33.2145281Z Cache hits rate                       -
+2026-10-09T22:03:33.2145758Z Cache timeouts                        0
+2026-10-09T22:03:33.2146269Z Cache read errors                     0
+2026-10-09T22:03:33.2146811Z Forced recaches                       0
+2026-10-09T22:03:33.2147317Z Cache write errors                    0
+2026-10-09T22:03:33.2148103Z Cache errors                          0
+2026-10-09T22:03:33.2148559Z Compilations                          0
+2026-10-09T22:03:33.2149078Z Compilation failures                  0
+2026-10-09T22:03:33.2149543Z Non-cacheable compilations            0
+2026-10-09T22:03:33.2150153Z Non-cacheable calls                   0
+2026-10-09T22:03:33.2150478Z Non-compilation calls                 0
+2026-10-09T22:03:33.2150801Z Unsupported compiler calls            0
+2026-10-09T22:03:33.2151135Z Average cache write               0.000 s
+2026-10-09T22:03:33.2151472Z Average compiler                  0.000 s
+2026-10-09T22:03:33.2151806Z Average cache read hit            0.000 s
+2026-10-09T22:03:33.2152140Z Failed distributed compilations       0
+2026-10-09T22:03:33.2152835Z Cache location                  ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/
+2026-10-09T22:03:33.2153520Z Base directories                (none)
+2026-10-09T22:03:33.2153839Z Version (client)                0.16.0
+2026-10-09T22:03:33.2159672Z ##[end-action id=__self.__run_3;outcome=success;conclusion=success;duration_ms=219]
+2026-10-09T22:03:33.2258634Z Prepare all required actions
+2026-10-09T22:03:33.2259297Z Getting action download info
+2026-10-09T22:03:33.3002794Z Download action repository 'actions/cache@v6' (SHA:55cc8345863c7cc4c66a329aec7e433d2d1c52a9)
+2026-10-09T22:03:33.5926300Z ##[group]Run ./.github/actions/cache-cargo-registry
+2026-10-09T22:03:33.5926707Z with:
+2026-10-09T22:03:33.5926949Z   prefix: coverage-
+2026-10-09T22:03:33.5927218Z   restore-only: true
+2026-10-09T22:03:33.5927477Z env:
+2026-10-09T22:03:33.5928004Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:33.5928383Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:33.5928713Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:33.5929015Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:33.5929307Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:33.5929633Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:33.5929953Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:03:33.5930336Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2026-10-09T22:03:33.5930848Z   ACTIONS_CACHE_SERVICE_V2: on
+2026-10-09T22:03:33.5931372Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2026-10-09T22:03:33.5983702Z   ACTIONS_RUNTIME_TOKEN: ***
+2026-10-09T22:03:33.5983980Z   SCCACHE_GHA_ENABLED: true
+2026-10-09T22:03:33.5984219Z   RUSTC_WRAPPER: sccache
+2026-10-09T22:03:33.5984441Z ##[endgroup]
+2026-10-09T22:03:33.5988878Z ##[start-action display=Run actions/cache@v6;id=__self_2.read-write]
+2026-10-09T22:03:33.5993046Z ##[end-action id=__self_2.read-write;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-10-09T22:03:33.5994833Z ##[start-action display=Run actions/cache/restore@v6;id=__self_2.restore-only]
+2026-10-09T22:03:36.3480153Z ##[group]Run actions/cache/restore@v6
+2026-10-09T22:03:36.3480447Z with:
+2026-10-09T22:03:36.3480663Z   path: ~/.cargo/registry
+~/.cargo/git
+
+2026-10-09T22:03:36.3481181Z   key: Linux-cargo-coverage-9a3829a57195f34e9e8e39ad6459821c431e4c2c6b95dd25cde6c650736a24eb
+2026-10-09T22:03:36.3481766Z   restore-keys: Linux-cargo-coverage-
+Linux-cargo-
+
+2026-10-09T22:03:36.3482107Z   enableCrossOsArchive: false
+2026-10-09T22:03:36.3482372Z   fail-on-cache-miss: false
+2026-10-09T22:03:36.3482628Z   lookup-only: false
+2026-10-09T22:03:36.3482835Z env:
+2026-10-09T22:03:36.3483019Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:36.3483248Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:36.3483514Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:36.3483753Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:36.3483989Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:36.3484242Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:36.3484499Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:03:36.3484800Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2026-10-09T22:03:36.3485164Z   ACTIONS_CACHE_SERVICE_V2: on
+2026-10-09T22:03:36.3485580Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2026-10-09T22:03:36.3536578Z   ACTIONS_RUNTIME_TOKEN: ***
+2026-10-09T22:03:36.3536851Z   SCCACHE_GHA_ENABLED: true
+2026-10-09T22:03:36.3537099Z   RUSTC_WRAPPER: sccache
+2026-10-09T22:03:36.3537321Z ##[endgroup]
+2026-10-09T22:03:36.5360651Z Cache hit for: Linux-cargo-coverage-9a3829a57195f34e9e8e39ad6459821c431e4c2c6b95dd25cde6c650736a24eb
+2026-10-09T22:03:37.5868336Z Received 260046848 of 335900846 (77.4%), 246.8 MBs/sec
+2026-10-09T22:03:37.9153693Z Received 335900846 of 335900846 (100.0%), 240.1 MBs/sec
+2026-10-09T22:03:37.9156792Z Cache Size: ~320 MB (335900846 B)
+2026-10-09T22:03:37.9228849Z [command]/usr/bin/tar -xf /home/runner/work/_temp/9c41e637-21ac-4faf-8c0b-d38d11048f15/cache.tzst -P -C /home/runner/work/formal-ai/formal-ai --use-compress-program unzstd
+2026-10-09T22:03:41.5807611Z Cache restored successfully
+2026-10-09T22:03:41.6045315Z Cache restored from key: Linux-cargo-coverage-9a3829a57195f34e9e8e39ad6459821c431e4c2c6b95dd25cde6c650736a24eb
+2026-10-09T22:03:41.6169396Z ##[end-action id=__self_2.restore-only;outcome=success;conclusion=success;duration_ms=8017]
+2026-10-09T22:03:44.2809599Z ##[start-action display=Report the cargo registry cache outcome;id=__self_2.__run]
+2026-10-09T22:03:44.2833282Z ##[group]Run set -euo pipefail
+2026-10-09T22:03:44.2833612Z [36;1mset -euo pipefail[0m
+2026-10-09T22:03:44.2833902Z [36;1mif [ "${CACHE_HIT}" = "true" ]; then[0m
+2026-10-09T22:03:44.2834210Z [36;1m  outcome='hit (exact)'[0m
+2026-10-09T22:03:44.2834491Z [36;1melif [ -n "${MATCHED_KEY}" ]; then[0m
+2026-10-09T22:03:44.2834849Z [36;1m  outcome="restored from prefix \`${MATCHED_KEY}\`"[0m
+2026-10-09T22:03:44.2835197Z [36;1melse[0m
+2026-10-09T22:03:44.2835501Z [36;1m  outcome='**miss** -- every dependency will be recompiled'[0m
+2026-10-09T22:03:44.2835857Z [36;1mfi[0m
+2026-10-09T22:03:44.2836220Z [36;1mif [ "${RESTORE_ONLY}" = 'true' ]; then mode='restore-only'; else mode='read-write'; fi[0m
+2026-10-09T22:03:44.2836775Z [36;1m# A bullet rather than a table row: the action can run once or several[0m
+2026-10-09T22:03:44.2837271Z [36;1m# times in a job, and a stray row with no header renders as raw text.[0m
+2026-10-09T22:03:44.2839801Z [36;1mprintf -- '- cargo registry cache `%s` (%s): %s\n' \[0m
+2026-10-09T22:03:44.2840301Z [36;1m  "${WANTED_KEY}" "${mode}" "${outcome}" >> "${GITHUB_STEP_SUMMARY}"[0m
+2026-10-09T22:03:44.2840826Z [36;1m# Read straight from the process environment rather than mapping the[0m
+2026-10-09T22:03:44.2841322Z [36;1m# `env` context into a step `env:`. A calling job exports its own[0m
+2026-10-09T22:03:44.2841837Z [36;1m# `env:` block into every step it runs, this one included, and that[0m
+2026-10-09T22:03:44.2842323Z [36;1m# path does not depend on which contexts a composite action can[0m
+2026-10-09T22:03:44.2842810Z [36;1m# evaluate. (Written without expression syntax on purpose: Actions[0m
+2026-10-09T22:03:44.2843304Z [36;1m# expands an expression anywhere in a `run:` block, shell comments[0m
+2026-10-09T22:03:44.2843804Z [36;1m# included, which is what zizmor's template-injection audit reports.)[0m
+2026-10-09T22:03:44.2844332Z [36;1mif [ -z "${MATCHED_KEY}" ] && [ "${FORMAL_AI_CI_VERBOSE:-false}" = 'true' ]; then[0m
+2026-10-09T22:03:44.2845307Z [36;1m  echo "::warning title=cargo registry cache miss::No entry matched ${WANTED_KEY} or any of its restore keys. If the step log above shows a 429, this was a refused request rather than an absent entry (issue #1076)."[0m
+2026-10-09T22:03:44.2846139Z [36;1mfi[0m
+2026-10-09T22:03:44.2908724Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-09T22:03:44.2909077Z env:
+2026-10-09T22:03:44.2909273Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:44.2909520Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:44.2909792Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:44.2910036Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:44.2910271Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:44.2910527Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:44.2910787Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:03:44.2911090Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2026-10-09T22:03:44.2911449Z   ACTIONS_CACHE_SERVICE_V2: on
+2026-10-09T22:03:44.2911866Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2026-10-09T22:03:44.2961441Z   ACTIONS_RUNTIME_TOKEN: ***
+2026-10-09T22:03:44.2961924Z   SCCACHE_GHA_ENABLED: true
+2026-10-09T22:03:44.2962167Z   RUSTC_WRAPPER: sccache
+2026-10-09T22:03:44.2962393Z   CACHE_HIT: true
+2026-10-09T22:03:44.2962838Z   MATCHED_KEY: Linux-cargo-coverage-9a3829a57195f34e9e8e39ad6459821c431e4c2c6b95dd25cde6c650736a24eb
+2026-10-09T22:03:44.2963576Z   WANTED_KEY: Linux-cargo-coverage-9a3829a57195f34e9e8e39ad6459821c431e4c2c6b95dd25cde6c650736a24eb
+2026-10-09T22:03:44.2964069Z   RESTORE_ONLY: true
+2026-10-09T22:03:44.2964281Z ##[endgroup]
+2026-10-09T22:03:44.3060620Z ##[end-action id=__self_2.__run;outcome=success;conclusion=success;duration_ms=25]
+2026-10-09T22:03:44.3090301Z ##[group]Run bash scripts/install-rust-script.sh
+2026-10-09T22:03:44.3090698Z [36;1mbash scripts/install-rust-script.sh[0m
+2026-10-09T22:03:44.3146945Z shell: /usr/bin/bash -e {0}
+2026-10-09T22:03:44.3147213Z env:
+2026-10-09T22:03:44.3147420Z   CARGO_NET_RETRY: 10
+2026-10-09T22:03:44.3147942Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:03:44.3148243Z   CARGO_TERM_COLOR: always
+2026-10-09T22:03:44.3148505Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:03:44.3148747Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:03:44.3149017Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:03:44.3149295Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:03:44.3149602Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2026-10-09T22:03:44.3149972Z   ACTIONS_CACHE_SERVICE_V2: on
+2026-10-09T22:03:44.3150398Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2026-10-09T22:03:44.3200541Z   ACTIONS_RUNTIME_TOKEN: ***
+2026-10-09T22:03:44.3200837Z   SCCACHE_GHA_ENABLED: true
+2026-10-09T22:03:44.3201119Z   RUSTC_WRAPPER: sccache
+2026-10-09T22:03:44.3201349Z ##[endgroup]
+2026-10-09T22:03:44.3311327Z Installing rust-script (attempt 1/3)
+2026-10-09T22:03:48.6505691Z [1m[92m    Updating[0m crates.io index
+2026-10-09T22:03:48.7711104Z [1m[92m  Installing[0m rust-script v0.36.0
+2026-10-09T22:03:48.7748133Z [1m[92m    Updating[0m crates.io index
+2026-10-09T22:03:49.0178379Z [1m[92m    Updating[0m crates.io index
+2026-10-09T22:03:49.1423432Z [1m[92m   Compiling[0m typenum v1.18.0
+2026-10-09T22:03:49.1424693Z [1m[92m   Compiling[0m version_check v0.9.5
+2026-10-09T22:03:49.1425789Z [1m[92m   Compiling[0m libc v0.2.175
+2026-10-09T22:03:49.1426660Z [1m[92m   Compiling[0m memchr v2.7.5
+2026-10-09T22:03:49.2790851Z [1m[92m   Compiling[0m generic-array v0.14.7
+2026-10-09T22:03:49.3795980Z [1m[92m   Compiling[0m utf8parse v0.2.2
+2026-10-09T22:03:49.4820928Z [1m[92m   Compiling[0m serde v1.0.219
+2026-10-09T22:03:49.5362079Z [1m[92m   Compiling[0m anstyle-parse v0.2.7
+2026-10-09T22:03:49.6309301Z [1m[92m   Compiling[0m aho-corasick v1.1.3
+2026-10-09T22:03:49.6730016Z [1m[92m   Compiling[0m regex-syntax v0.8.5
+2026-10-09T22:03:49.8489735Z [1m[92m   Compiling[0m is_terminal_polyfill v1.70.1
+2026-10-09T22:03:49.8518820Z [1m[92m   Compiling[0m anstyle v1.0.11
+2026-10-09T22:03:49.9512101Z [1m[92m   Compiling[0m colorchoice v1.0.4
+2026-10-09T22:03:49.9537258Z [1m[92m   Compiling[0m anstyle-query v1.1.4
+2026-10-09T22:03:50.0090412Z [1m[92m   Compiling[0m regex-automata v0.4.9
+2026-10-09T22:03:50.0349772Z [1m[92m   Compiling[0m rustix v1.0.8
+2026-10-09T22:03:50.0719894Z [1m[92m   Compiling[0m anstream v0.6.20
+2026-10-09T22:03:50.2214284Z [1m[92m   Compiling[0m getrandom v0.3.3
+2026-10-09T22:03:50.2399500Z [1m[92m   Compiling[0m cfg-if v1.0.1
+2026-10-09T22:03:50.3190582Z [1m[92m   Compiling[0m bitflags v2.9.1
+2026-10-09T22:03:50.3523226Z [1m[92m   Compiling[0m crypto-common v0.1.6
+2026-10-09T22:03:50.3783898Z [1m[92m   Compiling[0m block-buffer v0.10.4
+2026-10-09T22:03:50.4422874Z [1m[92m   Compiling[0m regex v1.11.1
+2026-10-09T22:03:50.4682178Z [1m[92m   Compiling[0m strsim v0.11.1
+2026-10-09T22:03:50.4870784Z [1m[92m   Compiling[0m option-ext v0.2.0
+2026-10-09T22:03:50.4928101Z [1m[92m   Compiling[0m clap_lex v0.7.5
+2026-10-09T22:03:50.5608608Z [1m[92m   Compiling[0m winnow v0.7.12
+2026-10-09T22:03:50.5779093Z [1m[92m   Compiling[0m pulldown-cmark v0.13.0
+2026-10-09T22:03:50.6088457Z [1m[92m   Compiling[0m unicode-width v0.2.1
+2026-10-09T22:03:50.6091630Z [1m[92m   Compiling[0m linux-raw-sys v0.9.4
+2026-10-09T22:03:50.6565107Z [1m[92m   Compiling[0m log v0.4.27
+2026-10-09T22:03:50.8025367Z [1m[92m   Compiling[0m env_filter v0.1.3
+2026-10-09T22:03:50.8304910Z [1m[92m   Compiling[0m toml_parser v1.0.2
+2026-10-09T22:03:50.8920409Z [1m[92m   Compiling[0m clap_builder v4.5.44
+2026-10-09T22:03:50.9190841Z [1m[92m   Compiling[0m getopts v0.2.23
+2026-10-09T22:03:50.9517217Z [1m[92m   Compiling[0m dirs-sys v0.5.0
+2026-10-09T22:03:51.0230772Z [1m[92m   Compiling[0m digest v0.10.7
+2026-10-09T22:03:51.0842982Z [1m[92m   Compiling[0m serde_spanned v1.0.0
+2026-10-09T22:03:51.0847070Z [1m[92m   Compiling[0m toml_datetime v0.7.0
+2026-10-09T22:03:51.1425601Z [1m[92m   Compiling[0m unicase v2.8.1
+2026-10-09T22:03:51.1800141Z [1m[92m   Compiling[0m pulldown-cmark-escape v0.11.0
+2026-10-09T22:03:51.2073277Z [1m[92m   Compiling[0m fastrand v2.3.0
+2026-10-09T22:03:51.2079619Z [1m[92m   Compiling[0m cpufeatures v0.2.17
+2026-10-09T22:03:51.2322604Z [1m[92m   Compiling[0m jiff v0.2.15
+2026-10-09T22:03:51.2655614Z [1m[92m   Compiling[0m toml_writer v1.0.2
+2026-10-09T22:03:51.2819224Z [1m[92m   Compiling[0m once_cell v1.21.3
+2026-10-09T22:03:51.3011476Z [1m[92m   Compiling[0m sha1 v0.10.6
+2026-10-09T22:03:51.3801257Z [1m[92m   Compiling[0m tempfile v3.20.0
+2026-10-09T22:03:51.3802114Z [1m[92m   Compiling[0m toml v0.9.5
+2026-10-09T22:03:51.5312620Z [1m[92m   Compiling[0m clap v4.5.45
+2026-10-09T22:03:51.6002070Z [1m[92m   Compiling[0m dirs v6.0.0
+2026-10-09T22:03:51.6189332Z [1m[92m   Compiling[0m shell-words v1.1.0
+2026-10-09T22:03:51.6842054Z [1m[92m   Compiling[0m env_logger v0.11.8
+2026-10-09T22:03:51.7841174Z [1m[92m   Compiling[0m rust-script v0.36.0
+2026-10-09T22:04:10.5212406Z [1m[92m    Finished[0m `release` profile [optimized] target(s) in 26.15s
+2026-10-09T22:04:10.5254282Z [1m[92m  Installing[0m /home/runner/.cargo/bin/rust-script
+2026-10-09T22:04:10.5273731Z [1m[92m   Installed[0m package `rust-script v0.36.0` (executable `rust-script`)
+2026-10-09T22:04:10.5608118Z rust-script 0.36.0
+2026-10-09T22:04:10.5670335Z ##[group]Run actions/download-artifact@v8
+2026-10-09T22:04:10.5670645Z with:
+2026-10-09T22:04:10.5670853Z   name: coverage-objects
+2026-10-09T22:04:10.5671094Z   path: coverage-objects
+2026-10-09T22:04:10.5671330Z   merge-multiple: false
+2026-10-09T22:04:10.5671578Z   repository: link-assistant/formal-ai
+2026-10-09T22:04:10.5671853Z   run-id: 37989420805
+2026-10-09T22:04:10.5672072Z   skip-decompress: false
+2026-10-09T22:04:10.5672301Z   digest-mismatch: error
+2026-10-09T22:04:10.5672518Z env:
+2026-10-09T22:04:10.5672703Z   CARGO_NET_RETRY: 10
+2026-10-09T22:04:10.5672939Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:04:10.5673193Z   CARGO_TERM_COLOR: always
+2026-10-09T22:04:10.5673468Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:04:10.5673703Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:04:10.5673978Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:04:10.5674233Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:04:10.5674529Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2026-10-09T22:04:10.5674925Z   ACTIONS_CACHE_SERVICE_V2: on
+2026-10-09T22:04:10.5675336Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2026-10-09T22:04:10.5725055Z   ACTIONS_RUNTIME_TOKEN: ***
+2026-10-09T22:04:10.5725349Z   SCCACHE_GHA_ENABLED: true
+2026-10-09T22:04:10.5725602Z   RUSTC_WRAPPER: sccache
+2026-10-09T22:04:10.5725862Z   NODE_OPTIONS: --disable-warning=DEP0005
+2026-10-09T22:04:10.5726144Z ##[endgroup]
+2026-10-09T22:04:10.7128144Z Downloading single artifact
+2026-10-09T22:04:10.8009110Z Preparing to download the following artifacts:
+2026-10-09T22:04:10.8010224Z - coverage-objects (ID: 11645488194, Size: 7347967153, Expected Digest: sha256:53019a4b33201c4dd2b791ba6884428d79d19b1763fb53bf6c21dc858f132533)
+2026-10-09T22:04:10.9551834Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/a673085e-32f7-8818-aecf-fd3ddc77185d/workflow-job-run-cf43bb5e-82ea-5167-bf6d-a3778dfa9c07/artifacts/09c9657809ca73ae3cfcbbf9324fba5f43b4d9ca05cc1dc1e0b86ba266a2425c.zip
+2026-10-09T22:04:10.9554216Z Starting download of artifact to: /home/runner/work/formal-ai/formal-ai/coverage-objects
+2026-10-09T22:06:57.0618384Z SHA256 digest of downloaded artifact is 53019a4b33201c4dd2b791ba6884428d79d19b1763fb53bf6c21dc858f132533
+2026-10-09T22:06:57.0619468Z Artifact download completed successfully.
+2026-10-09T22:06:57.0620039Z Total of 1 artifact(s) downloaded
+2026-10-09T22:06:57.0627226Z Download artifact has finished successfully
+2026-10-09T22:06:57.0772367Z ##[group]Run tar -xf coverage-objects/coverage-objects.tar
+2026-10-09T22:06:57.0773313Z [36;1mtar -xf coverage-objects/coverage-objects.tar[0m
+2026-10-09T22:06:57.1164324Z shell: /usr/bin/bash -e {0}
+2026-10-09T22:06:57.1164654Z env:
+2026-10-09T22:06:57.1164885Z   CARGO_NET_RETRY: 10
+2026-10-09T22:06:57.1165181Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:06:57.1165498Z   CARGO_TERM_COLOR: always
+2026-10-09T22:06:57.1165771Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:06:57.1166034Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:06:57.1166331Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:06:57.1166620Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:06:57.1166966Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2026-10-09T22:06:57.1167380Z   ACTIONS_CACHE_SERVICE_V2: on
+2026-10-09T22:06:57.1168060Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2026-10-09T22:06:57.1218367Z   ACTIONS_RUNTIME_TOKEN: ***
+2026-10-09T22:06:57.1218692Z   SCCACHE_GHA_ENABLED: true
+2026-10-09T22:06:57.1218946Z   RUSTC_WRAPPER: sccache
+2026-10-09T22:06:57.1219178Z ##[endgroup]
+2026-10-09T22:08:39.3599224Z ##[group]Run bash scripts/report-runner-capacity.sh "before coverage"
+2026-10-09T22:08:39.3599804Z [36;1mbash scripts/report-runner-capacity.sh "before coverage"[0m
+2026-10-09T22:08:39.3671931Z shell: /usr/bin/bash -e {0}
+2026-10-09T22:08:39.3672203Z env:
+2026-10-09T22:08:39.3672411Z   CARGO_NET_RETRY: 10
+2026-10-09T22:08:39.3672672Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:08:39.3672954Z   CARGO_TERM_COLOR: always
+2026-10-09T22:08:39.3673215Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:08:39.3673465Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:08:39.3673733Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:08:39.3674010Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:08:39.3674351Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2026-10-09T22:08:39.3674741Z   ACTIONS_CACHE_SERVICE_V2: on
+2026-10-09T22:08:39.3675180Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2026-10-09T22:08:39.3725615Z   ACTIONS_RUNTIME_TOKEN: ***
+2026-10-09T22:08:39.3725943Z   SCCACHE_GHA_ENABLED: true
+2026-10-09T22:08:39.3726196Z   RUSTC_WRAPPER: sccache
+2026-10-09T22:08:39.3726429Z ##[endgroup]
+2026-10-09T22:08:39.3853681Z ##[group]Run set -euo pipefail
+2026-10-09T22:08:39.3854012Z [36;1mset -euo pipefail[0m
+2026-10-09T22:08:39.3854408Z [36;1mbash scripts/report-runner-capacity.sh --watch 120 "during coverage" &[0m
+2026-10-09T22:08:39.3854889Z [36;1mecho "CAPACITY_SAMPLER_PID=$!" >> "$GITHUB_ENV"[0m
+2026-10-09T22:08:39.3912195Z shell: /usr/bin/bash -e {0}
+2026-10-09T22:08:39.3912458Z env:
+2026-10-09T22:08:39.3912662Z   CARGO_NET_RETRY: 10
+2026-10-09T22:08:39.3912913Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:08:39.3913189Z   CARGO_TERM_COLOR: always
+2026-10-09T22:08:39.3913437Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:08:39.3913678Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:08:39.3913934Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:08:39.3914190Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:08:39.3914496Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2026-10-09T22:08:39.3914870Z   ACTIONS_CACHE_SERVICE_V2: on
+2026-10-09T22:08:39.3915317Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2026-10-09T22:08:39.3965892Z   ACTIONS_RUNTIME_TOKEN: ***
+2026-10-09T22:08:39.3966181Z   SCCACHE_GHA_ENABLED: true
+2026-10-09T22:08:39.3966437Z   RUSTC_WRAPPER: sccache
+2026-10-09T22:08:39.3966668Z ##[endgroup]
+2026-10-09T22:08:39.4118249Z ##[group]Run set -euo pipefail
+2026-10-09T22:08:39.4118598Z [36;1mset -euo pipefail[0m
+2026-10-09T22:08:39.4118906Z [36;1mexport SHARD_INDEX=$((SHARD_JOB_INDEX + 1))[0m
+2026-10-09T22:08:39.4119378Z [36;1mexport LLVM_PROFILE_FILE="$RUNNER_TEMP/coverage-profiles/rust-%p-%m.profraw"[0m
+2026-10-09T22:08:39.4119879Z [36;1mmkdir -p "$RUNNER_TEMP/coverage-profiles"[0m
+2026-10-09T22:08:39.4120227Z [36;1mscripts/run-with-budget-warning.sh \[0m
+2026-10-09T22:08:39.4120613Z [36;1m  "$TEST_BUDGET_SECONDS" "Instrumented coverage shard" \[0m
+2026-10-09T22:08:39.4121069Z [36;1m  bash scripts/run-coverage-shard.sh coverage-tests.tsv \[0m
+2026-10-09T22:08:39.4121501Z [36;1m    --skip no_benchmark_prompt_reaches_the_unknown_opener[0m
+2026-10-09T22:08:39.4178321Z shell: /usr/bin/bash -e {0}
+2026-10-09T22:08:39.4178589Z env:
+2026-10-09T22:08:39.4178791Z   CARGO_NET_RETRY: 10
+2026-10-09T22:08:39.4179034Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:08:39.4179332Z   CARGO_TERM_COLOR: always
+2026-10-09T22:08:39.4179580Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:08:39.4179816Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:08:39.4180071Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:08:39.4180332Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:08:39.4180638Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2026-10-09T22:08:39.4180996Z   ACTIONS_CACHE_SERVICE_V2: on
+2026-10-09T22:08:39.4181399Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2026-10-09T22:08:39.4230845Z   ACTIONS_RUNTIME_TOKEN: ***
+2026-10-09T22:08:39.4231127Z   SCCACHE_GHA_ENABLED: true
+2026-10-09T22:08:39.4231376Z   RUSTC_WRAPPER: sccache
+2026-10-09T22:08:39.4231621Z   CAPACITY_SAMPLER_PID: 3749
+2026-10-09T22:08:39.4231862Z   TEST_BUDGET_SECONDS: 1200
+2026-10-09T22:08:39.4232105Z   TEST_WARN_RATIO_PERCENT: 70
+2026-10-09T22:08:39.4232351Z   SHARD_JOB_INDEX: 6
+2026-10-09T22:08:39.4232560Z   SHARD_TOTAL: 16
+2026-10-09T22:08:39.4232766Z ##[endgroup]
+2026-10-09T22:08:39.8464899Z 6295 test(s) in 16 shard(s), each exactly once, longest first
+2026-10-09T22:08:39.9759043Z coverage batch 0: 1 unit case(s), priority 487.348544s
+2026-10-09T22:08:39.9800200Z coverage batch 1: 1 unit case(s), priority 268.550468s
+2026-10-09T22:08:39.9838310Z 
+2026-10-09T22:08:39.9858575Z running 1 test
+2026-10-09T22:08:39.9868192Z 
+2026-10-09T22:08:39.9868587Z running 1 test
+2026-10-09T22:09:35.9188877Z test issue_499_learn_from_source::learn_from_source_is_recognized_in_every_supported_language ... ok
+2026-10-09T22:09:35.9189652Z 
+2026-10-09T22:09:35.9190147Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 55.93s
+2026-10-09T22:09:35.9190810Z 
+2026-10-09T22:09:35.9298507Z coverage batch 1: completed 1/1 in 55.950s, exit 0, certified true
+2026-10-09T22:09:35.9311068Z coverage batch 2: 1 unit case(s), priority 180.71167s
+2026-10-09T22:09:35.9349048Z 
+2026-10-09T22:09:35.9349342Z running 1 test
+2026-10-09T22:09:39.9836628Z test issue_499_learn_from_source::the_reported_directive_drives_the_learning_recipe_via_agent_cli has been running for over 60 seconds
+2026-10-09T22:10:03.7939610Z test issue_499_learn_from_source::the_reported_directive_drives_the_learning_recipe_via_agent_cli ... ok
+2026-10-09T22:10:03.7940818Z 
+2026-10-09T22:10:03.7941475Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 83.81s
+2026-10-09T22:10:03.7942313Z 
+2026-10-09T22:10:03.8057405Z coverage batch 0: completed 1/1 in 83.831s, exit 0, certified true
+2026-10-09T22:10:03.8058490Z coverage batch 3: 1 unit case(s), priority 141.657774s
+2026-10-09T22:10:03.8104649Z 
+2026-10-09T22:10:03.8105135Z running 1 test
+2026-10-09T22:10:25.1323175Z test agentic_coding::issue_498_google_trends_learning::the_learning_report_is_a_faithful_proposal_only_run ... ok
+2026-10-09T22:10:25.1323685Z 
+2026-10-09T22:10:25.1324295Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 21.32s
+2026-10-09T22:10:25.1324689Z 
+2026-10-09T22:10:25.1423779Z coverage batch 3: completed 1/1 in 21.337s, exit 0, certified true
+2026-10-09T22:10:25.1424738Z coverage batch 4: 1 unit case(s), priority 112.006029s
+2026-10-09T22:10:25.1469885Z 
+2026-10-09T22:10:25.1470113Z running 1 test
+2026-10-09T22:10:35.9351946Z test coding_discovery::structural_composition::held_out_filter_predicate_and_string_window_schemas_execute has been running for over 60 seconds
+2026-10-09T22:11:05.8924983Z test issue_705_anticipation::idle_dreaming_persists_the_ledger_and_later_live_usage_records_a_hit ... ok
+2026-10-09T22:11:05.8925694Z 
+2026-10-09T22:11:05.8926189Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 40.75s
+2026-10-09T22:11:05.8926712Z 
+2026-10-09T22:11:05.9076437Z coverage batch 4: completed 1/1 in 40.765s, exit 0, certified true
+2026-10-09T22:11:05.9078793Z coverage batch 5: 1 unit case(s), priority 81.135636s
+2026-10-09T22:11:05.9125833Z 
+2026-10-09T22:11:05.9126191Z running 1 test
+2026-10-09T22:11:19.0396901Z test software_project::popular_software_project_prompts_use_the_general_formalization_path ... ok
+2026-10-09T22:11:19.0398113Z 
+2026-10-09T22:11:19.0398747Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 13.13s
+2026-10-09T22:11:19.0399479Z 
+2026-10-09T22:11:19.0511733Z coverage batch 5: completed 1/1 in 13.143s, exit 0, certified true
+2026-10-09T22:11:19.0512540Z coverage batch 6: 1 unit case(s), priority 68.209846s
+2026-10-09T22:11:19.0558460Z 
+2026-10-09T22:11:19.0559464Z running 1 test
+2026-10-09T22:11:41.3691828Z test coding_discovery::structural_composition::held_out_filter_predicate_and_string_window_schemas_execute ... ok
+2026-10-09T22:11:41.3692884Z 
+2026-10-09T22:11:41.3693614Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 125.43s
+2026-10-09T22:11:41.3694445Z 
+2026-10-09T22:11:41.3740047Z coverage batch 2: completed 1/1 in 125.444s, exit 0, certified true
+2026-10-09T22:11:41.3740888Z coverage batch 7: 1 unit case(s), priority 14.7s
+2026-10-09T22:11:41.3786623Z 
+2026-10-09T22:11:41.3787046Z running 1 test
+2026-10-09T22:11:48.0909569Z test specification::benchmarks::issue_315_program_synthesis_accepts_supported_language_wrappers ... ok
+2026-10-09T22:11:48.0910866Z 
+2026-10-09T22:11:48.0913654Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 29.03s
+2026-10-09T22:11:48.0914527Z 
+2026-10-09T22:11:48.1004526Z coverage batch 6: completed 1/1 in 29.049s, exit 0, certified true
+2026-10-09T22:11:48.1005792Z coverage batch 8: 1 integration case(s), priority 13.8s
+2026-10-09T22:11:48.1038777Z 
+2026-10-09T22:11:48.1038982Z running 1 test
+2026-10-09T22:11:52.9052155Z test specification::code_generation::single_turn::russian_program_request_with_unknown_task_is_not_unknown ... ok
+2026-10-09T22:11:52.9053280Z 
+2026-10-09T22:11:52.9056030Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 11.53s
+2026-10-09T22:11:52.9057039Z 
+2026-10-09T22:11:52.9147565Z coverage batch 7: completed 1/1 in 11.541s, exit 0, certified true
+2026-10-09T22:11:52.9148603Z coverage batch 9: 1 unit case(s), priority 10.2s
+2026-10-09T22:11:52.9194466Z 
+2026-10-09T22:11:52.9195124Z running 1 test
+2026-10-09T22:12:07.8089526Z test issue_819_report_flow::a_report_without_an_issue_url_is_narrated_as_a_failure ... ok
+2026-10-09T22:12:07.8092476Z 
+2026-10-09T22:12:07.8093064Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 410 filtered out; finished in 19.70s
+2026-10-09T22:12:07.8093799Z 
+2026-10-09T22:12:07.8178135Z coverage batch 8: completed 1/1 in 19.717s, exit 0, certified true
+2026-10-09T22:12:07.8178953Z coverage batch 10: 1 unit case(s), priority 7.3s
+2026-10-09T22:12:07.8227487Z 
+2026-10-09T22:12:07.8228024Z running 1 test
+2026-10-09T22:12:10.1359869Z test repository_workspace::issue_1138_locate_targets::census_locates_a_declaration_the_prompt_never_names ... ok
+2026-10-09T22:12:10.1361697Z 
+2026-10-09T22:12:10.1362599Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 17.22s
+2026-10-09T22:12:10.1363509Z 
+2026-10-09T22:12:10.1893914Z coverage batch 9: completed 1/1 in 17.274s, exit 0, certified true
+2026-10-09T22:12:10.1900828Z coverage batch 11: 1 unit case(s), priority 5.5s
+2026-10-09T22:12:10.1944833Z 
+2026-10-09T22:12:10.1945213Z running 1 test
+2026-10-09T22:12:20.1292290Z test web_engine_core::issue_1186_formalization_probe_set::every_probe_formalizes_to_its_expected_clause ... ok
+2026-10-09T22:12:20.1293008Z 
+2026-10-09T22:12:20.1293472Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 9.93s
+2026-10-09T22:12:20.1293970Z 
+2026-10-09T22:12:20.1386134Z coverage batch 11: completed 1/1 in 9.949s, exit 0, certified true
+2026-10-09T22:12:20.1386878Z coverage batch 12: 1 unit case(s), priority 4.6s
+2026-10-09T22:12:20.1433371Z 
+2026-10-09T22:12:20.1437284Z running 1 test
+2026-10-09T22:12:26.0107396Z test issue_1138_solve_cli::solve_refuses_to_commit_by_default ... ok
+2026-10-09T22:12:26.0533349Z 
+2026-10-09T22:12:26.0534343Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 18.23s
+2026-10-09T22:12:26.0535458Z 
+2026-10-09T22:12:26.0638375Z coverage batch 10: completed 1/1 in 18.246s, exit 0, certified true
+2026-10-09T22:12:26.0639160Z coverage batch 13: 1 unit case(s), priority 4.3s
+2026-10-09T22:12:26.0686607Z 
+2026-10-09T22:12:26.0687303Z running 1 test
+2026-10-09T22:12:26.1146617Z test ci_cd::macos_package_retry::retries_electron_builder_request_timeout ... ok
+2026-10-09T22:12:26.1147263Z 
+2026-10-09T22:12:26.1147991Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 0.05s
+2026-10-09T22:12:26.1148662Z 
+2026-10-09T22:12:26.1192756Z coverage batch 13: completed 1/1 in 0.055s, exit 0, certified true
+2026-10-09T22:12:26.1193937Z coverage batch 14: 1 integration case(s), priority 3.4s
+2026-10-09T22:12:26.1235384Z 
+2026-10-09T22:12:26.1235894Z running 1 test
+2026-10-09T22:12:28.2084173Z test specification::behavior_rules::behavior_rules_list_answer_is_localized_for_supported_languages ... ok
+2026-10-09T22:12:28.2084950Z 
+2026-10-09T22:12:28.2085913Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 8.06s
+2026-10-09T22:12:28.2086728Z 
+2026-10-09T22:12:28.2224504Z coverage batch 12: completed 1/1 in 8.084s, exit 0, certified true
+2026-10-09T22:12:28.2225300Z coverage batch 15: 1 unit case(s), priority 3.3s
+2026-10-09T22:12:28.2274081Z 
+2026-10-09T22:12:28.2274687Z running 1 test
+2026-10-09T22:12:29.3889622Z test issue_758_capability_routing::live_http_server_routes_reported_folder_variants_to_one_shell_contract ... ok
+2026-10-09T22:12:29.3890218Z 
+2026-10-09T22:12:29.3890546Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 410 filtered out; finished in 3.26s
+2026-10-09T22:12:29.3891004Z 
+2026-10-09T22:12:29.3915161Z coverage batch 14: completed 1/1 in 3.272s, exit 0, certified true
+2026-10-09T22:12:29.3915641Z coverage batch 16: 1 unit case(s), priority 2.9s
+2026-10-09T22:12:29.3964327Z 
+2026-10-09T22:12:29.3964843Z running 1 test
+2026-10-09T22:12:30.2289483Z test issue_1021_behaviour_range::a_command_naming_noun_is_stripped_for_every_command ... ok
+2026-10-09T22:12:30.2290564Z 
+2026-10-09T22:12:30.2291269Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 0.83s
+2026-10-09T22:12:30.2292151Z 
+2026-10-09T22:12:30.2402471Z coverage batch 16: completed 1/1 in 0.849s, exit 0, certified true
+2026-10-09T22:12:30.2403238Z coverage batch 17: 1 integration case(s), priority 2.5s
+2026-10-09T22:12:30.2438047Z 
+2026-10-09T22:12:30.2438506Z running 1 test
+2026-10-09T22:12:32.2523715Z test courtesy_response::courtesy_response_matrix_is_classified_across_languages ... ok
+2026-10-09T22:12:32.2524176Z 
+2026-10-09T22:12:32.2524447Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 4.02s
+2026-10-09T22:12:32.2525101Z 
+2026-10-09T22:12:32.2614720Z coverage batch 15: completed 1/1 in 4.039s, exit 0, certified true
+2026-10-09T22:12:32.2615473Z coverage batch 18: 1 integration case(s), priority 2.4s
+2026-10-09T22:12:32.2645991Z 
+2026-10-09T22:12:32.2646299Z running 1 test
+2026-10-09T22:12:32.7449508Z test http_client::a_response_that_pauses_mid_body_is_read_in_full ... ok
+2026-10-09T22:12:32.7450650Z 
+2026-10-09T22:12:32.7451502Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 410 filtered out; finished in 2.50s
+2026-10-09T22:12:32.7452431Z 
+2026-10-09T22:12:32.7476792Z coverage batch 17: completed 1/1 in 2.507s, exit 0, certified true
+2026-10-09T22:12:32.7478840Z coverage batch 19: 1 integration case(s), priority 2.2s
+2026-10-09T22:12:32.7511717Z 
+2026-10-09T22:12:32.7512019Z running 1 test
+2026-10-09T22:12:33.4651557Z test issue_712_intent_routing::responses_google_request_routes_to_web_search ... ok
+2026-10-09T22:12:33.4652607Z 
+2026-10-09T22:12:33.4653346Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 410 filtered out; finished in 1.20s
+2026-10-09T22:12:33.4654047Z 
+2026-10-09T22:12:33.4679889Z coverage batch 18: completed 1/1 in 1.206s, exit 0, certified true
+2026-10-09T22:12:33.4680960Z coverage batch 20: 1 unit case(s), priority 2.1s
+2026-10-09T22:12:33.4728168Z 
+2026-10-09T22:12:33.4728734Z running 1 test
+2026-10-09T22:12:35.3628009Z test issue_349_reverse_sort::issue_349_reverse_sort_follow_up_must_not_be_unknown ... ok
+2026-10-09T22:12:35.3628426Z 
+2026-10-09T22:12:35.3628696Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 410 filtered out; finished in 2.61s
+2026-10-09T22:12:35.3629073Z 
+2026-10-09T22:12:35.3721217Z coverage batch 19: completed 1/1 in 2.624s, exit 0, certified true
+2026-10-09T22:12:35.3721701Z coverage batch 21: 1 unit case(s), priority 2s
+2026-10-09T22:12:35.3765858Z 
+2026-10-09T22:12:35.3766156Z running 1 test
+2026-10-09T22:12:35.4847217Z test ci_cd::macos_package_retry::retry_is_skipped_when_it_would_exceed_the_packaging_budget ... ok
+2026-10-09T22:12:35.4848030Z 
+2026-10-09T22:12:35.4848339Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 2.01s
+2026-10-09T22:12:35.4848729Z 
+2026-10-09T22:12:35.4888847Z coverage batch 20: completed 1/1 in 2.021s, exit 0, certified true
+2026-10-09T22:12:35.4889743Z coverage batch 22: 1 integration case(s), priority 1.9s
+2026-10-09T22:12:35.4919763Z 
+2026-10-09T22:12:35.4920056Z running 1 test
+2026-10-09T22:12:37.1468797Z test issue_839_report_script::the_generated_script_files_the_full_conversation_in_all_six_sections ... ok
+2026-10-09T22:12:37.1469422Z 
+2026-10-09T22:12:37.1469715Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 410 filtered out; finished in 1.65s
+2026-10-09T22:12:37.1470085Z 
+2026-10-09T22:12:37.1569981Z coverage batch 22: completed 1/1 in 1.668s, exit 0, certified true
+2026-10-09T22:12:37.1570799Z coverage batch 23: 1 unit case(s), priority 1.8s
+2026-10-09T22:12:37.1613656Z 
+2026-10-09T22:12:37.1613952Z running 1 test
+2026-10-09T22:12:37.3904557Z test ci_cd::macos_package_retry::retry_is_skipped_when_the_job_deadline_is_too_close ... ok
+2026-10-09T22:12:37.3905577Z 
+2026-10-09T22:12:37.3906359Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 2.01s
+2026-10-09T22:12:37.3907209Z 
+2026-10-09T22:12:37.3946536Z coverage batch 21: completed 1/1 in 2.022s, exit 0, certified true
+2026-10-09T22:12:37.3956532Z coverage batch 24: 1 integration case(s), priority 1.7s
+2026-10-09T22:12:37.3980172Z 
+2026-10-09T22:12:37.3980396Z running 1 test
+2026-10-09T22:12:40.3305911Z test issue_671_absolute_path_projection::a_declaration_the_server_cannot_stat_is_still_the_clients_own ... ok
+2026-10-09T22:12:40.3306925Z 
+2026-10-09T22:12:40.3307583Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 410 filtered out; finished in 2.93s
+2026-10-09T22:12:40.3308655Z 
+2026-10-09T22:12:40.3395559Z coverage batch 24: completed 1/1 in 2.945s, exit 0, certified true
+2026-10-09T22:12:40.3396316Z coverage batch 25: 1 unit case(s), priority 1.7s
+2026-10-09T22:12:40.3441286Z 
+2026-10-09T22:12:40.3441925Z running 1 test
+2026-10-09T22:12:40.4141238Z test issue_1021_behaviour_range::a_bare_command_is_the_request ... ok
+2026-10-09T22:12:40.4142240Z 
+2026-10-09T22:12:40.4142911Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 3.25s
+2026-10-09T22:12:40.4143777Z 
+2026-10-09T22:12:40.4253737Z coverage batch 23: completed 1/1 in 3.268s, exit 0, certified true
+2026-10-09T22:12:40.4254509Z coverage batch 26: 1 integration case(s), priority 1.6s
+2026-10-09T22:12:40.4289229Z 
+2026-10-09T22:12:40.4289914Z running 1 test
+2026-10-09T22:12:41.2894425Z test issue_936_substitution_compiler::counter_loop_executes_identically_in_rust_javascript_and_webassembly ... ok
+2026-10-09T22:12:41.2895510Z 
+2026-10-09T22:12:41.2896122Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 0.95s
+2026-10-09T22:12:41.2896894Z 
+2026-10-09T22:12:41.2947343Z coverage batch 25: completed 1/1 in 0.955s, exit 0, certified true
+2026-10-09T22:12:41.2948560Z coverage batch 27: 1 unit case(s), priority 1.6s
+2026-10-09T22:12:41.3001397Z 
+2026-10-09T22:12:41.3002499Z running 1 test
+2026-10-09T22:12:42.7045052Z test issue_746_hosted_tools::every_specified_hosted_type_reaches_its_capability_through_the_public_api ... ok
+2026-10-09T22:12:42.7046111Z 
+2026-10-09T22:12:42.7046804Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 410 filtered out; finished in 2.28s
+2026-10-09T22:12:42.7047620Z 
+2026-10-09T22:12:42.7131411Z coverage batch 26: completed 1/1 in 2.288s, exit 0, certified true
+2026-10-09T22:12:42.7132191Z coverage batch 28: 1 integration case(s), priority 1.4s
+2026-10-09T22:12:42.7165749Z 
+2026-10-09T22:12:42.7166215Z running 1 test
+2026-10-09T22:12:43.7437542Z test specification::arbitrary_skill_compilation::whole_task_uses_one_artifact_across_solver_interpreter_explanation_and_agent ... ok
+2026-10-09T22:12:43.7438870Z 
+2026-10-09T22:12:43.7439382Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5243 filtered out; finished in 2.44s
+2026-10-09T22:12:43.7440136Z 
+2026-10-09T22:12:43.7554124Z coverage batch 27: completed 1/1 in 2.461s, exit 0, certified true
+2026-10-09T22:12:43.7554804Z coverage batch 29: 2 unit case(s), priority 1.4s
+2026-10-09T22:12:43.7602544Z 
+2026-10-09T22:12:43.7603032Z running 2 tests
+2026-10-09T22:12:44.7271481Z test issue_755_file_read_write::read_emits_only_the_advertised_parameter_name ... ok
+2026-10-09T22:12:44.7272667Z 
+2026-10-09T22:12:44.7278864Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 410 filtered out; finished in 2.01s
+2026-10-09T22:12:44.7279714Z 
+2026-10-09T22:12:44.7338856Z coverage batch 28: completed 1/1 in 2.020s, exit 0, certified true
+2026-10-09T22:12:44.7339781Z coverage batch 30: 2 unit case(s), priority 1.3s
+2026-10-09T22:12:44.7380390Z 
+2026-10-09T22:12:44.7381515Z running 2 tests
+2026-10-09T22:12:51.2799963Z test document_originality_check::document_originality_requests_route_to_grounded_attachment_workflow ... ok
+2026-10-09T22:12:51.5779495Z test specification::chat_surface::behavior_rule_grammar::behavior_rule_listing_renders_when_then_statements_grouped_by_topic ... ok
+2026-10-09T22:12:51.5780566Z 
+2026-10-09T22:12:51.5809243Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 5242 filtered out; finished in 7.81s
+2026-10-09T22:12:51.5828224Z 
+2026-10-09T22:12:51.5880513Z coverage batch 29: completed 2/2 in 7.833s, exit 0, certified true
+2026-10-09T22:12:51.5881489Z coverage batch 31: 2 unit case(s), priority 1.2s
+2026-10-09T22:12:51.5934547Z 
+2026-10-09T22:12:51.5935018Z running 2 tests
+2026-10-09T22:12:54.6249266Z test solver::issue_1138_self_use_repository_workspace::a_named_base_commit_is_not_silently_dropped ... ok
+2026-10-09T22:12:54.6490828Z test issue_1066_hollow_answers::a_colon_in_a_later_sentence_does_not_become_the_task ... ok
+2026-10-09T22:12:54.6519173Z 
+2026-10-09T22:12:54.6519957Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 5242 filtered out; finished in 9.91s
+2026-10-09T22:12:54.6520845Z 
+2026-10-09T22:12:54.6598217Z coverage batch 30: completed 2/2 in 9.926s, exit 0, certified true
+2026-10-09T22:12:54.6599516Z coverage batch 32: 3 unit case(s), priority 1.1s
+2026-10-09T22:12:54.6651330Z 
+2026-10-09T22:12:54.6651824Z running 3 tests
+2026-10-09T22:12:58.2235828Z test coding_discovery::composition_search::a_reduction_over_one_sequence_parameter_stays_a_reduction ... ok
+2026-10-09T22:12:58.3471423Z test issue_1066_ladder_capability::canonical_facts::a_serialized_relationship_uses_its_literal_links_key ... ok
+2026-10-09T22:12:58.8031186Z test seed::issue_1138_intent_phrase_migration::farewell_prompts_route_through_the_social_farewell_role ... ok
+2026-10-09T22:12:58.8032315Z 
+2026-10-09T22:12:58.8032949Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 5242 filtered out; finished in 7.21s
+2026-10-09T22:12:58.8033644Z 
+2026-10-09T22:12:58.8155350Z coverage batch 31: completed 2/2 in 7.227s, exit 0, certified true
+2026-10-09T22:12:58.8156385Z coverage batch 33: 1 desktop_launch_registry case(s), priority 0.092s
+2026-10-09T22:12:58.8180810Z 
+2026-10-09T22:12:58.8181787Z running 1 test
+2026-10-09T22:12:58.8198396Z test desktop_registry_has_cross_platform_launch_metadata ... ok
+2026-10-09T22:12:58.8200196Z 
+2026-10-09T22:12:58.8200845Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+2026-10-09T22:12:58.8201566Z 
+2026-10-09T22:12:58.8214353Z coverage batch 33: completed 1/1 in 0.005s, exit 0, certified true
+2026-10-09T22:12:58.8215329Z coverage batch 34: 1 equivalent_tool_requests case(s), priority 0.092s
+2026-10-09T22:12:58.8235703Z 
+2026-10-09T22:12:58.8236583Z running 1 test
+2026-10-09T22:12:59.0943925Z test multilingual_variations::arithmetic_chinese_word_variations_match ... ok
+2026-10-09T22:13:00.1939277Z test specification::synthesis::renumbered_word_problem_recomputes_from_quantities ... ok
+2026-10-09T22:13:00.1948345Z 
+2026-10-09T22:13:00.1948926Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 5241 filtered out; finished in 5.53s
+2026-10-09T22:13:00.1949636Z 
+2026-10-09T22:13:00.2061588Z coverage batch 32: completed 3/3 in 5.546s, exit 0, certified true
+2026-10-09T22:13:00.2062416Z coverage batch 35: 1 formal_ai case(s), priority 0.092s
+2026-10-09T22:13:00.2090799Z 
+2026-10-09T22:13:00.2091224Z running 1 test
+2026-10-09T22:13:00.4709584Z test agentic_coding::driver::algorithm_operation_receipts::algorithm_operation_status_comes_from_real_io_and_conformance_results ... ok
+2026-10-09T22:13:00.4710840Z 
+2026-10-09T22:13:00.4711558Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.26s
+2026-10-09T22:13:00.4712387Z 
+2026-10-09T22:13:00.4779288Z coverage batch 35: completed 1/1 in 0.272s, exit 0, certified true
+2026-10-09T22:13:00.4780393Z coverage batch 36: 23 integration case(s), priority 0.092s
+2026-10-09T22:13:00.4815902Z 
+2026-10-09T22:13:00.4817257Z running 23 tests
+2026-10-09T22:13:00.4892894Z test formal_ai_cli::cli_github_logs_plan_prints_reproducible_capture_commands ... ok
+2026-10-09T22:13:00.5163506Z test formal_ai_cli::cli_memory_reset_requires_confirmation_and_can_backup ... ok
+2026-10-09T22:13:00.5181781Z test issue_1021_client_preflight::every_published_base_path_answers_a_reachability_probe ... ok
+2026-10-09T22:13:00.6562468Z test issue_1069_attributed_dispatch::attributed_dispatch_requires_a_native_session_before_applying_an_effect ... ok
+2026-10-09T22:13:00.7803462Z test issue_1069_link_cli_store::link_cli_rolls_back_an_entire_memory_event_projection ... ok
+2026-10-09T22:13:00.7807042Z test issue_1138_draft_pull_request::open_draft_pull_request_never_targets_the_default_branch ... ok
+2026-10-09T22:13:00.7809091Z test issue_1138_recovery_live::an_idle_container_stops_and_restores_its_state ... ignored, Docker: plan 06 L14 snapshot/reattach evidence
+2026-10-09T22:13:01.2353162Z test issue_412_oracle_languages::catalogued_languages_still_use_the_verified_catalog ... ok
+2026-10-09T22:13:01.3439763Z test formal_ai_cli::cli_chat_command_can_emit_chat_completion_json ... ok
+2026-10-09T22:13:01.3945920Z test issue_703_orchestration::all_required_seed_adapters_capture_process_and_workspace_events ... ok
+2026-10-09T22:13:01.3962159Z test issue_703_orchestration::qwen_orchestration_uses_noninteractive_auto_edit_config ... ok
+2026-10-09T22:13:01.4080776Z test issue_703_orchestration_followup::parallel_comparison_records_a_ledger_and_composes_the_winner ... ok
+2026-10-09T22:13:01.4125786Z test issue_703_replay_tamper::edits_truncation_and_reordering_are_rejected_by_name ... ok
+2026-10-09T22:13:02.7242610Z test issue_744_qwen_tool_schema::qwen_startup_reminders_do_not_override_the_actual_fetch_request ... ok
+2026-10-09T22:13:02.7244395Z test issue_754_cursor::mcp_endpoint_returns_json_rpc_errors_for_bad_requests ... ok
+2026-10-09T22:13:02.7268850Z test issue_822_complete_transcript::export_reconstructs_the_final_streamed_assistant_message ... ok
+2026-10-09T22:13:02.7357309Z test issue_839_context_export::server_export_carries_conversation_turns_not_only_proxy_frames ... ok
+2026-10-09T22:13:03.9236313Z test issue_839_report_script::an_unexportable_session_fails_before_gh_is_reached ... ok
+2026-10-09T22:13:04.0611726Z test failed_web_fetch_phrasings_route_by_url_intent ... ok
+2026-10-09T22:13:04.0612385Z 
+2026-10-09T22:13:04.0613298Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 5.24s
+2026-10-09T22:13:04.0614102Z 
+2026-10-09T22:13:04.0736392Z coverage batch 34: completed 1/1 in 5.253s, exit 0, certified true
+2026-10-09T22:13:04.0737282Z coverage batch 37: 1 issue_707_computer_use case(s), priority 0.092s
+2026-10-09T22:13:04.0767300Z 
+2026-10-09T22:13:04.0768276Z running 1 test
+2026-10-09T22:13:04.0774783Z test every_seeded_primitive_advertises_verification_isolation_and_permission ... ok
+2026-10-09T22:13:04.0778723Z 
+2026-10-09T22:13:04.0779336Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s
+2026-10-09T22:13:04.0780110Z 
+2026-10-09T22:13:04.0805982Z coverage batch 37: completed 1/1 in 0.006s, exit 0, certified true
+2026-10-09T22:13:04.0806860Z coverage batch 38: 1 issue_707_generalization case(s), priority 0.092s
+2026-10-09T22:13:04.0819869Z 
+2026-10-09T22:13:04.0823133Z running 1 test
+2026-10-09T22:13:04.0823803Z test the_suite_holds_at_least_the_ratcheted_number_of_four_language_cases ... ok
+2026-10-09T22:13:04.0824392Z 
+2026-10-09T22:13:04.0824858Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+2026-10-09T22:13:04.0825500Z 
+2026-10-09T22:13:04.0830584Z coverage batch 38: completed 1/1 in 0.003s, exit 0, certified true
+2026-10-09T22:13:04.0831552Z coverage batch 39: 1 issue_715_rewrite_variations case(s), priority 0.092s
+2026-10-09T22:13:04.0858634Z 
+2026-10-09T22:13:04.0858954Z running 1 test
+2026-10-09T22:13:04.3791953Z test issue_931_local_transports::issue_931_transport_trace_is_opt_in ... ok
+2026-10-09T22:13:04.5689056Z test a_cyclic_program_reaches_the_bound_without_writing_partial_bytes ... ok
+2026-10-09T22:13:04.5718057Z 
+2026-10-09T22:13:04.5748700Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.48s
+2026-10-09T22:13:04.5749487Z 
+2026-10-09T22:13:04.5778456Z coverage batch 39: completed 1/1 in 0.495s, exit 0, certified true
+2026-10-09T22:13:04.5803377Z coverage batch 40: 1 issue_874_docs case(s), priority 0.092s
+2026-10-09T22:13:04.5848099Z 
+2026-10-09T22:13:04.5858200Z running 1 test
+2026-10-09T22:13:04.5888519Z test related_repositories_are_linked_without_overstating_runtime_integration ... ok
+2026-10-09T22:13:04.5903702Z 
+2026-10-09T22:13:04.5918589Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+2026-10-09T22:13:04.5938081Z 
+2026-10-09T22:13:04.5978392Z coverage batch 40: completed 1/1 in 0.004s, exit 0, certified true
+2026-10-09T22:13:04.6004901Z coverage batch 41: 1 issue_889_thinking_surfaces case(s), priority 0.092s
+2026-10-09T22:13:04.6027939Z 
+2026-10-09T22:13:04.6058109Z running 1 test
+2026-10-09T22:13:05.3113688Z test issue_558_repair_strategy::agent_mode_routes_repair_strategy_to_a_write ... ok
+2026-10-09T22:13:05.4819287Z test with_formal_ai::with_formal_ai_agent_ephemeral_injects_inline_config_and_model_flag ... ok
+2026-10-09T22:13:05.6509606Z test with_formal_ai_argv::with_formal_ai_reads_a_prompt_that_precedes_trailing_client_flags ... ok
+2026-10-09T22:13:06.8400616Z test step_summaries_are_localized_while_trace_keys_stay_neutral ... ok
+2026-10-09T22:13:06.8426807Z 
+2026-10-09T22:13:06.8439248Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 2.25s
+2026-10-09T22:13:06.8440137Z 
+2026-10-09T22:13:06.8514373Z coverage batch 41: completed 1/1 in 2.270s, exit 0, certified true
+2026-10-09T22:13:06.8515382Z coverage batch 42: 1 issue_973_solve_flags case(s), priority 0.092s
+2026-10-09T22:13:06.8545105Z 
+2026-10-09T22:13:06.8548609Z running 1 test
+2026-10-09T22:13:06.8549228Z test the_case_study_records_the_unrecoverable_failure_and_the_fix ... ok
+2026-10-09T22:13:06.8558853Z 
+2026-10-09T22:13:06.8563264Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+2026-10-09T22:13:06.8564069Z 
+2026-10-09T22:13:06.8564602Z coverage batch 42: completed 1/1 in 0.003s, exit 0, certified true
+2026-10-09T22:13:06.8565539Z coverage batch 43: 32 source case(s), priority 0.092s
+2026-10-09T22:13:06.8590123Z 
+2026-10-09T22:13:06.8590457Z running 32 tests
+2026-10-09T22:13:06.8596291Z test agent::tests::python_commands_have_cross_platform_startup_budget_floor ... ok
+2026-10-09T22:13:06.8618550Z test attachment_context::tests::composes_message_only_when_no_attachment ... ok
+2026-10-09T22:13:06.8628606Z test calculation_word_problem::tests::resolves_box_relations_and_total ... ok
+2026-10-09T22:13:06.8632459Z test coding::blueprint::tests::selects_rust_http_json_stats_blueprint ... ok
+2026-10-09T22:13:06.8633644Z test coding::program_ir::tests::no_new_module_keeps_its_unit_tests_inline ... ok
+2026-10-09T22:13:06.8643213Z test knowledge::tests::cache_capacity_caps_large_sources_at_one_percent ... ok
+2026-10-09T22:13:06.9429225Z test coding::catalog::seed_alias_coverage::every_task_resolves_through_the_seed ... ok
+2026-10-09T22:13:07.0532606Z test link_store::tests::link_cli_default_imports_full_lino_bundle_and_exports_deterministically ... ok
+2026-10-09T22:13:07.0548964Z test memory::tests::parse_returns_empty_when_header_missing ... ok
+2026-10-09T22:13:07.0551345Z test program_plan::tests::derived_inverse_rules_are_pure_data_from_declarations ... ok
+2026-10-09T22:13:07.0552364Z test proof_engine::arithmetic::tests::no_match_when_sides_lack_digits ... ok
+2026-10-09T22:13:07.0560680Z test proof_engine::decision::sat::tests::literal_constructors_and_negation ... ok
+2026-10-09T22:13:07.0562673Z test proof_engine::library::tests::sqrt_two_matches_english ... ok
+2026-10-09T22:13:07.0563938Z test relative_meta_logic::tests::independent_support_reinforces_rather_than_averages ... ok
+2026-10-09T22:13:07.0618551Z test seed::operation_vocabulary::tests::operation_vocabulary_exposes_declared_inverse_pairs ... ok
+2026-10-09T22:13:07.3338934Z test links_query::tests::role_filtered_edges_match_graph_projection ... ok
+2026-10-09T22:13:07.3361571Z test solver_handlers::benchmark_prompts::tests::ambiguous_napisal_prefers_author_over_painter ... ok
+2026-10-09T22:13:07.3468034Z test solver_handlers::numeric_list::tests::reverse_keeps_surface_tokens ... ok
+2026-10-09T22:13:07.3499831Z test solver_helpers::tests::humanize_url_decodes_chinese_percent_escapes ... ok
+2026-10-09T22:13:07.3528454Z test solver_helpers::tests::solver_config_default_is_offline_capable ... ok
+2026-10-09T22:13:07.3548341Z test summarization::tests::apply_semantic_primes_expands_orchestrates ... ok
+2026-10-09T22:13:07.3558811Z test summarization::tests::formalize_markdown_yields_statements_for_readme_prose ... ok
+2026-10-09T22:13:07.3588560Z test summarization::tests::summarize_repository_resource_full_directory_recurses_into_nested_folder ... ok
+2026-10-09T22:13:07.4306506Z test telegram::tests::thinking_blockquote_is_written_in_the_answer_language ... ok
+2026-10-09T22:13:07.4358729Z test translation::cache::tests::escaped_record_parses_as_links_notation ... ok
+2026-10-09T22:13:07.4360703Z test translation::formatting::tests::handles_empty_source ... ok
+2026-10-09T22:13:07.4361986Z test translation::meaning::tests::wikidata_backed_predicate_distinguishes_fallback_from_item ... ok
+2026-10-09T22:13:07.4364545Z test translation::prompt::tests::ignores_trailing_punctuation ... ok
+2026-10-09T22:13:07.4418833Z test translation::wiktionary::tests::extract_translations_finds_russian_from_english_page ... ok
+2026-10-09T22:13:07.4448679Z test web_engine_core::tests::normalize_handles_devanagari ... ok
+2026-10-09T22:13:07.4478852Z test web_search_core::tests::dictionary_sources_are_non_cors_knowledge_providers ... ok
+2026-10-09T22:13:07.7902032Z test seed::tests::issue_394_responses_are_seed_backed ... ok
+2026-10-09T22:13:07.7903012Z 
+2026-10-09T22:13:07.7916862Z test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 479 filtered out; finished in 0.93s
+2026-10-09T22:13:07.7918226Z 
+2026-10-09T22:13:07.7951198Z coverage batch 43: completed 32/32 in 0.940s, exit 0, certified true
+2026-10-09T22:13:07.7959473Z coverage batch 44: 64 unit case(s), priority 0.092s
+2026-10-09T22:13:07.8012960Z 
+2026-10-09T22:13:07.8013387Z running 64 tests
+2026-10-09T22:13:10.0154306Z test issue_982_self_hosting::formal_ai_agent_authored_leaves_and_sessions_replay_byte_for_byte ... ok
+2026-10-09T22:13:10.0155171Z 
+2026-10-09T22:13:10.0158828Z test result: ok. 22 passed; 0 failed; 1 ignored; 0 measured; 388 filtered out; finished in 9.53s
+2026-10-09T22:13:10.0188081Z 
+2026-10-09T22:13:10.0320757Z coverage batch 36: completed 23/23 in 9.551s, exit 0, certified true
+2026-10-09T22:13:10.0328189Z coverage batch 45: 64 unit case(s), priority 0.092s
+2026-10-09T22:13:10.0347073Z 
+2026-10-09T22:13:10.0373812Z running 64 tests
+2026-10-09T22:13:10.0398955Z test ci_cd::release_site_layout::issue_479_landing_surfaces_source_code_as_a_big_button ... ok
+2026-10-09T22:13:10.0548545Z test agentic_coding::agentic_backend_actions::report_issue::bare_report_after_conversation_files_the_issue ... ok
+2026-10-09T22:13:10.0563055Z test agentic_coding::agentic_general_planner::agentic_general_planner_rejects_unsafe_or_ambiguous_requests ... ok
+2026-10-09T22:13:10.0768945Z test ci_cd::source_test_placement::src_has_no_inline_unit_tests ... FAILED
+2026-10-09T22:13:10.0784055Z test ci_cd::test_lane_deduplication::the_specification_lane_still_runs_the_shard_it_owns ... ok
+2026-10-09T22:13:10.0801485Z test ci_cd::workflow_coverage::coverage_jobs_never_depend_on_a_skipped_upstream_check ... ok
+2026-10-09T22:13:10.0835780Z test ci_cd::workflow_release::release_workflow_jobs_have_explicit_timeouts ... ok
+2026-10-09T22:13:10.0858954Z test ci_cd::workflow_task_ladder::the_ladder_runs_against_the_committed_baseline ... ok
+2026-10-09T22:13:10.0888509Z test ci_gates::run_ci_gates::tests::a_gate_without_a_justification_is_rejected ... ok
+2026-10-09T22:13:10.0948755Z test ci_cd::step_budgets_within_job_clocks::unreviewed_install_scripts_are_reported_with_the_command_that_clears_them ... ok
+2026-10-09T22:13:10.3891001Z test agent_cli_entry_point::issue_1069_delivery_recovers_exact_paths_from_the_preserved_user_turn ... ok
+2026-10-09T22:13:10.3909873Z test agentic_coding::codex_patch_writes::changelog_bytes_match_the_agent_cli_write_call ... ok
+2026-10-09T22:13:10.5120485Z test coding_discovery::composition::source_owned_body_reads_compete_with_actual_typed_ir_under_a_provisional_signature ... ok
+2026-10-09T22:13:10.5258682Z test coding_discovery::fragment_catalog::rediscovery_queries_name_no_benchmark_identifier ... ok
+2026-10-09T22:13:10.6049208Z test coding_discovery::no_memorization::issue_1138_held_out_vocabulary_is_absent_from_runtime_and_seed ... ok
+2026-10-09T22:13:10.6228766Z test coding_discovery::program_ir::recursive_reduction_round_trips_as_data_and_type_checks ... ok
+2026-10-09T22:13:10.6278605Z test coding_discovery::task_spec::non_coding_questions_do_not_produce_a_task_spec ... ok
+2026-10-09T22:13:10.7760316Z test agentic_coding::agentic_surfaces::anthropic_messages_emits_tool_use_block_in_agent_mode ... ok
+2026-10-09T22:13:10.7788986Z test agentic_coding::issue_1069_ladder_change_tasks::issue_1069_every_leaf_contract_is_grounded_in_the_committed_tree ... ok
+2026-10-09T22:13:10.7799095Z test agentic_coding::issue_1085_link_edit_rules::a_member_is_inserted_in_the_lists_own_style_through_the_links_network ... ok
+2026-10-09T22:13:11.1999240Z test agentic_coding::issue_1096_edit_is_not_generation::a_replacement_in_a_tracked_file_is_not_generated_in_chinese ... ok
+2026-10-09T22:13:11.2558686Z test claude_code_away_recap::a_summarize_request_over_an_empty_conversation_is_still_owned ... ok
+2026-10-09T22:13:11.6140460Z test compatibility_research_evidence::reported_prompt_uses_namespaced_mcp_research_tools ... ok
+2026-10-09T22:13:12.1609026Z test custom_formalization_subject::custom_quoted_task_formalizes_the_supplied_text ... ok
+2026-10-09T22:13:12.1999205Z test data_files::seed_lino_files_have_no_keyword_restating_comments ... ok
+2026-10-09T22:13:12.2000289Z test docs_benchmarks::issue_444_benchmark_catalog_lists_every_touched_suite ... ok
+2026-10-09T22:13:12.2023611Z test docs_requirements::issue_16_followup_documents_capture_universal_seed_and_memory_migration ... ok
+2026-10-09T22:13:12.2031628Z test docs_requirements::issues::associative_knowledge_networks::issue_686_associative_persistence_case_study_documents_are_present_and_traceable ... ok
+2026-10-09T22:13:12.2033310Z test docs_requirements::issues::dropped_requirements_reverification::no_conversational_gap_is_left_without_a_green_specification ... ok
+2026-10-09T22:13:12.2034766Z test docs_requirements::issues::full_range_coding_artifacts::the_case_study_records_the_data_the_analysis_rests_on ... ok
+2026-10-09T22:13:12.2058672Z test docs_requirements::issues::general_meta_algorithm::issue_559_work_unit_reasoning_is_traceable ... ok
+2026-10-09T22:13:12.2088774Z test docs_requirements::issues::lexeme_importer_evidence::issue_660_evidence_and_ci_are_traceable ... ok
+2026-10-09T22:13:12.2118744Z test docs_requirements::issues::release_badge_stability::issue_492_release_badge_documents_are_traceable ... ok
+2026-10-09T22:13:12.2120284Z test docs_requirements::issues::summarization_validation::issue_893_published_metric_matches_the_scored_criteria ... ok
+2026-10-09T22:13:12.2121628Z test document_generation_plan::latest_meta_language_document_formats_are_available ... ok
+2026-10-09T22:13:13.3298962Z test documentation_issue_citations::issue_citations_match_the_committed_issue_state_snapshot ... ok
+2026-10-09T22:13:14.2630606Z test agentic_coding::issue_1099_multiple_obligations::literal_obligation_transaction::closed_fence_enumeration_payload_has_one_real_exact_receipt ... ok
+2026-10-09T22:13:14.2699078Z test agentic_coding::issue_1099_multiple_obligations::literal_obligation_transaction::unicode_case_mapping_does_not_promote_unrelated_write_owners ... ok
+2026-10-09T22:13:14.6693814Z test agentic_coding::issue_1138_translate_agent_tool::the_planner_lowers_a_source_tree_request_to_one_translate_call ... FAILED
+2026-10-09T22:13:14.6695772Z test agentic_coding::issue_1185_error_repair_loop::formalize_diagnostic_extracts_file_line_code_and_message_from_rustc_output ... ok
+2026-10-09T22:13:14.6728858Z test agentic_coding::issue_1185_repair_apply::every_refusal_is_a_named_gap ... ok
+2026-10-09T22:13:15.5439145Z test fetched_page_answer_extraction::report_format::complete_context_is_requested_in_links_notation ... ok
+2026-10-09T22:13:15.5498663Z test formal_ai::seed_and_memory::environment_directory_declares_every_supported_surface ... ok
+2026-10-09T22:13:15.5518716Z test formal_projection_round_trips::every_seed_language_round_trips_through_a_seeded_formal_target ... ok
+2026-10-09T22:13:16.6079029Z test grounded_local_action::covering_fetch_ends_the_recipe_instead_of_reading_every_result_row ... ok
+2026-10-09T22:13:16.6509370Z test agentic_coding::file_read_tool_calls::read_every_file_lists_then_reads_each_file ... ok
+2026-10-09T22:13:16.6558636Z test agentic_coding::issue_538_agentic::routes_different_requests_to_different_concepts ... ok
+2026-10-09T22:13:16.6618813Z test coding_ladder_rungs::r916_04_completion_is_claimed_when_the_effect_is_observed ... ok
+2026-10-09T22:13:16.8432716Z test agentic_coding::issue_558_change_request::planner_walks_the_change_request_recipe ... ok
+2026-10-09T22:13:16.8748916Z test agentic_coding::issue_558_learning_ledger::refuses_promotion_when_the_user_declines ... ok
+2026-10-09T22:13:16.8750152Z test agentic_coding::issue_558_repair_strategy::the_canonical_set_covers_all_three_classes ... ok
+2026-10-09T22:13:16.9230539Z test agentic_coding::issue_558_self_healing::source_round_trip_is_lossless_for_a_real_module ... ok
+2026-10-09T22:13:17.1949245Z test grounded_local_action::unflagged_adapter_403_still_reads_as_a_failed_fetch ... ok
+2026-10-09T22:13:17.1958639Z test issue_1021_bounded_autonomy::full_trust_selects_the_heaviest_option_and_records_the_arithmetic ... ok
+2026-10-09T22:13:17.3039070Z test issue_1021_write_path::a_command_the_operator_named_is_not_the_ladders_business ... ok
+2026-10-09T22:13:17.3068545Z test issue_1066_agent_ladder::the_qualifying_pr_dry_run_selects_one_session_without_a_pipefail_sigpipe ... ok
+2026-10-09T22:13:18.7992106Z test issue_1066_ladder_capability::a_documented_invariant_searches_repository_documentation ... ok
+2026-10-09T22:13:19.6509067Z test agentic_coding::issue_538_agentic::committed_diagram_session_matches_a_fresh_run ... ok
+2026-10-09T22:13:19.8030812Z test installation_conversion::install_script_converts_back_to_readme_guide ... ok
+2026-10-09T22:13:20.0135974Z test agentic_coding::issue_659_hardcoded_language_learning::formal_ai_executes_the_whole_issue_659_learning_task ... ok
+2026-10-09T22:13:20.3479076Z test agentic_coding::issue_686_agent_cli::committed_agent_cli_session_is_byte_reproducible ... ok
+2026-10-09T22:13:20.7355800Z test issue_1066_ladder_capability::canonical_facts::an_agent_cli_ladder_depth_selector_searches_the_experiment_workflow ... ok
+2026-10-09T22:13:20.8026852Z test issue_1066_node_verifier::the_node_verifier_rejects_a_proof_without_a_repository_effect ... ok
+2026-10-09T22:13:20.8068556Z test issue_1073_reasoning_standard::primary_documentation_is_required_by_default ... ok
+2026-10-09T22:13:20.8108983Z test issue_1085_self_authored_backlog::the_report_says_what_each_open_pull_request_is_waiting_for ... ok
+2026-10-09T22:13:20.8118865Z test issue_1090_manual_column_retired::the_traceability_header_carries_the_aspirational_status ... ok
+2026-10-09T22:13:20.8148701Z test issue_1105_report_flow::latest_resolution::learn_resolves_latest_like_every_other_session_subcommand ... ok
+2026-10-09T22:13:20.8150069Z test issue_1133_hive_mind_three_runs::extended::positional_inserts_compose_in_every_language ... ok
+2026-10-09T22:13:20.8240620Z test issue_1138_concept_lookup::an_unknown_word_resolves_to_a_licensed_sense_with_exact_provenance ... ok
+2026-10-09T22:13:20.8402564Z test issue_1138_formalization_depth::a_grounded_gloss_raises_its_own_needs_at_the_next_depth_and_stops_at_the_bound ... ok
+2026-10-09T22:13:20.8419644Z test issue_1138_handler_promotions::no_handler_name_appears_in_prompt_relevants ... ok
+2026-10-09T22:13:20.9491005Z test agentic_coding::issue_716_agentic_execution::failed_compile_is_reported_and_the_run_command_is_not_attempted ... ok
+2026-10-09T22:13:21.4384032Z test issue_1138_learned_items_change_answers::a_held_out_paraphrase_gets_the_same_verdict ... ok
+2026-10-09T22:13:21.4620587Z test issue_1138_retrieval_method::a_capture_is_rendered_beside_its_provenance ... ok
+2026-10-09T22:13:21.4631860Z test issue_1138_rust_projection::meta_to_rust_refuses_every_other_lino_dialect_by_name ... ok
+2026-10-09T22:13:21.5799246Z test issue_1138_source_capabilities::composition_procedure_composes_nothing_without_verified_capture ... ok
+2026-10-09T22:13:22.7162933Z test issue_1138_telegram_execution::telegram_without_a_backend_is_honest_in_five_languages ... ok
+2026-10-09T22:13:22.7251390Z test issue_1138_translation_tool::the_agentic_module_subtree_writes_its_mts_twins ... ok
+2026-10-09T22:13:22.7298887Z test issue_1163_1164_captured_pages::kotlinlang_steps_keep_the_compile_and_run_commands ... ok
+2026-10-09T22:13:22.7319506Z test issue_1163_web_formalize::scala_page_tags_language_through_class_prefix ... ok
+2026-10-09T22:13:22.8209356Z test issue_1164_code_example_knowledge::recompose_refuses_a_language_without_a_shape ... ok
+2026-10-09T22:13:22.8540876Z test issue_1165_discovery_production::bootstrap_tier_is_governed_by_the_policy_seed ... ok
+2026-10-09T22:13:22.9364828Z test issue_1165_documentation_route::documented_commands_of_every_captured_language ... ok
+2026-10-09T22:13:23.8129057Z test issue_1166_obligation_routing::ci_workflow_demand_is_read_from_the_obligation_graph ... ok
+2026-10-09T22:13:23.8158708Z test issue_1168_latest_versions::captured_evidence_under_cache_is_not_generated_code ... ok
+2026-10-09T22:13:23.8198310Z test issue_1168_latest_versions::rewrites_the_stale_ci_setup_literals ... ok
+2026-10-09T22:13:23.9864542Z test agentic_coding::issue_749_shell_routing::passthrough_prefixes_have_language_parity ... ok
+2026-10-09T22:13:24.0211774Z test issue_1066_ladder_capability::written_files::a_semicolon_inside_a_payload_does_not_end_it ... ok
+2026-10-09T22:13:24.0214535Z 
+2026-10-09T22:13:24.0215092Z failures:
+2026-10-09T22:13:24.0215506Z 
+2026-10-09T22:13:24.0216169Z ---- ci_cd::source_test_placement::src_has_no_inline_unit_tests stdout ----
+2026-10-09T22:13:24.0216951Z 
+2026-10-09T22:13:24.0218106Z thread 'ci_cd::source_test_placement::src_has_no_inline_unit_tests' (9011) panicked at tests/unit/ci-cd/source_test_placement.rs:62:5:
+2026-10-09T22:13:24.0219603Z production code under src/ must not contain inline tests; move them to tests/:
+2026-10-09T22:13:24.0220895Z /home/runner/work/formal-ai/formal-ai/rust/src/agentic_coding/function_expectation.rs:301: #[cfg(test)]
+2026-10-09T22:13:24.0222229Z /home/runner/work/formal-ai/formal-ai/rust/src/agentic_coding/driver.rs:636: #[cfg(test)]
+2026-10-09T22:13:24.0223392Z note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+2026-10-09T22:13:24.0224150Z 
+2026-10-09T22:13:24.0224335Z 
+2026-10-09T22:13:24.0224649Z failures:
+2026-10-09T22:13:24.0225296Z     ci_cd::source_test_placement::src_has_no_inline_unit_tests
+2026-10-09T22:13:24.0225935Z 
+2026-10-09T22:13:24.0226615Z test result: FAILED. 63 passed; 1 failed; 0 ignored; 0 measured; 5180 filtered out; finished in 13.99s
+2026-10-09T22:13:24.0227493Z 
+2026-10-09T22:13:24.0395271Z coverage batch 45: completed 64/64 in 14.010s, exit 101, certified false
+2026-10-09T22:13:24.0396529Z coverage batch 46: 64 unit case(s), priority 0.092s
+2026-10-09T22:13:24.0456268Z 
+2026-10-09T22:13:24.0457596Z running 64 tests
+2026-10-09T22:13:24.0463067Z test issue_1169_dependency_currency::check_dependencies_latest::tests::drift_is_numeric_at_the_pinned_precision ... ok
+2026-10-09T22:13:24.0472115Z test issue_1171_llm_task_parity::registry_covers_the_r1_additions_beyond_the_probed_classes ... ok
+2026-10-09T22:13:25.4032341Z test issue_1176_quantities_dates::stated_day_offset_shifts_by_the_stated_count ... ok
+2026-10-09T22:13:25.4045977Z test issue_1179_fact_check_sources::exclusion_seed_rows_load ... ok
+2026-10-09T22:13:25.4053961Z test issue_1181_boolean_environment_parser::bool_env_value_parser_maps_spellings_to_clap_results ... ok
+2026-10-09T22:13:25.4061188Z test issue_1184_derivation_records::explain_and_thinking_trace_agree_on_the_same_event_log ... ok
+2026-10-09T22:13:25.4068947Z test issue_1187_credentials::orphan_branch_isolation_needs_no_credential ... ok
+2026-10-09T22:13:25.4439220Z test issue_1188_round_trip_translation::the_chat_translation_answers_with_the_surface_that_survives_the_round_trip ... ok
+2026-10-09T22:13:25.4468609Z test issue_483_small_model_fallback::off_by_default_and_nothing_loads ... ok
+2026-10-09T22:13:25.4528784Z test issue_531_algorithm_discovery::failed_longer_episode_does_not_hide_a_validated_subroutine ... ok
+2026-10-09T22:13:25.4529964Z test issue_649_world_model::dependent_statements_recalculate_to_a_fixpoint ... ok
+2026-10-09T22:13:26.8641631Z test agentic_coding::issue_848_coding_ladder::rust_test_request_writes_source_and_observes_it ... FAILED
+2026-10-09T22:13:27.0164394Z test agentic_coding::location_and_edit_routing::plain_text_trigger_and_answer_compile_and_replay ... ok
+2026-10-09T22:13:27.0171400Z test agentic_coding::planning_routes::explicit_doc_id_overrides_the_default ... ok
+2026-10-09T22:13:27.0735283Z test issue_1175_routing::reported_probes_stop_misrouting ... ok
+2026-10-09T22:13:27.0745074Z test issue_669_memory_sync::memory_sync_disabled_does_not_touch_remote ... ok
+2026-10-09T22:13:27.0746388Z test issue_671_matrix_coverage::repeated_independent_observations_propose_a_human_gated_reusable_contract ... ok
+2026-10-09T22:13:27.3739142Z test issue_676_thinking_narrative::calculation_narrative_precedes_recursive_robotic_detail ... ok
+2026-10-09T22:13:27.3788436Z test issue_700_si_units::dimension_algebra_holds_for_products_and_inverses ... ok
+2026-10-09T22:13:27.3936424Z test issue_701_learning_adoption::the_learning_cycle_emits_promotion_proposals_in_the_issue_656_shape ... ok
+2026-10-09T22:13:27.3978666Z test issue_702_world_model_dialog::a_helpful_action_shrinks_the_gap_and_a_destructive_one_is_flagged ... ok
+2026-10-09T22:13:27.5218907Z test agentic_coding::planning_routes::planner_ignores_non_formalization_tasks ... ok
+2026-10-09T22:13:30.6699365Z test issue_702_world_state_chat::the_world_model_handler_is_inert_until_the_knob_is_opted_in ... ok
+2026-10-09T22:13:30.7418305Z test issue_708_memory_query_language_browser::browser_worker_executes_the_exact_query_language_parity_contract ... ok
+2026-10-09T22:13:30.8169311Z test issue_709_search_fusion_learning::approved_recipe_round_trips_and_executes_a_held_out_task ... ok
+2026-10-09T22:13:30.8170587Z test issue_715_link_substitution_query::empty_substitution_side_deletes_a_link ... ok
+2026-10-09T22:13:30.8171588Z test issue_715_links_substitution_query::identical_operands_are_a_read ... ok
+2026-10-09T22:13:30.8172678Z test issue_715_renderer_artifacts::learning_report_fields_carrying_code_survive_the_grammar ... ok
+2026-10-09T22:13:30.8173860Z test issue_781_option_network::plan_search_is_bounded_by_the_declared_item_limit ... ok
+2026-10-09T22:13:30.8175020Z test issue_835_file_legality::confirmed_child_safety_hash_match_is_fail_closed_and_content_free ... ok
+2026-10-09T22:13:30.8259057Z test issue_844_production_pipeline::recursive_gathering_uses_exact_captures_and_replays_its_learning_proposal ... ok
+2026-10-09T22:13:30.8260437Z test issue_844_statement_merge::the_merge_is_deterministic_and_independent_of_source_order ... ok
+2026-10-09T22:13:30.8318949Z test issue_845_fact_checking::recursive_verification_is_disproof_first_and_reports_a_counterexample ... ok
+2026-10-09T22:13:30.8345853Z test issue_885_document_fact_checking::a_soft_wrapped_continuation_is_not_mistaken_for_a_new_reference ... ok
+2026-10-09T22:13:31.0848902Z test issue_901_triz_solver::an_umbrella_prompt_finds_the_umbrella_precedent ... ok
+2026-10-09T22:13:31.5099406Z test issue_918_handler_rules_batch::a_release_timeline_fact_renders_the_same_snapshot_answer ... ok
+2026-10-09T22:13:33.5529702Z test agentic_coding::issue_558_source_links::serialized_owned_source_shard_5 ... ok
+2026-10-09T22:13:33.9250468Z test issue_656_promotion::promotion_protocol_materializes_pass_and_preserves_fail ... ok
+2026-10-09T22:13:33.9268868Z test issue_918_handler_rules_batch_2::installation_steps_are_described_through_the_seeded_verb_table ... ok
+2026-10-09T22:13:33.9298748Z test issue_920_question_necessity::issue_920_question_without_a_complete_trace_is_refused ... ok
+2026-10-09T22:13:33.9328676Z test issue_932_self_authoring::issue_932_formal_ai_authored_survey_is_preserved_byte_for_byte ... ok
+2026-10-09T22:13:33.9358436Z test issue_940_research_documents::docx_keeps_unicode_and_escapes_markup ... ok
+2026-10-09T22:13:33.9388618Z test issue_988_stock_rust_install::default_dependency_lock_has_no_system_openssl_stack ... ok
+2026-10-09T22:13:33.9418650Z test issue_991_incremental_decomposition::an_unsplittable_failure_is_reported_irreducible_instead_of_split_forever ... ok
+2026-10-09T22:13:33.9448601Z test lino_location::the_failure_is_reported_with_the_line_and_column_that_caused_it ... ok
+2026-10-09T22:13:34.1295849Z test issue_918_handler_rules_batch::the_network_query_rules_answer_unchanged_through_the_engine ... ok
+2026-10-09T22:13:34.1740481Z test memory::issue_1021_recoverable_memory::a_version_that_compiles_and_clears_the_baseline_is_adopted ... ok
+2026-10-09T22:13:34.1769310Z test memory::issue_1180_history_context::rules_seed_round_trips_through_the_parser ... ok
+2026-10-09T22:13:34.1799968Z test memory::issue_686_associative_persistence::sync_merge_counts_uncounted_edits_and_preserves_monotone_peer_counts ... ok
+2026-10-09T22:13:34.1829640Z test memory::issue_708_memory_query_language_execution::common_sql_is_shared_across_declared_vendor_dialects ... ok
+2026-10-09T22:13:34.2309008Z test local_surface::memory_route_renders_demo_memory_document ... ok
+2026-10-09T22:13:34.3209024Z test memory::issue_714_agentic_mode::report_action_does_not_become_a_web_search_without_shell_access ... ok
+2026-10-09T22:13:35.5278920Z test memory_learning::failed_replay_refines_the_amendment_back_from_the_recorded_marker ... ok
+2026-10-09T22:13:35.5280213Z test memory_maintenance::storage_policy_measures_real_filesystem_and_persists_opt_in ... ok
+2026-10-09T22:13:35.5308811Z test minimal_core_and_seed_metadata::check_minimal_core_boundary::tests::accepts_a_complete_exact_census ... ok
+2026-10-09T22:13:35.7669222Z test agentic_coding::pull_request_1188_edit_composer_gaps::lines_under_a_request_keep_their_structure ... ok
+2026-10-09T22:13:35.7810100Z test agentic_coding::pull_request_1188_module_function::the_multiplication_ir_lowers_to_an_es_module_function ... ok
+2026-10-09T22:13:35.8549136Z test agentic_coding::pull_request_1188_subagent_folder::the_local_gate_runner_runs_as_asked ... ok
+2026-10-09T22:13:35.8588546Z test agentic_coding::report_context_collection::opencode_extractor_is_shipped_with_the_crate ... ok
+2026-10-09T22:13:35.9709092Z test memory::meta_reasoner::a_derived_file_program_runs_and_agrees_with_a_direct_count ... ok
+2026-10-09T22:13:35.9729407Z test prerequisite::issue_1138_install_scope::an_allowed_step_is_executed_as_exact_argv_and_observed ... ok
+2026-10-09T22:13:35.9738465Z test prerequisite::issue_1138_toolchain_ledger::a_restart_reattaches_from_the_ledger ... ok
+2026-10-09T22:13:36.2998924Z test proof_request::arithmetic_proof_request_contains_evaluated_values ... ok
+2026-10-09T22:13:36.5758923Z test proof_request::pythagorean_request_contains_textbook_proof ... ok
+2026-10-09T22:13:36.5788821Z test proof_request_configuration::proof_engine_keeps_default_plan_when_guess_low ... ok
+2026-10-09T22:13:39.9143373Z test multilingual_variations::greeting_hindi_variations_match ... ok
+2026-10-09T22:13:39.9168609Z test proxy::proxy_summary_logs_openai_chat_request_and_response_tool_call ... ok
+2026-10-09T22:13:40.3659070Z test agentic_coding::pull_request_1188_cifix2::a_request_that_declares_its_file_writes_it_unread ... ok
+2026-10-09T22:13:40.3688365Z test architect_notes::the_goals_do_not_rate_a_task_before_splitting_it ... ok
+2026-10-09T22:13:40.3718344Z test bulk_lexeme_import::every_surface_carries_truthful_source_record_provenance ... ok
+2026-10-09T22:13:42.6589035Z test caller_framing_context::an_unmarked_caller_preamble_does_not_outrank_a_later_objective ... ok
+2026-10-09T22:13:42.8269136Z test capability_routing::issue_1138_capability_routing::a_verb_synonym_never_changes_the_capability ... ok
+2026-10-09T22:13:42.8270986Z test capability_routing::issue_1138_object_type::wikipedia_summary_carries_no_calendar_day_operand ... ok
+2026-10-09T22:13:44.9430202Z test capability_routing::issue_1173_route2_probes::the_request_line_of_a_yaml_conversion_is_not_read_as_the_first_key ... ok
+2026-10-09T22:13:45.1319045Z test pull_request_1188_fix_gaps::g110_payload_paths_are_never_creation_targets ... ok
+2026-10-09T22:13:45.9999861Z test capability_routing::issue_1175_claim_routing_operands::last_five_rows_a_formalization_claims_only_with_a_statement ... ok
+2026-10-09T22:13:46.0058946Z test ci_cd::artifact_download_retry::the_per_attempt_deadline_clears_a_normal_download_by_a_wide_margin ... ok
+2026-10-09T22:13:46.0169133Z test ci_cd::authoring_effects::the_evidence_keeps_the_framed_events_and_never_the_raw_stream ... ok
+2026-10-09T22:13:46.0170716Z test ci_cd::check_associative_terminology::tests::identifies_standalone_graph_segments_only ... ok
+2026-10-09T22:13:46.0198641Z test ci_cd::check_file_size::tests::check_directory_reports_warning_and_violation_separately ... ok
+2026-10-09T22:13:46.0228404Z test ci_cd::ci_diagnostic_audit::javascript_installs_apply_a_scoped_lifecycle_policy ... ok
+2026-10-09T22:13:46.0229534Z test ci_cd::ci_warning_audit::sccache_backend_diagnostics_are_available_but_off_by_default ... ok
+2026-10-09T22:13:46.0230614Z test ci_cd::codeql_sink_heuristics::parser::self_and_nested_types_do_not_produce_spurious_names ... ok
+2026-10-09T22:13:46.0241121Z test ci_cd::create_github_release::tests::generic_validation_failure_is_not_duplicate_release ... ok
+2026-10-09T22:13:46.0258922Z test ci_cd::desktop_jobs_and_permissions::every_desktop_job_has_a_bounded_runtime_and_least_privilege ... ok
+2026-10-09T22:13:46.0287954Z test ci_cd::detect_code_changes::tests::a_javascript_suite_change_reruns_the_tier_that_executes_it ... ok
+2026-10-09T22:13:46.0318621Z test ci_cd::docker_resource_hygiene::docker_jobs_prune_on_every_non_cancelled_exit ... ok
+2026-10-09T22:13:46.0609096Z test ci_cd::fresh_merge_fetch_retry::a_base_tip_that_cannot_be_resolved_still_fails ... ok
+2026-10-09T22:13:46.0610138Z test ci_cd::issue_1107_green_ledger::the_action_saves_only_on_success_and_announces_a_skip ... ok
+2026-10-09T22:13:46.0658642Z test ci_cd::issue_1138_dependency_patches::lockfile_git_sources_are_all_declared_in_the_manifest ... ok
+2026-10-09T22:13:46.0680509Z test ci_cd::job_budget_fit::a_test_step_inside_a_budgeted_job_owns_a_deadline_that_reports_as_failure ... ok
+2026-10-09T22:13:46.1629374Z test ci_cd::job_budget_fit::release_preflight::a_token_that_authenticates_but_cannot_push_is_a_failure ... ok
+2026-10-09T22:13:46.1658731Z test ci_cd::job_timeouts_as_failures::every_docker_build_push_step_uses_the_gha_layer_cache ... ok
+2026-10-09T22:13:46.1659883Z test ci_cd::longest_tests_first::the_macos_lane_runs_a_planned_filter ... ok
+2026-10-09T22:13:46.1678781Z test ci_cd::macos_test_partitioning::known_advisories_do_not_emit_false_warning_annotations ... ok
+2026-10-09T22:13:46.1679980Z test ci_cd::one_build_per_platform::independent_checks_do_not_wait_for_the_build ... ok
+2026-10-09T22:13:46.1681216Z test ci_cd::pinned_tool_images::every_job_that_pushes_still_has_a_credential_to_push_with ... ok
+2026-10-09T22:13:46.1682267Z test ci_cd::pull_request_1188_sharding::shard_counts_come_from_the_matrix_itself ... ok
+2026-10-09T22:13:48.0670873Z test pull_request_1188_line_moves::g85_the_destination_is_the_path_after_the_cue_wherever_the_source_is_named ... ok
+2026-10-09T22:13:48.4249316Z test agentic_coding::work_item_planning::a_read_work_item_describing_a_program_reaches_an_authoring_route ... ok
+2026-10-09T22:13:48.4250053Z 
+2026-10-09T22:13:48.4250171Z failures:
+2026-10-09T22:13:48.4250351Z 
+2026-10-09T22:13:48.4250970Z ---- agentic_coding::issue_1138_translate_agent_tool::the_planner_lowers_a_source_tree_request_to_one_translate_call stdout ----
+2026-10-09T22:13:48.4251691Z 
+2026-10-09T22:13:48.4252723Z thread 'agentic_coding::issue_1138_translate_agent_tool::the_planner_lowers_a_source_tree_request_to_one_translate_call' (9167) panicked at tests/unit/agentic-coding/issue_1138_translate_agent_tool.rs:99:18:
+2026-10-09T22:13:48.4255180Z a source-tree translation with the tool advertised must lower to a translate call, got Some(Final("obligation_72653edc959773a0\n  record_type \"obligation_gap\"\n  clause \"Translate js/no_such_probe_file.js to TypeScript and write it\"\n  span_start \"0\"\n  span_end \"61\"\n  reason \"no_artifact_in_clause\""))
+2026-10-09T22:13:48.4257027Z note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+2026-10-09T22:13:48.4257473Z 
+2026-10-09T22:13:48.4258166Z ---- agentic_coding::issue_848_coding_ladder::rust_test_request_writes_source_and_observes_it stdout ----
+2026-10-09T22:13:48.4259094Z 
+2026-10-09T22:13:48.4260059Z thread 'agentic_coding::issue_848_coding_ladder::rust_test_request_writes_source_and_observes_it' (9255) panicked at tests/unit/agentic-coding/issue_848_coding_ladder.rs:781:5:
+2026-10-09T22:13:48.4261874Z assertion `left == right` failed: generated source: Create a new file rust/tests/unit/ladder_probe.rs in this repository containing a single Rust test named ladder_probe_runs that asserts 1 equals 1.
+2026-10-09T22:13:48.4263220Z   left: String("a single Rust test named ladder_probe_runs that asserts 1 equals 1.")
+2026-10-09T22:13:48.4263948Z  right: "#[test]\nfn ladder_probe_runs() {\n    assert_eq!(1, 1);\n}\n"
+2026-10-09T22:13:48.4264340Z 
+2026-10-09T22:13:48.4264345Z 
+2026-10-09T22:13:48.4264469Z failures:
+2026-10-09T22:13:48.4265222Z     agentic_coding::issue_1138_translate_agent_tool::the_planner_lowers_a_source_tree_request_to_one_translate_call
+2026-10-09T22:13:48.4266223Z     agentic_coding::issue_848_coding_ladder::rust_test_request_writes_source_and_observes_it
+2026-10-09T22:13:48.4266733Z 
+2026-10-09T22:13:48.4267154Z test result: FAILED. 62 passed; 2 failed; 0 ignored; 0 measured; 5180 filtered out; finished in 40.62s
+2026-10-09T22:13:48.4267916Z 
+2026-10-09T22:13:48.4366309Z coverage batch 44: completed 64/64 in 40.641s, exit 101, certified false
+2026-10-09T22:13:48.4367256Z coverage batch 47: 64 unit case(s), priority 0.092s
+2026-10-09T22:13:48.4421148Z 
+2026-10-09T22:13:48.4422268Z running 64 tests
+2026-10-09T22:13:48.6799094Z test pull_request_1188_line_removal::a_named_function_goes_whole_with_its_doc_comment ... ok
+2026-10-09T22:13:49.0577108Z test pull_request_1188_teach_f::g72_an_anchor_line_found_more_than_once_is_named ... ok
+2026-10-09T22:13:49.3618847Z test pull_request_1188_teach_f::g87_a_removal_whose_text_is_gone_says_so ... ok
+2026-10-09T22:13:49.4369018Z test pull_request_1188_teach_f::g13_an_assertion_is_added_in_the_files_expect_form ... ok
+2026-10-09T22:13:50.6298950Z test r1017_small_math_tasks::an_impossible_date_or_an_offset_is_not_a_date_weekday ... ok
+2026-10-09T22:13:50.6328869Z test repository_workspace::issue_1138_repository_world_model::kotlin_wrong_path_generated_artifact_and_no_ci_remain_open ... ok
+2026-10-09T22:13:50.6358541Z test requirement_span_integrity::fenced_multiline_payload_keeps_list_markers_and_sentence_punctuation ... ok
+2026-10-09T22:13:50.6388432Z test seed::issue_1085_seed_links::cue_sets_and_intent_routing_read_the_same_records_as_their_former_parsers ... ok
+2026-10-09T22:13:50.6398530Z test seed::issue_1138_intent_phrase_migration::the_url_navigate_family_stays_row_free ... ok
+2026-10-09T22:13:50.6449536Z test seed::issue_1161_client_registry_environment::opencode_family_global_configs_name_both_opencode_variables ... ok
+2026-10-09T22:13:51.3938925Z test seed::issue_1172_live_fact_answer::unseeded_capital_is_answered_live_with_its_reference ... ok
+2026-10-09T22:13:51.3968436Z test seed::issue_699_handler_migration::migration_ledger_is_a_complete_live_registry_census ... ok
+2026-10-09T22:13:51.3988501Z test seed::semantic_facets::root_link_semantic_facets_resolve_through_public_seed_api ... ok
+2026-10-09T22:13:51.4018553Z test seed::word_surface_grammar::tomato_singular_and_plural_are_distinct_forms_in_each_language ... ok
+2026-10-09T22:13:51.4048145Z test sequences::sequences_grid_2d::detects_symmetry ... ok
+2026-10-09T22:13:51.4078192Z test sequences::sequences_patterns_1d::reversal_and_translation ... ok
+2026-10-09T22:13:51.5859085Z test shared_dialog::normalized_google_capture_preserves_the_upstream_diagnostic ... ok
+2026-10-09T22:13:51.5979152Z test solver::issue_1138_self_use_concept_lookup::every_seeded_response_intent_serves_all_five_languages_or_has_exact_debt ... ok
+2026-10-09T22:13:51.6018420Z test solver::issue_1186_prover_step::the_unit_file_name_is_its_fnv1a_hash ... ok
+2026-10-09T22:13:51.9959956Z test solver::issue_676_naming::name_question_without_a_set_name_keeps_the_static_answer ... ok
+2026-10-09T22:13:52.4058470Z test pull_request_1188_workspace_search::a_named_test_file_runs_with_its_own_runtime ... ok
+2026-10-09T22:13:52.4080027Z test source_module_contracts::small_model_fallback::default_options_show_and_load_nothing ... ok
+2026-10-09T22:13:52.4121467Z test source_provenance::successful_fetch_records_bytes_and_truthful_cache_state ... ok
+2026-10-09T22:13:52.4395735Z test solver::weighted_statement_formalization::weighted_formalization_attaches_statement_weight_links_summing_to_one ... ok
+2026-10-09T22:13:52.7709118Z test pull_request_1188_quoted_payload_safety::g132_observed_source_finding_can_be_delivered ... FAILED
+2026-10-09T22:13:52.8389005Z test specification::agent_isolation::chat_mode_never_runs_user_supplied_shell_commands ... ok
+2026-10-09T22:13:52.8418801Z test specification::associative_packages::package_store_validates_dependencies_before_install ... ok
+2026-10-09T22:13:52.8420211Z test specification::budget_search_meta_algorithm::meta_recipe_groundings_resolve_to_cached_external_entities ... ok
+2026-10-09T22:13:52.9749244Z test pull_request_1188_setting_verb::set_assigns_the_setting_instead_of_replacing_its_key ... ok
+2026-10-09T22:13:53.0459328Z test protocol::issue_1138_agent_cli_ladder_recall::replace_leaf_edits_and_never_writes_failure_prose ... ok
+2026-10-09T22:13:53.0459806Z 
+2026-10-09T22:13:53.0459891Z failures:
+2026-10-09T22:13:53.0460010Z 
+2026-10-09T22:13:53.0460332Z ---- pull_request_1188_quoted_payload_safety::g132_observed_source_finding_can_be_delivered stdout ----
+2026-10-09T22:13:53.0460762Z 
+2026-10-09T22:13:53.0461730Z thread 'pull_request_1188_quoted_payload_safety::g132_observed_source_finding_can_be_delivered' (9544) panicked at tests/unit/pull_request_1188_quoted_payload_safety.rs:297:22:
+2026-10-09T22:13:53.0462655Z no entry found for key
+2026-10-09T22:13:53.0463355Z note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+2026-10-09T22:13:53.0463788Z 
+2026-10-09T22:13:53.0468286Z 
+2026-10-09T22:13:53.0468732Z failures:
+2026-10-09T22:13:53.0469759Z     pull_request_1188_quoted_payload_safety::g132_observed_source_finding_can_be_delivered
+2026-10-09T22:13:53.0470604Z 
+2026-10-09T22:13:53.0471306Z test result: FAILED. 63 passed; 1 failed; 0 ignored; 0 measured; 5180 filtered out; finished in 29.00s
+2026-10-09T22:13:53.0472297Z 
+2026-10-09T22:13:53.0620362Z coverage batch 46: completed 64/64 in 29.022s, exit 101, certified false
+2026-10-09T22:13:53.0621586Z coverage batch 48: 42 unit case(s), priority 0.092s
+2026-10-09T22:13:53.0662685Z 
+2026-10-09T22:13:53.0663861Z running 42 tests
+2026-10-09T22:13:53.0691531Z test specification::pronoun_topic_follow_up::seeded_antecedents_reject_embedded_alias_words ... ok
+2026-10-09T22:13:53.5889304Z test specification::arbitrary_skill_compilation::agentic_planner_reports_a_failed_conformance_execution_honestly ... ok
+2026-10-09T22:13:53.5979742Z test specification::capability_routing_table::a_fallback_is_named_in_data_not_in_a_rust_cascade ... ok
+2026-10-09T22:13:54.1109337Z test specification::reasoning_loop::step_3_external_search_kicks_in_when_local_is_insufficient ... ok
+2026-10-09T22:13:54.2219474Z test specification::chat_surface::behavior_rule_grammar::behavior_rule_teach_supports_english_when_x_do_y_grammar ... ok
+2026-10-09T22:13:54.6128811Z test specification::chat_surface::empty_prompt_does_not_crash_and_is_classified_as_unknown ... ok
+2026-10-09T22:13:54.7428979Z test specification::chat_surface::self_facts_answer_includes_model_id_and_strategy ... ok
+2026-10-09T22:13:54.8211465Z test specification::code_generation::follow_up::chinese_code_answer_explains_and_instructs ... ok
+2026-10-09T22:13:55.0320669Z test specification::reasoning_paths::arithmetic_routes_simple_expressions_across_supported_languages ... ok
+2026-10-09T22:13:55.1523375Z test specification::calculator_delegation::calculator_handles_embedded_request_variations ... ok
+2026-10-09T22:13:55.2899225Z test specification::reasoning_paths::extended::compatible_unit_query_does_not_trigger_incompatibility_handler ... ok
+2026-10-09T22:13:55.4459350Z test specification::code_generation::single_turn::execution_failures_are_reported_with_full_trace ... ok
+2026-10-09T22:13:55.4769399Z test specification::code_generation::single_turn::rust_alias_rs_is_supported ... ok
+2026-10-09T22:13:55.7329253Z test specification::prompt_variations::brainstorming_intent_routes_to_brainstorm_handler ... ok
+2026-10-09T22:13:56.0574636Z test specification::reasoning_paths::prior_turns_appear_in_evidence_log ... ok
+2026-10-09T22:13:56.0698977Z test specification::recipe_interpreter::an_unknown_recorder_binding_is_an_error ... ok
+2026-10-09T22:13:56.0728839Z test specification::refutation_search::the_same_space_and_seed_produce_the_same_experiment_sequence ... ok
+2026-10-09T22:13:56.1799172Z test specification::reasoning_paths_procedures::how_to_procedure_is_general_not_memoized_to_examples ... ok
+2026-10-09T22:13:56.1828677Z test specification::routing_precedence::loader_ignores_comments_and_note_fields ... ok
+2026-10-09T22:13:56.1848565Z test specification::selection::modes_round_trip_through_their_slugs ... ok
+2026-10-09T22:13:56.2509325Z test specification::conversation_history::chat_completion_supports_natural_language_history_search ... ok
+2026-10-09T22:13:56.2538735Z test specification::cue_lexicon::a_missing_set_never_matches ... ok
+2026-10-09T22:13:56.3171673Z test specification::code_generation_blueprint::hindi_http_json_statistics_request_returns_blueprint_in_hindi ... ok
+2026-10-09T22:13:56.3173342Z test specification::document_verification_meta_algorithm::meta_recipe_dispatch_intents_are_wired ... ok
+2026-10-09T22:13:56.3198574Z test specification::execution_evidence::a_harness_record_cannot_claim_a_local_process_source ... ok
+2026-10-09T22:13:56.3228780Z test specification::external_benchmarks::swebench::swebench_harness_installation_is_default_deny_and_workspace_scoped ... ok
+2026-10-09T22:13:56.3258544Z test specification::formalization::temperature_selection_is_deterministic_for_fixed_config ... ok
+2026-10-09T22:13:56.6589453Z test specification::definition_fusion::definition_fusion_by_default_preserves_contextual_concept_lookup ... ok
+2026-10-09T22:13:56.7989352Z test specification::intent_formalization::legacy_greeting_route_is_derived_from_formalized_intent ... ok
+2026-10-09T22:13:56.8018970Z test specification::links_network_terminology_meta_algorithm::meta_algorithm_doc_explains_and_links_the_recipe ... ok
+2026-10-09T22:13:56.8028623Z test specification::memory_query::substitution_requires_a_memory_scope ... ok
+2026-10-09T22:13:56.8481742Z test specification::meta_construction::leaves_construct_from_a_method_and_parents_compose_their_children ... ok
+2026-10-09T22:13:56.9068989Z test specification::meta_frame::ledger_serializes_to_grounded_links_notation ... ok
+2026-10-09T22:13:56.9098639Z test specification::meta_self_improvement::an_undescribed_pipeline_stage_is_proposed_as_an_addition ... ok
+2026-10-09T22:13:56.9128515Z test specification::method_registry::learned_methods_rank_after_every_compiled_method ... ok
+2026-10-09T22:13:57.2119164Z test specification::self_awareness_prompts::self_awareness_answers_are_environment_specific ... ok
+2026-10-09T22:13:57.2148838Z test specification::self_hosting_metric::release_pipeline_and_ledger_remain_pinned_to_the_metric ... ok
+2026-10-09T22:13:57.2178750Z test specification::self_improvement::self_improvement_trace_accumulation_covers_supported_languages ... ok
+2026-10-09T22:13:57.2782343Z test specification::solution_evidence::evidence_serializes_to_grounded_links_notation ... ok
+2026-10-09T22:13:57.2783567Z test specification::source_reconstruction::a_diverged_reconstruction_reports_both_hashes_and_keeps_the_stub ... ok
+2026-10-09T22:13:57.2808569Z test specification::summarization_pipeline::describe_readme_topic_returns_repo_slug ... ok
+2026-10-09T22:13:57.2838480Z test specification::summarization_pipeline::summarize_dialog_short_keeps_user_questions ... ok
+2026-10-09T22:13:57.2868371Z test specification::task_decomposition::an_atomic_task_yields_no_split ... ok
+2026-10-09T22:13:57.4654072Z test specification::multilingual::english_capabilities_question_returns_capabilities_intent ... ok
+2026-10-09T22:13:57.4689091Z test specification::multilingual::reported_prompts::humanize_url_preserves_functional_link_target ... ok
+2026-10-09T22:13:57.8520629Z test specification::links_network::distinct_prompts_lead_to_distinct_links_traces ... ok
+2026-10-09T22:13:57.9018900Z test specification::response_language_followup::capabilities_follow_up_returns_to_english_on_request ... ok
+2026-10-09T22:13:57.9681996Z test specification::multilingual::russian_capabilities_answer_is_in_russian ... ok
+2026-10-09T22:13:57.9710328Z test specification::natural_language_skill_compilation::typed_procedure_skill_compiles_steps_tests_and_handler_stub ... ok
+2026-10-09T22:13:58.2284255Z test specification::telegram_surface::public_chat_answers_when_mentioned ... ok
+2026-10-09T22:13:58.2298901Z test specification::translation_round_trip::every_seed_language_round_trips_through_first_order_logic ... ok
+2026-10-09T22:13:58.4439209Z test specification::multilingual::russian_iir_when_context_is_typed_natively_drops_redundant_parens ... ok
+2026-10-09T22:13:58.8039182Z test specification::network_visualization::graph_endpoint_supports_dot_export ... ok
+2026-10-09T22:13:58.8629354Z test specification::obligation_ledger::satisfied_is_unconstructible_without_an_execution_record ... ok
+2026-10-09T22:13:59.1301113Z test specification::openai_compatibility::responses_endpoint_includes_standard_reasoning_output_item ... ok
+2026-10-09T22:13:59.1328690Z test specification::probabilistic_reasoning::decision_policy::decision_policy_round_trips_through_ranking_config ... ok
+2026-10-09T22:13:59.1370174Z test specification::probabilistic_reasoning::multilingual::questioning_rigor_clarify_margin_scales_across_supported_languages ... ok
+2026-10-09T22:13:59.1429662Z test specification::probabilistic_reasoning::ranking_mechanics::stable_ids_change_when_any_distinguishing_field_changes ... ok
+2026-10-09T22:13:59.5044911Z test specification::project_lookups::associative_project_promotion_can_be_disabled ... ok
+2026-10-09T22:13:59.6159320Z test specification::openai_compatibility::http_chat_completion_queries_persisted_memory_with_natural_language ... ok
+2026-10-09T22:13:59.6191305Z 
+2026-10-09T22:13:59.6192138Z test result: ok. 64 passed; 0 failed; 0 ignored; 0 measured; 5180 filtered out; finished in 11.17s
+2026-10-09T22:13:59.6192945Z 
+2026-10-09T22:13:59.6314921Z coverage batch 47: completed 64/64 in 11.195s, exit 0, certified true
+2026-10-09T22:13:59.6315857Z coverage batch 49: 1 workspace_code_changes case(s), priority 0.092s
+2026-10-09T22:13:59.6348321Z 
+2026-10-09T22:13:59.6349301Z running 1 test
+2026-10-09T22:13:59.6916373Z test specification::text_manipulation::count_occurrences_uses_current_input_not_a_seeded_answer ... ok
+2026-10-09T22:14:00.1038396Z test specification::translation_via_links::issue_221_unquoted_common_noun_works_in_all_languages ... ok
+2026-10-09T22:14:00.1046042Z test specification::triz_contradictions::the_selection_value_is_derived_from_requirement_clauses_not_guessed ... ok
+2026-10-09T22:14:00.1052011Z test specification::vscode_surface::vscode_config_maps_settings_to_the_desktop_status_shape ... ok
+2026-10-09T22:14:00.3557492Z test symbolic_kernel_coverage::datalog_rule_inference_proves_transitive_reachability ... ok
+2026-10-09T22:14:00.9316217Z test contextual_change_is_language_independent_across_ten_phrasings_each ... ok
+2026-10-09T22:14:00.9344473Z 
+2026-10-09T22:14:00.9368930Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 1.30s
+2026-10-09T22:14:00.9369501Z 
+2026-10-09T22:14:00.9441418Z coverage batch 49: completed 1/1 in 1.313s, exit 0, certified true
+2026-10-09T22:14:01.4852495Z test terminal_command_intent::russian_terminal_request_is_not_unknown ... ok
+2026-10-09T22:14:01.7383617Z test specification::transparent_state::export_network_returns_links_notation_snapshot ... ok
+2026-10-09T22:14:01.7963672Z test total_closure::closure_audit_distinguishes_schema_data_from_semantic_references ... ok
+2026-10-09T22:14:01.7965680Z test unresolved_request_research::default_one_hour_limit_returns_the_current_plan_for_continuation ... ok
+2026-10-09T22:14:01.7995965Z test verifiable_task::identity::a_verifiable_task_projects_onto_the_shared_program_spec ... ok
+2026-10-09T22:14:01.7998105Z test verifiable_task::rendering::every_answer_expectation_becomes_one_symbolic_observation ... ok
+2026-10-09T22:14:01.8012587Z test web_engine_core::issue_1172_factual_qa_gate::the_longest_label_wins_and_a_cross_qid_tie_resolves_to_nothing ... ok
+2026-10-09T22:14:02.0189787Z test web_engine_core::issue_1174_text_transform::register_rewrite_reports_an_already_formal_text ... ok
+2026-10-09T22:14:02.4146803Z test web_engine_core::issue_1177_code_task_handlers::handler_code_debugging_reports_a_loop_bound_past_the_end ... ok
+2026-10-09T22:14:03.4102348Z test web_engine_core::issue_1177_code_task_handlers::handler_shell_compose_reads_an_ending_suffix ... ok
+2026-10-09T22:14:03.8349370Z test web_engine_core::issue_1178_creative_composition::handler_brainstorm_composes_from_the_formalized_topic ... ok
+2026-10-09T22:14:05.1568612Z test web_engine_core::issue_1186_formalization_task::deformalization_localizes_the_wrapper_prose ... ok
+2026-10-09T22:14:07.3002036Z test web_engine_core::issue_1186_formalization_task::russian_lean_round_trip_preserves_structure ... ok
+2026-10-09T22:14:08.0076885Z test web_requests::navigation_describes_frame_policy_check_before_iframe_preview ... ok
+2026-10-09T22:14:08.5207203Z test tool_failure_observations::successful_command_with_wrong_evidence_is_not_verified ... ok
+2026-10-09T22:14:08.5208098Z 
+2026-10-09T22:14:08.5208589Z test result: ok. 42 passed; 0 failed; 0 ignored; 0 measured; 5202 filtered out; finished in 15.45s
+2026-10-09T22:14:08.5209044Z 
+2026-10-09T22:14:08.5323691Z coverage batch 48: completed 42/42 in 15.471s, exit 0, certified true
+2026-10-09T22:14:08.5328650Z coverage shard 7/16: completed 401/401 selected of 6295 listed test(s)
+2026-10-09T22:14:09.1780014Z Instrumented coverage shard took 330s of its 1200s execution budget.
+2026-10-09T22:14:09.1797154Z ##[error]Process completed with exit code 1.
+2026-10-09T22:14:09.1849060Z ##[group]Run set -euo pipefail
+2026-10-09T22:14:09.1849393Z [36;1mset -euo pipefail[0m
+2026-10-09T22:14:09.1849698Z [36;1mif [ -n "${CAPACITY_SAMPLER_PID:-}" ]; then[0m
+2026-10-09T22:14:09.1850077Z [36;1m  kill "${CAPACITY_SAMPLER_PID}" 2>/dev/null || true[0m
+2026-10-09T22:14:09.1850401Z [36;1mfi[0m
+2026-10-09T22:14:09.2313515Z shell: /usr/bin/bash -e {0}
+2026-10-09T22:14:09.2313868Z env:
+2026-10-09T22:14:09.2314132Z   CARGO_NET_RETRY: 10
+2026-10-09T22:14:09.2314449Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:14:09.2314808Z   CARGO_TERM_COLOR: always
+2026-10-09T22:14:09.2315127Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:14:09.2315431Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:14:09.2315778Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:14:09.2316116Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:14:09.2316522Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2026-10-09T22:14:09.2317015Z   ACTIONS_CACHE_SERVICE_V2: on
+2026-10-09T22:14:09.2317606Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2026-10-09T22:14:09.2369481Z   ACTIONS_RUNTIME_TOKEN: ***
+2026-10-09T22:14:09.2369758Z   SCCACHE_GHA_ENABLED: true
+2026-10-09T22:14:09.2370010Z   RUSTC_WRAPPER: sccache
+2026-10-09T22:14:09.2370250Z   CAPACITY_SAMPLER_PID: 3749
+2026-10-09T22:14:09.2370495Z ##[endgroup]
+2026-10-09T22:14:09.2489039Z ##[group]Run bash scripts/report-runner-capacity.sh "after coverage"
+2026-10-09T22:14:09.2507032Z [36;1mbash scripts/report-runner-capacity.sh "after coverage"[0m
+2026-10-09T22:14:09.2566623Z shell: /usr/bin/bash -e {0}
+2026-10-09T22:14:09.2566896Z env:
+2026-10-09T22:14:09.2567104Z   CARGO_NET_RETRY: 10
+2026-10-09T22:14:09.2567357Z   CARGO_HTTP_MULTIPLEXING: false
+2026-10-09T22:14:09.2567647Z   CARGO_TERM_COLOR: always
+2026-10-09T22:14:09.2568126Z   RUSTFLAGS: -Dwarnings
+2026-10-09T22:14:09.2568374Z   FORMAL_AI_CI_VERBOSE: false
+2026-10-09T22:14:09.2568648Z   CARGO_HOME: /home/runner/.cargo
+2026-10-09T22:14:09.2569101Z   CARGO_INCREMENTAL: 0
+2026-10-09T22:14:09.2569417Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+2026-10-09T22:14:09.2569802Z   ACTIONS_CACHE_SERVICE_V2: on
+2026-10-09T22:14:09.2570234Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+2026-10-09T22:14:09.2620641Z   ACTIONS_RUNTIME_TOKEN: ***
+2026-10-09T22:14:09.2620953Z   SCCACHE_GHA_ENABLED: true
+2026-10-09T22:14:09.2621201Z   RUSTC_WRAPPER: sccache
+2026-10-09T22:14:09.2621440Z   CAPACITY_SAMPLER_PID: 3749
+2026-10-09T22:14:09.2621684Z ##[endgroup]
+2026-10-09T22:14:09.2843529Z Post job cleanup.
+2026-10-09T22:14:09.2900078Z Post job cleanup.
+2026-10-09T22:14:09.2903315Z ##[start-action display=Install sccache;id=__ea603720-98dc-4dec-a8df-5e4193881d14.__mozilla-actions_sccache-action]
+2026-10-09T22:14:09.2940039Z Post job cleanup.
+2026-10-09T22:14:09.3831567Z ##[group]Get human-readable stats
+2026-10-09T22:14:09.3858551Z [command]/opt/hostedtoolcache/sccache/0.16.0/x64/sccache --show-stats
+2026-10-09T22:14:09.3948759Z Compile requests                      74
+2026-10-09T22:14:09.3978637Z Compile requests executed             53
+2026-10-09T22:14:09.3984488Z Cache hits                            53
+2026-10-09T22:14:09.4008337Z Cache hits (Rust)                     53
+2026-10-09T22:14:09.4038717Z Cache misses                           0
+2026-10-09T22:14:09.4039437Z Cache hits rate                   100.00 %
+2026-10-09T22:14:09.4040170Z Cache hits rate (Rust)            100.00 %
+2026-10-09T22:14:09.4040818Z Cache timeouts                         0
+2026-10-09T22:14:09.4041529Z Cache read errors                      0
+2026-10-09T22:14:09.4042165Z Forced recaches                        0
+2026-10-09T22:14:09.4042795Z Cache write errors                     0
+2026-10-09T22:14:09.4043409Z Cache errors                           0
+2026-10-09T22:14:09.4044017Z Compilations                           0
+2026-10-09T22:14:09.4044648Z Compilation failures                   0
+2026-10-09T22:14:09.4045303Z Non-cacheable compilations             0
+2026-10-09T22:14:09.4045944Z Non-cacheable calls                   20
+2026-10-09T22:14:09.4046569Z Non-compilation calls                  1
+2026-10-09T22:14:09.4047242Z Unsupported compiler calls             0
+2026-10-09T22:14:09.4048102Z Average cache write                0.000 s
+2026-10-09T22:14:09.4048828Z Average compiler                   0.000 s
+2026-10-09T22:14:09.4049538Z Average cache read hit             0.066 s
+2026-10-09T22:14:09.4050246Z Failed distributed compilations        0
+2026-10-09T22:14:09.4050782Z 
+2026-10-09T22:14:09.4051115Z Non-cacheable reasons:
+2026-10-09T22:14:09.4051716Z crate-type                             9
+2026-10-09T22:14:09.4052371Z missing input                          8
+2026-10-09T22:14:09.4053095Z -                                      2
+2026-10-09T22:14:09.4053766Z -o                                     1
+2026-10-09T22:14:09.4054254Z 
+2026-10-09T22:14:09.4055127Z Cache location                  ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/
+2026-10-09T22:14:09.4056398Z Base directories                (none)
+2026-10-09T22:14:09.4057061Z Version (client)                0.16.0
+2026-10-09T22:14:09.4058321Z ##[endgroup]
+2026-10-09T22:14:09.4059263Z ##[group]Get JSON stats
+2026-10-09T22:14:09.4060643Z [command]/opt/hostedtoolcache/sccache/0.16.0/x64/sccache --show-stats --stats-format=json
+2026-10-09T22:14:09.4067246Z {"stats":{"compile_requests":74,"requests_unsupported_compiler":0,"requests_not_compile":1,"requests_not_cacheable":20,"requests_executed":53,"cache_errors":{"counts":{},"adv_counts":{}},"cache_hits":{"counts":{"Rust":53},"adv_counts":{"rust":53}},"cache_misses":{"counts":{},"adv_counts":{}},"cache_timeouts":0,"cache_read_errors":0,"non_cacheable_compilations":0,"forced_recaches":0,"cache_write_errors":0,"cache_writes":0,"cache_write_duration":{"secs":0,"nanos":0},"cache_read_hit_duration":{"secs":3,"nanos":537020857},"compilations":0,"compiler_write_duration":{"secs":0,"nanos":0},"compile_fails":0,"not_cached":{"-o":1,"missing input":8,"crate-type":9,"-":2},"dist_compiles":{},"dist_errors":0,"multi_level":null},"cache_location":"ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/","cache_size":null,"max_cache_size":null,"use_preprocessor_cache_mode":false,"version":"0.16.0","basedirs":[]}
+2026-10-09T22:14:09.4074207Z ##[endgroup]
+2026-10-09T22:14:09.4087291Z ##[notice]100% - 53 hits, 0 misses, 0 errors
+2026-10-09T22:14:09.4087965Z 
+2026-10-09T22:14:09.4088145Z Full human-readable stats:
+2026-10-09T22:14:09.4088866Z Compile requests                      74
+2026-10-09T22:14:09.4089364Z Compile requests executed             53
+2026-10-09T22:14:09.4089854Z Cache hits                            53
+2026-10-09T22:14:09.4090305Z Cache hits (Rust)                     53
+2026-10-09T22:14:09.4090759Z Cache misses                           0
+2026-10-09T22:14:09.4091215Z Cache hits rate                   100.00 %
+2026-10-09T22:14:09.4091697Z Cache hits rate (Rust)            100.00 %
+2026-10-09T22:14:09.4092167Z Cache timeouts                         0
+2026-10-09T22:14:09.4092621Z Cache read errors                      0
+2026-10-09T22:14:09.4093075Z Forced recaches                        0
+2026-10-09T22:14:09.4093538Z Cache write errors                     0
+2026-10-09T22:14:09.4093989Z Cache errors                           0
+2026-10-09T22:14:09.4094448Z Compilations                           0
+2026-10-09T22:14:09.4094910Z Compilation failures                   0
+2026-10-09T22:14:09.4095385Z Non-cacheable compilations             0
+2026-10-09T22:14:09.4095871Z Non-cacheable calls                   20
+2026-10-09T22:14:09.4096337Z Non-compilation calls                  1
+2026-10-09T22:14:09.4096810Z Unsupported compiler calls             0
+2026-10-09T22:14:09.4097291Z Average cache write                0.000 s
+2026-10-09T22:14:09.4097954Z Average compiler                   0.000 s
+2026-10-09T22:14:09.4099137Z Average cache read hit             0.066 s
+2026-10-09T22:14:09.4099763Z Failed distributed compilations        0
+2026-10-09T22:14:09.4100160Z 
+2026-10-09T22:14:09.4100334Z Non-cacheable reasons:
+2026-10-09T22:14:09.4100728Z crate-type                             9
+2026-10-09T22:14:09.4101178Z missing input                          8
+2026-10-09T22:14:09.4101619Z -                                      2
+2026-10-09T22:14:09.4102053Z -o                                     1
+2026-10-09T22:14:09.4102350Z 
+2026-10-09T22:14:09.4102998Z Cache location                  ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/
+2026-10-09T22:14:09.4103990Z Base directories                (none)
+2026-10-09T22:14:09.4104448Z Version (client)                0.16.0
+2026-10-09T22:14:09.4104794Z 
+2026-10-09T22:14:09.4179287Z ##[end-action id=__ea603720-98dc-4dec-a8df-5e4193881d14.__mozilla-actions_sccache-action;outcome=success;conclusion=success;duration_ms=127]
+2026-10-09T22:14:09.4313927Z Post job cleanup.
+2026-10-09T22:14:09.5214265Z [command]/usr/bin/git version
+2026-10-09T22:14:09.5261444Z git version 2.55.0
+2026-10-09T22:14:09.5302860Z Temporarily overriding HOME='/home/runner/work/_temp/33678bf7-c41e-419f-a1b9-2f4d79a90a7b' before making global git config changes
+2026-10-09T22:14:09.5316645Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-09T22:14:09.5318373Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+2026-10-09T22:14:09.5345727Z Removing SSH command configuration
+2026-10-09T22:14:09.5352674Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-09T22:14:09.5388799Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-09T22:14:09.5688494Z Removing HTTP extra header
+2026-10-09T22:14:09.5689458Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-09T22:14:09.5740493Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-09T22:14:09.6040193Z Removing includeIf entries pointing to credentials config files
+2026-10-09T22:14:09.6048649Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-09T22:14:09.6090899Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-09T22:14:09.6515023Z Cleaning up orphan processes
+2026-10-09T22:14:09.6945218Z Terminate orphan process: pid (2540) (sccache)

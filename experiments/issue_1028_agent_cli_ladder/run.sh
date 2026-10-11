@@ -141,6 +141,7 @@ NODES="$OUT/tree.tsv"
 RUN_LOG="$OUT/run.log"
 : > "$NODES"
 : > "$RUN_LOG"
+: > "$OUT/durations.tsv"
 declare -A VERIFIED_EFFECTS=()
 
 # Issue #1085 (D2.3, D4): the leaf table is committed beside this script so
@@ -275,6 +276,18 @@ else
 fi
 [[ "$selected_count" -eq "$expected" ]] || { echo "expected $expected selected nodes, got $selected_count" >&2; exit 1; }
 
+# Composite legs consume only validated evidence from this same source tree.
+if [[ -n "${LADDER_CHILD_EVIDENCE:-}" ]]; then
+  python3 "$ROOT/experiments/issue_1028_agent_cli_ladder/import-children.py" \
+    "$LADDER_CHILD_EVIDENCE" "$OUT" "$BASE_SHA" \
+    "$(git -C "$ROOT" rev-parse 'HEAD^{tree}')" \
+    "$([[ "$AUTHORED_RULES" == enabled ]] && echo true || echo false)" \
+    > "$OUT/imported-children.tsv"
+  while IFS=$'\t' read -r child_id child_effect; do
+    VERIFIED_EFFECTS["$child_id"]="$child_effect"
+  done < "$OUT/imported-children.tsv"
+fi
+
 run_one() {
   local id depth prompt criterion left right criterion_path criterion_marker criterion_guard row work session_dir server_pid port status proof effect config node_number full_prompt effect_contract verifier_status verifier_verdict
   # Tab is whitespace to Bash, so IFS would collapse the two empty child fields
@@ -321,6 +334,7 @@ PY
     fi
     # One line per node in the job log, so a ninety-minute step is readable
     # while it runs rather than blank until it ends (plan 01 step 4).
+    printf '%s\t%s\t%s\n' "$id" "$depth" "$((SECONDS - started))" >> "$OUT/durations.tsv"
     echo "node $id done in $((SECONDS - started))s"
     return 0
   }
@@ -378,7 +392,22 @@ PY
     return 1
   fi
 
-  config="$(printf '{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:%s/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}' "$port")"
+  # The model's limits come from the server, not from the client's built-in
+  # table. The Agent CLI ships a `formal-ai` model with a 60000-token context,
+  # and Formal AI counts one token per character, so a single read and write of
+  # a 25 KB source file crossed the CLI's compaction threshold: the session was
+  # summarized, the read and write evidence vanished, and the leaf re-planned
+  # read -> write until its budget ran out without a proof (run 37663996930,
+  # 15 of 32 leaves `missing_proof`; PR #1188 dogfooding). The served
+  # `/v1/models` states the real window and output cap.
+  limits="$(curl -fsS "http://127.0.0.1:$port/api/openai/v1/models" \
+    | python3 -c 'import json, sys; m = json.load(sys.stdin)["models"][0]; print(m["context_window_tokens"], m["max_output_tokens"])' \
+    2>/dev/null || true)"
+  model_limit=""
+  if [[ "$limits" =~ ^([0-9]+)\ ([0-9]+)$ ]]; then
+    model_limit="$(printf ',\"limit\":{\"context\":%s,\"output\":%s}' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}")"
+  fi
+  config="$(printf '{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:%s/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"%s}}}},\"model\":\"formalai/formal-ai\"}' "$port" "$model_limit")"
 
   if [[ "$depth" -eq 5 ]]; then
     printf -v effect_contract 'Apply the change to the tracked file `%s` itself -- the file has to end up modified in the Git worktree, and nothing else may change. Then create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=leaf`, and `result=` followed by at least four words that state the change you made and that contain the exact text %s.' \
@@ -439,25 +468,39 @@ PY
 
   effect="$work/agent-ladder-effects/node-${id}.lino"
   set +e
-  verifier_verdict=$(LADDER_LEAVES="$OUT/leaves.tsv" LADDER_LEAF_SPAN="$leaf_span" LADDER_CHILD_DIFFS="$child_diffs" \
-    "$VERIFY_NODE" "$work" "$proof" "$id" "$depth" "$left" "$right" "$criterion_path" "$criterion_marker" "$criterion_guard")
+  LADDER_LEAVES="$OUT/leaves.tsv" LADDER_LEAF_SPAN="$leaf_span" LADDER_CHILD_DIFFS="$child_diffs" \
+    "$VERIFY_NODE" "$work" "$proof" "$id" "$depth" "$left" "$right" "$criterion_path" "$criterion_marker" "$criterion_guard" \
+    >"$session_dir/verifier-stdout.log" 2>"$session_dir/verifier-stderr.log"
   verifier_status=$?
   set -e
+  verifier_verdict=$(cat "$session_dir/verifier-stdout.log")
+  cat "$session_dir/verifier-stderr.log" >&2 || true
+
+  capture_status=0
+  # Preserve diagnostic artifacts before interpreting the verifier status.
+  [[ ! -f "$proof" ]] || cp "$proof" "$session_dir/proof.md" || capture_status=1
+  [[ ! -f "$effect" ]] || cp "$effect" "$session_dir/effect.lino" || capture_status=1
+  [[ ! -f "$work/.agent-ladder/verify.tsv" ]] || cp "$work/.agent-ladder/verify.tsv" "$session_dir/verify.tsv" || capture_status=1
+  for verification_log in "$work/.agent-ladder"/cargo-*.log; do
+    [[ ! -f "$verification_log" ]] || cp "$verification_log" "$session_dir/" || capture_status=1
+  done
+  if [[ "$depth" -eq 5 ]]; then
+    git -C "$work" diff -- "$criterion_path" > "$session_dir/change.diff" || capture_status=1
+  elif [[ "$depth" -eq 4 ]]; then
+    cat "$OUT/$left/change.diff" "$OUT/$right/change.diff" > "$session_dir/change.diff" || capture_status=1
+  else
+    git -C "$work" diff > "$session_dir/change.diff" || capture_status=1
+  fi
   if [[ "$verifier_status" -ne 0 ]]; then
     printf '%s\tFAIL\t%s\n' "$id" "$verifier_verdict" | tee -a "$RUN_LOG"
     return 1
   fi
-
-  cp "$proof" "$session_dir/proof.md"
-  cp "$effect" "$session_dir/effect.lino"
-  [[ -f "$work/.agent-ladder/verify.tsv" ]] && cp "$work/.agent-ladder/verify.tsv" "$session_dir/verify.tsv"
-  if [[ "$depth" -eq 5 ]]; then
-    git -C "$work" diff -- "$criterion_path" > "$session_dir/change.diff"
-  elif [[ "$depth" -eq 4 ]]; then
-    cat "$OUT/$left/change.diff" "$OUT/$right/change.diff" > "$session_dir/change.diff"
-  else
-    git -C "$work" diff > "$session_dir/change.diff"
+  [[ -f "$proof" && -f "$effect" ]] || capture_status=1
+  if [[ "$capture_status" -ne 0 ]]; then
+    printf '%s\tFAIL\tartifact_capture_failure\n' "$id" | tee -a "$RUN_LOG"
+    return 1
   fi
+
   VERIFIED_EFFECTS["$id"]="$session_dir/effect.lino"
   printf '%s\tPASS\tdepth=%s\n' "$id" "$depth" | tee -a "$RUN_LOG"
 }
@@ -498,11 +541,18 @@ for level in 5 4 3 2 1 0; do
     break
   fi
 done
+evidence_digest() {
+  python3 -c 'import hashlib,sys; print(hashlib.sha256(open(sys.argv[1], "rb").read()).hexdigest())' "$1"
+}
 cat > "$OUT/ladder-result.lino" <<EOF
 ladder_result
   requested_depth "$TREE_DEPTH"
   node_filter "${NODE_FILTER:-none}"
   authored_rules_enabled "$([[ "$AUTHORED_RULES" == enabled ]] && echo true || echo false)"
+  source_commit "$BASE_SHA"
+  source_tree "$(git -C "$ROOT" rev-parse 'HEAD^{tree}')"
+  tree_sha256 "$(evidence_digest "$OUT/tree.tsv")"
+  leaves_sha256 "$(evidence_digest "$OUT/leaves.tsv")"
   selected_nodes "$selected_count"
   failures "$failed"
   deepest_passing_level "$deepest"

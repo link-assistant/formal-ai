@@ -1,0 +1,946 @@
+# Native source receipts and actual registry manifests; publication remains pending until cold CI and live registry checks pass.
+name: container-images
+on:
+  workflow_call:
+    inputs:
+      push:
+        type: boolean
+        default: false
+      ref:
+        type: string
+        default: ''
+      tag:
+        type: string
+        default: ''
+    outputs:
+      slim-size:
+        description: Observed per-architecture slim-size
+        value: ${{ jobs.merge.outputs.slim-size }}
+      full-size:
+        description: Observed per-architecture full-size
+        value: ${{ jobs.merge.outputs.full-size }}
+  pull_request:
+    branches-ignore: ['e2e/**']
+  release:
+    types:
+    - published
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Run pull-request checks on the dispatched branch
+        type: choice
+        default: checks
+        options: [checks]
+      pull-request:
+        description: Pull request number whose checks are dispatched
+        type: string
+      release_mode:
+        description: Explicit stable publication requires push and independent main/tag authority
+        type: choice
+        default: checks
+        options: [checks, publication]
+      push:
+        description: Publish only an independently authorized stable release
+        type: boolean
+        default: false
+      ref:
+        description: Optional source ref for unprivileged validation only
+        type: string
+        default: ''
+      tag:
+        description: Published stable tag for an explicit main dispatch
+        type: string
+        default: ''
+permissions:
+  contents: read
+concurrency:
+  group: ${{ format('container-images-{0}-{1}', github.repository, github.event_name == 'pull_request' && github.ref || 'stable-publication')
+    }}
+  cancel-in-progress: false
+  queue: max
+defaults:
+  run:
+    shell: bash
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      build: ${{ steps.release.outputs.build }}
+      publish: ${{ steps.release.outputs.publish }}
+      tag: ${{ steps.release.outputs.tag }}
+      image: ${{ steps.release.outputs.image }}
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 22
+        package-manager-cache: false
+    - name: Resolve only the matching published stable source or unprivileged validation
+      run: |
+        node --input-type=module - <<'NODE'
+        import assert from 'node:assert/strict';
+        import {appendFileSync} from 'node:fs';
+        import {resolvePackageRelease} from './scripts/resolve-package-release.mjs';
+        const env=process.env;
+        if(env.EVENT==='workflow_dispatch'&&env.CHECKS_MODE==='checks') {
+         assert.ok(['checks','publication'].includes(env.RELEASE_MODE),'unknown direct dispatch purpose');
+         if(env.RELEASE_MODE==='checks')assert.notEqual(env.PUBLISH,'true','checks dispatch cannot request registry publication');
+         else assert.equal(env.PUBLISH,'true','explicit publication also requires push');
+        }
+        const called=env.EVENT==='workflow_call';
+        const event=called||env.EVENT==='push'?'workflow_dispatch':env.EVENT;
+        if(event==='workflow_run'&&env.RUN_CONCLUSION!=='success') {
+         appendFileSync(env.GITHUB_OUTPUT,'build=false\npublish=false\ntag=\n');process.exit(0);
+        }
+        if(env.PUBLISH==='true')assert.equal(env.CUSTOM_REF,'','publication cannot select an arbitrary custom source');
+        const decision=resolvePackageRelease({...env,EVENT:event});
+        const image='ghcr.io/'+env.REPOSITORY.toLowerCase();
+        appendFileSync(env.GITHUB_OUTPUT,'build='+decision.build+'\npublish='+decision.publish+'\ntag='+decision.tag+'\nimage='+image+'\n');
+        NODE
+      id: release
+      env:
+        GH_TOKEN: ${{ github.token }}
+        EVENT: ${{ github.event_name }}
+        CHECKS_MODE: ${{ inputs.mode }}
+        RELEASE_MODE: ${{ inputs.release_mode }}
+        REPOSITORY: ${{ github.repository }}
+        REFERENCE: ${{ github.ref }}
+        PUBLISH: ${{ inputs.push }}
+        CUSTOM_REF: ${{ inputs.ref }}
+        INPUT_TAG: ${{ inputs.tag }}
+        RELEASE_TAG: ${{ github.event.release.tag_name }}
+        RUN_HEAD: ${{ github.event.workflow_run.head_sha }}
+        RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
+        RUN_REPOSITORY: ${{ github.event.workflow_run.head_repository.full_name }}
+        RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        RUN_ID: ${{ github.event.workflow_run.id }}
+        RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+        RUN_WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
+  source:
+    needs:
+    - resolve
+    if: ${{ needs.resolve.outputs.build == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      NATIVE_RELEASE_EVENT: ${{ github.event_name }}
+      NATIVE_RELEASE_PURPOSE: ${{ needs.resolve.outputs.publish == 'true' && 'publication' || 'validation' }}
+      NATIVE_PR_HEAD: ${{ github.event.pull_request.head.sha }}
+      NATIVE_PR_BASE: ${{ github.event.pull_request.base.sha }}
+    outputs:
+      commit: ${{ steps.seal.outputs.commit }}
+      tree: ${{ steps.seal.outputs.tree }}
+      selected-head: ${{ steps.seal.outputs.selected-head }}
+      toolchain: ${{ steps.seal.outputs.toolchain }}
+      compiler-commit: ${{ steps.seal.outputs.compiler-commit }}
+      selection-sha256: ${{ steps.seal.outputs.selection-sha256 }}
+      version: ${{ steps.seal.outputs.version }}
+      protocol-sha256: ${{ steps.protocol.outputs.protocol-sha256 }}
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 22
+        package-manager-cache: false
+    - name: Capture immutable workflow-owned container protocol
+      run: |
+        set -euo pipefail
+        test "$(git rev-parse HEAD)" = "$CONTAINER_PROTOCOL_COMMIT"
+        protocol="$RUNNER_TEMP/formal-ai-container-protocol"
+        mkdir -p "$protocol"
+        cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs scripts/resolve-package-release.mjs scripts/container-image-receipt.mjs scripts/verify-anonymous-image-manifest.mjs scripts/build-container-image.sh scripts/free-runner-disk.sh "$protocol/"
+        echo "FORMAL_AI_CONTAINER_PROTOCOL_DIR=$protocol" >> "$GITHUB_ENV"
+        node --input-type=module - "$protocol" <<'NODE'
+        import {readFileSync,writeFileSync} from 'node:fs';
+        import {join} from 'node:path';
+        import {createHash} from 'node:crypto';
+        import {execFileSync} from 'node:child_process';
+        const directory=process.argv[2];
+        const names=["native-release-source.mjs", "native-release-artifact.mjs", "native-release-trust.mjs", "resolve-package-release.mjs", "container-image-receipt.mjs", "verify-anonymous-image-manifest.mjs", "build-container-image.sh", "free-runner-disk.sh"];
+        const files=names.sort().map(name=>{const bytes=readFileSync(join(directory,name));
+         return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};});
+        const record={version:1,commit:process.env.CONTAINER_PROTOCOL_COMMIT,
+         tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
+        const bytes=JSON.stringify(record,null,2)+'\n';writeFileSync(join(directory,'protocol-selection.json'),bytes);
+        const digest=createHash('sha256').update(bytes).digest('hex');
+        if(process.env.CONTAINER_PROTOCOL_SHA256) {
+         if(digest!==process.env.CONTAINER_PROTOCOL_SHA256)throw Error('independently captured workflow protocol differs');
+        } else writeFileSync(process.env.GITHUB_OUTPUT,'protocol-sha256='+digest+'\n',{flag:'a'});
+        NODE
+      id: protocol
+      env:
+        CONTAINER_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+    - name: Authorize the published stable tag independently
+      run: |
+        node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/native-release-trust.mjs"
+        case "$NATIVE_RELEASE_EVENT" in
+          push|workflow_call) echo "NATIVE_RELEASE_EVENT=workflow_dispatch" >> "$GITHUB_ENV" ;;
+        esac
+      if: ${{ needs.resolve.outputs.publish == 'true' }}
+      env:
+        GH_TOKEN: ${{ github.token }}
+        NATIVE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+        NATIVE_REPOSITORY: ${{ github.repository }}
+    - uses: actions/checkout@v7
+      if: ${{ needs.resolve.outputs.publish != 'true' }}
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: actions/checkout@v7
+      if: ${{ needs.resolve.outputs.publish == 'true' }}
+      with:
+        ref: ${{ env.NATIVE_AUTHORIZED_RELEASE_COMMIT }}
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Select custom source only for explicit unprivileged dispatch
+      run: |
+        set -euo pipefail
+        [[ "$CUSTOM_REF" =~ ^[A-Za-z0-9][A-Za-z0-9/._-]*$ ]]
+        git fetch --no-tags origin "$CUSTOM_REF"
+        git checkout --detach FETCH_HEAD
+      if: ${{ github.event_name == 'workflow_dispatch' && inputs.ref != '' && needs.resolve.outputs.publish != 'true' }}
+      env:
+        CUSTOM_REF: ${{ inputs.ref }}
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Seal the actual source tree compiler and default-feature contract
+      run: |
+        set -euo pipefail
+        mkdir container-source
+        cp "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/protocol-selection.json" container-source/
+        if [ "$NATIVE_RELEASE_EVENT" = pull_request ]; then
+          NATIVE_SELECTED_HEAD="$NATIVE_PR_HEAD"
+          NATIVE_BASE_COMMIT="$NATIVE_PR_BASE"
+        else
+          NATIVE_SELECTED_HEAD="$(git rev-parse HEAD)"
+          NATIVE_BASE_COMMIT="$NATIVE_SELECTED_HEAD"
+        fi
+        NATIVE_RELEASE_TAG="$SELECTED_TAG"
+        NATIVE_METADATA_FILE="$RUNNER_TEMP/container-package-metadata.json"
+        NATIVE_COMPILER_FILE="$RUNNER_TEMP/container-compiler.txt"
+        export NATIVE_SELECTED_HEAD NATIVE_BASE_COMMIT NATIVE_RELEASE_TAG NATIVE_METADATA_FILE NATIVE_COMPILER_FILE
+        cargo metadata --manifest-path rust/Cargo.toml --no-deps --locked --format-version 1 > "$NATIVE_METADATA_FILE"
+        rustc -vV > "$NATIVE_COMPILER_FILE"
+        node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/native-release-source.mjs" seal container-source
+        node --input-type=module - <<'NODE'
+        import {readFileSync,appendFileSync} from 'node:fs';
+        const source=JSON.parse(readFileSync('container-source/source-selection.json','utf8'));
+        if(source.release_tag&&source.package_version!==source.release_tag.slice(1))throw Error('published source version differs');
+        appendFileSync(process.env.GITHUB_OUTPUT,'version='+source.package_version+'\n');
+        NODE
+      id: seal
+      env:
+        SELECTED_TAG: ${{ needs.resolve.outputs.tag }}
+    - uses: actions/upload-artifact@v7
+      with:
+        name: container-selected-source
+        path: container-source/
+        if-no-files-found: error
+        retention-days: 7
+  native:
+    needs:
+    - resolve
+    - source
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - arch: amd64
+          runner: ubuntu-24.04
+          target: x86_64-unknown-linux-gnu
+        - arch: arm64
+          runner: ubuntu-24.04-arm
+          target: aarch64-unknown-linux-gnu
+    env:
+      NATIVE_RELEASE_EVENT: ${{ github.event_name }}
+      NATIVE_RELEASE_PURPOSE: ${{ needs.resolve.outputs.publish == 'true' && 'publication' || 'validation' }}
+      CONTAINER_SOURCE_COMMIT: ${{ needs.source.outputs.commit }}
+      CONTAINER_SOURCE_TREE: ${{ needs.source.outputs.tree }}
+      CONTAINER_VERSION: ${{ needs.source.outputs.version }}
+      CONTAINER_PROTOCOL_SHA256: ${{ needs.source.outputs.protocol-sha256 }}
+      NATIVE_SELECTION_SHA256: ${{ needs.source.outputs.selection-sha256 }}
+      NATIVE_SELECTED_HEAD: ${{ needs.source.outputs.selected-head }}
+      NATIVE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+      NATIVE_REPOSITORY: ${{ github.repository }}
+      CONTAINER_PUBLISH: ${{ needs.resolve.outputs.publish }}
+      CONTAINER_TARGET: ${{ matrix.target }}
+      RUSTFLAGS: -Dwarnings
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 22
+        package-manager-cache: false
+    - name: Capture immutable workflow-owned container protocol
+      run: |
+        set -euo pipefail
+        test "$(git rev-parse HEAD)" = "$CONTAINER_PROTOCOL_COMMIT"
+        protocol="$RUNNER_TEMP/formal-ai-container-protocol"
+        mkdir -p "$protocol"
+        cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs scripts/resolve-package-release.mjs scripts/container-image-receipt.mjs scripts/verify-anonymous-image-manifest.mjs scripts/build-container-image.sh scripts/free-runner-disk.sh "$protocol/"
+        echo "FORMAL_AI_CONTAINER_PROTOCOL_DIR=$protocol" >> "$GITHUB_ENV"
+        node --input-type=module - "$protocol" <<'NODE'
+        import {readFileSync,writeFileSync} from 'node:fs';
+        import {join} from 'node:path';
+        import {createHash} from 'node:crypto';
+        import {execFileSync} from 'node:child_process';
+        const directory=process.argv[2];
+        const names=["native-release-source.mjs", "native-release-artifact.mjs", "native-release-trust.mjs", "resolve-package-release.mjs", "container-image-receipt.mjs", "verify-anonymous-image-manifest.mjs", "build-container-image.sh", "free-runner-disk.sh"];
+        const files=names.sort().map(name=>{const bytes=readFileSync(join(directory,name));
+         return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};});
+        const record={version:1,commit:process.env.CONTAINER_PROTOCOL_COMMIT,
+         tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
+        const bytes=JSON.stringify(record,null,2)+'\n';writeFileSync(join(directory,'protocol-selection.json'),bytes);
+        const digest=createHash('sha256').update(bytes).digest('hex');
+        if(process.env.CONTAINER_PROTOCOL_SHA256) {
+         if(digest!==process.env.CONTAINER_PROTOCOL_SHA256)throw Error('independently captured workflow protocol differs');
+        } else writeFileSync(process.env.GITHUB_OUTPUT,'protocol-sha256='+digest+'\n',{flag:'a'});
+        NODE
+      id: protocol
+      env:
+        CONTAINER_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+    - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
+      with:
+        name: container-selected-source
+        path: container-source
+    - name: Import and independently authorize the selected source
+      run: |
+        set -euo pipefail
+        if [ "$CONTAINER_PUBLISH" = true ]; then
+         node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/native-release-trust.mjs"
+         case "$NATIVE_RELEASE_EVENT" in
+           push|workflow_call) export NATIVE_RELEASE_EVENT=workflow_dispatch ;;
+         esac
+        fi
+        node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/native-release-source.mjs" import container-source
+        node --input-type=module - "$FORMAL_AI_CONTAINER_PROTOCOL_DIR" <<'NODE'
+        import {readFileSync} from 'node:fs';
+        import {pathToFileURL} from 'node:url';
+        const {validateSelectedSourceAuthority}=await import(pathToFileURL(process.argv[2]+'/native-release-trust.mjs'));
+        const record=JSON.parse(readFileSync('container-source/source-selection.json','utf8'));
+        if(process.env.CONTAINER_PUBLISH==='true')validateSelectedSourceAuthority(process.cwd(),record,{event:'release',authority:{
+         tag:process.env.NATIVE_RELEASE_TAG,releaseCommit:process.env.NATIVE_AUTHORIZED_RELEASE_COMMIT,
+         defaultCommit:process.env.NATIVE_AUTHORIZED_DEFAULT_COMMIT}});
+        else if(record.release_tag!==null)throw Error('unprivileged validation cannot use stable publication authority');
+        NODE
+      env:
+        GH_TOKEN: ${{ github.token }}
+    - uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: ${{ needs.source.outputs.toolchain }}
+        targets: ${{ matrix.target }}
+    - name: Produce the exact native GNU Linux executable
+      run: |
+        set -euo pipefail
+        cargo build --release --locked --bin formal-ai --manifest-path rust/Cargo.toml --target "$CONTAINER_TARGET"
+        mkdir native-bin
+        cp "rust/target/$CONTAINER_TARGET/release/formal-ai" native-bin/formal-ai
+        node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/native-release-artifact.mjs" write native-bin container-source "$CONTAINER_TARGET" native-bin/formal-ai
+        node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/native-release-artifact.mjs" verify native-bin container-source "$CONTAINER_TARGET"
+      timeout-minutes: 25
+    - uses: actions/upload-artifact@v7
+      with:
+        name: ${{ format('container-native-{0}', matrix.arch) }}
+        path: native-bin/
+        if-no-files-found: error
+        retention-days: 7
+  independent-full:
+    needs:
+    - resolve
+    - source
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - arch: amd64
+          runner: ubuntu-24.04
+          target: x86_64-unknown-linux-gnu
+        - arch: arm64
+          runner: ubuntu-24.04-arm
+          target: aarch64-unknown-linux-gnu
+    env:
+      NATIVE_RELEASE_EVENT: ${{ github.event_name }}
+      NATIVE_RELEASE_PURPOSE: ${{ needs.resolve.outputs.publish == 'true' && 'publication' || 'validation' }}
+      CONTAINER_SOURCE_COMMIT: ${{ needs.source.outputs.commit }}
+      CONTAINER_SOURCE_TREE: ${{ needs.source.outputs.tree }}
+      CONTAINER_VERSION: ${{ needs.source.outputs.version }}
+      CONTAINER_PROTOCOL_SHA256: ${{ needs.source.outputs.protocol-sha256 }}
+      NATIVE_SELECTION_SHA256: ${{ needs.source.outputs.selection-sha256 }}
+      NATIVE_SELECTED_HEAD: ${{ needs.source.outputs.selected-head }}
+      NATIVE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+      NATIVE_REPOSITORY: ${{ github.repository }}
+      CONTAINER_PUBLISH: ${{ needs.resolve.outputs.publish }}
+      CONTAINER_ARCH: ${{ matrix.arch }}
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 22
+        package-manager-cache: false
+    - name: Capture immutable workflow-owned container protocol
+      run: |
+        set -euo pipefail
+        test "$(git rev-parse HEAD)" = "$CONTAINER_PROTOCOL_COMMIT"
+        protocol="$RUNNER_TEMP/formal-ai-container-protocol"
+        mkdir -p "$protocol"
+        cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs scripts/resolve-package-release.mjs scripts/container-image-receipt.mjs scripts/verify-anonymous-image-manifest.mjs scripts/build-container-image.sh scripts/free-runner-disk.sh "$protocol/"
+        echo "FORMAL_AI_CONTAINER_PROTOCOL_DIR=$protocol" >> "$GITHUB_ENV"
+        node --input-type=module - "$protocol" <<'NODE'
+        import {readFileSync,writeFileSync} from 'node:fs';
+        import {join} from 'node:path';
+        import {createHash} from 'node:crypto';
+        import {execFileSync} from 'node:child_process';
+        const directory=process.argv[2];
+        const names=["native-release-source.mjs", "native-release-artifact.mjs", "native-release-trust.mjs", "resolve-package-release.mjs", "container-image-receipt.mjs", "verify-anonymous-image-manifest.mjs", "build-container-image.sh", "free-runner-disk.sh"];
+        const files=names.sort().map(name=>{const bytes=readFileSync(join(directory,name));
+         return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};});
+        const record={version:1,commit:process.env.CONTAINER_PROTOCOL_COMMIT,
+         tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
+        const bytes=JSON.stringify(record,null,2)+'\n';writeFileSync(join(directory,'protocol-selection.json'),bytes);
+        const digest=createHash('sha256').update(bytes).digest('hex');
+        if(process.env.CONTAINER_PROTOCOL_SHA256) {
+         if(digest!==process.env.CONTAINER_PROTOCOL_SHA256)throw Error('independently captured workflow protocol differs');
+        } else writeFileSync(process.env.GITHUB_OUTPUT,'protocol-sha256='+digest+'\n',{flag:'a'});
+        NODE
+      id: protocol
+      env:
+        CONTAINER_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+    - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
+      with:
+        name: container-selected-source
+        path: container-source
+    - name: Import and independently authorize the selected source
+      run: |
+        set -euo pipefail
+        if [ "$CONTAINER_PUBLISH" = true ]; then
+         node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/native-release-trust.mjs"
+         case "$NATIVE_RELEASE_EVENT" in
+           push|workflow_call) export NATIVE_RELEASE_EVENT=workflow_dispatch ;;
+         esac
+        fi
+        node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/native-release-source.mjs" import container-source
+        node --input-type=module - "$FORMAL_AI_CONTAINER_PROTOCOL_DIR" <<'NODE'
+        import {readFileSync} from 'node:fs';
+        import {pathToFileURL} from 'node:url';
+        const {validateSelectedSourceAuthority}=await import(pathToFileURL(process.argv[2]+'/native-release-trust.mjs'));
+        const record=JSON.parse(readFileSync('container-source/source-selection.json','utf8'));
+        if(process.env.CONTAINER_PUBLISH==='true')validateSelectedSourceAuthority(process.cwd(),record,{event:'release',authority:{
+         tag:process.env.NATIVE_RELEASE_TAG,releaseCommit:process.env.NATIVE_AUTHORIZED_RELEASE_COMMIT,
+         defaultCommit:process.env.NATIVE_AUTHORIZED_DEFAULT_COMMIT}});
+        else if(record.release_tag!==null)throw Error('unprivileged validation cannot use stable publication authority');
+        NODE
+      env:
+        GH_TOKEN: ${{ github.token }}
+    - name: Reclaim disk before the standalone full compile
+      run: |
+        bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/free-runner-disk.sh"
+    - uses: docker/setup-buildx-action@v4
+    - name: Compile the full image independently on each native architecture
+      run: |
+        set -euo pipefail
+        test ! -e rust/target/release/formal-ai
+        build_log=$(mktemp "$RUNNER_TEMP/formal-ai-independent-build.XXXXXX")
+        trap 'rm -f "$build_log"' EXIT
+        for build_attempt in 1 2 3; do
+          set +e
+          docker buildx build --load --provenance=false --platform "linux/$CONTAINER_ARCH" \
+           --file Dockerfile --build-arg BINARY_SOURCE=compile --tag formal-ai:independent-full \
+           --label "org.opencontainers.image.revision=$CONTAINER_SOURCE_COMMIT" --metadata-file standalone-build.json . 2>&1 | tee "$build_log"
+          build_status=("${PIPESTATUS[@]}")
+          set -e
+          if [ "${build_status[1]}" -ne 0 ]; then exit "${build_status[1]}"; fi
+          if [ "${build_status[0]}" -eq 0 ]; then break; fi
+          if [ "$build_attempt" -eq 3 ] || ! grep -Eq '^ERROR: failed to build: failed to solve:.*unexpected status from HEAD request to https://registry-1\.docker\.io/v2/[^ ]+/manifests/[^ ]+: 429 Too Many Requests$' "$build_log"; then
+            exit "${build_status[0]}"
+          fi
+          sleep "$((30 * build_attempt))"
+        done
+        version=$(docker run --rm --entrypoint /usr/local/bin/formal-ai formal-ai:independent-full --version)
+        test "$version" = "formal-ai $CONTAINER_VERSION"
+        docker run --rm --privileged formal-ai:independent-full verify-formal-ai-dind | tee standalone-runtime.log
+        docker run --rm --entrypoint sha256sum formal-ai:independent-full /usr/local/bin/formal-ai > standalone-executable.sha256
+        docker image inspect formal-ai:independent-full > standalone-image.json
+      timeout-minutes: 25
+    - uses: actions/upload-artifact@v7
+      with:
+        name: ${{ format('container-standalone-full-{0}', matrix.arch) }}
+        path: |-
+          standalone-build.json
+          standalone-runtime.log
+          standalone-executable.sha256
+          standalone-image.json
+        if-no-files-found: error
+        retention-days: 7
+  validate-images:
+    needs:
+    - resolve
+    - source
+    - native
+    - independent-full
+    if: ${{ github.event_name == 'pull_request' || needs.resolve.outputs.publish == 'false' }}
+    permissions:
+      contents: read
+      packages: read
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - arch: amd64
+          runner: ubuntu-24.04
+          target: x86_64-unknown-linux-gnu
+          variant: full
+        - arch: arm64
+          runner: ubuntu-24.04-arm
+          target: aarch64-unknown-linux-gnu
+          variant: full
+        - arch: amd64
+          runner: ubuntu-24.04
+          target: x86_64-unknown-linux-gnu
+          variant: slim
+        - arch: arm64
+          runner: ubuntu-24.04-arm
+          target: aarch64-unknown-linux-gnu
+          variant: slim
+    env:
+      NATIVE_RELEASE_EVENT: ${{ github.event_name }}
+      NATIVE_RELEASE_PURPOSE: ${{ needs.resolve.outputs.publish == 'true' && 'publication' || 'validation' }}
+      CONTAINER_SOURCE_COMMIT: ${{ needs.source.outputs.commit }}
+      CONTAINER_SOURCE_TREE: ${{ needs.source.outputs.tree }}
+      CONTAINER_VERSION: ${{ needs.source.outputs.version }}
+      CONTAINER_PROTOCOL_SHA256: ${{ needs.source.outputs.protocol-sha256 }}
+      NATIVE_SELECTION_SHA256: ${{ needs.source.outputs.selection-sha256 }}
+      NATIVE_SELECTED_HEAD: ${{ needs.source.outputs.selected-head }}
+      NATIVE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+      NATIVE_REPOSITORY: ${{ github.repository }}
+      CONTAINER_PUBLISH: 'false'
+      CONTAINER_ARCH: ${{ matrix.arch }}
+      CONTAINER_TARGET: ${{ matrix.target }}
+      CONTAINER_VARIANT: ${{ matrix.variant }}
+      CONTAINER_REPOSITORY: ${{ needs.resolve.outputs.image }}
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 22
+        package-manager-cache: false
+    - name: Capture immutable workflow-owned container protocol
+      run: |
+        set -euo pipefail
+        test "$(git rev-parse HEAD)" = "$CONTAINER_PROTOCOL_COMMIT"
+        protocol="$RUNNER_TEMP/formal-ai-container-protocol"
+        mkdir -p "$protocol"
+        cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs scripts/resolve-package-release.mjs scripts/container-image-receipt.mjs scripts/verify-anonymous-image-manifest.mjs scripts/build-container-image.sh scripts/free-runner-disk.sh "$protocol/"
+        echo "FORMAL_AI_CONTAINER_PROTOCOL_DIR=$protocol" >> "$GITHUB_ENV"
+        node --input-type=module - "$protocol" <<'NODE'
+        import {readFileSync,writeFileSync} from 'node:fs';
+        import {join} from 'node:path';
+        import {createHash} from 'node:crypto';
+        import {execFileSync} from 'node:child_process';
+        const directory=process.argv[2];
+        const names=["native-release-source.mjs", "native-release-artifact.mjs", "native-release-trust.mjs", "resolve-package-release.mjs", "container-image-receipt.mjs", "verify-anonymous-image-manifest.mjs", "build-container-image.sh", "free-runner-disk.sh"];
+        const files=names.sort().map(name=>{const bytes=readFileSync(join(directory,name));
+         return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};});
+        const record={version:1,commit:process.env.CONTAINER_PROTOCOL_COMMIT,
+         tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
+        const bytes=JSON.stringify(record,null,2)+'\n';writeFileSync(join(directory,'protocol-selection.json'),bytes);
+        const digest=createHash('sha256').update(bytes).digest('hex');
+        if(process.env.CONTAINER_PROTOCOL_SHA256) {
+         if(digest!==process.env.CONTAINER_PROTOCOL_SHA256)throw Error('independently captured workflow protocol differs');
+        } else writeFileSync(process.env.GITHUB_OUTPUT,'protocol-sha256='+digest+'\n',{flag:'a'});
+        NODE
+      id: protocol
+      env:
+        CONTAINER_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+    - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
+      with:
+        name: container-selected-source
+        path: container-source
+    - name: Import and independently authorize the selected source
+      run: |
+        set -euo pipefail
+        if [ "$CONTAINER_PUBLISH" = true ]; then
+         node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/native-release-trust.mjs"
+         case "$NATIVE_RELEASE_EVENT" in
+           push|workflow_call) export NATIVE_RELEASE_EVENT=workflow_dispatch ;;
+         esac
+        fi
+        node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/native-release-source.mjs" import container-source
+        node --input-type=module - "$FORMAL_AI_CONTAINER_PROTOCOL_DIR" <<'NODE'
+        import {readFileSync} from 'node:fs';
+        import {pathToFileURL} from 'node:url';
+        const {validateSelectedSourceAuthority}=await import(pathToFileURL(process.argv[2]+'/native-release-trust.mjs'));
+        const record=JSON.parse(readFileSync('container-source/source-selection.json','utf8'));
+        if(process.env.CONTAINER_PUBLISH==='true')validateSelectedSourceAuthority(process.cwd(),record,{event:'release',authority:{
+         tag:process.env.NATIVE_RELEASE_TAG,releaseCommit:process.env.NATIVE_AUTHORIZED_RELEASE_COMMIT,
+         defaultCommit:process.env.NATIVE_AUTHORIZED_DEFAULT_COMMIT}});
+        else if(record.release_tag!==null)throw Error('unprivileged validation cannot use stable publication authority');
+        NODE
+      env:
+        GH_TOKEN: ${{ github.token }}
+    - name: Reclaim disk before native image construction
+      run: |
+        bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/free-runner-disk.sh"
+    - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
+      with:
+        name: ${{ format('container-native-{0}', matrix.arch) }}
+        path: native-bin
+    - uses: docker/setup-buildx-action@v4
+    - name: Build and observe the actual native container
+      run: |
+        bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/build-container-image.sh"
+      timeout-minutes: 25
+    - uses: actions/upload-artifact@v7
+      with:
+        name: ${{ format('container-image-validated-{0}-{1}', matrix.variant, matrix.arch) }}
+        path: ${{ format('image-receipts/{0}-{1}.json', matrix.variant, matrix.arch) }}
+        if-no-files-found: error
+        retention-days: 7
+  publish-images:
+    needs:
+    - resolve
+    - source
+    - native
+    - independent-full
+    if: ${{ needs.resolve.outputs.publish == 'true' && github.event_name != 'pull_request' && (github.event_name == 'release'
+      || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch
+      == 'main' && github.event.workflow_run.head_repository.full_name == github.repository) || ((github.event_name == 'workflow_dispatch'
+      || github.event_name == 'push') && github.ref == 'refs/heads/main')) }}
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - arch: amd64
+          runner: ubuntu-24.04
+          target: x86_64-unknown-linux-gnu
+          variant: full
+        - arch: arm64
+          runner: ubuntu-24.04-arm
+          target: aarch64-unknown-linux-gnu
+          variant: full
+        - arch: amd64
+          runner: ubuntu-24.04
+          target: x86_64-unknown-linux-gnu
+          variant: slim
+        - arch: arm64
+          runner: ubuntu-24.04-arm
+          target: aarch64-unknown-linux-gnu
+          variant: slim
+    env:
+      NATIVE_RELEASE_EVENT: ${{ github.event_name }}
+      NATIVE_RELEASE_PURPOSE: ${{ needs.resolve.outputs.publish == 'true' && 'publication' || 'validation' }}
+      CONTAINER_SOURCE_COMMIT: ${{ needs.source.outputs.commit }}
+      CONTAINER_SOURCE_TREE: ${{ needs.source.outputs.tree }}
+      CONTAINER_VERSION: ${{ needs.source.outputs.version }}
+      CONTAINER_PROTOCOL_SHA256: ${{ needs.source.outputs.protocol-sha256 }}
+      NATIVE_SELECTION_SHA256: ${{ needs.source.outputs.selection-sha256 }}
+      NATIVE_SELECTED_HEAD: ${{ needs.source.outputs.selected-head }}
+      NATIVE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+      NATIVE_REPOSITORY: ${{ github.repository }}
+      CONTAINER_PUBLISH: 'true'
+      CONTAINER_ARCH: ${{ matrix.arch }}
+      CONTAINER_TARGET: ${{ matrix.target }}
+      CONTAINER_VARIANT: ${{ matrix.variant }}
+      CONTAINER_REPOSITORY: ${{ needs.resolve.outputs.image }}
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 22
+        package-manager-cache: false
+    - name: Capture immutable workflow-owned container protocol
+      run: |
+        set -euo pipefail
+        test "$(git rev-parse HEAD)" = "$CONTAINER_PROTOCOL_COMMIT"
+        protocol="$RUNNER_TEMP/formal-ai-container-protocol"
+        mkdir -p "$protocol"
+        cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs scripts/resolve-package-release.mjs scripts/container-image-receipt.mjs scripts/verify-anonymous-image-manifest.mjs scripts/build-container-image.sh scripts/free-runner-disk.sh "$protocol/"
+        echo "FORMAL_AI_CONTAINER_PROTOCOL_DIR=$protocol" >> "$GITHUB_ENV"
+        node --input-type=module - "$protocol" <<'NODE'
+        import {readFileSync,writeFileSync} from 'node:fs';
+        import {join} from 'node:path';
+        import {createHash} from 'node:crypto';
+        import {execFileSync} from 'node:child_process';
+        const directory=process.argv[2];
+        const names=["native-release-source.mjs", "native-release-artifact.mjs", "native-release-trust.mjs", "resolve-package-release.mjs", "container-image-receipt.mjs", "verify-anonymous-image-manifest.mjs", "build-container-image.sh", "free-runner-disk.sh"];
+        const files=names.sort().map(name=>{const bytes=readFileSync(join(directory,name));
+         return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};});
+        const record={version:1,commit:process.env.CONTAINER_PROTOCOL_COMMIT,
+         tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
+        const bytes=JSON.stringify(record,null,2)+'\n';writeFileSync(join(directory,'protocol-selection.json'),bytes);
+        const digest=createHash('sha256').update(bytes).digest('hex');
+        if(process.env.CONTAINER_PROTOCOL_SHA256) {
+         if(digest!==process.env.CONTAINER_PROTOCOL_SHA256)throw Error('independently captured workflow protocol differs');
+        } else writeFileSync(process.env.GITHUB_OUTPUT,'protocol-sha256='+digest+'\n',{flag:'a'});
+        NODE
+      id: protocol
+      env:
+        CONTAINER_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+    - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
+      with:
+        name: container-selected-source
+        path: container-source
+    - name: Import and independently authorize the selected source
+      run: |
+        set -euo pipefail
+        if [ "$CONTAINER_PUBLISH" = true ]; then
+         node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/native-release-trust.mjs"
+         case "$NATIVE_RELEASE_EVENT" in
+           push|workflow_call) export NATIVE_RELEASE_EVENT=workflow_dispatch ;;
+         esac
+        fi
+        node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/native-release-source.mjs" import container-source
+        node --input-type=module - "$FORMAL_AI_CONTAINER_PROTOCOL_DIR" <<'NODE'
+        import {readFileSync} from 'node:fs';
+        import {pathToFileURL} from 'node:url';
+        const {validateSelectedSourceAuthority}=await import(pathToFileURL(process.argv[2]+'/native-release-trust.mjs'));
+        const record=JSON.parse(readFileSync('container-source/source-selection.json','utf8'));
+        if(process.env.CONTAINER_PUBLISH==='true')validateSelectedSourceAuthority(process.cwd(),record,{event:'release',authority:{
+         tag:process.env.NATIVE_RELEASE_TAG,releaseCommit:process.env.NATIVE_AUTHORIZED_RELEASE_COMMIT,
+         defaultCommit:process.env.NATIVE_AUTHORIZED_DEFAULT_COMMIT}});
+        else if(record.release_tag!==null)throw Error('unprivileged validation cannot use stable publication authority');
+        NODE
+      env:
+        GH_TOKEN: ${{ github.token }}
+    - name: Reclaim disk before native image construction
+      run: |
+        bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/free-runner-disk.sh"
+    - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
+      with:
+        name: ${{ format('container-native-{0}', matrix.arch) }}
+        path: native-bin
+    - uses: docker/setup-buildx-action@v4
+    - uses: docker/login-action@v4
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and observe the actual native container
+      run: |
+        bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/build-container-image.sh"
+      timeout-minutes: 25
+    - uses: actions/upload-artifact@v7
+      with:
+        name: ${{ format('container-image-published-{0}-{1}', matrix.variant, matrix.arch) }}
+        path: ${{ format('image-receipts/{0}-{1}.json', matrix.variant, matrix.arch) }}
+        if-no-files-found: error
+        retention-days: 7
+  merge:
+    concurrency:
+      group: formal-ai-repository-writes
+      queue: max
+    needs:
+    - resolve
+    - source
+    - publish-images
+    if: ${{ needs.resolve.outputs.publish == 'true' && github.event_name != 'pull_request' && (github.event_name == 'release'
+      || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch
+      == 'main' && github.event.workflow_run.head_repository.full_name == github.repository) || ((github.event_name == 'workflow_dispatch'
+      || github.event_name == 'push') && github.ref == 'refs/heads/main')) }}
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      slim-size: ${{ steps.merge.outputs.slim-size }}
+      full-size: ${{ steps.merge.outputs.full-size }}
+    env:
+      NATIVE_RELEASE_EVENT: ${{ github.event_name }}
+      NATIVE_RELEASE_PURPOSE: ${{ needs.resolve.outputs.publish == 'true' && 'publication' || 'validation' }}
+      CONTAINER_SOURCE_COMMIT: ${{ needs.source.outputs.commit }}
+      CONTAINER_SOURCE_TREE: ${{ needs.source.outputs.tree }}
+      CONTAINER_VERSION: ${{ needs.source.outputs.version }}
+      CONTAINER_PROTOCOL_SHA256: ${{ needs.source.outputs.protocol-sha256 }}
+      NATIVE_SELECTION_SHA256: ${{ needs.source.outputs.selection-sha256 }}
+      NATIVE_SELECTED_HEAD: ${{ needs.source.outputs.selected-head }}
+      NATIVE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+      NATIVE_REPOSITORY: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+      CONTAINER_PUBLISH: 'true'
+      CONTAINER_REPOSITORY: ${{ needs.resolve.outputs.image }}
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 22
+        package-manager-cache: false
+    - name: Capture immutable workflow-owned container protocol
+      run: |
+        set -euo pipefail
+        test "$(git rev-parse HEAD)" = "$CONTAINER_PROTOCOL_COMMIT"
+        protocol="$RUNNER_TEMP/formal-ai-container-protocol"
+        mkdir -p "$protocol"
+        cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs scripts/resolve-package-release.mjs scripts/container-image-receipt.mjs scripts/verify-anonymous-image-manifest.mjs scripts/build-container-image.sh scripts/free-runner-disk.sh "$protocol/"
+        echo "FORMAL_AI_CONTAINER_PROTOCOL_DIR=$protocol" >> "$GITHUB_ENV"
+        node --input-type=module - "$protocol" <<'NODE'
+        import {readFileSync,writeFileSync} from 'node:fs';
+        import {join} from 'node:path';
+        import {createHash} from 'node:crypto';
+        import {execFileSync} from 'node:child_process';
+        const directory=process.argv[2];
+        const names=["native-release-source.mjs", "native-release-artifact.mjs", "native-release-trust.mjs", "resolve-package-release.mjs", "container-image-receipt.mjs", "verify-anonymous-image-manifest.mjs", "build-container-image.sh", "free-runner-disk.sh"];
+        const files=names.sort().map(name=>{const bytes=readFileSync(join(directory,name));
+         return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};});
+        const record={version:1,commit:process.env.CONTAINER_PROTOCOL_COMMIT,
+         tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
+        const bytes=JSON.stringify(record,null,2)+'\n';writeFileSync(join(directory,'protocol-selection.json'),bytes);
+        const digest=createHash('sha256').update(bytes).digest('hex');
+        if(process.env.CONTAINER_PROTOCOL_SHA256) {
+         if(digest!==process.env.CONTAINER_PROTOCOL_SHA256)throw Error('independently captured workflow protocol differs');
+        } else writeFileSync(process.env.GITHUB_OUTPUT,'protocol-sha256='+digest+'\n',{flag:'a'});
+        NODE
+      id: protocol
+      env:
+        CONTAINER_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+    - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
+      with:
+        name: container-selected-source
+        path: container-source
+    - name: Import and independently authorize the selected source
+      run: |
+        set -euo pipefail
+        if [ "$CONTAINER_PUBLISH" = true ]; then
+         node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/native-release-trust.mjs"
+         case "$NATIVE_RELEASE_EVENT" in
+           push|workflow_call) export NATIVE_RELEASE_EVENT=workflow_dispatch ;;
+         esac
+        fi
+        node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/native-release-source.mjs" import container-source
+        node --input-type=module - "$FORMAL_AI_CONTAINER_PROTOCOL_DIR" <<'NODE'
+        import {readFileSync} from 'node:fs';
+        import {pathToFileURL} from 'node:url';
+        const {validateSelectedSourceAuthority}=await import(pathToFileURL(process.argv[2]+'/native-release-trust.mjs'));
+        const record=JSON.parse(readFileSync('container-source/source-selection.json','utf8'));
+        if(process.env.CONTAINER_PUBLISH==='true')validateSelectedSourceAuthority(process.cwd(),record,{event:'release',authority:{
+         tag:process.env.NATIVE_RELEASE_TAG,releaseCommit:process.env.NATIVE_AUTHORIZED_RELEASE_COMMIT,
+         defaultCommit:process.env.NATIVE_AUTHORIZED_DEFAULT_COMMIT}});
+        else if(record.release_tag!==null)throw Error('unprivileged validation cannot use stable publication authority');
+        NODE
+      env:
+        GH_TOKEN: ${{ github.token }}
+    - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
+      with:
+        name: container-native-amd64
+        path: native/amd64
+    - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
+      with:
+        name: container-native-arm64
+        path: native/arm64
+    - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
+      with:
+        pattern: container-image-published-*
+        merge-multiple: true
+        path: image-receipts
+    - uses: docker/setup-buildx-action@v4
+    - uses: docker/login-action@v4
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Promote exact source-bound registry descriptors and verify the anonymous index
+      run: |
+        set -euo pipefail
+        node "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/container-image-receipt.mjs" merge container-source native image-receipts "$CONTAINER_REPOSITORY"
+      id: merge
+      timeout-minutes: 10
+    - uses: actions/upload-artifact@v7
+      with:
+        name: container-published-manifest-receipts
+        path: image-receipts/*.json
+        if-no-files-found: error
+        retention-days: 7

@@ -5,10 +5,12 @@ Q36794
     zh ("扉" "門扉" "門扇")
   descriptions
     en "flat, movable structure used to open and close an entrance"
+    es "barrera móvil que permite ingresar y salir"
     ru "устройство прохода сквозь стену; проём в стене для входа и выхода из помещения, или проём во внутреннее пространство чего-либо (самолёта, автомобиля, печи, шкафа и т. п.), а также створ или несколько створов, закрывающие этот проём"
   id Q36794
   labels
     en door
+    es puerta
     hi "द्वार"
     ru "дверь"
     zh "門"

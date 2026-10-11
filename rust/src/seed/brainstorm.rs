@@ -23,12 +23,18 @@ pub struct BrainstormCategory {
     pub items: Vec<String>,
 }
 
-/// Top-level brainstorm-seed bundle — the universal triggers that opt-in to
-/// brainstorm mode plus the list of categories the matcher iterates.
+/// Top-level brainstorm-seed bundle.
+///
+/// It holds the universal triggers that opt-in to brainstorm mode, the list
+/// of categories the matcher iterates, how many items a reply lists by
+/// default, and the cardinal meaning whose numeral a prompt may name to ask
+/// for more (issue #918).
 #[derive(Debug, Clone, Default)]
 pub struct BrainstormSeeds {
     pub triggers: Vec<String>,
     pub categories: Vec<BrainstormCategory>,
+    pub default_count: usize,
+    pub count_cardinal: String,
 }
 
 impl BrainstormSeeds {
@@ -71,6 +77,12 @@ pub fn brainstorm_seeds() -> BrainstormSeeds {
         .into_iter()
         .map(|t| t.to_lowercase())
         .collect();
+    seeds.default_count = root
+        .find_child_value("default_count")
+        .parse()
+        .unwrap_or_default();
+    root.find_child_value("count_cardinal")
+        .clone_into(&mut seeds.count_cardinal);
     for entry in root.children.iter().filter(|c| c.name == "category") {
         let slug = entry.id.clone();
         if slug.is_empty() {

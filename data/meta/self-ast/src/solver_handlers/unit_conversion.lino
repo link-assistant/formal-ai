@@ -1,0 +1,31 @@
+self_ast_census
+  target src/solver_handlers/unit_conversion.rs
+  language rust
+  fidelity signature
+  byte_len 23139
+  line_count 593
+  content_id source_module_8420747bd6ecb239
+  symbol_count 22
+  symbols
+    const ROLE_UNIT_CONVERSION_QUESTION 38 38
+    enum Conversion 42 47
+    enum FormulaStep 50 55
+    function parse 60 80
+    function parse_rational 84 89
+    function conversions 94 131
+    static TABLE 95 95
+    function parse_formula_steps 134 141
+    const WIKIDATA_CONVERSION_PATH 145 145
+    struct SiStatement 149 155
+    function si_statements 158 189
+    static TABLE 159 159
+    function resolve_item 194 201
+    struct WikidataFactor 206 209
+    function wikidata_factor 211 241
+    struct UnitMention 245 249
+    function unit_mentions 254 294
+    enum Direction 297 303
+    function find_conversion 308 324
+    function apply_formula 329 363
+    function handle_unit_conversion 367 581
+    function note_seed_factor 586 593

@@ -1,0 +1,44 @@
+self_ast_census
+  target src/history_context.rs
+  language rust
+  fidelity signature
+  byte_len 23769
+  line_count 620
+  content_id source_module_111e465fd3878b08
+  symbol_count 35
+  symbols
+    const SEED_PATH 33 33
+    const CURSOR_ROOT 36 36
+    const NUMBER_PLACEHOLDER 39 39
+    struct RawCommit 43 50
+    struct SymbolChange 60 65
+    struct RepositoryHistoryImportError 70 73
+    function with_detail 76 81
+    function code 84 86
+    function fmt 90 95
+    struct RecordRule 103 109
+    struct PatternRule 113 117
+    struct HistoryRules 121 150
+    struct RepositoryQaRules 158 168
+    struct StateTransitionRule 173 176
+    struct RequirementRule 181 185
+    function owned_list 188 190
+    function record_rule 192 206
+    function pattern_rule 208 214
+    function defaults 220 309
+    function from_seed_text 314 489
+    function load 494 508
+    function record 511 513
+    function effective_record 519 531
+    function child_ids 534 540
+    function owned_or 542 548
+    function rule_event 552 572
+    function pattern_number 578 590
+    module commits 593 593
+    module cursor 594 594
+    module github 595 595
+    module items 596 596
+    module lineage 597 597
+    module query 598 598
+    module repository_qa 599 599
+    module statements 600 600

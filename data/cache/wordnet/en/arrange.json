@@ -1,0 +1,97 @@
+{
+  "lemma": "arrange",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01466592-v",
+      "partOfSpeech": "v",
+      "definition": "put into a proper or systematic order",
+      "examples": [
+        "arrange the books on the shelves in chronological order"
+      ],
+      "synonyms": [
+        "set up"
+      ]
+    },
+    {
+      "id": "oewn-01023638-v",
+      "partOfSpeech": "v",
+      "definition": "make arrangements for",
+      "examples": [
+        "Can you arrange a meeting with the President?"
+      ],
+      "synonyms": [
+        "fix up"
+      ]
+    },
+    {
+      "id": "oewn-01651668-v",
+      "partOfSpeech": "v",
+      "definition": "plan, organize, and carry out (an event)",
+      "examples": [
+        "the neighboring tribe staged an invasion"
+      ],
+      "synonyms": [
+        "stage"
+      ]
+    },
+    {
+      "id": "oewn-01748949-v",
+      "partOfSpeech": "v",
+      "definition": "set (printed matter) into a specific format",
+      "examples": [
+        "Format this letter so it can be printed out"
+      ],
+      "synonyms": [
+        "format"
+      ]
+    },
+    {
+      "id": "oewn-00038562-v",
+      "partOfSpeech": "v",
+      "definition": "arrange attractively",
+      "examples": [
+        "dress my hair for the wedding"
+      ],
+      "synonyms": [
+        "dress",
+        "set",
+        "do",
+        "coif",
+        "coiffe",
+        "coiffure"
+      ]
+    },
+    {
+      "id": "oewn-01709988-v",
+      "partOfSpeech": "v",
+      "definition": "adapt for performance in a different way",
+      "examples": [
+        "set this poem to music"
+      ],
+      "synonyms": [
+        "set"
+      ]
+    },
+    {
+      "id": "oewn-00737576-v",
+      "partOfSpeech": "v",
+      "definition": "arrange thoughts, ideas, temporal events",
+      "examples": [
+        "arrange my schedule",
+        "set up one's life",
+        "I put these memories with those of bygone times"
+      ],
+      "synonyms": [
+        "set up",
+        "put",
+        "order"
+      ]
+    }
+  ]
+}

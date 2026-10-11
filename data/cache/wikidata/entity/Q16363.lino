@@ -3,10 +3,12 @@ Q16363
     ru ("плечевой сустав" "плечо (в бытовом смысле)")
   descriptions
     en "part of the body; movable joint between arm and upper body"
+    es "parte del cuerpo donde se une el brazo con el tronco"
     ru "часть тела около плечевого сустава и шеи"
   id Q16363
   labels
     en shoulder
+    es hombro
     hi "कंधा"
     ru "плечо"
     zh "肩"

@@ -1,0 +1,13 @@
+view
+  id M-b9da80bcafbe
+  lemma listing
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a database containing an ordered array of items (names or topics)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of making a list of items"
+    provenance (wordnet)

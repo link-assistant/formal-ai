@@ -1,0 +1,5 @@
+>> bash {"command":"gh workflow run issue-1028-agent-ladder.yml --repo link-assistant/formal-ai --ref qa-reasoning-coding-bulk-fixes -f mode=checks -f pull-request=1188 -f depth=all -f authored_rules=disabled -f skip_build=false"}
+   Output: 
+   Exit Code: 0
+== answer ==
+The command completed successfully without output.

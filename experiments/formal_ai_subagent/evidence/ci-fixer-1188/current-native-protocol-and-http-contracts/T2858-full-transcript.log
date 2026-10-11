@@ -1,0 +1,5 @@
+>> bash {"command":"rustfmt --check --edition 2024 rust/tests/unit/docs_requirements/natural_formal_translation.rs"}
+   Output: 
+   Exit Code: 0
+== answer ==
+The command completed successfully without output.

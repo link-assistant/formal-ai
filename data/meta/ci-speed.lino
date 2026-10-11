@@ -1,0 +1,45 @@
+# The CI speed rule (PR #1188), enforced by `scripts/check-ci-speed.mjs`
+# (`data/meta/ci-gates/check-ci-speed.lino`). Documented in docs/ci-cd/speed.md.
+#
+# - No job or step runs longer than limit-minutes; target-minutes is the aim.
+#   Every job declares a timeout-minutes at or under the limit, and no job's
+#   measured maximum in data/meta/ci-durations.lino is above it.
+# - Long work starts first. A job whose measured median is at or above
+#   long-job-minutes waits only on jobs whose outputs, results or artifacts it
+#   uses; test shards are planned longest-first by shard-planner from recorded
+#   durations, and every sharded-suite runs through it.
+# - Sharding loses nothing: the plan puts every listed test in exactly one shard.
+#
+# A job that cannot meet the limit yet is an over-limit-job under its workflow,
+# with the cap it may keep and the reason. The list only shrinks: an entry whose
+# job meets the limit again, or no longer exists, fails the gate until removed.
+ci-speed
+  issue 1188
+  limit-minutes 30
+  target-minutes 15
+  long-job-minutes 10
+  durations "data/meta/ci-durations.lino"
+  test-durations "data/meta/test-durations.lino"
+  javascript-test-durations "data/meta/javascript-test-durations.lino"
+  playwright-test-durations "data/meta/playwright-test-durations.lino"
+  shard-planner "scripts/plan-test-shards.mjs"
+  sharded-suite "scripts/run-prebuilt-tests.sh"
+  sharded-suite "scripts/run-coverage-shard.sh"
+  sharded-suite ".github/workflows/release.yml"
+  sharded-suite ".github/workflows/layered-ci.yml"
+  sharded-suite ".github/workflows/e2e-local.yml"
+  workflow ".github/workflows/dependencies-latest.yml"
+    over-limit-job update
+      timeout-minutes 90
+      reason "Weekly schedule and dispatch only: updates every dependency, then builds and tests the whole crate in one job."
+  workflow ".github/workflows/external-benchmarks.yml"
+    over-limit-job external-benchmarks
+      timeout-minutes 90
+      reason "Schedule and dispatch only (skipped on pull requests, which run the ratchet): runs the upstream suites, 21.2 minutes at most on main. To meet 30: run the sharded upstream-shard path on schedule too."
+    over-limit-job upstream-shard
+      timeout-minutes 45
+      reason "Dispatch with a shard size only: one window of the upstream suites. To meet 30: size the windows from measured durations."
+  workflow ".github/workflows/macos-core-tests.yml"
+    over-limit-job build-archive
+      timeout-minutes 55
+      reason "Switched off while non-Linux CI is off (issue #1111): a cold build of the macOS test archive. To meet 30: build the archive from a shared compiler cache on the Linux build job's schedule."

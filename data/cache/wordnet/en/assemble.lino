@@ -1,0 +1,25 @@
+language en
+lemma assemble
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "create by putting components or members together"
+    examples ("She pieced a quilt" "He tacked together some verses" "They set up a committee")
+    id oewn-01660471-v
+    partOfSpeech v
+    synonyms (piece "put together" "set up" tack "tack together")
+  entry
+    definition "collect in one place"
+    examples ("We assembled in the church basement" "Let's gather in the dining room")
+    id oewn-02433771-v
+    partOfSpeech v
+    synonyms (meet gather forgather foregather)
+  entry
+    definition "get people together"
+    examples ("assemble your colleagues" "get together all those who are interested in the project" "gather the close family members")
+    id oewn-02604140-v
+    partOfSpeech v
+    synonyms (gather "get together")
+source "oewn:2024"

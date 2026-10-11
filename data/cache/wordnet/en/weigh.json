@@ -1,0 +1,64 @@
+{
+  "lemma": "weigh",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02710678-v",
+      "partOfSpeech": "v",
+      "definition": "have a certain weight"
+    },
+    {
+      "id": "oewn-00952463-v",
+      "partOfSpeech": "v",
+      "definition": "show consideration for; take into account",
+      "examples": [
+        "You must consider her age",
+        "The judge considered the offender's youth and was lenient"
+      ],
+      "synonyms": [
+        "consider",
+        "count"
+      ]
+    },
+    {
+      "id": "oewn-02710477-v",
+      "partOfSpeech": "v",
+      "definition": "determine the weight of",
+      "examples": [
+        "The butcher weighed the chicken"
+      ],
+      "synonyms": [
+        "librate"
+      ]
+    },
+    {
+      "id": "oewn-02651923-v",
+      "partOfSpeech": "v",
+      "definition": "have weight; have import, carry weight",
+      "examples": [
+        "It does not matter much"
+      ],
+      "synonyms": [
+        "count",
+        "matter"
+      ]
+    },
+    {
+      "id": "oewn-02652148-v",
+      "partOfSpeech": "v",
+      "definition": "to be oppressive or burdensome",
+      "examples": [
+        "weigh heavily on the mind",
+        "Something pressed on his mind"
+      ],
+      "synonyms": [
+        "press"
+      ]
+    }
+  ]
+}

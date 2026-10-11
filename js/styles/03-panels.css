@@ -1,0 +1,694 @@
+/* Settings panel, desktop shell services / update panels, chat messages, and
+ * the permission + command-approval surfaces.
+ *
+ * Part of the app stylesheet split from the former js/styles.css. The
+ * files in js/styles/ are linked in numeric order by js/app/index.html and
+ * together form one cascade: keep that order when editing.
+ */
+
+.settings-panel {
+  display: grid;
+  gap: 12px;
+}
+
+/* Issue #386: reset-to-default bar at the top of the settings panel. */
+.settings-reset {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid #cdd8dc;
+  border-radius: 8px;
+  background: #f4f7f8;
+}
+
+.settings-reset-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.settings-reset-title {
+  color: #40515f;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.settings-reset-all,
+.settings-reset-one {
+  border: 1px solid #b9c6ca;
+  border-radius: 6px;
+  padding: 4px 10px;
+  background: #ffffff;
+  color: #1e252b;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.settings-reset-all:hover:not(:disabled),
+.settings-reset-one:hover {
+  border-color: #2d6cdf;
+}
+
+.settings-reset-all:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.settings-reset-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.settings-reset-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.settings-reset-label {
+  color: #40515f;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.settings-reset-empty {
+  margin: 0;
+  color: #657584;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.setting-row {
+  display: grid;
+  gap: 6px;
+  color: #40515f;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.setting-row label,
+.setting-row > span,
+.setting-row-slider > label {
+  color: #40515f;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.setting-row input[type="text"],
+.setting-row select {
+  width: 100%;
+  min-height: 34px;
+  border: 1px solid #b9c6ca;
+  border-radius: 6px;
+  padding: 6px 8px;
+  background: #ffffff;
+  color: #1e252b;
+}
+
+.setting-row input[type="range"] {
+  width: 100%;
+  accent-color: #175f4f;
+}
+
+.setting-poles {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: #657584;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.setting-row output {
+  color: #1e252b;
+  font-size: 12px;
+  font-weight: 800;
+  justify-self: end;
+}
+
+.setting-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #40515f;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.setting-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: #175f4f;
+}
+
+.setting-row-ocr {
+  gap: 4px;
+}
+
+.setting-warning {
+  margin: 0;
+  color: #6e5a2f;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.trace-list,
+.desktop-shell-panel {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.trace-list div,
+.desktop-shell-panel div {
+  display: grid;
+  gap: 2px;
+  border: 1px solid #d6dde1;
+  border-radius: 8px;
+  padding: 9px 10px;
+  background: #ffffff;
+}
+
+.trace-list dt,
+.desktop-shell-panel dt {
+  color: #657584;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.trace-list dd,
+.desktop-shell-panel dd {
+  margin: 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.desktop-shell-panel a {
+  color: #175f4f;
+  font-weight: 700;
+}
+
+.desktop-engine-row select {
+  width: 100%;
+  border: 1px solid #b8c5cc;
+  border-radius: 7px;
+  padding: 7px 9px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+}
+
+/* Issue #438 (follow-up): one-click start/stop panel for the prepared Docker
+   containers (Telegram bot + OpenAI-compatible server). */
+.desktop-services-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.desktop-service {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--fa-surface-card);
+}
+
+.desktop-service-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.desktop-service-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--fa-service-dot-idle);
+  flex: 0 0 auto;
+}
+
+.desktop-service-dot.is-running {
+  background: #2faa6a;
+  box-shadow: 0 0 0 3px rgba(47, 170, 106, 0.18);
+}
+
+.desktop-service-label {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.desktop-service-state {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--fa-text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.desktop-service-token {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 7px 9px;
+  border: 1px solid var(--fa-border-control);
+  border-radius: 7px;
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-body);
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.desktop-service-url {
+  color: var(--fa-accent-link);
+  font-weight: 700;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.desktop-service-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.desktop-service-actions button {
+  flex: 1 1 0;
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--fa-border-control);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-body);
+}
+
+/* Panel action buttons share the topbar control hover so hover is uniform
+ * across chrome AND panels (issue #550 P5). Was dark-only before. */
+.desktop-service-actions button:hover:not(:disabled),
+.desktop-update-actions button:hover:not(:disabled) {
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
+}
+
+.desktop-service-start {
+  background: var(--fa-accent-solid-bg);
+  border-color: var(--fa-accent-solid-border);
+  color: var(--fa-accent-solid-text);
+}
+
+.desktop-service-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.desktop-update-row dd {
+  display: grid;
+  gap: 8px;
+}
+
+.desktop-update-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.desktop-update-state {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fa-text-strong);
+  overflow-wrap: anywhere;
+}
+
+.desktop-update-progress {
+  width: 100%;
+  height: 9px;
+  accent-color: #1f7a5b;
+}
+
+.desktop-update-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.desktop-update-actions button {
+  flex: 1 1 0;
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--fa-border-control);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-body);
+}
+
+.desktop-update-install {
+  background: var(--fa-accent-solid-bg);
+  border-color: var(--fa-accent-solid-border);
+  color: var(--fa-accent-solid-text);
+}
+
+.desktop-update-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.desktop-services-note,
+.desktop-services-error {
+  margin: 0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.desktop-services-error {
+  color: var(--fa-error-text);
+  font-weight: 700;
+}
+
+.chat-panel {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  background: #ffffff;
+}
+
+.messages {
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  overflow: auto;
+  padding: 24px clamp(14px, 4vw, 48px);
+}
+
+.desktop-agent-stream {
+  display: flex;
+  gap: 8px;
+  width: min(820px, 100%);
+  border-left: 3px solid #2d6cdf;
+  border-radius: 6px;
+  padding: 9px 12px;
+  background: #eef4ff;
+  color: #29445f;
+  font-size: 13px;
+}
+
+.desktop-agent-stream span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.message {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 12px;
+  width: min(820px, 100%);
+}
+
+.message.user {
+  justify-self: end;
+  grid-template-columns: minmax(0, 1fr) 38px;
+}
+
+.message.user .avatar {
+  grid-column: 2;
+  grid-row: 1;
+  background: #2d6cdf;
+}
+
+.message.user .message-body {
+  grid-column: 1;
+  grid-row: 1;
+  background: #edf4ff;
+  border-color: #c6d9fb;
+}
+
+.message.assistant .avatar {
+  background: #175f4f;
+}
+
+.message.system .avatar {
+  background: #5f6b7a;
+  font-size: 12px;
+}
+
+.message.system .message-body {
+  background: #f6f8fb;
+  border-color: #cdd6e2;
+}
+
+.message-body {
+  min-width: 0;
+  border: 1px solid #dce4e7;
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: #fbfcfd;
+}
+
+.message-permission-panel {
+  margin-top: 12px;
+}
+
+.permission-panel,
+.command-approval-panel {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.permission-panel-header,
+.command-approval-copy {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.permission-panel-header strong,
+.command-approval-copy strong {
+  color: #1e252b;
+  font-size: 14px;
+}
+
+.permission-panel-header span,
+.permission-tool-copy span,
+.command-approval-copy span {
+  color: #657584;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.permission-tool-list {
+  display: grid;
+  min-width: 0;
+}
+
+/* Issue #541 (R9): one-click escalation CTA. The issue text reported that
+ * "after permissions are granted nothing happens" — the user had to grant six
+ * tools individually, flip the mode toggle, and re-send their prompt. This
+ * button collapses all three actions into a single primary affordance and is
+ * styled like a CTA to read as the main action on the panel. The container
+ * keeps a divider above the per-tool rows so the relationship between the
+ * shortcut and the granular controls is still visible. */
+.permission-panel-grant-all {
+  display: flex;
+  padding: 10px 0 4px;
+}
+
+.permission-button-grant-all {
+  flex: 1;
+  border-color: #5da28a;
+  background: #175f4f;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.permission-button-grant-all:hover:not(:disabled),
+.permission-button-grant-all:focus-visible {
+  background: #1e7960;
+  border-color: #175f4f;
+  color: #ffffff;
+}
+
+.permission-tool-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  border-top: 1px solid #dce4e7;
+  padding: 9px 0;
+}
+
+.permission-tool-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.permission-tool-copy strong {
+  color: #1e252b;
+  font-size: 13px;
+}
+
+.permission-state,
+.command-approval-status {
+  justify-self: start;
+  border: 1px solid #c8d3df;
+  border-radius: 6px;
+  padding: 3px 6px;
+  background: #eef3f8;
+  color: #34475a;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.permission-state-granted,
+.command-approval-status-approved {
+  border-color: #9bc9b7;
+  background: #e7f5ef;
+  color: #175f4f;
+}
+
+.permission-state-declined,
+.command-approval-status-denied {
+  border-color: #e0b2b2;
+  background: #faeeee;
+  color: #8a2f2f;
+}
+
+.command-approval-status-running {
+  border-color: #cdbd7a;
+  background: #fff6d8;
+  color: #6c5512;
+}
+
+.permission-actions,
+.command-approval-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.permission-button {
+  border: 1px solid #94b9ad;
+  border-radius: 6px;
+  padding: 5px 8px;
+  background: #ffffff;
+  color: #175f4f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.permission-button:hover:not(:disabled),
+.permission-button[aria-pressed="true"] {
+  background: #e5f3ee;
+  border-color: #5da28a;
+}
+
+.permission-button-secondary {
+  border-color: #c8d3df;
+  color: #46576a;
+}
+
+.permission-button-secondary:hover:not(:disabled),
+.permission-button-secondary[aria-pressed="true"] {
+  background: #f0f3f6;
+  border-color: #93a4b5;
+}
+
+.permission-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.command-approval-panel {
+  margin-top: 12px;
+  border-top: 1px solid #dce4e7;
+  padding-top: 12px;
+}
+
+.command-approval-copy code {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  border: 1px solid #d9e1e8;
+  border-radius: 6px;
+  padding: 3px 5px;
+  background: #f8fafc;
+  color: #1e252b;
+  font-size: 12px;
+}
+
+.desktop-shell-panel .desktop-permission-row {
+  gap: 8px;
+}
+
+.desktop-shell-panel .permission-panel-header,
+.desktop-shell-panel .permission-tool-row,
+.desktop-shell-panel .command-approval-copy {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.desktop-shell-panel .permission-panel-header,
+.desktop-shell-panel .command-approval-copy {
+  display: grid;
+}
+
+.desktop-shell-panel .permission-tool-row {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+.desktop-shell-panel .permission-actions {
+  justify-content: flex-start;
+}
+
+@media (max-width: 720px) {
+  .permission-panel-header,
+  .permission-tool-row,
+  .command-approval-copy {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .permission-tool-row {
+    align-items: start;
+  }
+
+  .permission-actions,
+  .command-approval-actions {
+    justify-content: flex-start;
+  }
+}
+
+.message-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: #667684;
+  font-size: 13px;
+}
+
+.message-meta strong {
+  color: #1e252b;
+}

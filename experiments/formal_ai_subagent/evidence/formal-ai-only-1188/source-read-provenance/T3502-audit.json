@@ -1,0 +1,11 @@
+{
+  "id": "T3502",
+  "tools": [
+    "bash"
+  ],
+  "stop": "final",
+  "answer": "The `node -e 'const fs=require('\\''fs'\\'');const changes=JSON.parse(fs.readFileSync('\\''/private/tmp/formal-ai-only-1188/T3502-request.json'\\'','\\''utf8'\\'')).changes;for(const change of changes){if(fs.readFileSync(change.path,'\\''utf8'\\'')!==change.before)throw Error('\\''preimage changed '\\''+change.path);}for(const change of changes){fs.writeFileSync(change.path,change.expected);}console.log(JSON.stringify({writes:changes.map(change=>change.path)}));'` command completed. Output:\n\n```json\n{\n  \"writes\": [\n    \"js/agentic/tool_result.mjs\",\n    \"js/agentic/progress.mjs\",\n    \"js/agentic/general_execution.mjs\"\n  ]\n}\n```",
+  "exact": true,
+  "physicalRepositoryEffects": 3,
+  "sourceLineDelta": 61
+}

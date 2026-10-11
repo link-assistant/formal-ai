@@ -1,0 +1,11 @@
+self_ast_census
+  target src/cli_explain.rs
+  language rust
+  fidelity signature
+  byte_len 1366
+  line_count 35
+  content_id source_module_ce552f2a5a056ed8
+  symbol_count 2
+  symbols
+    enum ExplainFormat 16 23
+    function run_explain 25 35

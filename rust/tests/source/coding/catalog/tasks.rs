@@ -115,4 +115,17 @@ pub const PROGRAM_TASKS: &[ProgramTask] = &[
         output: "hello\nworld",
         input: "hello\nworld\n",
     },
+    // Issue #1173 R1173-3: "a program that prints hello" names a task whose
+    // output is the operand of the request, not a memorized program. Its seed
+    // row in data/seed/hello-world-programs.lino names the procedure it is
+    // composed from (the hello_world print procedure the documentation route
+    // rediscovers) and the verb role that introduces the operand; the program
+    // binds the operand into the output literal of that procedure
+    // (`crate::coding::operand_program`), so `{operand}` is a slot, not text.
+    ProgramTask {
+        slug: "print_text",
+        label: "print text",
+        output: "{operand}",
+        input: "",
+    },
 ];

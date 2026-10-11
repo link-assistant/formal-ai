@@ -77,3 +77,73 @@ fn mentions(text: &str, phrase: &str) -> bool {
 const fn is_unspaced_script(character: char) -> bool {
     matches!(character, '\u{3400}'..='\u{9fff}' | '\u{f900}'..='\u{faff}')
 }
+
+/// The scope phrases whose words are never a listed directory.
+const LISTED_SCOPE_ROLES: [&str; 5] = [
+    "local_path_scope_current",
+    "local_path_scope_desktop",
+    "local_path_scope_home",
+    "capability_container_scope",
+    "capability_workspace_scope",
+];
+const FUNCTION_WORD_ROLE: &str = "request_function_word";
+const PLACE_ROLE: &str = "statement_place_preposition";
+const OPERAND_WRAPPERS: &[char] = &[
+    '`', '"', '\'', ',', ';', ':', '!', '?', '(', ')', '[', ']', '{', '}',
+];
+const CURRENT_DIRECTORY: &str = ".";
+
+/// A relative path a listing may name: no flag, no parent step, no URL (the
+/// operand characters admit no colon).
+fn is_directory_operand(token: &str) -> bool {
+    !token.is_empty()
+        && !token.starts_with('-')
+        && !token.split('/').any(|part| part == "..")
+        && token
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '.' | '_' | '/' | '-'))
+}
+
+/// The directory a listing request names (PR #1188 T98, gap G29).
+///
+/// "List the files in src." listed the workspace root. The operand is the
+/// path-shaped word right after a seeded place preposition
+/// (`statement_place_preposition`), unless that word is prose, part of a
+/// seeded scope phrase ("in this directory") or a seeded function word
+/// (`request_function_word`: the article of "en la carpeta actual" is no
+/// directory); `.` otherwise.
+pub(super) fn listed_directory(task: &str) -> String {
+    let lexicon = seed::lexicon();
+    let excluded: Vec<String> = LISTED_SCOPE_ROLES
+        .iter()
+        .chain(std::iter::once(&FUNCTION_WORD_ROLE))
+        .flat_map(|role| lexicon.words_for_role(role))
+        .flat_map(|surface| {
+            surface
+                .to_lowercase()
+                .split_whitespace()
+                .map(str::to_owned)
+                .collect::<Vec<_>>()
+        })
+        .collect();
+    let places: Vec<String> = lexicon
+        .words_for_role(PLACE_ROLE)
+        .iter()
+        .map(|surface| surface.to_lowercase())
+        .collect();
+    let words: Vec<&str> = task
+        .split_whitespace()
+        .map(|word| word.trim_matches(OPERAND_WRAPPERS).trim_end_matches('.'))
+        .collect();
+    words
+        .windows(2)
+        .filter(|pair| places.contains(&pair[0].to_lowercase()))
+        .map(|pair| pair[1].trim_end_matches('/'))
+        .find(|candidate| {
+            is_directory_operand(candidate)
+                && !super::shell_command_policy::is_prose_word(candidate)
+                && !excluded.contains(&candidate.to_lowercase())
+        })
+        .unwrap_or(CURRENT_DIRECTORY)
+        .to_owned()
+}

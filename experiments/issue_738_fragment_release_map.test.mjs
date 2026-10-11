@@ -14,7 +14,11 @@ import { join } from "node:path";
 import test from "node:test";
 
 import {
+  ARCHIVE_DIR,
+  ARCHIVE_LINE_LIMIT,
   addPendingRelease,
+  rebaseLinks,
+  relativeTo,
   renderReconstruction,
 } from "./issue_711_rebuild_changelog.mjs";
 
@@ -111,4 +115,65 @@ test("release regeneration records a consumed fragment in the release commit", (
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
+});
+
+function releaseGroups(count, linesPerRelease) {
+  const groups = new Map();
+  for (let minor = 1; minor <= count; minor += 1) {
+    const body = Array.from({ length: linesPerRelease }, (_, line) => `- Change ${minor}.${line}`)
+      .join("\n");
+    groups.set(`0.${minor}.0`, {
+      version: `0.${minor}.0`,
+      date: "2026-01-01",
+      body: `### Added\n${body}`,
+      fragments: null,
+    });
+  }
+  return groups;
+}
+
+test("a short history keeps every release in CHANGELOG.md and writes no archive", () => {
+  const result = renderReconstruction(releaseGroups(3, 5), []);
+  assert.equal(result.archives.length, 0);
+  assert.doesNotMatch(result.changelog, /docs\/changelog/);
+  assert.match(result.changelog, /<!-- changelog-insert-here -->\n\n## \[0\.3\.0]/);
+});
+
+test("older releases roll into size-capped archives linked from CHANGELOG.md", () => {
+  const result = renderReconstruction(releaseGroups(60, 100), []);
+  const lines = (text) => text.split("\n").length - 1;
+  assert.ok(lines(result.changelog) <= 1400, `${lines(result.changelog)} lines`);
+  assert.ok(result.archives.length >= 2);
+  for (const { path, content } of result.archives) {
+    assert.match(path, /^docs\/changelog\/releases-from-[\d.]+\.md$/);
+    // An archive is named for the oldest release it holds, its last section.
+    const oldest = [...content.matchAll(/^## \[([^\]]+)\]/gmu)].at(-1)[1];
+    assert.equal(path, `docs/changelog/releases-from-${oldest}.md`);
+    assert.ok(lines(content) <= ARCHIVE_LINE_LIMIT, `${path}: ${lines(content)} lines`);
+    assert.match(content, /\[CHANGELOG\.md]\(\.\.\/\.\.\/CHANGELOG\.md\)/);
+    assert.match(result.changelog, new RegExp(`\\]\\(${path.replaceAll(".", "\\.")}\\)`));
+  }
+  // Every release appears exactly once across CHANGELOG.md and the archives.
+  const everything = [result.changelog, ...result.archives.map(({ content }) => content)].join("\n");
+  for (let minor = 1; minor <= 60; minor += 1) {
+    assert.equal(everything.split(`## [0.${minor}.0] - `).length, 2, `0.${minor}.0`);
+  }
+  // The newest release stays in CHANGELOG.md; the oldest opens the first archive.
+  assert.match(result.changelog, /<!-- changelog-insert-here -->\n\n## \[0\.60\.0]/);
+  assert.match(result.archives[0].content, /^# Changelog archive: 0\.1\.0 to /);
+});
+
+test("a full archive file is not rewritten when a new release is added", () => {
+  const before = renderReconstruction(releaseGroups(60, 100), []);
+  const after = renderReconstruction(releaseGroups(61, 100), []);
+  assert.equal(after.archives[0].content, before.archives[0].content);
+});
+
+test("archived link targets are rebased to the archive directory", () => {
+  assert.equal(relativeTo(ARCHIVE_DIR, "docs/upload-memory.md"), "../upload-memory.md");
+  assert.equal(relativeTo(ARCHIVE_DIR, "scripts/install.sh"), "../../scripts/install.sh");
+  assert.equal(
+    rebaseLinks("[a](docs/a.md#x) [b](https://example.org) [c](#top)", ARCHIVE_DIR),
+    "[a](../a.md#x) [b](https://example.org) [c](#top)",
+  );
 });

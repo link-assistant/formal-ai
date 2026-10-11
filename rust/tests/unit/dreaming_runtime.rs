@@ -123,6 +123,15 @@ fn serve_startup_wires_the_dreaming_worker_and_requests_guard_the_idle_clock() {
         server.contains("ForegroundActivity::begin()"),
         "every API request must register foreground activity for the idle gate"
     );
+    let telegram = std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/src/telegram_runtime.rs"
+    ))
+    .expect("read the Telegram runtime");
+    assert!(
+        telegram.contains("dreaming_runtime::ForegroundActivity::begin()"),
+        "every Telegram update must register foreground activity for the idle gate"
+    );
 
     let runtime = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),

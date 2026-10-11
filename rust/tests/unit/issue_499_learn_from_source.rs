@@ -95,7 +95,7 @@ fn routing_requires_both_a_directive_and_a_known_source() {
         .expect("the seed must declare the Google Trends learnable source");
     assert_eq!(google.capability, "google_trends_learning");
     assert_eq!(google.host, "trends.google.com");
-    assert!(!registry.directive_cues.is_empty());
+    assert_ne!(registry.directive_cues, [] as [std::string::String; 0]);
 }
 
 // R499-4: the acknowledgement is rendered in the prompt's language.
@@ -178,7 +178,16 @@ fn committed_agent_cli_session_matches_a_fresh_learn_from_source_run() {
     let committed = include_str!(
         "../../../docs/case-studies/issue-499/agent-cli-session-learn-from-source.json"
     );
-    let fresh = run_agentic_task(REPORTED_PROMPT).expect("workspace");
+    let captured: serde_json::Value =
+        serde_json::from_str(committed).expect("captured session JSON");
+    let tools: Vec<&str> = captured["tools_advertised"]
+        .as_array()
+        .expect("captured tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("captured tool name"))
+        .collect();
+    let fresh = formal_ai::agentic_coding::run_agentic_task_with_tools(REPORTED_PROMPT, &tools)
+        .expect("workspace under the captured tool schema");
     let rendered = format!(
         "{}\n",
         serde_json::to_string_pretty(&fresh.session_json()).unwrap()

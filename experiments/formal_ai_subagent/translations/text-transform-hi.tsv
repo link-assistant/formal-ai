@@ -1,0 +1,6 @@
+translation_clarify_interpretation	"आपका मतलब कौन-सी व्याख्या थी: {top} या {other}?"
+translation_clarify_reading	"क्या मैं «{text}» को «{top}» पढ़ूँ या «{other}»?"
+translation_code_gap_comment	"{source} से {target} में `{subject}` के लिए अनुवाद अंतराल"
+translation_gap_no_source	"मैं {source} से {target} में अनुवाद के लिए कोई स्रोत वाक्यांश पहचान नहीं सका।"
+translation_gap_surface	"उपलब्ध formalization data से मैं «{surface}» का {source} से {target} में अनुवाद नहीं कर सका। मैंने इसे आगे के काम के लिए अनुवाद अंतराल के रूप में दर्ज किया है।"
+translation_program_heading	"`{code}` का {source} से {target} में अनुवाद:"

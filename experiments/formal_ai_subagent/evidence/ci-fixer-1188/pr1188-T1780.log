@@ -1,0 +1,291 @@
+>> read {"filePath":"rust/tests/web/issue-1021-behaviour-range.test.mjs","file_path":"rust/tests/web/issue-1021-behaviour-range.test.mjs","path":"rust/tests/web/issue-1021-behaviour-range.test.mjs"}
+   <file>
+   00001| // Issue #1021: the behaviour range, pinned on the JavaScript roots.
+   00002| //
+   00003| // rust/tests/unit/issue_1021_behaviour_range.rs pins every reported prompt of
+   00004| // issue #1021 with held-out paraphrases on the Rust solver. The same prompts are
+   00005| // driven here through the JavaScript twins: the agentic planner
+   00006| // (js/agentic/planner.mjs, the Agent CLI path) for the shell rows, and the
+   00007| // browser worker (js/worker/) for the coding rows. A green run means the
+   00008| // generalization holds on the first root too, not only on the Rust one.
+   00009| 
+   00010| import { before, describe, test } from 'node:test';
+   00011| import assert from 'node:assert/strict';
+   00012| 
+   00013| import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   00014| import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+   00015| import { createWorkerContext, evaluate } from './support/browser-runtime.mjs';
+   00016| 
+   00017| let planner;
+   00018| let mutating;
+   00019| let shell;
+   00020| let worker;
+   00021| 
+   00022| before(async () => {
+   00023|   await installNodeHost(new WorkerHost());
+   00024|   planner = await import('../../../js/agentic/planner.mjs');
+   00025|   mutating = await import('../../../js/agentic/mutating_action.mjs');
+   00026|   worker = createWorkerContext();
+   00027|   await evaluate(worker, 'loadSeed()');
+   00028| });
+   00029| 
+   00030| /** The longest recipe the seed declares is six steps; twelve is a runaway. */
+   00031| const MAX_PLAN_STEPS = 12;
+   00032| 
+   00033| /**
+   00034|  * The shell command the agentic planner resolves for `prompt`, or null. A
+   00035|  * verified recipe (issue #944) is driven to its end with every step succeeding
+   00036|  * and its mutating action picked out, as the Rust `shell_command` helper does;
+   00037|  * a single read-only command is returned as planned.
+   00038|  */
+   00039| async function shellCommand(prompt) {
+   00040|   const messages = [{ role: 'user', content: prompt }];
+   00041|   const commands = [];
+   00042|   while (commands.length <= MAX_PLAN_STEPS) {
+   00043|     const plan = await planner.planChatStep(messages, ['exec_command']);
+   00044|     if (!plan || plan.kind !== 'tool_calls') break;
+   00045|     const call = plan.calls[0];
+   00046|     const command = JSON.parse(call.arguments).command;
+   00047|     if (!command) break;
+   00048|     const id = `call_${messages.length}`;
+   00049|     messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
+   00050|     messages.push({ role: 'tool', tool_call_id: id, name: call.tool, content: `Command: ${command}\nOutput: (empty)\nExit Code: 0` });
+   00051|     commands.push(command);
+   00052|     // A read-only command is the whole plan; only a recipe opens with a check.
+   00053|     if (commands.length === 1 && !command.startsWith('test ')) break;
+   00054|   }
+   00055|   return commands.find((command) => mutating.verifiedRecipe(command)) ?? commands[0] ?? null;
+   00056| }
+   00057| 
+   00058| const solve = (prompt) => worker.solve(prompt, [], {}, {}, [], {});
+   00059| 
+   00060| describe('R1021-3/4/5/9: shell requests on the agentic planner', () => {
+   00061|   test('a command-naming noun is not an argument (#866, #867)', async () => {
+   00062|     for (const [prompt, expected] of [
+   00063|       ['Execute ls command', 'ls'],
+   00064|       ['Execute the ls command', 'ls'],
+   00065|       ['run ls command', 'ls'],
+   00066|       ['Run the ls command please', 'ls'],
+   00067|       ['выполни команду ls', 'ls'],
+   00068|       ['запусти ls команду', 'ls'],
+   00069|       ['execute pwd command', 'pwd'],
+   00070|       ['run whoami command', 'whoami'],
+   00071|       ['execute git status command', 'git status'],
+   00072|       ['run the df -h command', 'df -h'],
+   00073|     ]) {
+   00074|       assert.equal(await shellCommand(prompt), expected, prompt);
+   00075|     }
+   00076|   });
+   00077| 
+   00078|   test('a prose listing request routes to ls in any word order, english, russian, hindi and spanish (#865)', async () => {
+   00079|     for (const prompt of [
+   00080|       'List me files here',
+   00081|       'list me the files here',
+   00082|       'here, show me files',
+   00083|       'could you enumerate the files in this folder',
+   00084|       'which files do we have here?',
+   00085|       'give me the contents of the current directory',
+   00086|       'перечисли мне файлы здесь',
+   00087|       'покажи мне файлы в этой папке',
+   00088|       'यहाँ फ़ाइलें दिखाओ',
+   00089|       'lista los archivos aquí',
+   00090|       'muéstrame los archivos de la carpeta actual',
+   00091|       'aquí, enseña los ficheros',
+   00092|       '¿cuáles archivos hay en este directorio?',
+   00093|     ]) {
+   00094|       assert.equal(await shellCommand(prompt), 'ls', prompt);
+   00095|     }
+   00096|     assert.notEqual(await shellCommand('show me the current directory'), 'ls');
+   00097|     assert.notEqual(await shellCommand('list the running processes'), 'ls');
+   00098|   });
+   00099| 
+   00100|   test('a bare command is the request (#868)', async () => {
+   00101|     for (const command of ['ls', 'pwd', 'whoami', 'ls -la', 'df -h']) {
+   00102|       assert.equal(await shellCommand(command), command, command);
+   00103|     }
+   00104|   });
+   00105| 
+   00106|   test('a move between absolute or home-relative paths is performed; a traversal is not (#824)', async () => {
+   00107|     for (const [prompt, expected] of [
+   00108|       ['Move /Users/konard/Desktop/Archive/hive-control-center to ~/Code/Archive/link-assistant',
+   00109|         'mv /Users/konard/Desktop/Archive/hive-control-center ~/Code/Archive/link-assistant'],
+   00110|       ['move /tmp/report.txt to ~/Documents/report.txt', 'mv /tmp/report.txt ~/Documents/report.txt'],
+   00111|       ['please move the file /var/log/build.log to ~/archive/build.log', 'mv /var/log/build.log ~/archive/build.log'],
+   00112|       ['перемести файл /tmp/report.txt в ~/Documents/report.txt', 'mv /tmp/report.txt ~/Documents/report.txt'],
+   00113|     ]) {
+   00114|       assert.equal(await shellCommand(prompt), expected, prompt);
+   00115|     }
+   00116|     for (const prompt of ['move ../secrets/key.pem to ~/key.pem', 'move /tmp/report.txt to ../../elsewhere/report.txt']) {
+   00117|       assert.equal(await shellCommand(prompt), null, prompt);
+   00118|     }
+   00119|   });
+   00120| 
+   00121|   test('a cue that names its object still takes a plain name', async () => {
+   00122|     for (const [prompt, expected] of [
+   00123|       ['remove the directory build', 'rmdir build'],
+   00124|       ['delete the file old.txt', 'rm old.txt'],
+   00125|       ['copy a.txt to b.txt', 'cp a.txt b.txt'],
+   00126|       ['rename old.txt to new.txt', 'mv old.txt new.txt'],
+   00127|       ['create a symbolic link from a to b', 'ln -s a b'],
+   00128|     ]) {
+   00129|       assert.equal(await shellCommand(prompt), expected, prompt);
+   00130|     }
+   00131|   });
+   00132| });
+   00133| 
+   00134| describe('R1021-6/7: a named exercise is a program, not a file operation', () => {
+   00135|   test('neither the exercise nor its Rosetta Code URL reaches the shell (#862, #863)', async () => {
+   00136|     for (const prompt of [
+   00137|       'Give me example of how to do copy stdin to stdout in Rust',
+   00138|       'Execute https://rosettacode.org/wiki/Copy_stdin_to_stdout in Rust',
+   00139|       'show me how to copy stdin to stdout',
+   00140|       'how do I copy standard input to standard output in Rust?',
+   00141|       'write a program that copies stdin to stdout',
+   00142|       'rename the variable counter to total in this function',
+   00143|     ]) {
+   00144|       assert.equal(await shellCommand(prompt), null, prompt);
+   00145|     }
+   00146|   });
+   00147| 
+   00148|   test('the exercise is answered as a catalogued program in english, russian, hindi, chinese and spanish', async () => {
+   00149|     for (const [prompt, language] of [
+   00150|       ['Give me example of how to do copy stdin to stdout in Rust', 'rust'],
+   00151|       ['Execute https://rosettacode.org/wiki/Copy_stdin_to_stdout in Rust', 'rust'],
+   00152|       ['write a program that copies stdin to stdout in Python', 'python'],
+   00153|       ['Write a Go program that copies standard input to standard output', 'go'],
+   00154|       ['напиши программу на C, которая копирует стандартный ввод в стандартный вывод', 'c'],
+   00155|       ['скопировать stdin в stdout на php', 'php'],
+   00156|       ['मानक इनपुट को मानक आउटपुट में कॉपी करें python', 'python'],
+   00157|       ['用 Java 将标准输入复制到标准输出', 'java'],
+   00158|       ['copiar stdin a stdout en JavaScript', 'javascript'],
+   00159|     ]) {
+   00160|       const answer = await solve(prompt);
+   00161|       assert.equal(answer.intent, 'write_program', prompt);
+   00162|       assert.ok(answer.evidence.includes(`response:write_program:copy_stdin_to_stdout:${language}`), `${prompt}: ${answer.evidence}`);
+   00163|     }
+   00164|   });
+   00165| 
+   00166|   test('the stdin answer pipes the input it was verified against into the run command', async () => {
+   00167|     const answer = await solve('copy stdin to stdout in Rust');
+   00168|     assert.equal(answer.content, [
+   00169|       'Here is a minimal Rust copy standard input to standard output program:',
+   00170|       '',
+   00171|       '```rust',
+   00172|       'use std::io::{self, Read, Write};',
+   00173|       '',
+   00174|       'fn main() -> io::Result<()> {',
+   00175|       '    let mut input = Vec::new();',
+   00176|       '    io::stdin().read_to_end(&mut input)?;',
+   00177|       '    io::stdout().write_all(&input)',
+   00178|       '}',
+   00179|       '```',
+   00180|       '',
+   00181|       'Execution status: not run - the browser sandbox cannot invoke a rust toolchain.',
+   00182|       '',
+   00183|       'Copy the snippet into a rust environment to verify.',
+   00184|       '',
+   00185|       'Expected output after verification:',
+   00186|       '```text',
+   00187|       'hello',
+   00188|       'world',
+   00189|       '```',
+   00190|       '',
+   00191|       'How it works:',
+   00192|       'The program performs the requested task and prints its result to standard output.',
+   00193|       '',
+   00194|       'How to test it yourself:',
+   00195|       '1. Install the Rust toolchain from https://rustup.rs.',
+   00196|       '2. Save the code above to a file named `main.rs`.',
+   00197|       '3. Check that it compiles: `rustc main.rs -o main`.',
+   00198|       "4. Run it: `printf 'hello\\nworld\\n' | ./main`.",
+   00199|       '5. Compare the output with the expected output shown above.',
+   00200|     ].join('\n'));
+   00201|     assert.equal(answer.programExecution.runCommand, "printf 'hello\\nworld\\n' | ./main");
+   00202|   });
+   00203| 
+   00204|   test('a task that reads no input keeps its plain run command', async () => {
+   00205|     const answer = await solve('write me hello world program in Rust');
+   00206|     assert.equal(answer.programExecution.runCommand, './main');
+   00207|     assert.ok(!answer.content.includes('printf'), answer.content);
+   00208|   });
+   00209| });
+   00210| 
+   00211| describe('R1021-8: a framework-named request is answered in that framework (#723)', () => {
+   00212|   test('Laravel is its own target; an uncatalogued framework falls back to its language', async () => {
+   00213|     for (const [prompt, intent] of [
+   00214|       ['напиши мне код на PHP Laravel', 'write_script_laravel'],
+   00215|       ['write me PHP Laravel code', 'write_script_laravel'],
+   00216|       ['PHP Laravel में कोड लिखें', 'write_script_laravel'],
+   00217|       ['用 PHP Laravel 写代码', 'write_script_laravel'],
+   00218|       ['write me PHP Symfony code', 'write_script_php'],
+   00219|       ['write me some PHP code', 'write_script_php'],
+   00220|       ['PHP में कोड लिखें', 'write_script_php'],
+   00221|       ['用 PHP 写代码', 'write_script_php'],
+   00222|       ['write me Ruby on Rails code', 'write_script_ruby'],
+   00223|       ['напиши мне код на Python Django', 'write_script_python'],
+   00224|     ]) {
+   00225|       assert.equal((await solve(prompt)).intent, intent, prompt);
+   00226|     }
+   00227|   });
+   00228| });
+   00229| 
+   00230| describe('R1021-31: asking for code is a coding request whatever the asking verb', () => {
+   00231|   test('a named language is answered with its minimal script in every asking verb', async () => {
+   00232|     for (const [prompt, intent] of [
+   00233|       ['мне нужен код на пхп', 'write_script_php'],
+   00234|       ['дай мне код на php', 'write_script_php'],
+   00235|       ['мне нужен код на python', 'write_script_python'],
+   00236|       ['I need PHP code', 'write_script_php'],
+   00237|       ['I want PHP code', 'write_script_php'],
+   00238|       ['give me python code', 'write_script_python'],
+   00239|       ['मुझे php कोड चाहिए', 'write_script_php'],
+   00240|       ['我需要 php 代码', 'write_script_php'],
+   00241|       ['escribe código en Python', 'write_script_python'],
+   00242|     ]) {
+   00243|       assert.equal((await solve(prompt)).intent, intent, prompt);
+   00244|     }
+   00245|   });
+   00246| 
+   00247|   test('code naming no language reaches the honest dead end in english, russian, hindi, chinese and spanish', async () => {
+   00248|     for (const prompt of [
+   00249|       'мне нужен код', 'дай мне код', 'напиши мне код', 'мне нужна программа',
+   00250|       'I need code', 'give me code', 'I want code', 'write me a program',
+   00251|       'मुझे कोड चाहिए', '我需要代码', '给我代码', 'necesito código', 'escribe código', 'dame código',
+   00252|     ]) {
+   00253|       assert.equal((await solve(prompt)).intent, 'write_program_request_unspecified', prompt);
+   00254|     }
+   00255|   });
+   00256| 
+   00257|   test('the dead end is worded in the language it was asked in', async () => {
+   00258|     assert.equal((await solve('I need code')).content,
+   00259|       'I will not guess what to write. This reads as a program request, but it names neither what the program must do nor which programming language to write it in.\n\nSay what the program should do and which language it should be written in, and I will derive it.');
+   00260|     assert.equal((await solve('мне нужен код')).content,
+   00261|       'Я не угадываю, что писать. Это похоже на запрос программы, но в нём не названо ни что программа должна делать, ни на каком языке программирования её написать.\n\nСкажите, что должна делать программа и на каком языке, и я её выведу.');
+   00262|   });
+   00263| 
+   00264|   test('an asking verb that names another subject is not a coding request', async () => {
+   00265|     for (const prompt of [
+   00266|       'I need information about Rust',
+   00267|       'I need to find a python tutorial',
+   00268|       'give me the code of this repository',
+   00269|       'I need a code review',
+   00270|       'дай мне код этого репозитория',
+   00271|       'I need the code of this file',
+   00272|       'give me a code example for sorting',
+   00273|     ]) {
+   00274|       const { intent } = await solve(prompt);
+   00275|       assert.ok(!intent.startsWith('write_'), `${prompt} routed to ${intent}`);
+   00276|     }
+   00277|   });
+   00278| });
+   00279| 
+   
+   (End of file - total 279 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/issue-1021-behaviour-range.test.mjs","file_path":"rust/tests/web/issue-1021-behaviour-range.test.mjs","new":"  mutating = await import('../../../js/agentic/mutating_action.mjs');\n  shell = await import('../../../js/agentic/shell_command.mjs');","newString":"  mutating = await import('../../../js/agentic/mutating_action.mjs');\n  shell = await import('../../../js/agentic/shell_command.mjs');","new_str":"  mutating = await import('../../../js/agentic/mutating_action.mjs');\n  shell = await import('../../../js/agentic/shell_command.mjs');","new_string":"  mutating = await import('../../../js/agentic/mutating_action.mjs');\n  shell = await import('../../../js/agentic/shell_command.mjs');","old":"  mutating = await import('../../../js/agentic/mutating_action.mjs');","oldString":"  mutating = await import('../../../js/agentic/mutating_action.mjs');","old_str":"  mutating = await import('../../../js/agentic/mutating_action.mjs');","old_string":"  mutating = await import('../../../js/agentic/mutating_action.mjs');","path":"rust/tests/web/issue-1021-behaviour-range.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/issue-1021-behaviour-range.test.mjs"}
+   651333c877af41004c55b66ec602fad374409ce0ef3c4121ee531dd97bd8591d  rust/tests/web/issue-1021-behaviour-range.test.mjs
+   
+== answer ==
+Replaced `  mutating = await import('../../../js/agentic/mutating_action.mjs');` with `  mutating = await import('../../../js/agentic/mutating_action.mjs');
+  shell = await import('../../../js/agentic/shell_command.mjs');` in `rust/tests/web/issue-1021-behaviour-range.test.mjs` and observed the result.

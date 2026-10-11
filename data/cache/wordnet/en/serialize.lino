@@ -1,0 +1,13 @@
+language en
+lemma serialize
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "arrange serially"
+    examples ("Serialize the numbers")
+    id oewn-00279845-v
+    partOfSpeech v
+    synonyms (serialise)
+source "oewn:2024"

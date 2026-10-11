@@ -1,0 +1,9 @@
+view
+  id M-b4685320e0f3
+  lemma gui
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a user interface based on graphics (icons and pictures and menus) instead of text; uses a mouse as well as a keyboard as an input device"
+    provenance (wordnet)

@@ -1,0 +1,1 @@
+Record compact-input coding and self-coding requirements and source-bound work measurements, retaining failures and supplied-patch attribution. Correctness remains mandatory; no token savings or autonomous coding baseline is claimed.

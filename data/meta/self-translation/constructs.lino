@@ -1,0 +1,78 @@
+# The construct map of portable-pure-v1, how each construct of the portable
+# fragment is spelled in JavaScript, in the meta language (the links IR that
+# `node scripts/self-translate.mjs --to meta` prints) and in Rust.
+#
+# Adapted from link-foundation/meta-language PR #196 (docs/self-translation.md,
+# docs/four-language-contracts.md "Construct and fidelity inventory") and
+# link-foundation/relative-meta-logic PR #184
+# (docs/case-studies/issue-183/portable-natural-translation.md), both released
+# into the public domain under the Unlicense. The translator reads the type,
+# operator, unary, builtin and method rows to spell code, and every refusal
+# it reports is a `carried` row, so a gap is named here, never improvised.
+# rust/tests/web/self-translation.test.mjs fails when a row has no evidence
+# in the shared corpus (rust/tests/fixtures/self-translation/cases.lino).
+#
+# (type <meta> (javascript <JSDoc>) (rust <parameter spelling>) (rust-owned <result spelling>))
+(type number (javascript number) (rust f64) (rust-owned f64))
+(type boolean (javascript boolean) (rust bool) (rust-owned bool))
+(type string (javascript string) (rust "&str") (rust-owned String))
+# (operator <meta> (javascript <spelling>) (rust <spelling>) (precedence <n>) (operands <type>) (yields <type>))
+# `any` operands must share one type; Rust comparisons do not chain, so a
+# comparison operand that is itself a comparison is parenthesized.
+(operator or (javascript "||") (rust "||") (precedence 3) (operands boolean) (yields boolean))
+(operator and (javascript "&&") (rust "&&") (precedence 4) (operands boolean) (yields boolean))
+(operator equal (javascript "===") (rust "==") (precedence 8) (operands any) (yields boolean))
+(operator not-equal (javascript "!==") (rust "!=") (precedence 8) (operands any) (yields boolean))
+(operator less (javascript "<") (rust "<") (precedence 9) (operands number) (yields boolean))
+(operator less-equal (javascript "<=") (rust "<=") (precedence 9) (operands number) (yields boolean))
+(operator greater (javascript ">") (rust ">") (precedence 9) (operands number) (yields boolean))
+(operator greater-equal (javascript ">=") (rust ">=") (precedence 9) (operands number) (yields boolean))
+(operator add (javascript "+") (rust "+") (precedence 11) (operands number) (yields number))
+(operator subtract (javascript "-") (rust "-") (precedence 11) (operands number) (yields number))
+(operator multiply (javascript "*") (rust "*") (precedence 12) (operands number) (yields number))
+(operator divide (javascript "/") (rust "/") (precedence 12) (operands number) (yields number))
+(operator remainder (javascript "%") (rust "%") (precedence 12) (operands number) (yields number))
+(unary negate (javascript "-") (rust "-") (operand number) (yields number))
+(unary not (javascript "!") (rust "!") (operand boolean) (yields boolean))
+# (builtin <meta> (javascript <callee>) (rust <callee>) (arguments <types>) (yields <type>))
+(builtin max (javascript "Math.max") (rust "f64::max") (arguments number number) (yields number))
+(builtin min (javascript "Math.min") (rust "f64::min") (arguments number number) (yields number))
+(builtin abs (javascript "Math.abs") (rust "f64::abs") (arguments number) (yields number))
+(builtin floor (javascript "Math.floor") (rust "f64::floor") (arguments number) (yields number))
+(builtin ceil (javascript "Math.ceil") (rust "f64::ceil") (arguments number) (yields number))
+(builtin sqrt (javascript "Math.sqrt") (rust "f64::sqrt") (arguments number) (yields number))
+# (method <meta> (javascript <name>) (rust <name>) (receiver <type>) (arguments <types>) (yields <type>))
+(method starts-with (javascript startsWith) (rust starts_with) (receiver string) (arguments string) (yields boolean))
+(method ends-with (javascript endsWith) (rust ends_with) (receiver string) (arguments string) (yields boolean))
+(method includes (javascript includes) (rust contains) (receiver string) (arguments string) (yields boolean))
+# (construct <meta> (javascript "<form>") (rust "<form>")) rows name the item,
+# statement and expression shapes; the emitters write them, and the corpus
+# must use each.
+(construct function (javascript "export function name(a) { ... } with JSDoc types") (rust "#[must_use] pub fn name(a: T) -> R { ... }"))
+(construct constant (javascript "export const NAME = literal;") (rust "pub const NAME: T = literal;"))
+(construct binding (javascript "const name = value;") (rust "let name = value;"))
+(construct return (javascript "return value;") (rust "the block's tail expression"))
+(construct branch (javascript "if (c) { ... } else { ... }, or if (c) { return a; } followed by the rest") (rust "if c { ... } else { ... }"))
+(construct choose (javascript "c ? a : b") (rust "if c { a } else { b }"))
+(construct call (javascript "name(a, b) of a function of the same module") (rust "name(a, b)"))
+(construct comment (javascript "a // or /* */ comment group no item follows") (rust "the same comment"))
+# (carried <slug> "<reason>") rows are every refusal the translator can report.
+(carried no-definition "no definition")
+(carried class "a class is outside portable-pure-v1")
+(carried untyped "a parameter or result without a JSDoc number, boolean or string type")
+(carried mutable "let, var and assignment are outside portable-pure-v1")
+(carried loop "loops are outside portable-pure-v1")
+(carried collection "arrays and objects are outside portable-pure-v1")
+(carried template "template literals are outside portable-pure-v1")
+(carried concatenation "string concatenation is outside portable-pure-v1")
+(carried rounding "Math.round rounds halves up, f64::round away from zero")
+(carried length "a string length counts UTF-16 units in JavaScript and bytes in Rust")
+(carried name "a name with no spelling both languages read back")
+(carried unknown-call "a call to a function the module does not define")
+(carried type "operand types the construct map does not accept")
+(carried missing-return "a path that ends without a return")
+(carried statement "a top-level statement runs once, as a program")
+(carried async "async functions and await are outside portable-pure-v1")
+(carried rust-item "a Rust item outside portable-pure-v1")
+(carried comment "comment the target cannot hold")
+(carried unsupported "a construct outside portable-pure-v1")

@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "巴士"
+        },
+        "es": {
+          "language": "es",
+          "value": "autobús"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "用於載運多名乘客的車輛"
+        },
+        "es": {
+          "language": "es",
+          "value": "vehículo grande de carretera para transportar gente"
         }
       },
       "aliases": {
@@ -52,6 +60,36 @@
           {
             "language": "en",
             "value": "autobus"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "bus"
+          },
+          {
+            "language": "es",
+            "value": "ómnibus"
+          },
+          {
+            "language": "es",
+            "value": "micro"
+          },
+          {
+            "language": "es",
+            "value": "colectivo"
+          },
+          {
+            "language": "es",
+            "value": "guagua"
+          },
+          {
+            "language": "es",
+            "value": "autobus"
+          },
+          {
+            "language": "es",
+            "value": "omnibus"
           }
         ]
       }

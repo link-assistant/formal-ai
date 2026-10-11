@@ -1,0 +1,4 @@
+calendar_create_event_confirmation	"Crear el evento «{title}» el {date}. Hora: {time}, zona horaria: {time_zone}. Duración: {minutes} minutos.\nImporta este archivo .ics en cualquier calendario:\n{ics}\nO ábrelo en Google Calendar (no hace falta iniciar sesión):\n{google_url}\nResponde «sí» para confirmar."
+calendar_current_day	"Hoy es {weekday}, {date} ({time_zone})."
+calendar_weekday_relation_next	"El día siguiente a {source} es {result}. Desplazo {source_plain} en {delta} dentro del ciclo de siete días del calendario."
+calendar_weekday_relation_previous	"El día anterior a {source} es {result}. Desplazo {source_plain} en {delta} dentro del ciclo de siete días del calendario."

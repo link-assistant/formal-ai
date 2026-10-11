@@ -17,23 +17,21 @@ use serde::{Deserialize, Serialize};
 
 use crate::coding::guidance::{program_explanation_section, program_test_instructions};
 use crate::engine_assistant_name::{
-    ASSISTANT_NAME_EXAMPLES, assistant_name_answer, chinese_assistant_name_answer,
-    hindi_assistant_name_answer, russian_assistant_name_answer,
-};
-use crate::engine_responses::{
-    ASSISTANT_FREE_TIME_EXAMPLES, COURTESY_RESPONSE_EXAMPLES, GREETING_EXAMPLES, IDENTITY_EXAMPLES,
-    TEST_STATUS_EXAMPLES, UNKNOWN_EXAMPLES, chinese_courtesy_response_answer,
-    chinese_farewell_answer, chinese_greeting_answer, chinese_identity_answer,
-    chinese_test_status_answer, chinese_wellbeing_answer, courtesy_response_answer,
-    hindi_courtesy_response_answer, hindi_farewell_answer, hindi_greeting_answer,
-    hindi_identity_answer, hindi_test_status_answer, hindi_wellbeing_answer,
-    russian_courtesy_response_answer, russian_farewell_answer, russian_greeting_answer,
-    russian_identity_answer, russian_test_status_answer, russian_wellbeing_answer,
-    test_status_answer,
+    assistant_name_answer, chinese_assistant_name_answer, hindi_assistant_name_answer,
+    russian_assistant_name_answer,
 };
 pub(crate) use crate::engine_responses::{
     assistant_free_time_answer, farewell_answer, greeting_answer, identity_answer, unknown_answer,
     unknown_language_fallback_answer, wellbeing_answer,
+};
+use crate::engine_responses::{
+    chinese_courtesy_response_answer, chinese_farewell_answer, chinese_greeting_answer,
+    chinese_identity_answer, chinese_test_status_answer, chinese_wellbeing_answer,
+    courtesy_response_answer, hindi_courtesy_response_answer, hindi_farewell_answer,
+    hindi_greeting_answer, hindi_identity_answer, hindi_test_status_answer, hindi_wellbeing_answer,
+    russian_courtesy_response_answer, russian_farewell_answer, russian_greeting_answer,
+    russian_identity_answer, russian_test_status_answer, russian_wellbeing_answer,
+    test_status_answer,
 };
 use crate::event_log::EventLog;
 use crate::language::Language;
@@ -51,105 +49,7 @@ pub use crate::thinking::{
     thinking_narrative, thinking_narrative_in, thinking_trace_heading,
 };
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct SymbolicAnswer {
-    pub intent: String,
-    pub answer: String,
-    pub confidence: f32,
-    pub evidence_links: Vec<String>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub thinking_steps: Vec<ThinkingStep>,
-    pub links_notation: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub execution_recipe: Option<Box<ExecutionRecipe>>,
-}
-
-/// A code artifact whose side effects belong to the requesting agentic client.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ExecutionRecipe {
-    pub language: String,
-    pub source: String,
-    pub path: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub supporting_files: Vec<ExecutionRecipeFile>,
-    pub commands: Vec<String>,
-}
-
-/// An additional file required by a typed execution recipe.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ExecutionRecipeFile {
-    pub path: String,
-    pub source: String,
-}
-
-impl SymbolicAnswer {
-    /// Whether the answer never reached a conclusion about the prompt.
-    ///
-    /// The unknown-prompt fallback, an ill-formed prompt, a punctuation-only
-    /// prompt and every clarification request answer something *about* the
-    /// prompt rather than the prompt itself. A caller that has to act on the
-    /// text -- replaying it in another language
-    /// (`solver_handlers::response_language_followup`), recording it as
-    /// evidence at a path the caller named
-    /// ([`crate::agentic_coding`]) -- must be able to tell the two apart, and
-    /// both callers have to agree on where the line is, so the test lives with
-    /// the type that carries the intent rather than in either caller.
-    #[must_use]
-    pub fn is_inconclusive(&self) -> bool {
-        matches!(
-            self.intent.as_str(),
-            "unknown" | "ill_formed" | "punctuation_only_prompt" | "concept_lookup_unresolved"
-        ) || self.asks_for_clarification()
-    }
-
-    /// Whether the answer is a clarifying question. An ask is not an unknown:
-    /// the engine knows exactly what is missing and says so, so a caller
-    /// admitting "unresolved" requests must exclude it. [`Self::is_inconclusive`]
-    /// includes it and states why; this half is the boundary callers such as
-    /// the research continuation gate subtract.
-    #[must_use]
-    pub fn asks_for_clarification(&self) -> bool {
-        self.intent.starts_with("clarify")
-    }
-
-    /// Whether the answer points at the open web instead of stating a finding.
-    ///
-    /// The `web_search` intent renders what the browser demo *would* query and
-    /// how it would rank the results. That is a plan for a lookup nobody has
-    /// performed yet, so the text is about the search rather than about the
-    /// subject: nothing in it is true of `IIR` or of `Sunday` in particular.
-    ///
-    /// `agentic_coding::web_research` already reads the intent this
-    /// way when it decides an open-world question is unresolved. A caller that
-    /// has to *deliver* an answer -- writing it to a path the request named --
-    /// needs the same reading for the opposite reason: recording a description
-    /// of a pending search as the evidence a run produced is the hollow proof
-    /// issue #1066 exists to stop.
-    #[must_use]
-    pub fn defers_to_the_open_web(&self) -> bool {
-        self.intent == "web_search"
-    }
-
-    /// Whether the answer ends on a promise of a list it never makes.
-    ///
-    /// A reply that closes with the colon introducing an enumeration and stops
-    /// there is a heading with nothing under it. The handler that composes such
-    /// a reply is the one that knows *why* it has nothing to enumerate and says
-    /// so ([`crate::task_decomposition::Decomposition::unenumerable_reason`]);
-    /// this is the backstop underneath it, for the callers that deliver an
-    /// answer somewhere a reader will later find it. Delivering a heading with
-    /// no list is the hollow evidence issue #1066 exists to stop -- it passes
-    /// every mechanical check a harness makes, because a file that says
-    /// nothing is still a non-empty file.
-    ///
-    /// The full-width colon is here because Chinese and Japanese introduce a
-    /// list with it, and a guard that only reads ASCII would hold for four of
-    /// the supported languages and not the fifth.
-    #[must_use]
-    pub fn announces_a_list_it_does_not_make(&self) -> bool {
-        self.answer.trim_end().ends_with([':', '\u{ff1a}'])
-    }
-}
+pub use crate::engine_answer::{ExecutionRecipe, ExecutionRecipeFile, SymbolicAnswer};
 
 #[derive(Debug, Default, Clone, Copy)]
 pub struct FormalAiEngine;
@@ -174,12 +74,22 @@ impl FormalAiEngine {
         prompt: &str,
         memory_events: &[crate::memory::MemoryEvent],
     ) -> SymbolicAnswer {
-        crate::dreaming_application::solve_with_standing_requirements(
-            &crate::solver::UniversalSolver::default(),
+        let solver = crate::solver::UniversalSolver::default();
+        let answer = crate::dreaming_application::solve_with_standing_requirements(
+            &solver,
             prompt,
             &[],
             memory_events,
-        )
+        );
+        crate::dialog_log::record_native_response_if_enabled(
+            "FormalAiEngine::answer_with_memory",
+            prompt,
+            &[],
+            &solver.config,
+            || serde_json::json!({"memory-links": crate::memory::export_links_notation(memory_events)}),
+            &answer,
+        );
+        answer
     }
 }
 
@@ -224,7 +134,7 @@ pub fn knowledge_links_notation() -> String {
                 ("intent", String::from("greeting")),
                 ("response_link", String::from("response:greeting")),
                 ("answer", String::from(greeting_answer())),
-                ("examples", GREETING_EXAMPLES.join(", ")),
+                ("examples", seed::intent_examples("greeting")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -234,7 +144,7 @@ pub fn knowledge_links_notation() -> String {
                 ("intent", String::from("courtesy_response")),
                 ("response_link", String::from("response:courtesy_response")),
                 ("answer", String::from(courtesy_response_answer())),
-                ("examples", COURTESY_RESPONSE_EXAMPLES.join(", ")),
+                ("examples", seed::intent_examples("courtesy_response")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -247,7 +157,7 @@ pub fn knowledge_links_notation() -> String {
                     String::from("response:assistant_free_time"),
                 ),
                 ("answer", String::from(assistant_free_time_answer())),
-                ("examples", ASSISTANT_FREE_TIME_EXAMPLES.join(", ")),
+                ("examples", seed::intent_examples("assistant_free_time")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -257,7 +167,7 @@ pub fn knowledge_links_notation() -> String {
                 ("intent", String::from("identity")),
                 ("response_link", String::from("response:identity")),
                 ("answer", String::from(identity_answer())),
-                ("examples", IDENTITY_EXAMPLES.join(", ")),
+                ("examples", seed::intent_examples("identity")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -267,7 +177,7 @@ pub fn knowledge_links_notation() -> String {
                 ("intent", String::from("assistant_name")),
                 ("response_link", String::from("response:assistant_name")),
                 ("answer", String::from(assistant_name_answer())),
-                ("examples", ASSISTANT_NAME_EXAMPLES.join(", ")),
+                ("examples", seed::intent_examples("assistant_name")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -277,7 +187,7 @@ pub fn knowledge_links_notation() -> String {
                 ("intent", String::from("test_status")),
                 ("response_link", String::from("response:test_status")),
                 ("answer", String::from(test_status_answer())),
-                ("examples", TEST_STATUS_EXAMPLES.join(", ")),
+                ("examples", seed::intent_examples("test_status")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -290,7 +200,7 @@ pub fn knowledge_links_notation() -> String {
             ("intent", String::from("unknown")),
             ("response_link", String::from("response:unknown")),
             ("answer", String::from(unknown_answer())),
-            ("examples", UNKNOWN_EXAMPLES.join(", ")),
+            ("examples", seed::intent_examples("unknown")),
             ("source", String::from("fallback symbolic rule")),
         ],
     ));
@@ -772,7 +682,66 @@ pub(crate) fn normalize_prompt(prompt: &str) -> String {
         }
     }
 
-    normalized.split_whitespace().collect::<Vec<_>>().join(" ")
+    expand_contractions(&normalized.split_whitespace().collect::<Vec<_>>().join(" "))
+}
+
+/// The seeded contracted token pairs, each with the words it stands for.
+///
+/// Normalization turns an apostrophe into a space, so "you're" reaches every
+/// matcher as the pair `you re` and never equals a surface the seed writes out
+/// ("you are"), issue #1175 p020. The pairs are the `contraction` /
+/// `expansion` records of `data/seed/languages.lino`.
+fn contractions() -> &'static [(Vec<String>, String)] {
+    static CELL: OnceLock<Vec<(Vec<String>, String)>> = OnceLock::new();
+    CELL.get_or_init(|| {
+        let ledger = seed::seed_files()
+            .into_iter()
+            .find(|(path, _)| *path == "data/seed/languages.lino")
+            .map_or("", |(_, text)| text);
+        let mut pairs = Vec::new();
+        let mut contracted: Option<Vec<String>> = None;
+        for line in ledger.lines() {
+            let Some((key, value)) = line.trim().split_once(' ') else {
+                continue;
+            };
+            let value = value.trim().trim_matches('"');
+            match key {
+                "contraction" => {
+                    contracted = Some(value.split_whitespace().map(ToOwned::to_owned).collect());
+                }
+                "expansion" => {
+                    if let Some(tokens) = contracted.take().filter(|tokens| !tokens.is_empty()) {
+                        pairs.push((tokens, value.to_owned()));
+                    }
+                }
+                _ => {}
+            }
+        }
+        pairs
+    })
+}
+
+/// `normalized` with every seeded contracted pair rewritten into its expansion.
+///
+/// Mirrors `expandSeededContractions` in `js/worker/formal_ai_worker_seed_responses_and_language.js`.
+fn expand_contractions(normalized: &str) -> String {
+    let pairs = contractions();
+    let tokens: Vec<&str> = normalized.split(' ').collect();
+    let mut out: Vec<&str> = Vec::with_capacity(tokens.len());
+    let mut index = 0;
+    while index < tokens.len() {
+        let pair = pairs.iter().find(|(contracted, _)| {
+            tokens
+                .get(index..index + contracted.len())
+                .is_some_and(|window| window.iter().zip(contracted).all(|(a, b)| *a == b.as_str()))
+        });
+        let (word, step) = pair.map_or((tokens[index], 1), |(contracted, expansion)| {
+            (expansion.as_str(), contracted.len())
+        });
+        out.push(word);
+        index += step;
+    }
+    out.join(" ")
 }
 
 const fn is_script_combining_mark(character: char) -> bool {
@@ -853,12 +822,7 @@ fn format_write_program_rule_record() -> String {
             ("template_count", program_template_count().to_string()),
             ("response_link", String::from("response:write_program")),
             ("answer", sample),
-            (
-                "examples",
-                String::from(
-                    "Write me hello world program in Rust; Write a Python program that counts to three",
-                ),
-            ),
+            ("examples", seed::intent_examples("write_program")),
             ("source", program_template_sources()),
         ],
     )
@@ -902,13 +866,18 @@ fn write_program_answer(
             &spec.run_command_line(),
             &expected_output,
             language,
+            rediscovered_page(spec).as_deref(),
         ),
         program_explanation_section(spec, language),
         program_test_instructions(spec, language, prior_code_response),
     )
 }
 
-fn write_program_intro(language_name: &str, task_label: &str, language: Language) -> String {
+pub(crate) fn write_program_intro(
+    language_name: &str,
+    task_label: &str,
+    language: Language,
+) -> String {
     match language {
         Language::Russian => {
             format!("Вот минимальная программа на языке {language_name} ({task_label}):")
@@ -921,19 +890,49 @@ fn write_program_intro(language_name: &str, task_label: &str, language: Language
     }
 }
 
-fn execution_report(
+/// The page a documentation-sourced program was rediscovered from, when no
+/// recorded run verified that exact program (issue #1165).
+///
+/// Such a program is not the one the language's recorded harness run
+/// executed, so its execution status may not borrow that run.
+pub(crate) fn rediscovered_page(spec: ProgramSpec) -> Option<String> {
+    let pair = crate::coding::documented_pair(spec.task.slug, spec.language.slug)?;
+    crate::discovery_production::program_verification(&pair.program)
+        .rediscovered_page()
+        .map(str::to_owned)
+}
+
+pub(crate) fn execution_report(
     program_language: &ProgramLanguage,
     run_command: &str,
     output: &str,
     language: Language,
+    rediscovered_from: Option<&str>,
 ) -> String {
     let execution = &program_language.execution;
+    if let Some(page) = rediscovered_from {
+        // The status names the page and the check that actually ran; the
+        // language's notes describe the recorded run of another program, so
+        // they are not repeated here.
+        let status_line = crate::seed::render_response(
+            "program_execution_rediscovered",
+            language.slug(),
+            &[("page", page)],
+        )
+        .or_else(|| {
+            crate::seed::render_response("program_execution_rediscovered", "en", &[("page", page)])
+        })
+        .unwrap_or_default();
+        let command_lines = execution_command_lines(execution, run_command);
+        let output_label = execution_output_label(ExecutionStatus::Unavailable, language);
+        return format!("{status_line}\n{command_lines}\n{output_label}:\n```text\n{output}\n```");
+    }
     let status = program_language.execution_status();
     let environment = program_language.environment();
     let command_lines = execution_command_lines(execution, run_command);
     let status_phrase = execution_status_phrase(status, language);
     let output_label = execution_output_label(status, language);
-    let notes = &execution.notes;
+    let notes = program_language.execution_notes();
     let status_line = match language {
         Language::Russian => format!("Статус выполнения: {status_phrase} в среде «{environment}»."),
         Language::Hindi => format!("निष्पादन स्थिति: {status_phrase} ({environment} में)।"),
@@ -989,7 +988,7 @@ fn execution_output_label(status: ExecutionStatus, language: Language) -> &'stat
 /// ([`crate::coding::ProgramSpec::run_command_line`], issue #863); for every
 /// other task it is `execution.run_command` unchanged.
 fn execution_command_lines(execution: &ProgramExecution, run_command: &str) -> String {
-    execution.check_command.map_or_else(
+    execution.check_command.as_deref().map_or_else(
         || format!("Run command: `{run_command}`"),
         |check_command| format!("Check command: `{check_command}`\nRun command: `{run_command}`"),
     )

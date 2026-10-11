@@ -1,0 +1,43 @@
+language en
+lemma statement
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a message that is stated or declared; a communication (oral or written) setting forth particulars or facts etc"
+    examples ("according to his statement he was in London on that day")
+    id oewn-06735202-n
+    partOfSpeech n
+  entry
+    definition "a fact or assertion offered as evidence that something is true"
+    examples ("it was a strong argument that his hypothesis was true")
+    id oewn-06661469-n
+    partOfSpeech n
+    synonyms (argument)
+  entry
+    definition "(music) the presentation of a musical theme"
+    examples ("the initial statement of the sonata")
+    id oewn-07043306-n
+    partOfSpeech n
+  entry
+    definition "a nonverbal message"
+    examples ("a Cadillac makes a statement about who you are" "his tantrums are a statement of his need for attention")
+    id oewn-06736201-n
+    partOfSpeech n
+  entry
+    definition "the act of affirming or asserting or stating something"
+    id oewn-07217786-n
+    partOfSpeech n
+    synonyms (affirmation assertion)
+  entry
+    definition "(computer science) a line of code written as part of a computer program"
+    id oewn-06597067-n
+    partOfSpeech n
+    synonyms (instruction command "program line")
+  entry
+    definition "a document showing credits and debits"
+    id oewn-06528586-n
+    partOfSpeech n
+    synonyms ("financial statement")
+source "oewn:2024"

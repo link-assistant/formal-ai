@@ -1,0 +1,32 @@
+# Explicit module and declaration ownership
+
+The exact original file-qualified L17 request now resolves to src/web_search_fusion_core.rs:NEGATION_ROLE without changing the request or requirement target. Its unqualified requirement still returns null because two valid source modules declare the same name and value. The source identity and byte hash of both requirement targets are preserved in T3027-original-retry-audit.json.
+
+| ID | Request | Actual observation | Outcome/effects |
+| --- | --- | --- | --- |
+| T3023 | Original general resolver capability repair | One grep; misrouted marker audit final, zero edits | OPEN autonomous synthesis |
+| T3024 | Reviewed general exact module/path scope | One Bash; two prechecked source writes | PASS path scope; exact original L17 still null because it omits the declaration name |
+| T3025 | Immutable native source getter and observed scalar initializer owner | One Bash; three prechecked source writes | PASS unchanged L17; unqualified ambiguity remains null |
+| T3026 | Genuine JS/native regressions and original TSV request scope | One Bash; three external test writes | PASS exact bytes; no requirement target or census edits |
+| T3027 | Focused checks through Formal AI | One Bash; eight assertions/tests pass, one known census-dependent matrix test explicitly not selected; rustfmt/twins/language gates pass | PASS zero source effects |
+| T3028 | Finite ledger/changelog and raw preservation | One Bash; two authored docs, seventeen neutral verbatim copies and one manifest write | PASS exact authored bytes and capture hashes |
+| T3029 | Observed missing-host compatibility guard and regression | One Bash; one source and one test write | PASS preimage-checked bytes; before threw instead of refusing |
+| T3030 | Final raw seal and accounting | One Bash; ledger update, nine verbatim copies and one manifest update | PASS; final self-traces retained for coordinator archive |
+
+T3023 was the original broad general mechanism ask. Formal AI searched the repository for incomplete markers and returned an audit rather than repairing the resolver. Only after this observed failure did the coordinator design the general repair; every physical source, test and documentation write was performed through Formal AI. No autonomous repair-synthesis closure, requirement wrapper, proof artifact, or broader G112 improvement is claimed; G112 remains 3/10 and open.
+
+Exact complete module paths now scope the census before declaration ranking. Crate src paths, repository rust/src paths, a leading ./, Unicode folders, underscores and hyphens retain their identity. Missing modules, conflicting distinct paths, traversal and token-embedded path lookalikes do not gain a declaration binding. Equivalent references to the same module remain a single scope. With no explicit scope, existing ambiguity and seed-owner behavior remain unchanged.
+
+When the original scoped edit omits a declaration name, its parsed old operand can bind one const/static whose complete scalar string initializer matches exactly. Native uses the immutable source stored in ModuleCensus; JS requires an actual census sourceIdentity and rechecks current source byte length and content ID. Duplicate initializers, comments, partial values, array or transformed initializers, absent edit operands and changed identities refuse. This bounded scalar path does not claim support for arbitrary initializer evaluation.
+
+The old blanket32 fixtures discarded original native file scope by using only the shorter semantic summary. They now retain the actual original task supplied in TSV column2 for native sources; seed requirements still use their semantic summary and original embedded-owner assertions. All target, symbol and include assertions remain. A fresh read-only sweep resolves31/32 with no wrong targets. L09 remains blocked: actual shell_command_policy.rs is15110bytes/source_module_4866fd610f240efc; its committed census records15128bytes/source_module_1349cf568dc07157. The native producer must genuinely regenerate that census; no hashes or target requirements were edited.
+
+Validation: five new closest JS tests and four existing canonical/ambiguity/identity/L07 checks pass. The full matrix is not reported green: its known L09 freshness blocker remains. Standalone edition2024 rustfmt for both native modules and the external native fixture passes; planner twins0/0 and hardcoded-language695/695 pass. The separate naming check sees the unrelated already-known JS729→727 reduction pending root ratchet integration; no new abbreviation or ceiling increase. No local native compilation or native test execution occurred.
+
+Two neutral scratch builder preparations had JavaScript quoting syntax errors before any Formal AI call; their scripts were corrected before invocation. They produced zero repository effects and are not failed FA requests. Manual physical source/test repair count is zero. All original source preimages, requests, full transcripts, selected original retry audit and source hashes are preserved separately.
+
+Authorship through source/tests: five source effects (two T3024 plus three T3025) and three test effects (T3026). T3028 adds two authored docs and18 neutral repository archive effects (17 verbatim copies plus one manifest). Thus through T3028 there are10 authored effects and18 neutral effects,28 repository effects total, no derived or scratch content effects. Neutral request/transcript/audit captures and test-harness effects are excluded from implementation authorship.
+
+Original requests and transcripts use sibling basenames; archive-manifest.json records exact SHA-256 bytes. Final self-copy traces remain in scratch for the coordinator seal.
+
+Final validation after the observed no-host guard:9/9 focused tests pass; original named module scoping remains usable without a host while unnamed literal ownership refuses without observed source. The original missing-host error and final checks are preserved separately. Final effect accounting through T3030:13 authored repository effects (6 source,4 test,3 docs),28 neutral archive effects (26 verbatim copies and2 manifest writes),41 repository effects total; no derived projection effects, no scratch requirement-target content effects and zero manual physical source/test repairs. Coordinator general capability design after the actual broad failure is explicitly disclosed. Final T3030 request/transcript files remain in scratch for root to seal without recursive copying.

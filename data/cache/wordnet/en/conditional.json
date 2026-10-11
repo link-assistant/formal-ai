@@ -1,0 +1,26 @@
+{
+  "lemma": "conditional",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00557545-a",
+      "partOfSpeech": "a",
+      "definition": "imposing or depending on or containing a condition",
+      "examples": [
+        "conditional acceptance of the terms",
+        "lent conditional support",
+        "the conditional sale will not be complete until the full purchase price is paid"
+      ]
+    },
+    {
+      "id": "oewn-01919794-s",
+      "partOfSpeech": "s",
+      "definition": "qualified by reservations"
+    }
+  ]
+}

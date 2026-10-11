@@ -1,0 +1,22 @@
+{
+  "lemma": "inclusive",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01869630-a",
+      "partOfSpeech": "a",
+      "definition": "including much or everything; and especially including stated limits",
+      "examples": [
+        "an inclusive art form",
+        "an inclusive fee",
+        "his concept of history is modern and inclusive",
+        "from Monday to Friday inclusive"
+      ]
+    }
+  ]
+}

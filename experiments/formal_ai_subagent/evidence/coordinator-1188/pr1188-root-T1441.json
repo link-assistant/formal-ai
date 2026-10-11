@@ -1,0 +1,25 @@
+{
+  "identifier": "T1441",
+  "prompt": "In data/meta/adoption-effect-ratchet.lino replace «invariant \"equals adopted_items\"» with «invariant \"equals adopted-items\"»",
+  "result": {
+    "transcript": [
+      {
+        "tool": "read",
+        "arguments": "{\"filePath\":\"data/meta/adoption-effect-ratchet.lino\",\"file_path\":\"data/meta/adoption-effect-ratchet.lino\",\"path\":\"data/meta/adoption-effect-ratchet.lino\"}",
+        "result": "<file>\n00001| adoption-effect-ratchet\n00002|   record_type ratchet-ledger\n00003|   schema_version 1\n00004|   owner docs/case-studies/issue-1138/plans/07-learning-loops-that-change-behavior.md\n00005|   measure adopted-items\n00006|     direction up\n00007|     value 1\n00008|     measured_by tests/unit/issue_1138_learning_ratchet.rs\n00009|     note \"Only status adopted counts. The shipped method has a five-language verified execution effect.\"\n00010|   measure adopted-items-with-qualifying-effect\n00011|     direction up\n00012|     value 1\n00013|     measured_by tests/unit/issue_1138_learning_ratchet.rs\n00014|     invariant \"equals adopted_items\"\n00015|   measure learned-items-never-read-back\n00016|     direction down\n00017|     value 0\n00018|     measured_by tests/unit/issue_1138_learning_ratchet.rs\n00019|     invariant \"every effective adoption enters the registry's final dispatch loop\"\n00020| \n\n(End of file - total 20 lines)\n</file>"
+      },
+      {
+        "tool": "edit",
+        "arguments": "{\"filePath\":\"data/meta/adoption-effect-ratchet.lino\",\"file_path\":\"data/meta/adoption-effect-ratchet.lino\",\"new\":\"invariant \\\"equals adopted-items\\\"\",\"newString\":\"invariant \\\"equals adopted-items\\\"\",\"new_str\":\"invariant \\\"equals adopted-items\\\"\",\"new_string\":\"invariant \\\"equals adopted-items\\\"\",\"old\":\"invariant \\\"equals adopted_items\\\"\",\"oldString\":\"invariant \\\"equals adopted_items\\\"\",\"old_str\":\"invariant \\\"equals adopted_items\\\"\",\"old_string\":\"invariant \\\"equals adopted_items\\\"\",\"path\":\"data/meta/adoption-effect-ratchet.lino\"}",
+        "result": ""
+      },
+      {
+        "tool": "bash",
+        "arguments": "{\"command\":\"sha256sum -- data/meta/adoption-effect-ratchet.lino\"}",
+        "result": "27e163d4e8ca8b696d326bf32731124c2494e2f07a2d0125887759b307625c76  data/meta/adoption-effect-ratchet.lino\n"
+      }
+    ],
+    "answer": "Replaced `invariant \"equals adopted_items\"` with `invariant \"equals adopted-items\"` in `data/meta/adoption-effect-ratchet.lino` and observed the result.",
+    "stop": "final"
+  }
+}

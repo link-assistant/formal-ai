@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "藝術"
+        },
+        "es": {
+          "language": "es",
+          "value": "arte"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "一个总体概念，指为了其美感或情感力量而创作的表达性作品（使用Q838948表示由此产生的作品，使用Q2018526表示创意学科的集合"
+        },
+        "es": {
+          "language": "es",
+          "value": "actividad creativa humana con una finalidad estética y comunicativa"
         }
       },
       "aliases": {
@@ -50,6 +58,16 @@
           {
             "language": "zh",
             "value": "艺术"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "artes"
+          },
+          {
+            "language": "es",
+            "value": "Arte"
           }
         ]
       }

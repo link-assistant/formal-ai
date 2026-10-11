@@ -1,0 +1,3 @@
+Source edit verification now checks successful, target-bound stdout bytes instead of comparing whole shell receipts with file contents. The same JS/native mechanism covers whole rewrites, structured insertion, generated source and independent source/registration readbacks.
+
+Exact Unicode, JSON and terminal newlines are retained; failed, unrelated, stale or structured presentation receipts cannot certify source. Forty focused JavaScript checks and the unchanged original failed edit pass. Native receipt helpers were extracted within the existing file budget and pass standalone formatting; native execution remains a CI check. Broad repair synthesis remains open.

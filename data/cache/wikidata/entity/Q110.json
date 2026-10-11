@@ -1,0 +1,117 @@
+{
+  "entities": {
+    "Q110": {
+      "type": "item",
+      "id": "Q110",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "March"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "март"
+        },
+        "es": {
+          "language": "es",
+          "value": "marzo"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मार्च"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "3月"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "третий месяц года в юлианском и григорианском календарях"
+        },
+        "en": {
+          "language": "en",
+          "value": "third month in the Julian and Gregorian calendars"
+        },
+        "es": {
+          "language": "es",
+          "value": "tercer mes del año en los calendarios juliano y gregoriano"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "公历及儒略历中第三个月份"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जूलियन और ग्रेगोरियन कैलेंडर में तीसरा महीना"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Mar"
+          },
+          {
+            "language": "en",
+            "value": "3. month"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "марта"
+          },
+          {
+            "language": "ru",
+            "value": "мар."
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Mar."
+          },
+          {
+            "language": "es",
+            "value": "3"
+          },
+          {
+            "language": "es",
+            "value": "3.º mes"
+          },
+          {
+            "language": "es",
+            "value": "mes 3"
+          },
+          {
+            "language": "es",
+            "value": "mes 3.º"
+          },
+          {
+            "language": "es",
+            "value": "mes de Marte"
+          },
+          {
+            "language": "es",
+            "value": "mes del dios Marte"
+          },
+          {
+            "language": "es",
+            "value": "mes tercero"
+          },
+          {
+            "language": "es",
+            "value": "tercer mes"
+          },
+          {
+            "language": "es",
+            "value": "mes del dios de la guerra"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

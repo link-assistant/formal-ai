@@ -1,0 +1,12 @@
+language en
+lemma pending
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "awaiting conclusion or confirmation"
+    examples ("business still pending")
+    id oewn-01008292-s
+    partOfSpeech s
+source "oewn:2024"

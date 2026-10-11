@@ -1,0 +1,48 @@
+language en
+lemma repeat
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an event that repeats"
+    examples ("the events today were a repeat of yesterday's")
+    id oewn-07356649-n
+    partOfSpeech n
+    synonyms (repetition)
+  entry
+    definition "to say, state, or perform again"
+    examples ("She kept reiterating her request")
+    id oewn-00960366-v
+    partOfSpeech v
+    synonyms (reiterate ingeminate iterate restate retell)
+  entry
+    definition "make or do or perform again"
+    examples ("He could never replicate his brilliant performance of the magic trick")
+    id oewn-01738383-v
+    partOfSpeech v
+    synonyms (duplicate reduplicate double replicate)
+  entry
+    definition "happen or occur again"
+    examples ("This is a recurring story")
+    id oewn-00343988-v
+    partOfSpeech v
+    synonyms (recur)
+  entry
+    definition "to say again or imitate"
+    examples ("followers echoing the cries of their leaders")
+    id oewn-00959711-v
+    partOfSpeech v
+    synonyms (echo)
+  entry
+    definition "do over"
+    examples ("They would like to take it over again")
+    id oewn-02601659-v
+    partOfSpeech v
+    synonyms ("take over")
+  entry
+    definition "repeat an earlier theme of a composition"
+    id oewn-01731369-v
+    partOfSpeech v
+    synonyms (reprise reprize recapitulate)
+source "oewn:2024"

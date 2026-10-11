@@ -1,0 +1,20 @@
+shared-lexeme-fields-schema
+  scope "bare slug or explicit meaning identity directly below each independent meanings root; reserved structural owners refused"
+  declaration shared-lexeme-fields
+    identity "bare [a-z][a-z0-9_-]* meaning-local identifier; exactly one declaration"
+  reference use-lexeme-fields
+    identity "same bare identifier as the owning meaning declaration; no cross-meaning or cross-root reference"
+    scope "direct child of every surface of each distinct language lexeme"
+  field part-of-speech
+    provenance "rust/src/seed/meanings/parse.rs FACET_KINDS"
+  field grammatical-number
+    provenance "rust/src/seed/meanings/parse.rs FACET_KINDS"
+  value "nonempty leaf reference, retained verbatim as an existing semantic facet"
+  lowering "replace the reference at its original position with independent field clones"
+  refuse "unknown fields, effects, nested nodes, cycles, aliases, duplicate declarations or languages, conflicts, unresolved references, partial surfaces"
+  legacy "every document without the new operators retains its original parse tree"
+  rust-error "parse_lino_checked returns diagnostics; legacy parse_lino raises an explicit refusal for the entire malformed shared document"
+  runtime-source js/seed_loader.js 7a8bab7265dfd301efc78a4182e37c7f41d0e094012de47c58f69b7e80eac1a4
+  runtime-source rust/src/seed/parser.rs dca9ff49a8947be9497566ac9c496a51c3b3aa57df18d2cd9308c3235a1a1a8c
+  runtime-source ts/seed_loader.ts 7a8bab7265dfd301efc78a4182e37c7f41d0e094012de47c58f69b7e80eac1a4
+  facet-source rust/src/seed/meanings/parse.rs de6bf428fae301da85770cf3ad301a50d02dc6eeb9f175ae2e789f28caa3309b

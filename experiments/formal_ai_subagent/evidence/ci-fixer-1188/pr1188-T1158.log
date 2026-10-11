@@ -1,0 +1,244 @@
+>> read {"filePath":"js/agentic/code_task.mjs","file_path":"js/agentic/code_task.mjs","path":"js/agentic/code_task.mjs"}
+   <file>
+   00001| // Small Rust source items generated from a coding request
+   00002| // (rust/src/agentic_coding/code_task.rs).
+   00003| 
+   00004| import { Capability } from './capability.mjs';
+   00005| import { toolFor } from './capability_router.mjs';
+   00006| import { latestResult } from './code_artifact.mjs';
+   00007| import { composeEditRequest } from './general_planner.mjs';
+   00008| import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
+   00009| import { responseLanguage } from './tool_result.mjs';
+   00010| import { unwrapTransportQuotes } from './crate/normal_markov.mjs';
+   00011| import { localizedResponse, responseFor } from './crate/seed.mjs';
+   00012| import { firstRoleMatch, words } from './crate/seed_meanings.mjs';
+   00013| import { mentionsRole, roleWordForms, wordsForRole } from './write_lexicon.mjs';
+   00014| import { isAsciiAlphanumeric, isAsciiDigit, trim, trimEndMatches } from './write_str.mjs';
+   00015| 
+   00016| const RustItemKind = Object.freeze({ Function: 'function', Constant: 'constant', Test: 'test' });
+   00017| 
+   00018| const eqIgnoreAsciiCase = (left, right) => left.replace(/[A-Z]/g, (c) => c.toLowerCase()) === right.replace(/[A-Z]/g, (c) => c.toLowerCase());
+   00019| const isAsciiAlphabetic = (character) => /^[A-Za-z]$/.test(character);
+   00020| 
+   00021| /**
+   00022|  * Mirrors `fn plan_generated_source_step`.
+   00023|  * @param {string} rawTask
+   00024|  * @param {Array<object>} messages
+   00025|  * @param {Array<string>} toolNames
+   00026|  */
+   00027| export function planGeneratedSourceStep(rawTask, messages, toolNames) {
+   00028|   const task = unwrapTransportQuotes(rawTask);
+   00029|   if (composeEditRequest(task) !== null) return null;
+   00030|   const artifact = rustSourceForTask(task);
+   00031|   if (!artifact) return null;
+   00032|   const writeTool = toolFor(toolNames, Capability.Write);
+   00033|   if (!writeTool) return null;
+   00034|   let latestUser = -1;
+   00035|   for (let index = messages.length - 1; index >= 0 && latestUser < 0; index -= 1) {
+   00036|     if (eqIgnoreAsciiCase(messages[index].role, 'user')) latestUser = index;
+   00037|   }
+   00038|   if (latestUser < 0) return null;
+   00039|   const currentTurn = messages.slice(latestUser + 1);
+   00040|   const observed = latestResult(currentTurn, Capability.Run);
+   00041|   if (observed !== null) {
+   00042|     const outcome = observed === artifact.content ? 'coding_workspace_effect_observed' : 'coding_workspace_verification_failed';
+   00043|     const rendered = renderSeededOutcome(outcome, task, artifact.path);
+   00044|     return rendered === null ? null : finalAnswer(rendered);
+   00045|   }
+   00046|   if (latestResult(currentTurn, Capability.Write) !== null) {
+   00047|     const runTool = toolFor(toolNames, Capability.Run);
+   00048|     if (runTool) return planOne(runTool, jsonText({ command: `cat ${artifact.path}` }));
+   00049|     const rendered = renderSeededOutcome('coding_workspace_written_unverified', task, artifact.path);
+   00050|     return rendered === null ? null : finalAnswer(rendered);
+   00051|   }
+   00052|   return planOne(writeTool, writeArguments(artifact.path, artifact.content));
+   00053| }
+   00054| 
+   00055| /** Mirrors `fn rust_source_for_task`: `{path, content}` or null. */
+   00056| export function rustSourceForTask(task) {
+   00057|   const normalized = task.toLowerCase();
+   00058|   if (!mentionsRole('file_write_action_cue', normalized) && !mentionsRole('program_request', normalized)) return null;
+   00059|   const path = rustPath(task);
+   00060|   if (path === null) return null;
+   00061|   const extraKind = firstRoleMatch('coding_artifact_kind', normalized);
+   00062|   let kind;
+   00063|   if (extraKind?.slug === 'coding_constant') kind = RustItemKind.Constant;
+   00064|   else if (extraKind?.slug === 'coding_test') kind = RustItemKind.Test;
+   00065|   else if (firstRoleMatch('program_kind', normalized)?.slug === 'function') kind = RustItemKind.Function;
+   00066|   else return null;
+   00067|   const name = requestedIdentifier(task, path, kind);
+   00068|   if (name === null) return null;
+   00069|   const numbers = numericLiterals(task.replace(path, () => ''));
+   00070|   const visibility = mentionsRole('coding_visibility', normalized) ? 'pub ' : '';
+   00071|   let content;
+   00072|   if (kind === RustItemKind.Function) {
+   00073|     const value = numbers[numbers.length - 1];
+   00074|     if (normalized.includes('f64') && mentionsRole('coding_division_action', normalized)) {
+   00075|       if (value === undefined) return null;
+   00076|       content = renderRustTemplate('coding_source_function_division', [['{visibility}', visibility], ['{name}', name], ['{divisor}', value]]);
+   00077|     } else if (mentionsRole('coding_return_action', normalized)) {
+   00078|       if (value === undefined) return null;
+   00079|       content = renderRustTemplate('coding_source_function_return', [['{visibility}', visibility], ['{name}', name], ['{value}', value]]);
+   00080|     } else return null;
+   00081|   } else if (kind === RustItemKind.Constant) {
+   00082|     if (!normalized.includes('&str')) return null;
+   00083|     const value = slotIdentifier(normalized, 'coding_value_slot');
+   00084|     if (value === null) return null;
+   00085|     content = renderRustTemplate('coding_source_string_constant', [['{visibility}', visibility], ['{name}', name], ['{value}', value]]);
+   00086|   } else {
+   00087|     const [left, right, expected] = numbers;
+   00088|     if (left === undefined || right === undefined) return null;
+   00089|     const meaning = firstRoleMatch('arithmetic_operator_word', normalized);
+   00090|     const operator = meaning ? words(meaning).find((surface) => !/\p{Alphabetic}/u.test(surface)) : undefined;
+   00091|     content = expected !== undefined && operator !== undefined
+   00092|       ? renderRustTemplate('coding_source_binary_operation_test', [
+   00093|         ['{name}', name], ['{left}', left], ['{operator}', operator], ['{right}', right], ['{expected}', expected],
+   00094|       ])
+   00095|       : renderRustTemplate('coding_source_equality_test', [['{name}', name], ['{left}', left], ['{right}', right]]);
+   00096|   }
+   00097|   return content === null ? null : { path, content };
+   00098| }
+   00099| 
+   00100| /** Mirrors `fn render_rust_template`. */
+   00101| export function renderRustTemplate(intent, substitutions) {
+   00102|   const template = responseFor(intent, 'rust');
+   00103|   return template === null ? null : renderTemplate(template, substitutions);
+   00104| }
+   00105| 
+   00106| /** Mirrors `fn render_seeded_outcome`. */
+   00107| export function renderSeededOutcome(intent, task, path) {
+   00108|   const template = localizedResponse(intent, responseLanguage(task));
+   00109|   return template === null || template === undefined ? null : renderTemplate(template, [['{path}', path]]);
+   00110| }
+   00111| 
+   00112| /** Mirrors `fn render_seeded_change`. */
+   00113| export function renderSeededChange(intent, task, path, slots) {
+   00114|   const template = localizedResponse(intent, responseLanguage(task));
+   00115|   return template === null || template === undefined ? null : renderTemplate(template, [['{path}', path], ...slots]);
+   00116| }
+   00117| 
+   00118| /** Mirrors `fn render_seeded_list_change`: an explicitly typed list slot. */
+   00119| export function renderSeededListChange(intent, task, path, slot, values) {
+   00120|   return renderSeededChange(intent, task, path, [[slot, values]]);
+   00121| }
+   00122| 
+   00123| // A placeholder the seed sentence wraps in backticks becomes a CommonMark code
+   00124| // span: a value holding a backtick run gets a longer fence, padded when it
+   00125| // starts or ends with a backtick, so the inserted text reads back verbatim.
+   00126| // Mirrors `code_span` in rust/src/agentic_coding/code_task.rs.
+   00127| function codeSpanItem(value) {
+   00128|   const longest = Math.max(0, ...(value.match(/`+/g) ?? []).map((run) => run.length));
+   00129|   if (longest === 0) return `\`${value}\``;
+   00130|   const fence = '`'.repeat(longest + 1);
+   00131|   const pad = value.startsWith('`') || value.endsWith('`') ? ' ' : '';
+   00132|   return `${fence}${pad}${value}${pad}${fence}`;
+   00133| }
+   00134| 
+   00135| // A scalar payload is fenced whole, even when it contains comma-separated code.
+   00136| const codeSpan = codeSpanItem;
+   00137| 
+   00138| function renderTemplate(template, substitutions) {
+   00139|   return substitutions.reduce((text, [placeholder, value]) =>
+   00140|     text.split(`\`${placeholder}\``).join(codeSpan(value)).split(placeholder).join(value), template);
+   00141| }
+   00142| 
+   00143| const isPathCharacter = (character) => isAsciiAlphanumeric(character) || '_-./'.includes(character);
+   00144| 
+   00145| function rustPath(task) {
+   00146|   const found = task.indexOf('.rs');
+   00147|   if (found < 0) return null;
+   00148|   const end = found + 3;
+   00149|   let start = end;
+   00150|   while (start > 0 && isPathCharacter(task[start - 1])) start -= 1;
+   00151|   if (start === end) start = 0;
+   00152|   const path = task.slice(start, end);
+   00153|   return path !== '' && !path.startsWith('/') && !path.split('/').some((component) => component === '..') ? path : null;
+   00154| }
+   00155| 
+   00156| function requestedIdentifier(task, path, kind) {
+   00157|   const normalized = task.toLowerCase();
+   00158|   if (kind !== RustItemKind.Constant) {
+   00159|     const name = slotIdentifier(normalized, 'coding_name_slot');
+   00160|     if (name !== null && validIdentifier(name)) return name;
+   00161|   }
+   00162|   let candidates = identifierTokens(task.replace(path, () => '')).filter(validIdentifier);
+   00163|   if (kind === RustItemKind.Constant) {
+   00164|     candidates = candidates.filter((candidate) => candidate.includes('_') && /^[A-Z_]+$/.test(candidate));
+   00165|   } else {
+   00166|     candidates = candidates.filter((candidate) => candidate.includes('_'));
+   00167|   }
+   00168|   return candidates[0] ?? null;
+   00169| }
+   00170| 
+   00171| function slotIdentifier(normalized, role) {
+   00172|   for (const form of roleWordForms(role)) {
+   00173|     let found;
+   00174|     if (form.slot === 'prefix') {
+   00175|       const prefix = trim(form.before).toLowerCase();
+   00176|       const at = normalized.indexOf(prefix);
+   00177|       found = at < 0 ? undefined : identifierTokens(normalized.slice(at + prefix.length))[0];
+   00178|     } else if (form.slot === 'suffix') {
+   00179|       const suffix = trim(form.after).toLowerCase();
+   00180|       const at = normalized.indexOf(suffix);
+   00181|       found = at < 0 ? undefined : identifierTokens(normalized.slice(0, at)).pop();
+   00182|     } else if (form.slot === 'circumfix') {
+   00183|       const before = trim(form.before).toLowerCase();
+   00184|       const after = trim(form.after).toLowerCase();
+   00185|       const at = normalized.indexOf(before);
+   00186|       if (at >= 0) {
+   00187|         const remainder = normalized.slice(at + before.length);
+   00188|         const end = remainder.indexOf(after);
+   00189|         found = end < 0 ? undefined : identifierTokens(remainder.slice(0, end))[0];
+   00190|       }
+   00191|     }
+   00192|     if (found !== undefined) return found;
+   00193|   }
+   00194|   return null;
+   00195| }
+   00196| 
+   00197| function identifierTokens(text) {
+   00198|   return text.split(/[^A-Za-z0-9_]/u).filter((token) => token !== '');
+   00199| }
+   00200| 
+   00201| function validIdentifier(identifier) {
+   00202|   if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(identifier)) return false;
+   00203|   return !wordsForRole('identifier_reserved_word').includes(identifier);
+   00204| }
+   00205| 
+   00206| function numericLiterals(text) {
+   00207|   const chars = Array.from(text);
+   00208|   const values = [];
+   00209|   let index = 0;
+   00210|   while (index < chars.length) {
+   00211|     const character = chars[index];
+   00212|     if (!isAsciiDigit(character) || (index > 0 && isAsciiAlphabetic(chars[index - 1]))) {
+   00213|       index += 1;
+   00214|       continue;
+   00215|     }
+   00216|     let endIndex = index + 1;
+   00217|     while (endIndex < chars.length && (isAsciiDigit(chars[endIndex]) || chars[endIndex] === '.')) endIndex += 1;
+   00218|     if (endIndex < chars.length && isAsciiAlphabetic(chars[endIndex])) {
+   00219|       index = endIndex + 1;
+   00220|       continue;
+   00221|     }
+   00222|     const value = trimEndMatches(chars.slice(index, endIndex).join(''), (c) => c === '.');
+   00223|     if (value !== '') values.push(value);
+   00224|     index = endIndex;
+   00225|   }
+   00226|   return values;
+   00227| }
+   00228| 
+   
+   (End of file - total 228 lines)
+   </file>
+>> edit {"filePath":"js/agentic/code_task.mjs","file_path":"js/agentic/code_task.mjs","new":"  return substitutions.reduce((text, [placeholder, value]) => {\n    const rendered = Array.isArray(value) ? value.map(codeSpanItem).join(', ') : codeSpan(value);\n    const plain = Array.isArray(value) ? rendered : value;\n    return text.split(`\\`${placeholder}\\``).join(rendered).split(placeholder).join(plain);\n  }, template);","newString":"  return substitutions.reduce((text, [placeholder, value]) => {\n    const rendered = Array.isArray(value) ? value.map(codeSpanItem).join(', ') : codeSpan(value);\n    const plain = Array.isArray(value) ? rendered : value;\n    return text.split(`\\`${placeholder}\\``).join(rendered).split(placeholder).join(plain);\n  }, template);","new_str":"  return substitutions.reduce((text, [placeholder, value]) => {\n    const rendered = Array.isArray(value) ? value.map(codeSpanItem).join(', ') : codeSpan(value);\n    const plain = Array.isArray(value) ? rendered : value;\n    return text.split(`\\`${placeholder}\\``).join(rendered).split(placeholder).join(plain);\n  }, template);","new_string":"  return substitutions.reduce((text, [placeholder, value]) => {\n    const rendered = Array.isArray(value) ? value.map(codeSpanItem).join(', ') : codeSpan(value);\n    const plain = Array.isArray(value) ? rendered : value;\n    return text.split(`\\`${placeholder}\\``).join(rendered).split(placeholder).join(plain);\n  }, template);","old":"  return substitutions.reduce((text, [placeholder, value]) =>\n    text.split(`\\`${placeholder}\\``).join(codeSpan(value)).split(placeholder).join(value), template);","oldString":"  return substitutions.reduce((text, [placeholder, value]) =>\n    text.split(`\\`${placeholder}\\``).join(codeSpan(value)).split(placeholder).join(value), template);","old_str":"  return substitutions.reduce((text, [placeholder, value]) =>\n    text.split(`\\`${placeholder}\\``).join(codeSpan(value)).split(placeholder).join(value), template);","old_string":"  return substitutions.reduce((text, [placeholder, value]) =>\n    text.split(`\\`${placeholder}\\``).join(codeSpan(value)).split(placeholder).join(value), template);","path":"js/agentic/code_task.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/code_task.mjs"}
+   e693297548a7cbcf4997a0cbbd7eea8fe11b9e23a5efebd577c5951cca0d1766  js/agentic/code_task.mjs
+   
+== answer ==
+Replaced ```  return substitutions.reduce((text, [placeholder, value]) =>
+    text.split(`\`${placeholder}\``).join(codeSpan(value)).split(placeholder).join(value), template);``` with ```  return substitutions.reduce((text, [placeholder, value]) => {
+    const rendered = Array.isArray(value) ? value.map(codeSpanItem).join(', ') : codeSpan(value);
+    const plain = Array.isArray(value) ? rendered : value;
+    return text.split(`\`${placeholder}\``).join(rendered).split(placeholder).join(plain);
+  }, template);``` in `js/agentic/code_task.mjs` and observed the result.

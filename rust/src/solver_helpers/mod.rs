@@ -37,57 +37,42 @@ pub const fn confidence_for(rule: &SelectedRule, validation: Option<&ValidationC
     }
 }
 
+// The policy-gate predicates (R1188-U29): each reads its seed role in
+// `data/seed/meanings-policy.lino` as raw substrings of the lowercased prompt,
+// in every supported language, as `is_inappropriate_content` reads the vulgar
+// markers. The browser worker's twins read the same roles.
+
+fn mentions_policy_role(role: &str, normalized: &str) -> bool {
+    crate::seed::lexicon().mentions_role_raw(role, normalized)
+}
+
 pub fn is_unbounded_autonomy(normalized: &str) -> bool {
-    let triggers = [
-        "forever",
-        "continuously",
-        "non-stop",
-        "nonstop",
-        "indefinitely",
-        "without stopping",
-        "until i tell you to stop",
-    ];
-    triggers.iter().any(|trigger| normalized.contains(trigger))
+    mentions_policy_role(crate::seed::ROLE_UNBOUNDED_AUTONOMY_MARKER, normalized)
 }
 
 pub fn is_forget_request(normalized: &str) -> bool {
-    normalized.contains("forget ")
-        || normalized.starts_with("forget")
-        || normalized.contains("delete the greeting concept")
+    mentions_policy_role(crate::seed::ROLE_FORGET_REQUEST_MARKER, normalized)
 }
 
 pub fn is_cache_flush_request(normalized: &str) -> bool {
-    (normalized.contains("flush") || normalized.contains("clear")) && normalized.contains("cache")
+    mentions_policy_role(crate::seed::ROLE_CACHE_CLEARING_ACTION, normalized)
+        && mentions_policy_role(crate::seed::ROLE_CACHE_REFERENCE, normalized)
 }
 
 pub fn is_agent_request(normalized: &str) -> bool {
-    normalized.contains("[agent]")
-        || normalized.contains("enable agent")
-        || normalized.contains("agent mode")
+    is_agent_opt_in(normalized)
 }
 
 pub fn is_agent_opt_in(normalized: &str) -> bool {
-    normalized.contains("[agent]")
-        || normalized.contains("enable agent")
-        || normalized.contains("agent mode")
+    mentions_policy_role(crate::seed::ROLE_AGENT_MODE_OPT_IN_MARKER, normalized)
 }
 
 pub fn is_destructive_action(normalized: &str) -> bool {
-    let triggers = [
-        "rm -rf",
-        "delete the .git",
-        "drop table",
-        "delete /",
-        "delete the database",
-    ];
-    triggers.iter().any(|trigger| normalized.contains(trigger))
+    mentions_policy_role(crate::seed::ROLE_DESTRUCTIVE_ACTION_MARKER, normalized)
 }
 
 pub fn is_unbounded_loop(normalized: &str) -> bool {
-    normalized.contains("while true")
-        || normalized.contains("infinite loop")
-        || normalized.contains("for one hour")
-        || normalized.contains("forever")
+    mentions_policy_role(crate::seed::ROLE_UNBOUNDED_LOOP_MARKER, normalized)
 }
 
 pub fn is_inappropriate_content(normalized: &str) -> bool {
@@ -173,6 +158,16 @@ pub fn record_decomposition(
     {
         return record_sub_impulses(log, independent_parts, true);
     }
+    // A question asking the assistant's opinion is one utterance: the clause
+    // after its lead ("Как ты думаешь, …") is what the opinion is about, not a
+    // second request (the browser worker splits only at sentence ends).
+    if crate::rule_interpreter::handler_matches("opinion_question", prompt) {
+        return Vec::new();
+    }
+
+    if courtesy_context_for_single_directive(&independent_parts) {
+        return Vec::new();
+    }
 
     let language = detect_language(prompt);
     let whole_intent = formalize_intent(prompt, language.slug(), None);
@@ -214,6 +209,47 @@ fn record_sub_impulses(
         });
     }
     sub_impulses
+}
+
+/// The substantive clause after an actually bound leading courtesy.
+/// Keep the full original utterance in the log; this is only a parser view.
+pub fn request_after_leading_courtesy(prompt: &str) -> Option<&str> {
+    let (at, delimiter) = prompt.char_indices().find(|&(at, character)| {
+        matches!(
+            character,
+            ',' | ';' | '；' | '，' | '、' | '\n' | '。' | '！' | '？'
+        ) || (matches!(character, '.' | '!' | '?')
+            && prompt[at + character.len_utf8()..]
+                .chars()
+                .next()
+                .is_some_and(char::is_whitespace))
+    })?;
+    let lead = prompt[..at].trim();
+    let language = detect_language(lead);
+    if formalize_intent(lead, language.slug(), None).kind != IntentKind::Courtesy {
+        return None;
+    }
+    let tail = strip_leading_coordinator(prompt[at + delimiter.len_utf8()..].trim());
+    (!tail.is_empty()).then_some(tail)
+}
+
+// Courtesy is context for one directed operation, not an extra operation.
+// Explicit question lists and procedure questions retain their composition.
+fn courtesy_context_for_single_directive(parts: &[String]) -> bool {
+    let mut courtesies = 0;
+    let mut directives = 0;
+    for part in parts {
+        let language = detect_language(part);
+        let binding = formalize_intent(part, language.slug(), None);
+        if binding.kind == IntentKind::Courtesy {
+            courtesies += 1;
+        } else if binding.route.is_some() && binding.kind != IntentKind::Question {
+            directives += 1;
+        } else {
+            return false;
+        }
+    }
+    courtesies > 0 && directives == 1
 }
 
 fn independent_actionable_segments(prompt: &str) -> Vec<String> {
@@ -288,6 +324,12 @@ fn strip_leading_coordinator(text: &str) -> &str {
 fn looks_like_independent_impulse(segment: &str) -> bool {
     let normalized = normalize_prompt(segment);
     if normalized.is_empty() {
+        return false;
+    }
+    // A bare number ("1776?" after "July 4,", or an item of "1, 2, 3") is an
+    // operand of the clause beside it, never a request of its own.
+    let bare = segment.trim_matches(|c: char| !c.is_alphanumeric());
+    if !bare.is_empty() && bare.chars().all(char::is_numeric) {
         return false;
     }
     let language = detect_language(segment);
@@ -641,6 +683,11 @@ fn names_no_task_beyond_the_minimal_script(prompt: &str, normalized: &str) -> bo
     if crate::solver_handlers::looks_like_python_function_request(prompt, &canonical) {
         return false;
     }
+    // A script over files ("every file in a folder with more than 1000 lines")
+    // is a program the meta reasoner derives; the template prints one line.
+    if crate::meta_reasoner::request::names_file_noun(prompt, detect_language(prompt).slug()) {
+        return false;
+    }
     let Some(program) = crate::engine::hello_world_program_by_alias(normalized) else {
         // No catalogued language: the route declines on its own grounds.
         return true;
@@ -656,7 +703,7 @@ fn names_no_task_beyond_the_minimal_script(prompt: &str, normalized: &str) -> bo
 pub fn format_write_script_execution(program: ProgramSpec) -> String {
     let execution = &program.language.execution;
     let expected_output = program.expected_output();
-    let cmd = execution.check_command.map_or_else(
+    let cmd = execution.check_command.as_deref().map_or_else(
         || format!("Run command: `{}`", execution.run_command),
         |check| {
             format!(
@@ -665,6 +712,19 @@ pub fn format_write_script_execution(program: ProgramSpec) -> String {
             )
         },
     );
+    // Issue #1165: a documentation-sourced program no recorded run verified
+    // names its page and its decomposition check, never the language's run.
+    if let Some(page) = crate::engine::rediscovered_page(program) {
+        let status_line = crate::seed::render_response(
+            "program_execution_rediscovered",
+            "en",
+            &[("page", page.as_str())],
+        )
+        .unwrap_or_default();
+        return format!(
+            "{status_line}\n{cmd}\nExpected output after verification:\n```text\n{expected_output}\n```"
+        );
+    }
     let status = program.language.execution_status();
     let output_label = if matches!(status, ExecutionStatus::Verified) {
         "Output"
@@ -678,7 +738,7 @@ pub fn format_write_script_execution(program: ProgramSpec) -> String {
         cmd,
         output_label,
         expected_output,
-        execution.notes
+        program.language.execution_notes()
     )
 }
 
@@ -692,6 +752,10 @@ pub fn env_definition_fusion_by_default() -> Option<bool> {
 }
 
 /// Parse a boolean env var using the standard truthy/falsy vocabulary.
+///
+/// Issue #1181: delegates to the one shared spelling table
+/// ([`crate::cli_env::parse_bool_env`]) so every boolean switch in the crate
+/// accepts exactly the same forms.
 pub fn env_bool(name: &str) -> Option<bool> {
     env_bool_with_extra_truthy(name, &[], &[])
 }
@@ -703,13 +767,16 @@ pub fn env_bool_with_extra_truthy(name: &str, truthy: &[&str], falsy: &[&str]) -
     if value.is_empty() {
         return None;
     }
-    match value.as_str() {
-        "1" | "true" | "yes" | "on" => Some(true),
-        "0" | "false" | "no" | "off" => Some(false),
-        other if truthy.contains(&other) => Some(true),
-        other if falsy.contains(&other) => Some(false),
-        _ => None,
+    if let Some(parsed) = crate::cli_env::parse_bool_env(&value) {
+        return Some(parsed);
     }
+    if truthy.contains(&value.as_str()) {
+        return Some(true);
+    }
+    if falsy.contains(&value.as_str()) {
+        return Some(false);
+    }
+    None
 }
 
 /// Parse a finite `f32` env var, clamped into `[min, max]`.

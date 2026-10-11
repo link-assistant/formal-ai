@@ -1,0 +1,11 @@
+language en
+lemma haiku
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an epigrammatic Japanese verse form of three short lines"
+    id oewn-06392118-n
+    partOfSpeech n
+source "oewn:2024"

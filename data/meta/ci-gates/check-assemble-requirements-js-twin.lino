@@ -1,0 +1,5 @@
+ci_gate check-assemble-requirements-js-twin
+  stage web
+  description "PR #1188: the JavaScript twin scripts/assemble-requirements.mjs prints the same lines, exits with the same code and checks the same bytes as scripts/assemble-requirements.rs on this tree, so REQUIREMENTS.md and its assembled parts are checked locally without compiling Rust."
+  run "node scripts/lib/requirements-twin-parity.mjs 'rust-script scripts/assemble-requirements.rs' 'node scripts/assemble-requirements.mjs'"
+  justification "Agents run the JavaScript twins locally instead of rust-script, whose compile cache grew to 3.7 GB (#1188); a twin that drifted from its Rust original would pass a stale assembled register locally that CI then rejects."

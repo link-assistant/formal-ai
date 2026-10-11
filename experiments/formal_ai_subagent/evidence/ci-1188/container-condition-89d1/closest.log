@@ -1,0 +1,55 @@
+TAP version 13
+# Subtest: release creation calls trusted container delivery without a completion trigger
+ok 1 - release creation calls trusted container delivery without a completion trigger
+  ---
+  duration_ms: 0.88
+  ...
+# Subtest: two same-run native targets feed every full and slim architecture without a static exclusion
+ok 2 - two same-run native targets feed every full and slim architecture without a static exclusion
+  ---
+  duration_ms: 0.196375
+  ...
+# Subtest: PR validation has no registry write while publication retains independent source authority
+ok 3 - PR validation has no registry write while publication retains independent source authority
+  ---
+  duration_ms: 0.224042
+  ...
+# Subtest: full source compilation has an independent path and every job keeps the required deadline
+ok 4 - full source compilation has an independent path and every job keeps the required deadline
+  ---
+  duration_ms: 0.55125
+  ...
+# Subtest: the release pipeline waits for native publication only after actual successful release creation
+ok 5 - the release pipeline waits for native publication only after actual successful release creation
+  ---
+  duration_ms: 0.321375
+  ...
+# Subtest: all six real merge invocations bind the exact shared resolver in their own steps
+ok 6 - all six real merge invocations bind the exact shared resolver in their own steps
+  ---
+  duration_ms: 65.186125
+  ...
+# Subtest: the six original native binding negatives cannot certify an invoking step
+ok 7 - the six original native binding negatives cannot certify an invoking step
+  ---
+  duration_ms: 0.666833
+  ...
+# Subtest: one step pin binds repeated invocations while metadata prose is not a command
+ok 8 - one step pin binds repeated invocations while metadata prose is not a command
+  ---
+  duration_ms: 0.401334
+  ...
+# Subtest: native container publication requires explicit event, main ref, mode, matching success and nonempty tag
+ok 9 - native container publication requires explicit event, main ref, mode, matching success and nonempty tag
+  ---
+  duration_ms: 10.250959
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 132.203917

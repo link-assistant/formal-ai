@@ -2,9 +2,9 @@ self_ast_census
   target src/link_store/staging.rs
   language rust
   fidelity signature
-  byte_len 4095
+  byte_len 4088
   line_count 88
-  content_id source_module_48719fced52f42a8
+  content_id source_module_b8c7583bec26cb4a
   symbol_count 6
   symbols
     function stage_without_per_entry_sync 34 36

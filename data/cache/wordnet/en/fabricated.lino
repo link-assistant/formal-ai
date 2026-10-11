@@ -1,0 +1,13 @@
+language en
+lemma fabricated
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "formed or conceived by the imagination"
+    examples ("a fabricated excuse for his absence" "a fancied wrong" "a fictional character")
+    id oewn-01942527-s
+    partOfSpeech s
+    synonyms (fancied fictional fictitious)
+source "oewn:2024"

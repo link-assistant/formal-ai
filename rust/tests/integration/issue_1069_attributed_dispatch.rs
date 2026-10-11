@@ -222,12 +222,12 @@ fn incremental_dispatch_commits_each_verified_effect_with_its_session_evidence()
         evidence.to_ascii_lowercase().contains("formal-ai"),
         "{evidence}"
     );
-    assert!(
+    assert_eq!(
         git(
             workspace.path(),
             &["status", "--porcelain", "--untracked-files=no"]
-        )
-        .is_empty()
+        ),
+        ""
     );
 }
 

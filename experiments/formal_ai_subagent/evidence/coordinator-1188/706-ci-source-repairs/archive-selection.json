@@ -1,0 +1,17 @@
+{
+  "ciHead": "7065828299defa1eb7d8ff32e95c2cd803dd1325",
+  "scope": "Completed23source repairs/draft, all three final agent packets, original failed and incomplete coding/native/release obligations retained; no native local execution",
+  "mutableHostExcluded": true,
+  "nativeCompilationLocal": false,
+  "publication": false,
+  "autonomousCredit": 0,
+  "records": 2357,
+  "finalAdditionalObservation": "7065828299 at 14:25:42 UTC: 200 checks,131 success,27 failure,17 running,24 skipped,1 cancelled. Missing-artifact cascades preserved; no runtime semantics credit.",
+  "uniqueOriginals": 1760,
+  "selectedOriginalBytes": 145505003,
+  "manifestFiles": 3,
+  "sourceHead": "12bde0b966bb37d2679c342762940c3d28158c2f",
+  "finalSourceQualification": "Actual T3381 PASS;23 source paths,17 final checks,214 relevant portable passes with zero skips; native execution reserved for CI",
+  "controllerOuter": "Root3370–3381, CI4384–4406, Spec4700–4736 and Formal4400–4501 selected finite originals included once; T3382 installation outer postdates this cut and is appended once by T3383, no recursive self-prefix completeness credit",
+  "autonomousCodingCredit": 0
+}

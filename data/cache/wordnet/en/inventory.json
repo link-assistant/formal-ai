@@ -1,0 +1,74 @@
+{
+  "lemma": "inventory",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06504655-n",
+      "partOfSpeech": "n",
+      "definition": "a detailed list of all the items in stock",
+      "synonyms": [
+        "stock list"
+      ]
+    },
+    {
+      "id": "oewn-04328672-n",
+      "partOfSpeech": "n",
+      "definition": "the merchandise that a shop has on hand",
+      "examples": [
+        "they carried a vast inventory of hardware",
+        "they stopped selling in exact sizes in order to reduce inventory"
+      ],
+      "synonyms": [
+        "stock"
+      ]
+    },
+    {
+      "id": "oewn-13433706-n",
+      "partOfSpeech": "n",
+      "definition": "(accounting) the value of a firm's current assets including raw materials and work in progress and finished goods"
+    },
+    {
+      "id": "oewn-05641904-n",
+      "partOfSpeech": "n",
+      "definition": "a collection of resources",
+      "examples": [
+        "he dipped into his intellectual armory to find an answer"
+      ],
+      "synonyms": [
+        "armory",
+        "armoury"
+      ]
+    },
+    {
+      "id": "oewn-01013367-n",
+      "partOfSpeech": "n",
+      "definition": "making an itemized list of merchandise or supplies on hand",
+      "examples": [
+        "an inventory may be necessary to see if anything is missing",
+        "they held an inventory every month"
+      ],
+      "synonyms": [
+        "inventorying",
+        "stocktaking",
+        "stock-taking"
+      ]
+    },
+    {
+      "id": "oewn-02477918-v",
+      "partOfSpeech": "v",
+      "definition": "make or include in an itemized record or report",
+      "examples": [
+        "Inventory all books before the end of the year"
+      ],
+      "synonyms": [
+        "take stock",
+        "stock-take"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "entities": {
+    "Q123": {
+      "type": "item",
+      "id": "Q123",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "September"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сентябрь"
+        },
+        "es": {
+          "language": "es",
+          "value": "septiembre"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सितम्बर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "9月"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "ninth month in the Julian and Gregorian calendars"
+        },
+        "es": {
+          "language": "es",
+          "value": "noveno mes del año"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "девятый месяц года в юлианском и григорианском календарях"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "公历及儒略历中第九个月份"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जूलियन और ग्रेगोरियन कैलेंडर में नौवां महीना"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "九月"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "сентября"
+          },
+          {
+            "language": "ru",
+            "value": "сен."
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Sept"
+          },
+          {
+            "language": "en",
+            "value": "Sep"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "setiembre"
+          },
+          {
+            "language": "es",
+            "value": "Sept"
+          },
+          {
+            "language": "es",
+            "value": "Sept."
+          },
+          {
+            "language": "es",
+            "value": "Set"
+          },
+          {
+            "language": "es",
+            "value": "Set."
+          },
+          {
+            "language": "es",
+            "value": "sept."
+          },
+          {
+            "language": "es",
+            "value": "set."
+          },
+          {
+            "language": "es",
+            "value": "sept"
+          },
+          {
+            "language": "es",
+            "value": "set"
+          },
+          {
+            "language": "es",
+            "value": "mes noveno"
+          },
+          {
+            "language": "es",
+            "value": "mes nono"
+          },
+          {
+            "language": "es",
+            "value": "mes 9.°"
+          },
+          {
+            "language": "es",
+            "value": "noveno mes"
+          },
+          {
+            "language": "es",
+            "value": "nono mes"
+          },
+          {
+            "language": "es",
+            "value": "9.° mes"
+          },
+          {
+            "language": "es",
+            "value": "9"
+          },
+          {
+            "language": "es",
+            "value": "mes 9"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

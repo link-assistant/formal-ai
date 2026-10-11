@@ -572,21 +572,36 @@ fn candidate_draft(
                 referenced_params: source_referenced_parameters(spec, &source),
             })
         }
-        "wikifunctions_recurrence" => match (&candidate.code, &candidate.callable_name) {
-            (Some(source), Some(callable_name)) => Some(Draft {
+        "wikifunctions_recurrence" => {
+            let (Some(source), Some(callable_name), Some(contract)) = (
+                &candidate.code,
+                &candidate.callable_name,
+                &candidate.callable_contract,
+            ) else {
+                return Ok(None);
+            };
+            if contract.name != *callable_name || contract.render_python() != *source {
+                return Ok(None);
+            }
+            let Some(bound) = contract.bound_to(spec) else {
+                return Ok(None);
+            };
+            let Some(read_positions) = bound.read_positions() else {
+                return Ok(None);
+            };
+            Some(Draft {
                 id: format!("recurrence:{}", candidate.id),
-                source: source.clone(),
-                callable_name: callable_name.clone(),
+                source: echo_declared_surface(spec, bound.render_python()),
+                callable_name: bound.name,
                 source_urls: vec![candidate.source_url.clone()],
                 source_licenses: vec![candidate.license.clone()],
                 composition: format!("source_recurrence({})", candidate.id),
                 action_cost: 3,
                 typed_ir: false,
                 search_rank: usize::MAX,
-                referenced_params: source_referenced_parameters(spec, source),
-            }),
-            _ => None,
-        },
+                referenced_params: read_positions.len(),
+            })
+        }
         "source_program" => match (&candidate.code, &candidate.callable_name) {
             (Some(source), Some(callable_name)) => Some(Draft {
                 id: format!("source:{}", candidate.id),

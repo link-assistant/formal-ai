@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_file_size
+ci_gate check-file-size
   stage rust
   description "No source file grows past the per-language ceiling that keeps merges and reviews small."
   run "rust-script scripts/check-file-size.rs"
+  justification "Files longer than the ceiling accumulate complexity that makes AI-driven edits unsafe; the size guard has been in CI since the initial commit (6f8d4a8a0) to prevent single-file bloat."

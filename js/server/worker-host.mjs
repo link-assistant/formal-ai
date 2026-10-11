@@ -1,0 +1,348 @@
+// A Node host for the browser worker (`js/worker/*.js`).
+//
+// The worker mirror is plain browser script: it installs globals, fetches
+// `seed/*.lino`, and answers through `solve`. This module gives it the
+// smallest `window`-shaped realm it needs inside `node:vm`, so the same
+// production sources serve three hosts - the browser, `node --test`
+// (rust/tests/web/support/browser-runtime.mjs re-exports this file), and the
+// JavaScript HTTP server (js/server/), which answers every protocol route
+// from the worker exactly as the Rust server answers from the native solver.
+//
+// Each script runs with its real absolute path as the `filename`, so coverage
+// is attributed to the file the browser downloads.
+
+import { readFileSync, readdirSync } from "node:fs";
+import path from "node:path";
+import vm from "node:vm";
+
+import { serverMessage } from "./messages.mjs";
+import { applyProcedureCache } from "./procedure-cache.mjs";
+
+export const REPO_ROOT = path.resolve(import.meta.dirname, "../..");
+const WORKER_DIR = path.join(REPO_ROOT, "js/worker");
+
+/** Map a worker URL to its web-root path, mirroring the entry's base shim. */
+function webRootPath(url) {
+  const { pathname } = new URL(String(url), "http://localhost/");
+  return pathname.replace(/^\/+/, "").split("?")[0];
+}
+
+/** An in-memory `localStorage` good enough for the preference round-trips. */
+export function createStorage(initial = {}) {
+  const data = new Map(Object.entries(initial));
+  return {
+    get length() {
+      return data.size;
+    },
+    key: (index) => [...data.keys()][index] ?? null,
+    getItem: (key) => (data.has(key) ? data.get(key) : null),
+    setItem: (key, value) => data.set(key, String(value)),
+    removeItem: (key) => data.delete(key),
+    clear: () => data.clear(),
+  };
+}
+
+function createElement() {
+  const element = {
+    style: {},
+    dataset: {},
+    children: [],
+    textContent: "",
+    innerHTML: "",
+    classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
+    setAttribute() {},
+    getAttribute: () => null,
+    removeAttribute() {},
+    appendChild(child) {
+      element.children.push(child);
+      return child;
+    },
+    append() {},
+    addEventListener() {},
+    removeEventListener() {},
+    querySelector: () => null,
+    querySelectorAll: () => [],
+    remove() {},
+    focus() {},
+    click() {},
+  };
+  return element;
+}
+
+function createDocument() {
+  return {
+    documentElement: createElement(),
+    head: createElement(),
+    body: createElement(),
+    title: "",
+    readyState: "complete",
+    createElement,
+    createTextNode: (text) => ({ textContent: text }),
+    createDocumentFragment: createElement,
+    getElementById: () => null,
+    querySelector: () => null,
+    querySelectorAll: () => [],
+    addEventListener() {},
+    removeEventListener() {},
+  };
+}
+
+/**
+ * A `window`-shaped sandbox. `overrides` replaces or adds globals; `fetch`
+ * rejects by default so a module that reaches for the network in a unit test
+ * fails loudly instead of hanging.
+ */
+export function createBrowserContext(overrides = {}) {
+  const sandbox = {};
+  const context = vm.createContext(sandbox);
+  Object.assign(sandbox, {
+    globalThis: sandbox,
+    window: sandbox,
+    self: sandbox,
+    console,
+    document: createDocument(),
+    localStorage: createStorage(),
+    sessionStorage: createStorage(),
+    navigator: { language: "en", languages: ["en"], userAgent: "node-test" },
+    location: {
+      href: "http://localhost/app/",
+      origin: "http://localhost",
+      pathname: "/app/",
+      search: "",
+      hash: "",
+    },
+    history: { replaceState() {}, pushState() {} },
+    matchMedia: () => ({
+      matches: false,
+      addEventListener() {},
+      removeEventListener() {},
+      addListener() {},
+      removeListener() {},
+    }),
+    fetch: () => Promise.reject(new Error(serverMessage("worker_network_disabled"))),
+    setTimeout,
+    clearTimeout,
+    setInterval,
+    clearInterval,
+    queueMicrotask,
+    TextEncoder,
+    TextDecoder,
+    URL,
+    URLSearchParams,
+    crypto,
+    atob: (value) => Buffer.from(value, "base64").toString("binary"),
+    btoa: (value) => Buffer.from(value, "binary").toString("base64"),
+    addEventListener() {},
+    removeEventListener() {},
+    dispatchEvent: () => true,
+    CustomEvent: class CustomEvent {
+      constructor(type, init = {}) {
+        this.type = type;
+        this.detail = init.detail;
+      }
+    },
+    postMessage() {},
+    importScripts() {},
+    indexedDB: undefined,
+    ...overrides,
+  });
+  return context;
+}
+
+/**
+ * Run a repo-relative browser script inside `context`.
+ *
+ * The absolute path is passed as the script `filename`, which is what makes the
+ * file show up in the coverage report under its real repository path.
+ */
+export function loadBrowserScript(context, relativePath) {
+  const absolute = path.join(REPO_ROOT, relativePath);
+  const source = readFileSync(absolute, "utf8");
+  new vm.Script(source, { filename: absolute }).runInContext(context);
+  return context;
+}
+
+/** List the worker mirror files in the order the worker loads them. */
+export function workerMirrorFiles() {
+  return readdirSync(WORKER_DIR)
+    // The entry point loads the list; it is not one of the modules in it.
+    .filter((name) => name.endsWith(".js") && name !== "formal_ai_worker.js")
+    .sort()
+    .map((name) => path.posix.join("js/worker", name));
+}
+
+/**
+ * Boot the split browser worker mirror (`js/worker/*.js`) exactly the way
+ * `formal_ai_worker.js` does: concatenated in filename order into one global
+ * scope.
+ */
+export function loadWorkerMirror(overrides = {}) {
+  const context = createBrowserContext(overrides);
+  loadBrowserScript(context, "js/worker-bootstrap-responses.js");
+  for (const file of workerMirrorFiles()) {
+    loadBrowserScript(context, file);
+  }
+  return context;
+}
+
+/**
+ * Boot the real worker entry point, `js/worker/formal_ai_worker.js`.
+ *
+ * The entry resolves worker-relative URLs against the web root, so
+ * `importScripts` and `fetch` arrive as web-root URLs: `js/` serves the
+ * scripts the browser would load, and `seed/*.lino` comes from the canonical
+ * `data/seed/` tree, which is exactly what the dev server mirrors into
+ * `js/seed/`. The result is a worker booted from production sources and real
+ * seed data, so the answers the tests assert are the answers the site gives.
+ *
+ * `reorderModules`, when given, maps the module list the entry loads to the
+ * order to load it in, so a test can prove the modules load in any order.
+ */
+export function createWorkerContext(overrides = {}, { reorderModules = null } = {}) {
+  const context = createBrowserContext({
+    location: { href: "http://localhost/worker/formal_ai_worker.js", search: "" },
+    fetch: (url) => {
+      const relative = webRootPath(url);
+      const onDisk = relative.startsWith("seed/")
+        ? path.join(REPO_ROOT, "data", relative)
+        : path.join(REPO_ROOT, "js", relative);
+      try {
+        const text = readFileSync(onDisk, "utf8");
+        return Promise.resolve({ ok: true, status: 200, text: () => Promise.resolve(text) });
+      } catch {
+        return Promise.resolve({ ok: false, status: 404, text: () => Promise.resolve("") });
+      }
+    },
+    ...overrides,
+  });
+  context.importScripts = (...urls) => {
+    for (const url of urls) {
+      const relative = webRootPath(url);
+      loadBrowserScript(context, path.posix.join("js", relative));
+      if (reorderModules && relative === "worker-modules.js") {
+        context.FORMAL_AI_WORKER_MODULES = Object.freeze(reorderModules([...context.FORMAL_AI_WORKER_MODULES]));
+      }
+    }
+  };
+  loadBrowserScript(context, "js/worker/formal_ai_worker.js");
+  return context;
+}
+
+/**
+ * Copy a value out of the sandbox realm into a host-realm plain value.
+ *
+ * Objects created inside a `vm` context have that context's `Object.prototype`,
+ * which `assert.deepEqual` from `node:assert/strict` treats as a difference. The
+ * JSON round-trip drops the foreign prototypes so assertions compare the data.
+ */
+export function plain(value) {
+  return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
+}
+
+/** Evaluate an expression against a loaded context, e.g. a worker function. */
+export function evaluate(context, expression) {
+  return vm.runInContext(expression, context);
+}
+
+/**
+ * One booted worker realm, answering one `solve` at a time.
+ *
+ * The worker keeps per-turn state in globals (the forced response language,
+ * learned meanings), so concurrent turns would observe each other. Requests
+ * queue here instead; the HTTP layer stays concurrent for every route that
+ * does not solve.
+ */
+export class WorkerHost {
+  constructor(overrides = {}) {
+    this.overrides = overrides;
+    this.context = null;
+    this.ready = null;
+    this.queue = Promise.resolve();
+    this.readers = null;
+    this.templateFor = null;
+  }
+
+  /** Boot the worker and load the seed once. */
+  boot() {
+    if (!this.ready) {
+      this.context = createWorkerContext(this.overrides);
+      this.ready = Promise.resolve(evaluate(this.context, "loadSeed()")).then(() => this.context);
+    }
+    return this.ready;
+  }
+
+  /**
+   * Run `expression` against the booted realm with `bindings` installed as
+   * globals, serialized behind every earlier call.
+   */
+  run(expression, bindings = {}) {
+    const task = this.queue.then(async () => {
+      const context = await this.boot();
+      Object.assign(context, bindings);
+      return plain(await evaluate(context, expression));
+    });
+    this.queue = task.catch(() => undefined);
+    return task;
+  }
+
+  /**
+   * The worker's seed readers, for server modules that mirror a native
+   * protocol step ahead of the solver (rust/src/protocol_memory.rs): the
+   * prompt normalizer, the language detector, the lexicon role queries and
+   * the raw `response_for` table lookup (`null` when the intent has no text
+   * in that language, like `seed::response_for`). They are pure reads of the
+   * loaded seed, so they run outside the solve queue.
+   */
+  async seedReaders() {
+    const context = await this.boot();
+    if (!this.readers) {
+      this.readers = evaluate(context, `({
+        normalizePrompt,
+        detectLanguage,
+        lexiconMentionsRole,
+        roleWordForms,
+        responseFor(intent, language) {
+          const table = MULTILINGUAL_ANSWERS[intent];
+          const raw = table && Object.prototype.hasOwnProperty.call(table, language) ? table[language] : null;
+          if (raw === null || raw === undefined) return null;
+          return typeof raw === "string" ? raw : String(raw.text ?? "");
+        },
+      })`);
+    }
+    return this.readers;
+  }
+
+  /**
+   * The worker's answer to `prompt` after `history` turns. The Rust server
+   * greets with the canonical wording, so the worker's per-reply greeting
+   * variation (a browser preference) is off here.
+   */
+  async solve(prompt, history = [], options = {}) {
+    const result = await this.run("solve(__serverPrompt, __serverHistory, { greetingVariations: false }, {}, [], __serverOptions)", {
+      __serverPrompt: prompt,
+      __serverHistory: history,
+      __serverOptions: options,
+    });
+    // Issue #1165 R1165-10: the native `WriteProgram` branch reads the procedure cache file.
+    return applyProcedureCache(result, prompt, this, await this.catalogTemplate());
+  }
+
+  /**
+   * The worker's catalog template for a `(task, language)` pair (rediscovered
+   * from documentation first, issue #1165 R1165-1), what `prompt` rendered it
+   * to (the inline replacement a customised request makes), and the
+   * rediscovered row when there is one, for the procedure-cache read.
+   */
+  async catalogTemplate() {
+    const context = await this.boot();
+    if (!this.templateFor) {
+      this.templateFor = evaluate(context, `((prompt, task, language) => {
+        const template = writeProgramTemplate(task, language);
+        if (typeof template !== "string") return { template: null, rendered: null, documented: null };
+        const documented = documentedProgram(task, language).recipe;
+        return { template, rendered: applyInlineHelloWorldOutputReplacement(prompt, task, template), documented };
+      })`);
+    }
+    return this.templateFor;
+  }
+}

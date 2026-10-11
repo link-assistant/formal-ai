@@ -1,0 +1,456 @@
+// `crate::summarization` (rust/src/summarization/mod.rs): the formalize ->
+// summarize -> deformalize pipeline, JavaScript root. Every transformation is
+// a pure function of its input plus a `SummarizationConfig`; no model and no
+// network is consulted. The sibling modules carry the rest of the #563 surface:
+//
+// * summarization_markdown.mjs  - markdown.rs  (README ingestion);
+// * summarization_dialog.mjs    - dialog.rs    (dialog recaps, chat titles);
+// * summarization_file.mjs      - file.rs      (repository-file formalization);
+// * summarization_resource.mjs  - resource.rs  (file + folder trees);
+// * summarization_identifier.mjs / summarization_vocabulary.mjs - the
+//   identifier rung and the seed word lists it reads.
+//
+// Representation (no classes, so the translator's portable subset applies): a
+// `StatementKind` and a `SummarizationMode` are their lowercase string labels
+// (the same labels `statement_kind_label` in file.rs renders), a `Statement`
+// is `{text, kind, weight}` and a `SummarizationConfig` is
+// `{mode, max_statements, language, use_compound_words, use_semantic_primes,
+// drop_boilerplate}` with `max_statements` null for Rust's `None`. The
+// builders return a new object, like Rust's by-value `with_*` methods.
+//
+// Not ported (outside the #563 surface rows R345-R359): `describe_project`
+// and `Statement::from_seed`'s `ProjectRecord` registry (no JS twin of
+// `crate::seed::projects_registry` exists), and the #844/#893 layers
+// (importance.rs, context.rs, dedup.rs, recheck.rs, pipeline.rs, gathering.rs,
+// validation/) that nothing in the #563 call graph reaches.
+
+import { cached } from '../host.mjs';
+import { agenticMessage } from '../messages.mjs';
+import { identifierBudget, NamingConvention, toIdentifier } from './summarization_identifier.mjs';
+import { meaningsWithRole, words } from './seed_meanings.mjs';
+
+/** Mirrors `DEFAULT_MAX_STATEMENTS` in rust/src/summarization/mod.rs. */
+export const DEFAULT_MAX_STATEMENTS = 30;
+
+/** Mirrors `ROLE_SUMMARY_CLASSIFICATION_CUE` in rust/src/seed/roles/tooling.rs. */
+export const ROLE_SUMMARY_CLASSIFICATION_CUE = 'summary_classification_cue';
+
+/** Mirrors `enum StatementKind` in rust/src/summarization/mod.rs. */
+export const StatementKind = Object.freeze({
+  Identity: 'identity',
+  Purpose: 'purpose',
+  Language: 'language',
+  Stars: 'stars',
+  Feature: 'feature',
+  UseCase: 'use_case',
+  Install: 'install',
+  Example: 'example',
+  Misc: 'misc',
+});
+
+/**
+ * Mirrors `StatementKind::parse` in rust/src/summarization/mod.rs.
+ * @param {string} value
+ */
+export function statementKindParse(value) {
+  switch (value.replace(/^\p{White_Space}+|\p{White_Space}+$/gu, '').replace(/[A-Z]/g, (letter) => letter.toLowerCase())) {
+    case 'identity': return StatementKind.Identity;
+    case 'purpose': return StatementKind.Purpose;
+    case 'language': return StatementKind.Language;
+    case 'stars': return StatementKind.Stars;
+    case 'feature': return StatementKind.Feature;
+    case 'use_case': case 'usecase': case 'use-case': return StatementKind.UseCase;
+    case 'install': return StatementKind.Install;
+    case 'example': return StatementKind.Example;
+    default: return StatementKind.Misc;
+  }
+}
+
+/**
+ * Mirrors `StatementKind::from_slug` in rust/src/summarization/mod.rs.
+ * @param {string} slug
+ */
+export function statementKindFromSlug(slug) {
+  switch (slug) {
+    case 'summary_kind_install': return StatementKind.Install;
+    case 'summary_kind_example': return StatementKind.Example;
+    case 'summary_kind_language': return StatementKind.Language;
+    case 'summary_kind_stars': return StatementKind.Stars;
+    case 'summary_kind_purpose': return StatementKind.Purpose;
+    case 'summary_kind_use_case': return StatementKind.UseCase;
+    case 'summary_kind_feature': return StatementKind.Feature;
+    default: return StatementKind.Misc;
+  }
+}
+
+/** Mirrors `StatementKind::is_essential` in rust/src/summarization/mod.rs. @param {string} kind */
+export function isEssential(kind) {
+  return kind === StatementKind.Identity || kind === StatementKind.Purpose
+    || kind === StatementKind.Language || kind === StatementKind.Stars;
+}
+
+/** Mirrors `StatementKind::is_boilerplate` in rust/src/summarization/mod.rs. @param {string} kind */
+export function isBoilerplate(kind) {
+  return kind === StatementKind.Install || kind === StatementKind.Example;
+}
+
+/**
+ * Mirrors `Statement::new` in rust/src/summarization/mod.rs.
+ * @param {string} text
+ * @param {string} kind
+ * @param {number} weight
+ * @returns {{text: string, kind: string, weight: number}}
+ */
+export function statement(text, kind, weight) {
+  return { text, kind, weight };
+}
+
+/**
+ * Mirrors `Statement::from_seed` in rust/src/summarization/mod.rs: a seed
+ * `{text, kind, weight}` project statement with its kind label parsed.
+ * @param {{text: string, kind: string, weight: number}} seed
+ */
+export function statementFromSeed(seed) {
+  return statement(seed.text, statementKindParse(seed.kind), seed.weight);
+}
+
+/** Mirrors `enum SummarizationMode` in rust/src/summarization/mod.rs. */
+export const SummarizationMode = Object.freeze({
+  Identifier: 'identifier',
+  Topic: 'topic',
+  Short: 'short',
+  Standard: 'standard',
+  Full: 'full',
+  Expand: 'expand',
+});
+
+/** Mirrors `SummarizationMode::target_percent` in rust/src/summarization/mod.rs. @param {string} mode */
+export function targetPercent(mode) {
+  switch (mode) {
+    case SummarizationMode.Short: return 20;
+    case SummarizationMode.Standard: return 50;
+    case SummarizationMode.Full: return 100;
+    case SummarizationMode.Expand: return 200;
+    default: return 0;
+  }
+}
+
+/** Mirrors `SummarizationMode::one_step_shorter` in rust/src/summarization/mod.rs. @param {string} mode */
+export function oneStepShorter(mode) {
+  switch (mode) {
+    case SummarizationMode.Expand: case SummarizationMode.Full: return SummarizationMode.Standard;
+    case SummarizationMode.Standard: return SummarizationMode.Short;
+    case SummarizationMode.Short: return SummarizationMode.Topic;
+    default: return SummarizationMode.Identifier;
+  }
+}
+
+/** Mirrors `SummarizationMode::is_label_only` in rust/src/summarization/mod.rs. @param {string} mode */
+export function isLabelOnly(mode) {
+  return mode === SummarizationMode.Topic || mode === SummarizationMode.Identifier;
+}
+
+/**
+ * Mirrors `fn label_for_mode` in rust/src/summarization/mod.rs: the label of a
+ * label-only rung; `Identifier` shortens it to a `snake_case` name.
+ * @param {string} mode
+ * @param {string} label
+ */
+export function labelForMode(mode, label) {
+  if (mode === SummarizationMode.Identifier) {
+    return toIdentifier(label, NamingConvention.SnakeCase, identifierBudget());
+  }
+  return label;
+}
+
+/**
+ * Mirrors `SummarizationConfig::default` in rust/src/summarization/mod.rs.
+ * @returns {{mode: string, max_statements: number|null, language: string,
+ *   use_compound_words: boolean, use_semantic_primes: boolean, drop_boilerplate: boolean}}
+ */
+export function defaultConfig() {
+  return {
+    mode: SummarizationMode.Standard,
+    max_statements: null,
+    language: 'en',
+    use_compound_words: false,
+    use_semantic_primes: false,
+    drop_boilerplate: true,
+  };
+}
+
+/** Mirrors `SummarizationConfig::with_mode` in rust/src/summarization/mod.rs. */
+export function withMode(config, mode) {
+  return { ...config, mode };
+}
+
+/** Mirrors `SummarizationConfig::with_language` in rust/src/summarization/mod.rs. */
+export function withLanguage(config, language) {
+  return { ...config, language };
+}
+
+/** Mirrors `SummarizationConfig::keeping_boilerplate` in rust/src/summarization/mod.rs. */
+export function keepingBoilerplate(config) {
+  return { ...config, drop_boilerplate: false };
+}
+
+/** Mirrors `SummarizationConfig::with_max_statements` in rust/src/summarization/mod.rs. */
+export function withMaxStatements(config, cap) {
+  return { ...config, max_statements: cap };
+}
+
+/**
+ * Mirrors `SummarizationConfig::effective_max_statements` in
+ * rust/src/summarization/mod.rs.
+ * @param {object} config
+ * @param {number} inputCount
+ */
+export function effectiveMaxStatements(config, inputCount) {
+  if (inputCount === 0) return 0;
+  let ratioTarget;
+  if (config.mode === SummarizationMode.Identifier || config.mode === SummarizationMode.Topic) {
+    ratioTarget = 1;
+  } else if (config.mode === SummarizationMode.Full || config.mode === SummarizationMode.Expand) {
+    ratioTarget = inputCount;
+  } else {
+    ratioTarget = Math.max(1, Math.floor((inputCount * targetPercent(config.mode) + 50) / 100));
+  }
+  if (config.max_statements === null || config.max_statements === undefined) return Math.max(ratioTarget, 1);
+  return Math.max(Math.min(config.max_statements, ratioTarget), 1);
+}
+
+const ALPHANUMERIC = /^[\p{Alphabetic}\p{N}]$/u;
+const ALPHABETIC = /^\p{Alphabetic}$/u;
+const TERMINALS = new Set(['.', '!', '?', '。', '…', '।', '॥', '\n']);
+
+/** Mirrors `fn period_belongs_to_token` in rust/src/summarization/mod.rs. */
+function periodBelongsToToken(buffer, next) {
+  const chars = Array.from(buffer);
+  const previous = chars[chars.length - 1];
+  if (previous !== undefined && ALPHANUMERIC.test(previous) && next !== undefined && ALPHANUMERIC.test(next)) {
+    return true;
+  }
+  const wordsOfBuffer = buffer.split(/\p{White_Space}+/u).filter(Boolean);
+  const last = wordsOfBuffer[wordsOfBuffer.length - 1] ?? '';
+  const keep = (character) => ALPHABETIC.test(character) || character === '.';
+  const tokenChars = Array.from(last);
+  let start = 0;
+  let end = tokenChars.length;
+  while (start < end && !keep(tokenChars[start])) start += 1;
+  while (end > start && !keep(tokenChars[end - 1])) end -= 1;
+  const segments = tokenChars.slice(start, end).join('').split('.');
+  const isLetter = (segment) => {
+    const letters = Array.from(segment);
+    return letters.length === 1 && ALPHABETIC.test(letters[0]);
+  };
+  if (!isLetter(segments[0])) return false;
+  for (const segment of segments.slice(1)) if (!isLetter(segment)) return false;
+  return segments.length >= 2;
+}
+
+/**
+ * Mirrors `fn weight_for_kind` in rust/src/summarization/mod.rs.
+ * @param {string} kind
+ */
+export function weightForKind(kind) {
+  switch (kind) {
+    case StatementKind.Purpose: return 100;
+    case StatementKind.Identity: return 90;
+    case StatementKind.Language: return 60;
+    case StatementKind.Stars: return 55;
+    case StatementKind.Feature: return 70;
+    case StatementKind.UseCase: return 65;
+    case StatementKind.Install: return 10;
+    case StatementKind.Example: return 15;
+    default: return 30;
+  }
+}
+
+/**
+ * The `summary_classification_cue` meanings in declaration order, each with its
+ * resolved kind and surface words (the `OnceLock`-style cache of the lexicon
+ * scan `classify_sentence` repeats per sentence).
+ */
+function classificationCues() {
+  return cached('summarization-classification-cues', () => meaningsWithRole(ROLE_SUMMARY_CLASSIFICATION_CUE)
+    .map((meaning) => ({ kind: statementKindFromSlug(meaning.slug), words: words(meaning) })));
+}
+
+/**
+ * Mirrors `fn classify_sentence` in rust/src/summarization/mod.rs: the kind of
+ * the first `summary_classification_cue` meaning whose surface occurs in the
+ * lowercased sentence; the `language` kind only applies to sentences of at most
+ * twelve whitespace words.
+ * @param {string} sentence
+ * @returns {string} a `StatementKind`
+ */
+export function classifySentence(sentence) {
+  const lower = sentence.toLowerCase();
+  const wordCount = lower.split(/\p{White_Space}+/u).filter(Boolean).length;
+  for (const cue of classificationCues()) {
+    if (!cue.words.some((word) => lower.includes(word))) continue;
+    if (cue.kind === StatementKind.Language && wordCount > 12) continue;
+    return cue.kind;
+  }
+  return StatementKind.Misc;
+}
+
+/** Mirrors `fn push_sentence` in rust/src/summarization/mod.rs. */
+function pushSentence(buffer, out) {
+  const sentence = buffer.replaceAll('\n', '').replace(/^\p{White_Space}+|\p{White_Space}+$/gu, '');
+  if (!sentence) return;
+  const kind = classifySentence(sentence);
+  out.push(statement(sentence, kind, weightForKind(kind)));
+}
+
+/**
+ * Mirrors `fn formalize` in rust/src/summarization/mod.rs: the text split into
+ * classified, weighted sentence statements. A sentence ends at `.`, `!`, `?`,
+ * `。`, `…`, the Devanagari dandas or a newline; a full stop glued to the next
+ * character (`crates.io`, `1.96`, `U.S.`) ends nothing.
+ * @param {string} text
+ * @returns {Array<{text: string, kind: string, weight: number}>}
+ */
+export function formalize(text) {
+  const out = [];
+  const chars = Array.from(text);
+  let buffer = '';
+  for (let index = 0; index < chars.length; index += 1) {
+    const character = chars[index];
+    const internalPeriod = character === '.' && periodBelongsToToken(buffer, chars[index + 1]);
+    buffer += character;
+    if (!internalPeriod && TERMINALS.has(character)) {
+      pushSentence(buffer, out);
+      buffer = '';
+    }
+  }
+  pushSentence(buffer, out);
+  return out;
+}
+
+/**
+ * Mirrors `fn summarize` in rust/src/summarization/mod.rs: boilerplate dropped,
+ * ordered by descending weight (stable), capped at the effective maximum, and
+ * `Expand` mode doubled with semantic-prime paraphrases.
+ * @param {Array<{text: string, kind: string, weight: number}>} statements
+ * @param {object} config
+ */
+export function summarize(statements, config) {
+  if (statements.length === 0) return [];
+  const filtered = statements
+    .filter((candidate) => !(config.drop_boilerplate && isBoilerplate(candidate.kind)))
+    .map((candidate) => ({ ...candidate }));
+  filtered.sort((left, right) => right.weight - left.weight);
+  const cap = effectiveMaxStatements(config, filtered.length);
+  filtered.length = Math.min(filtered.length, cap);
+
+  if (config.mode === SummarizationMode.Expand) {
+    const expanded = [];
+    for (const candidate of filtered) {
+      expanded.push({ ...candidate });
+      if (config.use_semantic_primes) {
+        const paraphrase = { ...candidate };
+        paraphrase.text = applySemanticPrimes(candidate.text, config.language);
+        paraphrase.weight = Math.max(0, candidate.weight - 5);
+        if (paraphrase.text !== candidate.text) expanded.push(paraphrase);
+      }
+    }
+    return expanded;
+  }
+
+  if (config.use_compound_words) {
+    for (const candidate of filtered) candidate.text = applyCompoundWords(candidate.text, config.language);
+  }
+  return filtered;
+}
+
+const TERMINAL_PUNCTUATION = new Set(['.', '!', '?', '。', '…', '।', '॥', '」', '"']);
+
+/**
+ * Mirrors `fn deformalize` in rust/src/summarization/mod.rs: the statements as
+ * one block of prose, each re-punctuated and joined by single spaces.
+ * @param {Array<{text: string}>} statements
+ */
+export function deformalize(statements) {
+  const rendered = [];
+  for (const candidate of statements) {
+    const trimmed = candidate.text.replace(/^\p{White_Space}+|\p{White_Space}+$/gu, '');
+    if (trimmed === '') continue;
+    const last = Array.from(trimmed).pop();
+    rendered.push(TERMINAL_PUNCTUATION.has(last) ? trimmed : `${trimmed}.`);
+  }
+  return rendered.join(' ');
+}
+
+const CLAMP_TRAILING = new Set(['.', ',', '!', '?', ';', ':', '…', '」', '"']);
+
+/** Mirrors `fn clamp_words` in rust/src/summarization/mod.rs. */
+function clampWords(text, maxWords) {
+  const kept = text.split(/\p{White_Space}+/u).filter(Boolean).slice(0, maxWords).join(' ');
+  const chars = Array.from(kept);
+  while (chars.length > 0 && CLAMP_TRAILING.has(chars[chars.length - 1])) chars.pop();
+  return chars.join('');
+}
+
+/**
+ * Mirrors `fn to_topic` in rust/src/summarization/mod.rs: a non-empty explicit
+ * topic clamped to five words, otherwise the highest-weight statement
+ * (`Iterator::max_by_key` keeps the LAST of equal maxima) clamped likewise.
+ * @param {string} explicitTopic
+ * @param {Array<{text: string, weight: number}>} statements
+ */
+export function toTopic(explicitTopic, statements) {
+  const candidate = explicitTopic.replace(/^\p{White_Space}+|\p{White_Space}+$/gu, '');
+  if (candidate !== '') return clampWords(candidate, 5);
+  const best = maxByWeight(statements);
+  return best === null ? '' : clampWords(best.text, 5);
+}
+
+/**
+ * `Iterator::max_by_key(|s| s.weight)`: the last statement of maximal weight,
+ * or null for an empty slice.
+ * Rust built-in `Iterator::max_by_key`.
+ * @param {Array<{weight: number}>} statements
+ */
+export function maxByWeight(statements) {
+  let best = null;
+  for (const candidate of statements) if (best === null || candidate.weight >= best.weight) best = candidate;
+  return best;
+}
+
+/**
+ * The `[from, to]` substitution pairs of a data/meta/agentic-messages.lino
+ * entry: `from=>to` records separated by `|`, in the order Rust lists them
+ * (the `pairs` slices of `apply_compound_words` / `apply_semantic_primes`).
+ * @param {string} key
+ * @returns {Array<[string, string]>}
+ */
+function messagePairs(key) {
+  return agenticMessage(key).split('|').map((pair) => pair.split('=>'));
+}
+
+/**
+ * Mirrors `fn apply_compound_words` in rust/src/summarization/mod.rs: shorter
+ * compound forms (Russian for `ru`, English otherwise).
+ * @param {string} text
+ * @param {string} language
+ */
+export function applyCompoundWords(text, language) {
+  const pairs = messagePairs(language === 'ru' ? 'summarization_compound_words_ru' : 'summarization_compound_words_en');
+  let out = text;
+  for (const [long, short] of pairs) out = out.split(long).join(short);
+  return out;
+}
+
+/**
+ * Mirrors `fn apply_semantic_primes` in rust/src/summarization/mod.rs: compound
+ * or rare words replaced by NSM semantic primes.
+ * @param {string} text
+ * @param {string} language
+ */
+export function applySemanticPrimes(text, language) {
+  const pairs = messagePairs(language === 'ru' ? 'summarization_semantic_primes_ru' : 'summarization_semantic_primes_en');
+  let out = text;
+  for (const [compound, prime] of pairs) out = out.split(compound).join(prime);
+  return out;
+}

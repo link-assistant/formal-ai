@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2906-request.json",
+  "sha256": "e59d1854c58e87867c474ea960eb9744e45b9a80c38976697aa9dbe957ffcd13",
+  "rawUtf8": "{\n  \"taskId\": \"T2906\",\n  \"directory\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"prompt\": \"Run node /private/tmp/spec-recurrence-1188/prepare-next-typed-reader.mjs\"\n}\n"
+}

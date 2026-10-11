@@ -1,0 +1,33 @@
+view
+  id M-69c97233b674
+  lemma indent
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an order for goods to be exported or imported"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the space left between the margin and the start of an indented line"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "set in from the margin"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cut or tear along an irregular line so that the parts can later be matched for authentication"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a depression into"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "notch the edge of or make jagged"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "bind by or as if by indentures, as of an apprentice or servant"
+    provenance (wordnet)

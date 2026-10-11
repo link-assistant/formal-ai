@@ -1,0 +1,252 @@
+{
+  "endpoint": "repos/link-assistant/formal-ai/actions/runs/37870721641/artifacts?per_page=100",
+  "observedAt": "2026-10-09T05:03:32.722Z",
+  "status": "retrieved",
+  "rawUtf8": "{\"total_count\":12,\"artifacts\":[{\"id\":11592076641,\"node_id\":\"MDg6QXJ0aWZhY3QxMTU5MjA3NjY0MQ==\",\"name\":\"checksums-windows-arm64\",\"size_in_bytes\":424,\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11592076641\",\"archive_download_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11592076641/zip\",\"expired\":false,\"digest\":\"sha256:4734e336e9877a61b456b90c7c02c429dbf630acafba11f335a33fd1555d4fa8\",\"created_at\":\"2026-10-09T02:25:43Z\",\"updated_at\":\"2026-10-09T02:25:43Z\",\"expires_at\":\"2026-10-16T02:25:42Z\",\"workflow_run\":{\"id\":37870721641,\"repository_id\":1236510803,\"head_repository_id\":1236510803,\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\"}},{\"id\":11592072010,\"node_id\":\"MDg6QXJ0aWZhY3QxMTU5MjA3MjAxMA==\",\"name\":\"checksums-windows-x64\",\"size_in_bytes\":417,\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11592072010\",\"archive_download_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11592072010/zip\",\"expired\":false,\"digest\":\"sha256:cf0deb9b4185db9d50caba06619cd2e75b10300372b7882901a37a4bdaa829e4\",\"created_at\":\"2026-10-09T02:28:55Z\",\"updated_at\":\"2026-10-09T02:28:55Z\",\"expires_at\":\"2026-10-16T02:28:54Z\",\"workflow_run\":{\"id\":37870721641,\"repository_id\":1236510803,\"head_repository_id\":1236510803,\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\"}},{\"id\":11591512020,\"node_id\":\"MDg6QXJ0aWZhY3QxMTU5MTUxMjAyMA==\",\"name\":\"checksums-cli-macos-arm64\",\"size_in_bytes\":277,\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591512020\",\"archive_download_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591512020/zip\",\"expired\":false,\"digest\":\"sha256:e9aeec48385bae7bdff4e3016999d47304fd3301995689ec809833686838bbe5\",\"created_at\":\"2026-10-09T02:18:22Z\",\"updated_at\":\"2026-10-09T02:18:22Z\",\"expires_at\":\"2026-10-16T02:18:22Z\",\"workflow_run\":{\"id\":37870721641,\"repository_id\":1236510803,\"head_repository_id\":1236510803,\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\"}},{\"id\":11591397169,\"node_id\":\"MDg6QXJ0aWZhY3QxMTU5MTM5NzE2OQ==\",\"name\":\"checksums-cli-macos-x64\",\"size_in_bytes\":274,\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591397169\",\"archive_download_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591397169/zip\",\"expired\":false,\"digest\":\"sha256:e6a1a0f2662bbc5533115c21daf24ed92c756a3ccf580f28e271c40d0fd23b3f\",\"created_at\":\"2026-10-09T02:17:34Z\",\"updated_at\":\"2026-10-09T02:17:34Z\",\"expires_at\":\"2026-10-16T02:17:32Z\",\"workflow_run\":{\"id\":37870721641,\"repository_id\":1236510803,\"head_repository_id\":1236510803,\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\"}},{\"id\":11591205360,\"node_id\":\"MDg6QXJ0aWZhY3QxMTU5MTIwNTM2MA==\",\"name\":\"checksums-cli-windows-x64\",\"size_in_bytes\":278,\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591205360\",\"archive_download_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591205360/zip\",\"expired\":false,\"digest\":\"sha256:0494dea5c19ec2ac72536ab7ad348f0570a99782f38758df57f595c8e131b26b\",\"created_at\":\"2026-10-09T02:02:46Z\",\"updated_at\":\"2026-10-09T02:02:46Z\",\"expires_at\":\"2026-10-16T02:02:45Z\",\"workflow_run\":{\"id\":37870721641,\"repository_id\":1236510803,\"head_repository_id\":1236510803,\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\"}},{\"id\":11591193492,\"node_id\":\"MDg6QXJ0aWZhY3QxMTU5MTE5MzQ5Mg==\",\"name\":\"checksums-cli-linux-x64\",\"size_in_bytes\":279,\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591193492\",\"archive_download_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591193492/zip\",\"expired\":false,\"digest\":\"sha256:eae470fb09fee12ebd45961fef59c0cc519c701ad0399f62233745b241e3ed7c\",\"created_at\":\"2026-10-09T02:24:12Z\",\"updated_at\":\"2026-10-09T02:24:12Z\",\"expires_at\":\"2026-10-16T02:24:11Z\",\"workflow_run\":{\"id\":37870721641,\"repository_id\":1236510803,\"head_repository_id\":1236510803,\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\"}},{\"id\":11591131548,\"node_id\":\"MDg6QXJ0aWZhY3QxMTU5MTEzMTU0OA==\",\"name\":\"checksums-macos-x64\",\"size_in_bytes\":438,\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591131548\",\"archive_download_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591131548/zip\",\"expired\":false,\"digest\":\"sha256:6a537cf961f356ace2066b6076cecf1fcf93a0c816b73bf20e97e1f2054da74c\",\"created_at\":\"2026-10-09T02:16:36Z\",\"updated_at\":\"2026-10-09T02:16:36Z\",\"expires_at\":\"2026-10-16T02:16:35Z\",\"workflow_run\":{\"id\":37870721641,\"repository_id\":1236510803,\"head_repository_id\":1236510803,\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\"}},{\"id\":11591075690,\"node_id\":\"MDg6QXJ0aWZhY3QxMTU5MTA3NTY5MA==\",\"name\":\"checksums-cli-linux-arm64\",\"size_in_bytes\":283,\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591075690\",\"archive_download_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591075690/zip\",\"expired\":false,\"digest\":\"sha256:e8e6a5cfd5b2abac4a11ad331f9257e3067485bd9489e223bdee4386f1593017\",\"created_at\":\"2026-10-09T01:53:33Z\",\"updated_at\":\"2026-10-09T01:53:33Z\",\"expires_at\":\"2026-10-16T01:53:32Z\",\"workflow_run\":{\"id\":37870721641,\"repository_id\":1236510803,\"head_repository_id\":1236510803,\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\"}},{\"id\":11590969946,\"node_id\":\"MDg6QXJ0aWZhY3QxMTU5MDk2OTk0Ng==\",\"name\":\"checksums-macos-arm64\",\"size_in_bytes\":445,\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590969946\",\"archive_download_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590969946/zip\",\"expired\":false,\"digest\":\"sha256:8581c14e08275bfbaff57bc9129e1d3d82605ec4e15e68dd83edff59e966eee8\",\"created_at\":\"2026-10-09T02:28:33Z\",\"updated_at\":\"2026-10-09T02:28:33Z\",\"expires_at\":\"2026-10-16T02:28:31Z\",\"workflow_run\":{\"id\":37870721641,\"repository_id\":1236510803,\"head_repository_id\":1236510803,\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\"}},{\"id\":11590953390,\"node_id\":\"MDg6QXJ0aWZhY3QxMTU5MDk1MzM5MA==\",\"name\":\"checksums-linux-arm64\",\"size_in_bytes\":363,\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590953390\",\"archive_download_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590953390/zip\",\"expired\":false,\"digest\":\"sha256:8aace142fed7394c7344fe25dda10cd9ef626c6b766d8c038dd39a7f189dbf76\",\"created_at\":\"2026-10-09T02:03:04Z\",\"updated_at\":\"2026-10-09T02:03:04Z\",\"expires_at\":\"2026-10-16T02:03:04Z\",\"workflow_run\":{\"id\":37870721641,\"repository_id\":1236510803,\"head_repository_id\":1236510803,\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\"}},{\"id\":11590852735,\"node_id\":\"MDg6QXJ0aWZhY3QxMTU5MDg1MjczNQ==\",\"name\":\"checksums-linux-x64\",\"size_in_bytes\":406,\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590852735\",\"archive_download_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590852735/zip\",\"expired\":false,\"digest\":\"sha256:5a34d375bb7dc5fcdf919db5c611d2ba4f0feb6029c8b151ccf6576a6f0012cf\",\"created_at\":\"2026-10-09T02:04:20Z\",\"updated_at\":\"2026-10-09T02:04:20Z\",\"expires_at\":\"2026-10-16T02:04:19Z\",\"workflow_run\":{\"id\":37870721641,\"repository_id\":1236510803,\"head_repository_id\":1236510803,\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\"}},{\"id\":11590597690,\"node_id\":\"MDg6QXJ0aWZhY3QxMTU5MDU5NzY5MA==\",\"name\":\"checksums-vscode\",\"size_in_bytes\":249,\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590597690\",\"archive_download_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590597690/zip\",\"expired\":false,\"digest\":\"sha256:7466a25e1d9845f202c541002f34a64c07458581a712ef8b6caa9bba73f53867\",\"created_at\":\"2026-10-09T01:49:37Z\",\"updated_at\":\"2026-10-09T01:49:37Z\",\"expires_at\":\"2026-10-16T01:49:36Z\",\"workflow_run\":{\"id\":37870721641,\"repository_id\":1236510803,\"head_repository_id\":1236510803,\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\"}}]}",
+  "sha256": "dae131c06a1ddc56f81c090669408261ea6695f1d1cc1507229ddb1c8d9da136",
+  "json": {
+    "total_count": 12,
+    "artifacts": [
+      {
+        "id": 11592076641,
+        "node_id": "MDg6QXJ0aWZhY3QxMTU5MjA3NjY0MQ==",
+        "name": "checksums-windows-arm64",
+        "size_in_bytes": 424,
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11592076641",
+        "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11592076641/zip",
+        "expired": false,
+        "digest": "sha256:4734e336e9877a61b456b90c7c02c429dbf630acafba11f335a33fd1555d4fa8",
+        "created_at": "2026-10-09T02:25:43Z",
+        "updated_at": "2026-10-09T02:25:43Z",
+        "expires_at": "2026-10-16T02:25:42Z",
+        "workflow_run": {
+          "id": 37870721641,
+          "repository_id": 1236510803,
+          "head_repository_id": 1236510803,
+          "head_branch": "qa-reasoning-coding-bulk-fixes",
+          "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e"
+        }
+      },
+      {
+        "id": 11592072010,
+        "node_id": "MDg6QXJ0aWZhY3QxMTU5MjA3MjAxMA==",
+        "name": "checksums-windows-x64",
+        "size_in_bytes": 417,
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11592072010",
+        "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11592072010/zip",
+        "expired": false,
+        "digest": "sha256:cf0deb9b4185db9d50caba06619cd2e75b10300372b7882901a37a4bdaa829e4",
+        "created_at": "2026-10-09T02:28:55Z",
+        "updated_at": "2026-10-09T02:28:55Z",
+        "expires_at": "2026-10-16T02:28:54Z",
+        "workflow_run": {
+          "id": 37870721641,
+          "repository_id": 1236510803,
+          "head_repository_id": 1236510803,
+          "head_branch": "qa-reasoning-coding-bulk-fixes",
+          "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e"
+        }
+      },
+      {
+        "id": 11591512020,
+        "node_id": "MDg6QXJ0aWZhY3QxMTU5MTUxMjAyMA==",
+        "name": "checksums-cli-macos-arm64",
+        "size_in_bytes": 277,
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591512020",
+        "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591512020/zip",
+        "expired": false,
+        "digest": "sha256:e9aeec48385bae7bdff4e3016999d47304fd3301995689ec809833686838bbe5",
+        "created_at": "2026-10-09T02:18:22Z",
+        "updated_at": "2026-10-09T02:18:22Z",
+        "expires_at": "2026-10-16T02:18:22Z",
+        "workflow_run": {
+          "id": 37870721641,
+          "repository_id": 1236510803,
+          "head_repository_id": 1236510803,
+          "head_branch": "qa-reasoning-coding-bulk-fixes",
+          "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e"
+        }
+      },
+      {
+        "id": 11591397169,
+        "node_id": "MDg6QXJ0aWZhY3QxMTU5MTM5NzE2OQ==",
+        "name": "checksums-cli-macos-x64",
+        "size_in_bytes": 274,
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591397169",
+        "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591397169/zip",
+        "expired": false,
+        "digest": "sha256:e6a1a0f2662bbc5533115c21daf24ed92c756a3ccf580f28e271c40d0fd23b3f",
+        "created_at": "2026-10-09T02:17:34Z",
+        "updated_at": "2026-10-09T02:17:34Z",
+        "expires_at": "2026-10-16T02:17:32Z",
+        "workflow_run": {
+          "id": 37870721641,
+          "repository_id": 1236510803,
+          "head_repository_id": 1236510803,
+          "head_branch": "qa-reasoning-coding-bulk-fixes",
+          "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e"
+        }
+      },
+      {
+        "id": 11591205360,
+        "node_id": "MDg6QXJ0aWZhY3QxMTU5MTIwNTM2MA==",
+        "name": "checksums-cli-windows-x64",
+        "size_in_bytes": 278,
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591205360",
+        "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591205360/zip",
+        "expired": false,
+        "digest": "sha256:0494dea5c19ec2ac72536ab7ad348f0570a99782f38758df57f595c8e131b26b",
+        "created_at": "2026-10-09T02:02:46Z",
+        "updated_at": "2026-10-09T02:02:46Z",
+        "expires_at": "2026-10-16T02:02:45Z",
+        "workflow_run": {
+          "id": 37870721641,
+          "repository_id": 1236510803,
+          "head_repository_id": 1236510803,
+          "head_branch": "qa-reasoning-coding-bulk-fixes",
+          "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e"
+        }
+      },
+      {
+        "id": 11591193492,
+        "node_id": "MDg6QXJ0aWZhY3QxMTU5MTE5MzQ5Mg==",
+        "name": "checksums-cli-linux-x64",
+        "size_in_bytes": 279,
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591193492",
+        "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591193492/zip",
+        "expired": false,
+        "digest": "sha256:eae470fb09fee12ebd45961fef59c0cc519c701ad0399f62233745b241e3ed7c",
+        "created_at": "2026-10-09T02:24:12Z",
+        "updated_at": "2026-10-09T02:24:12Z",
+        "expires_at": "2026-10-16T02:24:11Z",
+        "workflow_run": {
+          "id": 37870721641,
+          "repository_id": 1236510803,
+          "head_repository_id": 1236510803,
+          "head_branch": "qa-reasoning-coding-bulk-fixes",
+          "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e"
+        }
+      },
+      {
+        "id": 11591131548,
+        "node_id": "MDg6QXJ0aWZhY3QxMTU5MTEzMTU0OA==",
+        "name": "checksums-macos-x64",
+        "size_in_bytes": 438,
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591131548",
+        "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591131548/zip",
+        "expired": false,
+        "digest": "sha256:6a537cf961f356ace2066b6076cecf1fcf93a0c816b73bf20e97e1f2054da74c",
+        "created_at": "2026-10-09T02:16:36Z",
+        "updated_at": "2026-10-09T02:16:36Z",
+        "expires_at": "2026-10-16T02:16:35Z",
+        "workflow_run": {
+          "id": 37870721641,
+          "repository_id": 1236510803,
+          "head_repository_id": 1236510803,
+          "head_branch": "qa-reasoning-coding-bulk-fixes",
+          "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e"
+        }
+      },
+      {
+        "id": 11591075690,
+        "node_id": "MDg6QXJ0aWZhY3QxMTU5MTA3NTY5MA==",
+        "name": "checksums-cli-linux-arm64",
+        "size_in_bytes": 283,
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591075690",
+        "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11591075690/zip",
+        "expired": false,
+        "digest": "sha256:e8e6a5cfd5b2abac4a11ad331f9257e3067485bd9489e223bdee4386f1593017",
+        "created_at": "2026-10-09T01:53:33Z",
+        "updated_at": "2026-10-09T01:53:33Z",
+        "expires_at": "2026-10-16T01:53:32Z",
+        "workflow_run": {
+          "id": 37870721641,
+          "repository_id": 1236510803,
+          "head_repository_id": 1236510803,
+          "head_branch": "qa-reasoning-coding-bulk-fixes",
+          "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e"
+        }
+      },
+      {
+        "id": 11590969946,
+        "node_id": "MDg6QXJ0aWZhY3QxMTU5MDk2OTk0Ng==",
+        "name": "checksums-macos-arm64",
+        "size_in_bytes": 445,
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590969946",
+        "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590969946/zip",
+        "expired": false,
+        "digest": "sha256:8581c14e08275bfbaff57bc9129e1d3d82605ec4e15e68dd83edff59e966eee8",
+        "created_at": "2026-10-09T02:28:33Z",
+        "updated_at": "2026-10-09T02:28:33Z",
+        "expires_at": "2026-10-16T02:28:31Z",
+        "workflow_run": {
+          "id": 37870721641,
+          "repository_id": 1236510803,
+          "head_repository_id": 1236510803,
+          "head_branch": "qa-reasoning-coding-bulk-fixes",
+          "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e"
+        }
+      },
+      {
+        "id": 11590953390,
+        "node_id": "MDg6QXJ0aWZhY3QxMTU5MDk1MzM5MA==",
+        "name": "checksums-linux-arm64",
+        "size_in_bytes": 363,
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590953390",
+        "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590953390/zip",
+        "expired": false,
+        "digest": "sha256:8aace142fed7394c7344fe25dda10cd9ef626c6b766d8c038dd39a7f189dbf76",
+        "created_at": "2026-10-09T02:03:04Z",
+        "updated_at": "2026-10-09T02:03:04Z",
+        "expires_at": "2026-10-16T02:03:04Z",
+        "workflow_run": {
+          "id": 37870721641,
+          "repository_id": 1236510803,
+          "head_repository_id": 1236510803,
+          "head_branch": "qa-reasoning-coding-bulk-fixes",
+          "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e"
+        }
+      },
+      {
+        "id": 11590852735,
+        "node_id": "MDg6QXJ0aWZhY3QxMTU5MDg1MjczNQ==",
+        "name": "checksums-linux-x64",
+        "size_in_bytes": 406,
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590852735",
+        "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590852735/zip",
+        "expired": false,
+        "digest": "sha256:5a34d375bb7dc5fcdf919db5c611d2ba4f0feb6029c8b151ccf6576a6f0012cf",
+        "created_at": "2026-10-09T02:04:20Z",
+        "updated_at": "2026-10-09T02:04:20Z",
+        "expires_at": "2026-10-16T02:04:19Z",
+        "workflow_run": {
+          "id": 37870721641,
+          "repository_id": 1236510803,
+          "head_repository_id": 1236510803,
+          "head_branch": "qa-reasoning-coding-bulk-fixes",
+          "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e"
+        }
+      },
+      {
+        "id": 11590597690,
+        "node_id": "MDg6QXJ0aWZhY3QxMTU5MDU5NzY5MA==",
+        "name": "checksums-vscode",
+        "size_in_bytes": 249,
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590597690",
+        "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/11590597690/zip",
+        "expired": false,
+        "digest": "sha256:7466a25e1d9845f202c541002f34a64c07458581a712ef8b6caa9bba73f53867",
+        "created_at": "2026-10-09T01:49:37Z",
+        "updated_at": "2026-10-09T01:49:37Z",
+        "expires_at": "2026-10-16T01:49:36Z",
+        "workflow_run": {
+          "id": 37870721641,
+          "repository_id": 1236510803,
+          "head_repository_id": 1236510803,
+          "head_branch": "qa-reasoning-coding-bulk-fixes",
+          "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e"
+        }
+      }
+    ]
+  }
+}

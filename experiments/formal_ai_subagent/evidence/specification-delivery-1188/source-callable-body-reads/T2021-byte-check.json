@@ -1,0 +1,5 @@
+{
+  "taskId": "T2021",
+  "target": "rust/tests/unit/coding_discovery/structural_composition.rs",
+  "byteEqual": true
+}

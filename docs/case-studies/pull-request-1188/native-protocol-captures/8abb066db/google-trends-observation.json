@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "head": "8abb066dbe9895ba843ca690e0d9e9f21c12e571",
+  "source_preview": "96e579831186bb93c657e807056cd7e41ea4bdd4",
+  "job": 113928932078,
+  "raw_log_sha256": "75e2ac0f1af562e562af25904f36275f4e0e90a1c278f642a357a0e95cdbd921",
+  "line": 1589,
+  "path": "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/google-trends.json",
+  "sha256": "bf2a3351443fb7394dd4da237fcac540da7a58804329417d54adcfd9987df858",
+  "raw_line_sha256": "c1c947daf84a02d81b2afb3473779cb082aff2ddb4042b4290e2f08ff0a2a99e",
+  "legacy": "docs/case-studies/issue-498/agent-cli-session-google-trends.json",
+  "legacy_sha256": "31002208954bc32d1a28706dc6f7fbbe1a4fedbd992fa22250fe9a3ab9977b56",
+  "fresh_final_head": false,
+  "representation": "Exact complete native operand from the official failing assertion, including decoded Rust Unicode escapes; every immutable original session field except the typed process receipt is preserved."
+}

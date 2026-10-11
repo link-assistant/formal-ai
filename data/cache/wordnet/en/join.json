@@ -1,0 +1,89 @@
+{
+  "lemma": "join",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13934166-n",
+      "partOfSpeech": "n",
+      "definition": "the shape or manner in which things come together and a connection is made",
+      "synonyms": [
+        "articulation",
+        "joint",
+        "juncture",
+        "junction"
+      ]
+    },
+    {
+      "id": "oewn-08015154-n",
+      "partOfSpeech": "n",
+      "definition": "a set containing all and only the members of two or more given sets",
+      "examples": [
+        "let C be the union of the sets A and B"
+      ],
+      "synonyms": [
+        "union",
+        "sum"
+      ]
+    },
+    {
+      "id": "oewn-02439823-v",
+      "partOfSpeech": "v",
+      "definition": "become part of; become a member of a group or organization",
+      "examples": [
+        "He joined the Communist Party as a young man"
+      ],
+      "synonyms": [
+        "fall in",
+        "get together"
+      ]
+    },
+    {
+      "id": "oewn-01297878-v",
+      "partOfSpeech": "v",
+      "definition": "cause to become joined or linked",
+      "examples": [
+        "join these two parts so that they fit together"
+      ]
+    },
+    {
+      "id": "oewn-02604762-v",
+      "partOfSpeech": "v",
+      "definition": "come into the company of",
+      "examples": [
+        "She joined him for a drink"
+      ]
+    },
+    {
+      "id": "oewn-01293672-v",
+      "partOfSpeech": "v",
+      "definition": "make contact or come together",
+      "examples": [
+        "The two roads join here"
+      ],
+      "synonyms": [
+        "conjoin"
+      ]
+    },
+    {
+      "id": "oewn-02628315-v",
+      "partOfSpeech": "v",
+      "definition": "be or become joined or united or linked",
+      "examples": [
+        "The two streets connect to become a highway",
+        "Our paths joined",
+        "The travelers linked up again at the airport"
+      ],
+      "synonyms": [
+        "connect",
+        "link",
+        "link up",
+        "unite"
+      ]
+    }
+  ]
+}

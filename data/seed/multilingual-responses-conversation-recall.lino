@@ -1,0 +1,81 @@
+multilingual-responses-conversation-recall
+  response response-conversation-recall-empty-en
+    intent conversation-recall-empty
+    language en
+    text 'No mentions of "{term}" found in the conversation history.'
+  response response-conversation-recall-empty-ru
+    intent conversation-recall-empty
+    language ru
+    text 'Упоминаний "{term}" в истории разговора не найдено.'
+  response response-conversation-recall-empty-hi
+    intent conversation-recall-empty
+    language hi
+    text 'बातचीत के इतिहास में "{term}" नहीं मिला.'
+  response response-conversation-recall-empty-zh
+    intent conversation-recall-empty
+    language zh
+    text '在对话历史中没有找到 "{term}"。'
+  response response-conversation-recall-empty-es
+    intent conversation-recall-empty
+    language es
+    text 'No se encontraron menciones de "{term}" en el historial de la conversación.'
+  response response-conversation-recall-header-en
+    intent conversation-recall-header
+    language en
+    text 'Found {count} mention(s) of "{term}" in the conversation history.'
+  response response-conversation-recall-header-ru
+    intent conversation-recall-header
+    language ru
+    text 'Найдено упоминаний "{term}" в истории разговора: {count}'
+  response response-conversation-recall-header-hi
+    intent conversation-recall-header
+    language hi
+    text 'बातचीत के इतिहास में "{term}" के उल्लेख मिले: {count}'
+  response response-conversation-recall-header-zh
+    intent conversation-recall-header
+    language zh
+    text '在对话历史中找到 "{term}" 的记录: {count}'
+  response response-conversation-recall-header-es
+    intent conversation-recall-header
+    language es
+    text 'Se encontraron {count} menciones de "{term}" en el historial de la conversación.'
+  response response-conversation-recall-turn-en
+    intent conversation-recall-turn
+    language en
+    text "- turn {turn} {role}: {content}"
+  response response-conversation-recall-turn-ru
+    intent conversation-recall-turn
+    language ru
+    text "- turn {turn} {role}: {content}"
+  response response-conversation-recall-turn-hi
+    intent conversation-recall-turn
+    language hi
+    text "- turn {turn} {role}: {content}"
+  response response-conversation-recall-turn-zh
+    intent conversation-recall-turn
+    language zh
+    text "- turn {turn} {role}: {content}"
+  response response-conversation-recall-turn-es
+    intent conversation-recall-turn
+    language es
+    text "- turn {turn} {role}: {content}"
+  response response-conversation-summary-envelope-en
+    intent conversation-summary-envelope
+    language en
+    text "Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n"
+  response response-conversation-summary-envelope-ru
+    intent conversation-summary-envelope
+    language ru
+    text "Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n"
+  response response-conversation-summary-envelope-zh
+    intent conversation-summary-envelope
+    language zh
+    text "对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n"
+  response response-conversation-summary-envelope-hi
+    intent conversation-summary-envelope
+    language hi
+    text "बातचीत का सारांश: {summary}\n\nशीर्षक: {title}\n\nउपयोगकर्ता के संदेश:\n"
+  response response-conversation-summary-envelope-es
+    intent conversation-summary-envelope
+    language es
+    text "Resumen de la conversación: {summary}\n\nTítulo: {title}\n\nTurnos del usuario:\n"

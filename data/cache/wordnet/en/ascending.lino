@@ -1,0 +1,17 @@
+language en
+lemma ascending
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "moving or going or growing upward"
+    examples ("the ascending plane" "the ascending staircase" "the ascending stems of chickweed")
+    id oewn-02493886-a
+    partOfSpeech a
+  entry
+    definition "the act of changing location in an upward direction"
+    id oewn-00325210-n
+    partOfSpeech n
+    synonyms (rise ascent ascension)
+source "oewn:2024"

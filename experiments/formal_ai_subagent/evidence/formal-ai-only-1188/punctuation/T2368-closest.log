@@ -1,0 +1,207 @@
+TAP version 13
+# Subtest: fenced creation preserves source with task labels, command cues and paths
+ok 1 - fenced creation preserves source with task labels, command cues and paths
+  ---
+  duration_ms: 884.677958
+  ...
+# Subtest: closed quoted whole-content consent replaces an existing source file
+ok 2 - closed quoted whole-content consent replaces an existing source file
+  ---
+  duration_ms: 46.610417
+  ...
+# Subtest: a plain replacement stays an edit even when its new literal names a file write
+ok 3 - a plain replacement stays an edit even when its new literal names a file write
+  ---
+  duration_ms: 36.613791
+  ...
+# Subtest: longer fences preserve payloads containing their own Markdown examples
+ok 4 - longer fences preserve payloads containing their own Markdown examples
+  ---
+  duration_ms: 73.115125
+  ...
+# Subtest: literal verification reads failure narratives and compact JSON as authored data
+ok 5 - literal verification reads failure narratives and compact JSON as authored data
+  ---
+  duration_ms: 70.921167
+  ...
+# Subtest: explicit verification failure still vetoes exact literal output
+ok 6 - explicit verification failure still vetoes exact literal output
+  ---
+  duration_ms: 1.270958
+  ...
+# Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes
+  ---
+  duration_ms: 311.316084
+  ...
+# Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content
+  ---
+  duration_ms: 165.564333
+  ...
+# Subtest: G125: quoted edit payloads with skill cues stay data
+ok 9 - G125: quoted edit payloads with skill cues stay data
+  ---
+  duration_ms: 39.392667
+  ...
+# Subtest: G125: genuine unquoted skill teaching keeps its guard
+ok 10 - G125: genuine unquoted skill teaching keeps its guard
+  ---
+  duration_ms: 0.941333
+  ...
+# Subtest: G125: a malformed quoted replacement changes nothing
+ok 11 - G125: a malformed quoted replacement changes nothing
+  ---
+  duration_ms: 1.588708
+  ...
+# Subtest: the original repair instruction does not become destructive source contents
+ok 12 - the original repair instruction does not become destructive source contents
+  ---
+  duration_ms: 482.990125
+  ...
+# Subtest: a later write does not license an earlier read with a content-like preposition
+ok 13 - a later write does not license an earlier read with a content-like preposition
+  ---
+  duration_ms: 275.095583
+  ...
+# Subtest: payload write vocabulary cannot turn an explicit read into a whole-file write
+ok 14 - payload write vocabulary cannot turn an explicit read into a whole-file write
+  ---
+  duration_ms: 0.779875
+  ...
+# Subtest: declarative creation and a real write action retain their original bytes
+ok 15 - declarative creation and a real write action retain their original bytes
+  ---
+  duration_ms: 99.678625
+  ...
+# Subtest: a write-only client receives the actual target and a truthful auxiliary gap
+ok 16 - a write-only client receives the actual target and a truthful auxiliary gap
+  ---
+  duration_ms: 17.329
+  ...
+# Subtest: write-only target transport failure remains an actual failure
+ok 17 - write-only target transport failure remains an actual failure
+  ---
+  duration_ms: 9.018917
+  ...
+# Subtest: closed punctuation operands retain their exact bytes
+not ok 18 - closed punctuation operands retain their exact bytes
+  ---
+  duration_ms: 2.272667
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/literal-write-request-scope.test.mjs:62:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'punctuation.txt'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'punctuation.txt'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/literal-write-request-scope.test.mjs:65:12)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: seeded explicit content qualifiers license unquoted punctuation
+ok 19 - seeded explicit content qualifiers license unquoted punctuation
+  ---
+  duration_ms: 2.424708
+  ...
+# Subtest: empty or unclosed punctuation operands cannot authorize literal writes
+ok 20 - empty or unclosed punctuation operands cannot authorize literal writes
+  ---
+  duration_ms: 2.005416
+  ...
+# Subtest: a member the request quotes twice is inserted once (T180)
+    # Subtest: the ladder node prompt repeats the member in its result clause
+    ok 1 - the ladder node prompt repeats the member in its result clause
+      ---
+      duration_ms: 809.122916
+      ...
+    1..1
+ok 21 - a member the request quotes twice is inserted once (T180)
+  ---
+  duration_ms: 1000.334125
+  type: 'suite'
+  ...
+# Subtest: setting a file's contents writes the file (G68, issue \#745)
+    # Subtest: set the contents of note.txt to hello
+    ok 1 - set the contents of note.txt to hello
+      ---
+      duration_ms: 112.044833
+      ...
+    # Subtest: pon el contenido de note.txt en hello
+    ok 2 - pon el contenido de note.txt en hello
+      ---
+      duration_ms: 345.059042
+      ...
+    1..2
+ok 22 - setting a file's contents writes the file (G68, issue \#745)
+  ---
+  duration_ms: 457.216417
+  type: 'suite'
+  ...
+# Subtest: a request that declares the file it writes creates it unread (T310)
+    # Subtest: a file noun before the path and the content after it write first, whatever the verb
+    ok 1 - a file noun before the path and the content after it write first, whatever the verb
+      ---
+      duration_ms: 1125.278542
+      ...
+    # Subtest: a destination ahead of the file noun keeps the read-first guard
+    ok 2 - a destination ahead of the file noun keeps the read-first guard
+      ---
+      duration_ms: 21.416667
+      ...
+    1..2
+ok 23 - a request that declares the file it writes creates it unread (T310)
+  ---
+  duration_ms: 1337.126708
+  type: 'suite'
+  ...
+# Subtest: an explicit grep runs as written; a search request is the workspace search (T311)
+    # Subtest: execute grep TODO note.txt is the command itself
+    ok 1 - execute grep TODO note.txt is the command itself
+      ---
+      duration_ms: 26.18625
+      ...
+    # Subtest: a local search request greps the workspace for the whole word
+    ok 2 - a local search request greps the workspace for the whole word
+      ---
+      duration_ms: 24.96325
+      ...
+    1..2
+ok 24 - an explicit grep runs as written; a search request is the workspace search (T311)
+  ---
+  duration_ms: 51.258958
+  type: 'suite'
+  ...
+# Subtest: an article after a place preposition is no directory (T312)
+    # Subtest: qué hay en la carpeta actual lists the current directory
+    ok 1 - qué hay en la carpeta actual lists the current directory
+      ---
+      duration_ms: 283.683917
+      ...
+    # Subtest: a named directory is still listed
+    ok 2 - a named directory is still listed
+      ---
+      duration_ms: 64.927125
+      ...
+    1..2
+ok 25 - an article after a place preposition is no directory (T312)
+  ---
+  duration_ms: 348.787375
+  type: 'suite'
+  ...
+1..25
+# tests 29
+# suites 5
+# pass 28
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2142.519791

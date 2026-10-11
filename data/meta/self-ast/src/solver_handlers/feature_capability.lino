@@ -2,30 +2,26 @@ self_ast_census
   target src/solver_handlers/feature_capability.rs
   language rust
   fidelity signature
-  byte_len 25510
-  line_count 656
-  content_id source_module_5936e6e6df8300c8
-  symbol_count 22
+  byte_len 10741
+  line_count 311
+  content_id source_module_97e0b60ac8142fa9
+  symbol_count 18
   symbols
-    struct CapabilityRuntime 12 17
-    function new 21 33
-    function try_feature_capability 36 89
-    struct FeatureCapability 92 97
-    enum FeatureState 100 106
-    struct LocalizedText 109 114
-    struct FeatureAvailability 117 120
-    enum UnavailableReason 123 129
-    function slug 132 140
-    function label 144 146
-    function example 148 150
-    function availability 152 191
-    function localized 194 201
-    function detect_feature_capability 209 226
-    function is_feature_capability_question 232 247
-    function is_english_availability_question 249 258
-    function is_feature_action_request 266 279
-    function feature_capability_body 281 318
-    function unavailable_reason_body 320 368
-    function text 370 377
-    const FEATURE_CAPABILITIES 379 390
-    function web_search_capability_body 603 656
+    const FEATURES_PATH 20 20
+    const ALIAS_PREFIX 22 22
+    struct CapabilityRuntime 26 31
+    function new 35 47
+    function try_feature_capability 50 103
+    struct FeatureCapability 108 112
+    struct FeatureAvailability 115 118
+    function localized 122 132
+    function availability 134 152
+    function feature_capabilities 156 181
+    static FEATURES 157 157
+    function detect_feature_capability 189 208
+    function is_feature_capability_question 215 226
+    function is_english_availability_question 228 237
+    function is_feature_action_request 245 258
+    function feature_capability_body 260 288
+    function web_search_capability_body 290 303
+    function capability_response 305 311

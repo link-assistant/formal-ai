@@ -1,0 +1,113 @@
+meanings
+  requirement_obligation
+    # Requirement extraction (R1188-U20): words that mark a sentence of an issue as a requirement.
+    defined-by relation
+    role requirement_obligation_cue
+    precondition "a sentence or list item of an issue contains this word or phrase"
+    effect "the sentence states something the work must do or must keep, so it is listed as a requirement"
+    unit "not applicable"
+    example "The page must load in under a second."
+    lexeme en
+      words "must" "must not" "should" "should not" "shall" "need to" "needs to" "we need" "i need" "have to" "has to"
+      words "required" "is required" "are required" "ensure" "make sure" "it is important" "we want" "i want" "please"
+      words "never" "always" "cannot" "is expected" "are expected" "expected to"
+      words "fixed means" "done means" "done when"
+    lexeme ru
+      words "должен" "должна" "должно" "должны" "нужно" "необходимо" "надо" "следует" "требуется" "обязательно"
+      words "пожалуйста" "нельзя" "всегда" "никогда"
+      words "исправлено значит" "готово когда"
+    lexeme hi "चाहिए" "ज़रूरी" "जरूरी" "आवश्यक" "अनिवार्य" "कृपया" "हमेशा" "कभी नहीं" "पूरा तब माना जाएगा जब"
+    lexeme zh "必须" "应该" "需要" "应当" "请" "不能" "务必" "总是" "不要" "完成标准"
+    lexeme es
+      words "debe" "deben" "debería" "deberían" "hay que" "necesita" "necesitamos" "es necesario" "tiene que"
+      words "tienen que" "por favor" "siempre" "nunca" "no debe"
+      words "arreglado significa" "listo cuando"
+  requirement_directive
+    defined-by relation
+    role requirement_directive_verb
+    precondition "a sentence or list item of an issue starts with this verb"
+    effect "the sentence is an instruction to the implementer, so it is listed as a requirement"
+    unit "not applicable"
+    example "Add a dark mode toggle."
+    lexeme en
+      words "add" "make" "fix" "use" "check" "double check" "create" "implement" "support" "remove" "update" "keep"
+      words "allow" "provide" "write" "show" "test" "delete" "move" "rename" "split" "convert" "translate" "run" "avoid"
+      words "prefer" "do" "deliver" "report" "upload" "store" "record" "document" "replace" "generate" "enforce" "track"
+      words "verify" "publish" "release" "include" "list" "collect" "find" "try" "continue" "start" "stop" "integrate"
+      words "build" "design" "measure" "display" "return" "answer" "accept" "reject" "handle" "detect" "ignore" "mark"
+      words "merge" "open" "close" "send" "save" "load" "parse" "render" "print" "reuse" "extract" "expose" "limit"
+      words "restore" "teach" "learn"
+    lexeme ru
+      words "добавь" "добавить" "сделай" "сделать" "исправь" "исправить" "используй" "использовать" "проверь"
+      words "проверить" "создай" "создать" "реализуй" "реализовать" "удали" "удалить" "обнови" "обновить" "покажи"
+      words "показать" "напиши" "написать" "переведи" "перевести" "запусти" "запустить" "избегай" "сохрани" "сохранить"
+      words "поддержи" "поддерживать"
+    lexeme hi
+      words "जोड़ें" "बनाएं" "ठीक करें" "उपयोग करें" "जांचें" "लागू करें" "हटाएं" "अपडेट करें" "दिखाएं" "लिखें" "चलाएं"
+      words "अनुवाद करें" "सहेजें"
+    lexeme zh "添加" "修复" "使用" "检查" "创建" "实现" "删除" "更新" "显示" "编写" "运行" "翻译" "保存" "支持" "避免"
+    lexeme es
+      words "añade" "agrega" "haz" "corrige" "usa" "comprueba" "verifica" "crea" "implementa" "elimina" "actualiza"
+      words "muestra" "escribe" "ejecuta" "traduce" "guarda" "evita" "mantén" "permite" "soporta"
+  requirement_section
+    defined-by relation
+    role requirement_section_heading
+    precondition "a heading of an issue contains this word or phrase"
+    effect "every list item and sentence under the heading states a requirement"
+    unit "not applicable"
+    example "## Acceptance criteria"
+    lexeme en
+      words "requirements" "requirement" "acceptance criteria" "definition of done" "tasks" "to do" "todo"
+      words "deliverables" "scope" "goals" "expected behavior" "expected behaviour" "proposal" "proposed solution"
+      words "what to do" "checklist" "must have" "plan"
+    lexeme ru
+      words "требования" "требование" "критерии приёмки" "критерии приемки" "задачи" "что сделать" "что нужно сделать"
+      words "ожидаемое поведение" "предложение" "план" "цели"
+    lexeme hi "आवश्यकताएँ" "आवश्यकताएं" "आवश्यकता" "स्वीकृति मानदंड" "कार्य" "लक्ष्य" "योजना" "अपेक्षित व्यवहार"
+    lexeme zh "需求" "要求" "验收标准" "任务" "待办" "目标" "计划" "预期行为"
+    lexeme es
+      words "requisitos" "requisito" "criterios de aceptación" "tareas" "objetivos" "alcance" "comportamiento esperado"
+      words "propuesta" "plan"
+  requirement_listing_action
+    # R1188-U20: a request to list the requirements of the text it carries (after a colon, a line break or in quotes).
+    # Read only in the command head (the `command_head` subject of data/seed/handler-rules.lino), so a phrase inside the pasted text never routes.
+    defined-by action
+    role requirement_listing_action
+    precondition "the command head of a request carrying its own text contains this phrase"
+    effect "the reply lists the requirements that text states, one per line, through the requirement_listing rule set"
+    unit "not applicable"
+    example "List the requirements of this issue: The page must load in under a second."
+    lexeme en
+      words "list the requirements" "list requirements" "list all requirements" "list all the requirements"
+      words "list the … requirements" "extract the requirements" "extract requirements" "enumerate the requirements"
+      words "enumerate requirements" "what are the requirements"
+    lexeme ru
+      words "перечисли требования" "перечислите требования" "перечисли все требования" "перечисли … требования"
+      words "выпиши требования" "выпишите требования" "выдели требования" "выделите требования" "извлеки требования"
+      words "список требований"
+    lexeme hi
+      words "आवश्यकताएँ सूचीबद्ध करें" "आवश्यकताएं सूचीबद्ध करें" "आवश्यकताओं की सूची बनाएं" "आवश्यकताओं की सूची बनाओ"
+      words "आवश्यकताएँ निकालें" "आवश्यकताएं निकालें" "क्या आवश्यकताएँ हैं" "क्या आवश्यकताएं हैं"
+    lexeme zh "列出需求" "列出要求" "列出…需求" "列出…要求" "列举需求" "列举…需求" "提取需求" "提取…需求" "有哪些需求" "有哪些要求"
+    lexeme es
+      words "enumera los requisitos" "enumere los requisitos" "enumera todos los requisitos" "lista los requisitos"
+      words "extrae los requisitos" "cuáles son los requisitos" "enumera los requerimientos" "lista los requerimientos"
+      words "cuáles son los requerimientos"
+  requirement_list
+    # R1188-U20: the named text transform of the handler-rule `transform` value source that lists requirements.
+    defined-by method
+    role action
+    precondition "a handler rule captures a value through the requirement_list transform of a request carrying its own text"
+    effect "the requirements the text states, one Markdown list item per line, or no value when it states none"
+    unit "not applicable"
+    example "- The page must load in under a second."
+    grounding "data/seed/handler-rules.lino"
+  requirement-extraction-command-subject
+    # R1188-U20: the handler-rule subject that holds the request before its free-text payload.
+    defined-by concept
+    role action
+    precondition "a request carries its own text after a command colon, a line break or inside quotes"
+    effect "a rule condition read of command_head sees only the instruction, so a phrase inside the pasted text never decides the route"
+    unit "not applicable"
+    example "list the requirements of this issue"
+    grounding "data/seed/handler-rules.lino"

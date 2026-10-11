@@ -1,0 +1,42 @@
+self_ast_census
+  target src/derivation.rs
+  language rust
+  fidelity signature
+  byte_len 23819
+  line_count 575
+  content_id source_module_0b207c9555f69857
+  symbol_count 33
+  symbols
+    const NOT_RECORDED 39 39
+    const SEARCH_REQUEST_KIND 42 42
+    const SOURCE_HTTP_KIND 46 46
+    const FORMALIZE_FRAGMENT_KIND 49 49
+    const DECOMPOSE_PART_KIND 52 52
+    const RECOMPOSE_BIND_KIND 55 55
+    const RENDER_EMIT_KIND 58 58
+    const VERIFICATION_KIND 61 61
+    const SCHEMA 64 64
+    const APPLIED_RULE_FIELD 68 68
+    function applied_rule_kinds 73 86
+    static KINDS 74 74
+    struct AppliedRule 91 94
+    const DERIVATIONS_DIR 97 97
+    struct FetchRecord 101 105
+    struct VerificationRecord 114 118
+    function from_evidence 123 129
+    function payload 135 143
+    function parse_payload 149 168
+    struct Derivation 174 184
+    function answer_derivation_id 193 195
+    function finalize_answer 200 229
+    function record_for 237 279
+    function to_lino 286 326
+    function from_lino 331 381
+    function explain_text 387 456
+    function persist 461 469
+    function load 474 479
+    function store_path 487 497
+    function explain_answer 501 505
+    function miss_message 510 516
+    function parse_source_http 527 558
+    function parse_entries 562 575

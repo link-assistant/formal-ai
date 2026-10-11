@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "魚"
+        },
+        "es": {
+          "language": "es",
+          "value": "pez"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "水生變溫脊椎動物，種類極多，卵生或卵胎生，絕大部分用鰓呼吸"
+        },
+        "es": {
+          "language": "es",
+          "value": "animal vertebrado acuático"
         }
       },
       "aliases": {
@@ -78,6 +86,12 @@
           {
             "language": "zh",
             "value": "魚兒"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "peces"
           }
         ]
       }

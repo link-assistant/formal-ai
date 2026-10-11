@@ -2,97 +2,145 @@ self_ast_census
   target src/agentic_coding/positional_edit.rs
   language rust
   fidelity full_ast
-  byte_len 7966
-  line_count 188
-  content_id source_module_2be8ae6169aa3936
-  symbol_count 8
+  byte_len 39244
+  line_count 1000
+  content_id source_module_b7348386b6e579dd
+  symbol_count 41
   symbols
-    function literal_text 18 22
-    function compose_positional_insert 28 66
-    struct QuotedLiteral 69 73
-    function quoted_literals 77 95
-    function cue_governed_literal 107 151
-    function quoted_verbatim 156 166
-    function names_local_edit 172 182
-    function unescape_prose_newlines 186 188
+    module insert_lines 21 21
+    module unquoted_anchor 22 22
+    const COUNT_SLOT 26 26
+    function literal_text 29 35
+    function described_literal 39 46
+    function compose_positional_insert 55 67
+    struct PositionalInsert 75 89
+    function positional_inserts 97 132
+    function clause_insert 141 278
+    const BLANK_LINE 281 281
+    function named_paths 289 307
+    function rebased_block 313 324
+    function leading_indentation 327 329
+    function indents_lines_at 335 340
+    const ANCHOR_CONTEXT_CUE 343 343
+    const JOINER_CUE 345 345
+    function anchor_context 351 379
+    function insert_clauses 386 458
+    function joined_literal_lines 465 478
+    function joined_only 484 492
+    type CueOccurrence 495 495
+    function cue_occurrences 503 532
+    function governed_literal 542 576
+    struct IntroducedBlock 579 588
+    function instruction_end 595 597
+    function introduced_block 602 654
+    const FENCE 657 657
+    struct QuotedLiteral 660 664
+    function quoted_literals 670 679
+    function quoted_verbatim 683 697
+    function unquoted_path_tokens 701 713
+    function own_text 719 724
+    function names_local_edit 730 736
+    function local_edit_path 739 745
+    function unquoted_addition_path 752 762
+    function unescape_prose_newlines 766 768
+    function insert_edit 776 851
+    function lone_line_occurrences 856 870
+    function inserted_text 877 891
+    function insert_intent 894 902
+    function plan_insert_sequence_step 909 1000
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 5047
-    named_node_count 993
-    distinct_node_kinds 72
+    total_link_count 29143
+    named_node_count 5952
+    distinct_node_kinds 87
     node_kinds
-      arguments 78
-      array_expression 4
-      assignment_expression 1
-      attribute 1
-      attribute_item 1
-      binary_expression 20
-      block 23
-      break_expression 1
-      call_expression 78
-      char_literal 8
-      closure_expression 10
-      closure_parameters 10
-      crate 4
-      doc_comment 34
-      else_clause 3
-      escape_sequence 6
-      expression_statement 13
-      field_declaration 3
-      field_declaration_list 1
-      field_expression 61
-      field_identifier 67
-      field_initializer 3
-      field_initializer_list 1
-      for_expression 3
-      function_item 7
-      generic_type 5
-      identifier 239
-      if_expression 4
-      index_expression 5
-      inner_doc_comment_marker 9
-      integer_literal 12
-      let_condition 1
-      let_declaration 30
-      line_comment 44
-      macro_invocation 1
-      match_arm 5
-      match_block 2
-      match_expression 2
-      match_pattern 5
-      mutable_specifier 4
-      outer_doc_comment_marker 25
-      parameter 11
-      parameters 7
-      parenthesized_expression 1
-      primitive_type 15
-      range_expression 5
-      reference_expression 12
-      reference_pattern 1
-      reference_type 11
-      return_expression 2
-      scoped_identifier 21
-      scoped_use_list 1
-      slice_pattern 1
+      arguments 538
+      array_expression 18
+      array_type 10
+      assignment_expression 4
+      attribute 2
+      attribute_item 2
+      base_field_initializer 3
+      binary_expression 102
+      block 132
+      boolean_literal 3
+      call_expression 538
+      captured_pattern 1
+      char_literal 26
+      closure_expression 91
+      closure_parameters 91
+      const_item 5
+      continue_expression 2
+      crate 10
+      doc_comment 145
+      else_clause 20
+      escape_sequence 15
+      expression_statement 87
+      field_declaration 14
+      field_declaration_list 3
+      field_expression 480
+      field_identifier 507
+      field_initializer 16
+      field_initializer_list 7
+      for_expression 13
+      function_item 30
+      function_modifiers 1
+      generic_function 5
+      generic_type 55
+      identifier 1309
+      if_expression 46
+      index_expression 47
+      inner_doc_comment_marker 2
+      integer_literal 48
+      let_chain 3
+      let_condition 5
+      let_declaration 136
+      lifetime 9
+      lifetime_parameter 1
+      line_comment 182
+      macro_invocation 4
+      match_arm 11
+      match_block 4
+      match_expression 4
+      match_pattern 11
+      mod_item 2
+      mutable_specifier 14
+      outer_doc_comment_marker 143
+      parameter 55
+      parameters 30
+      parenthesized_expression 10
+      primitive_type 90
+      range_expression 30
+      reference_expression 79
+      reference_pattern 7
+      reference_type 70
+      return_expression 21
+      scoped_identifier 75
+      scoped_type_identifier 4
+      scoped_use_list 6
+      shorthand_field_initializer 8
+      slice_pattern 5
       source_file 1
-      string_content 2
-      string_literal 6
-      struct_expression 1
-      struct_item 1
-      super 4
-      token_tree 1
-      try_expression 3
-      tuple_expression 6
-      tuple_pattern 7
-      tuple_struct_pattern 5
-      tuple_type 2
-      type_arguments 5
-      type_identifier 18
-      unary_expression 2
-      use_declaration 2
-      use_list 1
-      visibility_modifier 3
-      while_expression 1
+      string_content 21
+      string_literal 37
+      struct_expression 7
+      struct_item 3
+      super 42
+      token_tree 6
+      try_expression 25
+      tuple_expression 30
+      tuple_pattern 43
+      tuple_struct_pattern 12
+      tuple_type 11
+      type_arguments 60
+      type_identifier 118
+      type_item 1
+      type_parameters 1
+      unary_expression 37
+      use_declaration 12
+      use_list 6
+      visibility_modifier 30
+      while_expression 2

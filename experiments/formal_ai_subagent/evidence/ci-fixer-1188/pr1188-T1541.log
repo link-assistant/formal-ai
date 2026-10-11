@@ -1,0 +1,303 @@
+>> read {"filePath":".github/workflows/macos-core-tests.yml","file_path":".github/workflows/macos-core-tests.yml","path":".github/workflows/macos-core-tests.yml"}
+   <file>
+   00001| name: macOS Core Tests
+   00002| 
+   00003| on:
+   00004|   workflow_call:
+   00005|     inputs:
+   00006|       base-commit:
+   00007|         description: >-
+   00008|           Issue #1017: the base-branch commit every job in this workflow must
+   00009|           merge. The archive job and the sixteen slices start up to an hour
+   00010|           apart on a serialized macOS pool, so resolving the base branch tip
+   00011|           per job made the merged tree a function of when each job happened to
+   00012|           start -- and a push to the base branch mid-run then failed the
+   00013|           archive tree check on every slice that started after it. Empty on a
+   00014|           push build, where nothing is merged.
+   00015|         required: false
+   00016|         type: string
+   00017|         default: ''
+   00018| 
+   00019| permissions:
+   00020|   contents: read
+   00021| 
+   00022| env:
+   00023|   CARGO_NET_RETRY: '10'
+   00024|   CARGO_HTTP_MULTIPLEXING: 'false'
+   00025|   CARGO_TERM_COLOR: always
+   00026|   RUSTFLAGS: -Dwarnings
+   00027|   FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
+   00028| 
+   00029| jobs:
+   00030|   build-archive:
+   00031|     name: Build macOS test archive
+   00032|     runs-on: macos-15-intel
+   00033|     outputs:
+   00034|       already-green: ${{ steps.ledger.outputs.already-green }}
+   00035|     # Issue #1017: `timeout-minutes` is the backstop, never the deadline. The
+   00036|     # step budget below (1200s) plus its SIGTERM grace has to expire first, or
+   00037|     # an overrun reports as a cancelled job instead of a failed one, so the job
+   00038|     # cap stays at least a third above the budget it guards.
+   00039|     # Worst observed on main: 629s (run 31937348472).
+   00040|     #
+   00041|     # Issue #1055 raised both. Changing `[profile.release]` gives sccache a new
+   00042|     # key space, so the first run after it compiles cold -- this job reported a
+   00043|     # 40% hit rate (615 misses) and was killed at 1202s of its 1200s budget,
+   00044|     # before the archive existed. 1400s covers that, and the cap moves to 35m so
+   00045|     # the budget stays at 66% of it rather than the 77% a 30m cap would give --
+   00046|     # `issue_1017`'s gate allows 70%, and the margin pays for checkout and
+   00047|     # toolchain setup outside the budgeted step.
+   00048|     #
+   00049|     # Issue #1081 gave the doc-test step below a budget of its own, which makes
+   00050|     # the arithmetic a sum: two steps that both run in this job now claim
+   00051|     # their budgets together against the 70% share
+   00052|     # `tests/unit/ci-cd/job_budget_fit.rs` enforces.
+   00053|     #
+   00054|     # Issue #1085: run 33994570842 (2026-09-05, main) was killed at the full
+   00055|     # 1400s of the archive budget with a 93% sccache hit rate -- not a cold
+   00056|     # cache, the runner itself. Over the ten `main` runs before it the same job
+   00057|     # took 11 to 26 minutes end to end, a 2.4x spread on identical work, and
+   00058|     # 1400s sat inside that spread. 1800s matches the budget the specification
+   00059|     # build in `release.yml` was given for the same compile on the same image;
+   00060|     # 1800 + 400 = 2200s against a 55m cap is 66.7%. The job does not get
+   00061|     # slower for it; a backstop only costs time when it fires.
+   00062|     timeout-minutes: 55
+   00063|     steps:
+   00064|       - uses: actions/checkout@v7
+   00065|         with:
+   00066|           persist-credentials: false
+   00067|           fetch-depth: 0
+   00068|       - name: Simulate fresh merge with base branch (PR only)
+   00069|         if: github.event_name == 'pull_request'
+   00070|         env:
+   00071|           BASE_REF: ${{ github.base_ref }}
+   00072|           BASE_COMMIT: ${{ inputs.base-commit }}
+   00073|         run: bash scripts/simulate-fresh-merge.sh
+   00074|       - name: Skip when identical inputs already passed
+   00075|         id: ledger
+   00076|         uses: ./.github/actions/green-ledger
+   00077|         with:
+   00078|           check: macos-core-archive
+   00079|           paths: >-
+   00080|             rust/src rust/tests data rust/examples rust/build.rs rust/Cargo.toml rust/Cargo.lock scripts .github/workflows/macos-core-tests.yml .github/actions
+   00081|           enabled: ${{ github.ref != 'refs/heads/main' }}
+   00082|       - name: Free up runner disk space
+   00083|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00084|         run: bash scripts/free-runner-disk.sh
+   00085|       - name: Setup Rust
+   00086|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00087|         uses: dtolnay/rust-toolchain@stable
+   00088|       - name: Install cargo-nextest
+   00089|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00090|         uses: taiki-e/install-action@nextest
+   00091|       - uses: ./.github/actions/setup-sccache
+   00092|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00093|       - uses: ./.github/actions/cache-cargo-registry
+   00094|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00095|         with:
+   00096|           restore-only: 'true'
+   00097|       - name: Build one portable nextest archive
+   00098|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00099|         env:
+   00100|           TEST_BUDGET_SECONDS: 1800
+   00101|           TEST_WARN_RATIO_PERCENT: 80
+   00102|         run: |
+   00103|           mkdir -p "$RUNNER_TEMP/macos-core-tests"
+   00104|           scripts/run-with-budget-warning.sh \
+   00105|             "$TEST_BUDGET_SECONDS" "macOS test archive build" \
+   00106|             cargo nextest --manifest-path rust/Cargo.toml archive --lib --bins --tests --all-features \
+   00107|             --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst"
+   00108|           git rev-parse 'HEAD^{tree}' > "$RUNNER_TEMP/macos-core-tests/tree"
+   00109|       # Issue #1047: computed once here rather than on each of the eight
+   00110|       # slices, so the plan costs one rust-script install instead of eight and
+   00111|       # every slice reads the same file -- a plan recomputed per machine could
+   00112|       # disagree if the durations file changed mid-run.
+   00113|       - name: Plan the macOS platform test filter
+   00114|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00115|         run: |
+   00116|           bash scripts/install-rust-script.sh
+   00117|           rust-script scripts/plan-test-partition.rs --macos-platform --of 1 \
+   00118|             > "$RUNNER_TEMP/macos-core-tests/platform.filter"
+   00119|       # Issue #1081. Two things were wrong with this step and only one of them
+   00120|       # was visible. The invisible one: it ran `cargo test --manifest-path rust/Cargo.toml` with no execution
+   00121|       # budget inside a job that has one, so the only limit on it was the job
+   00122|       # cap -- and a cap kill reports as `cancelled`, the grey non-signal issue
+   00123|       # #977 exists to remove. Worst observed here is 205s against a 12s median
+   00124|       # (run 33902725025), which is the shape of a step that compiles when the
+   00125|       # cache misses, so the gap between the two limits was real.
+   00126|       #
+   00127|       # The visible one: it was called `Run doc tests`, and so is the budgeted
+   00128|       # step in `release.yml`'s ubuntu job, where the same name costs 8s. The
+   00129|       # step budget audit joins measurements to budgets on the step name, so
+   00130|       # two steps sharing a name are two different jobs' work under one label.
+   00131|       # Renamed rather than deduplicated -- these are different runs of the doc
+   00132|       # tests on different platforms, and the name should say which.
+   00133|       - name: Run doc tests on macOS
+   00134|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00135|         env:
+   00136|           TEST_BUDGET_SECONDS: 400
+   00137|           TEST_WARN_RATIO_PERCENT: 80
+   00138|         run: |
+   00139|           scripts/run-with-budget-warning.sh \
+   00140|             "$TEST_BUDGET_SECONDS" "macOS doc tests" \
+   00141|             cargo test --manifest-path rust/Cargo.toml --doc --verbose
+   00142|       - name: Upload macOS test archive
+   00143|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00144|         uses: actions/upload-artifact@v7
+   00145|         with:
+   00146|           name: macos-core-tests-${{ github.run_id }}-${{ github.run_attempt }}
+   00147|           path: ${{ runner.temp }}/macos-core-tests
+   00148|           retention-days: 1
+   00149|           # Issue #1039: the payload is `tests.tar.zst` -- already zstd
+   00150|           # compressed. The action's default is zip level 6, so the bytes get
+   00151|           # compressed a second time: that costs CPU on the upload and again on
+   00152|           # every one of the eight downloads, and buys close to nothing on
+   00153|           # data that has no redundancy left. Level 0 stores them as they are.
+   00154|           compression-level: 0
+   00155| 
+   00156|   test-archive:
+   00157|     name: Run macOS platform tests
+   00158|     needs: [build-archive]
+   00159|     runs-on: macos-15-intel
+   00160|     # Issue #1017: at 12 slices the round-robin `slice:` partitioner -- which
+   00161|     # balances by test index, never by test duration -- gave slice 10 a 467s+
+   00162|     # test phase against a 185s minimum. With 133s of per-slice setup that
+   00163|     # exceeded the 600s job cap, and GitHub reports a `timeout-minutes` kill as
+   00164|     # `cancelled`, so the whole pipeline reported `cancelled` and skipped the
+   00165|     # release. 16 slices cut the worst measured slice to roughly 410s.
+   00166|     #
+   00167|     # Issue #1039 measured what that split actually bought. The macOS pool runs
+   00168|     # about 4-5 slices at a time, so sixteen of them delivered 4.3x parallelism
+   00169|     # (3796s of slice time over an 873s span in run 32572106023) while every
+   00170|     # slice paid ~120s of fixed cost -- checkout, toolchain, and its own copy of
+   00171|     # a 941MB archive. Eight slices halve that tax. Because `slice:` partitions
+   00172|     # round-robin by test index, merging pairs each slow slice with a fast one:
+   00173|     # the per-slice test times of that run recombine to a 333s worst case at
+   00174|     # eight, against 256s at sixteen, still only 55% of the 600s budget.
+   00175|     #
+   00176|     # Issue #1039 added a retrying artifact download whose own guard bounds it
+   00177|     # to 570s worst case, which the previous 900s cap could not absorb at all --
+   00178|     # the *cap* would expire first and report `cancelled`. 25 minutes makes room:
+   00179|     # 570s download + 600s slice + 133s setup + 15s grace = 1318s against 1500s,
+   00180|     # leaving 182s -- comfortably more than the range a single slow checkout
+   00181|     # varies by (33s to 62s across the slices of run 32572106023).
+   00182|     # The download is a 941MB artifact whose transfer time depends on runner
+   00183|     # throughput, so its budget has to cover a slow runner rather than a typical
+   00184|     # one.
+   00185|     # `artifact_download_retry::the_download_retry_is_bounded_to_fit_the_job_cap` recomputes
+   00186|     # this from the workflow, so the numbers cannot drift out of agreement.
+   00187|     #
+   00188|     # Issue #1081 kept that arithmetic and widened the margin it leaves. The
+   00189|     # sum above is built from one measured setup figure, and a measured figure
+   00190|     # is a description of the runs that have happened, not a bound on the next
+   00191|     # one: at 25 minutes the two budgets already claimed 79.3% of the cap, so a
+   00192|     # setup slower than the 133s that was measured would put the cap ahead of
+   00193|     # the budgets again and turn a real overrun back into a grey `cancelled`.
+   00194|     # 30 minutes holds the budgets at 66.1%, under the 70% share
+   00195|     # `tests/unit/ci-cd/job_budget_fit.rs` now enforces for every job in the
+   00196|     # repository. Nothing runs longer for it -- a backstop only costs time when
+   00197|     # it fires, and this one is now sized never to fire first.
+   00198|     timeout-minutes: 30
+   00199|     strategy:
+   00200|       fail-fast: false
+   00201|       matrix:
+   00202|         include:
+   00203|           - { partition: 1 }
+   00204|     steps:
+   00205|       - uses: actions/checkout@v7
+   00206|         if: ${{ needs.build-archive.outputs.already-green != 'true' }}
+   00207|         with:
+   00208|           persist-credentials: false
+   00209|           fetch-depth: 0
+   00210|       # Issue #1017: merge the commit the caller pinned, which is the same one
+   00211|       # the archive job merged, rather than resolving the base branch tip at
+   00212|       # this slice's own start time. The slices are serialized by the macOS
+   00213|       # runner pool and start up to an hour apart, so the unpinned form made the
+   00214|       # merged tree a function of when each slice happened to start: a push to
+   00215|       # the base branch mid-run failed the tree check below on every slice that
+   00216|       # started after it, with nothing wrong in the pull request.
+   00217|       - name: Simulate fresh merge with base branch (PR only)
+   00218|         if: ${{ (github.event_name == 'pull_request') && needs.build-archive.outputs.already-green != 'true' }}
+   00219|         env:
+   00220|           BASE_REF: ${{ github.base_ref }}
+   00221|           BASE_COMMIT: ${{ inputs.base-commit }}
+   00222|         run: bash scripts/simulate-fresh-merge.sh
+   00223|       - name: Setup Rust
+   00224|         if: ${{ needs.build-archive.outputs.already-green != 'true' }}
+   00225|         uses: dtolnay/rust-toolchain@stable
+   00226|         with:
+   00227|           targets: wasm32-unknown-unknown
+   00228|       - name: Install cargo-nextest
+   00229|         if: ${{ needs.build-archive.outputs.already-green != 'true' }}
+   00230|         uses: taiki-e/install-action@nextest
+   00231|       # Issue #1039: the action's own five retries are spent back-to-back, so a
+   00232|       # storage backend having a bad minute exhausts them and reddens a slice
+   00233|       # that never ran a test. The wrapper pauses between attempts so a later
+   00234|       # one meets a different minute.
+   00235|       #
+   00236|       # The per-attempt deadline is sized from the archive, not from a guess.
+   00237|       # It is 941MB, so the transfer time is set by whatever throughput the
+   00238|       # runner gets, and that varies by more than 5x in practice: run
+   00239|       # 32572106023 recorded successes at 16s, 44s and 82s (58, 21 and 11 MB/s)
+   00240|       # while slice 11/16 of the same run spent three attempts at exactly 87s
+   00241|       # against an 85s deadline.
+   00242|       #
+   00243|       # Two earlier drafts died on this. 40s was barely above the *fastest*
+   00244|       # observations; 85s still sat 3s above an 82s success. A deadline just
+   00245|       # past the observed spread fires on ordinary slow runners, so the retry
+   00246|       # manufactures the red it exists to prevent -- the original action had no
+   00247|       # per-attempt deadline at all and simply retried.
+   00248|       #
+   00249|       # 165s is twice the slowest observed success, tolerating ~5.7MB/s, so only
+   00250|       # a genuinely stuck transfer reaches it. The budget still has to fit the
+   00251|       # job cap: 1500s cap - 600s slice - 133s setup - 15s grace leaves 752s,
+   00252|       # and 3 x (165s + 15s) + 2 x 15s = 570s fits with room. An exhausted retry
+   00253|       # then still *fails* inside the cap rather than being killed by it and
+   00254|       # reported as `cancelled` -- the issue #1017 failure this must not
+   00255|       # reintroduce. `TEST_BUDGET_SECONDS` makes the wrapper enforce that
+   00256|       # itself rather than trusting this comment.
+   00257|       - name: Download macOS test archive
+   00258|         if: ${{ needs.build-archive.outputs.already-green != 'true' }}
+   00259|         env:
+   00260|           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   00261|           TEST_BUDGET_SECONDS: 590
+   00262|           FORMAL_AI_DOWNLOAD_ATTEMPTS: 3
+   00263|           FORMAL_AI_DOWNLOAD_ATTEMPT_SECONDS: 165
+   00264|           FORMAL_AI_DOWNLOAD_LOOKUP_SECONDS: 15
+   00265|           FORMAL_AI_DOWNLOAD_RETRY_DELAY_SECONDS: 15
+   00266|         run: |
+   00267|           scripts/download-artifact-with-retry.sh \
+   00268|             "macos-core-tests-${{ github.run_id }}" \
+   00269|             "$RUNNER_TEMP/macos-core-tests"
+   00270|       - name: Verify archive source tree
+   00271|         if: ${{ needs.build-archive.outputs.already-green != 'true' }}
+   00272|         run: test "$(git rev-parse 'HEAD^{tree}')" = "$(cat "$RUNNER_TEMP/macos-core-tests/tree")"
+   00273|       # Issue #1059: macOS runs the tests whose behaviour can differ from
+   00274|       # Linux, not the whole suite. `data/meta/macos-platform-tests.lino` names
+   00275|       # the modules and says why each is listed. One runner, because those tests
+   00276|       # take about ten seconds -- slicing that only multiplies checkout,
+   00277|       # toolchain and a 916MB artifact download across eight machines, and two
+   00278|       # slices of run 32706091539 could not finish that download at all.
+   00279|       - name: Run macOS platform tests
+   00280|         if: ${{ needs.build-archive.outputs.already-green != 'true' }}
+   00281|         env:
+   00282|           TEST_BUDGET_SECONDS: 600
+   00283|           TEST_WARN_RATIO_PERCENT: 75
+   00284|         run: |
+   00285|           PLATFORM=$(cat "$RUNNER_TEMP/macos-core-tests/platform.filter")
+   00286|           scripts/run-with-budget-warning.sh \
+   00287|             "$TEST_BUDGET_SECONDS" "macOS platform tests" \
+   00288|             cargo nextest --manifest-path rust/Cargo.toml run --archive-file "$RUNNER_TEMP/macos-core-tests/tests.tar.zst" \
+   00289|             --extract-to "$GITHUB_WORKSPACE" \
+   00290|             --workspace-remap "$GITHUB_WORKSPACE" \
+   00291|             -E "($PLATFORM) & not (test(data_files::) | test(self_ast_census) | test(specification::))"
+   00292| 
+   
+   (End of file - total 292 lines)
+   </file>
+>> edit {"filePath":".github/workflows/macos-core-tests.yml","file_path":".github/workflows/macos-core-tests.yml","new":"--workspace-remap \"$GITHUB_WORKSPACE/rust\"","newString":"--workspace-remap \"$GITHUB_WORKSPACE/rust\"","new_str":"--workspace-remap \"$GITHUB_WORKSPACE/rust\"","new_string":"--workspace-remap \"$GITHUB_WORKSPACE/rust\"","old":"--workspace-remap \"$GITHUB_WORKSPACE\"","oldString":"--workspace-remap \"$GITHUB_WORKSPACE\"","old_str":"--workspace-remap \"$GITHUB_WORKSPACE\"","old_string":"--workspace-remap \"$GITHUB_WORKSPACE\"","path":".github/workflows/macos-core-tests.yml"}
+>> bash {"command":"sha256sum -- .github/workflows/macos-core-tests.yml"}
+   7b4b74a981201b106e6b83ffeeaeed67c87c2138eb45734821b431277c03fa30  .github/workflows/macos-core-tests.yml
+   
+== answer ==
+Replaced `--workspace-remap "$GITHUB_WORKSPACE"` with `--workspace-remap "$GITHUB_WORKSPACE/rust"` in `.github/workflows/macos-core-tests.yml` and observed the result.

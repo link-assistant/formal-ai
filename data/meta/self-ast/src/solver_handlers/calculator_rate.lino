@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/calculator_rate.rs
   language rust
   fidelity signature
-  byte_len 5263
+  byte_len 5267
   line_count 124
-  content_id source_module_ca8d424b8b6ee6de
+  content_id source_module_9168504e0bb54d81
   symbol_count 5
   symbols
     const USD_RUB_RATE_EXPRESSION 11 11

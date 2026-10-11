@@ -1,0 +1,162 @@
+{
+  "entities": {
+    "Q1490": {
+      "type": "item",
+      "id": "Q1490",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Tokyo"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Токио"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "टोक्यो"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "東京都"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "东京都"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Tôkyô"
+          },
+          {
+            "language": "en",
+            "value": "Tokyo-to"
+          },
+          {
+            "language": "en",
+            "value": "Tokyo Metropolitan prefecture"
+          },
+          {
+            "language": "en",
+            "value": "Tōkyō-to"
+          },
+          {
+            "language": "en",
+            "value": "Tôkyô-to"
+          },
+          {
+            "language": "en",
+            "value": "Tokyo Metropolis"
+          },
+          {
+            "language": "en",
+            "value": "Tokio"
+          },
+          {
+            "language": "en",
+            "value": "Tokyo Prefecture"
+          },
+          {
+            "language": "en",
+            "value": "Tokyo, Japan"
+          },
+          {
+            "language": "en",
+            "value": "Tokei"
+          },
+          {
+            "language": "en",
+            "value": "Tokyo (Japan)"
+          },
+          {
+            "language": "en",
+            "value": "Edo"
+          },
+          {
+            "language": "en",
+            "value": "Jedo"
+          },
+          {
+            "language": "en",
+            "value": "Yedo"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Токио-то"
+          },
+          {
+            "language": "ru",
+            "value": "Токё"
+          },
+          {
+            "language": "ru",
+            "value": "Токё-то"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "东京都"
+          },
+          {
+            "language": "zh",
+            "value": "东京"
+          },
+          {
+            "language": "zh",
+            "value": "東京"
+          },
+          {
+            "language": "zh",
+            "value": "日本东京"
+          },
+          {
+            "language": "zh",
+            "value": "日本東京"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Tokyo"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Токио"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "टोक्यो"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "東京都"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [],
+    "claim_ranks": "truthy"
+  }
+}

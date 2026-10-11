@@ -33,6 +33,8 @@ mod graphql;
 mod learning;
 #[cfg(not(target_arch = "wasm32"))]
 mod lowering;
+#[cfg(all(feature = "meta-language", not(target_arch = "wasm32")))]
+mod page_queries;
 mod sql;
 mod syntax;
 
@@ -42,6 +44,10 @@ pub use execution::{MemoryQueryOutcome, execute_memory_query};
 pub use learning::{
     MemoryQueryCompiler, MemoryQueryLearningApproval, MemoryQueryLearningCandidate,
     MemoryQueryLearningGate, MemoryQueryLearningObservation,
+};
+#[cfg(all(feature = "meta-language", not(target_arch = "wasm32")))]
+pub use page_queries::{
+    PageQuery, parse_page_query, run_page_query, run_page_query_in_working_memory,
 };
 
 #[cfg(not(target_arch = "wasm32"))]

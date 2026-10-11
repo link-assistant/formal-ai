@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "椅"
+        },
+        "es": {
+          "language": "es",
+          "value": "silla"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "椅子"
+        },
+        "es": {
+          "language": "es",
+          "value": "mueble para sentarse"
         }
       },
       "aliases": {

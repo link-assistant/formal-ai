@@ -1,0 +1,252 @@
+{
+  "endpoint": "repos/link-assistant/formal-ai/actions/runs/37870721326/jobs?per_page=100",
+  "observedAt": "2026-10-09T05:03:32.724Z",
+  "status": "retrieved",
+  "rawUtf8": "{\"total_count\":2,\"jobs\":[{\"id\":113627941126,\"run_id\":37870721326,\"workflow_name\":\"Publish VS Code extension\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721326\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadMDJBg\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113627941126\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721326/job/113627941126\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:38:05Z\",\"started_at\":\"2026-10-09T01:40:44Z\",\"completed_at\":\"2026-10-09T01:41:07Z\",\"name\":\"resolve\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T01:40:45Z\",\"completed_at\":\"2026-10-09T01:40:46Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T01:40:46Z\",\"completed_at\":\"2026-10-09T01:41:03Z\"},{\"name\":\"Run actions/setup-node@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T01:41:03Z\",\"completed_at\":\"2026-10-09T01:41:04Z\"},{\"name\":\"Resolve the published package release\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T01:41:04Z\",\"completed_at\":\"2026-10-09T01:41:04Z\"},{\"name\":\"Post Run actions/setup-node@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":7,\"started_at\":\"2026-10-09T01:41:04Z\",\"completed_at\":\"2026-10-09T01:41:04Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T01:41:04Z\",\"completed_at\":\"2026-10-09T01:41:04Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":9,\"started_at\":\"2026-10-09T01:41:04Z\",\"completed_at\":\"2026-10-09T01:41:04Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113627941126\",\"labels\":[\"ubuntu-latest\"],\"runner_id\":1000155919,\"runner_name\":\"GitHub Actions 1000155919\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113628716267,\"run_id\":37870721326,\"workflow_name\":\"Publish VS Code extension\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721326\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadMyc6w\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113628716267\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721326/job/113628716267\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:41:07Z\",\"started_at\":\"2026-10-09T02:04:14Z\",\"completed_at\":\"2026-10-09T02:06:01Z\",\"name\":\"publish\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T02:04:15Z\",\"completed_at\":\"2026-10-09T02:04:16Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T02:04:16Z\",\"completed_at\":\"2026-10-09T02:04:41Z\"},{\"name\":\"Select the resolved release tag\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":3,\"started_at\":\"2026-10-09T02:04:41Z\",\"completed_at\":\"2026-10-09T02:04:41Z\"},{\"name\":\"Run actions/setup-node@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T02:04:41Z\",\"completed_at\":\"2026-10-09T02:04:41Z\"},{\"name\":\"Install Bun\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":5,\"started_at\":\"2026-10-09T02:04:41Z\",\"completed_at\":\"2026-10-09T02:04:43Z\"},{\"name\":\"Build web resources and extension\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":6,\"started_at\":\"2026-10-09T02:04:43Z\",\"completed_at\":\"2026-10-09T02:05:50Z\"},{\"name\":\"Compare the packaged extension version with the preceding release\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":7,\"started_at\":\"2026-10-09T02:05:50Z\",\"completed_at\":\"2026-10-09T02:05:50Z\"},{\"name\":\"Run actions/upload-artifact@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T02:05:50Z\",\"completed_at\":\"2026-10-09T02:05:58Z\"},{\"name\":\"Run existing extension checks\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":9,\"started_at\":\"2026-10-09T02:05:58Z\",\"completed_at\":\"2026-10-09T02:05:58Z\"},{\"name\":\"Attach installable extension package to the release\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":10,\"started_at\":\"2026-10-09T02:05:58Z\",\"completed_at\":\"2026-10-09T02:05:58Z\"},{\"name\":\"Publish Marketplace\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":11,\"started_at\":\"2026-10-09T02:05:58Z\",\"completed_at\":\"2026-10-09T02:05:58Z\"},{\"name\":\"Publish Open VSX\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":12,\"started_at\":\"2026-10-09T02:05:58Z\",\"completed_at\":\"2026-10-09T02:05:58Z\"},{\"name\":\"Install published Marketplace extension in a clean profile\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":13,\"started_at\":\"2026-10-09T02:05:58Z\",\"completed_at\":\"2026-10-09T02:05:58Z\"},{\"name\":\"Post Run actions/setup-node@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":25,\"started_at\":\"2026-10-09T02:05:58Z\",\"completed_at\":\"2026-10-09T02:05:58Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":26,\"started_at\":\"2026-10-09T02:05:58Z\",\"completed_at\":\"2026-10-09T02:05:59Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":27,\"started_at\":\"2026-10-09T02:05:59Z\",\"completed_at\":\"2026-10-09T02:05:59Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113628716267\",\"labels\":[\"ubuntu-latest\"],\"runner_id\":1000155997,\"runner_name\":\"GitHub Actions 1000155997\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"}]}",
+  "sha256": "3b16d56f8b19a25da8d5b8320c71db394a498a18ac8eccabdf0d42c38690efa3",
+  "json": {
+    "total_count": 2,
+    "jobs": [
+      {
+        "id": 113627941126,
+        "run_id": 37870721326,
+        "workflow_name": "Publish VS Code extension",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721326",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadMDJBg",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113627941126",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721326/job/113627941126",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:38:05Z",
+        "started_at": "2026-10-09T01:40:44Z",
+        "completed_at": "2026-10-09T01:41:07Z",
+        "name": "resolve",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T01:40:45Z",
+            "completed_at": "2026-10-09T01:40:46Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T01:40:46Z",
+            "completed_at": "2026-10-09T01:41:03Z"
+          },
+          {
+            "name": "Run actions/setup-node@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T01:41:03Z",
+            "completed_at": "2026-10-09T01:41:04Z"
+          },
+          {
+            "name": "Resolve the published package release",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T01:41:04Z",
+            "completed_at": "2026-10-09T01:41:04Z"
+          },
+          {
+            "name": "Post Run actions/setup-node@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-09T01:41:04Z",
+            "completed_at": "2026-10-09T01:41:04Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T01:41:04Z",
+            "completed_at": "2026-10-09T01:41:04Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-09T01:41:04Z",
+            "completed_at": "2026-10-09T01:41:04Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113627941126",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000155919,
+        "runner_name": "GitHub Actions 1000155919",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113628716267,
+        "run_id": 37870721326,
+        "workflow_name": "Publish VS Code extension",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721326",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadMyc6w",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113628716267",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721326/job/113628716267",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:41:07Z",
+        "started_at": "2026-10-09T02:04:14Z",
+        "completed_at": "2026-10-09T02:06:01Z",
+        "name": "publish",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T02:04:15Z",
+            "completed_at": "2026-10-09T02:04:16Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T02:04:16Z",
+            "completed_at": "2026-10-09T02:04:41Z"
+          },
+          {
+            "name": "Select the resolved release tag",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 3,
+            "started_at": "2026-10-09T02:04:41Z",
+            "completed_at": "2026-10-09T02:04:41Z"
+          },
+          {
+            "name": "Run actions/setup-node@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T02:04:41Z",
+            "completed_at": "2026-10-09T02:04:41Z"
+          },
+          {
+            "name": "Install Bun",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-09T02:04:41Z",
+            "completed_at": "2026-10-09T02:04:43Z"
+          },
+          {
+            "name": "Build web resources and extension",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-09T02:04:43Z",
+            "completed_at": "2026-10-09T02:05:50Z"
+          },
+          {
+            "name": "Compare the packaged extension version with the preceding release",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-09T02:05:50Z",
+            "completed_at": "2026-10-09T02:05:50Z"
+          },
+          {
+            "name": "Run actions/upload-artifact@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T02:05:50Z",
+            "completed_at": "2026-10-09T02:05:58Z"
+          },
+          {
+            "name": "Run existing extension checks",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-09T02:05:58Z",
+            "completed_at": "2026-10-09T02:05:58Z"
+          },
+          {
+            "name": "Attach installable extension package to the release",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 10,
+            "started_at": "2026-10-09T02:05:58Z",
+            "completed_at": "2026-10-09T02:05:58Z"
+          },
+          {
+            "name": "Publish Marketplace",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 11,
+            "started_at": "2026-10-09T02:05:58Z",
+            "completed_at": "2026-10-09T02:05:58Z"
+          },
+          {
+            "name": "Publish Open VSX",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 12,
+            "started_at": "2026-10-09T02:05:58Z",
+            "completed_at": "2026-10-09T02:05:58Z"
+          },
+          {
+            "name": "Install published Marketplace extension in a clean profile",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 13,
+            "started_at": "2026-10-09T02:05:58Z",
+            "completed_at": "2026-10-09T02:05:58Z"
+          },
+          {
+            "name": "Post Run actions/setup-node@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 25,
+            "started_at": "2026-10-09T02:05:58Z",
+            "completed_at": "2026-10-09T02:05:58Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 26,
+            "started_at": "2026-10-09T02:05:58Z",
+            "completed_at": "2026-10-09T02:05:59Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 27,
+            "started_at": "2026-10-09T02:05:59Z",
+            "completed_at": "2026-10-09T02:05:59Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113628716267",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000155997,
+        "runner_name": "GitHub Actions 1000155997",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      }
+    ]
+  }
+}

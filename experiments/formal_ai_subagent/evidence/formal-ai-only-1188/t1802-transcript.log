@@ -1,0 +1,9 @@
+>> bash {"command":"node scripts/generate-worker-crate-modules.mjs --write"}
+   34 worker crate files, 1 rewritten.
+   
+== answer ==
+The `node scripts/generate-worker-crate-modules.mjs --write` command completed. Output:
+
+```text
+34 worker crate files, 1 rewritten.
+```

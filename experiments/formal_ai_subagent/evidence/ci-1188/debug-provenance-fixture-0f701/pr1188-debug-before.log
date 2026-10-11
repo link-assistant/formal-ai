@@ -1,0 +1,109 @@
+TAP version 13
+# Subtest: the session state machine (DebugSession)
+    # Subtest: only loopback hosts may carry a debug session
+    ok 1 - only loopback hosts may carry a debug session
+      ---
+      duration_ms: 0.522667
+      ...
+    # Subtest: the token comes from the launcher, else it is generated and printed once
+    ok 2 - the token comes from the launcher, else it is generated and printed once
+      ---
+      duration_ms: 0.812459
+      ...
+    # Subtest: stepping off never holds a turn
+    ok 3 - stepping off never holds a turn
+      ---
+      duration_ms: 0.073875
+      ...
+    # Subtest: each advance reveals exactly one stage and a repeated advance records nothing
+    ok 4 - each advance reveals exactly one stage and a repeated advance records nothing
+      ---
+      duration_ms: 333.902
+      ...
+    # Subtest: every stage carries the recipe diagram, its own emitters and the routed method
+    ok 5 - every stage carries the recipe diagram, its own emitters and the routed method
+      ---
+      duration_ms: 162.583042
+      ...
+    # Subtest: the stage-sources table is current with the source tree
+    ok 6 - the stage-sources table is current with the source tree
+      ---
+      duration_ms: 89.625709
+      ...
+    # Subtest: a turn begun before its solve waits at its first stage, then resumes
+    ok 7 - a turn begun before its solve waits at its first stage, then resumes
+      ---
+      duration_ms: 1.018125
+      ...
+    # Subtest: a disconnect or a release frees a paused turn
+    ok 8 - a disconnect or a release frees a paused turn
+      ---
+      duration_ms: 0.325375
+      ...
+    1..8
+ok 1 - the session state machine (DebugSession)
+  ---
+  duration_ms: 589.610792
+  type: 'suite'
+  ...
+# Subtest: the --debug-session server
+    # Subtest: the flag parses, and a non-loopback bind is refused
+    not ok 1 - the flag parses, and a non-loopback bind is refused
+      ---
+      duration_ms: 0
+      location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/server-debug-session.test.mjs:353:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: every debug request needs the session token
+    not ok 2 - every debug request needs the session token
+      ---
+      duration_ms: 0
+      location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/server-debug-session.test.mjs:359:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: a paused chat turn waits before it is solved and answers only after its last stage
+    not ok 3 - a paused chat turn waits before it is solved and answers only after its last stage
+      ---
+      duration_ms: 0
+      location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/server-debug-session.test.mjs:373:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: a disconnected client and a release never leave a solve paused
+    not ok 4 - a disconnected client and a release never leave a solve paused
+      ---
+      duration_ms: 0
+      location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/server-debug-session.test.mjs:431:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    1..4
+not ok 2 - the --debug-session server
+  ---
+  duration_ms: 406.735708
+  type: 'suite'
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/server-debug-session.test.mjs:298:1'
+  failureType: 'hookFailed'
+  error: 'listen EPERM: operation not permitted 127.0.0.1'
+  code: 'EPERM'
+  stack: |-
+    Server.setupListenHandle [as _listen2] (node:net:1886:21)
+    listenInCluster (node:net:1965:12)
+    doListen (node:net:2139:7)
+    process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+  ...
+1..2
+# tests 12
+# suites 2
+# pass 8
+# fail 0
+# cancelled 4
+# skipped 0
+# todo 0
+# duration_ms 1137.372041

@@ -1,0 +1,65 @@
+{
+  "lemma": "intersection",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05875237-n",
+      "partOfSpeech": "n",
+      "definition": "a point where lines intersect",
+      "synonyms": [
+        "intersection point",
+        "point of intersection"
+      ]
+    },
+    {
+      "id": "oewn-03586294-n",
+      "partOfSpeech": "n",
+      "definition": "a junction where one street or road crosses another",
+      "synonyms": [
+        "crossroad",
+        "crossway",
+        "crossing",
+        "carrefour"
+      ]
+    },
+    {
+      "id": "oewn-13895852-n",
+      "partOfSpeech": "n",
+      "definition": "a point or set of points common to two or more geometric configurations"
+    },
+    {
+      "id": "oewn-08015510-n",
+      "partOfSpeech": "n",
+      "definition": "the set of elements common to two or more sets",
+      "examples": [
+        "the set of red hats is the intersection of the set of hats and the set of red things"
+      ],
+      "synonyms": [
+        "product",
+        "Cartesian product"
+      ]
+    },
+    {
+      "id": "oewn-05772362-n",
+      "partOfSpeech": "n",
+      "definition": "a representation of common ground between theories or phenomena",
+      "examples": [
+        "there was no overlap between their proposals"
+      ],
+      "synonyms": [
+        "overlap",
+        "convergence"
+      ]
+    },
+    {
+      "id": "oewn-00146931-n",
+      "partOfSpeech": "n",
+      "definition": "the act of intersecting (as joining by causing your path to intersect your target's path)"
+    }
+  ]
+}

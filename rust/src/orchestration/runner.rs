@@ -4,16 +4,10 @@ use crate::DEFAULT_MODEL;
 use crate::seed::client_integrations;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-#[cfg(unix)]
-use std::collections::HashMap;
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::fmt;
 use std::io;
-#[cfg(not(unix))]
-use std::io::Read;
 use std::path::{Path, PathBuf};
-#[cfg(not(unix))]
-use std::process::{Command, Stdio};
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -664,23 +658,11 @@ struct ProcessOutput {
     timed_out: bool,
 }
 
+// One implementation on every platform. command-stream's exact-argv runner
+// keeps argument boundaries on Windows too (command-stream#190), and since
+// 1.5.1 cancelling it stops the whole process tree there as well (`taskkill
+// /T`), which is what the former std-process Windows fallback existed for.
 fn execute(
-    command: &AgentCommand,
-    workspace: &Path,
-    timeout: Duration,
-) -> Result<ProcessOutput, AgentRunError> {
-    #[cfg(unix)]
-    {
-        execute_with_command_stream(command, workspace, timeout)
-    }
-    #[cfg(not(unix))]
-    {
-        execute_with_std_process(command, workspace, timeout)
-    }
-}
-
-#[cfg(unix)]
-fn execute_with_command_stream(
     command: &AgentCommand,
     workspace: &Path,
     timeout: Duration,
@@ -711,7 +693,6 @@ fn execute_with_command_stream(
     .map_err(|_| AgentRunError::Process(io::Error::other("command_stream_worker_panicked")))?
 }
 
-#[cfg(unix)]
 fn ensure_program_available(command: &AgentCommand, workspace: &Path) -> Result<(), AgentRunError> {
     let search_path = command
         .env
@@ -722,7 +703,6 @@ fn ensure_program_available(command: &AgentCommand, workspace: &Path) -> Result<
         .map_err(|error| AgentRunError::Process(io::Error::new(io::ErrorKind::NotFound, error)))
 }
 
-#[cfg(unix)]
 async fn collect_command_stream(
     runner: command_stream::StreamingRunner,
     timeout: Duration,
@@ -772,77 +752,6 @@ async fn collect_command_stream(
         stderr: String::from_utf8_lossy(&stderr).into_owned(),
         timed_out,
     })
-}
-
-// Keep the std-process Windows implementation until command-stream provides
-// job-object process-tree termination there. Unix uses its exact-argv stream
-// API and POSIX process-group termination.
-#[cfg(not(unix))]
-fn execute_with_std_process(
-    command: &AgentCommand,
-    workspace: &Path,
-    timeout: Duration,
-) -> Result<ProcessOutput, AgentRunError> {
-    let mut process = Command::new(&command.program);
-    process
-        .args(&command.args)
-        .envs(&command.env)
-        .env("PWD", workspace)
-        .current_dir(workspace)
-        .stdin(Stdio::null())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped());
-    let mut child = process.spawn().map_err(AgentRunError::Process)?;
-    let stdout = child
-        .stdout
-        .take()
-        .ok_or_else(|| AgentRunError::Process(io::Error::other("stdout_pipe_unavailable")))?;
-    let stderr = child
-        .stderr
-        .take()
-        .ok_or_else(|| AgentRunError::Process(io::Error::other("stderr_pipe_unavailable")))?;
-    let stdout_reader = thread::spawn(move || read_all(stdout));
-    let stderr_reader = thread::spawn(move || read_all(stderr));
-    let started = Instant::now();
-    let (status, timed_out) = loop {
-        if let Some(status) = child.try_wait().map_err(AgentRunError::Process)? {
-            break (status, false);
-        }
-        if started.elapsed() >= timeout {
-            terminate_process_tree(&mut child)?;
-            let status = child.wait().map_err(AgentRunError::Process)?;
-            break (status, true);
-        }
-        thread::sleep(Duration::from_millis(10));
-    };
-    let stdout = join_reader(stdout_reader)?;
-    let stderr = join_reader(stderr_reader)?;
-    Ok(ProcessOutput {
-        exit_code: status.code(),
-        stdout,
-        stderr,
-        timed_out,
-    })
-}
-
-#[cfg(not(unix))]
-fn terminate_process_tree(child: &mut std::process::Child) -> Result<(), AgentRunError> {
-    child.kill().map_err(AgentRunError::Process)
-}
-
-#[cfg(not(unix))]
-fn read_all(mut reader: impl Read) -> io::Result<String> {
-    let mut bytes = Vec::new();
-    reader.read_to_end(&mut bytes)?;
-    Ok(String::from_utf8_lossy(&bytes).into_owned())
-}
-
-#[cfg(not(unix))]
-fn join_reader(reader: thread::JoinHandle<io::Result<String>>) -> Result<String, AgentRunError> {
-    reader
-        .join()
-        .map_err(|_| AgentRunError::Process(io::Error::other("output_reader_panicked")))?
-        .map_err(AgentRunError::Process)
 }
 
 fn run_verification(

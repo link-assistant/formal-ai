@@ -1,0 +1,70 @@
+self_ast_census
+  target src/agentic_coding/file_read/source.rs
+  language rust
+  fidelity full_ast
+  byte_len 2515
+  line_count 72
+  content_id source_module_635dac36e745103c
+  symbol_count 2
+  symbols
+    function read_observation 8 26
+    function source_read_answer 27 72
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2113
+    named_node_count 422
+    distinct_node_kinds 50
+    node_kinds
+      arguments 34
+      array_type 3
+      assignment_expression 1
+      binary_expression 1
+      block 9
+      boolean_literal 1
+      call_expression 34
+      closure_expression 4
+      closure_parameters 4
+      doc_comment 1
+      else_clause 2
+      expression_statement 6
+      field_expression 31
+      field_identifier 35
+      field_initializer 4
+      field_initializer_list 1
+      for_expression 1
+      function_item 2
+      generic_function 3
+      generic_type 7
+      identifier 113
+      if_expression 4
+      inner_doc_comment_marker 1
+      let_condition 2
+      let_declaration 6
+      line_comment 1
+      mutable_specifier 2
+      parameter 9
+      parameters 2
+      primitive_type 2
+      reference_expression 4
+      reference_type 9
+      return_expression 2
+      scoped_identifier 17
+      scoped_type_identifier 2
+      scoped_use_list 3
+      source_file 1
+      string_content 2
+      string_literal 2
+      struct_expression 1
+      super 8
+      try_expression 2
+      tuple_expression 1
+      tuple_pattern 2
+      tuple_struct_pattern 2
+      type_arguments 10
+      type_identifier 20
+      use_declaration 3
+      use_list 3
+      visibility_modifier 2

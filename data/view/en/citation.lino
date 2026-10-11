@@ -1,0 +1,29 @@
+view
+  id M-0842fd46aa6d
+  lemma citation
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "thoroughbred that won the triple crown in 1948"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an official award (as for bravery or service) usually given as formal public statement"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(law) the act of citing (as of spoken words or written passages or legal precedents etc.)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a short note recognizing a source of information or of a quoted passage"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a passage or expression that is quoted or cited"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a summons that commands the appearance of a party at a proceeding"
+    provenance (wordnet)

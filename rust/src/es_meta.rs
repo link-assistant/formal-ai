@@ -14,13 +14,16 @@
 //!
 //! The round-trip contract is token-tree equality with spans ignored: spans
 //! name bytes of one text, and a rendered target is a different text. The
-//! renderers emit canonical spacing — every leaf separated by one space,
-//! group delimiters spaced, template chunks verbatim — and because the
-//! tokenizer's regex-versus-division decision is a pure function of the
-//! previous significant token, re-tokenizing canonically spaced output
-//! repeats every decision the original made. Rendered source is not
-//! promised to be runnable (automatic-semicolon insertion is not a
-//! token-tree fact); it is promised to re-tokenize to the same tree.
+//! pivot also carries the source's layout ([`layout_of`]): the whitespace
+//! and comments before every token and after the last one. The renderers
+//! write each token after its own layout text, so a rendered target keeps
+//! its source's lines, indentation and comments (issue #1188 R1188-U23:
+//! committed code stays readable). A document with no layout renders in
+//! canonical spacing — every leaf separated by one space, group delimiters
+//! spaced, template chunks verbatim — and because the tokenizer's
+//! regex-versus-division decision is a pure function of the previous
+//! significant token, re-tokenizing either rendering repeats every decision
+//! the original made.
 
 extern crate alloc;
 
@@ -118,6 +121,8 @@ pub struct PivotDocument {
     pub token_count: usize,
     /// The tree itself.
     pub trees: Vec<OwnedTree>,
+    /// The source's layout ([`layout_of`]); empty renders canonical spacing.
+    pub layout: Vec<String>,
 }
 
 /// Extract one source into a pivot document. Fails exactly when the
@@ -132,6 +137,7 @@ pub fn extract(
     source: &str,
 ) -> Result<PivotDocument, TokenizeError> {
     let trees = tokenize(source)?;
+    let layout = layout_of(source, &trees);
     let owned = trees.iter().map(own_tree).collect::<Vec<_>>();
     let token_count = count_tokens(&owned);
     Ok(PivotDocument {
@@ -139,7 +145,82 @@ pub fn extract(
         language,
         token_count,
         trees: owned,
+        layout,
     })
+}
+
+/// The layout of one source: the text before every slot of its tree.
+///
+/// Slots come in the order the renderer visits them, then one more holds
+/// the text after the last token. A slot is a leaf, a group's opening and
+/// closing delimiter, a template's opening backtick, and an interpolation's
+/// closing brace; everything else in a template is its verbatim chunks. The
+/// text is what the tokenizer skips: whitespace, comments, a leading
+/// shebang line.
+#[must_use]
+pub fn layout_of(source: &str, trees: &[Tree<'_>]) -> Vec<String> {
+    let mut layout = Vec::new();
+    let mut cursor = 0;
+    collect_layout(source, trees, &mut cursor, &mut layout);
+    push_gap(source, cursor, source.len(), &mut layout);
+    layout
+}
+
+fn collect_layout(source: &str, trees: &[Tree<'_>], cursor: &mut usize, layout: &mut Vec<String>) {
+    for tree in trees {
+        match tree {
+            Tree::Leaf(token) => {
+                push_gap(source, *cursor, token.span.start, layout);
+                *cursor = token.span.end;
+            }
+            Tree::Group { span, trees, .. } => {
+                push_gap(source, *cursor, span.start, layout);
+                *cursor = span.start + 1;
+                collect_layout(source, trees, cursor, layout);
+                push_gap(source, *cursor, span.end - 1, layout);
+                *cursor = span.end;
+            }
+            Tree::Template { span, parts } => {
+                push_gap(source, *cursor, span.start, layout);
+                for part in parts {
+                    if let TemplatePart::Interpolation {
+                        span: interpolation,
+                        trees,
+                    } = part
+                    {
+                        *cursor = interpolation.start + 2;
+                        collect_layout(source, trees, cursor, layout);
+                        push_gap(source, *cursor, interpolation.end - 1, layout);
+                    }
+                }
+                *cursor = span.end;
+            }
+        }
+    }
+}
+
+fn push_gap(source: &str, start: usize, end: usize, layout: &mut Vec<String>) {
+    layout.push(source.get(start..end).unwrap_or_default().to_string());
+}
+
+/// How many layout slots a tree has, the trailing one not counted.
+fn slot_count(trees: &[OwnedTree]) -> usize {
+    let mut total = 0;
+    for tree in trees {
+        match tree {
+            OwnedTree::Leaf(_) => total += 1,
+            OwnedTree::Group { trees, .. } => total += 2 + slot_count(trees),
+            OwnedTree::Template { parts } => {
+                total += 1;
+                for part in parts {
+                    if let OwnedPart::Interpolation { trees } = part {
+                        total += 1 + slot_count(trees);
+                    }
+                }
+            }
+        }
+    }
+    total
 }
 
 fn own_tree(tree: &Tree<'_>) -> OwnedTree {
@@ -216,8 +297,8 @@ fn delimiter_from_slug(slug: &str) -> Option<Delimiter> {
 }
 
 /// Render the pivot document as lino. Deterministic, and exactly what
-/// [`parse_document`] reads back: leaf values are double-quoted with the
-/// backslash escapes the shared seed parser decodes.
+/// [`parse_document`] reads back: leaf values and layout slots are
+/// double-quoted with the backslash escapes the shared seed parser decodes.
 #[must_use]
 pub fn render_document(document: &PivotDocument) -> String {
     let mut out = String::new();
@@ -229,6 +310,12 @@ pub fn render_document(document: &PivotDocument) -> String {
     let _ = writeln!(out, "  token_count {}", document.token_count);
     let _ = writeln!(out, "  trees");
     write_trees(&mut out, 2, &document.trees);
+    if !document.layout.is_empty() {
+        let _ = writeln!(out, "  layout");
+        for slot in &document.layout {
+            let _ = writeln!(out, "    slot {}", quoted(slot));
+        }
+    }
     format!("{}\n", out.trim_end())
 }
 
@@ -349,14 +436,23 @@ pub fn parse_document(text: &str) -> Result<PivotDocument, PivotParseError> {
         .iter()
         .map(parse_tree)
         .collect::<Result<Vec<_>, _>>()?;
+    let layout = record
+        .children
+        .iter()
+        .find(|node| node.name == "layout")
+        .map_or_else(Vec::new, |node| flag_values(node, "slot"));
     let document = PivotDocument {
         target: target.to_string(),
         language,
         token_count,
         trees,
+        layout,
     };
     if document.token_count != count_tokens(&document.trees) {
         return Err(PivotParseError::MissingField("token_count"));
+    }
+    if !document.layout.is_empty() && document.layout.len() != slot_count(&document.trees) + 1 {
+        return Err(PivotParseError::MissingField("layout"));
     }
     Ok(document)
 }
@@ -680,7 +776,7 @@ pub fn render_source_under(
         };
     }
     let mut out = String::new();
-    write_source(&mut out, &document.trees);
+    write_source(&mut out, &document.trees, &document.layout);
     report.carried = document.token_count;
     RenderedSource {
         output: Some(out),
@@ -821,27 +917,40 @@ fn window_matches(window: &[LevelItem<'_>], signature: &[SignatureItem]) -> bool
             })
 }
 
-/// Emit canonically spaced source: every leaf separated by one space, group
-/// delimiters spaced around their subtree, template chunks verbatim between
-/// backticks. An empty interpolation cannot round-trip (`${}` tokenizes as
-/// `$` then an empty group, never an interpolation) and cannot arise from
-/// extraction, so it renders as-is.
-fn write_source(out: &mut String, trees: &[OwnedTree]) {
-    let mut first = true;
-    for tree in trees {
-        if !first {
-            out.push(' ');
-        }
-        first = false;
+/// Emit target source, each token after its slot's layout text.
+///
+/// A slot ([`layout_of`]) takes the layout's own text when the document
+/// carries one, and canonical spacing otherwise — every leaf separated by
+/// one space, group delimiters spaced around their subtree, template chunks
+/// verbatim between backticks. An empty interpolation cannot round-trip
+/// (`${}` tokenizes as `$` then an empty group, never an interpolation) and
+/// cannot arise from extraction, so it renders as-is.
+fn write_source(out: &mut String, trees: &[OwnedTree], layout: &[String]) {
+    let mut slot = 0;
+    write_level(out, trees, layout, &mut slot, "");
+    out.push_str(slot_text(layout, &mut slot, ""));
+}
+
+/// One tree level; `lead` is the canonical text before its first item.
+fn write_level(
+    out: &mut String,
+    trees: &[OwnedTree],
+    layout: &[String],
+    slot: &mut usize,
+    lead: &str,
+) {
+    for (index, tree) in trees.iter().enumerate() {
+        out.push_str(slot_text(layout, slot, if index == 0 { lead } else { " " }));
         match tree {
             OwnedTree::Leaf(token) => out.push_str(&token.text),
             OwnedTree::Group { delim, trees } => {
                 out.push(delim.opens() as char);
-                if !trees.is_empty() {
-                    out.push(' ');
-                    write_source(out, trees);
-                    out.push(' ');
-                }
+                write_level(out, trees, layout, slot, " ");
+                out.push_str(slot_text(
+                    layout,
+                    slot,
+                    if trees.is_empty() { "" } else { " " },
+                ));
                 out.push(delim.closes() as char);
             }
             OwnedTree::Template { parts } => {
@@ -851,7 +960,8 @@ fn write_source(out: &mut String, trees: &[OwnedTree]) {
                         OwnedPart::Chunk(text) => out.push_str(text),
                         OwnedPart::Interpolation { trees } => {
                             out.push_str("${");
-                            write_source(out, trees);
+                            write_level(out, trees, layout, slot, "");
+                            out.push_str(slot_text(layout, slot, ""));
                             out.push('}');
                         }
                     }
@@ -860,4 +970,15 @@ fn write_source(out: &mut String, trees: &[OwnedTree]) {
             }
         }
     }
+}
+
+/// The next slot's text: the layout's own, or the canonical spacing given.
+fn slot_text<'text>(
+    layout: &'text [String],
+    slot: &mut usize,
+    canonical: &'text str,
+) -> &'text str {
+    let text = layout.get(*slot).map_or(canonical, String::as_str);
+    *slot += 1;
+    text
 }

@@ -1,4 +1,5 @@
-ci_gate check_status_render
+ci_gate check-status-render
   stage rust
   description "The generated status document and its two pinned summaries are byte-current against committed ledgers."
   run "rust-script scripts/render-status.rs --check"
+  justification "A rendered status document that lags behind the ledgers causes contributors to act on stale data; the byte-current check was introduced in #1138 (commit 9c31b0530) to keep docs/status.md always current."

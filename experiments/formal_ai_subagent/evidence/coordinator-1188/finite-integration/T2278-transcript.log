@@ -1,0 +1,927 @@
+>> read {"filePath":"rust/src/agentic_coding/file_read.rs","file_path":"rust/src/agentic_coding/file_read.rs","path":"rust/src/agentic_coding/file_read.rs"}
+   <file>
+   00001| //! File-reading agentic recipe for local workspace prompts (issue #627).
+   00002| 
+   00003| mod audit;
+   00004| mod exact;
+   00005| mod supplied;
+   00006| 
+   00007| use audit::file_read_final_answer;
+   00008| pub use supplied::supplied_file_answer;
+   00009| 
+   00010| use super::final_result::{FinalDisposition, FinalResult, record};
+   00011| use serde_json::json;
+   00012| 
+   00013| use super::file_path_shape::{is_dotted_number, peel_sentence_punctuation};
+   00014| use super::general_planner::has_file_write_intent;
+   00015| use super::planner::{AgenticPlan, Capability, PlannedToolCall, tool_capability};
+   00016| use super::shell_command_policy::sentences;
+   00017| use super::write_request;
+   00018| use crate::protocol::{ChatMessage, ToolCall};
+   00019| use crate::seed;
+   00020| 
+   00021| const AUDIT_READ_LINE_LIMIT: usize = 160;
+   00022| const AUDIT_READ_COLUMN_LIMIT: usize = 320;
+   00023| 
+   00024| #[derive(Debug, Clone, PartialEq, Eq)]
+   00025| pub(super) enum FileReadTask {
+   00026|     Direct {
+   00027|         path: String,
+   00028|         mode: FileReadMode,
+   00029|         prefer_run: bool,
+   00030|     },
+   00031|     DirectMany {
+   00032|         paths: Vec<String>,
+   00033|         mode: FileReadMode,
+   00034|     },
+   00035|     ListThenRead {
+   00036|         directory: String,
+   00037|         selection: FileSelection,
+   00038|         mode: FileReadMode,
+   00039|     },
+   00040| }
+   00041| 
+   00042| impl FileReadTask {
+   00043|     pub(super) fn is_analysis(&self) -> bool {
+   00044|         match self {
+   00045|             Self::Direct { mode, .. }
+   00046|             | Self::DirectMany { mode, .. }
+   00047|             | Self::ListThenRead { mode, .. } => mode == &FileReadMode::Audit,
+   00048|         }
+   00049|     }
+   00050| }
+   00051| 
+   00052| #[derive(Debug, Clone, PartialEq, Eq)]
+   00053| pub(super) enum FileReadMode {
+   00054|     Full,
+   00055|     FirstLine,
+   00056|     ExtractValue(String),
+   00057|     Summary,
+   00058|     /// Collect explicit incompleteness evidence without loading whole files.
+   00059|     Audit,
+   00060|     /// A run of the file's lines (PR #1188 G33).
+   00061|     LineSlice(super::workspace_line_operation::LineSlice),
+   00062| }
+   00063| 
+   00064| #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+   00065| pub(super) enum FileSelection {
+   00066|     First,
+   00067|     Last,
+   00068|     All,
+   00069| }
+   00070| 
+   00071| /// Advertised capability ports shared by each local file-read branch.
+   00072| #[derive(Clone, Copy)]
+   00073| struct FileReadTools<'a> {
+   00074|     read: Option<&'a str>,
+   00075|     run: Option<&'a str>,
+   00076|     grep: Option<&'a str>,
+   00077| }
+   00078| 
+   00079| struct ToolResultRecord {
+   00080|     capability: Option<Capability>,
+   00081|     arguments: serde_json::Value,
+   00082|     content: String,
+   00083| }
+   00084| 
+   00085| /// The issue-#627 file-reading recipe: direct filename requests use an advertised
+   00086| /// `read` tool, shell-shaped `cat` requests use the run tool, and multi-step
+   00087| /// "list then read" prompts walk `bash(ls)` → `read(file)` → final content.
+   00088| pub(super) fn plan_file_read_step(
+   00089|     task: &FileReadTask,
+   00090|     messages: &[ChatMessage],
+   00091|     tool_names: &[&str],
+   00092|     result: &mut Option<FinalResult>,
+   00093| ) -> AgenticPlan {
+   00094|     let read_tool = tool_for(tool_names, Capability::Read);
+   00095|     let run_tool = tool_for(tool_names, Capability::Run);
+   00096|     let grep_tool = tool_for(tool_names, Capability::Grep);
+   00097|     let tools = FileReadTools {
+   00098|         read: read_tool,
+   00099|         run: run_tool,
+   00100|         grep: grep_tool,
+   00101|     };
+   00102|     let records = tool_result_records(messages);
+   00103|     let request = crate::protocol::latest_user_request(messages).unwrap_or_default();
+   00104| 
+   00105|     match task {
+   00106|         FileReadTask::Direct {
+   00107|             path,
+   00108|             mode,
+   00109|             prefer_run,
+   00110|         } => plan_direct_file_read(path, mode, *prefer_run, tools, &records, &request, result),
+   00111|         FileReadTask::DirectMany { paths, mode } => {
+   00112|             exact::plan_direct_file_reads(paths, mode, tools, &records, &request, result)
+   00113|         }
+   00114|         FileReadTask::ListThenRead {
+   00115|             directory,
+   00116|             selection,
+   00117|             mode,
+   00118|         } => plan_list_then_read(
+   00119|             directory, *selection, mode, tools, &records, &request, result,
+   00120|         ),
+   00121|     }
+   00122| }
+   00123| 
+   00124| /// The report for a recorded step the harness itself judged failed (rung
+   00125| /// `R916-01`).
+   00126| ///
+   00127| /// A read whose command exited non-zero has no contents to show: issue #905
+   00128| /// watched `cat hello.txt` exit 1 and still be answered with "Contents of
+   00129| /// `hello.txt`:" wrapped around the transport envelope, so the missing file read
+   00130| /// as an empty one. The report is the seed-localized one every other route
+   00131| /// uses, so the request's own language answers it.
+   00132| fn failed_step_answer(label: &str, raw: &str, request: &str) -> Option<String> {
+   00133|     super::tool_result::harness_reported_failure(raw)
+   00134|         .then(|| super::tool_result::render(label, raw, request))
+   00135| }
+   00136| 
+   00137| fn plan_direct_file_read(
+   00138|     path: &str,
+   00139|     mode: &FileReadMode,
+   00140|     prefer_run: bool,
+   00141|     tools: FileReadTools<'_>,
+   00142|     records: &[ToolResultRecord],
+   00143|     request: &str,
+   00144|     result: &mut Option<FinalResult>,
+   00145| ) -> AgenticPlan {
+   00146|     let FileReadTools {
+   00147|         read: read_tool,
+   00148|         run: run_tool,
+   00149|         grep: grep_tool,
+   00150|     } = tools;
+   00151|     if mode == &FileReadMode::Audit {
+   00152|         return exact::plan_direct_file_reads(
+   00153|             &[path.to_owned()],
+   00154|             mode,
+   00155|             tools,
+   00156|             records,
+   00157|             request,
+   00158|             result,
+   00159|         );
+   00160|     }
+   00161|     let read_command = read_command_for(path, mode);
+   00162|     let exact_run = exact::exact_line_key(request).is_some() && run_tool.is_some();
+   00163|     let recorded = if exact_run {
+   00164|         run_record_for_command(records, &read_command).map(|raw| {
+   00165|             (
+   00166|                 read_command.as_str(),
+   00167|                 raw,
+   00168|                 super::tool_result::strip_transport_envelope(raw),
+   00169|             )
+   00170|         })
+   00171|     } else {
+   00172|         read_result_for_path(records, path)
+   00173|             .map(|raw| (path, raw, raw.to_owned()))
+   00174|             .or_else(|| {
+   00175|                 run_record_for_command(records, &read_command).map(|raw| {
+   00176|                     (
+   00177|                         read_command.as_str(),
+   00178|                         raw,
+   00179|                         super::tool_result::strip_transport_envelope(raw),
+   00180|                     )
+   00181|                 })
+   00182|             })
+   00183|     };
+   00184|     if let Some((label, raw, content)) = recorded {
+   00185|         if let Some(failure) = failed_step_answer(label, raw, request) {
+   00186|             return AgenticPlan::Final(failure);
+   00187|         }
+   00188|         let content = if label == path {
+   00189|             super::code_artifact::source_from_read_result(&content)
+   00190|         } else {
+   00191|             content
+   00192|         };
+   00193|         return record(
+   00194|             AgenticPlan::Final(file_read_final_answer(
+   00195|                 mode,
+   00196|                 &[(path.to_owned(), content)],
+   00197|                 request,
+   00198|             )),
+   00199|             FinalDisposition::Finding,
+   00200|             "file_read_observed",
+   00201|             result,
+   00202|         );
+   00203|     }
+   00204| 
+   00205|     if (prefer_run || exact_run)
+   00206|         && let Some(tool) = run_tool
+   00207|     {
+   00208|         return plan_one(
+   00209|             tool,
+   00210|             json!({ "command": read_command_for(path, mode) }).to_string(),
+   00211|         );
+   00212|     }
+   00213| 
+   00214|     if let Some(tool) = read_tool {
+   00215|         return plan_one(tool, read_arguments(path, mode));
+   00216|     }
+   00217|     if let Some(tool) = run_tool {
+   00218|         return plan_one(
+   00219|             tool,
+   00220|             json!({ "command": read_command_for(path, mode) }).to_string(),
+   00221|         );
+   00222|     }
+   00223| 
+   00224|     AgenticPlan::Final(format!(
+   00225|         "I can read `{path}` when the client advertises a file read tool or a shell tool."
+   00226|     ))
+   00227| }
+   00228| 
+   00229| fn plan_list_then_read(
+   00230|     directory: &str,
+   00231|     selection: FileSelection,
+   00232|     mode: &FileReadMode,
+   00233|     tools: FileReadTools<'_>,
+   00234|     records: &[ToolResultRecord],
+   00235|     request: &str,
+   00236|     result: &mut Option<FinalResult>,
+   00237| ) -> AgenticPlan {
+   00238|     let FileReadTools {
+   00239|         read: read_tool,
+   00240|         run: run_tool,
+   00241|         ..
+   00242|     } = tools;
+   00243|     let list_command = list_files_command(directory);
+   00244|     let Some(raw_listing) = run_record_for_command(records, &list_command) else {
+   00245|         if let Some(tool) = run_tool {
+   00246|             return plan_one(tool, json!({ "command": list_command }).to_string());
+   00247|         }
+   00248|         return AgenticPlan::Final(
+   00249|             "I can resolve that file selection when the client advertises a shell tool for listing files."
+   00250|                 .to_owned(),
+   00251|         );
+   00252|     };
+   00253|     if let Some(failure) = failed_step_answer(&list_command, raw_listing, request) {
+   00254|         return AgenticPlan::Final(failure);
+   00255|     }
+   00256|     let listing = super::tool_result::strip_transport_envelope(raw_listing);
+   00257| 
+   00258|     let paths = selected_paths_from_listing(directory, &listing, selection);
+   00259|     if paths.is_empty() {
+   00260|         return AgenticPlan::Final(format!("No files were listed in `{directory}`."));
+   00261|     }
+   00262| 
+   00263|     if let Some(contents) = read_results_for_paths(records, &paths) {
+   00264|         if let Some(failure) = contents
+   00265|             .iter()
+   00266|             .find_map(|(path, raw)| failed_step_answer(path, raw, request))
+   00267|         {
+   00268|             return AgenticPlan::Final(failure);
+   00269|         }
+   00270|         return record(
+   00271|             AgenticPlan::Final(file_read_final_answer(mode, &contents, request)),
+   00272|             FinalDisposition::Finding,
+   00273|             "file_read_observed",
+   00274|             result,
+   00275|         );
+   00276|     }
+   00277| 
+   00278|     if selection == FileSelection::All {
+   00279|         if let Some(tool) = read_tool {
+   00280|             let calls = paths
+   00281|                 .iter()
+   00282|                 .filter(|path| read_result_for_path(records, path).is_none())
+   00283|                 .map(|path| PlannedToolCall {
+   00284|                     tool: tool.to_owned(),
+   00285|                     arguments: read_arguments(path, mode),
+   00286|                 })
+   00287|                 .collect();
+   00288|             return AgenticPlan::ToolCalls(calls);
+   00289|         }
+   00290|     } else if let Some(path) = paths.first()
+   00291|         && let Some(tool) = read_tool
+   00292|     {
+   00293|         return plan_one(tool, read_arguments(path, mode));
+   00294|     }
+   00295| 
+   00296|     if let Some(tool) = run_tool {
+   00297|         let command = if selection == FileSelection::All {
+   00298|             cat_many_command(&paths)
+   00299|         } else {
+   00300|             read_command_for(&paths[0], mode)
+   00301|         };
+   00302|         if let Some(raw) = run_record_for_command(records, &command) {
+   00303|             if let Some(failure) = failed_step_answer(&command, raw, request) {
+   00304|                 return AgenticPlan::Final(failure);
+   00305|             }
+   00306|             return record(
+   00307|                 AgenticPlan::Final(file_read_final_answer(
+   00308|                     mode,
+   00309|                     &[(
+   00310|                         paths.join(", "),
+   00311|                         super::tool_result::strip_transport_envelope(raw),
+   00312|                     )],
+   00313|                     request,
+   00314|                 )),
+   00315|                 FinalDisposition::Finding,
+   00316|                 "file_read_observed",
+   00317|                 result,
+   00318|             );
+   00319|         }
+   00320|         return plan_one(tool, json!({ "command": command }).to_string());
+   00321|     }
+   00322| 
+   00323|     AgenticPlan::Final(
+   00324|         "I can read the selected file after listing when the client advertises a read or shell tool."
+   00325|             .to_owned(),
+   00326|     )
+   00327| }
+   00328| 
+   00329| /// Shell syntax that chains, pipes or redirects commands.
+   00330| const SHELL_OPERATORS: [&str; 5] = ["&&", "||", ";", "|", ">"];
+   00331| 
+   00332| pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
+   00333|     let lower = prompt.to_lowercase();
+   00334| 
+   00335|     // Issue #681: a file-creation / write request must never be routed to the read
+   00336|     // recipe — the target does not exist yet, so reading it is always the wrong
+   00337|     // tool. When the request is a write intent, decline here and let the router
+   00338|     // fall through to the general write/create planner. This is the general rule
+   00339|     // ("write intent beats read intent"), not a per-phrase special case: the same
+   00340|     // gate catches create/write/save/generate across every supported language.
+   00341|     if has_file_write_intent(&lower) {
+   00342|         return None;
+   00343|     }
+   00344|     // A command quoted after a run prefix that chains, pipes or redirects is
+   00345|     // run as written, not read file by file (PR #1188 G62).
+   00346|     if super::shell_command::explicit_passthrough_command(prompt).is_some_and(|command| {
+   00347|         SHELL_OPERATORS
+   00348|             .iter()
+   00349|             .any(|operator| command.contains(operator))
+   00350|     }) {
+   00351|         return None;
+   00352|     }
+   00353| 
+   00354|     if let Some(path) = leading_cat_path(prompt) {
+   00355|         return Some(FileReadTask::Direct {
+   00356|             path,
+   00357|             mode: FileReadMode::Full,
+   00358|             prefer_run: false,
+   00359|         });
+   00360|     }
+   00361| 
+   00362|     if asks_to_read_every_file(&lower) {
+   00363|         return Some(FileReadTask::ListThenRead {
+   00364|             directory: String::from("."),
+   00365|             selection: FileSelection::All,
+   00366|             mode: FileReadMode::Summary,
+   00367|         });
+   00368|     }
+   00369| 
+   00370|     if asks_to_list_then_read(&lower) {
+   00371|         return Some(FileReadTask::ListThenRead {
+   00372|             directory: directory_for_list_read(prompt).unwrap_or_else(|| String::from(".")),
+   00373|             selection: selection_for_prompt(&lower),
+   00374|             mode: mode_for_prompt(prompt),
+   00375|         });
+   00376|     }
+   00377| 
+   00378|     if asks_to_read_file_in_folder(&lower) {
+   00379|         return Some(FileReadTask::ListThenRead {
+   00380|             directory: directory_for_list_read(prompt).unwrap_or_else(|| String::from(".")),
+   00381|             selection: FileSelection::First,
+   00382|             mode: mode_for_prompt(prompt),
+   00383|         });
+   00384|     }
+   00385| 
+   00386|     // A read cue and a path in the same sentence are about each other, and that
+   00387|     // is the ordinary case: "выведи sample.txt", "show me the contents of
+   00388|     // beta.md". Answering it from the sentence rather than from the whole prompt
+   00389|     // is what keeps the two-obligation requests below from being decided by a
+   00390|     // cue that belongs to a different clause (issue #1066).
+   00391|     let read_paths = read_paths_named_beside_their_cue(prompt);
+   00392|     if read_paths.len() > 1 {
+   00393|         return Some(FileReadTask::DirectMany {
+   00394|             paths: read_paths,
+   00395|             mode: mode_for_prompt(prompt),
+   00396|         });
+   00397|     }
+   00398|     if let Some(path) = read_paths.into_iter().next() {
+   00399|         return Some(FileReadTask::Direct {
+   00400|             path,
+   00401|             mode: mode_for_prompt(prompt),
+   00402|             prefer_run: false,
+   00403|         });
+   00404|     }
+   00405| 
+   00406|     // Issue #1066: "write intent beats read intent" is decided above over the
+   00407|     // whole prompt, which settles a request that is only a write. It does not
+   00408|     // settle a request that is both -- "find X out, and leave the answer in
+   00409|     // FILE" -- because there the read cue and the path belong to different
+   00410|     // sentences and different obligations. "Leave observable evidence in
+   00411|     // `.agent-ladder/node-1.2-proof.md`. The first line must be exactly
+   00412|     // `node_path=1.2`" carries the read cue *first line* in the sentence that
+   00413|     // constrains the file's opening, and the only path in the prompt is the one
+   00414|     // the caller asked to have written. Opening it reads a file that does not
+   00415|     // exist yet, and the run ends by recording the resulting error as its
+   00416|     // evidence. Where cue and path were never in one sentence, a path the
+   00417|     // request states as a write destination is therefore not a read target.
+   00418|     if has_file_read_intent(&lower)
+   00419|         && let Some(path) = first_local_file_path(prompt)
+   00420|         && !write_request::is_stated_write_target(prompt, &path)
+   00421|     {
+   00422|         return Some(FileReadTask::Direct {
+   00423|             path,
+   00424|             mode: mode_for_prompt(prompt),
+   00425|             prefer_run: false,
+   00426|         });
+   00427|     }
+   00428| 
+   00429|     None
+   00430| }
+   00431| 
+   00432| /// The first path a request names in the same sentence as a read cue.
+   00433| ///
+   00434| /// Sentence scope is what separates a cue that is *about* the path from one that
+   00435| /// merely shares a prompt with it, the same scoping
+   00436| /// [`super::evidence_record`] uses to split a delivery obligation from the work
+   00437| /// it delivers, and [`super::shell_command`] uses to tell a named command from an
+   00438| /// ordered one (issue #907).
+   00439| fn read_paths_named_beside_their_cue(prompt: &str) -> Vec<String> {
+   00440|     sentences(prompt)
+   00441|         .into_iter()
+   00442|         .find_map(|sentence| {
+   00443|             has_file_read_intent(&sentence.text.to_lowercase())
+   00444|                 .then(|| local_file_paths(sentence.text))
+   00445|         })
+   00446|         .unwrap_or_default()
+   00447| }
+   00448| 
+   00449| fn has_file_read_intent(lower: &str) -> bool {
+   00450|     seed::lexicon().mentions_role(seed::ROLE_FILE_READ_ACTION_CUE, lower)
+   00451| }
+   00452| 
+   00453| fn asks_to_read_every_file(lower: &str) -> bool {
+   00454|     (lower.contains("read every file") || lower.contains("read all files"))
+   00455|         && (lower.contains("summarize") || lower.contains("summary") || lower.contains("here"))
+   00456| }
+   00457| 
+   00458| fn asks_to_list_then_read(lower: &str) -> bool {
+   00459|     let lists_files = lower.contains("list the files")
+   00460|         || lower.contains("list files")
+   00461|         || lower.contains("ls the folder")
+   00462|         || lower.split_whitespace().any(|word| word == "ls");
+   00463|     let reads_after = lower.contains("read")
+   00464|         || lower.contains("contents")
+   00465|         || lower.contains("content")
+   00466|         || lower.contains("show me");
+   00467|     lists_files && reads_after
+   00468| }
+   00469| 
+   00470| fn asks_to_read_file_in_folder(lower: &str) -> bool {
+   00471|     lower.contains("read the file") && (lower.contains(" folder") || lower.contains(" directory"))
+   00472| }
+   00473| 
+   00474| fn selection_for_prompt(lower: &str) -> FileSelection {
+   00475|     if lower.contains("last") {
+   00476|         FileSelection::Last
+   00477|     } else {
+   00478|         FileSelection::First
+   00479|     }
+   00480| }
+   00481| 
+   00482| fn mode_for_prompt(prompt: &str) -> FileReadMode {
+   00483|     // Inspection verbs are multilingual seed data, so normalization must fold
+   00484|     // every script that has case rather than only ASCII. Otherwise a capitalized
+   00485|     // Russian imperative misses the same semantic role its lowercase form hits.
+   00486|     let lower = prompt.to_lowercase();
+   00487|     if lower.contains("first line") {
+   00488|         return FileReadMode::FirstLine;
+   00489|     }
+   00490|     if let Some(key) = extract_value_key(prompt) {
+   00491|         return FileReadMode::ExtractValue(key);
+   00492|     }
+   00493|     if let Some(key) = exact::exact_line_key(prompt) {
+   00494|         return FileReadMode::ExtractValue(key);
+   00495|     }
+   00496|     if seed::lexicon().mentions_role(seed::ROLE_WORKSPACE_INSPECTION_ACTION, &lower) {
+   00497|         return FileReadMode::Audit;
+   00498|     }
+   00499|     if lower.contains("summarize") || lower.contains("summary") {
+   00500|         return FileReadMode::Summary;
+   00501|     }
+   00502|     super::workspace_line_operation::line_slice(prompt)
+   00503|         .map_or(FileReadMode::Full, FileReadMode::LineSlice)
+   00504| }
+   00505| 
+   00506| fn extract_value_key(prompt: &str) -> Option<String> {
+   00507|     let lower = prompt.to_ascii_lowercase();
+   00508|     let marker = "value of ";
+   00509|     let start = lower.find(marker)? + marker.len();
+   00510|     let rest = &prompt[start..];
+   00511|     let key = rest
+   00512|         .split_whitespace()
+   00513|         .next()
+   00514|         .unwrap_or_default()
+   00515|         .trim_matches(|c: char| !is_file_path_char(c));
+   00516|     (!key.is_empty()).then(|| key.to_owned())
+   00517| }
+   00518| 
+   00519| fn leading_cat_path(prompt: &str) -> Option<String> {
+   00520|     let trimmed = prompt.trim().trim_matches('`').trim();
+   00521|     let mut parts = trimmed.split_whitespace();
+   00522|     let command = parts.next()?;
+   00523|     if !command.eq_ignore_ascii_case("cat") {
+   00524|         return None;
+   00525|     }
+   00526|     parts
+   00527|         .next()
+   00528|         .map(clean_file_token)
+   00529|         .filter(|path| !path.is_empty())
+   00530| }
+   00531| 
+   00532| fn first_local_file_path(prompt: &str) -> Option<String> {
+   00533|     local_file_paths(prompt).into_iter().next()
+   00534| }
+   00535| 
+   00536| fn local_file_paths(prompt: &str) -> Vec<String> {
+   00537|     let mut paths = prompt
+   00538|         .split_whitespace()
+   00539|         .map(clean_file_token)
+   00540|         .filter(|token| looks_like_local_file_path(token))
+   00541|         .collect::<Vec<_>>();
+   00542|     paths.dedup();
+   00543|     paths
+   00544| }
+   00545| 
+   00546| /// A path token as prose wrote it, stripped of the punctuation the sentence put
+   00547| /// around it.
+   00548| ///
+   00549| /// The terminating dot is delegated to
+   00550| /// [`trim_trailing_sentence_dot`](super::file_path_shape::trim_trailing_sentence_dot)
+   00551| /// so the read route, the write-request parser and the shell route all draw the
+   00552| /// same boundary between a path and the sentence carrying it.
+   00553| fn clean_file_token(token: &str) -> String {
+   00554|     peel_sentence_punctuation(token, |token| {
+   00555|         token
+   00556|             .trim_matches('`')
+   00557|             .trim_matches('"')
+   00558|             .trim_matches('\'')
+   00559|             .trim_matches(|c: char| {
+   00560|                 matches!(
+   00561|                     c,
+   00562|                     ',' | ';' | ':' | '!' | '?' | ')' | '(' | '[' | ']' | '{' | '}'
+   00563|                 )
+   00564|             })
+   00565|     })
+   00566|     .to_owned()
+   00567| }
+   00568| 
+   00569| fn looks_like_local_file_path(token: &str) -> bool {
+   00570|     if token.is_empty()
+   00571|         || token.contains("://")
+   00572|         || token.starts_with("http:")
+   00573|         || token.starts_with("https:")
+   00574|         || is_dotted_number(token)
+   00575|     {
+   00576|         return false;
+   00577|     }
+   00578|     if token.contains('/') {
+   00579|         return token.chars().all(is_file_path_char);
+   00580|     }
+   00581|     let Some((stem, extension)) = token.rsplit_once('.') else {
+   00582|         return false;
+   00583|     };
+   00584|     !stem.is_empty()
+   00585|         && !extension.is_empty()
+   00586|         && extension.len() <= 12
+   00587|         && token.chars().all(is_file_path_char)
+   00588| }
+   00589| 
+   00590| const fn is_file_path_char(character: char) -> bool {
+   00591|     character.is_ascii_alphanumeric() || matches!(character, '_' | '-' | '.' | '/' | '\\' | '@')
+   00592| }
+   00593| 
+   00594| fn directory_for_list_read(prompt: &str) -> Option<String> {
+   00595|     let tokens = prompt
+   00596|         .split_whitespace()
+   00597|         .map(clean_file_token)
+   00598|         .collect::<Vec<_>>();
+   00599|     for window in tokens.windows(3) {
+   00600|         if window[0].eq_ignore_ascii_case("the")
+   00601|             && !window[1].is_empty()
+   00602|             && (window[2].eq_ignore_ascii_case("folder")
+   00603|                 || window[2].eq_ignore_ascii_case("directory"))
+   00604|         {
+   00605|             return Some(window[1].clone());
+   00606|         }
+   00607|         if (window[0].eq_ignore_ascii_case("in") || window[0].eq_ignore_ascii_case("inside"))
+   00608|             && window[1].eq_ignore_ascii_case("the")
+   00609|             && !window[2].is_empty()
+   00610|         {
+   00611|             return Some(window[2].clone());
+   00612|         }
+   00613|     }
+   00614|     for window in tokens.windows(2) {
+   00615|         let lower = window[0].to_ascii_lowercase();
+   00616|         if !window[0].is_empty()
+   00617|             && (window[1].eq_ignore_ascii_case("folder")
+   00618|                 || window[1].eq_ignore_ascii_case("directory"))
+   00619|             && !["the", "a", "this", "current"].contains(&lower.as_str())
+   00620|         {
+   00621|             return Some(window[0].clone());
+   00622|         }
+   00623|     }
+   00624|     None
+   00625| }
+   00626| 
+   00627| fn tool_result_records(messages: &[ChatMessage]) -> Vec<ToolResultRecord> {
+   00628|     // Only results produced *within the current user turn* ground a read. A
+   00629|     // client loops tool calls without a new user message, so the current turn is
+   00630|     // everything after the last user message; a `cat 1.txt` result from an
+   00631|     // earlier turn must never be replayed as the answer to a later `read 1.txt`
+   00632|     // (issue #755 — read/list determinism). Without this bound the recipe short
+   00633|     // -circuits on a stale, unrelated result and skips the fresh read entirely.
+   00634|     let turn_start = messages
+   00635|         .iter()
+   00636|         .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+   00637|         .map_or(0, |index| index + 1);
+   00638|     let mut records = Vec::new();
+   00639|     for (index, message) in messages.iter().enumerate().skip(turn_start) {
+   00640|         if !message.role.eq_ignore_ascii_case("tool") {
+   00641|             continue;
+   00642|         }
+   00643|         let (capability, arguments) =
+   00644|             tool_result_call(messages, index).map_or((None, serde_json::Value::Null), |call| {
+   00645|                 (
+   00646|                     tool_capability(&call.function.name),
+   00647|                     serde_json::from_str(&call.function.arguments)
+   00648|                         .unwrap_or(serde_json::Value::Null),
+   00649|                 )
+   00650|             });
+   00651|         records.push(ToolResultRecord {
+   00652|             capability,
+   00653|             arguments,
+   00654|             content: message.content.plain_text(),
+   00655|         });
+   00656|     }
+   00657|     records
+   00658| }
+   00659| 
+   00660| fn tool_result_call(messages: &[ChatMessage], index: usize) -> Option<&ToolCall> {
+   00661|     let call_id = messages[index].tool_call_id.as_ref()?;
+   00662|     messages[..index]
+   00663|         .iter()
+   00664|         .flat_map(|prior| prior.tool_calls.iter())
+   00665|         .find(|call| &call.id == call_id)
+   00666| }
+   00667| 
+   00668| fn read_result_for_path<'a>(records: &'a [ToolResultRecord], path: &str) -> Option<&'a str> {
+   00669|     records
+   00670|         .iter()
+   00671|         .find(|record| {
+   00672|             record.capability == Some(Capability::Read)
+   00673|                 && path_argument(&record.arguments)
+   00674|                     .is_some_and(|recorded| same_path(&recorded, path))
+   00675|         })
+   00676|         .map(|record| record.content.as_str())
+   00677| }
+   00678| 
+   00679| fn grep_result_for_path<'a>(
+   00680|     records: &'a [ToolResultRecord],
+   00681|     path: &str,
+   00682|     pattern: &str,
+   00683| ) -> Option<&'a str> {
+   00684|     records
+   00685|         .iter()
+   00686|         .find(|record| {
+   00687|             record.capability == Some(Capability::Grep)
+   00688|                 && path_argument(&record.arguments)
+   00689|                     .is_some_and(|recorded| same_path(&recorded, path))
+   00690|                 && record
+   00691|                     .arguments
+   00692|                     .get("pattern")
+   00693|                     .and_then(serde_json::Value::as_str)
+   00694|                     == Some(pattern)
+   00695|         })
+   00696|         .map(|record| record.content.as_str())
+   00697| }
+   00698| 
+   00699| /// Whether a recorded path argument denotes the path the planner asked for.
+   00700| ///
+   00701| /// The transcript holds the argument the *client's* schema accepted, not the one
+   00702| /// the planner planned with: [`crate::protocol_responses`] rewrites `path` to
+   00703| /// Gemini's `absolute_path` and absolutises it, so a recorded
+   00704| /// `/work/alpha.txt` has to answer a planned `alpha.txt`.
+   00705| fn same_path(recorded: &str, planned: &str) -> bool {
+   00706|     if recorded == planned {
+   00707|         return true;
+   00708|     }
+   00709|     let planned = planned.trim_start_matches("./");
+   00710|     recorded
+   00711|         .trim_start_matches("./")
+   00712|         .strip_suffix(planned)
+   00713|         .is_some_and(|prefix| prefix.is_empty() || prefix.ends_with('/'))
+   00714| }
+   00715| 
+   00716| fn read_results_for_paths(
+   00717|     records: &[ToolResultRecord],
+   00718|     paths: &[String],
+   00719| ) -> Option<Vec<(String, String)>> {
+   00720|     let mut out = Vec::with_capacity(paths.len());
+   00721|     for path in paths {
+   00722|         let content = read_result_for_path(records, path)?;
+   00723|         out.push((path.clone(), content.to_owned()));
+   00724|     }
+   00725|     Some(out)
+   00726| }
+   00727| 
+   00728| /// The recorded run result for `command`, exactly as the harness reported it.
+   00729| ///
+   00730| /// Callers that only want the command's own text strip the transport envelope
+   00731| /// themselves; callers that have to judge whether the step *succeeded* need the
+   00732| /// envelope intact, because the `Exit Code:` field is what it carries (rung
+   00733| /// `R916-01`).
+   00734| fn run_record_for_command<'a>(records: &'a [ToolResultRecord], command: &str) -> Option<&'a str> {
+   00735|     records
+   00736|         .iter()
+   00737|         .find(|record| {
+   00738|             record.capability == Some(Capability::Run)
+   00739|                 && super::tool_result::command_argument(&record.arguments.to_string()).as_deref()
+   00740|                     == Some(command)
+   00741|         })
+   00742|         .map(|record| record.content.as_str())
+   00743| }
+   00744| 
+   00745| fn path_argument(arguments: &serde_json::Value) -> Option<String> {
+   00746|     ["filePath", "path", "file_path", "absolute_path"]
+   00747|         .iter()
+   00748|         .find_map(|key| arguments.get(*key).and_then(serde_json::Value::as_str))
+   00749|         .map(ToOwned::to_owned)
+   00750| }
+   00751| 
+   00752| fn read_arguments(path: &str, mode: &FileReadMode) -> String {
+   00753|     let mut arguments = json!({
+   00754|         "filePath": path,
+   00755|         "path": path,
+   00756|         "file_path": path,
+   00757|     });
+   00758|     if mode == &FileReadMode::Audit {
+   00759|         arguments["offset"] = json!(0);
+   00760|         arguments["limit"] = json!(AUDIT_READ_LINE_LIMIT);
+   00761|         arguments["columnOffset"] = json!(0);
+   00762|         arguments["columnLimit"] = json!(AUDIT_READ_COLUMN_LIMIT);
+   00763|     }
+   00764|     arguments.to_string()
+   00765| }
+   00766| 
+   00767| fn grep_arguments(path: &str, pattern: &str) -> String {
+   00768|     json!({ "path": path, "pattern": pattern }).to_string()
+   00769| }
+   00770| 
+   00771| /// Build the audit query from semantic seed data. The one structural member is
+   00772| /// an unchecked Markdown box: syntax rather than natural-language domain data.
+   00773| fn file_analysis_pattern() -> String {
+   00774|     let mut alternatives = vec![String::from(r"\[\s*\]")];
+   00775|     alternatives.extend(
+   00776|         seed::lexicon()
+   00777|             .words_for_role(seed::ROLE_FILE_ANALYSIS_GAP_MARKER)
+   00778|             .into_iter()
+   00779|             .filter(|surface| !surface.trim().is_empty())
+   00780|             .map(|surface| regex_escape(&surface)),
+   00781|     );
+   00782|     alternatives.sort();
+   00783|     alternatives.dedup();
+   00784|     format!("(?i)(?:{})", alternatives.join("|"))
+   00785| }
+   00786| 
+   00787| fn regex_escape(surface: &str) -> String {
+   00788|     surface
+   00789|         .chars()
+   00790|         .flat_map(|character| {
+   00791|             if matches!(
+   00792|                 character,
+   00793|                 '.' | '+' | '*' | '?' | '(' | ')' | '|' | '[' | ']' | '{' | '}' | '^' | '$' | '\\'
+   00794|             ) {
+   00795|                 vec!['\\', character]
+   00796|             } else {
+   00797|                 vec![character]
+   00798|             }
+   00799|         })
+   00800|         .collect()
+   00801| }
+   00802| 
+   00803| fn read_command_for(path: &str, mode: &FileReadMode) -> String {
+   00804|     match mode {
+   00805|         FileReadMode::FirstLine => format!("head -n 1 {}", shell_path(path)),
+   00806|         FileReadMode::ExtractValue(key) => {
+   00807|             let expression = shell_string(&format!("s/^{key}=//p"));
+   00808|             ["sed", "-n", &expression, &shell_path(path)].join(" ")
+   00809|         }
+   00810|         FileReadMode::Audit => {
+   00811|             let line_range = format!("'1,{AUDIT_READ_LINE_LIMIT}p'");
+   00812|             let column_range = format!("1-{AUDIT_READ_COLUMN_LIMIT}");
+   00813|             [
+   00814|                 "sed",
+   00815|                 "-n",
+   00816|                 &line_range,
+   00817|                 &shell_path(path),
+   00818|                 "|",
+   00819|                 "cut",
+   00820|                 "-c",
+   00821|                 &column_range,
+   00822|             ]
+   00823|             .join(" ")
+   00824|         }
+   00825|         FileReadMode::Full | FileReadMode::Summary | FileReadMode::LineSlice(_) => {
+   00826|             format!("cat {}", shell_path(path))
+   00827|         }
+   00828|     }
+   00829| }
+   00830| 
+   00831| fn list_files_command(directory: &str) -> String {
+   00832|     if directory == "." {
+   00833|         String::from("find . -maxdepth 1 -type f | sed 's#^./##' | sort")
+   00834|     } else {
+   00835|         format!(
+   00836|             "find {} -maxdepth 1 -type f | sed 's#^.*/##' | sort",
+   00837|             shell_path(directory)
+   00838|         )
+   00839|     }
+   00840| }
+   00841| 
+   00842| fn cat_many_command(paths: &[String]) -> String {
+   00843|     paths
+   00844|         .iter()
+   00845|         .map(|path| {
+   00846|             format!(
+   00847|                 "printf '==> %s <==\\n' {}; cat {}",
+   00848|                 shell_path(path),
+   00849|                 shell_path(path)
+   00850|             )
+   00851|         })
+   00852|         .collect::<Vec<_>>()
+   00853|         .join("; ")
+   00854| }
+   00855| 
+   00856| fn shell_path(path: &str) -> String {
+   00857|     if path.chars().all(|character| {
+   00858|         character.is_ascii_alphanumeric() || matches!(character, '_' | '-' | '.' | '/')
+   00859|     }) {
+   00860|         path.to_owned()
+   00861|     } else {
+   00862|         format!("'{}'", path.replace('\'', "'\\''"))
+   00863|     }
+   00864| }
+   00865| 
+   00866| fn shell_string(value: &str) -> String {
+   00867|     format!("'{}'", value.replace('\'', "'\\''"))
+   00868| }
+   00869| 
+   00870| fn selected_paths_from_listing(
+   00871|     directory: &str,
+   00872|     listing: &str,
+   00873|     selection: FileSelection,
+   00874| ) -> Vec<String> {
+   00875|     let mut entries = listing
+   00876|         .lines()
+   00877|         .map(str::trim)
+   00878|         .filter(|line| !line.is_empty())
+   00879|         .map(|line| line.trim_start_matches("./").to_owned())
+   00880|         .collect::<Vec<_>>();
+   00881|     entries.sort();
+   00882|     entries.dedup();
+   00883| 
+   00884|     let selected = match selection {
+   00885|         FileSelection::First => entries.into_iter().take(1).collect(),
+   00886|         FileSelection::Last => entries.into_iter().rev().take(1).collect(),
+   00887|         FileSelection::All => entries,
+   00888|     };
+   00889| 
+   00890|     selected
+   00891|         .into_iter()
+   00892|         .map(|entry: String| {
+   00893|             if directory == "." || entry.contains('/') {
+   00894|                 entry
+   00895|             } else {
+   00896|                 format!("{directory}/{entry}")
+   00897|             }
+   00898|         })
+   00899|         .collect()
+   00900| }
+   00901| 
+   00902| fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
+   00903|     tool_names
+   00904|         .iter()
+   00905|         .copied()
+   00906|         .find(|name| tool_capability(name) == Some(capability))
+   00907| }
+   00908| 
+   00909| fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
+   00910|     AgenticPlan::ToolCalls(vec![PlannedToolCall {
+   00911|         tool: tool.to_owned(),
+   00912|         arguments,
+   00913|     }])
+   00914| }
+   00915| 
+   
+   (End of file - total 915 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/file_read.rs","file_path":"rust/src/agentic_coding/file_read.rs","new":"fn plan_direct_file_read(\n    path: &str,\n    mode: &FileReadMode,\n    prefer_run: bool,\n    tools: FileReadTools<'_>,\n    records: &[ToolResultRecord],\n    request: &str,\n    result: &mut Option<FinalResult>,\n) -> AgenticPlan {\n    let FileReadTools {\n        read: read_tool,\n        run: run_tool,\n        ..\n    } = tools;\n","newString":"fn plan_direct_file_read(\n    path: &str,\n    mode: &FileReadMode,\n    prefer_run: bool,\n    tools: FileReadTools<'_>,\n    records: &[ToolResultRecord],\n    request: &str,\n    result: &mut Option<FinalResult>,\n) -> AgenticPlan {\n    let FileReadTools {\n        read: read_tool,\n        run: run_tool,\n        ..\n    } = tools;\n","new_str":"fn plan_direct_file_read(\n    path: &str,\n    mode: &FileReadMode,\n    prefer_run: bool,\n    tools: FileReadTools<'_>,\n    records: &[ToolResultRecord],\n    request: &str,\n    result: &mut Option<FinalResult>,\n) -> AgenticPlan {\n    let FileReadTools {\n        read: read_tool,\n        run: run_tool,\n        ..\n    } = tools;\n","new_string":"fn plan_direct_file_read(\n    path: &str,\n    mode: &FileReadMode,\n    prefer_run: bool,\n    tools: FileReadTools<'_>,\n    records: &[ToolResultRecord],\n    request: &str,\n    result: &mut Option<FinalResult>,\n) -> AgenticPlan {\n    let FileReadTools {\n        read: read_tool,\n        run: run_tool,\n        ..\n    } = tools;\n","old":"fn plan_direct_file_read(\n    path: &str,\n    mode: &FileReadMode,\n    prefer_run: bool,\n    tools: FileReadTools<'_>,\n    records: &[ToolResultRecord],\n    request: &str,\n    result: &mut Option<FinalResult>,\n) -> AgenticPlan {\n    let FileReadTools {\n        read: read_tool,\n        run: run_tool,\n        grep: grep_tool,\n    } = tools;\n","oldString":"fn plan_direct_file_read(\n    path: &str,\n    mode: &FileReadMode,\n    prefer_run: bool,\n    tools: FileReadTools<'_>,\n    records: &[ToolResultRecord],\n    request: &str,\n    result: &mut Option<FinalResult>,\n) -> AgenticPlan {\n    let FileReadTools {\n        read: read_tool,\n        run: run_tool,\n        grep: grep_tool,\n    } = tools;\n","old_str":"fn plan_direct_file_read(\n    path: &str,\n    mode: &FileReadMode,\n    prefer_run: bool,\n    tools: FileReadTools<'_>,\n    records: &[ToolResultRecord],\n    request: &str,\n    result: &mut Option<FinalResult>,\n) -> AgenticPlan {\n    let FileReadTools {\n        read: read_tool,\n        run: run_tool,\n        grep: grep_tool,\n    } = tools;\n","old_string":"fn plan_direct_file_read(\n    path: &str,\n    mode: &FileReadMode,\n    prefer_run: bool,\n    tools: FileReadTools<'_>,\n    records: &[ToolResultRecord],\n    request: &str,\n    result: &mut Option<FinalResult>,\n) -> AgenticPlan {\n    let FileReadTools {\n        read: read_tool,\n        run: run_tool,\n        grep: grep_tool,\n    } = tools;\n","path":"rust/src/agentic_coding/file_read.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/file_read.rs"}
+   Output: e697d6e7beee20c5c2a0d3ebf3293efc9bdecdcef0773ecf89ca528e334c2782  rust/src/agentic_coding/file_read.rs
+   
+   Exit Code: 0
+== answer ==
+Verification failed for `rust/src/agentic_coding/file_read.rs`: the observed bytes differ from the planned workspace effect.

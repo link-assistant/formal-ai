@@ -20,16 +20,16 @@
 use std::fmt::Write as _;
 
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use super::corpus;
 use crate::agent::{AgentCommandResult, AgentError, AgentWorkspace, AgentWorkspaceConfig};
 use crate::algorithm_discovery::{
-    discover_algorithms, traces_from_memory_events, AlgorithmCandidate,
+    AlgorithmCandidate, discover_algorithms, traces_from_memory_events,
 };
 use crate::memory::MemoryStore;
 use crate::protocol::{
-    create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage, ToolCall,
+    ChatCompletionRequest, ChatMessage, ToolCall, create_chat_completion_with_solver,
 };
 use crate::skill_procedure::CompiledProcedure;
 use crate::solver::{SolverConfig, UniversalSolver};
@@ -44,14 +44,15 @@ pub const CORE_RECIPE_TOOLS: [&str; 4] = ["web_search", "web_fetch", "write_file
 
 /// The tool set the driver advertises.
 ///
-/// [`CORE_RECIPE_TOOLS`] plus the source-tree translator (plan 16 L2g) so the
+/// [`CORE_RECIPE_TOOLS`] plus observed workspace reads and the translator so the
 /// agent CLI can turn the js/ts cycle mid-session without shelling out.
-pub const DRIVER_TOOLS: [&str; 5] = [
+pub const DRIVER_TOOLS: [&str; 6] = [
     "web_search",
     "web_fetch",
     "write_file",
     "run_command",
     "translate",
+    "read_file",
 ];
 
 /// A hard cap on agentic turns (server round-trips). The recipe needs five; the
@@ -74,6 +75,9 @@ pub struct DriverToolStep {
 pub struct DriverOutcome {
     /// The task the driver was asked to solve.
     pub task: String,
+    /// The exact tool names advertised for this particular execution.
+    #[serde(default)]
+    pub tools_advertised: Vec<String>,
     /// Every tool call the driver executed, in order.
     pub steps: Vec<DriverToolStep>,
     /// The server's final assistant text (the knowledge base inline).
@@ -118,7 +122,7 @@ impl DriverOutcome {
             "task": self.task,
             "driver": "formal-ai in-repo agentic CLI",
             "server": "formal-ai OpenAI-compatible chat completions",
-            "tools_advertised": DRIVER_TOOLS,
+            "tools_advertised": self.tools_advertised,
             "turns": self.turns,
             "hit_turn_cap": self.hit_turn_cap,
             "steps": self.steps.iter().map(|step| json!({
@@ -141,6 +145,17 @@ pub fn run_agentic_task(task: &str) -> Result<DriverOutcome, AgentError> {
     run_agentic_task_in(task, &AgentWorkspaceConfig::default())
 }
 
+/// Execute with exactly the caller's advertised tool names, including archived sessions.
+///
+/// # Errors
+/// Returns an error for unsupported or repeated tools, or an unavailable workspace.
+pub fn run_agentic_task_with_tools(
+    task: &str,
+    tool_names: &[&str],
+) -> Result<DriverOutcome, AgentError> {
+    run_agentic_task_in_with_tools(task, &AgentWorkspaceConfig::default(), tool_names)
+}
+
 /// Drive the agentic loop for `task` using the given workspace `config`.
 ///
 /// # Errors
@@ -150,6 +165,25 @@ pub fn run_agentic_task_in(
     task: &str,
     config: &AgentWorkspaceConfig,
 ) -> Result<DriverOutcome, AgentError> {
+    run_agentic_task_in_with_tools(task, config, &DRIVER_TOOLS)
+}
+
+fn run_agentic_task_in_with_tools(
+    task: &str,
+    config: &AgentWorkspaceConfig,
+    tool_names: &[&str],
+) -> Result<DriverOutcome, AgentError> {
+    if tool_names
+        .iter()
+        .enumerate()
+        .any(|(index, name)| !DRIVER_TOOLS.contains(name) || tool_names[..index].contains(name))
+    {
+        return Err(std::io::Error::from(std::io::ErrorKind::InvalidInput).into());
+    }
+    let advertised_tools = tool_names
+        .iter()
+        .map(|name| (*name).to_owned())
+        .collect::<Vec<_>>();
     // Agent mode is the explicit opt-in the server's tool gate requires; without
     // it the server refuses every tool. The driver is that isolated execution
     // environment, so it opts in.
@@ -157,7 +191,7 @@ pub fn run_agentic_task_in(
         agent_mode: true,
         ..SolverConfig::default()
     });
-    let tools = tool_definitions(&DRIVER_TOOLS);
+    let tools = tool_definitions(tool_names);
     let mut workspace = AgentWorkspace::for_prompt(task, config)?;
     let mut messages = vec![ChatMessage::user(task)];
     let mut steps = Vec::new();
@@ -169,6 +203,7 @@ pub fn run_agentic_task_in(
                 task: task.to_owned(),
                 steps,
                 final_answer: String::new(),
+                tools_advertised: advertised_tools,
                 turns,
                 hit_turn_cap: true,
             });
@@ -192,6 +227,7 @@ pub fn run_agentic_task_in(
                 task: task.to_owned(),
                 steps,
                 final_answer: String::new(),
+                tools_advertised: advertised_tools,
                 turns,
                 hit_turn_cap: false,
             });
@@ -204,6 +240,7 @@ pub fn run_agentic_task_in(
                 task: task.to_owned(),
                 steps,
                 final_answer: choice.message.content.plain_text(),
+                tools_advertised: advertised_tools,
                 turns,
                 hit_turn_cap: false,
             });
@@ -215,17 +252,21 @@ pub fn run_agentic_task_in(
         let assistant = choice.message;
         let mut results = Vec::with_capacity(assistant.tool_calls.len());
         for call in &assistant.tool_calls {
-            let (result, failed) = execute_tool_call(call, &mut workspace);
+            if !tool_names.contains(&call.function.name.as_str()) {
+                return Err(std::io::Error::from(std::io::ErrorKind::InvalidInput).into());
+            }
+            let (result, failed, source_read) = execute_tool_call(call, &mut workspace);
             steps.push(DriverToolStep {
                 tool: call.function.name.clone(),
                 arguments: call.function.arguments.clone(),
                 result: result.clone(),
             });
-            let message = if failed {
+            let mut message = if failed {
                 ChatMessage::tool_result_error(call.id.clone(), call.function.name.clone(), result)
             } else {
                 ChatMessage::tool_result(call.id.clone(), call.function.name.clone(), result)
             };
+            message.source_read = source_read;
             results.push(message);
         }
         messages.push(assistant);
@@ -237,80 +278,142 @@ pub fn run_agentic_task_in(
 /// return the textual result to feed back to the server, plus whether the call
 /// failed to produce its output at all (refused, unsupported, or lost) — the
 /// transport fact a real Agent CLI flags with `is_error`.
-fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> (String, bool) {
-    let arguments: Value = serde_json::from_str(&call.function.arguments).unwrap_or(Value::Null);
-    match call.function.name.as_str() {
-        "web_search" => (corpus::web_search(arg_str(&arguments, "query")), false),
-        "web_fetch" => (corpus::web_fetch(arg_str(&arguments, "url")), false),
-        "write_file" => {
-            let path = arg_str(&arguments, "path");
-            let content = arg_str(&arguments, "content");
-            workspace.create_file(path, content);
-            (format!("wrote {} byte(s) to {path}", content.len()), false)
-        }
-        "run_command" => {
-            let command = arg_str(&arguments, "command");
-            if let Some(result) = execute_algorithm_command(command, workspace) {
-                return (result, false);
+fn execute_tool_call(
+    call: &ToolCall,
+    workspace: &mut AgentWorkspace,
+) -> (String, bool, Option<Value>) {
+    let mut source_read = None;
+    let (content, failed) = (|| {
+        let arguments: Value =
+            serde_json::from_str(&call.function.arguments).unwrap_or(Value::Null);
+        match call.function.name.as_str() {
+            "web_search" => (corpus::web_search(arg_str(&arguments, "query")), false),
+            "web_fetch" => match corpus::web_fetch_result(arg_str(&arguments, "url")) {
+                Ok(body) => (body, false),
+                Err(detail) => (detail, true),
+            },
+            "read_file" => {
+                let path = arg_str(&arguments, "path");
+                match workspace.read_file(path) {
+                    Ok(content) => (
+                        super::tool_result::complete_owned_source_read_frame(&content),
+                        false,
+                    ),
+                    Err(error) => {
+                        let missing = matches!(&error, AgentError::Io(error)
+                        if error.kind() == std::io::ErrorKind::NotFound);
+                        source_read = Some(json!({
+                            "path": path, "success": false, "complete": false, "format": "raw",
+                            "error_code": if missing { "ENOENT" } else { "UNKNOWN" },
+                        }));
+                        (error.to_string(), true)
+                    }
+                }
             }
-            if let Some(result) = execute_procedure_conformance(command, workspace) {
-                return (result, false);
+            "write_file" => {
+                let path = arg_str(&arguments, "path");
+                let content = arg_str(&arguments, "content");
+                workspace.create_file(path, content);
+                (format!("wrote {} byte(s) to {path}", content.len()), false)
             }
-            workspace.run_command(command);
-            workspace.last_command_result().map_or_else(
-                || {
-                    (
-                        format!("run_command produced no result for {command:?}"),
-                        true,
-                    )
-                },
-                |executed| (format_command_result(executed), false),
-            )
-        }
-        // Plan 16 L2g: the same library the CLI's `--write` runs, executed
-        // against the sandbox workspace — the workspace root plays the
-        // repository root, so `js/…` paths are the ones the plan wrote
-        // there. The report text is rendered from the seed the CLI uses,
-        // and a refusal, wrong root or unreadable source is an error result
-        // so the agent sees the failure instead of a silent no-op.
-        "translate" => {
-            let Some(from) = crate::meta_translate::SourceRoot::parse(arg_str(&arguments, "from"))
-            else {
-                return ("error: translate needs a known from root (js, ts)".to_owned(), true);
-            };
-            let Some(to) = crate::meta_translate::SourceRoot::parse(arg_str(&arguments, "to"))
-            else {
-                return ("error: translate needs a known to root (js, ts)".to_owned(), true);
-            };
-            let path = arg_str(&arguments, "path");
-            let write = arguments
-                .get("write")
-                .and_then(serde_json::Value::as_bool)
-                .unwrap_or(false);
-            let report = if path.is_empty() {
-                if !write {
+            "run_command" => {
+                let command = arg_str(&arguments, "command");
+                if let Some(result) = execute_algorithm_command(command, workspace) {
+                    let (stdout, error, operation_success) = match result {
+                        Ok(stdout) => (stdout, None, true),
+                        Err(error) => (String::new(), Some(error), false),
+                    };
                     return (
-                        "error: a tree translation must set write, or name one path".to_owned(),
-                        true,
+                        json!({
+                            "schema": "algorithm-command-receipt/v1", "command": command,
+                            "operation_success": operation_success, "exit_code": null,
+                            "stdout": stdout, "stderr": "", "error": error,
+                            "complete": true, "truncated": false, "timed_out": false,
+                        })
+                        .to_string(),
+                        !operation_success,
                     );
                 }
-                crate::translate_write::write_tree(from, to, workspace.root())
-            } else if write {
-                crate::translate_write::write_one(from, to, workspace.root(), path)
-            } else {
-                return translate_without_write(from, to, workspace.root(), path);
-            };
-            let (intent, values) = report.intent();
-            let values = values
-                .iter()
-                .map(|(key, value)| (*key, value.as_str()))
-                .collect::<Vec<_>>();
-            let rendered = crate::seed::render_response(intent, "en", &values)
-                .unwrap_or_else(|| intent.to_owned());
-            (rendered, report.is_failure())
+                if let Some(result) = execute_procedure_conformance(command, workspace) {
+                    let (stdout, error, operation_success) = match result {
+                        Ok(stdout) => (stdout, None, true),
+                        Err(error) => (String::new(), Some(error), false),
+                    };
+                    return (
+                        json!({
+                            "schema": "procedure-command-receipt/v1", "command": command,
+                            "operation_success": operation_success, "exit_code": null,
+                            "stdout": stdout, "stderr": "", "error": error,
+                            "complete": true, "truncated": false, "timed_out": false,
+                        })
+                        .to_string(),
+                        !operation_success,
+                    );
+                }
+                workspace.run_command(command);
+                workspace.last_command_result().map_or_else(
+                    || {
+                        (
+                            format!("run_command produced no result for {command:?}"),
+                            true,
+                        )
+                    },
+                    |executed| (format_command_result(executed), false),
+                )
+            }
+            // Plan 16 L2g: the same library the CLI's `--write` runs, executed
+            // against the sandbox workspace — the workspace root plays the
+            // repository root, so `js/…` paths are the ones the plan wrote
+            // there. The report text is rendered from the seed the CLI uses,
+            // and a refusal, wrong root or unreadable source is an error result
+            // so the agent sees the failure instead of a silent no-op.
+            "translate" => {
+                let Some(from) =
+                    crate::meta_translate::SourceRoot::parse(arg_str(&arguments, "from"))
+                else {
+                    return (
+                        "error: translate needs a known from root (js, ts)".to_owned(),
+                        true,
+                    );
+                };
+                let Some(to) = crate::meta_translate::SourceRoot::parse(arg_str(&arguments, "to"))
+                else {
+                    return (
+                        "error: translate needs a known to root (js, ts)".to_owned(),
+                        true,
+                    );
+                };
+                let path = arg_str(&arguments, "path");
+                let write = arguments
+                    .get("write")
+                    .and_then(serde_json::Value::as_bool)
+                    .unwrap_or(false);
+                let report = if path.is_empty() {
+                    if !write {
+                        return (
+                            "error: a tree translation must set write, or name one path".to_owned(),
+                            true,
+                        );
+                    }
+                    crate::translate_write::write_tree(from, to, workspace.root())
+                } else if write {
+                    crate::translate_write::write_one(from, to, workspace.root(), path)
+                } else {
+                    return translate_without_write(from, to, workspace.root(), path);
+                };
+                let (intent, values) = report.intent();
+                let values = values
+                    .iter()
+                    .map(|(key, value)| (*key, value.as_str()))
+                    .collect::<Vec<_>>();
+                let rendered = crate::seed::render_response(intent, "en", &values)
+                    .unwrap_or_else(|| intent.to_owned());
+                (rendered, report.is_failure())
+            }
+            other => (format!("error: unsupported tool {other}"), true),
         }
-        other => (format!("error: unsupported tool {other}"), true),
-    }
+    })();
+    (content, failed, source_read)
 }
 
 /// The read-only half of the translate tool: the result text is the rendered
@@ -326,16 +429,20 @@ fn translate_without_write(
     let report = match std::fs::read_to_string(root.join(repo_relative)) {
         Ok(source) => match crate::meta_translate::translate(from, to, repo_relative, &source) {
             TranslationOutcome::Rendered { target, .. } => return (target, false),
-            TranslationOutcome::Refused { refusals } => crate::translate_write::WriteReport::Refused {
-                items: crate::translate_write::refusal_items(repo_relative, &refusals),
-            },
+            TranslationOutcome::Refused { refusals } => {
+                crate::translate_write::WriteReport::Refused {
+                    items: crate::translate_write::refusal_items(repo_relative, &refusals),
+                }
+            }
             TranslationOutcome::Pending { .. } => {
                 crate::translate_write::WriteReport::UnsupportedLeg { from, to }
             }
-            TranslationOutcome::Invalid { reason } => crate::translate_write::WriteReport::Invalid {
-                path: repo_relative.to_owned(),
-                reason,
-            },
+            TranslationOutcome::Invalid { reason } => {
+                crate::translate_write::WriteReport::Invalid {
+                    path: repo_relative.to_owned(),
+                    reason,
+                }
+            }
         },
         Err(_) => crate::translate_write::WriteReport::Missing {
             path: repo_relative.to_owned(),
@@ -346,14 +453,18 @@ fn translate_without_write(
         .iter()
         .map(|(key, value)| (*key, value.as_str()))
         .collect::<Vec<_>>();
-    let rendered = crate::seed::render_response(intent, "en", &values)
-        .unwrap_or_else(|| intent.to_owned());
+    let rendered =
+        crate::seed::render_response(intent, "en", &values).unwrap_or_else(|| intent.to_owned());
     (rendered, true)
 }
 
 /// Mirror the public discovery/conformance commands inside the deterministic
 /// in-repo driver. External Agent CLIs invoke the installed binary instead.
-fn execute_algorithm_command(command: &str, workspace: &AgentWorkspace) -> Option<String> {
+/// Result distinguishes actual completed library execution from process status.
+fn execute_algorithm_command(
+    command: &str,
+    workspace: &AgentWorkspace,
+) -> Option<Result<String, String>> {
     let parts = command.split_whitespace().collect::<Vec<_>>();
     if parts.get(..3) == Some(&["formal-ai", "learn", "algorithms"]) {
         let from = option_value(&parts, "--from")?;
@@ -361,25 +472,25 @@ fn execute_algorithm_command(command: &str, workspace: &AgentWorkspace) -> Optio
         if from != super::algorithm_learning::OBSERVATIONS_PATH
             || output != super::algorithm_learning::DISCOVERY_PATH
         {
-            return Some(format!(
+            return Some(Err(format!(
                 "algorithm_learning_paths_unsupported:{from:?}:{output:?}"
-            ));
+            )));
         }
         let document = match std::fs::read_to_string(workspace.root().join(from)) {
             Ok(document) => document,
-            Err(error) => return Some(format!("algorithm_observations_read_failed:{error}")),
+            Err(error) => return Some(Err(format!("algorithm_observations_read_failed:{error}"))),
         };
         let mut memory = MemoryStore::new();
         memory.replace_from_links_notation(&document);
         let run = discover_algorithms(&traces_from_memory_events(memory.events()));
         if let Err(error) = std::fs::write(workspace.root().join(output), run.links_notation()) {
-            return Some(format!("algorithm_artifact_write_failed:{error}"));
+            return Some(Err(format!("algorithm_artifact_write_failed:{error}")));
         }
-        return Some(format!(
+        return Some(Ok(format!(
             "algorithm_learning_complete:candidates={}:validated={}",
             run.candidates.len(),
             run.validated_candidates().len()
-        ));
+        )));
     }
     if parts.get(..3) != Some(&["formal-ai", "algorithm", "conformance"]) {
         return None;
@@ -387,15 +498,19 @@ fn execute_algorithm_command(command: &str, workspace: &AgentWorkspace) -> Optio
     let artifact = option_value(&parts, "--artifact")?;
     let trigger = option_value(&parts, "--trigger")?;
     if artifact != super::algorithm_learning::DISCOVERY_PATH {
-        return Some(format!("algorithm_artifact_unsupported:{artifact:?}"));
+        return Some(Err(format!("algorithm_artifact_unsupported:{artifact:?}")));
     }
     let document = match std::fs::read_to_string(workspace.root().join(artifact)) {
         Ok(document) => document,
-        Err(error) => return Some(format!("algorithm_artifact_read_failed:{artifact}:{error}")),
+        Err(error) => {
+            return Some(Err(format!(
+                "algorithm_artifact_read_failed:{artifact}:{error}"
+            )));
+        }
     };
     let candidate = match AlgorithmCandidate::from_links_notation(&document) {
         Ok(candidate) => candidate,
-        Err(error) => return Some(format!("algorithm_artifact_invalid:{error}")),
+        Err(error) => return Some(Err(format!("algorithm_artifact_invalid:{error}"))),
     };
     let mut bindings = std::collections::BTreeMap::new();
     for (index, part) in parts.iter().enumerate() {
@@ -403,24 +518,27 @@ fn execute_algorithm_command(command: &str, workspace: &AgentWorkspace) -> Optio
             continue;
         }
         let Some(binding) = parts.get(index + 1) else {
-            return Some(String::from("algorithm_binding_missing"));
+            return Some(Err(String::from("algorithm_binding_missing")));
         };
         let Some((name, value)) = binding.split_once('=') else {
-            return Some(format!("algorithm_binding_invalid:{binding:?}"));
+            return Some(Err(format!("algorithm_binding_invalid:{binding:?}")));
         };
         bindings.insert(name.to_owned(), value.to_owned());
     }
     Some(
         candidate
             .conformance_links_notation(trigger, &bindings)
-            .unwrap_or_else(|error| format!("algorithm_conformance_failed:{error}")),
+            .map_err(|error| format!("algorithm_conformance_failed:{error}")),
     )
 }
 
 /// Mirror the public `formal-ai procedure conformance` command inside the
 /// in-repo sandbox. External Agent CLI runs the binary; this deterministic
 /// driver invokes the same library path without allowing arbitrary executables.
-fn execute_procedure_conformance(command: &str, workspace: &AgentWorkspace) -> Option<String> {
+fn execute_procedure_conformance(
+    command: &str,
+    workspace: &AgentWorkspace,
+) -> Option<Result<String, String>> {
     let parts = command.split_whitespace().collect::<Vec<_>>();
     if parts.get(..3) != Some(&["formal-ai", "procedure", "conformance"]) {
         return None;
@@ -428,15 +546,19 @@ fn execute_procedure_conformance(command: &str, workspace: &AgentWorkspace) -> O
     let artifact = option_value(&parts, "--artifact")?;
     let trigger = option_value(&parts, "--trigger")?;
     if artifact != super::procedure::COMPILED_PROCEDURE_PATH {
-        return Some(format!("procedure_artifact_unsupported:{artifact:?}"));
+        return Some(Err(format!("procedure_artifact_unsupported:{artifact:?}")));
     }
     let document = match std::fs::read_to_string(workspace.root().join(artifact)) {
         Ok(document) => document,
-        Err(error) => return Some(format!("procedure_artifact_read_failed:{artifact}:{error}")),
+        Err(error) => {
+            return Some(Err(format!(
+                "procedure_artifact_read_failed:{artifact}:{error}"
+            )));
+        }
     };
     match CompiledProcedure::from_artifact_links_notation(&document) {
-        Ok(procedure) => Some(procedure.conformance_links_notation(trigger)),
-        Err(error) => Some(format!("procedure_artifact_invalid:{error}")),
+        Ok(procedure) => Some(Ok(procedure.conformance_links_notation(trigger))),
+        Err(error) => Some(Err(format!("procedure_artifact_invalid:{error}"))),
     }
 }
 
@@ -461,8 +583,9 @@ fn tool_definitions(names: &[&str]) -> Vec<Value> {
 fn tool_description(name: &str) -> String {
     match name {
         "web_search" => "Search the web for sources. Arguments: {\"query\": string}.".to_owned(),
-        "web_fetch" => {
-            "Fetch the text at a URL. Arguments: {\"url\": string}.".to_owned()
+        "web_fetch" => "Fetch the text at a URL. Arguments: {\"url\": string}.".to_owned(),
+        "read_file" => {
+            crate::seed::render_response("read-file-tool-schema", "en", &[]).unwrap_or_default()
         }
         "write_file" => {
             "Write a workspace file. Arguments: {\"path\": string, \"content\": string}.".to_owned()
@@ -480,23 +603,21 @@ fn tool_description(name: &str) -> String {
     }
 }
 
-/// Render a command result the way an agentic CLI would surface it: stdout on
-/// success, an annotated error otherwise (so the agent can "understand errors").
+/// Preserve the command producer's observed status and exact captured channels.
+/// Both builtin commands and child processes return fully collected strings;
+/// timed-out output remains incomplete and cannot certify a successful effect.
 fn format_command_result(result: &AgentCommandResult) -> String {
-    if result.timed_out {
-        return format!("command timed out: {}", result.command);
-    }
-    match result.status_code {
-        Some(0) => result.stdout.clone(),
-        Some(code) => format!(
-            "command exited with status {code}\nstdout:\n{}\nstderr:\n{}",
-            result.stdout, result.stderr
-        ),
-        None => format!(
-            "command terminated without an exit status\nstderr:\n{}",
-            result.stderr
-        ),
-    }
+    json!({
+        "schema": "command-execution-receipt/v1",
+        "command": result.command,
+        "exit_code": result.status_code,
+        "stdout": result.stdout,
+        "stderr": result.stderr,
+        "timed_out": result.timed_out,
+        "complete": !result.timed_out,
+        "truncated": false,
+    })
+    .to_string()
 }
 
 fn arg_str<'a>(arguments: &'a Value, key: &str) -> &'a str {
@@ -515,3 +636,7 @@ fn preview(text: &str, max: usize) -> String {
     let truncated: String = collapsed.chars().take(max).collect();
     format!("{truncated}…")
 }
+
+#[cfg(test)]
+#[path = "../../tests/fixtures/algorithm-operation-receipts.rs"]
+mod algorithm_operation_receipts;

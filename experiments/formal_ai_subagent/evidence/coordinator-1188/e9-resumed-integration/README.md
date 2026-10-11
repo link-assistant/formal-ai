@@ -1,0 +1,13 @@
+# Qualified e9 repair integration evidence
+
+This finite archive preserves9,358 selected originals as4,619 SHA-addressed gzip blobs (34,460,935 compressed bytes). `index.json` binds14 member and7 blob JSONL shards, each at most700 records. `originals/` retains the full original index, selection and preparation provenance with exact decoder proofs. All selected raw SHA256 and byte lengths were verified before and after encoding. Decode a blob with standard gzip; verify the decompressed SHA256 and length against its member row.
+
+`completion-auxiliary/index.json` separately binds478 completed follow-up members in383 deduplicated gzip blobs, including ledger defaults, source formatting, reviewed full inventories, exact guarded integration and independent canonical/source checks. Its producer metadata describes its original private cut; actual root installation is observed in the completion proof. `final-completion/` retains the final named-grammar integration, current342-check qualification, documentation/generator effects and controller provenance in a later finite cut. Controllers after that selection are explicitly outside it.
+
+Actual root integration used maintained JavaScript Formal AI with preimage/hash/absence guards, full source inverses and actual process exit checks. Supplied transformation programs receive zero autonomous authorship, useful-code amplification or monetary-cost credit. Observed command launch/marker success is separate from semantic completion. Hosted native compilation, exact-new-head CI, all planned requirements and production publication remain pending.
+
+The original203 supported witness objects are conserved in the reviewed214/1182 inventory;968 cases remain unsupported. Complete1374 declared ledger objects and152 generated outputs are conserved, with46 qualified shorter default representations. These counts belong to different domains and are not acceptance percentages.
+
+Known losses are retained in `index.json` and the original selection. No overwritten V8/raw JSON/program body is reconstructed. Separate raw stdout/stderr from the first partial commit batch were not saved; only combined tool output was available. Preserve that limitation. Real wrong invocation, stale guard, metadata/source-hash, incorrect denominator, lexer/formatter and observer failures remain full originals. No assertions, scanner exclusions, budgets, thresholds, denominators or native authority were weakened.
+
+Disk use is bounded through gzip and content IDs. Do not expand the archive wholesale or copy dependency trees to inspect it. Read only the selected members needed for a review.

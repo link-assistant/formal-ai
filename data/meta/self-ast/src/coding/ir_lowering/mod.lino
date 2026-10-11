@@ -2,18 +2,20 @@ self_ast_census
   target src/coding/ir_lowering/mod.rs
   language rust
   fidelity signature
-  byte_len 1485
-  line_count 44
-  content_id source_module_4c0bf2794c245a29
-  symbol_count 10
+  byte_len 1606
+  line_count 46
+  content_id source_module_93e5d744d002a630
+  symbol_count 12
   symbols
-    module python 8 8
-    module rust 9 9
-    trait LanguageLowering 15 22
-    function language 17 17
-    function lower 21 21
-    struct LoweringGap 25 29
-    function lowerings 33 37
-    static PYTHON 34 34
-    static RUST 35 35
-    function lowering_for 40 44
+    module javascript 8 8
+    module python 9 9
+    module rust 10 10
+    trait LanguageLowering 16 23
+    function language 18 18
+    function lower 22 22
+    struct LoweringGap 26 30
+    function lowerings 34 39
+    static PYTHON 35 35
+    static RUST 36 36
+    static JAVASCRIPT 37 37
+    function lowering_for 42 46

@@ -1,0 +1,19 @@
+{
+  "id": "T3065",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Read the actual current sources js/agentic/workspace_change.mjs, rust/src/agentic_coding/workspace_change.rs, js/agentic/tool_result.mjs, rust/src/agentic_coding/tool_result/source_observation.rs, js/agentic/progress.mjs and rust/src/agentic_coding/progress.rs. This is a read-only capability design request. Analyze the existing whole-file fallback verification and the reusable planDigestVerification and plan_digest_verification operations. Provide a bounded source-backed mechanism design for a fresh digest observation after the current authored mutation. Identify the real callable signatures, required source identities, precise mutation-to-receipt association, path contracts, explicit status and outer tool error handling, and safe unknown-status behavior. Identify meaningful original Agent CLI bare digest and truncated cat fixture controls, stale pre-mutation receipt controls, failed later writes and exact-path controls. Keep independent proof and effect record readback gaps distinct. Return an honest typed gap when source contracts are missing; the output is an analysis response only.",
+  "tools": [
+    "read",
+    "grep",
+    "list"
+  ],
+  "steps": 8,
+  "before": {
+    "js/agentic/workspace_change.mjs": "e879be4d9a79d08710a770e4d2d7f4726bbd8bd75fcd2800775dae1dadf9a636",
+    "rust/src/agentic_coding/workspace_change.rs": "b070fd7b9135e2ca5cd3116c6fb88baf0a4bac7bb4f30b555ee5554c79ea86a6",
+    "js/agentic/tool_result.mjs": "8cf6c622950bef310994735fec172e2a7b9509621dae1f8c89ae88107a823875",
+    "rust/src/agentic_coding/tool_result/source_observation.rs": "69126ed8fbd4ff6d08fba1f9d694aebe9b59c3318b40496d5448f749281bfe82",
+    "js/agentic/progress.mjs": "631dc456728b72c44ad0882ef2e3cf8145efc531638dc6850ea2f7575b30d473",
+    "rust/src/agentic_coding/progress.rs": "6287d4089aeb8704fdd308f9fdf510f6272049909784a94cc9e0b9f7052e8c5b"
+  }
+}

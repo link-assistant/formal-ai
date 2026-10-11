@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "唇"
+        },
+        "es": {
+          "language": "es",
+          "value": "labio"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "кожно-мышечные складки, окружающие вход в полость рта"
+        },
+        "es": {
+          "language": "es",
+          "value": "parte externa de la boca"
         }
       },
       "aliases": {

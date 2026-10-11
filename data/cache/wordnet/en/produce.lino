@@ -1,0 +1,54 @@
+language en
+lemma produce
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "fresh fruits and vegetable grown for the market"
+    id oewn-07721456-n
+    partOfSpeech n
+    synonyms ("green goods" "green groceries" "garden truck")
+  entry
+    definition "bring forth or yield"
+    examples ("The tree would not produce fruit")
+    id oewn-01756303-v
+    partOfSpeech v
+    synonyms ("bring forth")
+  entry
+    definition "create or manufacture a man-made product"
+    examples ("We produce more cars than we can sell" "The company has been making toys for two centuries")
+    id oewn-01624592-v
+    partOfSpeech v
+    synonyms (make create)
+  entry
+    definition "cause to happen, occur or exist"
+    examples ("This procedure produces a curious effect" "The new law gave rise to many complaints" "These chemicals produce a noxious vapor" "the new President must bring about a change in the health care system")
+    id oewn-01756692-v
+    partOfSpeech v
+    synonyms ("bring about" "give rise")
+  entry
+    definition "bring out for display"
+    examples ("The proud father produced many pictures of his baby" "The accused brought forth a letter in court that he claims exonerates him")
+    id oewn-02145619-v
+    partOfSpeech v
+    synonyms ("bring forth")
+  entry
+    definition "cultivate by growing, often involving improvements by means of agricultural techniques"
+    examples ("The Bordeaux region produces great red wines" "They produce good ham in Parma" "We grow wheat here" "We raise hogs here")
+    id oewn-01743695-v
+    partOfSpeech v
+    synonyms (grow raise farm)
+  entry
+    definition "bring onto the market or release"
+    examples ("produce a movie" "bring out a book" "produce a new play")
+    id oewn-02161530-v
+    partOfSpeech v
+    synonyms ("bring on" "bring out")
+  entry
+    definition "come to have or undergo a change of (physical features and attributes)"
+    examples ("He grew a beard" "The patient developed abdominal pains" "I got funny spots all over my body" "Well-developed breasts")
+    id oewn-00094214-v
+    partOfSpeech v
+    synonyms (grow develop get acquire)
+source "oewn:2024"

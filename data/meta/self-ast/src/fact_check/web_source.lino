@@ -1,0 +1,19 @@
+self_ast_census
+  target src/fact_check/web_source.rs
+  language rust
+  fidelity signature
+  byte_len 6261
+  line_count 166
+  content_id source_module_221ca50c0a0e2bd7
+  symbol_count 10
+  symbols
+    function tier_for_url 28 39
+    function url_host 43 46
+    function is_external_statement 52 57
+    function web_query_for 62 71
+    function researchable 76 78
+    function internet_evidence_captures 84 101
+    function internet_evidence 105 117
+    function github_capture_plan 127 141
+    function github_evidence 149 156
+    function github_claim_selector 160 166

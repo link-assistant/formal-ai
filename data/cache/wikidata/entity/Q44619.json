@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "恐惧"
+        },
+        "es": {
+          "language": "es",
+          "value": "miedo"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "感知威脅引起的基本情緒"
+        },
+        "es": {
+          "language": "es",
+          "value": "respuesta ante un posible peligro"
         }
       },
       "aliases": {
@@ -110,6 +118,36 @@
           {
             "language": "zh",
             "value": "害怕"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Pavor"
+          },
+          {
+            "language": "es",
+            "value": "Temor"
+          },
+          {
+            "language": "es",
+            "value": "Pavura"
+          },
+          {
+            "language": "es",
+            "value": "miedos"
+          },
+          {
+            "language": "es",
+            "value": "temores"
+          },
+          {
+            "language": "es",
+            "value": "canguelo"
+          },
+          {
+            "language": "es",
+            "value": "medrana"
           }
         ]
       }

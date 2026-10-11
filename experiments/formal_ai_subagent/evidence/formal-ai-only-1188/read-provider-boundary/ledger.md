@@ -1,0 +1,7 @@
+| Task | Before | After | Evidence |
+| --- | --- | --- | --- |
+| T3551 | Missing truthful provider-boundary implementation | Open G112: original general mechanism ask returns typed Gap/MissingContract, zero tools/effects; three source preimages unchanged. | [raw](raw/T3551-transcript.json) |
+| T3552 | Fail general-plan-event-append.test.mjs and observed-auxiliary-contracts.test.mjs original auxiliary I/O: 12/17 | Pass reviewed general provider repair: actual filesystem raw Read and caught errors carry separate outer metadata; legacy execute text API preserved; two injected providers adapted with all assertions unchanged; five repository writes. Original17/17 and focused65/65 pass. | [raw](raw/T3552-audit.json) |
+| T3553 | Provider boundary wider adapter validation pending | Pass all seven nearest suites82/82, zero skips, including actual permission denial, source-JSON spoof controls, partial/path refusals and existing Bash/grep adapters; one reviewed source-comment write. | [raw](raw/T3553-closest.log) |
+| T3554 | Open T3551 general mechanism synthesis | Open G112: exact unchanged T3551 retry remains Gap/MissingContract, zero tools/effects and source preimages unchanged. Reviewed repair validation does not certify autonomous synthesis. | [raw](raw/T3554-audit.json) |
+| T3555 | Unsealed provider phase | Pass scoped packet with source/evidence identities, six reviewed repository file effects, two authored seal docs and seventeen neutral evidence copies. No consumer/native weakening or push. | [manifest](manifest.json) |

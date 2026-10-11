@@ -2,10 +2,10 @@ self_ast_census
   target src/capability_routing/evidence.rs
   language rust
   fidelity signature
-  byte_len 17102
-  line_count 410
-  content_id source_module_137fa0170dfe4058
-  symbol_count 25
+  byte_len 17823
+  line_count 424
+  content_id source_module_d0c7793cd2e70aef
+  symbol_count 26
   symbols
     function evidences 22 25
     function evidence_strength 36 44
@@ -30,5 +30,6 @@ self_ast_census
     function explicit_content 299 336
     function assigned_content 345 360
     function quoted_span 363 381
-    function first_path 385 397
-    function first_url 401 410
+    function first_path 387 411
+    const EDGES 388 388
+    function first_url 415 424

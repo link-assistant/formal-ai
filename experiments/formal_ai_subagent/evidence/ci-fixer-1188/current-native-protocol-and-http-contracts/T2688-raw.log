@@ -1,0 +1,48 @@
+>> read {"filePath":"rust/tests/web/native-test-artifact.test.mjs","file_path":"rust/tests/web/native-test-artifact.test.mjs","path":"rust/tests/web/native-test-artifact.test.mjs"}
+   <file>
+   00001| // Verified native artifacts reject incompatible inputs before running the original testcase.
+   00002| import {test} from 'node:test';
+   00003| import assert from 'node:assert/strict';
+   00004| import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,existsSync,rmSync} from 'node:fs';
+   00005| import {join} from 'node:path';
+   00006| import {tmpdir} from 'node:os';
+   00007| import {writeReceipt,verifyReceipt,runVerifiedTest} from '../../../scripts/native-test-artifact.mjs';
+   00008| const identity={'source-commit':'a'.repeat(40),'source-tree':'b'.repeat(40),'cargo-lock-sha256':'c'.repeat(64),platform:'linux',architecture:'x64','rust-flags':'-Dwarnings',compiler:'actual producer compiler',profile:'release',features:'all'};
+   00009| function fixture(){
+   00010|  const root=mkdtempSync(join(tmpdir(),'native-test-artifact-')),directory=join(root,'tests'),binary=join(root,'formal-ai');mkdirSync(directory);
+   00011|  const script='#!/bin/sh\nif [ "$1" = --list ]; then printf "suite::wanted: test\\n"; exit 0; fi\n[ "$1" = --exact ] && [ "$2" = suite::wanted ] || exit 9\nprintf "actual testcase ran\\n" > ran.txt\n';
+   00012|  writeFileSync(join(directory,'unit'),script);for(const target of ['integration','source'])writeFileSync(join(directory,target),target+' executable bytes');writeFileSync(binary,'actual binary bytes');
+   00013|  writeReceipt(directory,identity,binary);return {root,directory,binary,dispose:()=>rmSync(root,{recursive:true,force:true})};
+   00014| }
+   00015| test('same build identity and bytes execute the exact registered testcase',()=>{
+   00016|  const f=fixture();try{assert.equal(runVerifiedTest(f.directory,identity,f.binary,'suite::wanted',f.root),0);assert.equal(readFileSync(join(f.root,'ran.txt'),'utf8'),'actual testcase ran\n');}finally{f.dispose();}
+   00017| });
+   00018| test('foreign source tree and build variants refuse before executing artifact bytes',()=>{
+   00019|  const f=fixture();try{
+   00020|   for(const [field,value] of [['source-commit','d'.repeat(40)],['source-tree','d'.repeat(40)],['cargo-lock-sha256','d'.repeat(64)],['platform','darwin'],['architecture','arm64'],['compiler','another compiler'],['profile','debug'],['features','default']]){
+   00021|    assert.throws(()=>runVerifiedTest(f.directory,{...identity,[field]:value},f.binary,'suite::wanted',f.root));assert.equal(existsSync(join(f.root,'ran.txt')),false);
+   00022|   }
+   00023|  }finally{f.dispose();}
+   00024| });
+   00025| test('tampered unit or runtime binary bytes are rejected before execution',()=>{
+   00026|  for(const target of ['unit','binary']){const f=fixture();try{
+   00027|   writeFileSync(target==='unit'?join(f.directory,'unit'):f.binary,'tampered');assert.throws(()=>runVerifiedTest(f.directory,identity,f.binary,'suite::wanted',f.root));assert.equal(existsSync(join(f.root,'ran.txt')),false);
+   00028|  }finally{f.dispose();}}
+   00029| });
+   00030| test('missing testcase and noncanonical receipt cannot silently run a different test',()=>{
+   00031|  const f=fixture();try{
+   00032|   assert.throws(()=>runVerifiedTest(f.directory,identity,f.binary,'suite::absent',f.root));assert.equal(existsSync(join(f.root,'ran.txt')),false);
+   00033|   const path=join(f.directory,'native-build-receipt.json'),receipt=JSON.parse(readFileSync(path,'utf8'));receipt.files['../outside']='0'.repeat(64);writeFileSync(path,JSON.stringify(receipt));assert.throws(()=>verifyReceipt(f.directory,identity,f.binary));
+   00034|  }finally{f.dispose();}
+   00035| });
+   00036| 
+   
+   (End of file - total 36 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/native-test-artifact.test.mjs","file_path":"rust/tests/web/native-test-artifact.test.mjs","new":"['compiler','another compiler'],['rust-flags','--cfg incompatible'],['profile'","newString":"['compiler','another compiler'],['rust-flags','--cfg incompatible'],['profile'","new_str":"['compiler','another compiler'],['rust-flags','--cfg incompatible'],['profile'","new_string":"['compiler','another compiler'],['rust-flags','--cfg incompatible'],['profile'","old":"['compiler','another compiler'],['profile'","oldString":"['compiler','another compiler'],['profile'","old_str":"['compiler','another compiler'],['profile'","old_string":"['compiler','another compiler'],['profile'","path":"rust/tests/web/native-test-artifact.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/native-test-artifact.test.mjs"}
+   Output: 0894130d303aed6d16d5f5caa51cd7a1cce97300ee7b86a59210a762f1ca46c6  rust/tests/web/native-test-artifact.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `['compiler','another compiler'],['profile'` with `['compiler','another compiler'],['rust-flags','--cfg incompatible'],['profile'` in `rust/tests/web/native-test-artifact.test.mjs` and observed the result.

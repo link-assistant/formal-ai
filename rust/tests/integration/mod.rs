@@ -1,3 +1,6 @@
+#[path = "../support/http_auxiliary_workspace.rs"]
+mod auxiliary_workspace;
+
 mod formal_ai_cli;
 mod http_client;
 mod http_server;
@@ -15,6 +18,7 @@ mod issue_1138_formalization_agent;
 mod issue_1138_no_silent_unknown;
 mod issue_1138_recovery_live;
 mod issue_1138_swebench_case;
+mod issue_1161_clients_surface;
 mod issue_349_reverse_sort;
 mod issue_386_cancel_sort;
 mod issue_395_sort_numbers;
@@ -24,6 +28,7 @@ mod issue_427_invert_sort;
 mod issue_457_self_source_metrics;
 mod issue_458_crypto_portfolio;
 mod issue_461_php_followup;
+mod issue_540_memory_dream_cli;
 mod issue_558_change_request;
 mod issue_558_learning_ledger;
 mod issue_558_rebuild_plan;
@@ -39,9 +44,11 @@ mod issue_671_absolute_path_projection;
 mod issue_671_aider_system_echo;
 mod issue_671_supplied_file_bytes;
 mod issue_680_intent_routing;
+mod issue_703_controller_boundaries;
 mod issue_703_orchestration;
 mod issue_703_orchestration_followup;
 mod issue_703_orchestration_languages;
+mod issue_703_replay_tamper;
 mod issue_712_intent_routing;
 mod issue_714_agentic_mode;
 mod issue_716_agentic_execution;
@@ -86,3 +93,7 @@ mod with_formal_ai_argv;
 mod with_formal_ai_global;
 mod with_formal_ai_grok;
 mod with_formal_ai_headless_global;
+
+// Readers for the split REQUIREMENTS.md register and the archived CHANGELOG.md.
+#[path = "../support/assembled_docs.rs"]
+mod assembled_docs;

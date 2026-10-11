@@ -116,7 +116,7 @@ fn the_link_backend_reads_an_injected_store_not_the_boot_projection() {
     let with_source = LinkStoreSource::from_store(&with_probe);
     let without_source = LinkStoreSource::from_store(&without_probe);
     let rules = HandlerRules::parse(
-        "handler_rules\n  handler probe\n    rule probe\n      when\n        role store_probe raw\n        route_exact store_route\n      respond_unknown\n",
+        "handler-rules\n  handler probe\n    rule probe\n      when\n        role store_probe raw\n        route-exact store_route\n      respond-unknown\n",
     )
     .expect("fixture rule parses");
     let handler = rules.handler("probe").expect("fixture handler");
@@ -134,17 +134,17 @@ fn the_store_read_share_is_a_declared_upward_ratchet() {
     let ledger = fs::read_to_string(repo_root().join("data/meta/debt-ratchet.lino"))
         .expect("debt ratchet readable");
     assert!(
-        ledger.contains("measure store_read_share"),
-        "plan 09 leaf 4 adds `store_read_share` to data/meta/debt-ratchet.lino"
+        ledger.contains("measure store-read-share"),
+        "plan 09 leaf 4 adds `store-read-share` to data/meta/debt-ratchet.lino"
     );
     let block = ledger
-        .split("measure store_read_share")
+        .split("measure store-read-share")
         .nth(1)
         .unwrap_or_default();
     let head: String = block.lines().take(4).collect::<Vec<_>>().join("\n");
     assert!(
         head.contains("up"),
-        "the `store_read_share` block must declare its upward direction in its own \
+        "the `store-read-share` block must declare its upward direction in its own \
          fields, since every other measure here ratchets down: {head}"
     );
 }

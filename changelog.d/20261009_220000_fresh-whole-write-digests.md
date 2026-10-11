@@ -1,0 +1,1 @@
+Whole-file grounded rewrites and structured member insertions now verify a fresh digest associated with the current exact Write. Explicit failures, wrong paths, stale receipts and later failed writes cannot certify the source effect. Retained Agent CLI fixtures and69 closest JavaScript checks pass; native execution remains CI-only.

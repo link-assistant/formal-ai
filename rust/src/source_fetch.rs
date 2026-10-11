@@ -15,6 +15,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use sha2::{Digest, Sha256};
 
+mod seed_captures;
+
 use crate::event_log::EventLog;
 use crate::translation::cache::cache_key;
 
@@ -155,7 +157,12 @@ impl Display for FetchError {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::InvalidUrl(url) => write!(formatter, "unsupported source URL: {url}"),
-            Self::OfflineCacheMiss(url) => write!(formatter, "no cached capture for {url}"),
+            Self::OfflineCacheMiss(url) => {
+                let template =
+                    crate::seed::localized_response("source-capture-offline-cache-miss", "en")
+                        .ok_or(std::fmt::Error)?;
+                formatter.write_str(&template.replace(concat!("{", "url", "}"), url))
+            }
             Self::Transport(message) => write!(formatter, "source transport error: {message}"),
             Self::Cache(message) => write!(formatter, "source cache error: {message}"),
             Self::HttpStatus { url, status } => {
@@ -178,6 +185,14 @@ pub struct SourceCapture {
 }
 
 impl SourceCapture {
+    /// Decode a registry capture without fetching, verifying its exact bytes and provenance.
+    ///
+    /// An absent URL returns `None`; duplicate entries, invalid timestamps or mismatched
+    /// content digests return the existing cache error.
+    pub fn from_seed_registry(url: &str, raw: &str) -> Result<Option<Self>, FetchError> {
+        seed_captures::read_seed_capture(url, raw)
+    }
+
     #[must_use]
     pub fn source_url(&self) -> &str {
         &self.source_url
@@ -215,6 +230,17 @@ impl SourceCapture {
             if self.cached { "true" } else { "false" },
         ]
         .concat()
+    }
+
+    /// The same capture replayed from memory: identical URL, timestamp,
+    /// digest and bytes, marked as a cache hit because nothing was fetched
+    /// (issue #1163 R6, the formalized-page working memory).
+    #[must_use]
+    pub fn replayed(&self) -> Self {
+        Self {
+            cached: true,
+            ..self.clone()
+        }
     }
 
     /// Append evidence events that are backed by this capture.
@@ -278,7 +304,17 @@ impl<T: SourceTransport> CachedSourceClient<T> {
                     return Ok(capture);
                 }
             }
-            Ok(None) => {}
+            Ok(None) => {
+                if let Some(capture) =
+                    SourceCapture::from_seed_registry(url, crate::seed::SOURCES_REGISTRY_LINO)?
+                {
+                    let age =
+                        (self.now)().saturating_sub(capture.fetched_at.parse::<u64>().unwrap_or(0));
+                    if !self.online || age <= self.ttl_seconds {
+                        return Ok(capture);
+                    }
+                }
+            }
             Err(error) => return Err(error),
         }
         if !self.online {

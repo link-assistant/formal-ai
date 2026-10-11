@@ -14,16 +14,12 @@ use crate::summarization::{
 const RETURN_RECAP_MAX_WORDS: usize = 39;
 const RETURN_RECAP_MAX_SENTENCES: usize = 2;
 
-/// Recognise a request to summarize the running conversation by composing
-/// meaning roles rather than matching raw per-language phrases (issue #386).
-///
-/// The universal algorithm is identical for every language: the prompt either
-/// (a) carries a complete standalone conversation-summary phrasing, (b) carries
-/// an objectless courtesy frame asking for a summary, (c) names a summary
-/// directive *together with* a conversation reference, or (d) leads with a bare
-/// summary directive (`summarize`, `резюме`, `总结`, …). The prompt is
-/// re-normalised first so the boundary-aware matcher sees punctuation collapsed
-/// to spaces. Mirror of `asksForConversationSummary` in the browser worker.
+/// Recognise historical summary requests through loaded meaning roles.
+/// Standalone phrases, objectless courtesy, directive with conversation role,
+/// and bare directives share the same language-independent classifier.
+/// Normalized matching keeps literal supplied text with its declared owner.
+/// Mirrors isSummarizePrompt in the browser worker.
+/// Full rationale: docs/case-studies/pull-request-1188/conversation-summary-source-notes.md.
 fn asks_for_conversation_summary(normalized: &str) -> bool {
     let cleaned = normalize_prompt(normalized);
     let lexicon = seed::lexicon();
@@ -97,7 +93,11 @@ pub(super) fn try_summarize_conversation(
         seed::ROLE_CONVERSATION_RETURN_RECAP,
         &normalize_prompt(normalized),
     );
-    if !is_return_recap && !asks_for_conversation_summary(normalized) {
+    let head = normalize_prompt(super::super::text_rewrite::command_head(prompt));
+    let explicit_text = super::super::text_rewrite::free_text_payload(prompt).is_some()
+        && !seed::lexicon().mentions_role(seed::ROLE_CONVERSATION_REFERENCE, &head)
+        && !seed::lexicon().mentions_role(seed::ROLE_CONVERSATION_SUMMARY_PHRASE, &head);
+    if !is_return_recap && (explicit_text || !asks_for_conversation_summary(normalized)) {
         return None;
     }
     let mut turns: Vec<DialogTurn> = log
@@ -123,6 +123,10 @@ pub(super) fn try_summarize_conversation(
     // decision table answered the bare phrase with a literal web search and a
     // hallucinated fetch loop (agentic CLI matrix, summarize leg).
     if turns.is_empty() && !prompt.trim().is_empty() {
+        log.append(
+            "conversation_recall:refusal",
+            "conversation not started".to_owned(),
+        );
         turns.push(DialogTurn::user(prompt.trim().to_owned()));
     }
     let user_turn_count = turns.iter().filter(|turn| turn.role == "user").count();
@@ -155,30 +159,7 @@ pub(super) fn try_summarize_conversation(
         ));
     }
     let language = detect_language(prompt).slug();
-    // Standard mode keeps roughly 50% of the highest-weighted statements; with
-    // the dialog bias (user +20, assistant -10) the user's questions dominate
-    // the output while still keeping room for any assistant prose worth
-    // remembering.
-    let config = SummarizationConfig::default()
-        .with_mode(SummarizationMode::Standard)
-        .with_language(language);
-    let summary = summarize_dialog(&turns, &config);
-    let title = generate_chat_title(&turns, language);
-    let user_turns: Vec<&str> = turns
-        .iter()
-        .filter(|turn| turn.role == "user")
-        .map(|turn| turn.text.as_str())
-        .collect();
-    let mut body = match language {
-        "ru" => {
-            format!("Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n")
-        }
-        "zh" => format!("对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n"),
-        _ => format!("Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n"),
-    };
-    for (index, turn) in user_turns.iter().enumerate() {
-        writeln!(body, "  {}. {turn}", index + 1).expect("string write is infallible");
-    }
+    let (body, title) = conversation_summary_envelope(&turns, language);
     log.append("filter:user", "conversation_summary".to_owned());
     log.append("summarization:mode", "standard".to_owned());
     log.append("summarization:language", language.to_owned());
@@ -188,7 +169,39 @@ pub(super) fn try_summarize_conversation(
         log,
         "summarize_conversation",
         "response:summarize_conversation",
-        body.trim_end(),
+        &body,
         0.9,
     ))
+}
+
+/// The summary envelope over `turns` in `language`, with the chat title.
+///
+/// The envelope holds the summary, the title and the numbered user turns,
+/// trimmed at the end. Mirrored by `conversationSummaryEnvelope` in
+/// `js/agentic/crate/conversation_summary.mjs`.
+fn conversation_summary_envelope(turns: &[DialogTurn], language: &str) -> (String, String) {
+    // Standard mode keeps roughly 50% of the highest-weighted statements; with
+    // the dialog bias (user +20, assistant -10) the user's questions dominate
+    // the output while still keeping room for any assistant prose worth
+    // remembering.
+    let config = SummarizationConfig::default()
+        .with_mode(SummarizationMode::Standard)
+        .with_language(language);
+    let summary = summarize_dialog(turns, &config);
+    let title = generate_chat_title(turns, language);
+    let user_turns: Vec<&str> = turns
+        .iter()
+        .filter(|turn| turn.role == "user")
+        .map(|turn| turn.text.as_str())
+        .collect();
+    let envelope_language = ["ru", "zh"].contains(&language).then_some(language);
+    let mut body = seed::render_localized_once(
+        "conversation-summary-envelope",
+        envelope_language.unwrap_or("en"),
+        &[("summary", &summary), ("title", &title)],
+    );
+    for (index, turn) in user_turns.iter().enumerate() {
+        writeln!(body, "  {}. {turn}", index + 1).expect("string write is infallible");
+    }
+    (body.trim_end().to_owned(), title)
 }

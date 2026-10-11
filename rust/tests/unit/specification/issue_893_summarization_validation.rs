@@ -189,7 +189,7 @@ fn issue_893_quality_metric_is_published_and_ratcheted_at_eighty_percent() {
         "the published metric must name its criteria, not hide behind one number"
     );
     for criterion in CRITERIA {
-        assert!(!criterion.name.is_empty());
+        assert_ne!(criterion.name, "");
         let description = criterion.description();
         assert!(
             description.len() > 20,
@@ -238,7 +238,10 @@ fn issue_893_quality_metric_is_published_and_ratcheted_at_eighty_percent() {
         report.score.applicable,
         report.failures()
     );
-    assert!(ratchet_violations(&report, None).is_empty());
+    assert_eq!(
+        ratchet_violations(&report, None),
+        [] as [std::string::String; 0]
+    );
 
     // The ratchet is monotonic against the committed floor — and it is the
     // floor that binds, not the percent the last run happened to measure.
@@ -583,7 +586,10 @@ fn issue_893_whole_task_validates_real_repository_files_against_the_ratchet() {
         report.score.applicable,
         report.failures()
     );
-    assert!(ratchet_violations(&report, None).is_empty());
+    assert_eq!(
+        ratchet_violations(&report, None),
+        [] as [std::string::String; 0]
+    );
 
     // The rendered baseline reads back as the run it describes.
     let rendered = report.to_links_notation(QUALITY_RATCHET_PERCENT);

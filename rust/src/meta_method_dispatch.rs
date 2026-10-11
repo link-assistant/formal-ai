@@ -27,10 +27,10 @@ use crate::solver_dispatch::{
     try_contextual_override,
 };
 use crate::solver_handlers::{
-    CapabilityRuntime, SelfAwarenessRuntime, try_behavior_rules_with_runtime,
-    try_explicit_repository_lookup, try_feature_capability, try_learn_from_source,
-    try_natural_language_tool_request, try_playwright_script, try_project_lookup,
-    try_project_lookup_with_response_language, try_response_language_followup,
+    CapabilityRuntime, SelfAwarenessRuntime, handle_statistics, try_behavior_rules_with_runtime,
+    try_document_originality_check, try_explicit_repository_lookup, try_feature_capability,
+    try_learn_from_source, try_natural_language_tool_request, try_playwright_script,
+    try_project_lookup, try_project_lookup_with_response_language, try_response_language_followup,
     try_routed_calendar_create_event, try_routed_http_fetch_with_offline,
 };
 
@@ -56,7 +56,7 @@ pub fn try_dispatch(
                 .map(|method| method.name.clone())
         })
         .collect();
-    let method_names = registry.ordered_method_names_for_relevants(&intent_formalization.relevants);
+    let method_names = registry.dispatch_order(&intent_formalization.relevants);
     let runtime = MethodRuntime::new(solver.config);
     let mut capability_route_checked = false;
 
@@ -82,6 +82,17 @@ pub fn try_dispatch(
         // handler can reinterpret a URL, path, clock, language or local scope.
         if !capability_route_checked && !PRELUDE_METHOD_NAMES.contains(&name.as_str()) {
             capability_route_checked = true;
+            // Issue #1172 R7: a question over a quoted, prompt-supplied
+            // passage carries its own answer, so it precedes the table and
+            // every promoted reading of the passage's words (a time in it
+            // is no calendar entry). The browser twin runs
+            // `tryPromptTextQuestion` as early, right after the summary. A
+            // page query over a supplied page keeps its own row (#1163).
+            if !crate::solver_handlers::page_query_text::page_query_text_claims(prompt)
+                && let Some(answer) = crate::solver_handlers::try_prompt_text_question(prompt, log)
+            {
+                return Some(record_method_answer(prompt, log, answer, "fact_lookup"));
+            }
             if let Some(answer) =
                 try_capability_route(solver, prompt, history, &promoted_methods, log)
             {
@@ -142,18 +153,33 @@ pub fn try_dispatch(
         {
             return Some(answer);
         }
-        match try_contextual_override(
-            &name,
-            prompt,
-            &normalized,
-            history,
-            ContextualRuntime::new(
-                runtime.proof_render_config,
-                runtime.self_awareness_runtime,
-                solver.config,
-            ),
-            log,
-        ) {
+        // Issue #1175 R3: the claim-routing rows of the capability table are
+        // consulted before the handler runs, contextual or plain, so a handler
+        // whose row admits on none of its evidence kinds (read from the prompt
+        // and the dialogue before it) is never offered the prompt. A row
+        // naming a refusal event admits its handler without the evidence to
+        // the refusal lane only: the answer stands when the handler recorded
+        // that event, and is dropped (with its events) otherwise.
+        let admission =
+            crate::capability_routing::claim_admission_in_dialogue(&name, prompt, &normalized, log);
+        let refusal_only = admission == crate::capability_routing::ClaimAdmission::RefusalOnly;
+        let contextual = if admission == crate::capability_routing::ClaimAdmission::Full {
+            try_contextual_override(
+                &name,
+                prompt,
+                &normalized,
+                history,
+                ContextualRuntime::new(
+                    runtime.proof_render_config,
+                    runtime.self_awareness_runtime,
+                    solver.config,
+                ),
+                log,
+            )
+        } else {
+            ContextualOutcome::NotHandled
+        };
+        match contextual {
             ContextualOutcome::Answer(answer) => {
                 return Some(record_contextual_method_answer(prompt, log, answer, &name));
             }
@@ -184,10 +210,21 @@ pub fn try_dispatch(
         {
             return Some(answer);
         }
-        if let Some(handler) = handler_for_method(&name)
-            && let Some(answer) = handler.call(prompt, &normalized, log)
+        if admission != crate::capability_routing::ClaimAdmission::Denied
+            && let Some(handler) = handler_for_method(&name)
         {
-            return Some(record_method_answer(prompt, log, answer, &name));
+            let before = refusal_only.then(|| log.clone());
+            let mark = log.events().len();
+            if let Some(answer) = handler.call(prompt, &normalized, log) {
+                let appended = log.events().get(mark..).unwrap_or_default();
+                if !refusal_only || crate::capability_routing::refusal_recorded(&name, appended) {
+                    return Some(record_method_answer(prompt, log, answer, &name));
+                }
+                if let Some(before) = before {
+                    *log = before;
+                }
+                log.append("claim_routing:refusal_lane_dropped", name.clone());
+            }
         }
         if execution.project_lookup == Some(ProjectLookupPhase::Fallback) {
             let answer = if let Some(language) = forced_response_language {
@@ -234,6 +271,15 @@ pub const SOLVER_CAPABILITIES: &[&str] = &[
     "report_issue",
     "ask_user",
 ];
+
+/// Whether `prompt` names a file-type filter: a `.ext` or `*.ext` operand.
+fn names_file_type_filter(prompt: &str) -> bool {
+    prompt.split_whitespace().any(|token| {
+        let token = token.trim_end_matches([',', ';', '?', '!', ')']);
+        let extension = token.trim_start_matches('*').strip_prefix('.');
+        extension.is_some_and(|ext| !ext.is_empty() && ext.chars().all(char::is_alphanumeric))
+    })
+}
 
 /// Execute the object/act/locus decision on the non-agent solver surface.
 ///
@@ -304,11 +350,23 @@ fn try_capability_route(
     // A text operation the manipulation handler recognizes is its turn: the
     // table reads "title case this text: ..." as a write gap, but the edit
     // answers on the chat surface itself, so the table declines and method
-    // dispatch claims the edit (issue #1138: text operations).
-    if crate::solver_handlers::names_text_operation(&normalized) {
+    // dispatch claims the edit (issue #1138: text operations), as a plagiarism
+    // check claims its supplied text (issue #1175 p102-p104).
+    let normal = crate::engine::normalize_prompt(prompt);
+    let check = try_document_originality_check(prompt, &normal, &mut EventLog::default());
+    if crate::solver_handlers::names_text_operation(&normalized) || check.is_some() {
         return None;
     }
     if !crate::capability_routing::table_routing_enabled() {
+        return None;
+    }
+    // A request over pasted code is its code-task handler's: the `/` inside
+    // the code or the `fetch(url)` a refactoring rewrites is no object for a
+    // workspace or web tool, so the table declines and the rank walk reaches
+    // the handler (issue #1177). A document to convert is its converter's.
+    if crate::solver_dispatch::code_artifact_task_claims(prompt)
+        || crate::solver_dispatch::format_conversion_claims(prompt)
+    {
         return None;
     }
     let decision = crate::capability_routing::route_decision(prompt, SOLVER_CAPABILITIES);
@@ -406,12 +464,38 @@ fn try_capability_route(
             {
                 return None;
             }
+            // A prompt that is itself a command line (`touch newfile.txt`) is
+            // the terminal suggestion's: the table reads the file argument as
+            // a workspace read, but the request is to run the command (issue
+            // #1175). A request to compose a command is likewise the
+            // composer's: its search root (`under data/meta`) is the printed
+            // command's operand, not a read this surface owes (issue #1177).
+            // Only a file-type filter (`.lino files`) makes it a composition:
+            // a folder named by name on a personal locus ("on my desktop")
+            // stays the honest list_dir gap (issue #1138 self-use).
+            if !commit_anchored_gap
+                && (crate::solver_terminal::names_terminal_command(prompt)
+                    || (names_file_type_filter(prompt)
+                        && crate::solver_dispatch::shell_compose_claims(prompt)))
+            {
+                return None;
+            }
             // A software-authoring request the lexicon recognizes (authoring
             // verb plus software artifact) is the software-project handler's:
             // the table reads "imports customer records" as a file-read gap,
             // but a scaffolded build is a plan, not a read (issue #1138
             // software-project corpus).
             if crate::solver_handlers::software_project_claims(&normalized) && !commit_anchored_gap
+            {
+                return None;
+            }
+            // A page query over a page the prompt supplies is answered from
+            // that page, and a lineage question from the repository's
+            // history; the file names they mention are not a read request
+            // (issues #1163 R10, #1180 R10).
+            if !commit_anchored_gap
+                && (crate::solver_handlers::page_query_text::page_query_text_claims(prompt)
+                    || crate::history_context::repository_lineage_claims(prompt))
             {
                 return None;
             }
@@ -478,12 +562,7 @@ fn try_capability_route(
         );
     }
 
-    let live_fetch = std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
-        matches!(
-            value.trim().to_ascii_lowercase().as_str(),
-            "1" | "true" | "yes" | "on"
-        )
-    });
+    let live_fetch = crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH");
     match capability {
         "web_fetch" => {
             try_routed_http_fetch_with_offline(prompt, log, solver.config.offline || !live_fetch)
@@ -541,8 +620,12 @@ fn try_capability_route(
             // "是多少"), and executing a source capability for them reports a
             // measurement miss where the calculator answers, so the table
             // declines before either arm runs (issue #1138 specification:
-            // the calculator-delegation family).
-            if crate::solver_handler_units::names_arithmetic_quantity(&normalized) {
+            // the calculator-delegation family). A statistic of a stated list
+            // is likewise computed (issue #1175 p273).
+            let statistic = handle_statistics(prompt, &normal, &mut EventLog::default());
+            if crate::solver_handler_units::names_arithmetic_quantity(&normalized)
+                || statistic.is_some()
+            {
                 return None;
             }
             // A summarization seed trigger is the summarization method's turn:
@@ -638,16 +721,12 @@ fn promoted_calendar_claims(promoted_methods: &[String], normalized: &str) -> bo
         && crate::solver_handlers::calendar_claims(normalized)
 }
 
-/// Whether the lexicon recognises all four roles of the GitHub
-/// repository-traffic handler: the platform, a repository reference, a
-/// traffic signal, and a visibility question (issue #497). Mirrors the
-/// `github_repository_traffic` rule in `data/seed/handler-rules.lino`.
-fn github_repository_traffic_claims(normalized: &str) -> bool {
-    let lex = crate::seed::lexicon();
-    lex.mentions_role("github_repository_platform", normalized)
-        && lex.mentions_role("repository_reference", normalized)
-        && lex.mentions_role("github_repository_traffic_signal", normalized)
-        && lex.mentions_role("github_repository_traffic_question", normalized)
+/// Whether the seeded `github_repository_traffic` rules claim the prompt.
+///
+/// Read as the browser's `tryGithubRepositoryTraffic` reads them (issues #497,
+/// #1175 p133, p135, p136).
+fn github_repository_traffic_claims(prompt: &str) -> bool {
+    crate::rule_interpreter::handler_matches("github_repository_traffic", prompt)
 }
 
 /// Whether a grounded capability decision is more specific than a promoted
@@ -820,7 +899,7 @@ fn try_attributed_runtime(
 ) -> Option<SymbolicAnswer> {
     let kind = execution.runtime?;
     let answer = match kind {
-        MethodRuntimeKind::Diagnostic => try_diagnostic(solver, prompt, normalized, log),
+        MethodRuntimeKind::Diagnostic => try_diagnostic(solver, prompt, log),
         MethodRuntimeKind::NaturalLanguageTool => {
             try_natural_language_tool_request(prompt, normalized, log, solver.config.agent_mode)
         }
@@ -840,18 +919,17 @@ fn try_attributed_runtime(
 fn try_diagnostic(
     solver: &UniversalSolver,
     prompt: &str,
-    normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    if !normalized.contains("[diagnostic]") {
-        return None;
-    }
+    let (marker, _) = crate::rule_interpreter::handler_table_rows("diagnostic_marker")
+        .iter()
+        .find(|(marker, _)| !marker.is_empty() && prompt.contains(marker.as_str()))?;
     log.append("diagnostic_mode", "active".to_owned());
-    let stripped = prompt.replace("[diagnostic]", "").trim().to_owned();
+    let stripped = prompt.replace(marker.as_str(), "").trim().to_owned();
     let inner_solver = UniversalSolver::new(solver.config);
     let inner = inner_solver.solve(&stripped);
     let mut decorated = inner.answer.clone();
-    decorated.push_str("\n\n[diagnostic]\n");
+    let _ = writeln!(decorated, "\n\n{marker}");
     decorated.push_str(inner.links_notation.trim_end());
     decorated.push('\n');
     for link in &inner.evidence_links {

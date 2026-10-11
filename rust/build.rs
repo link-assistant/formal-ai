@@ -24,7 +24,9 @@ fn main() {
     let out_path = out_dir.join("seed_bundle_files.rs");
 
     println!("cargo:rerun-if-changed=build.rs");
-    println!("cargo:rerun-if-changed={}", seed_dir.display());
+    let repository_root = manifest_dir.parent().expect("crate source root");
+    let seed_watch = optional_input_watch_path(&seed_dir, repository_root);
+    println!("cargo:rerun-if-changed={}", seed_watch.display());
 
     install_git_hooks(&manifest_dir);
 
@@ -54,6 +56,39 @@ fn main() {
 
     emit_owned_source_manifest(&manifest_dir, &out_dir);
     emit_crate_edition(&manifest_dir);
+}
+
+/// Watch an optional input without registering a missing path as always dirty.
+/// The original path is retained so creation, deletion and symlink changes remain visible.
+fn optional_input_watch_path(path: &Path, source_root: &Path) -> PathBuf {
+    let canonical_root = fs::canonicalize(source_root).expect("canonical source root");
+    for candidate in path
+        .ancestors()
+        .take_while(|candidate| candidate.starts_with(source_root))
+    {
+        let metadata = match fs::symlink_metadata(candidate) {
+            Ok(metadata) => metadata,
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => continue,
+            Err(error) => panic!(
+                "cannot inspect build input {}: {error}",
+                candidate.display()
+            ),
+        };
+        let canonical = fs::canonicalize(candidate).expect("resolve existing build input");
+        assert!(
+            canonical.starts_with(&canonical_root),
+            "build input escapes source root: {}",
+            candidate.display()
+        );
+        if metadata.is_dir() || canonical.is_dir() {
+            let _ = fs::read_dir(candidate).expect("read watched build input directory");
+        }
+        return candidate.to_path_buf();
+    }
+    panic!(
+        "no existing build input inside source root: {}",
+        path.display()
+    )
 }
 
 /// Export the crate's own Rust edition as `FORMAL_AI_CRATE_EDITION`.

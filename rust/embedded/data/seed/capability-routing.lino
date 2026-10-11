@@ -3,6 +3,15 @@ capability_routing
   routing_enabled true
   routing_note "Plan 10 leaf 9 wired the table ahead of the cue-phrase path behind this field, and leaf 11 flipped it on. Setting it to false returns routing to data/seed/agentic-tool-capabilities.lino cue matching, which is how the two are compared without a Rust edit."
   purpose "Capability is a function of the object in the request, the act asked for, and where the effect lands. Verbs select the act; they never select the capability. A triple with no row asks rather than guesses."
+  dialogue_utterance_note "A request made only of the surfaces of these roles (and function words) is a dialogue act the engine answers in the reply -- a bare hi is a greeting, not a bare term to search the web for (the opencode greeting leg searched it and read a dictionary page)."
+  dialogue_utterance_role social_greeting
+  dialogue_utterance_role social_wellbeing
+  dialogue_utterance_role social_farewell
+  dialogue_utterance_role social_courtesy_response
+  dialogue_utterance_role social_test_status
+  dialogue_utterance_role social_assistant_name
+  dialogue_utterance_role social_identity
+  dialogue_utterance_role social_assistant_free_time
   route
     object url
     act retrieve
@@ -361,4 +370,515 @@ capability_routing
     locus dialogue
     capability subagent
     because "issue 758: assigning a task to an agent is recorded as delegation"
+  claim_note "Issue 1175 R3: claim rows are consulted after formalization and before a handler runs. A handler with a row is offered the prompt only when one of its admits_on evidence kinds holds in the prompt's structure, so no surface word alone can claim it; a handler with no row is admitted as before."
+  claim_note "Issue 1175 R3 refusal lane: a row that names a refusal_event admits its handler without the evidence to refuse only. The handler runs, and its answer is kept only when the handler recorded that refusal event, so a cued request without its operand keeps its honest named refusal while no answer can be claimed on the cue alone."
+  claim
+    handler software_project
+    browser_handler trySoftwareProjectRequest
+    admits_on object_phrase_artifact
+    admits_on approval_of_a_proposal
+    because "issue 1175 R2: the artifact kind is the head noun of the authoring verb's object phrase, never an artifact word elsewhere in the prompt; a bare go-ahead moves an earlier plan forward"
+  claim
+    handler terminal_command
+    browser_handler tryTerminalCommand
+    admits_on shell_command_shape
+    admits_on semantic_shell_task
+    because "issue 1175 R1: a leading shell token claims only when the rest parses as command arguments, so a sentence that opens with an English word that is also a command is prose"
+  claim
+    handler repository_lineage
+    admits_on repository_subject
+    because "issue 1180 R10: a history cue claims only with an existing path, a status phrase or a census symbol to answer about"
+  claim
+    handler page_query_text
+    browser_handler tryPageQueryText
+    admits_on supplied_page
+    because "issue 1175 R3: a page query claims only a prompt whose first line is the query and whose remaining lines are the page it supplies; a question that merely mentions a page is not one"
+  claim
+    handler javascript_execution
+    browser_handler tryJavaScriptExecution
+    admits_on javascript_program
+    because "issue 1175 R3: running a program claims only when a program can be extracted from the prompt, never on a run word alone"
+  claim
+    handler incompatible_units
+    browser_handler tryIncompatibleUnits
+    admits_on incompatible_unit_pair
+    because "issue 1175 R3: an incompatibility claims only when two measurement units of different physical dimensions are both named"
+  claim
+    handler http_fetch
+    admits_on fetch_url
+    because "issue 1175 R3: a fetch claims only with a URL operand the request asks to retrieve, never on a fetch word alone"
+  claim
+    handler url_navigate
+    admits_on navigation_url
+    because "issue 1175 R3: a navigation claims only with a URL operand the request asks to open"
+  claim
+    handler calendar_create_event
+    admits_on calendar_date_signal
+    because "issue 1175 R3: an event claims only with a date signal backed by an entity such as a clock hour, a timezone or a participant, or an explicit scheduling act"
+  claim
+    handler code_debugging
+    browser_handler tryCodeDebugging
+    admits_on code_artifact
+    because "issue 1175 R3: a debugging request claims only with the code it debugs, a fenced block, a code-shaped backtick span, a definition or the payload after a command colon"
+  claim
+    handler code_explanation
+    browser_handler tryCodeExplanation
+    admits_on code_artifact
+    because "issue 1175 R3: an explanation of code claims only with the code it explains, never on an explain word alone"
+  claim
+    handler code_review
+    browser_handler tryCodeReview
+    admits_on code_artifact
+    because "issue 1175 R3: a review claims only with the code it reviews, never on a review word alone"
+  claim
+    handler summarization_text
+    browser_handler trySummarizationText
+    admits_on supplied_text
+    because "issue 1175 R3: a free-text summary claims only with the text the request carries after a command colon, a line break or quotes"
+  claim
+    handler requirement_listing
+    browser_handler requirement_listing
+    admits_on supplied_text
+    because "R1188-U20: a requirement listing claims only with the text the request carries after a command colon, a line break or quotes"
+  claim
+    handler text_rewrite
+    browser_handler tryTextRewrite
+    admits_on supplied_text
+    because "issue 1175 R3: a rewrite, a correction or a genre rendering claims only with the text the request carries, never on a rewrite word alone"
+  claim
+    handler statistics
+    browser_handler tryStatistics
+    admits_on stated_number
+    because "issue 1175 R3: a statistics or one-number primality question claims only with the numbers it states, never on a measure or property word alone"
+  claim
+    handler word_problem
+    browser_handler tryWordProblem
+    admits_on stated_number
+    because "issue 1175 R3: a word problem claims only with the quantities it states, never on a price, gain or share word alone"
+  claim
+    handler arithmetic
+    browser_handler tryArithmetic
+    admits_on calculation_expression
+    admits_on currency_rate_basis
+    because "issue 1175 R3: a calculation claims only with the expression the calculator reader extracts, or the named currency pair whose rate basis it asks"
+  claim
+    handler compound_interest
+    browser_handler tryCompoundInterest
+    admits_on investment_terms
+    admits_on conversion_target_currency
+    because "issue 1175 R3: an interest problem claims only with its principal, rate, compounding and term, and its follow-up only with the currency the earlier final amount converts to"
+  claim
+    handler number_constraint_reasoning
+    browser_handler tryNumberConstraintReasoning
+    admits_on interval_bounds
+    because "issue 1175 R3: a hidden-number riddle claims only with the lower and upper bound it states"
+  claim
+    handler unit_conversion
+    browser_handler tryUnitConversion
+    admits_on measured_quantity
+    because "issue 1175 R3: a conversion claims only with a stated number and exactly two named units, never on a convert word alone"
+  claim
+    handler calendar_reasoning
+    browser_handler tryCalendarReasoning
+    admits_on calendar_date_signal
+    admits_on calendar_anchor
+    because "issue 1175 R3: calendar arithmetic claims only with the day it starts from, a weekday, a month, a stated date or today, or with an event's date signal"
   default ask
+  claim
+    handler test_generation
+    browser_handler tryTestGeneration
+    admits_on function_under_test
+    refusal_event "test_generation:refusal"
+    because "issue 1175 R3: a test request claims a suite only with the function under test it names; without one it is admitted to the refusal lane, where only its named refusal is kept"
+  claim
+    handler code_refactoring
+    browser_handler tryCodeRefactoring
+    admits_on code_artifact
+    refusal_event "code_refactoring:refusal"
+    because "issue 1175 R3: a refactoring request claims a rewrite only with the code it rewrites; without code it is admitted to the refusal lane, where only its named refusal is kept"
+  claim
+    handler format_conversion
+    browser_handler tryFormatConversion
+    admits_on structured_document
+    refusal_event "format_conversion:refusal"
+    because "issue 1175 R3: a conversion request claims a converted document only with the document it converts; without one it is admitted to the refusal lane, where only its named refusal is kept"
+  claim_note "Issue 1175 R3 classes b, c and e: a follow-up admits on the earlier turn it continues (its dialogue evidence reads the prior turns, never the prompt alone), a composer on the specification it builds from with its cannot-compose answer in the refusal lane, and a lookup or policy on the subject or shape its own reader extracts."
+  claim
+    handler brainstorm_composition
+    browser_handler tryBrainstormComposition
+    admits_on composition_topic
+    refusal_event "brainstorming:refusal"
+    because "issue 1175 R3: a naming brainstorm composes only from the topic words it reads; without one it is admitted to the refusal lane"
+  claim
+    handler creative_writing
+    browser_handler tryCreativeWritingRequest
+    admits_on composition_topic
+    refusal_event "creative_writing:refusal"
+    because "issue 1175 R3: verse is composed only about the topic the request states; without one it is admitted to the refusal lane"
+  claim
+    handler advice_request
+    browser_handler tryAdviceRequest
+    admits_on advice_topic
+    refusal_event "advice:refusal"
+    because "issue 1175 R3: advice is given only on a topic the cited recommendation table covers; any other topic is admitted to the refusal lane"
+  claim
+    handler planning_request
+    browser_handler tryPlanningRequest
+    admits_on cached_destination
+    refusal_event "planning:refusal"
+    because "issue 1175 R3: an itinerary is planned only for a destination whose places are cached; any other is admitted to the refusal lane"
+  claim
+    handler regex_synthesis
+    browser_handler tryRegexSynthesis
+    admits_on pattern_constraints
+    refusal_event "regex_synthesis:refusal"
+    because "issue 1175 R3: a regular expression is composed only from the character classes and separators the request names; without them it is admitted to the refusal lane"
+  claim
+    handler sql_synthesis
+    browser_handler trySqlSynthesis
+    admits_on table_reference
+    refusal_event "sql_synthesis:refusal"
+    because "issue 1175 R3: a query is composed only over the table the request names; without one it is admitted to the refusal lane"
+  claim
+    handler shell_command_compose
+    browser_handler tryShellCommandCompose
+    admits_on filesystem_object
+    refusal_event "shell_command_compose:refusal"
+    because "issue 1175 R3: a shell command is composed only over the files or directories the request acts on, or a complete substitution; a request no manual page covers is admitted to the refusal lane"
+  claim
+    handler program_synthesis
+    browser_handler tryProgramSynthesis
+    admits_on function_spec
+    because "issue 1175 R3: a function is synthesized only from the signature, assertion or sourced recurrence that names it"
+  claim
+    handler write_script
+    browser_handler tryWriteScript
+    admits_on script_language
+    because "issue 1175 R3: a minimal script is written only in a catalogued language the request names"
+  claim
+    handler document_generation_plan
+    browser_handler tryDocumentGenerationPlan
+    admits_on document_format
+    because "issue 1175 R3: a document plan claims only with the document format the authoring verb governs"
+  claim
+    handler installation_conversion
+    browser_handler tryInstallationConversion
+    admits_on install_steps
+    because "issue 1175 R3: a conversion claims only with the installation commands it converts"
+  claim
+    handler execution_failure
+    browser_handler tryExecutionFailure
+    admits_on call_expression
+    because "issue 1175 R3: a failure trace claims only with the call expression whose execution fails"
+  claim
+    handler concept_lookup
+    browser_handler tryConceptLookup
+    admits_on concept_subject
+    because "issue 1175 R3: a definition claims only with the subject the concept reader extracts from the question"
+  claim
+    handler definition_merge
+    browser_handler tryDefinitionMerge
+    admits_on definition_merge_term
+    because "issue 1175 R3: a definition merge claims only with the term whose definitions it merges"
+  claim
+    handler who_is
+    browser_handler tryWhoIsQuestion
+    admits_on concept_subject
+    because "issue 1175 R3: a person question claims only with the name the concept reader extracts"
+  claim
+    handler how_it_works
+    browser_handler tryHowItWorks
+    admits_on mechanism_subject
+    admits_on prior_reply
+    refusal_event "how_it_works:refusal"
+    because "issue 1175 R3: a mechanism question claims with the subject it names or the earlier reply it elaborates; a bare question with neither is admitted to the refusal lane, where it explains how to ask"
+  claim
+    handler procedural_how_to
+    browser_handler tryProceduralHowTo
+    admits_on procedure_task
+    because "issue 1175 R3: a procedure claims only with the task the how-to reader extracts"
+  claim
+    handler procedural_how_to_followup
+    browser_handler tryProceduralHowToFollowup
+    admits_on prior_procedure
+    because "issue 1175 R3: an elaboration claims only when the earlier turn was an answered how-to request whose task re-parses"
+  claim
+    handler web_search
+    browser_handler tryWebSearch
+    admits_on search_focus
+    because "issue 1175 R3: a search claims only with the query focus the search reader extracts"
+  claim
+    handler conversation_topic
+    admits_on conversation_topic_subject
+    because "issue 1175 R3: a conversation opener claims only with the topic it names"
+  claim
+    handler learn_from_source
+    browser_handler tryLearnFromSource
+    admits_on learnable_source
+    because "issue 1175 R3: a learning directive claims only with a declared source the engine can learn from"
+  claim
+    handler product_search
+    browser_handler tryProductSearch
+    admits_on marketplace_scope
+    refusal_event "product_search:refusal"
+    because "issue 1175 R3: a product search claims only with the marketplace it is scoped to; issue 1173 R3: a product request that names no marketplace is admitted to the refusal lane, where only its named refusal (the catalogued marketplaces, no guessed store) is kept"
+  claim
+    handler verifiable_task
+    browser_handler tryVerifiableTask
+    admits_on verifiable_spec
+    because "issue 1175 R3: a verifiable task claims only with the expectation the task reader formalizes"
+  claim
+    handler legality_warning
+    browser_handler tryLegalityWarning
+    admits_on legality_assessment
+    because "issue 1175 R3: a legality advisory claims only when the catalogue assesses the request, through a trigger phrase or an act whose object phrase names a protected object"
+  claim
+    handler opinion_question
+    browser_handler tryOpinionQuestion
+    admits_on assistant_addressee
+    because "issue 1175 R3: the no-opinion policy claims only a question addressed to the assistant"
+  claim
+    handler physical_action_question
+    browser_handler tryPhysicalActionQuestion
+    admits_on assistant_addressee
+    because "issue 1175 R3: the physical-action policy claims only a question addressed to the assistant"
+  claim
+    handler punctuation_only_prompt
+    browser_handler tryPunctuationOnlyPrompt
+    admits_on punctuation_only
+    because "issue 1175 R3: the punctuation clarification claims only a prompt that carries no word at all"
+  claim
+    handler ill_formed
+    browser_handler tryIllFormed
+    admits_on unbalanced_brackets
+    because "issue 1175 R3: the ill-formed notation answer claims only a prompt whose brackets do not balance"
+  claim
+    handler shell_refusal
+    browser_handler tryShellRefusal
+    admits_on shell_command_shape
+    because "issue 1175 R3: the bounded-autonomy refusal claims only a request that carries a shell command"
+  claim
+    handler link_native_synthesis
+    browser_handler tryLinkNativeSynthesis
+    admits_on stated_number
+    because "issue 1175 R3: a link-native synthesis claims only with the quantities it substitutes or sells"
+  claim
+    handler software_project_followup
+    browser_handler trySoftwareProjectFollowup
+    admits_on prior_software_project
+    because "issue 1175 R3: a project follow-up claims only when the earlier reply formalized a software project request"
+  claim
+    handler research_result_followup
+    browser_handler tryResearchResultFollowup
+    admits_on prior_research_request
+    because "issue 1175 R3: a result follow-up claims only when the earlier request was research"
+  claim
+    handler research_comparison_table
+    browser_handler tryResearchComparisonTable
+    admits_on prior_research_request
+    because "issue 1175 R3: a comparison table claims only over the topics of the earlier research request"
+  claim
+    handler coreference
+    browser_handler tryCoreferenceFactLookup
+    admits_on coreference_antecedent
+    because "issue 1175 R3: a pronoun claims only when the earlier request names its antecedent"
+  claim
+    handler response_language_followup
+    browser_handler tryResponseLanguageFollowup
+    admits_on prior_user_request
+    because "issue 1175 R3: a language retarget claims only when an earlier request exists to answer again"
+  claim
+    handler numeric_list
+    browser_handler tryNumericList
+    admits_on list_items
+    admits_on prior_numeric_list
+    because "issue 1175 R3: a list operation claims only with the numbers or quoted values it lists, or the list, language or code request the earlier turn established"
+  claim
+    handler text_manipulation
+    browser_handler tryTextManipulation
+    admits_on text_operation
+    because "issue 1175 R3: a text operation claims only with the input text and operations it parses, from the request or the earlier reply"
+  claim
+    handler shell_command_transform
+    browser_handler tryShellCommandTransform
+    admits_on shell_command_operand
+    admits_on prior_reply
+    because "issue 1175 R3: a command rewrite claims only with the command it rewrites, from the request or the earlier reply"
+  claim
+    handler write_program_coreference
+    browser_handler tryWriteProgramCoreference
+    admits_on prior_program
+    because "issue 1175 R3: a bare program follow-up claims only when an earlier turn established the program's task and language"
+  claim
+    handler write_program_concrete
+    browser_handler tryWriteProgramConcrete
+    admits_on program_task
+    because "issue 1175 R3: a concrete program claims only with the task and language the program reader extracts"
+  claim
+    handler program_blueprint_from_prompt
+    browser_handler tryProgramBlueprintFromPrompt
+    admits_on program_task
+    because "issue 1175 R3: a program blueprint claims only with the task and language the program reader extracts"
+  claim
+    handler software_project_request
+    browser_handler trySoftwareProjectRequest
+    admits_on object_phrase_artifact
+    admits_on approval_of_a_proposal
+    because "issue 1175 R2: the browser-only project row reads the same object phrase and approval as the software_project row"
+  claim
+    handler memory_program
+    browser_handler tryMemoryProgram
+    admits_on memory_program_reading
+    because "issue 1175 R3: a memory program claims only when a seeded program family compiles from the request"
+  claim
+    handler memory_program_gap
+    browser_handler tryMemoryProgramGap
+    admits_on memory_program_reading
+    because "issue 1175 R3: a memory program gap claims only when the request reads as a seeded program family"
+  claim_note "Issue 1175 R3 follow-up round: a handler that used to answer without its input now records a named refusal event in that branch, so its row admits on the input and keeps the no-input answer through the refusal lane; the assistant itself is the subject of a question that addresses it or names no other subject."
+  claim
+    handler conversation_control
+    admits_on backticked_term
+    admits_on prior_reply
+    refusal_event "conversation_control:refusal"
+    because "issue 1175 R3: a preference claims with the backticked term it avoids and a correction with the earlier action it corrects; a correction with no earlier turn is admitted to the refusal lane"
+  claim
+    handler agentic_continuation
+    browser_handler tryAgenticContinuation
+    admits_on prior_reply
+    refusal_event "agentic_continuation:refusal"
+    because "issue 1175 R3: a continuation claims with the earlier task it resumes; with nothing to resume it is admitted to the refusal lane"
+  claim
+    handler clarification
+    browser_handler tryClarification
+    admits_on prior_reply
+    refusal_event "clarification:refusal"
+    because "issue 1175 R3: a clarification request claims with the earlier reply it asks about; with none it is admitted to the refusal lane"
+  claim
+    handler current_dialogue_fact_checking
+    browser_handler tryCurrentDialogueFactChecking
+    admits_on prior_user_request
+    refusal_event "current_dialogue_fact_checking:refusal"
+    because "issue 1175 R3: a dialogue fact check claims with the earlier statements it checks; with none it is admitted to the refusal lane"
+  claim
+    handler historical
+    browser_handler tryHistorical
+    admits_on dialogue_turn
+    admits_on name_assignment
+    admits_on recall_query_term
+    refusal_event "conversation_recall:refusal"
+    because "issue 1175 R3: a recap or recall claims with the earlier turns it reads, a naming with the name it assigns; a recall with no earlier message is admitted to the refusal lane"
+  claim
+    handler conversation_memory
+    admits_on dialogue_turn
+    admits_on name_assignment
+    admits_on recall_query_term
+    admits_on supplied_payload
+    refusal_event "conversation_recall:refusal"
+    because "issue 1175 R3: a conversation recall claims with the earlier turns, the name it assigns, the term it recalls or the text it summarizes; a request with none of them is admitted to the refusal lane"
+  claim
+    handler summarization
+    admits_on summary_topic
+    refusal_event "summarization:refusal"
+    because "issue 1175 R3: a topic summary claims with the seeded topic it summarizes; any other topic is admitted to the refusal lane"
+  claim
+    handler brainstorming
+    browser_handler tryBrainstormingRequest
+    admits_on brainstorm_category
+    refusal_event "brainstorming:refusal"
+    because "issue 1175 R3: a brainstorm list claims with the category its keywords name; the default category is admitted to the refusal lane"
+  claim
+    handler roleplay
+    browser_handler tryRoleplayRequest
+    admits_on persona_or_topic
+    refusal_event "roleplay:refusal"
+    because "issue 1175 R3: a roleplay claims with the persona or topic it names; the default persona on the fallback topic is admitted to the refusal lane"
+  claim
+    handler document_originality_check
+    browser_handler tryDocumentOriginalityCheck
+    admits_on document_operand
+    refusal_event "document_originality_check:refusal"
+    because "issue 1175 R3: an originality check claims with the document it checks, an attachment, a text sample or a supplied text; a named but unsupplied document is admitted to the refusal lane"
+  claim
+    handler translation
+    browser_handler tryTranslation
+    admits_on translation_text
+    refusal_event "translation:refusal"
+    because "issue 1175 R3: a translation claims with the text it translates; a request with no source phrase is admitted to the refusal lane"
+  claim
+    handler triz_resolution
+    browser_handler tryTrizResolution
+    admits_on triz_precedent
+    refusal_event "triz_resolution:refusal"
+    because "issue 1175 R3: a contradiction question claims with the precedent its words overlap; with none it is admitted to the refusal lane"
+  claim
+    handler algorithm
+    browser_handler tryAlgorithm
+    admits_on algorithm_operation
+    refusal_event "algorithm:refusal"
+    because "issue 1175 R3: an algorithm request claims with the operation it names; with none it is admitted to the refusal lane"
+  claim
+    handler source_refresh
+    browser_handler trySourceRefresh
+    admits_on source_reference
+    refusal_event "source_refresh:refusal"
+    because "issue 1175 R3: a refresh claims with the source it names, a URL or a path; with none it is admitted to the refusal lane"
+  claim
+    handler proof_request
+    browser_handler tryProofRequest
+    admits_on stated_claim
+    refusal_event "proof_request:refusal"
+    because "issue 1175 R3: a proof request claims with the claim it states beyond its directive; with none it is admitted to the refusal lane"
+  claim
+    handler capabilities
+    browser_handler tryCapabilities
+    admits_on assistant_subject
+    because "issue 1175 R3: a capability question claims only when its subject is the assistant, addressed or left unnamed, never when it names another subject"
+  claim
+    handler meta_explanation
+    browser_handler tryMetaExplanation
+    admits_on assistant_subject
+    because "issue 1175 R3: a question about how or why the assistant answers claims only when its subject is the assistant, addressed or left unnamed"
+  claim
+    handler network_query
+    browser_handler tryNetworkSnapshot
+    admits_on assistant_subject
+    because "issue 1175 R3: a network question claims only when its subject is the assistant's own network, addressed or left unnamed"
+  claim
+    handler exact_memory_query
+    browser_handler tryExactMemoryQuery
+    admits_on memory_query_statement
+    because "issue 1175 R3: an exact memory query claims only with a statement in a memory query dialect"
+  claim
+    handler fact_lookup
+    admits_on fact_subject
+    because "issue 1175 R3: a fact question claims only with the subject one of its arms resolves: a question over supplied text, a comparison of seeded subjects, the gated record, a live relation and subject, or the concept an explanation researches"
+  claim_note "Issue 1175 R3 last five rows: each handler that read nothing but its cue now reads the operand its answer is about, through a reader the rule interpreter also captures the operand with (value <name> operand <kind>), so the row and the answer read the same thing."
+  claim
+    handler docs_method_explanation
+    browser_handler tryDocsMethodExplanation
+    admits_on documented_method
+    because "issue 1175 R3: a documentation explanation claims only when the prompt names the project and the method of a seeded documentation page, never on an explanation lead alone"
+  claim
+    handler kupi_slona
+    browser_handler tryKupiSlona
+    admits_on idiom_utterance
+    because "issue 1175 R3: the circular idiom claims only when it is the whole utterance, framed at most by particles and function words, never when the phrase merely occurs inside another request"
+  claim
+    handler source_conflict
+    browser_handler trySourceConflict
+    admits_on attributed_alternatives
+    refusal_event "source_conflict:refusal"
+    because "issue 1175 R3: a source conflict claims an answer only with the two alternatives it attributes to sources, and names them; a cued conflict without them is admitted to the refusal lane"
+  claim
+    handler github_repository_traffic
+    browser_handler tryGithubRepositoryTraffic
+    admits_on named_repository
+    refusal_event "github_repository_traffic:refusal"
+    because "issue 1175 R3: a traffic answer names a repository only when the prompt names it, as an owner/name slug or URL or as the assistant's own; a question about an unnamed repository is admitted to the refusal lane, which states the policy for any repository"
+  claim
+    handler formalization_request
+    browser_handler tryFormalizationRequest
+    admits_on formalization_statement
+    refusal_event "formalization_request:refusal"
+    because "issue 1175 R3: a formalization claims only with a statement beyond its cue, or the formal clause a deformalization reads; a cue without one is admitted to the refusal lane"

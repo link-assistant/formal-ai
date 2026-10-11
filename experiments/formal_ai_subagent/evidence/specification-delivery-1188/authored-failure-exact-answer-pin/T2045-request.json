@@ -1,0 +1,5 @@
+{
+  "taskId": "T2045",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Run `node --test --test-name-pattern=\"literal verification reads\" rust/tests/web/authored-literal-planning.test.mjs`"
+}

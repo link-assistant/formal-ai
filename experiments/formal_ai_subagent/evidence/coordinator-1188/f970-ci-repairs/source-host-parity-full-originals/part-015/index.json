@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "part": 15,
+  "totalParts": 15,
+  "originalUnionIndexSHA256": "5c0561dd265e79e64b6155c7ed02eeb8b0ddd3539d0c6227b14f3c1c9620c8fe",
+  "originalLogicalMembersAcrossThisFiniteSelection": 565,
+  "logicalMembersThisPart": 565,
+  "currentControllerMembers": 4,
+  "selectedInputsThisPart": 565,
+  "sourceAndControllerInputBytes": 21839235,
+  "inputLimitBytes": 33554432,
+  "uniqueEncodedBlobs": 419,
+  "newEncodedBlobs": 380,
+  "reusedPreviousEncodedBlobs": 39,
+  "newCompressedBytes": 2314903,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 569
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 419
+    }
+  ],
+  "selectionSHA256": "06342f747041c1ae73c64780221827849a8115e84b0d8c161f97a16a0322b116",
+  "allCurrentSourceGuardsExact": true,
+  "originalInputBytesPreserved": true,
+  "knownLosses": [],
+  "pending": [
+    "Own running archive receipt excluded nonrecursively; all full original failures remain unpromoted",
+    "Original old8537 CI205=106 success/62 failure/37 skip; current fresh stock4/native/release/full requirements acceptance pending",
+    "Original reader-substitution performance proofs explicitly withdrawn; genuine compiler realm counterexample and restoration full originals preserved",
+    "Historical6332 live index source relocated by4751+6333 exact176645 bytes/SHA32e845; no new observation or silent digest refresh",
+    "Supplied guarded repairs have zero autonomy/amplification/cost credit; no merge or production publication authorized",
+    "7963 physical plan partition is further bounded deterministically at26MiB peractualinput selection tocount fullplan+selector+controller authority; original7963 plan and genuine root7072 cap refusal remain exact"
+  ],
+  "ownRunningReceiptExcluded": true,
+  "autonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "actualCost": "Unknown",
+  "productionAcceptance": "Pending"
+}

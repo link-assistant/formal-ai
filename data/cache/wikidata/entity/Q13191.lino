@@ -5,12 +5,14 @@ Q13191
     zh ("橙子")
   descriptions
     en "citrus fruit of the orange tree"
+    es "fruta comestible"
     hi "एक प्रकार फल"
     ru "круглый цитрусовый фрукт оранжевого цвета"
     zh "水果"
   id Q13191
   labels
     en orange
+    es naranja
     hi "संतरा"
     ru "апельсин"
     zh "橙"

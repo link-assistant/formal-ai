@@ -1,0 +1,168 @@
+{
+  "source": "/original/.github/workflows/publish-engine.yml",
+  "packagePermissions": {
+    "contents": "write",
+    "id-token": "write"
+  },
+  "resolve": {
+    "runs-on": "ubuntu-latest",
+    "timeout-minutes": 5,
+    "if": "github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' &&\n github.event.workflow_run.head_repository.full_name == github.repository &&\n github.event.workflow_run.conclusion != 'cancelled' &&\n github.event.workflow_run.conclusion != 'skipped')",
+    "outputs": {
+      "tag": "${{ steps.release.outputs.tag }}",
+      "publish": "${{ steps.release.outputs.publish }}",
+      "build": "${{ steps.release.outputs.build }}"
+    },
+    "steps": [
+      {
+        "uses": "actions/checkout@v7",
+        "with": {
+          "persist-credentials": false
+        }
+      },
+      {
+        "uses": "actions/setup-node@v7",
+        "with": {
+          "node-version": "24.x"
+        }
+      },
+      {
+        "name": "Resolve the published package release",
+        "id": "release",
+        "env": {
+          "GH_TOKEN": "${{ github.token }}",
+          "EVENT": "${{ github.event_name }}",
+          "REPOSITORY": "${{ github.repository }}",
+          "REFERENCE": "${{ github.ref }}",
+          "PUBLISH": "${{ inputs.publish }}",
+          "INPUT_TAG": "${{ inputs.tag }}",
+          "RELEASE_TAG": "${{ github.event.release.tag_name }}",
+          "RUN_HEAD": "${{ github.event.workflow_run.head_sha }}",
+          "RUN_BRANCH": "${{ github.event.workflow_run.head_branch }}",
+          "RUN_REPOSITORY": "${{ github.event.workflow_run.head_repository.full_name }}",
+          "RUN_CONCLUSION": "${{ github.event.workflow_run.conclusion }}",
+          "RUN_ID": "${{ github.event.workflow_run.id }}",
+          "RUN_ATTEMPT": "${{ github.event.workflow_run.run_attempt }}",
+          "RUN_WORKFLOW_ID": "${{ github.event.workflow_run.workflow_id }}"
+        },
+        "run": "node scripts/resolve-package-release.mjs"
+      }
+    ]
+  },
+  "concurrency": {
+    "group": "package-${{ github.event.pull_request.number || github.ref }}",
+    "cancel-in-progress": false,
+    "queue": "max"
+  },
+  "permissions": {
+    "contents": "read"
+  },
+  "publicationEnvironment": {
+    "NODE_AUTH_TOKEN": "${{ secrets.NPM_TOKEN }}",
+    "NPM_TRUSTED_PUBLISHING": "${{ vars.FORMAL_AI_NPM_TRUSTED_PUBLISHING }}",
+    "RELEASE_PROTOCOL_COMMIT": "${{ github.workflow_sha }}",
+    "RELEASE_PROTOCOL_SHA256": "${{ steps.protocol.outputs.protocol-sha256 }}"
+  },
+  "steps": [
+    {
+      "uses": "actions/checkout@v7",
+      "with": {
+        "ref": "${{ github.workflow_sha }}",
+        "fetch-depth": 0,
+        "persist-credentials": false
+      }
+    },
+    {
+      "uses": "actions/setup-node@v7",
+      "with": {
+        "node-version": "24.x"
+      }
+    },
+    {
+      "name": "Capture immutable workflow-owned engine protocol",
+      "id": "protocol",
+      "env": {
+        "RELEASE_PROTOCOL_COMMIT": "${{ github.workflow_sha }}"
+      },
+      "run": "node scripts/release-protocol.mjs capture \"$GITHUB_WORKSPACE\" \"$RUNNER_TEMP/browser-engine-protocol\" \"$RELEASE_PROTOCOL_COMMIT\" engine"
+    },
+    {
+      "name": "Restore the triggering source before optional release-tag selection",
+      "uses": "actions/checkout@v7",
+      "with": {
+        "ref": "${{ github.sha }}",
+        "fetch-depth": 0,
+        "persist-credentials": false
+      }
+    },
+    {
+      "name": "Select the resolved release tag",
+      "if": "needs.resolve.outputs.tag != ''",
+      "env": {
+        "PACKAGE_RELEASE_TAG": "${{ needs.resolve.outputs.tag }}"
+      },
+      "run": "set -euo pipefail\n[[ \"$PACKAGE_RELEASE_TAG\" =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+$ ]] || exit 1\ngit fetch origin \"refs/tags/$PACKAGE_RELEASE_TAG:refs/tags/$PACKAGE_RELEASE_TAG\"\ngit checkout --detach \"refs/tags/$PACKAGE_RELEASE_TAG\"\n"
+    },
+    {
+      "uses": "actions/setup-node@v7",
+      "with": {
+        "node-version": "24.x",
+        "registry-url": "https://registry.npmjs.org"
+      }
+    },
+    {
+      "name": "Install Bun",
+      "run": "curl -fsSL https://bun.sh/install | bash\necho \"$HOME/.bun/bin\" >> \"$GITHUB_PATH\"\n"
+    },
+    {
+      "name": "Bind selected package metadata before building",
+      "id": "source",
+      "run": "set -euo pipefail\nselected_commit=\"$(git rev-parse HEAD)\"\necho \"commit=$selected_commit\" >> \"$GITHUB_OUTPUT\"\nnode \"$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/release-protocol.mjs\" package \\\n  \"$GITHUB_WORKSPACE\" packages/formal-ai-engine/package.json \"$selected_commit\"\n"
+    },
+    {
+      "name": "Prepare web and engine artifacts",
+      "run": "bun install --frozen-lockfile\nbun run build:web\n"
+    },
+    {
+      "name": "Verify only the declared selected-Cargo package version projection",
+      "env": {
+        "SELECTED_SOURCE_COMMIT": "${{ steps.source.outputs.commit }}"
+      },
+      "run": "node \"$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/release-protocol.mjs\" package \"$GITHUB_WORKSPACE\" packages/formal-ai-engine/package.json \"$SELECTED_SOURCE_COMMIT\" built"
+    },
+    {
+      "name": "Package the engine",
+      "working-directory": "packages/formal-ai-engine",
+      "run": "npm pack --ignore-scripts"
+    },
+    {
+      "uses": "actions/upload-artifact@v7",
+      "with": {
+        "name": "formal-ai-engine",
+        "path": "packages/formal-ai-engine/*.tgz",
+        "if-no-files-found": "error"
+      }
+    },
+    {
+      "name": "Attach installable engine package to the release",
+      "if": "needs.resolve.outputs.publish == 'true'",
+      "env": {
+        "GH_TOKEN": "${{ github.token }}",
+        "PACKAGE_RELEASE_TAG": "${{ needs.resolve.outputs.tag }}"
+      },
+      "run": "gh release upload \"$PACKAGE_RELEASE_TAG\" packages/formal-ai-engine/*.tgz --clobber"
+    },
+    {
+      "name": "Publish with provenance",
+      "if": "needs.resolve.outputs.publish == 'true'",
+      "working-directory": "packages/formal-ai-engine",
+      "env": {
+        "NODE_AUTH_TOKEN": "${{ secrets.NPM_TOKEN }}",
+        "NPM_TRUSTED_PUBLISHING": "${{ vars.FORMAL_AI_NPM_TRUSTED_PUBLISHING }}",
+        "RELEASE_PROTOCOL_COMMIT": "${{ github.workflow_sha }}",
+        "RELEASE_PROTOCOL_SHA256": "${{ steps.protocol.outputs.protocol-sha256 }}"
+      },
+      "run": "if [ -z \"$NODE_AUTH_TOKEN\" ] && [ \"$NPM_TRUSTED_PUBLISHING\" != \"true\" ]; then\n  echo \"::notice::npm publication is not configured; the installable tarball is attached to the release\"\n  exit 0\nfi\nnode \"$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/release-protocol.mjs\" verify \\\n  \"$GITHUB_WORKSPACE\" \"$FORMAL_AI_RELEASE_PROTOCOL_DIR\" \"$RELEASE_PROTOCOL_COMMIT\" \"$RELEASE_PROTOCOL_SHA256\"\nnode \"$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/publish-browser-engine.mjs\"\n"
+    }
+  ]
+}

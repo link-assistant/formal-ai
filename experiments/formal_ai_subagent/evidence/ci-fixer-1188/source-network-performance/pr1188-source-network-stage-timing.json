@@ -1,0 +1,26 @@
+[
+  {
+    "path": "js/agentic/associative_learning.mjs",
+    "sourceBytes": 2115,
+    "serializedBytes": 95116,
+    "parseMilliseconds": 189.115375,
+    "encodeMilliseconds": 2.302332999999976,
+    "decodeMilliseconds": 45.630457999999976
+  },
+  {
+    "path": "ts/worker/formal_ai_worker_facts_and_software_phrases.ts",
+    "sourceBytes": 50132,
+    "serializedBytes": 3458046,
+    "parseMilliseconds": 9198.873458,
+    "encodeMilliseconds": 83.7330409999995,
+    "decodeMilliseconds": 944.4757910000008
+  },
+  {
+    "path": "rust/src/meta_method_dispatch.rs",
+    "sourceBytes": 46469,
+    "serializedBytes": 2025478,
+    "parseMilliseconds": 2850.6727919999994,
+    "encodeMilliseconds": 49.60916600000019,
+    "decodeMilliseconds": 664.0376250000008
+  }
+]

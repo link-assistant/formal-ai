@@ -1,0 +1,50 @@
+### Changed
+
+- PR #1188 round 20:
+  - **The release test job meets 30 minutes (R1188-U9, R1188-U10).**
+    - The specification shards no longer compile their own test binary (220-362s a shard, 1201s cold). They run the unit executable that `build-artifacts` compiles once, through `scripts/run-prebuilt-tests.sh` (`TEST_SUITE=specification`).
+    - The full lane runs five shards and the specification lane four, planned longest-first from per-test durations re-recorded from CI (the longest test takes 520s).
+    - The job's cap fell from 90 to 30 minutes: 83 of 94 jobs now meet the limit.
+    - The unsharded macOS specification leg is gone: macOS runs only the tests whose behaviour can differ from Linux (issue #1059).
+  - **JavaScript first (R1188-U29).**
+    - When a requirement row names tests in both roots, the requirement ledger now cites the JavaScript one, so the requirements pinned only by a Rust test fall from 1116 to 921.
+    - `js/agentic/crate/least_action.mjs` is the JavaScript twin of the least-action scoring (issue #491). R918-2 (the handler inventory) is delivered and pinned by a JavaScript test.
+  - **The Rust specification suite asked of the browser worker (R1188-U29, R1188-U30).**
+    - `scripts/lib/rust-specification-cases.mjs` reads every specification test of the simple shape (a prompt, then assertions on the answer, the intent or the evidence links) into a JavaScript case, which is the rust → js direction of the automated translation.
+    - The gate `check-specification-in-javascript` asks the worker each case: 136 of 1169 are carried and 102 pass.
+    - The 34 failing cases are listed in `data/meta/specification-javascript-gaps.lino` as the worker's parity debt. The number that pass never falls.
+  - **Recorded translation workarounds (R1188-U30, R994).**
+    - The js → rust leg runs meta-language at eb0574d5, which translates imports and sibling calls.
+    - Where it cannot translate yet, a recorded workaround in `data/meta/translation-workarounds.lino` does, each linked to the upstream issue that retires it.
+    - The CI compile builds one crate per root.
+  - **The progressive plan's ratchet (R1188-U28).** A recorded, measured or partial level may grow only by newly recorded requirements and by rows that rose from below. A pass that refines a high level while a lower one grows now fails `check-progressive-plan`.
+  - **Readable names (R1188-U4, R1188-U5).**
+    - The abbreviation rule has a measure and a falling ratchet (gate `check-abbreviations`).
+    - Twelve file names are spelled in full words.
+    - The lexicon-import shards and the changelog archives are named by what they hold (`meanings-lexicon-import-actor-to-diamond.lino`, `releases-from-0.1.0.md`).
+  - **Text capabilities in chat (R1188-U18, R1188-U19, R1188-U21).**
+    - "Summarize …" answers through the dependency summarizer in both roots. The browser worker runs the JavaScript crate module itself, through generated `js/worker/formal_ai_worker_crate_*.js` copies kept current by the gate `check-worker-crate-modules`.
+    - "Formalize <url>" and "formalize this page: <url>" fetch the page and answer its statements, in five languages, from a seeded `page_formalization` meaning. Offline, the answer says so and formalizes nothing.
+    - Chat translation chooses, among the surfaces a dictionary offers, the one whose meaning comes back through the seed lexicon (`round_trip_choice` / `roundTripChoice`); the primary surface wins ties.
+  - **Requirement extraction (R1188-U20)** reads a definition-of-done label ("Fixed means:", "done when", and the same in Russian, Hindi, Chinese and Spanish) as an obligation: recall 0.411 → 0.419 and precision 0.406 → 0.407 on the 138-issue benchmark.
+  - **The last three test files named only by an issue number** are named for what they pin (R1188-U5).
+  - **CI.**
+    - Clippy 1.99's new `doc_markdown` and `significant_drop_tightening` findings are fixed.
+    - `audit-seed-metadata` finds the `meanings` root after a comment header, and has a JavaScript twin.
+    - The browser app registers its offline service worker only after the engine is ready, so the precache no longer delays the first answer past the end-to-end tests' wait.
+  - **The browser worker passes 122 of the 136 carried Rust specification cases (was 102, R1188-U29).**
+    - Its answers carry the native evidence links, through a JavaScript twin of `build_evidence_links` (`js/agentic/crate/event_log.mjs`).
+    - The policy gates (bounded autonomy, destructive actions, agent time budget, cache flush, add-only history, inappropriate content) read seeded trigger words and responses in five languages in both roots.
+    - Project lookup follows the two phases `data/seed/method-execution.lino` declares.
+  - **Formal AI edit gaps fixed in both roots:**
+    - nested same-mark quotes are declined (G90);
+    - "then" sequences of edits are applied step by step (G99);
+    - a create request that describes the file is declined safely (G102);
+    - every file of a coordinated list is counted (G104);
+    - an edit clause that cannot be planned is named (G106);
+    - a backticked payload runs to its own close (G107).
+    The several-files guard reads only the clause that holds the edit, which restores the Issue 1028 ladder's proof leaves.
+  - **The `check-architecture-contents` gate** keeps ARCHITECTURE.md a table of contents whose links and anchors name the topic files (R1188-U2).
+  - **Handoff.** `docs/case-studies/pull-request-1188/handoff.md` records the owner's requirements, the methodology and what is left, for the next agent.
+  - **Formal AI.** 31 dogfood rows whose gaps were fixed or not reproduced later now say so. 160 of 165 recorded failures are fixed.
+  - The Formal AI tally counts "Not fixed …" as open.

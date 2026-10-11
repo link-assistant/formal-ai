@@ -1,0 +1,49 @@
+{
+  "lemma": "rotation",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00342854-n",
+      "partOfSpeech": "n",
+      "definition": "the act of rotating as if on an axis",
+      "examples": [
+        "the rotation of the dancer kept time with the music"
+      ],
+      "synonyms": [
+        "rotary motion"
+      ]
+    },
+    {
+      "id": "oewn-13807769-n",
+      "partOfSpeech": "n",
+      "definition": "(mathematics) a transformation in which the coordinate axes are rotated by a fixed angle about the origin"
+    },
+    {
+      "id": "oewn-07455579-n",
+      "partOfSpeech": "n",
+      "definition": "a single complete turn (axial or orbital)",
+      "examples": [
+        "the plane made three rotations before it crashed",
+        "the revolution of the earth about the sun takes one year"
+      ],
+      "synonyms": [
+        "revolution",
+        "gyration"
+      ]
+    },
+    {
+      "id": "oewn-05052532-n",
+      "partOfSpeech": "n",
+      "definition": "a planned recurrent sequence (of crops or personnel etc.)",
+      "examples": [
+        "crop rotation makes a balanced demand on the fertility of the soil",
+        "the manager had only four starting pitchers in his rotation"
+      ]
+    }
+  ]
+}

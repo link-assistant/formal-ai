@@ -30,8 +30,14 @@ pub fn clauses_with_spans(request: &str) -> Vec<(String, (usize, usize))> {
         return vec![(request.trim().to_owned(), (0, request.len()))];
     }
     let mut boundaries = vec![0_usize];
+    let quoted = crate::normal_markov::quoted_segment_spans(request);
     for (index, _) in request.char_indices() {
-        if index == 0 || !opens_a_clause(request, index) {
+        if index == 0
+            || quoted
+                .iter()
+                .any(|segment| index >= segment.start && index < segment.end)
+            || !opens_a_clause(request, index)
+        {
             continue;
         }
         let rest = request[index..].to_lowercase();
@@ -56,11 +62,17 @@ pub fn clauses_with_spans(request: &str) -> Vec<(String, (usize, usize))> {
 }
 
 /// Whether the byte at `index` begins a clause: everything before it either ends
-/// a sentence or is nothing but whitespace.
+/// a sentence, ends a line, or is nothing but whitespace.
+///
+/// The line break is read before trimming: `trim_end` would strip it, and a cue
+/// opening a new line ("…\"Alpha\"\nThen, print …") would never cut (issue
+/// #1166).
 fn opens_a_clause(request: &str, index: usize) -> bool {
-    let before = request[..index].trim_end();
+    let line_end = request[..index].trim_end_matches([' ', '\t', '\r']);
+    let before = line_end.trim_end();
     before.is_empty()
-        || before.ends_with(['.', '!', '?', ';', ':', '\n', '。', '！', '？', '।', '॥'])
+        || line_end.ends_with('\n')
+        || before.ends_with(['.', '!', '?', ';', ':', '。', '！', '？', '।', '॥'])
 }
 
 /// Whether `rest` opens with `cue` as a whole word — or, for a script that does

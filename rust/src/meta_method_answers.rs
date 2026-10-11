@@ -123,13 +123,20 @@ pub fn names_exact_commit(prompt: &str) -> bool {
 /// The marker is the seed-grounded response-language role
 /// ([`detect_response_language`]), so this holds no phrase table of its own and
 /// reads the request the same way the demonstration route does. Only user turns
-/// speak: an assistant turn merely obeyed.
+/// speak: an assistant turn merely obeyed. The latest turn that names a language
+/// decides, and a turn that forbids it ("never answer in Russian") establishes
+/// none.
 pub fn established_response_language(history: &[ConversationTurn]) -> Option<&'static str> {
     history
         .iter()
         .rev()
         .filter(|turn| turn.role == ConversationRole::User)
-        .find_map(|turn| detect_response_language(&turn.content.to_lowercase()))
+        .find_map(|turn| {
+            detect_response_language(&turn.content.to_lowercase()).map(|language| {
+                (!crate::translation::forbids_response_language(&turn.content)).then_some(language)
+            })
+        })
+        .flatten()
 }
 
 pub fn response_language_demonstration(
@@ -137,7 +144,8 @@ pub fn response_language_demonstration(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let target = detect_response_language(normalized)?;
+    // "Never answer in Russian" names Russian only to forbid it.
+    let target = crate::translation::requested_response_language(prompt, normalized)?;
     let canonical = crate::language::language_name(target).unwrap_or(target);
     let surface = crate::seed::lexicon()
         .meanings_with_role(crate::seed::ROLE_RESPONSE_LANGUAGE_MARKER)

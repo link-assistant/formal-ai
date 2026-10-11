@@ -1,16 +1,19 @@
 Q35473
   aliases
     en (windows)
+    es (ventanuco ventanal ventanas ventanales)
     hi ("खिड़कियों" "खिड़कियाँ" "झरोखा")
     ru ("окошко" "окошечко")
     zh ("窗户" "廔" "窗戶")
   descriptions
     en "opening to admit light or air"
+    es "tipo de vano o hueco en un edificio"
     ru "элемент архитектуры"
     zh "建筑部件"
   id Q35473
   labels
     en window
+    es ventana
     hi "खिड़की"
     ru "окно"
     zh "窗"

@@ -1,0 +1,73 @@
+# Software-project request phrase vocabulary (issues #1138, #1175).
+#
+# The object-phrase discipline of rust/src/solver_handlers/
+# software_project_phrases.rs reads every surface from this file — the words
+# that close an authoring verb's object noun phrase (so the artifact kind is
+# the head the verb governs, never an incidental modifier), the determiners
+# and benefactives that may lead the phrase without belonging to it, and the
+# punctuation that ends a phrase or a sentence. The recognition algorithm is
+# compiled; the vocabulary is data, one meaning per table, so extending the
+# languages covered needs no Rust change. Every record is defined by the
+# statement function-word genus — these surfaces carry grammatical structure,
+# not lexical content.
+#
+# The word-internal character table declares `lexeme en`, `lexeme ru` and
+# `lexeme es` with no surfaces on purpose — spaced scripts have no character
+# that cuts a token at any position. ASCII punctuation inside a token is part
+# of a name ("a Node.js service"), so listing it there would split names.
+
+meanings
+  software_object_boundary_word
+    defined-by statement_function_word
+    role software_object_boundary_word
+    lexeme en
+      words about and but by for from i in into it of or please so that they to using via we when where which who with
+      words without
+    lexeme zh 从 但 关于 和 或 那 请 所以 使用 谁 他们 它 到 的 为 通过 我们 无论 哪个 哪里 什么时候 与 经由 在
+    lexeme es
+      words a asi con cual cuando de desde dentro donde ello ellos en nosotros o para "por favor" que quien sobre sin
+      words usando via y yo
+    lexeme ru в для и из или которая которое который которые когда на от с чтобы
+    lexeme hi और जो के को से में या
+  software_object_lead_word
+    defined-by statement_function_word
+    role software_object_lead_word
+    lexeme en a an the this that these those my your our me us please
+    lexeme ru эта эти те мой твой наш мне нам пожалуйста
+    lexeme hi एक यह वह ये वे मेरा तुम्हारा हमारा मुझे हमें कृपया
+    lexeme zh 一个 这 那 这些 那些 我的 你的 我们的 我 我们 请
+    lexeme es "por favor" el esos este estos la mi nos nuestro tu un una
+  software_object_lead_bigram
+    defined-by statement_function_word
+    role software_object_lead_bigram
+    lexeme en "for me" "for us" "to me" "to us"
+    lexeme ru "для меня" "для нас"
+    lexeme hi "मेरे लिए" "हमारे लिए"
+    lexeme zh 给我 给我们 对我 对我们
+    lexeme es "para mí" "para nosotros" "a mí" "a nosotros"
+  software_object_boundary_character
+    defined-by statement_function_word
+    role software_object_boundary_character
+    lexeme en "," ";" "." "?" "!" ":" "(" ")" "[" "]"
+    lexeme zh "，" "。" "？" "！" "；" "：" "、"
+    lexeme hi "।"
+    
+    lexeme ru "," ";" "." "?" "!" ":" "(" ")" "[" "]"
+    lexeme es "," ";" "." "?" "!" ":" "(" ")" "[" "]"
+  software_object_word_internal_character
+    defined-by statement_function_word
+    role software_object_word_internal_character
+    lexeme zh "，" "。" "？" "！" "；" "：" "、"
+    lexeme hi "।"
+    lexeme en
+    lexeme ru
+    lexeme es
+  software_sentence_end_character
+    defined-by statement_function_word
+    role software_sentence_end_character
+    lexeme en "." "?" "!" ";" ":"
+    lexeme zh "。" "？" "！" "；"
+    lexeme hi "।"
+    
+    lexeme ru "." "?" "!" ";" ":"
+    lexeme es "." "?" "!" ";" ":"

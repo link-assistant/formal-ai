@@ -1,0 +1,25 @@
+{
+  "sources": [
+    {
+      "path": "js/agentic/general_planner.mjs",
+      "bytes": 26562,
+      "sha256": "c262c1a4c9218f26b357c9912f2f46cce08841a7fbe2b9074b61fb85b72b127a"
+    },
+    {
+      "path": "rust/src/agentic_coding/general_planner/literal_request.rs",
+      "bytes": 19359,
+      "sha256": "4572e22f3a41451ccdef6e6671389a7d7f5406c88f08ddabe3d590f174efcc88"
+    },
+    {
+      "path": "rust/tests/web/literal-write-request-scope.test.mjs",
+      "bytes": 8432,
+      "sha256": "92e6b341a860f27163b64db2df2c521469b6da264e393460b37f79f4d52819f4"
+    },
+    {
+      "path": "rust/tests/fixtures/literal-obligation-transaction.rs",
+      "bytes": 19860,
+      "sha256": "9874c3cb93a23644ef38729cfc1b81ed73a9a4edcd44f9319ebb8eeb30a456eb"
+    }
+  ],
+  "nativeExecuted": false
+}

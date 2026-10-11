@@ -2,59 +2,60 @@ self_ast_census
   target src/agentic_coding/corpus.rs
   language rust
   fidelity full_ast
-  byte_len 4807
-  line_count 122
-  content_id source_module_c5ffda9bccd862d1
-  symbol_count 4
+  byte_len 5061
+  line_count 129
+  content_id source_module_1df66e2f58c4de76
+  symbol_count 5
   symbols
     struct CorpusPage 21 27
     function pages 33 72
     function web_search 81 108
-    function web_fetch 117 122
+    function web_fetch 116 118
+    function web_fetch_result 124 129
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2534
-    named_node_count 519
+    total_link_count 2709
+    named_node_count 560
     distinct_node_kinds 55
     node_kinds
-      arguments 34
+      arguments 38
       array_expression 1
       attribute 2
       attribute_item 2
       binary_expression 1
-      block 7
-      call_expression 34
-      closure_expression 7
-      closure_parameters 7
-      doc_comment 30
+      block 8
+      call_expression 38
+      closure_expression 8
+      closure_parameters 8
+      doc_comment 33
       escape_sequence 2
       expression_statement 6
       field_declaration 4
       field_declaration_list 1
-      field_expression 36
-      field_identifier 43
+      field_expression 37
+      field_identifier 44
       field_initializer 3
       field_initializer_list 1
       for_expression 2
-      function_item 3
-      generic_type 4
-      identifier 94
+      function_item 4
+      generic_type 5
+      identifier 102
       if_expression 1
       inner_doc_comment_marker 11
       integer_literal 2
       let_declaration 8
-      line_comment 32
+      line_comment 35
       macro_invocation 5
       mutable_specifier 3
-      outer_doc_comment_marker 19
-      parameter 2
-      parameters 3
+      outer_doc_comment_marker 22
+      parameter 3
+      parameters 4
       parenthesized_expression 1
-      primitive_type 2
-      reference_type 3
+      primitive_type 3
+      reference_type 4
       return_expression 1
       scoped_identifier 9
       scoped_use_list 1
@@ -68,10 +69,10 @@ self_ast_census
       super 3
       token_tree 16
       tuple_pattern 1
-      type_arguments 4
-      type_identifier 16
+      type_arguments 5
+      type_identifier 19
       unary_expression 1
       use_as_clause 1
       use_declaration 4
       use_list 1
-      visibility_modifier 2
+      visibility_modifier 3

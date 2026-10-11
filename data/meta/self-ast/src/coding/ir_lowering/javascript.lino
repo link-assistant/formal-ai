@@ -1,0 +1,15 @@
+self_ast_census
+  target src/coding/ir_lowering/javascript.rs
+  language rust
+  fidelity signature
+  byte_len 3825
+  line_count 101
+  content_id source_module_3b8271ab6673e016
+  symbol_count 6
+  symbols
+    struct JavaScriptLowering 16 16
+    function language 19 21
+    function lower 23 43
+    function lower_node 46 72
+    function identifier 75 90
+    function gap 94 101

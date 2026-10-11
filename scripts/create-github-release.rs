@@ -361,45 +361,78 @@ fn is_duplicate_release_error(output: &str) -> bool {
         && lowered.contains("\"field\":\"tag_name\"")
 }
 
+/// Where `experiments/issue_711_rebuild_changelog.mjs` rolls the releases
+/// CHANGELOG.md no longer keeps (every file stays under the 1500-line cap).
+#[cfg(not(test))]
+const CHANGELOG_ARCHIVE_DIR: &str = "docs/changelog";
+
+/// CHANGELOG.md, then its archive files: the newest release is always in
+/// CHANGELOG.md, and a rerun for an older release finds it in the archive.
+#[cfg(not(test))]
+fn changelog_sources() -> Vec<String> {
+    let mut sources = vec!["CHANGELOG.md".to_string()];
+    if let Ok(entries) = fs::read_dir(CHANGELOG_ARCHIVE_DIR) {
+        // Each archive is named for the oldest release it holds
+        // (`releases-from-<version>.md`); newest first, by version.
+        let mut archives: Vec<(Vec<u64>, String)> = entries
+            .filter_map(Result::ok)
+            .filter_map(|entry| entry.file_name().into_string().ok())
+            .filter_map(|name| {
+                let version = name
+                    .strip_prefix("releases-from-")?
+                    .strip_suffix(".md")?
+                    .split(['.', '-'])
+                    .map(|part| part.parse().unwrap_or(0))
+                    .collect();
+                Some((version, format!("{CHANGELOG_ARCHIVE_DIR}/{name}")))
+            })
+            .collect();
+        archives.sort();
+        archives.reverse();
+        sources.extend(archives.into_iter().map(|(_, path)| path));
+    }
+    sources
+}
+
 #[cfg(not(test))]
 fn get_changelog_for_version(version: &str) -> String {
-    let changelog_path = "CHANGELOG.md";
-
-    if !Path::new(changelog_path).exists() {
-        return format!("Release v{version}");
+    for source in changelog_sources() {
+        let Ok(content) = fs::read_to_string(&source) else {
+            continue;
+        };
+        if let Some(notes) = changelog_section(&content, version) {
+            return notes;
+        }
     }
+    format!("Release v{version}")
+}
 
-    let content = match fs::read_to_string(changelog_path) {
-        Ok(content) => content,
-        Err(_) => return format!("Release v{version}"),
-    };
-
+/// The body of the `## [version]` section of one changelog file, if it has one.
+#[cfg(not(test))]
+fn changelog_section(content: &str, version: &str) -> Option<String> {
     let escaped_version = regex::escape(version);
     let header_pattern = format!(r"(?m)^## \[{escaped_version}\]");
     let header_re = Regex::new(&header_pattern).unwrap();
 
-    if let Some(version_header) = header_re.find(&content) {
-        let after_header = &content[version_header.end()..];
-        let body_start = after_header
-            .find('\n')
-            .map_or(after_header.len(), |i| i + 1);
-        let body = &after_header[body_start..];
+    let version_header = header_re.find(content)?;
+    let after_header = &content[version_header.end()..];
+    let body_start = after_header
+        .find('\n')
+        .map_or(after_header.len(), |i| i + 1);
+    let body = &after_header[body_start..];
 
-        let next_section_re = Regex::new(r"(?m)^## \[").unwrap();
-        let section_body = if let Some(next) = next_section_re.find(body) {
-            &body[..next.start()]
-        } else {
-            body
-        };
-
-        let trimmed = section_body.trim();
-        if trimmed.is_empty() {
-            format!("Release v{version}")
-        } else {
-            trimmed.to_string()
-        }
+    let next_section_re = Regex::new(r"(?m)^## \[").unwrap();
+    let section_body = if let Some(next) = next_section_re.find(body) {
+        &body[..next.start()]
     } else {
-        format!("Release v{version}")
+        body
+    };
+
+    let trimmed = section_body.trim();
+    if trimmed.is_empty() {
+        Some(format!("Release v{version}"))
+    } else {
+        Some(trimmed.to_string())
     }
 }
 

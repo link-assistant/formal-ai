@@ -1,0 +1,13 @@
+view
+  id M-f24aca9677a6
+  lemma rome
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "capital and largest city of Italy; on the Tiber; seat of the Roman Catholic Church; formerly the capital of the Roman Republic and the Roman Empire"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the leadership of the Roman Catholic Church"
+    provenance (wordnet)

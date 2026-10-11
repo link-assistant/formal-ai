@@ -1,0 +1,1 @@
+The supplied-file reader imports the existing same_path predicate from its extracted record owner, restoring compilation without changing the predicate body. Actual Formal AI packet raw logs are included explicitly despite the global log ignore rule, preserving exact original failure and unchanged retry evidence for local links. New-head native acceptance remains pending.

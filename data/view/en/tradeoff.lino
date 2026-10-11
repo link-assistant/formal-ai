@@ -1,0 +1,9 @@
+view
+  id M-7b48c81620aa
+  lemma tradeoff
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an exchange that occurs as a compromise"
+    provenance (wordnet)

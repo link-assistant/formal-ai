@@ -14,14 +14,7 @@ use crate::solver_handlers::finalize_simple;
 use crate::solver_helpers::{last_assistant_turn, last_user_turn};
 
 use super::software_project_code::implementation_code;
-
-/// A matched software-artifact phrase: the surface word it was recognised by
-/// (used to locate the target text after it) and the canonical English label.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-struct ArtifactMatch {
-    surface: &'static str,
-    label: &'static str,
-}
+use super::software_project_phrases::{ArtifactMatch, object_phrase_artifact};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) struct SoftwareProjectMeaning {
@@ -91,20 +84,33 @@ impl ApprovalState {
 }
 
 /// Whether a prompt carries the software-project frame (a software-authoring
-/// verb plus a software artifact), recognized through the same lexicon tables
+/// verb whose object phrase is headed by a software artifact), recognized
+/// through the same lexicon tables
 /// [`SoftwareProjectMeaning::from_prompt`] uses. Callers that already answered
 /// a narrower reading of the prompt — the capability table's honest gap, the
 /// calendar-create handler's event gate — decline on this claim so a build
 /// request reaches the software-project plan instead of being read as a file
-/// read or a scheduled event (issue #1138 software-project corpus).
+/// read or a scheduled event (issue #1138 software-project corpus). The
+/// artifact must head the verb's object phrase (issue #1175), so an artifact
+/// word that merely modifies another noun ("a 4-digit extension" of a ZIP
+/// code) does not claim.
 pub fn software_project_claims(normalized: &str) -> bool {
     if normalized.contains("hello") && normalized.contains("world") {
         return false;
     }
     let actions = action_surface_table();
     let artifacts = artifact_surface_table();
-    scan_match(normalized, |input| match_action(input, &actions)).is_some()
-        && scan_match(normalized, |input| match_artifact(input, &artifacts)).is_some()
+    object_phrase_artifact(normalized, &actions, &artifacts).is_some()
+}
+
+/// Whether the whole prompt is a go-ahead for a proposed software project.
+///
+/// The claim-routing table (issue #1175 R3) admits the handler on this
+/// evidence as well as on [`software_project_claims`]: an approval carries no
+/// artifact of its own, it moves the dialogue's earlier plan forward.
+#[must_use]
+pub fn software_project_approval_claims(normalized: &str) -> bool {
+    is_approval_prompt(normalized)
 }
 
 impl SoftwareProjectMeaning {
@@ -115,8 +121,12 @@ impl SoftwareProjectMeaning {
 
         let actions = action_surface_table();
         let artifacts = artifact_surface_table();
-        let action = scan_match(normalized, |input| match_action(input, &actions))?;
-        let artifact = scan_match(normalized, |input| match_artifact(input, &artifacts))?;
+        // The artifact kind comes only from the head noun of the authoring
+        // verb's object phrase (issue #1175): an artifact surface that merely
+        // modifies another noun — "an optional 4-digit extension" of a ZIP
+        // code — must not turn a regex request into an extension project.
+        let subject = prompt.to_lowercase();
+        let (action, artifact) = object_phrase_artifact(&subject, &actions, &artifacts)?;
         let target = extract_target(prompt, artifact);
         let requirements = extract_requirements(prompt);
         let game_tracker = is_game_unit_tracker(normalized);
@@ -379,8 +389,10 @@ fn artifact_label(slug: &str) -> Option<&'static str> {
 /// The (surface, label) recognition table for software artifacts, sourced from
 /// the lexicon: every `software_artifact_kind` meaning, in declaration order,
 /// flat-mapped over its surface words in every supported language. Declaration
-/// order preserves the specific-before-generic constraint [`scan_match`] relies
-/// on (e.g. `application` precedes `app`, so the longer phrase is taken first).
+/// order preserves the specific-before-generic constraint the phrase reader's
+/// longest-surface tie-break in `software_project_phrases::match_artifact_head`
+/// relies on (e.g. `application` precedes `app`, so the longer phrase wins an
+/// equal-length tie).
 fn artifact_surface_table() -> Vec<(&'static str, &'static str)> {
     let mut table = Vec::new();
     for meaning in seed::lexicon().meanings_with_role(seed::ROLE_SOFTWARE_ARTIFACT_KIND) {
@@ -408,97 +420,6 @@ fn action_surface_table() -> Vec<(&'static str, &'static str)> {
         }
     }
     table
-}
-
-/// Match a software-authoring verb at the start of `input`, returning the
-/// consumed byte length and the matched meaning's slug.
-fn match_action(
-    input: &str,
-    table: &[(&'static str, &'static str)],
-) -> Option<(usize, &'static str)> {
-    for &(surface, slug) in table {
-        if input.starts_with(surface) {
-            return Some((surface.len(), slug));
-        }
-    }
-    None
-}
-
-/// Match a software-artifact phrase at the start of `input`, returning the
-/// consumed byte length and the resolved [`ArtifactMatch`].
-fn match_artifact(
-    input: &str,
-    table: &[(&'static str, &'static str)],
-) -> Option<(usize, ArtifactMatch)> {
-    for &(surface, label) in table {
-        if input.starts_with(surface) {
-            return Some((surface.len(), ArtifactMatch { surface, label }));
-        }
-    }
-    None
-}
-
-/// Walk every word-boundary-aligned position in `normalized` left to right and
-/// return the first match the `matcher` accepts that also ends on a word
-/// boundary. Position-major: the surface appearing earliest in the prompt wins,
-/// independent of table order (ties at one position fall to the matcher's own
-/// first-match rule).
-fn scan_match<T>(normalized: &str, matcher: impl Fn(&str) -> Option<(usize, T)>) -> Option<T> {
-    for (index, _) in normalized.char_indices() {
-        if !is_start_boundary(normalized, index) {
-            continue;
-        }
-        if let Some((consumed, value)) = matcher(&normalized[index..])
-            && consumed > 0
-            && is_end_boundary(normalized, index + consumed)
-        {
-            return Some(value);
-        }
-    }
-    None
-}
-
-fn is_start_boundary(value: &str, index: usize) -> bool {
-    if index == 0 {
-        return true;
-    }
-    value[..index]
-        .chars()
-        .next_back()
-        .is_some_and(|character| !is_word_character(character))
-}
-
-fn is_end_boundary(value: &str, index: usize) -> bool {
-    if index >= value.len() {
-        return true;
-    }
-    value[index..]
-        .chars()
-        .next()
-        .is_some_and(|character| !is_word_character(character))
-}
-
-/// A "word character" for the recognition scan: an alphanumeric that is *not*
-/// CJK.
-///
-/// CJK scripts write without inter-word spaces, so a CJK surface must match as a
-/// substring (every CJK codepoint is its own boundary). Latin, Cyrillic, and
-/// Devanagari keep strict whole-token boundaries so a short surface like `апи`
-/// never matches inside `напиши`. This mirrors the substring-vs-token contract
-/// in [`crate::coding::contains_cjk`].
-fn is_word_character(character: char) -> bool {
-    character.is_alphanumeric() && !is_cjk_character(character)
-}
-
-/// Whether `character` belongs to a CJK script (per the codepoint ranges in
-/// [`crate::coding::contains_cjk`]), and so matches as a substring not a token.
-fn is_cjk_character(character: char) -> bool {
-    let codepoint = character as u32;
-    (0x3400..=0x4DBF).contains(&codepoint)
-        || (0x4E00..=0x9FFF).contains(&codepoint)
-        || (0xF900..=0xFAFF).contains(&codepoint)
-        || (0x3040..=0x30FF).contains(&codepoint)
-        || (0x3100..=0x312F).contains(&codepoint)
 }
 
 fn extract_target(prompt: &str, artifact: ArtifactMatch) -> String {

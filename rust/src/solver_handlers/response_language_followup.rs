@@ -14,7 +14,7 @@
 //! retarget covers the entire class of answerable requests, not just one shape.
 //!
 //! Both the language marker and the "I cannot understand" trigger are grounded
-//! in `data/seed/meanings-translation.lino`: [`detect_response_language`] reads
+//! in `data/seed/meanings-translation.lino`: [`requested_response_language`] reads
 //! the response-language marker role and [`detect_comprehension_failure`] reads
 //! the comprehension-failure marker role. This module holds no natural-language
 //! phrase table of its own; widening the vocabulary is a pure seed edit.
@@ -22,10 +22,10 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::solver::{ConversationRole, ConversationTurn, SolverConfig, UniversalSolver};
-use crate::translation::{detect_comprehension_failure, detect_response_language};
+use crate::translation::{detect_comprehension_failure, requested_response_language};
 
 pub fn try_response_language_followup(
-    _prompt: &str,
+    prompt: &str,
     normalized: &str,
     log: &mut EventLog,
     history: &[ConversationTurn],
@@ -36,7 +36,7 @@ pub fn try_response_language_followup(
     if config.forced_response_language.is_some() {
         return None;
     }
-    let target_language = detect_response_language(normalized)?;
+    let target_language = requested_response_language(prompt, normalized)?;
     if !is_language_reanswer_followup(normalized) {
         return None;
     }
@@ -101,7 +101,8 @@ pub fn try_response_language_followup(
 /// is a terse language-switch request. In the terse case the caller has already
 /// confirmed a seed-grounded response-language marker is present, so a short
 /// prompt with no fresh subject of its own is enough to treat it as a retarget
-/// of the previous turn rather than a new question.
+/// of the previous turn rather than a new question. How short is the
+/// `terse-word-limit` policy of `data/seed/handler-rules.lino` (issue #918).
 fn is_language_reanswer_followup(normalized: &str) -> bool {
     let normalized = normalized.trim();
     if normalized.is_empty() {
@@ -112,7 +113,11 @@ fn is_language_reanswer_followup(normalized: &str) -> bool {
     }
     // Chinese and other scriptio-continua markers carry no inter-word spaces,
     // so a bare "用中文" counts as one word here — still terse, still a switch.
-    normalized.split_whitespace().count() <= 4
+    let limit =
+        crate::rule_interpreter::handler_policy("response_language_followup", "terse-word-limit")
+            .and_then(|value| value.parse::<usize>().ok())
+            .unwrap_or_default();
+    normalized.split_whitespace().count() <= limit
 }
 
 fn push_unique(links: &mut Vec<String>, link: String) {

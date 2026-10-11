@@ -1,0 +1,81 @@
+{
+  "lemma": "detail",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05825971-n",
+      "partOfSpeech": "n",
+      "definition": "an isolated fact that is considered separately from the whole",
+      "examples": [
+        "several of the details are similar",
+        "a point of information"
+      ],
+      "synonyms": [
+        "item",
+        "point"
+      ]
+    },
+    {
+      "id": "oewn-13832132-n",
+      "partOfSpeech": "n",
+      "definition": "a small part that can be considered separately from the whole",
+      "examples": [
+        "it was perfect in all details"
+      ],
+      "synonyms": [
+        "particular",
+        "item"
+      ]
+    },
+    {
+      "id": "oewn-07152515-n",
+      "partOfSpeech": "n",
+      "definition": "extended treatment of particulars",
+      "examples": [
+        "the essay contained too much detail"
+      ],
+      "synonyms": []
+    },
+    {
+      "id": "oewn-08260002-n",
+      "partOfSpeech": "n",
+      "definition": "a crew of workers selected for a particular task",
+      "examples": [
+        "a detail was sent to remove the fallen trees"
+      ],
+      "synonyms": []
+    },
+    {
+      "id": "oewn-08421506-n",
+      "partOfSpeech": "n",
+      "definition": "a temporary military unit",
+      "examples": [
+        "the peacekeeping force includes one British contingent"
+      ],
+      "synonyms": [
+        "contingent"
+      ]
+    },
+    {
+      "id": "oewn-00958282-v",
+      "partOfSpeech": "v",
+      "definition": "provide details for",
+      "examples": [],
+      "synonyms": []
+    },
+    {
+      "id": "oewn-00680024-v",
+      "partOfSpeech": "v",
+      "definition": "assign to a specific task",
+      "examples": [
+        "The ambulances were detailed to the fire station"
+      ],
+      "synonyms": []
+    }
+  ]
+}

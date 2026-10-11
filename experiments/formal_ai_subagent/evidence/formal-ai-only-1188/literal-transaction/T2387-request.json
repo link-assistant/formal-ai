@@ -1,0 +1,9 @@
+{
+  "id": "T2387",
+  "prompt": "First, create file a.txt with exactly this content «alpha». Second, derive the missing compiler contract.",
+  "expected": {
+    "a.txt": "alpha"
+  },
+  "dir": "/private/tmp/formal-ai-only-1188/obligation-heldout-kho3qJ",
+  "steps": 8
+}

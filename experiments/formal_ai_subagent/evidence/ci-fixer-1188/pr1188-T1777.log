@@ -1,0 +1,638 @@
+>> read {"filePath":"js/agentic/shell_command.mjs","file_path":"js/agentic/shell_command.mjs","path":"js/agentic/shell_command.mjs"}
+   <file>
+   00001| // Resolve a user turn into the concrete shell command the agentic loop should
+   00002| // run: a port of rust/src/agentic_coding/shell_command.rs.
+   00003| 
+   00004| import {
+   00005|   commandSpan, governsCommandsRatherThanRequestingOne, isProseWord, namedShellCommandInSentence,
+   00006|   normalizeCommandWord, sentenceSpans, shellQuotesPaired, statesACommandPolicy,
+   00007| } from './shell_command_policy.mjs';
+   00008| import { asksForDirectoryListing } from './directory_listing.mjs';
+   00009| import { withoutPathWords } from './workspace_line_operation.mjs';
+   00010| import { isDottedNumber, trimTrailingSentenceDot } from './file_path_shape.mjs';
+   00011| import { requestBlocks } from './stated_request.mjs';
+   00012| import { testFileCommand } from './test_file_runner.mjs';
+   00013| import { currentDirectory, isFile } from './host.mjs';
+   00014| import { effectIsDeclared, shellIntentVocabulary } from './crate/seed_shell_intents.mjs';
+   00015| import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
+   00016| import { asksAQuestion, callerContextVocabulary, copulaIn } from './crate/seed_caller_context.mjs';
+   00017| import { agenticToolCapabilities } from './crate/seed_agentic_tool_capabilities.mjs';
+   00018| import { evidencedIn, meaning, mentionsRole, roleWordForms, wordsForRole } from './crate/seed_meanings.mjs';
+   00019| import { normalizePrompt } from './crate/engine.mjs';
+   00020| import { containsWordSequence } from './crate/solver_handlers_benchmark_prompts.mjs';
+   00021| import { quotedSegmentSpans } from './crate/normal_markov.mjs';
+   00022| import { webSearchQueryFor } from './crate/solver_handlers_web_search.mjs';
+   00023| import {
+   00024|   byteFind, charCount, compareTuples, eqIgnoreAsciiCase, isAlphanumeric, isWhitespace, maxByKey, minByKey,
+   00025|   sliceFromByte, splitWhitespace, trim, trimEndMatches, trimMatches, trimStart, utf8Len,
+   00026| } from './crate/rust_str.mjs';
+   00027| 
+   00028| const REPORT_ISSUE_ACTION = 'formal-ai:report-issue';
+   00029| const ROLE_CODING_SEARCH_LITERAL_QUERY = 'coding_search_literal_query';
+   00030| const ROLE_CODING_SEARCH_SUBJECT_KIND = 'coding_search_subject_kind';
+   00031| const ROLE_HELLO_WORLD_REFERENCE = 'hello_world_reference';
+   00032| const ROLE_PROGRAM_KIND = 'program_kind';
+   00033| const ROLE_PROGRAM_REQUEST = 'program_request';
+   00034| 
+   00035| const firstWord = (text) => splitWhitespace(text)[0];
+   00036| 
+   00037| /** Mirrors `fn shell_command_for_task`. */
+   00038| export function shellCommandForTask(task) {
+   00039|   const prompt = stripBalancedOuterQuotes(trim(task));
+   00040|   if (governsCommandsRatherThanRequestingOne(prompt)) return null;
+   00041|   const vocab = terminalCommandVocabulary();
+   00042|   const intentVocab = shellIntentVocabulary();
+   00043|   const intent = intentShellCommand(prompt, intentVocab);
+   00044|   const listing = asksForDirectoryListing(prompt);
+   00045|   const webSearch = webSearchQueryFor(prompt) !== null;
+   00046|   const semantic = listing ? 'ls' : intent;
+   00047|   const command = prefixedShellCommand(prompt, vocab);
+   00048|   if (command !== null) {
+   00049|     const firstToken = firstWord(command);
+   00050|     const first = firstToken === undefined ? null : normalizeCommandWord(firstToken);
+   00051|     const namesKnownCommand = first !== null && vocab.shell_tokens.includes(first);
+   00052|     const semanticFirst = semantic === null ? undefined : firstWord(semantic);
+   00053|     const namesSemanticCommand = semantic !== null
+   00054|       && (semanticFirst === undefined ? null : normalizeCommandWord(semanticFirst)) === first;
+   00055|     if (namesSemanticCommand) return semantic;
+   00056|     if (namesKnownCommand || (semantic === null && !webSearch)) return command;
+   00057|   }
+   00058|   return semantic ?? namedShellCommand(prompt, vocab) ?? bareShellCommand(prompt, vocab);
+   00059| }
+   00060| 
+   00061| /** Mirrors `fn semantic_shell_command_for_task`. */
+   00062| export function semanticShellCommandForTask(prompt) {
+   00063|   return intentShellCommand(prompt, shellIntentVocabulary());
+   00064| }
+   00065| 
+   00066| /** Mirrors `fn strip_balanced_outer_quotes`. */
+   00067| function stripBalancedOuterQuotes(prompt) {
+   00068|   for (const quote of ['"', '\'', '`']) {
+   00069|     if (prompt.startsWith(quote) && prompt.endsWith(quote) && utf8Len(prompt) >= 2) return prompt.slice(1, -1);
+   00070|   }
+   00071|   return prompt;
+   00072| }
+   00073| 
+   00074| /** Mirrors `fn prefixed_shell_command`. */
+   00075| function prefixedShellCommand(raw, vocab) {
+   00076|   const prompt = trim(raw);
+   00077|   const lower = prompt.toLowerCase();
+   00078|   const prefix = maxByKey(vocab.passthrough_prefixes.filter((candidate) => prefixBoundary(lower, candidate)), charCount);
+   00079|   if (prefix === undefined) return null;
+   00080|   const tail = sliceFromByte(prompt, utf8Len(prefix));
+   00081|   if (tail === null) return null;
+   00082|   let remainder = commandSpan(trimStart(tail));
+   00083|   if (remainder === null) return null;
+   00084|   remainder = trimCommandSentenceEnd(stripBalancedOuterQuotes(remainder));
+   00085|   const named = commandNamedInProse(remainder, vocab);
+   00086|   if (named !== null) return named;
+   00087|   return remainder && !readsAsProse(remainder, vocab) ? remainder : null;
+   00088| }
+   00089| 
+   00090| /**
+   00091|  * Mirrors `fn trim_command_sentence_end`: the sentence's full stop and the
+   00092|  * quotes it wrapped around the command, peeled from the last token to a
+   00093|  * fixpoint — `Run python3 greet.py.` runs `python3 greet.py`, and
+   00094|  * `` Run `ls -la`. `` runs `ls -la`, while `cd ..` and `ls .` keep their dots.
+   00095|  */
+   00096| function trimCommandSentenceEnd(remainder) {
+   00097|   let current = remainder;
+   00098|   for (;;) {
+   00099|     const unquoted = stripBalancedOuterQuotes(trim(current));
+   00100|     const lastSpace = /\s(?=\S*$)/u.exec(unquoted);
+   00101|     const split = lastSpace === null ? 0 : lastSpace.index + lastSpace[0].length;
+   00102|     const next = unquoted.slice(0, split) + trimTrailingSentenceDot(unquoted.slice(split));
+   00103|     if (next === current) return current;
+   00104|     current = next;
+   00105|   }
+   00106| }
+   00107| 
+   00108| const SHELL_QUOTING_AND_METACHARACTERS = ['"', '\'', '`', '|', '&', ';', '<', '>', '$', '(', ')', '{', '}'];
+   00109| 
+   00110| /** Mirrors `fn command_named_in_prose`. */
+   00111| function commandNamedInProse(remainder, vocab) {
+   00112|   if (SHELL_QUOTING_AND_METACHARACTERS.some((character) => remainder.includes(character))) return null;
+   00113|   const words = splitWhitespace(remainder);
+   00114|   const kept = words.filter((word) => !namesACommand(word, vocab));
+   00115|   if (kept.length === words.length || kept.length === 0) return null;
+   00116|   const start = kept.findIndex((word) => !isProseWord(word));
+   00117|   if (start < 0) return null;
+   00118|   const command = [kept[start]];
+   00119|   for (const word of kept.slice(start + 1)) {
+   00120|     if (isProseWord(word)) break;
+   00121|     command.push(word);
+   00122|   }
+   00123|   return command.join(' ');
+   00124| }
+   00125| 
+   00126| /** Mirrors `fn names_a_command`. */
+   00127| function namesACommand(word, vocab) {
+   00128|   const normalized = trimMatches(word, (character) => !isAlphanumeric(character)).toLowerCase();
+   00129|   return normalized !== '' && vocab.command_nouns.includes(normalized);
+   00130| }
+   00131| 
+   00132| /** Mirrors `fn reads_as_prose`. */
+   00133| function readsAsProse(remainder, vocab) {
+   00134|   const words = splitWhitespace(remainder);
+   00135|   const first = words[0];
+   00136|   if (first === undefined) return true;
+   00137|   if (first.includes('://')) return true;
+   00138|   if (vocab.shell_tokens.includes(normalizeCommandWord(first))) return false;
+   00139|   return isProseWord(first) || words.slice(1).filter(isProseWord).length >= 2;
+   00140| }
+   00141| 
+   00142| /** Mirrors `fn explicit_passthrough_command`. */
+   00143| export function explicitPassthroughCommand(task) {
+   00144|   const prompt = stripBalancedOuterQuotes(trim(task));
+   00145|   if (governsCommandsRatherThanRequestingOne(prompt)) return null;
+   00146|   const command = prefixedShellCommand(prompt, terminalCommandVocabulary());
+   00147|   return command !== null && shellQuotesPaired(command) ? command : null;
+   00148| }
+   00149| 
+   00150| /** Mirrors `fn bare_shell_command`. */
+   00151| function bareShellCommand(prompt, vocab) {
+   00152|   const words = splitWhitespace(prompt);
+   00153|   if (!words.length) return null;
+   00154|   const command = normalizeCommandWord(words[0]);
+   00155|   if (webSearchQueryFor(prompt) !== null) return null;
+   00156|   const isKnown = vocab.bare_shell_tokens.includes(command);
+   00157|   return isKnown && words.slice(1).every((word) => !isProseWord(word)) ? prompt : null;
+   00158| }
+   00159| 
+   00160| /** Mirrors `fn prefix_boundary`. */
+   00161| function prefixBoundary(prompt, prefix) {
+   00162|   if (!prompt.startsWith(prefix)) return false;
+   00163|   const rest = sliceFromByte(prompt, utf8Len(prefix));
+   00164|   const next = rest === null ? undefined : Array.from(rest)[0];
+   00165|   return next !== undefined && (isWhitespace(next) || next === ':');
+   00166| }
+   00167| 
+   00168| /** Mirrors `fn code_search_query_for_task`. */
+   00169| export function codeSearchQueryForTask(prompt) {
+   00170|   const vocab = shellIntentVocabulary();
+   00171|   for (const block of requestBlocks(prompt)) {
+   00172|     const lower = block.toLowerCase();
+   00173|     const cue = longestSearchCue(lower, vocab);
+   00174|     if (cue === null) continue;
+   00175|     const query = literalCodeSearchQuery(lower)
+   00176|       ?? shapedCodeSearchToken(block)
+   00177|       ?? adjacentCodeSearchToken(block, lower)
+   00178|       ?? localSearchQuery(block, cue, vocab);
+   00179|     if (query !== null) return query;
+   00180|   }
+   00181|   return null;
+   00182| }
+   00183| 
+   00184| /** Mirrors `fn code_shaped_query`. */
+   00185| export function codeShapedQuery(text) {
+   00186|   const normalized = text.toLowerCase();
+   00187|   return literalCodeSearchQuery(normalized) ?? shapedCodeSearchToken(text) ?? adjacentCodeSearchToken(text, normalized);
+   00188| }
+   00189| 
+   00190| /** Mirrors `fn longest_search_cue`. */
+   00191| function longestSearchCue(normalized, vocab) {
+   00192|   const intentCues = vocab.intents.filter((intent) => intent.command === 'rg').flatMap((intent) => intent.cues);
+   00193|   const capabilityCues = agenticToolCapabilities().filter((capability) => capability.id === 'grep')
+   00194|     .flatMap((capability) => capability.cues);
+   00195|   const cue = maxByKey([...intentCues, ...capabilityCues].filter((candidate) => normalized.includes(candidate)), charCount);
+   00196|   return cue ?? null;
+   00197| }
+   00198| 
+   00199| /** Mirrors `fn literal_code_search_query`. */
+   00200| function literalCodeSearchQuery(normalized) {
+   00201|   const form = roleWordForms(ROLE_CODING_SEARCH_LITERAL_QUERY).find((candidate) => normalized.includes(candidate.text.toLowerCase()));
+   00202|   return form && form.action ? form.action : null;
+   00203| }
+   00204| 
+   00205| /** Mirrors `fn shaped_code_search_token`. */
+   00206| function shapedCodeSearchToken(prompt) {
+   00207|   const scored = [];
+   00208|   for (const token of searchTokens(prompt)) {
+   00209|     const interiorUppercase = Array.from(token).slice(1).some((character) => /^[A-Z]$/.test(character));
+   00210|     const score = (token.includes('.') ? 4 : 0) + (token.includes('_') ? 4 : 0) + (interiorUppercase ? 3 : 0)
+   00211|       + (token.includes('-') ? 2 : 0);
+   00212|     if (score > 0 && !token.includes('/') && !isDottedNumber(token)) scored.push([score, utf8Len(token), token]);
+   00213|   }
+   00214|   const best = maxByKey(scored, ([score, length]) => [score, length], compareTuples);
+   00215|   return best === undefined ? null : best[2].replaceAll('-', '_');
+   00216| }
+   00217| 
+   00218| /** Mirrors `fn adjacent_code_search_token` (UTF-8 byte offsets, as Rust measures them). */
+   00219| function adjacentCodeSearchToken(prompt, normalized) {
+   00220|   const tokens = searchTokensWithOffsets(prompt);
+   00221|   const candidates = [];
+   00222|   for (const form of roleWordForms(ROLE_CODING_SEARCH_SUBJECT_KIND)) {
+   00223|     const surface = form.text.toLowerCase();
+   00224|     const start = byteFind(normalized, surface);
+   00225|     if (start < 0) continue;
+   00226|     const end = start + utf8Len(surface);
+   00227|     const near = [];
+   00228|     for (const [token, tokenStart, tokenEnd] of tokens) {
+   00229|       if (!(tokenEnd <= start || tokenStart >= end)) continue;
+   00230|       const distance = tokenEnd <= start ? start - tokenEnd : tokenStart - end;
+   00231|       if (validSearchIdentifier(token)) near.push([distance, tokenStart, token]);
+   00232|     }
+   00233|     const best = minByKey(near, ([distance, offset]) => [distance, offset], compareTuples);
+   00234|     if (best !== undefined) candidates.push(best);
+   00235|   }
+   00236|   const best = minByKey(candidates, ([distance, offset]) => [distance, offset], compareTuples);
+   00237|   return best === undefined ? null : best[2];
+   00238| }
+   00239| 
+   00240| /** Mirrors `fn search_tokens`. */
+   00241| export function searchTokens(text) {
+   00242|   return text.split(/[^0-9A-Za-z_.:-]/u)
+   00243|     .map((token) => trimMatches(token, (character) => character === '.' || character === '-'))
+   00244|     .filter(Boolean);
+   00245| }
+   00246| 
+   00247| /** Mirrors `fn search_tokens_with_offsets`: `[token, startByte, endByte]`. */
+   00248| function searchTokensWithOffsets(text) {
+   00249|   const separator = (character) => !/^[0-9A-Za-z_]$/.test(character);
+   00250|   const chunks = [];
+   00251|   let chunk = '';
+   00252|   for (const character of text) {
+   00253|     chunk += character;
+   00254|     if (separator(character)) {
+   00255|       chunks.push(chunk);
+   00256|       chunk = '';
+   00257|     }
+   00258|   }
+   00259|   if (chunk) chunks.push(chunk);
+   00260|   const out = [];
+   00261|   let offset = 0;
+   00262|   for (const part of chunks) {
+   00263|     const start = offset;
+   00264|     offset += utf8Len(part);
+   00265|     const token = trimEndMatches(part, separator);
+   00266|     if (token) out.push([token, start, start + utf8Len(token)]);
+   00267|   }
+   00268|   return out;
+   00269| }
+   00270| 
+   00271| /** Mirrors `fn valid_search_identifier`. */
+   00272| export function validSearchIdentifier(token) {
+   00273|   const chars = Array.from(token);
+   00274|   return chars.length > 0
+   00275|     && /^[A-Za-z_]$/.test(chars[0])
+   00276|     && chars.slice(1).every((character) => /^[0-9A-Za-z_]$/.test(character))
+   00277|     && !wordsForRole(ROLE_CODING_SEARCH_SUBJECT_KIND).some((surface) => eqIgnoreAsciiCase(surface, token));
+   00278| }
+   00279| 
+   00280| const MOOD_ENDS = new Set(['.', '!', '?', ';', '\n', '。', '！', '？', '；']);
+   00281| 
+   00282| /** Mirrors `fn sentences_with_mood`: `[text, interrogative]` pairs. */
+   00283| function sentencesWithMood(lower) {
+   00284|   const out = [];
+   00285|   let start = 0;
+   00286|   let index = 0;
+   00287|   for (const character of lower) {
+   00288|     const at = index;
+   00289|     index += character.length;
+   00290|     if (!MOOD_ENDS.has(character)) continue;
+   00291|     if (character === '.') {
+   00292|       const next = Array.from(lower.slice(index))[0];
+   00293|       if (next !== undefined && isAlphanumeric(next)) continue;
+   00294|     }
+   00295|     const text = trim(lower.slice(start, at));
+   00296|     if (text) out.push([text, character === '?' || character === '？']);
+   00297|     start = index;
+   00298|   }
+   00299|   const tail = trim(lower.slice(start));
+   00300|   if (tail) out.push([tail, false]);
+   00301|   return out;
+   00302| }
+   00303| 
+   00304| /** Mirrors `fn requesting_sentences`. */
+   00305| function requestingSentences(sentences, cues) {
+   00306|   return sentences
+   00307|     .filter(([sentence, interrogative]) => !cues.some((cue) =>
+   00308|       sentence.includes(cue) && isFactStatement(sentence, interrogative, cue)))
+   00309|     .map(([sentence]) => sentence);
+   00310| }
+   00311| 
+   00312| /** Mirrors `fn carries_authoring_task`. */
+   00313| export function carriesAuthoringTask(sentence) {
+   00314|   return mentionsRole(ROLE_PROGRAM_REQUEST, sentence)
+   00315|     && [ROLE_PROGRAM_KIND, ROLE_HELLO_WORLD_REFERENCE].some((role) => mentionsRole(role, sentence));
+   00316| }
+   00317| 
+   00318| /** Mirrors `fn strip_subject_lead`. */
+   00319| function stripSubjectLead(sentence) {
+   00320|   for (const lead of callerContextVocabulary().subject_leads) {
+   00321|     if (sentence.startsWith(lead) && sentence.slice(lead.length).startsWith(' ')) {
+   00322|       return trimStart(sentence.slice(lead.length));
+   00323|     }
+   00324|   }
+   00325|   return sentence;
+   00326| }
+   00327| 
+   00328| /** Mirrors `fn labels_a_value`. */
+   00329| function labelsAValue(sentence, cue) {
+   00330|   const headEnd = byteFind(sentence.toLowerCase(), cue);
+   00331|   if (headEnd < 0) return false;
+   00332|   const tail = sliceFromByte(sentence, headEnd + utf8Len(cue));
+   00333|   if (tail === null) return false;
+   00334|   const rest = trimStart(tail);
+   00335|   if (!rest.startsWith(':') && !rest.startsWith('：')) return false;
+   00336|   const words = splitWhitespace(trim(rest.slice(1)));
+   00337|   if (!words.length) return false;
+   00338|   return words.length === 1 && (words[0].startsWith('/') || words[0].startsWith('~/'));
+   00339| }
+   00340| 
+   00341| /** Mirrors `fn is_fact_statement`. */
+   00342| function isFactStatement(sentence, interrogative, cue) {
+   00343|   if (interrogative || asksAQuestion(sentence)) return false;
+   00344|   if (labelsAValue(sentence, cue)) return true;
+   00345|   let rest = null;
+   00346|   if (sentence.startsWith(cue)) rest = sentence.slice(cue.length);
+   00347|   else {
+   00348|     const stripped = stripSubjectLead(sentence);
+   00349|     if (stripped.startsWith(cue)) rest = stripped.slice(cue.length);
+   00350|   }
+   00351|   if (rest === null) return false;
+   00352|   rest = trimMatches(rest, (character) => isWhitespace(character) || ',:：，-'.includes(character));
+   00353|   const words = splitWhitespace(rest);
+   00354|   if (!words.length) return false;
+   00355|   const head = words[0];
+   00356|   const last = words[words.length - 1];
+   00357|   const copula = copulaIn(head);
+   00358|   if (copula !== null) return words.length > 1 || charCount(head) > charCount(copula);
+   00359|   return words.length > 1 && copulaIn(last) !== null;
+   00360| }
+   00361| 
+   00362| /** Mirrors `fn intent_shell_command`. */
+   00363| function intentShellCommand(prompt, vocab) {
+   00364|   const lower = prompt.toLowerCase();
+   00365|   // A request about text inside a file carries its payload in quotes: the
+   00366|   // words there are data, never the command it asks for (PR #1188 G32:
+   00367|   // `Add the line '- run tests' …` ran the workspace tests).
+   00368|   const insideAFile = editsInsideAFile(prompt);
+   00369|   const matched = matchedIntentCue(insideAFile ? outsideQuotedSegments(prompt).toLowerCase() : lower, vocab);
+   00370|   if (matched === null) return null;
+   00371|   const [intent, cue] = matched;
+   00372|   // A destructive intent (`destructive true` in the seed) never reads a
+   00373|   // request about text inside a file as a request to delete the file.
+   00374|   if (intent.destructive && insideAFile) return null;
+   00375|   // Nor does it read a move or copy of text inside a file (`Move lines 2-3 of
+   00376|   // a.md to the end of b.md`) as a move or copy of the file (PR #1188 G85).
+   00377|   if (intent.argument === 'two_paths' && insideAFile) return null;
+   00378|   const withArgument = (argument) => (argument === null ? null : `${intent.command} ${argument}`);
+   00379|   switch (intent.argument) {
+   00380|     case 'none':
+   00381|       // A named test file runs with its own runtime (PR #1188 T91).
+   00382|       return testFileCommand(intent.command, pathArgument(prompt)) ?? resolveShellCommand(intent.command, vocab);
+   00383|     case 'path':
+   00384|       return withArgument(pathArgument(prompt));
+   00385|     case 'name_lead':
+   00386|       return withArgument(nameLeadArgument(prompt, vocab.name_leads));
+   00387|     case 'one_path':
+   00388|       return withArgument(pathArguments(prompt, cue, vocab, 1));
+   00389|     case 'two_paths':
+   00390|       return withArgument(pathArguments(prompt, cue, vocab, 2));
+   00391|     case 'remainder': {
+   00392|       const argument = remainderArgument(prompt, lower, cue);
+   00393|       return argument === null ? null : `${intent.command} --fixed-strings -- '${argument}' .`;
+   00394|     }
+   00395|     default: {
+   00396|       const argument = localSearchQuery(prompt, cue, vocab);
+   00397|       return argument === null ? null : `${intent.command} --fixed-strings -- '${argument}' .`;
+   00398|     }
+   00399|   }
+   00400| }
+   00401| 
+   00402| /**
+   00403|  * Mirrors `fn sentence_carries_cue`: the cue is in the sentence as written,
+   00404|  * or once both drop the seeded filler words a speaker inserts inside a cue
+   00405|  * phrase (`show me git status` carries `show git status`).
+   00406|  */
+   00407| function sentenceCarriesCue(sentence, cue, fillers) {
+   00408|   // Whole words only (CJK aside): `move` is not inside `removed` (PR #1188 G66).
+   00409|   if (containsWordSequence(sentence, cue)) return true;
+   00410|   const withoutFillers = (text) => splitWhitespace(text).filter((word) => !fillers.includes(word)).join(' ');
+   00411|   const bare = withoutFillers(cue);
+   00412|   return bare !== '' && containsWordSequence(withoutFillers(sentence), bare);
+   00413| }
+   00414| 
+   00415| /** Mirrors `fn matched_intent_cue`: `[intent, cue]` or null. */
+   00416| function matchedIntentCue(lower, vocab) {
+   00417|   // Path operands and quoted payloads supply data, never operation cues.
+   00418|   lower = outsideQuotedSegments(withoutPathWords(lower));
+   00419|   const moods = sentencesWithMood(lower);
+   00420|   const cues = vocab.intents.flatMap((intent) => intent.cues);
+   00421|   const requesting = requestingSentences(moods, cues);
+   00422|   if (carriesAuthoringTask(lower)) return null;
+   00423|   const pairs = [];
+   00424|   for (const intent of vocab.intents) {
+   00425|     if (intent.command === REPORT_ISSUE_ACTION) continue;
+   00426|     for (const cue of intent.cues) {
+   00427|       if (!requesting.some((sentence) => sentenceCarriesCue(sentence, cue, vocab.cue_fillers))) continue;
+   00428|       if (intent.argument === 'search_query' && !vocab.local_search_scopes.some((scope) => lower.includes(scope))) continue;
+   00429|       pairs.push([intent, cue]);
+   00430|     }
+   00431|   }
+   00432|   return maxByKey(pairs, ([, cue]) => charCount(cue)) ?? null;
+   00433| }
+   00434| 
+   00435| /** The request without its quoted segments. */
+   00436| function outsideQuotedSegments(prompt) {
+   00437|   let outside = '';
+   00438|   let cursor = 0;
+   00439|   for (const segment of quotedSegmentSpans(prompt)) {
+   00440|     if (segment.start < cursor) continue;
+   00441|     outside += `${prompt.slice(cursor, segment.start)} `;
+   00442|     cursor = segment.end;
+   00443|   }
+   00444|   return outside + prompt.slice(cursor);
+   00445| }
+   00446| 
+   00447| /**
+   00448|  * Mirrors `fn edits_inside_a_file`: the request is about text inside a file —
+   00449|  * it quotes a payload that is not a path, or names a line (the seeded `line`
+   00450|  * meaning) or another unit of text (`file_text_unit`: word, phrase,
+   00451|  * occurrence, text, in every registered language) outside its quotes
+   00452|  * (PR #1188: `t.md से drop शब्द हटाओ।` ran `rm t.md`).
+   00453|  */
+   00454| export function editsInsideAFile(prompt) {
+   00455|   const quoted = quotedSegmentSpans(prompt).map((segment) => trim(segment.text)).filter((text) => text !== '');
+   00456|   if (quoted.some((text) => !looksLikeAPath(text))) return true;
+   00457|   const outside = normalizePrompt(outsideQuotedSegments(withoutPathWords(prompt))).toLowerCase();
+   00458|   const line = meaning('line');
+   00459|   return (line !== null && line !== undefined && evidencedIn(line, outside)) || mentionsRole('file_text_unit', outside);
+   00460| }
+   00461| 
+   00462| /**
+   00463|  * Mirrors `fn refused_destructive_edit`: when the request's seeded intent is
+   00464|  * destructive but the request edits inside a file, the path it names (or
+   00465|  * '') so the planner can decline honestly instead of composing the command;
+   00466|  * null otherwise.
+   00467|  */
+   00468| export function refusedDestructiveEdit(task) {
+   00469|   const prompt = stripBalancedOuterQuotes(trim(task));
+   00470|   const matched = matchedIntentCue(prompt.toLowerCase(), shellIntentVocabulary());
+   00471|   if (matched === null || !matched[0].destructive || !editsInsideAFile(prompt)) return null;
+   00472|   const written = splitWhitespace(outsideQuotedSegments(prompt))
+   00473|     .map((token) => trimMatches(token, (character) => '`"\'()[]{}<>,;:!?।。'.includes(character)))
+   00474|     .map((token) => trimTrailingSentenceDot(token))
+   00475|     .find((token) => looksLikeAPath(token));
+   00476|   return written ?? pathArguments(prompt, matched[1], shellIntentVocabulary(), 1) ?? '';
+   00477| }
+   00478| 
+   00479| /** Mirrors `fn names_mutating_shell_intent`. */
+   00480| export function namesMutatingShellIntent(prompt) {
+   00481|   const matched = matchedIntentCue(prompt.toLowerCase(), shellIntentVocabulary());
+   00482|   return matched !== null && effectIsDeclared(matched[0].effect);
+   00483| }
+   00484| 
+   00485| /** Mirrors `fn path_arguments`. */
+   00486| function pathArguments(prompt, cue, vocab, count) {
+   00487|   const lower = prompt.toLowerCase();
+   00488|   const anchored = namesAPathObject(cue, vocab);
+   00489|   const start = byteFind(lower, cue);
+   00490|   const afterCue = start < 0 ? '' : (sliceFromByte(prompt, start + utf8Len(cue)) ?? '');
+   00491|   let args = collectPathArguments(afterCue, '', vocab, count, anchored);
+   00492|   if (args.length < count) args = collectPathArguments(prompt, cue, vocab, count, anchored);
+   00493|   return args.length === count ? args.join(' ') : null;
+   00494| }
+   00495| 
+   00496| /** Mirrors `fn names_a_path_object`. */
+   00497| function namesAPathObject(cue, vocab) {
+   00498|   return vocab.path_objects.some((object) => cue.includes(object));
+   00499| }
+   00500| 
+   00501| /** Mirrors `fn looks_like_a_path`. */
+   00502| function looksLikeAPath(token) {
+   00503|   if (isDottedNumber(token)) return false;
+   00504|   if (token.startsWith('~') || token.includes('/')) return true;
+   00505|   const dot = token.lastIndexOf('.');
+   00506|   if (dot < 0) return false;
+   00507|   const stem = token.slice(0, dot);
+   00508|   const extension = token.slice(dot + 1);
+   00509|   return stem !== '' && extension !== '' && Array.from(extension).every(isAlphanumeric);
+   00510| }
+   00511| 
+   00512| /** Mirrors `fn collect_path_arguments`. */
+   00513| function collectPathArguments(text, rawCue, vocab, count, anchored) {
+   00514|   const cue = rawCue.toLowerCase();
+   00515|   const cueParts = splitWhitespace(cue);
+   00516|   const args = [];
+   00517|   for (const word of splitWhitespace(text)) {
+   00518|     // A quoted operand closes before the full stop: `'b.txt'.` (PR #1188 G37).
+   00519|     const quote = (character) => '`"\',;:!?«»‘’“”'.includes(character);
+   00520|     const candidate = trimMatches(trimTrailingSentenceDot(trimMatches(word, quote)), quote);
+   00521|     const normalized = candidate.toLowerCase();
+   00522|     if (!candidate || !isSafePath(candidate) || (!anchored && !looksLikeAPath(candidate))
+   00523|       || cueParts.includes(normalized) || vocab.argument_noise.includes(normalized)) continue;
+   00524|     args.push(candidate);
+   00525|     if (args.length === count) break;
+   00526|   }
+   00527|   return args;
+   00528| }
+   00529| 
+   00530| const QUERY_CHARACTER = (character) => isAlphanumeric(character) || '_-.:'.includes(character);
+   00531| 
+   00532| /** Mirrors `fn local_search_query`. */
+   00533| function localSearchQuery(prompt, cue, vocab) {
+   00534|   const cueWords = splitWhitespace(cue).map((word) => word.toLowerCase());
+   00535|   const scopeWords = vocab.local_search_scopes.flatMap((scope) => splitWhitespace(scope).map((word) => word.toLowerCase()));
+   00536|   const query = splitWhitespace(prompt)
+   00537|     .map((word) => trimMatches(word, (character) => !QUERY_CHARACTER(character)))
+   00538|     .filter(Boolean)
+   00539|     .filter((word) => {
+   00540|       const lower = word.toLowerCase();
+   00541|       return !cueWords.includes(lower) && !scopeWords.includes(lower) && !vocab.argument_noise.includes(lower);
+   00542|     })
+   00543|     .join(' ');
+   00544|   return query && Array.from(query).every((character) => QUERY_CHARACTER(character) || isWhitespace(character)) ? query : null;
+   00545| }
+   00546| 
+   00547| /** Mirrors `fn resolve_shell_command`. */
+   00548| function resolveShellCommand(command, vocab) {
+   00549|   if (command.startsWith('formal-ai:workspace-')) {
+   00550|     return workspaceCommand(command.slice('formal-ai:workspace-'.length), vocab);
+   00551|   }
+   00552|   return command;
+   00553| }
+   00554| 
+   00555| /**
+   00556|  * Mirrors `fn workspace_command`: the first workspace whose marker file exists
+   00557|  * in the server's working directory (`Path::new(marker).is_file()`).
+   00558|  */
+   00559| function workspaceCommand(action, vocab) {
+   00560|   const cwd = currentDirectory();
+   00561|   const commands = vocab.workspace_commands.find((candidate) =>
+   00562|     isFile(cwd && !candidate.marker.startsWith('/') ? `${cwd}/${candidate.marker}` : candidate.marker));
+   00563|   if (!commands) return null;
+   00564|   if (action === 'test') return commands.test;
+   00565|   if (action === 'install') return commands.install;
+   00566|   if (action === 'build') return commands.build;
+   00567|   return null;
+   00568| }
+   00569| 
+   00570| /** Mirrors `fn remainder_argument`. */
+   00571| function remainderArgument(prompt, lower, cue) {
+   00572|   const start = byteFind(lower, cue);
+   00573|   if (start < 0) return null;
+   00574|   const tail = sliceFromByte(prompt, start + utf8Len(cue));
+   00575|   if (tail === null) return null;
+   00576|   const remainder = trim(tail);
+   00577|   return remainder && Array.from(remainder).every((character) => QUERY_CHARACTER(character) || isWhitespace(character))
+   00578|     ? remainder : null;
+   00579| }
+   00580| 
+   00581| /** Mirrors `fn path_argument`. */
+   00582| function pathArgument(prompt) {
+   00583|   for (const word of prompt.split(/\p{White_Space}/u)) {
+   00584|     const token = trimEndMatches(trimMatches(word, (character) => '`"\',;?'.includes(character)),
+   00585|       (character) => character === '.' || character === '!');
+   00586|     const interiorDot = trimMatches(token, (character) => character === '.').includes('.');
+   00587|     if (interiorDot && !token.includes('://') && isSafePath(token)) return token;
+   00588|   }
+   00589|   return null;
+   00590| }
+   00591| 
+   00592| /** Mirrors `fn name_lead_argument`. */
+   00593| function nameLeadArgument(prompt, nameLeads) {
+   00594|   const words = splitWhitespace(prompt);
+   00595|   const leadIndex = words.findIndex((word) =>
+   00596|     nameLeads.includes(trimMatches(word, (character) => !isAlphanumeric(character)).toLowerCase()));
+   00597|   if (leadIndex < 0 || words[leadIndex + 1] === undefined) return null;
+   00598|   const name = trimMatches(words[leadIndex + 1], (character) => '`"\',;.!?:'.includes(character));
+   00599|   return name && isSafePath(name) ? name : null;
+   00600| }
+   00601| 
+   00602| /** Mirrors `fn is_safe_path`. */
+   00603| function isSafePath(token) {
+   00604|   let body = token.startsWith('~/') ? token.slice(2) : token;
+   00605|   body = body.startsWith('/') ? body.slice(1) : body;
+   00606|   return !token.startsWith('-')
+   00607|     && body !== ''
+   00608|     && !body.split('/').some((part) => part === '..' || part === '')
+   00609|     && Array.from(token).every((character) => isAlphanumeric(character) || '/._-~'.includes(character));
+   00610| }
+   00611| 
+   00612| /** Mirrors `fn named_shell_command`. */
+   00613| function namedShellCommand(prompt, vocab) {
+   00614|   for (const sentence of sentenceSpans(prompt)) {
+   00615|     if (statesACommandPolicy(sentence)) continue;
+   00616|     const command = namedShellCommandInSentence(sentence, vocab);
+   00617|     if (command !== null) return command;
+   00618|   }
+   00619|   return null;
+   00620| }
+   00621| 
+   
+   (End of file - total 621 lines)
+   </file>
+>> edit {"filePath":"js/agentic/shell_command.mjs","file_path":"js/agentic/shell_command.mjs","new":"  const vocab = terminalCommandVocabulary();\n  const command = prefixedShellCommand(prompt, vocab);\n  if (command === null) return null;\n  const first = normalizeCommandWord(firstWord(command) ?? '');\n  if (intentShellCommand(prompt, shellIntentVocabulary()) !== null && !vocab.shell_tokens.includes(first)) return null;\n  return shellQuotesPaired(command) ? command : null;","newString":"  const vocab = terminalCommandVocabulary();\n  const command = prefixedShellCommand(prompt, vocab);\n  if (command === null) return null;\n  const first = normalizeCommandWord(firstWord(command) ?? '');\n  if (intentShellCommand(prompt, shellIntentVocabulary()) !== null && !vocab.shell_tokens.includes(first)) return null;\n  return shellQuotesPaired(command) ? command : null;","new_str":"  const vocab = terminalCommandVocabulary();\n  const command = prefixedShellCommand(prompt, vocab);\n  if (command === null) return null;\n  const first = normalizeCommandWord(firstWord(command) ?? '');\n  if (intentShellCommand(prompt, shellIntentVocabulary()) !== null && !vocab.shell_tokens.includes(first)) return null;\n  return shellQuotesPaired(command) ? command : null;","new_string":"  const vocab = terminalCommandVocabulary();\n  const command = prefixedShellCommand(prompt, vocab);\n  if (command === null) return null;\n  const first = normalizeCommandWord(firstWord(command) ?? '');\n  if (intentShellCommand(prompt, shellIntentVocabulary()) !== null && !vocab.shell_tokens.includes(first)) return null;\n  return shellQuotesPaired(command) ? command : null;","old":"  const command = prefixedShellCommand(prompt, terminalCommandVocabulary());\n  return command !== null && shellQuotesPaired(command) ? command : null;","oldString":"  const command = prefixedShellCommand(prompt, terminalCommandVocabulary());\n  return command !== null && shellQuotesPaired(command) ? command : null;","old_str":"  const command = prefixedShellCommand(prompt, terminalCommandVocabulary());\n  return command !== null && shellQuotesPaired(command) ? command : null;","old_string":"  const command = prefixedShellCommand(prompt, terminalCommandVocabulary());\n  return command !== null && shellQuotesPaired(command) ? command : null;","path":"js/agentic/shell_command.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/shell_command.mjs"}
+   929edfdfd54d1b1952246c2d0ebb07d73f4565c018c9d7f0f70ff58e02f6b6e6  js/agentic/shell_command.mjs
+   
+== answer ==
+Replaced `  const command = prefixedShellCommand(prompt, terminalCommandVocabulary());
+  return command !== null && shellQuotesPaired(command) ? command : null;` with `  const vocab = terminalCommandVocabulary();
+  const command = prefixedShellCommand(prompt, vocab);
+  if (command === null) return null;
+  const first = normalizeCommandWord(firstWord(command) ?? '');
+  if (intentShellCommand(prompt, shellIntentVocabulary()) !== null && !vocab.shell_tokens.includes(first)) return null;
+  return shellQuotesPaired(command) ? command : null;` in `js/agentic/shell_command.mjs` and observed the result.

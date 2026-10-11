@@ -1,0 +1,174 @@
+{
+  "entities": {
+    "Q61": {
+      "type": "item",
+      "id": "Q61",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Washington, D.C."
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Вашингтон"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वॉशिंगटन डी॰ सी॰"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "華盛頓哥倫比亞特區"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "华盛顿哥伦比亚特区"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Washington, District of Columbia"
+          },
+          {
+            "language": "en",
+            "value": "D.C. Washington"
+          },
+          {
+            "language": "en",
+            "value": "The District"
+          },
+          {
+            "language": "en",
+            "value": "District of Columbia"
+          },
+          {
+            "language": "en",
+            "value": "City of Washington, D.C."
+          },
+          {
+            "language": "en",
+            "value": "Washington City, D.C."
+          },
+          {
+            "language": "en",
+            "value": "Nation's Capital (D.C.)"
+          },
+          {
+            "language": "en",
+            "value": "Federal City (D.C.)"
+          },
+          {
+            "language": "en",
+            "value": "D.C."
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Округ Колумбия"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "वाशिंगटन,डी.सी."
+          },
+          {
+            "language": "hi",
+            "value": "वाशिंगटन डी सी"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "華盛頓特區"
+          },
+          {
+            "language": "zh",
+            "value": "哥倫比亞特區"
+          },
+          {
+            "language": "zh",
+            "value": "華盛頓市"
+          },
+          {
+            "language": "zh",
+            "value": "華盛頓"
+          },
+          {
+            "language": "zh",
+            "value": "華府"
+          },
+          {
+            "language": "zh",
+            "value": "花生屯"
+          },
+          {
+            "language": "zh",
+            "value": "浣洗屯"
+          }
+        ],
+        "zh-hans": [
+          {
+            "language": "zh-hans",
+            "value": "华盛顿特区"
+          },
+          {
+            "language": "zh-hans",
+            "value": "哥伦比亚特区"
+          },
+          {
+            "language": "zh-hans",
+            "value": "华盛顿市"
+          },
+          {
+            "language": "zh-hans",
+            "value": "华盛顿"
+          },
+          {
+            "language": "zh-hans",
+            "value": "华府"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Washington, D.C."
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Вашингтон"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "वॉशिंगटन, डी॰ सी॰"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "华盛顿哥伦比亚特区"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [],
+    "claim_ranks": "truthy"
+  }
+}

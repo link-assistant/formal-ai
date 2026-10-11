@@ -1,0 +1,8 @@
+{
+  "id": "T2369",
+  "dir": "/private/tmp/formal-ai-only-1188/punctuation-retry-dZYMZz",
+  "prompt": "Write «!?» to punctuation.txt",
+  "steps": 8,
+  "expected": "!?",
+  "original": "T2366"
+}

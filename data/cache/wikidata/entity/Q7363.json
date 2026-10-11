@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "鼻"
+        },
+        "es": {
+          "language": "es",
+          "value": "nariz"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "часть лица или морды, участвующая в дыхании, обонянии, добыче корма и общении"
+        },
+        "es": {
+          "language": "es",
+          "value": "protuberancia que forma parte del sistema respiratorio en los vertebrados y que es el órgano del olfato"
         }
       }
     }

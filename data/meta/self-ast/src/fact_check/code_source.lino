@@ -1,0 +1,26 @@
+self_ast_census
+  target src/fact_check/code_source.rs
+  language rust
+  fidelity signature
+  byte_len 13358
+  line_count 358
+  content_id source_module_f30e587eb5d2bdd4
+  symbol_count 17
+  symbols
+    enum CodeQuery 27 32
+    function query_id 37 42
+    function parse_code_query 51 76
+    struct CallSiteCount 80 86
+    function any 91 93
+    function count_call_sites 104 129
+    function references_symbol 132 151
+    function is_symbol_char 153 155
+    function code_evidence_for 167 247
+    function production_strength 251 253
+    function is_test_tree_path 256 258
+    function read_certified 264 267
+    function parses_clean 271 278
+    function parses_clean 282 284
+    function rust_files 288 322
+    function cue_phrases 325 342
+    function backticked_spans 345 358

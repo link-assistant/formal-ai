@@ -73,7 +73,7 @@ pub fn try_write_program_from_oracle(
         .map(str::to_owned)
         .or_else(|| program_task_by_alias(normalized).map(|task| task.slug.to_owned()))?;
 
-    let snippet = CodingOracle::lookup(&task_slug, language)?;
+    let snippet = CodingOracle::answer(&task_slug, language)?;
 
     let body = format!(
         "Here is a minimal {} program ({}):\n\n```{}\n{}\n```\n\nOutput:\n```text\n{}\n```\n\
@@ -91,7 +91,7 @@ pub fn try_write_program_from_oracle(
     // the verified catalog, so record the provenance and an honest "not run"
     // execution status — the snippet is reviewed and cached, not sandbox-run.
     log.append("knowledge_source", snippet.source.slug().to_owned());
-    log.append("knowledge_source_url", snippet.source_url.to_owned());
+    log.append("knowledge_source_url", snippet.source_url.clone());
     log.append(
         "execution_status",
         "not run (cached external snippet)".to_owned(),
@@ -100,11 +100,8 @@ pub fn try_write_program_from_oracle(
         "execution_environment",
         "no compile/run sandbox configured for cached external snippets".to_owned(),
     );
-    log.append(
-        "program_parameter:language",
-        snippet.language_slug.to_owned(),
-    );
-    log.append("program_parameter:task", snippet.task_slug.to_owned());
+    log.append("program_parameter:language", snippet.language_slug.clone());
+    log.append("program_parameter:task", snippet.task_slug.clone());
 
     let intent = format!(
         "write_program_oracle_{}_{}",

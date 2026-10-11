@@ -105,7 +105,13 @@ fn unfetched_sources_do_not_include_prompt_hashes() {
 
 #[test]
 fn conflicting_sources_are_surfaced() {
-    let response = answer("Was X born in 1880 or 1881?");
+    // Issue #1175 R3: a disagreement is recorded between the two answers the
+    // prompt attributes to sources; a bare disjunction names no source and is
+    // refused (rust/tests/unit/issue_918_handler_rules_batch.rs).
+    let response = answer(
+        "The sources conflict: Wikipedia says X was born in 1880, but Britannica says 1881.",
+    );
+    assert_eq!(response.intent, "source_conflict");
     assert!(
         response
             .evidence_links
@@ -150,4 +156,109 @@ fn offline_mode_disables_external_lookups() {
             .any(|link| link == "policy:offline"),
         "offline mode must record a policy refusal for external lookups"
     );
+}
+
+// The original source-prefix pin above is retained. This stronger pin binds
+// the actual requested subject to the genuine captured disambiguation body.
+#[test]
+fn source_qualified_definition_replays_all_meanings_with_actual_provenance() {
+    let client = formal_ai::CachedSourceClient::new(
+        std::env::temp_dir().join("formal-ai-source-qualified-definition-offline"),
+        formal_ai::CurlSourceTransport,
+    )
+    .with_online(false);
+    let mut log = formal_ai::event_log::EventLog::new();
+    let response = formal_ai::try_word_definition_with_client(
+        "Cite a definition of associative memory from Wikipedia",
+        &mut log,
+        &client,
+    )
+    .expect("the genuine committed API capture is available offline");
+    assert_eq!(
+        response.answer,
+        r"associative memory — Wikipedia (disambiguation):
+  1. Associative memory (psychology), the ability to learn and remember the relationship between unrelated items
+  2. Associative storage, or content-addressable memory, a type of computer memory used in certain very high speed searching applications
+  3. Autoassociative memory, all computer memories that enable one to retrieve a piece of data from only a tiny sample of itself
+  4. Bidirectional associative memory, a type of recurrent neural network
+  5. Hopfield network, a form of recurrent artificial neural network
+  6. Transderivational search in psychology or cybernetics, a search for a fuzzy match across a broad field
+Source: https://en.wikipedia.org/api/rest_v1/page/summary/associative%20memory (sha256 d8c37a8c6e2e0abcb15cab4ece37127ab3a1d6335319be0fc79be0be66f5fa09; captured-at 1791508773; cached true; CC BY-SA 4.0; https://creativecommons.org/licenses/by-sa/4.0/)"
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("source:http")
+                && link.contains("/summary/associative%20memory")
+                && link.contains("fetched_at=1791508773")
+                && link.contains(
+                    "sha256=d8c37a8c6e2e0abcb15cab4ece37127ab3a1d6335319be0fc79be0be66f5fa09"
+                )
+                && link.contains("cached=true"))
+    );
+}
+
+#[test]
+fn an_unknown_named_provider_has_no_fabricated_provenance() {
+    let client = formal_ai::CachedSourceClient::new(
+        std::env::temp_dir().join("formal-ai-source-qualified-definition-offline"),
+        formal_ai::CurlSourceTransport,
+    )
+    .with_online(false);
+    let mut log = formal_ai::event_log::EventLog::new();
+    let response = formal_ai::try_word_definition_with_client(
+        "Cite a definition of entropy from Unknown provider",
+        &mut log,
+        &client,
+    )
+    .expect("an explicit unbound provider produces an honest outcome");
+    assert_eq!(
+        response.answer,
+        "No verified definition of entropy from Unknown provider: missing-source."
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .all(|link| !link.starts_with("source:http") && !link.starts_with("cache_hit:"))
+    );
+}
+
+#[test]
+fn seeded_source_frames_preserve_utf8_slots_and_fold_only_literal_whitespace() {
+    use formal_ai::formalization::source_qualified_definition::request;
+    for (prompt, term, language) in [
+        ("CITE\tA definition of café from Wikipedia", "café", "en"),
+        ("According to Wikipedia, define entropy", "entropy", "en"),
+        (
+            "Cita una definición de red de nodos de Wikipedia",
+            "red de nodos",
+            "es",
+        ),
+        (
+            "Приведи определение энтропия из Wikipedia",
+            "энтропия",
+            "ru",
+        ),
+        ("Wikipedia से ऊर्जा की परिभाषा उद्धृत करें", "ऊर्जा", "hi"),
+        ("引用Wikipedia对熵的定义", "熵", "zh"),
+    ] {
+        let bound = request(prompt).expect("both declared frame slots bind");
+        assert_eq!(bound.term, term);
+        assert_eq!(bound.source, "Wikipedia");
+        assert_eq!(bound.language, language);
+    }
+    let unknown = request("Cite a definition of café from Unknown provider")
+        .expect("an unknown provider remains a bound unresolved request");
+    assert_eq!(unknown.term, "café");
+    assert_eq!(unknown.source, "Unknown provider");
+    for prompt in [
+        "Before cite a definition of entropy from Wikipedia",
+        "Cite a definition of \"\" from Wikipedia",
+        "Cite a definition of entropy\nextra from Wikipedia",
+        "引用Wikipedia对的定义",
+    ] {
+        assert!(request(prompt).is_none(), "{prompt}");
+    }
 }

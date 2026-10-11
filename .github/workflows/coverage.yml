@@ -6,7 +6,7 @@ name: Coverage
 # must never be averaged into a single number, and a workflow named "Coverage"
 # with one job per denominator makes that visible in the checks list instead of
 # burying it among twenty release jobs. The second is the repository's own file
-# size gate (scripts/check-file-size.rs), which caps a workflow at 2000 lines
+# size gate (scripts/check-file-size.rs), which caps a workflow at 1500 lines
 # and documents release.yml as debt that "cannot grow": these jobs are a leaf of
 # the release graph -- nothing `needs:` them -- so moving them out is
 # behaviour-preserving and pays some of that debt down.
@@ -19,9 +19,25 @@ on:
     branches:
       - main
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
+  # Issue #1187 R2: a bot pull request's checks start through dispatch
+  # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
     inputs:
+      mode:
+        description: 'checks: run the pull-request checks on the dispatched branch'
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request the dispatched checks report for'
+        required: false
+        default: ''
+        type: string
       verbose:
         description: >-
           Record runner CPU steal, load, memory and disk while coverage runs
@@ -71,35 +87,42 @@ jobs:
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
         run: rust-script scripts/detect-code-changes.rs
   # === CODE COVERAGE ===
-  # Generate and upload code coverage using cargo-llvm-cov
-  coverage:
-    name: Code Coverage
+  # Generate the Rust coverage report with cargo-llvm-cov, from one build and
+  # parallel test shards.
+  #
+  # The history this layout answers: issue #812 raised the single job's cap
+  # from 15 to 25 minutes, issue #1039 to 40, issue #1076 made the cap a
+  # backstop behind a step budget (a cap kill reports `cancelled`, not
+  # `failure` -- run 33955786082, issue #977), and issues #1138 and #1149
+  # raised the pair to a 5400s budget under 135 minutes, because the
+  # instrumented suite kept outgrowing it: run 37652295937 spent 6m21s
+  # compiling and then 4310s in the `unit` target alone (4683 tests), 80
+  # minutes in one step. Every raise bought a longer wait for the same answer.
+  #
+  # PR #1188 stops raising and splits the work instead, so no job runs past
+  # the owner's 15-minute target:
+  #   coverage-build  compiles every instrumented executable once (the same
+  #                   all-features test set cargo-llvm-cov builds)
+  #                   and uploads them with a manifest of the test harnesses;
+  #   coverage-shard  N legs each run every N-th test of the whole suite
+  #                   (scripts/run-coverage-shard.sh) and upload the merged
+  #                   raw profile of what they executed;
+  #   coverage        the check this workflow always reported: every shard
+  #                   must have succeeded (scripts/check-shard-results.sh),
+  #                   every shard's profile must be present, and the profiles
+  #                   are merged with llvm-profdata into the one profile
+  #                   `cargo llvm-cov report` reads -- the same report, over
+  #                   the same objects, a single run produces. A line is hit
+  #                   in the merged profile exactly when some shard hit it, so
+  #                   the ratchet sees the whole-suite number.
+  coverage-build:
+    name: Build instrumented test executables
     runs-on: ubuntu-latest
-    # Issue #812 raised this from 15 to 25, and issue #1039 to 40. Neither
-    # helped, because the cap was never the right instrument: run 33955786082
-    # burned all 40 minutes and GitHub reported it as `cancelled`, not
-    # `failure`, so nothing turned red (issue #977). Issue #1076 measured that
-    # run -- the `integration` target ran the *same 358 tests* in 1572.8s that
-    # the previous day's run finished in 213.6s, on an identical runner image,
-    # with the slowdown spread across every module and hitting tests that do no
-    # I/O at all. The host was slower, not the code.
-    #
-    # So the cap goes back to being a backstop and the step below owns the
-    # deadline. Issue #1138 raised the pair again: run 36046809360 (tip
-    # 00b8d873e) had 2553 tests finished, no hanger, when the 2400s budget
-    # killed the lane, while the uninstrumented twin lane (`Test / ubuntu /
-    # full`) ran all 2856 in 1235.57s -- the suite outgrew 2400s instrumented.
-    # Issue #1149 raised the pair once more, and this time the suite was
-    # innocent: main run 36269286808 (tip 9e673a1dc) burned the full 4200s
-    # with every test passing and no hanger, while the identical tree on
-    # branch run 36266423193 (f3948e0c7, same day) finished the same lane
-    # green in 2574s -- a contended host ~1.6x slower than the clean run.
-    # `TEST_BUDGET_SECONDS: 5400` is 90 minutes, ~2.1x the 43 minutes the
-    # clean run measured, and 66.7% of this 135-minute cap, still inside the
-    # 70% share issue #1017 enforces so checkout, the toolchain,
-    # cargo-llvm-cov's install, the ratchet and the uploads fit (measured
-    # overhead outside the coverage step: ~82s on the green branch run).
-    timeout-minutes: 135
+    # Run 37957603076 on source 8abb066db: the complete producer took 1393s,
+    # including a 670s instrumented compile and all executable uploads.
+    # A 1260s compile deadline is 70% of this 30-minute cap; compilation
+    # and the unchanged artifact protocol retain their independent checks.
+    timeout-minutes: 30
     needs: [detect-changes]
     if: |
       !cancelled() && (
@@ -107,14 +130,6 @@ jobs:
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true'
       )
-    # Issue #1076. The diagnostics switch belongs to the job, not to four
-    # separate steps: `.github/actions/cache-cargo-registry` reports its cache
-    # outcome under it too, and a composite action reads the environment its
-    # job exports rather than an `env:` block on some other step. Off unless a
-    # `workflow_dispatch` input or the `FORMAL_AI_CI_VERBOSE` repository
-    # variable turns it on, so an ordinary green run gains no output.
-    env:
-      FORMAL_AI_CI_VERBOSE: ${{ inputs.verbose || vars.FORMAL_AI_CI_VERBOSE || 'false' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -128,12 +143,8 @@ jobs:
 
       - uses: ./.github/actions/setup-sccache
 
-      # Issue #1076: the inline block this replaces restored only
-      # `Linux-cargo-coverage-*`, so run 33955786082 missed both its exact key
-      # and its one restore key and compiled every dependency from scratch. The
-      # shared action (issue #1055) adds the generic `Linux-cargo-` fallback
-      # that would have caught it, and stops this job's registry being a sixth
-      # near-identical copy against one 10 GB repository-wide cache quota.
+      # Issue #1076: the shared action (issue #1055) adds the generic
+      # `Linux-cargo-` fallback a coverage-only key missed in run 33955786082.
       - uses: ./.github/actions/cache-cargo-registry
         with:
           prefix: coverage-
@@ -143,6 +154,121 @@ jobs:
 
       - name: Clean stale coverage artifacts
         run: cargo llvm-cov --manifest-path rust/Cargo.toml clean --workspace
+
+      # `show-env` exports exactly the instrumentation `cargo llvm-cov` applies
+      # to its own build; the target directory is the one it uses by default,
+      # so every path baked into the executables (`CARGO_BIN_EXE_formal-ai`)
+      # and every path the report filters is unchanged.
+      - name: Build the instrumented test executables
+        env:
+          TEST_BUDGET_SECONDS: 1260
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          set -euo pipefail
+          export CARGO_TARGET_DIR="$GITHUB_WORKSPACE/rust/target/llvm-cov-target"
+          # `--sh` is the current name of the flag cargo-llvm-cov 0.9 renamed
+          # from `--export-prefix`; the fallback keeps an older install working.
+          env_script=$(cd rust && { cargo llvm-cov show-env --sh || cargo llvm-cov show-env --export-prefix; })
+          eval "$env_script"
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Instrumented test build" \
+            cargo test --manifest-path rust/Cargo.toml --all-features --no-run \
+              --message-format=json-render-diagnostics > coverage-build.json
+
+      # The manifest names every test harness the build produced (cargo-llvm-cov
+      # runs the same set); the archive holds every executable the report's
+      # object walk would find in the target directory.
+      - name: Collect the instrumented executables
+        run: |
+          set -euo pipefail
+          target=rust/target/llvm-cov-target
+          # -R with fromjson?: the budget wrapper's closing line shares stdout
+          # with cargo's JSON messages, and is skipped rather than parsed.
+          jq -rR --arg root "$GITHUB_WORKSPACE/" \
+            'fromjson? | select(.reason == "compiler-artifact" and .profile.test == true and .executable != null)
+             | [.target.name, (.executable | ltrimstr($root))] | @tsv' \
+            coverage-build.json > coverage-tests.tsv
+          if [ "$(wc -l < coverage-tests.tsv)" -lt 3 ] || grep -q $'\t/' coverage-tests.tsv; then
+            echo "::error title=Coverage manifest is wrong::expected the unit, integration and source harnesses as repository-relative paths" >&2
+            cat coverage-tests.tsv >&2
+            exit 1
+          fi
+          cat coverage-tests.tsv
+          find "$target/debug" \( -path "$target/debug/build" -o -path "$target/debug/incremental" \
+            -o -path "$target/debug/.fingerprint" \) -prune -o -type f -perm -u+x \
+            ! -name '*.d' ! -name '*.rlib' ! -name '*.rmeta' -print > coverage-objects.txt
+          tar -cf coverage-objects.tar coverage-tests.tsv -T coverage-objects.txt
+          du -h coverage-objects.tar
+
+      - name: Upload the instrumented executables
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-objects
+          path: coverage-objects.tar
+          if-no-files-found: error
+          retention-days: 1
+
+  coverage-shard:
+    name: Coverage shard ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    # 1200s of budget under a 30-minute cap is 66.7%. The whole instrumented
+    # suite measured ~4560s of test time (run 37652295937); a tenth is ~460s,
+    # and the budget leaves room for the shard that draws the slowest tests
+    # (the longest single test reported 733s under four-way contention).
+    timeout-minutes: 30
+    needs: [coverage-build]
+    strategy:
+      fail-fast: false
+      matrix:
+        # Sixteen legs; the shard count is the matrix size (strategy.job-total),
+        # so adding or removing a leg can never leave a test unmeasured.
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+    # Issue #1076. The diagnostics switch belongs to the job, not to separate
+    # steps: composite actions read the environment the job exports. Off
+    # unless a `workflow_dispatch` input or the `FORMAL_AI_CI_VERBOSE`
+    # repository variable turns it on, so an ordinary green run gains no output.
+    env:
+      FORMAL_AI_CI_VERBOSE: ${{ inputs.verbose || vars.FORMAL_AI_CI_VERBOSE || 'false' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      # The tests shell out to the toolchain (rust-script gates, wasm builds);
+      # llvm-tools-preview supplies llvm-profdata for the shard's profile.
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: llvm-tools-preview
+          targets: wasm32-unknown-unknown
+
+      - uses: ./.github/actions/setup-sccache
+
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          prefix: coverage-
+          restore-only: 'true'
+
+      # Issue #1138: three unit tests shell out to `rust-script` (the
+      # documentation_issue_citations snapshot test and both
+      # `documentation_status` render-cycle tests); without it they fail on a
+      # missing binary.
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+
+      - name: Download the instrumented executables
+        uses: actions/download-artifact@v8
+        env:
+          # v8's bundled unzip dependency still calls Buffer(); suppress only
+          # that reviewed upstream diagnostic, never all Node warnings:
+          # https://github.com/actions/download-artifact/issues/484
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: coverage-objects
+          path: coverage-objects
+
+      - name: Unpack the instrumented executables
+        run: tar -xf coverage-objects/coverage-objects.tar
 
       # Issue #1076. Both steps print nothing unless the job-level switch above
       # is on. Switched on, they record CPU steal, load, memory and disk once
@@ -158,45 +284,36 @@ jobs:
           bash scripts/report-runner-capacity.sh --watch 120 "during coverage" &
           echo "CAPACITY_SAMPLER_PID=$!" >> "$GITHUB_ENV"
 
-      # Issue #1138: three unit tests inside the instrumented run shell out to
-      # `rust-script` (the docs_issue_citations snapshot test and both
-      # `docs_status` render-cycle tests). This job installed it only after
-      # the run, for the ratchet step, so on run 36046809360 all three failed
-      # on a missing binary. Install it before the run; the step after the run
-      # no-ops (the installer exits early when the binary is on PATH).
-      - name: Install rust-script
-        run: bash scripts/install-rust-script.sh
-
-      # The step that decides this job's outcome, and the one that was killed.
-      # It owns its deadline so an overrun is a `failure` with an ::error
-      # annotation naming the budget, never a silent `cancelled`.
+      # The step that decides this shard's outcome. It owns its deadline, so an
+      # overrun is a `failure` with an ::error annotation naming the budget,
+      # never a silent `cancelled`.
       #
       # The one test skipped here (issue #1138, plan 10 leaf 10) answers every
-      # committed benchmark prompt — all 1355 of them — through the full
-      # engine. Measured 2026-09-22 on a dev notebook, end to end: 1518s
-      # uninstrumented for the whole sweep. The cost is concentrated in the
-      # coding corpora (coding-discovery-paraphrases 444s/25 prompts,
-      # coding-composition-from-sources 416s/25, industry-suite 356s/13 —
-      # invented-identifier prompts like blorptide() or has_close_elements()
-      # cost 20-151s each) while every other corpus answers in ~0.1s; an
-      # earlier "~150s" note here had measured only those fast corpora.
-      # Instrumented (llvm-cov ~2.5x), the sweep alone is ~63 minutes —
-      # before the ~556s the rest of the suite costs this lane — so it
-      # cannot fit inside the 2400s budget on any host; run 35689478703 had
-      # every other test finished while the sweep was still running at the
-      # kill. The sweep gate is adjudicated uninstrumented in the Test
-      # (ubuntu / full) lane; this lane measures lines, and no honest
-      # budget holds both. (The whole lane with the skip in place measured
-      # 556s on 2026-09-22.)
-      - name: Generate code coverage
+      # committed benchmark prompt through the full engine -- 1518s
+      # uninstrumented for the whole sweep, ~63 minutes instrumented. Its gate
+      # is adjudicated uninstrumented in benchmark-corpus-gate.yml; this lane
+      # measures lines, and no honest budget holds both.
+      - name: Setup the pinned native fixture dependency installer
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install actual locked native fixture dependencies
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Run the instrumented coverage shard
         env:
-          TEST_BUDGET_SECONDS: 5400
+          TEST_BUDGET_SECONDS: 1200
           TEST_WARN_RATIO_PERCENT: 70
+          SHARD_JOB_INDEX: ${{ strategy.job-index }}
+          SHARD_TOTAL: ${{ strategy.job-total }}
         run: |
+          set -euo pipefail
+          export SHARD_INDEX=$((SHARD_JOB_INDEX + 1))
+          export LLVM_PROFILE_FILE="$RUNNER_TEMP/coverage-profiles/rust-%p-%m.profraw"
+          mkdir -p "$RUNNER_TEMP/coverage-profiles"
           scripts/run-with-budget-warning.sh \
-            "$TEST_BUDGET_SECONDS" "Instrumented coverage run" \
-            cargo llvm-cov --manifest-path rust/Cargo.toml --all-features --lcov --output-path lcov.info \
-              -- --skip no_benchmark_prompt_reaches_the_unknown_opener
+            "$TEST_BUDGET_SECONDS" "Instrumented coverage shard" \
+            bash scripts/run-coverage-shard.sh coverage-tests.tsv \
+              --skip no_benchmark_prompt_reaches_the_unknown_opener
 
       # `kill 0` means "every process in my own process group", so a `:-0`
       # default here would make this step kill its own shell whenever the
@@ -213,6 +330,128 @@ jobs:
       - name: Report runner capacity after coverage
         if: always()
         run: bash scripts/report-runner-capacity.sh "after coverage"
+
+      # One indexed profile per shard instead of hundreds of raw ones: every
+      # spawned `formal-ai` writes its own .profraw. The file name carries the
+      # plan, so the verdict can prove it holds every shard of one plan.
+      - name: Merge the shard's raw profiles
+        env:
+          SHARD_JOB_INDEX: ${{ strategy.job-index }}
+          SHARD_TOTAL: ${{ strategy.job-total }}
+        run: |
+          set -euo pipefail
+          host=$(rustc -vV | sed -n 's/^host: //p')
+          llvm_profdata="$(rustc --print sysroot)/lib/rustlib/$host/bin/llvm-profdata"
+          find "$RUNNER_TEMP/coverage-profiles" -name '*.profraw' > profraw-files.txt
+          if [ ! -s profraw-files.txt ]; then
+            echo "::error title=No coverage profile::the shard's tests wrote no raw profile" >&2
+            exit 1
+          fi
+          mkdir -p coverage-profile
+          "$llvm_profdata" merge -sparse -f profraw-files.txt \
+            -o "coverage-profile/shard-$((SHARD_JOB_INDEX + 1))-of-${SHARD_TOTAL}.profdata"
+
+      - name: Upload the shard's profile
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-profile-${{ matrix.shard }}
+          path: coverage-profile
+          if-no-files-found: error
+          retention-days: 1
+
+  coverage:
+    name: Code Coverage (merged shards)
+    # A new display name on purpose: scripts/check-job-headroom.rs matches
+    # measured jobs to caps by name, and the one-job history under the old
+    # name would be judged against this short verdict job's cap.
+    runs-on: ubuntu-latest
+    # 900s of budget under a 25-minute cap is 60%. The report reads the same
+    # objects a single run's report read; the ratchet, the uploads and the
+    # downloads fit in the remainder.
+    timeout-minutes: 25
+    needs: [detect-changes, coverage-build, coverage-shard]
+    if: |
+      !cancelled() && (
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.rs-changed == 'true' ||
+        needs.detect-changes.outputs.toml-changed == 'true'
+      )
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Every coverage shard measured its tests
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          JOBS: coverage-build coverage-shard
+          CHECK: Rust coverage
+        run: bash scripts/check-shard-results.sh
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: llvm-tools-preview
+
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          prefix: coverage-
+          restore-only: 'true'
+
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+
+      - name: Download the instrumented executables
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: coverage-objects
+          path: coverage-objects
+
+      - name: Download every shard's profile
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          pattern: coverage-profile-*
+          merge-multiple: true
+          path: coverage-profiles
+
+      # A merge that silently lost a shard would publish a smaller suite's
+      # coverage as the whole one, so the profiles must be exactly the shards
+      # of one plan before anything is merged. The merged profile goes where
+      # `cargo llvm-cov` keeps its own (`<target>/llvm-cov-target/<workspace
+      # dir>.profdata`), and with no raw profiles beside it `report` reads it
+      # as is -- the same report code, objects and filters a single run used.
+      - name: Report merged Rust coverage
+        env:
+          TEST_BUDGET_SECONDS: 900
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          set -euo pipefail
+          mapfile -t profiles < <(find coverage-profiles -name 'shard-*-of-*.profdata' | sort)
+          total=$(printf '%s\n' "${profiles[@]}" | sed -n 's/.*-of-\([0-9]*\)\.profdata$/\1/p' | sort -u)
+          if [ "${#profiles[@]}" -eq 0 ] || [ "$(printf '%s\n' "$total" | wc -l)" -ne 1 ] \
+            || [ "${#profiles[@]}" -ne "$total" ]; then
+            echo "::error title=Coverage shards incomplete::expected every shard of one plan, found: ${profiles[*]:-none}" >&2
+            exit 1
+          fi
+          for index in $(seq 1 "$total"); do
+            [ -s "coverage-profiles/shard-$index-of-$total.profdata" ] || {
+              echo "::error title=Coverage shard missing::no profile for shard $index of $total" >&2
+              exit 1
+            }
+          done
+          tar -xf coverage-objects/coverage-objects.tar
+          workspace=$(cargo metadata --manifest-path rust/Cargo.toml --format-version 1 --no-deps | jq -r .workspace_root)
+          host=$(rustc -vV | sed -n 's/^host: //p')
+          llvm_profdata="$(rustc --print sysroot)/lib/rustlib/$host/bin/llvm-profdata"
+          "$llvm_profdata" merge -sparse "${profiles[@]}" \
+            -o "rust/target/llvm-cov-target/$(basename "$workspace").profdata"
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Coverage report" \
+            cargo llvm-cov report --manifest-path rust/Cargo.toml --lcov --output-path lcov.info
 
       # Issue #895: an LCOV file nobody reads is not a coverage requirement.
       # This step reads it, publishes a human-readable summary into the run
@@ -274,11 +513,15 @@ jobs:
   # denominators are ratcheted separately and never averaged: a Rust percentage
   # and a browser percentage count different things, and one number covering
   # both would be a number nobody can act on.
-  browser-coverage:
-    name: Browser Code Coverage
+  browser-coverage-shard:
+    name: Browser coverage shard ${{ matrix.shard }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [detect-changes]
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6]
     if: |
       !cancelled() && (
         github.event_name == 'workflow_dispatch' ||
@@ -295,14 +538,90 @@ jobs:
         with:
           node-version: 22
 
+      - name: Setup the pinned web dependency installer
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install actual locked UI test dependencies
+        run: bun install --frozen-lockfile --ignore-scripts
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
 
-      - name: Generate browser coverage
-        run: npm run coverage:web
+      - name: Provision the real agentic search adapter
+        run: bash scripts/install-agentic-search-tools.sh
+      - name: Regenerate canonical seed projection for browser consumers
+        timeout-minutes: 1
+        run: bash scripts/sync-seed.sh
+
+      - name: Measure the complete assigned browser test inventory
+        run: >-
+          npm run coverage:web -- run ${{ matrix.shard }}
+          coverage/browser-shard-${{ matrix.shard }}
+
+      - name: Retain exact browser coverage and completion receipts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: browser-coverage-shard-${{ matrix.shard }}
+          path: coverage/browser-shard-${{ matrix.shard }}/
+          if-no-files-found: error
+          retention-days: 1
+
+  browser-coverage:
+    name: Browser Code Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [detect-changes, browser-coverage-shard]
+    if: |
+      !cancelled() && (
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.any-code-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Every browser shard measured its complete test slice
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          JOBS: browser-coverage-shard
+          CHECK: Browser coverage
+        run: bash scripts/check-shard-results.sh
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+
+      - name: Provision the real agentic search adapter
+        run: bash scripts/install-agentic-search-tools.sh
+      - name: Regenerate canonical seed projection for browser consumers
+        timeout-minutes: 1
+        run: bash scripts/sync-seed.sh
+
+      - name: Download every browser coverage shard
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          pattern: browser-coverage-shard-*
+          merge-multiple: false
+          path: coverage/browser-shards
+
+      - name: Collect the complete source-bound browser coverage
+        run: npm run coverage:web -- collect coverage/browser-shards
 
       - name: Check browser coverage ratchet
         run: rust-script scripts/check-coverage-ratchet.rs --only browser
@@ -314,6 +633,8 @@ jobs:
           name: coverage-browser
           path: |
             coverage/browser-lcov.info
+            coverage/browser-measured-durations.lino
+            coverage/browser-duration-status.json
             coverage/summary-browser.md
             coverage/summary-browser.json
           if-no-files-found: warn

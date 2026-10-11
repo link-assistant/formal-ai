@@ -1,0 +1,17 @@
+view
+  id M-140b45020d00
+  lemma problem
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a state of difficulty that needs to be resolved"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a question raised for consideration or solution"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a source of difficulty"
+    provenance (wordnet)

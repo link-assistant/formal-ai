@@ -1,0 +1,10 @@
+{
+  "id": "T2351",
+  "dir": "/private/tmp/formal-ai-only-1188/issue755-Ne78Ov",
+  "prompt": "write 10 to 1.txt file",
+  "tools": [
+    "write"
+  ],
+  "steps": 4,
+  "note": "Original issue755 prompt; canonical runnable write alias, not an HTTP advertised-parameter schema replay."
+}

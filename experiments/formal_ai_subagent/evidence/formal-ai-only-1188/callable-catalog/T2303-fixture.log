@@ -1,0 +1,165 @@
+TAP version 13
+# Subtest: fixture: source preimages remain exact
+ok 1 - fixture: source preimages remain exact
+  ---
+  duration_ms: 1.019959
+  ...
+# Subtest: fixture: selector returns the chosen object without cloning or mutation
+ok 2 - fixture: selector returns the chosen object without cloning or mutation
+  ---
+  duration_ms: 0.139291
+  ...
+# Subtest: fixture: summaries agree with independently stated strings
+ok 3 - fixture: summaries agree with independently stated strings
+  ---
+  duration_ms: 0.093916
+  ...
+# Subtest: composition: selected index wins over highest score and first position
+not ok 4 - composition: selected index wins over highest score and first position
+  ---
+  duration_ms: 0.751208
+  location: '/private/tmp/formal-ai-only-1188/composition-fixtures/selected-summary.test.mjs:71:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot find module '/private/tmp/formal-ai-only-1188/composition-fixtures/repair-summary.mjs' imported from /private/tmp/formal-ai-only-1188/composition-fixtures/selected-summary.test.mjs"
+  code: 'ERR_MODULE_NOT_FOUND'
+  stack: |-
+    finalizeResolution (node:internal/modules/esm/resolve:283:11)
+    moduleResolve (node:internal/modules/esm/resolve:952:10)
+    defaultResolve (node:internal/modules/esm/resolve:1188:11)
+    ModuleLoader.defaultResolve (node:internal/modules/esm/loader:642:12)
+    #cachedDefaultResolve (node:internal/modules/esm/loader:591:25)
+    ModuleLoader.resolve (node:internal/modules/esm/loader:574:38)
+    ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:236:38)
+    ModuleLoader.import (node:internal/modules/esm/loader:539:34)
+    defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:221:31)
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:260:12)
+  ...
+# Subtest: composition: selected empty candidate is a string
+not ok 5 - composition: selected empty candidate is a string
+  ---
+  duration_ms: 0.122458
+  location: '/private/tmp/formal-ai-only-1188/composition-fixtures/selected-summary.test.mjs:71:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot find module '/private/tmp/formal-ai-only-1188/composition-fixtures/repair-summary.mjs' imported from /private/tmp/formal-ai-only-1188/composition-fixtures/selected-summary.test.mjs"
+  code: 'ERR_MODULE_NOT_FOUND'
+  stack: |-
+    finalizeResolution (node:internal/modules/esm/resolve:283:11)
+    moduleResolve (node:internal/modules/esm/resolve:952:10)
+    defaultResolve (node:internal/modules/esm/resolve:1188:11)
+    ModuleLoader.defaultResolve (node:internal/modules/esm/loader:642:12)
+    #cachedDefaultResolve (node:internal/modules/esm/loader:591:25)
+    ModuleLoader.resolve (node:internal/modules/esm/loader:574:38)
+    ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:236:38)
+    ModuleLoader.import (node:internal/modules/esm/loader:539:34)
+    defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:221:31)
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:260:12)
+  ...
+# Subtest: composition: slot order is preserved
+not ok 6 - composition: slot order is preserved
+  ---
+  duration_ms: 0.106083
+  location: '/private/tmp/formal-ai-only-1188/composition-fixtures/selected-summary.test.mjs:71:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot find module '/private/tmp/formal-ai-only-1188/composition-fixtures/repair-summary.mjs' imported from /private/tmp/formal-ai-only-1188/composition-fixtures/selected-summary.test.mjs"
+  code: 'ERR_MODULE_NOT_FOUND'
+  stack: |-
+    finalizeResolution (node:internal/modules/esm/resolve:283:11)
+    moduleResolve (node:internal/modules/esm/resolve:952:10)
+    defaultResolve (node:internal/modules/esm/resolve:1188:11)
+    ModuleLoader.defaultResolve (node:internal/modules/esm/loader:642:12)
+    #cachedDefaultResolve (node:internal/modules/esm/loader:591:25)
+    ModuleLoader.resolve (node:internal/modules/esm/loader:574:38)
+    ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:236:38)
+    ModuleLoader.import (node:internal/modules/esm/loader:539:34)
+    defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:221:31)
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:260:12)
+  ...
+# Subtest: composition: unresolved terms without slots are retained
+not ok 7 - composition: unresolved terms without slots are retained
+  ---
+  duration_ms: 0.106
+  location: '/private/tmp/formal-ai-only-1188/composition-fixtures/selected-summary.test.mjs:71:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot find module '/private/tmp/formal-ai-only-1188/composition-fixtures/repair-summary.mjs' imported from /private/tmp/formal-ai-only-1188/composition-fixtures/selected-summary.test.mjs"
+  code: 'ERR_MODULE_NOT_FOUND'
+  stack: |-
+    finalizeResolution (node:internal/modules/esm/resolve:283:11)
+    moduleResolve (node:internal/modules/esm/resolve:952:10)
+    defaultResolve (node:internal/modules/esm/resolve:1188:11)
+    ModuleLoader.defaultResolve (node:internal/modules/esm/loader:642:12)
+    #cachedDefaultResolve (node:internal/modules/esm/loader:591:25)
+    ModuleLoader.resolve (node:internal/modules/esm/loader:574:38)
+    ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:236:38)
+    ModuleLoader.import (node:internal/modules/esm/loader:539:34)
+    defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:221:31)
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:260:12)
+  ...
+# Subtest: composition: clarification has no selected summary
+not ok 8 - composition: clarification has no selected summary
+  ---
+  duration_ms: 0.155416
+  location: '/private/tmp/formal-ai-only-1188/composition-fixtures/selected-summary.test.mjs:71:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot find module '/private/tmp/formal-ai-only-1188/composition-fixtures/repair-summary.mjs' imported from /private/tmp/formal-ai-only-1188/composition-fixtures/selected-summary.test.mjs"
+  code: 'ERR_MODULE_NOT_FOUND'
+  stack: |-
+    finalizeResolution (node:internal/modules/esm/resolve:283:11)
+    moduleResolve (node:internal/modules/esm/resolve:952:10)
+    defaultResolve (node:internal/modules/esm/resolve:1188:11)
+    ModuleLoader.defaultResolve (node:internal/modules/esm/loader:642:12)
+    #cachedDefaultResolve (node:internal/modules/esm/loader:591:25)
+    ModuleLoader.resolve (node:internal/modules/esm/loader:574:38)
+    ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:236:38)
+    ModuleLoader.import (node:internal/modules/esm/loader:539:34)
+    defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:221:31)
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:260:12)
+  ...
+# Subtest: composition: no-candidate decision is null
+not ok 9 - composition: no-candidate decision is null
+  ---
+  duration_ms: 0.461833
+  location: '/private/tmp/formal-ai-only-1188/composition-fixtures/selected-summary.test.mjs:71:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot find module '/private/tmp/formal-ai-only-1188/composition-fixtures/repair-summary.mjs' imported from /private/tmp/formal-ai-only-1188/composition-fixtures/selected-summary.test.mjs"
+  code: 'ERR_MODULE_NOT_FOUND'
+  stack: |-
+    finalizeResolution (node:internal/modules/esm/resolve:283:11)
+    moduleResolve (node:internal/modules/esm/resolve:952:10)
+    defaultResolve (node:internal/modules/esm/resolve:1188:11)
+    ModuleLoader.defaultResolve (node:internal/modules/esm/loader:642:12)
+    #cachedDefaultResolve (node:internal/modules/esm/loader:591:25)
+    ModuleLoader.resolve (node:internal/modules/esm/loader:574:38)
+    ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:236:38)
+    ModuleLoader.import (node:internal/modules/esm/loader:539:34)
+    defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:221:31)
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:260:12)
+  ...
+# Subtest: composition: out-of-range selected index is null
+not ok 10 - composition: out-of-range selected index is null
+  ---
+  duration_ms: 0.18625
+  location: '/private/tmp/formal-ai-only-1188/composition-fixtures/selected-summary.test.mjs:71:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot find module '/private/tmp/formal-ai-only-1188/composition-fixtures/repair-summary.mjs' imported from /private/tmp/formal-ai-only-1188/composition-fixtures/selected-summary.test.mjs"
+  code: 'ERR_MODULE_NOT_FOUND'
+  stack: |-
+    finalizeResolution (node:internal/modules/esm/resolve:283:11)
+    moduleResolve (node:internal/modules/esm/resolve:952:10)
+    defaultResolve (node:internal/modules/esm/resolve:1188:11)
+    ModuleLoader.defaultResolve (node:internal/modules/esm/loader:642:12)
+    #cachedDefaultResolve (node:internal/modules/esm/loader:591:25)
+    ModuleLoader.resolve (node:internal/modules/esm/loader:574:38)
+    ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:236:38)
+    ModuleLoader.import (node:internal/modules/esm/loader:539:34)
+    defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:221:31)
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:260:12)
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 3
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 51.595833

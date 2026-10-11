@@ -1,0 +1,11 @@
+mechanism_inquiry	cómo funciona esto	cómo funciona …	cómo funcionan …	cómo está hecho …	cómo está hecha …
+procedural_request	dime cómo …	muéstrame cómo …	cuáles son los pasos para …	qué pasos necesito para …	cómo debo …	cómo puedo …	cómo podemos …	cómo hacer … ;; action do	cómo implementar … ;; action implement	cómo crear … ;; action create	cómo escribir … ;; action write
+procedural_request_elided_lead	cómo …
+procedural_action_order	pedir	encargar
+procedural_action_install	instalar
+connect	conectar
+mechanism_predicate	… funciona	… funcionan	… está hecho	… está construido
+detail_modifier	… en detalle	… detalladamente	… por favor
+procedural_task_modifier	… paso a paso	… por pasos	… por favor
+procedural_elaboration	instrucciones concretas	pasos concretos	instrucciones detalladas	pasos detallados	pasos exactos	paso a paso	más detalle	más detalles	más concreto
+common_typo	porfavor ;; action "por favor"

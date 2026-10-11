@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "蔬果汁"
+        },
+        "es": {
+          "language": "es",
+          "value": "zumo"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "挤压水果和蔬菜产生的可饮用液体"
+        },
+        "es": {
+          "language": "es",
+          "value": "sustancia líquida que se extrae de los vegetales o frutas"
         }
       },
       "aliases": {
@@ -94,6 +102,36 @@
           {
             "language": "ru",
             "value": "соки из фруктов и овощей"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "jugo"
+          },
+          {
+            "language": "es",
+            "value": "jugos de frutas y vegetales"
+          },
+          {
+            "language": "es",
+            "value": "jugo de frutas"
+          },
+          {
+            "language": "es",
+            "value": "jugos de frutas"
+          },
+          {
+            "language": "es",
+            "value": "jugo de vegetales"
+          },
+          {
+            "language": "es",
+            "value": "jugos de vegetales"
+          },
+          {
+            "language": "es",
+            "value": "jugo de frutas y vegetales"
           }
         ]
       }

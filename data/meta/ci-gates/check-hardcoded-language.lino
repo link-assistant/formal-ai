@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_hardcoded_language
+ci_gate check-hardcoded-language
   stage rust
   description "No natural-language string is hardcoded outside the seed data and its allowlist."
   run "rust-script scripts/check-hardcoded-language.rs"
+  justification "Hardcoded prose strings in source code bypass the i18n catalog and leave users without translations; the burn-down gate was introduced in #659 (R379) to prevent new hardcoded strings from entering the codebase."

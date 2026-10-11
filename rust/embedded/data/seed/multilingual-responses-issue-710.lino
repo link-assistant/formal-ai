@@ -15,6 +15,10 @@ multilingual_responses_issue_710
     intent client_integration_invalid_typed_json_setting
     language zh
     text "无效的带类型 JSON 设置 `{rendered}`：{error}"
+  response response_client_integration_invalid_typed_json_setting_es
+    intent client_integration_invalid_typed_json_setting
+    language es
+    text "ajuste JSON tipado no válido `{rendered}`: {error}"
   response response_set_assistant_name_en
     intent set_assistant_name
     language en

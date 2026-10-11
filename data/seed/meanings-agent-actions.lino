@@ -2,146 +2,37 @@ meanings
   formalize_document_action
     defined-by action
     role agent_action_formalize_verb
-    lexeme en
-      surface
-        text formalize
-      surface
-        text formalise
-    lexeme ru
-      surface
-        text формализуй
-      surface
-        text формализировать
-      surface
-        text формализовать
-    lexeme hi
-      surface
-        text "औपचारिक रूप दें"
-      surface
-        text formalize
-    lexeme zh
-      surface
-        text 形式化
-    lexeme es
-      surface
-        text formaliza
-      surface
-        text formalizar
+    lexeme en formalize formalise
+    lexeme ru формализуй формализировать формализовать
+    lexeme hi "औपचारिक रूप दें" formalize
+    lexeme zh 形式化
+    lexeme es formaliza formalizar
   report_issue_action
     defined-by action
     role agent_action_report_verb
-    lexeme en
-      surface
-        text report
-      surface
-        text file
-      surface
-        text open
-      surface
-        text submit
-      surface
-        text create
-    lexeme ru
-      surface
-        text сообщи
-      surface
-        text сообщить
-      surface
-        text создай
-      surface
-        text создать
-      surface
-        text зарепорти
-    lexeme hi
-      surface
-        text रिपोर्ट
-    lexeme zh
-      surface
-        text 报告
-      surface
-        text 提交
+    lexeme en report file open submit create
+    lexeme ru сообщи сообщить создай создать зарепорти
+    lexeme hi रिपोर्ट
+    lexeme zh 报告 提交 上报
+    lexeme es reporta reportar notifica notificar
   report_issue_subject
     defined-by inquiry
     role agent_action_report_subject
-    lexeme en
-      surface
-        text issue
-      surface
-        text bug
-      surface
-        text problem
-      surface
-        text github
-      surface
-        text repository
-      surface
-        text repo
-    lexeme ru
-      surface
-        text баг
-      surface
-        text проблема
-      surface
-        text проблеме
-      surface
-        text ошибка
-      surface
-        text ошибке
-      surface
-        text issue
-    lexeme hi
-      surface
-        text समस्या
-      surface
-        text त्रुटि
-    lexeme zh
-      surface
-        text 问题
-      surface
-        text 错误
+    lexeme en issue bug problem github repository repo
+    lexeme ru баг проблема проблеме ошибка ошибке issue
+    lexeme hi समस्या त्रुटि
+    lexeme zh 问题 错误
+    lexeme es issue incidencia problema error fallo repositorio
   request_objective
     defined-by relation
     role request_objective_lead
-    lexeme en
-      surface
-        text "issue to solve: …"
-      surface
-        text "task to solve: …"
-      surface
-        text "objective: …"
-      surface
-        text "request: …"
-      surface
-        text "task: …"
-      surface
-        text "goal: …"
-    lexeme ru
-      surface
-        text "задача для решения: …"
-      surface
-        text "запрос: …"
-      surface
-        text "задача: …"
-      surface
-        text "цель: …"
-    lexeme hi
-      surface
-        text "हल करने का कार्य: …"
-      surface
-        text "अनुरोध: …"
-      surface
-        text "कार्य: …"
-      surface
-        text "लक्ष्य: …"
-    lexeme zh
-      surface
-        text "待解决的问题：…"
-      surface
-        text "请求：…"
-      surface
-        text "任务：…"
-      surface
-        text "目标：…"
+    lexeme en "issue to solve: …" "task to solve: …" "objective: …" "request: …" "task: …" "goal: …"
+    lexeme ru "задача для решения: …" "запрос: …" "задача: …" "цель: …"
+    lexeme hi "हल करने का कार्य: …" "अनुरोध: …" "कार्य: …" "लक्ष्य: …"
+    lexeme zh "待解决的问题：…" "请求：…" "任务：…" "目标：…"
+    lexeme es
+      words "problema a resolver: …" "tarea a resolver: …" "objetivo: …" "solicitud: …" "petición: …" "tarea: …"
+      words "meta: …"
   method
     defined-by concept
     defined-by action
@@ -303,6 +194,14 @@ meanings
     unit "not applicable"
     example "retain benchmark evidence after each configured publisher rejects it"
     grounding "src/external_benchmarks/grade.rs"
+  external_benchmark_shard_cannot_record
+    defined-by method
+    role action
+    precondition "a benchmark run starts at a nonzero offset and asks to append to the ledger or rewrite the failure frontier"
+    effect "refuses the run so only the combined total of every shard reaches the ledger"
+    unit "not applicable"
+    example "reject an offset window of HumanEval that tries to record its partial pass count"
+    grounding "src/cli_benchmark.rs"
   external_benchmark_recovery_still_missing
     defined-by method
     role action
@@ -519,3 +418,403 @@ meanings
     unit "not applicable"
     example "summarize the current dialog while keeping source attribution"
     grounding "data/seed/environments.lino"
+  keep_greater
+    defined-by method
+    role action
+    precondition "a list request keeps the elements whose measure exceeds a threshold"
+    effect "filters the list by measure greater than the threshold inferred from the examples or read from the request"
+    unit "not applicable"
+    example "keep the words longer than 3 letters"
+    grounding "data/seed/meta-reasoning.lino"
+  keep_less
+    defined-by method
+    role action
+    precondition "a list request keeps the elements whose measure is below a threshold"
+    effect "filters the list by measure less than the threshold inferred from the examples or read from the request"
+    unit "not applicable"
+    example "keep the numbers smaller than 10"
+    grounding "data/seed/meta-reasoning.lino"
+  keep_containing
+    defined-by method
+    role action
+    precondition "a list request keeps the elements whose text contains a value"
+    effect "filters the list by substring containment of the requested value"
+    unit "not applicable"
+    example "keep the lines that contain TODO"
+    grounding "data/seed/meta-reasoning.lino"
+  maximum_by
+    defined-by method
+    role action
+    precondition "a request asks for the element with the greatest measure"
+    effect "selects the first element whose measure is the maximum"
+    unit "not applicable"
+    example "find the longest word in the list"
+    grounding "data/seed/meta-reasoning.lino"
+  code_blocks_on
+    defined-by method
+    role action
+    precondition "a memory query asks for the code blocks on a domain whose text contains a term"
+    effect "returns the code block links of every formalized page from that domain whose text carries the term"
+    unit "not applicable"
+    example "code blocks on kotlinlang.org whose text contains -d"
+    grounding "data/seed/page-formalization-rules.lino"
+  command_mentioning
+    defined-by method
+    role action
+    precondition "a memory query asks for the command in the paragraph that mentions a phrase"
+    effect "returns, for each formalized paragraph that itself mentions the phrase, the command tied to it"
+    unit "not applicable"
+    example "the command in the paragraph that mentions compiling"
+    grounding "data/seed/page-formalization-rules.lino"
+  generic_page_v1
+    defined-by method
+    role action
+    precondition "a registered source declares the generic page extractor for a fetched payload"
+    effect "formalizes the payload into headings, paragraphs, list items, table rows and language-tagged code blocks and reads its glosses from them"
+    unit "not applicable"
+    example "read the paragraphs of a fetched documentation page that mention the asked surface"
+    grounding "data/seed/sources-registry.lino"
+  web_page
+    defined-by entity
+    role software_artifact_kind
+    precondition "a resource is reached through web search rather than a registered endpoint"
+    effect "is read by the generic page formalizer and ranked by its own trust score"
+    unit "not applicable"
+    example "the kotlinlang.org command-line compiler page"
+    grounding "data/seed/sources-registry.lino"
+  role_slot
+    defined-by method
+    role action
+    precondition "a handler rule needs the object a request names in the open slot of one of a role's prefix surfaces"
+    effect "captures the text after the first surface that opens the request, or after a scan surface anywhere in it, with its edge punctuation shed; the rule does not match when nothing is left"
+    unit "not applicable"
+    example "the topic existence from let's talk about existence"
+    grounding "data/seed/handler-rules.lino"
+  stable_id
+    defined-by method
+    role action
+    precondition "a handler rule needs a deterministic identity for the request it answers"
+    effect "derives the FNV-1a identity of the raw prompt under a declared prefix, the same identity in every runtime"
+    unit "not applicable"
+    example "source_e2db54b48c90e140 for the request to refresh the cached page for example.com"
+    grounding "data/seed/handler-rules.lino"
+  quoted
+    defined-by method
+    role action
+    precondition "a handler rule needs the phrase a request quotes"
+    effect "captures the first phrase between a pair of quotation marks, trying the single, double, backtick and guillemet pairs in that order; the rule does not match without one"
+    unit "not applicable"
+    example "greeting from what do you know about 'greeting'"
+    grounding "data/seed/handler-rules.lino"
+  snapshot
+    defined-by method
+    role action
+    precondition "a handler rule renders the link network the runtime holds"
+    effect "renders the runtime's own link network as a Links Notation document at the moment of the request"
+    unit "not applicable"
+    example "the formal_ai_knowledge header, the concept index and one record per seeded rule"
+    grounding "data/seed/handler-rules.lino"
+  algorithm_language
+    defined-by method
+    role action
+    precondition "an algorithm rule needs the programming language a request names"
+    effect "reads the first row of the algorithm_language table whose surface occurs in the request, and python when none does"
+    unit "not applicable"
+    example "rust from write me a sorting algorithm in Rust"
+    grounding "data/seed/handler-rules.lino"
+  algorithm_snippet
+    defined-by method
+    role action
+    precondition "an algorithm rule needs the snippet family of the language it found"
+    effect "reads the algorithm_snippet row keyed by that language, and the python family for a language with no snippet of its own"
+    unit "not applicable"
+    example "javascript for javascript, python for go"
+    grounding "data/seed/handler-rules.lino"
+  document_software_artifact
+    defined-by method
+    role action
+    precondition "a document request must not be a request to build software that happens to produce documents"
+    effect "reads the first software-artifact surface that occurs in the request; any match leaves the request to the coding handlers"
+    unit "not applicable"
+    example "app from build me an app that exports pdf"
+    grounding "data/seed/handler-rules.lino"
+  document_authoring_action
+    defined-by method
+    role action
+    precondition "a document plan needs a request that asks to make, write or prepare something"
+    effect "reads the first authoring surface that occurs in the request"
+    unit "not applicable"
+    example "сделай from Сделай отчёт по продажам"
+    grounding "data/seed/handler-rules.lino"
+  document_ebook_marker
+    defined-by method
+    role action
+    precondition "an electronic-book request names the EPUB format without naming a file format"
+    effect "reads EPUB when an ebook surface occurs together with a book noun"
+    unit "not applicable"
+    example "EPUB from write an ebook"
+    grounding "data/seed/handler-rules.lino"
+  document_book_noun
+    defined-by method
+    role action
+    precondition "an ebook marker counts only beside a book noun"
+    effect "reads the first book-noun surface that occurs in the request"
+    unit "not applicable"
+    example "book from write an e-book"
+    grounding "data/seed/handler-rules.lino"
+  document_noun
+    defined-by method
+    role action
+    precondition "a request naming a generic document still asks for a document plan"
+    effect "reads document when a generic document surface occurs in the request"
+    unit "not applicable"
+    example "document from Сделай отчёт"
+    grounding "data/seed/handler-rules.lino"
+  document_conversion_action
+    defined-by method
+    role action
+    precondition "a conversion request asks to convert, export or render one document format into another"
+    effect "reads the first conversion surface that occurs in the request"
+    unit "not applicable"
+    example "convert from Convert this Markdown document to HTML"
+    grounding "data/seed/handler-rules.lino"
+  document_format_alias
+    defined-by method
+    role action
+    precondition "a conversion request names its formats by any of their usual spellings"
+    effect "maps each format spelling to the converter's format name"
+    unit "not applicable"
+    example "md to Markdown"
+    grounding "data/seed/handler-rules.lino"
+  document_source_marker
+    defined-by method
+    role action
+    precondition "the source format of a conversion follows a from-style marker"
+    effect "reads the surfaces that mark the next format as the source"
+    unit "not applicable"
+    example "from"
+    grounding "data/seed/handler-rules.lino"
+  document_target_marker
+    defined-by method
+    role action
+    precondition "the target format of a conversion follows a to-style marker"
+    effect "reads the surfaces that mark the next format as the target"
+    unit "not applicable"
+    example "to"
+    grounding "data/seed/handler-rules.lino"
+  document_output_fence
+    defined-by method
+    role action
+    precondition "the converted output is fenced with the code language of its target format"
+    effect "reads the fence language keyed by the target format, and no fence language when it has none"
+    unit "not applicable"
+    example "html for HTML"
+    grounding "data/seed/handler-rules.lino"
+  calendar_weekday_label
+    defined-by method
+    role action
+    precondition "a calendar answer prints a weekday in the asking language and in the case its direction phrase takes"
+    effect "reads the weekday name keyed by slug and language, or by slug, language and direction"
+    unit "not applicable"
+    example "monday.ru.next for понедельника"
+    grounding "data/seed/handler-rules.lino"
+  calendar_default_title
+    defined-by method
+    role action
+    precondition "an event request names no subject"
+    effect "reads the default event title keyed by language"
+    unit "not applicable"
+    example "Event"
+    grounding "data/seed/handler-rules.lino"
+  calendar_schedule_verb
+    defined-by method
+    role action
+    precondition "a date-anchored request asks to put something on the calendar"
+    effect "reads the surfaces that ask for scheduling"
+    unit "not applicable"
+    example "schedule"
+    grounding "data/seed/handler-rules.lino"
+  calendar_day_number_marker
+    defined-by method
+    role action
+    precondition "a request schedules on a numbered day of the month"
+    effect "reads the surfaces that mark a day number"
+    unit "not applicable"
+    example "число"
+    grounding "data/seed/handler-rules.lino"
+  calendar_clock_hour_lead
+    defined-by method
+    role action
+    precondition "a bare hour follows a preposition that introduces a clock time"
+    effect "reads the surfaces that introduce a clock hour"
+    unit "not applicable"
+    example "в"
+    grounding "data/seed/handler-rules.lino"
+  calendar_spoken_hour_marker
+    defined-by method
+    role action
+    precondition "a clock hour is stated with a spoken hour word"
+    effect "reads the hour words that follow a number"
+    unit "not applicable"
+    example "часов"
+    grounding "data/seed/handler-rules.lino"
+  calendar_spoken_hour_lead
+    defined-by method
+    role action
+    precondition "a spoken hour is introduced by a preposition"
+    effect "reads the prepositions allowed before a spoken hour"
+    unit "not applicable"
+    example "на"
+    grounding "data/seed/handler-rules.lino"
+  calendar_title_marker
+    defined-by method
+    role action
+    precondition "an event title follows a marker that introduces its subject"
+    effect "reads the surfaces after which the title starts"
+    unit "not applicable"
+    example "meeting with"
+    grounding "data/seed/handler-rules.lino"
+  calendar_participant_marker
+    defined-by method
+    role action
+    precondition "an event names a participant with a companion preposition"
+    effect "reads the surfaces that introduce a participant title"
+    unit "not applicable"
+    example "с"
+    grounding "data/seed/handler-rules.lino"
+  calendar_title_verb
+    defined-by method
+    role action
+    precondition "an event title follows a scheduling verb"
+    effect "reads the scheduling verbs after which the title starts"
+    unit "not applicable"
+    example "поставь"
+    grounding "data/seed/handler-rules.lino"
+  calendar_title_boundary
+    defined-by method
+    role action
+    precondition "an event title ends where a date, time or place phrase begins"
+    effect "reads the surfaces that end a title"
+    unit "not applicable"
+    example "at"
+    grounding "data/seed/handler-rules.lino"
+  calendar_title_stopword
+    defined-by method
+    role action
+    precondition "a candidate title is only a preposition"
+    effect "reads the words that are never a title by themselves"
+    unit "not applicable"
+    example "on"
+    grounding "data/seed/handler-rules.lino"
+  calendar_title_action_fragment
+    defined-by method
+    role action
+    precondition "a verb-final or spaceless request leaves the scheduling verb inside the title"
+    effect "reads the verb fragments a title sheds"
+    unit "not applicable"
+    example "安排"
+    grounding "data/seed/handler-rules.lino"
+  text_replacement_cue
+    defined-by method
+    role action
+    precondition "a text edit names a replacement of one quoted literal by another"
+    effect "reads the replacement cue and the order it quotes its operands in, target first or target after the cue"
+    unit "not applicable"
+    example "instead for target_follows_cue"
+    grounding "data/seed/handler-rules.lino"
+  text_input_context_cue
+    defined-by method
+    role action
+    precondition "a text edit may quote its input text before the operands"
+    effect "reads the surfaces before the first quote that make it the input text"
+    unit "not applicable"
+    example "text"
+    grounding "data/seed/handler-rules.lino"
+  text_input_continuation_cue
+    defined-by method
+    role action
+    precondition "a text edit carries its input on from the first quote to the operands"
+    effect "reads the surfaces between two quotes that continue the input"
+    unit "not applicable"
+    example "in"
+    grounding "data/seed/handler-rules.lino"
+  document_originality_marker
+    defined-by method
+    role action
+    precondition "an originality check reads the attachment envelope the client appends to the request"
+    effect "reads each envelope marker by kind: the section opener, a text sample, an omitted text or an unavailable text"
+    unit "not applicable"
+    example "Text excerpt: for sample"
+    grounding "data/seed/handler-rules.lino"
+  software_project_followup_action
+    defined-by method
+    role action
+    precondition "a software-project follow-up records the verb that exercises the artifact"
+    effect "reads the verb keyed by the role that recognized the follow-up kind"
+    unit "not applicable"
+    example "software_followup_verification for test"
+    grounding "data/seed/handler-rules.lino"
+  diagnostic_marker
+    defined-by method
+    role action
+    precondition "a request asks to see the reasoning trace beside its answer"
+    effect "reads the per-message marker that asks for the trace and heads the evidence and trace block added after the answer"
+    unit "not applicable"
+    example "[diagnostic] for section"
+    grounding "data/seed/handler-rules.lino"
+  installation_conversion_action
+    defined-by method
+    role action
+    precondition "a request may ask to convert an installation guide or script"
+    effect "names the conversion verbs whose presence marks the request"
+    unit "not applicable"
+    example "convert"
+    grounding "data/seed/handler-rules.lino"
+  installation_conversion_surface
+    defined-by method
+    role action
+    precondition "a conversion request may name an installation or deployment guide"
+    effect "names the guide surfaces a conversion reads"
+    unit "not applicable"
+    example "installation guide"
+    grounding "data/seed/handler-rules.lino"
+  installation_conversion_script
+    defined-by method
+    role action
+    precondition "a conversion request may name a shell or PowerShell script"
+    effect "names the script surfaces a conversion reads or writes"
+    unit "not applicable"
+    example "powershell"
+    grounding "data/seed/handler-rules.lino"
+  installation_source_marker
+    defined-by method
+    role action
+    precondition "a conversion request may say which surface it starts from"
+    effect "maps each source phrase to the format it names"
+    unit "not applicable"
+    example "this bash for shell_script"
+    grounding "data/seed/handler-rules.lino"
+  installation_target_marker
+    defined-by method
+    role action
+    precondition "a conversion request may say which surfaces it wants"
+    effect "maps each target phrase to the format or formats it names"
+    unit "not applicable"
+    example "to readme for markdown"
+    grounding "data/seed/handler-rules.lino"
+  installation_prose_word
+    defined-by method
+    role action
+    precondition "a candidate install line may be a wrapped prose note rather than a command"
+    effect "lists the function words that mark a line as prose"
+    unit "not applicable"
+    example "the"
+    grounding "data/seed/handler-rules.lino"
+  installation_verb_action
+    defined-by method
+    role action
+    precondition "an install step is described from the verb of its command"
+    effect "maps a command verb to the step description it stands for"
+    unit "not applicable"
+    example "install for install"
+    grounding "data/seed/handler-rules.lino"

@@ -1,0 +1,21 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-research-table.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-f1f3f8a05e78b7c2
+    record "advantages"
+  gap seed-metadata-gap-bc9bde43775c56a7
+    record "compare"
+  gap seed-metadata-gap-4cff5f4c4f907098
+    record "differences"
+  gap seed-metadata-gap-b01fc2e586344176
+    record "disadvantages"
+  gap seed-metadata-gap-c3507fc82c573ae8
+    record "key_differences"
+  gap seed-metadata-gap-4a6abab818ad17a5
+    record "research_prompt_signal"
+  gap seed-metadata-gap-b6d43547d7a1692c
+    record "table"
+  gap seed-metadata-gap-0289b7e4339a9889
+    record "use_cases"

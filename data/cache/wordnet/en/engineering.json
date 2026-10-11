@@ -1,0 +1,37 @@
+{
+  "lemma": "engineering",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00951878-n",
+      "partOfSpeech": "n",
+      "definition": "the practical application of technical and scientific knowledge to commerce or industry"
+    },
+    {
+      "id": "oewn-06134474-n",
+      "partOfSpeech": "n",
+      "definition": "the discipline dealing with the art or science of applying scientific knowledge to practical problems",
+      "examples": [
+        "he had trouble deciding which branch of engineering to study"
+      ],
+      "synonyms": [
+        "engineering science",
+        "applied science",
+        "technology"
+      ]
+    },
+    {
+      "id": "oewn-03293411-n",
+      "partOfSpeech": "n",
+      "definition": "a room (as on a ship) in which the engine is located",
+      "synonyms": [
+        "engine room"
+      ]
+    }
+  ]
+}

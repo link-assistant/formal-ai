@@ -2,29 +2,44 @@ self_ast_census
   target src/seed/parser.rs
   language rust
   fidelity signature
-  byte_len 12999
-  line_count 404
-  content_id source_module_120ff69ac8001d54
-  symbol_count 21
+  byte_len 20247
+  line_count 616
+  content_id source_module_894a4e269048a225
+  symbol_count 36
   symbols
     struct LinoNode 21 25
-    function find_child_value 28 35
-    function parse_lino 38 67
-    function navigate_mut 69 75
-    function parse_lino_line 77 94
-    function strip_comment 96 135
-    function parse_colon_definition 137 148
-    function find_closing_quote 150 152
-    function find_closing_delimiter 162 180
-    function take_doubled 184 191
-    function unescape_value 207 231
-    function unescape_single_value 233 265
-    function decode_raw_reference 267 275
-    function decode_raw_reference_preserving_quotes 277 279
-    function decode_codepoint_reference 281 292
-    function decode_quoted_reference 294 314
-    function decode_codepoints 316 320
-    function escape_value 322 324
-    function parse_codepoint 326 335
-    function split_pipe_list 337 354
-    function split_reference_tokens 360 404
+    function find_child_value 29 36
+    function parse_lino 40 69
+    function navigate_mut 71 77
+    function parse_lino_line 79 96
+    function strip_comment 98 137
+    function parse_colon_definition 139 150
+    function find_closing_quote 152 154
+    function find_closing_delimiter 164 182
+    function take_doubled 186 193
+    function unescape_value 209 233
+    function unescape_single_value 235 267
+    function decode_raw_reference 269 277
+    function decode_raw_reference_preserving_quotes 279 281
+    function decode_codepoint_reference 283 294
+    function decode_quoted_reference 296 316
+    function decode_codepoints 318 322
+    function escape_value 324 326
+    function parse_codepoint 328 337
+    function split_pipe_list 339 356
+    function split_reference_tokens 362 406
+    function expand_concise_lexemes 417 481
+    const LEXEME 484 484
+    const WORDS 485 485
+    const SURFACE 486 486
+    function opens_with 489 493
+    function is_concise_hint 497 501
+    function lexeme_head 504 522
+    function leading_spaces 524 526
+    function is_blank_line 528 530
+    function word_tokens 535 569
+    struct ChildBlock 572 576
+    function is_words 579 581
+    function is_surface 583 585
+    function reindented 588 593
+    function child_blocks 597 616

@@ -9,10 +9,10 @@
 #             whole run on its own.
 #
 # The copied binary runs because both sides are Ubuntu 24.04 on glibc 2.39:
-# `ubuntu-latest` builds it and `konard/box-dind:2.1.1` runs it.
+# `ubuntu-latest` builds it and `konard/box-dind:2.10.2` runs it.
 ARG BINARY_SOURCE=compile
 
-FROM rust:1.98-slim AS builder
+FROM rust:1.99-slim AS builder
 
 WORKDIR /app
 RUN apt-get update && \
@@ -70,7 +70,7 @@ COPY rust/target/release/formal-ai /app/target/release/formal-ai
 # Resolves to whichever stage `BINARY_SOURCE` names.
 FROM ${BINARY_SOURCE}-binary AS selected-binary
 
-FROM konard/box-dind:2.1.1
+FROM konard/box-dind:2.10.2
 
 LABEL org.opencontainers.image.source="https://github.com/link-assistant/formal-ai"
 
@@ -83,6 +83,10 @@ ENV HOME=/home/box \
     BUN_INSTALL=/home/box/.bun
 ENV PATH="${BUN_INSTALL}/bin:${PATH}"
 
+# box-dind 2.10.2 ends its own build as `USER box` (2.1.1 ended as root), so
+# the system package install switches back to root explicitly; apt cannot
+# write /var/lib/apt/lists as box. The bun installs below run as box again.
+USER root
 RUN apt-get update && \
     apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/* && \

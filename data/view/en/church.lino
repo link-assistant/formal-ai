@@ -1,0 +1,25 @@
+view
+  id M-65a6acb86cf7
+  lemma church
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "one of the groups of Christians who have their own beliefs and forms of worship"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a place for public (especially Christian) worship"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a service conducted in a house of worship"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the body of people who attend or belong to a particular local church"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "perform a special church rite or service for"
+    provenance (wordnet)

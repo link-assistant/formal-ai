@@ -353,6 +353,10 @@ fn stage_of(task: &str) -> RoutingStage {
 /// Plan 10 leaf 11: the seven request-side cue families joined this table, so
 /// every capability the seed registry declares is decided by a
 /// `(object, act, locus)` row and none by a memorized phrase.
+/// Capabilities that only observe the workspace: a request naming a mutating
+/// shell intent is never answered by one of them.
+const OBSERVING_SLUGS: [&str; 4] = ["read_many", "list_dir", "glob", "grep"];
+
 const ROUTED_CAPABILITIES: [(&str, Capability); 12] = [
     ("web_fetch", Capability::Fetch),
     ("web_search", Capability::Search),
@@ -444,6 +448,7 @@ fn plan_routed_capability_step_in(
         .into_iter()
         .next()
         .unwrap_or(task);
+    let first_block = routed_task;
     // A sentence that merely governs commands is the caller's framing, not
     // the work: the task sentence after it states the request, and a policy
     // sentence's own nouns ("files", "workspace") must not name a capability
@@ -452,9 +457,7 @@ fn plan_routed_capability_step_in(
     // whole shape, so the boundary below still declines it as governed.
     let policy_free_request = super::shell_command_policy::sentence_spans(routed_task)
         .into_iter()
-        .filter(|sentence| {
-            !super::shell_command_policy::states_a_command_policy(sentence)
-        })
+        .filter(|sentence| !super::shell_command_policy::states_a_command_policy(sentence))
         .collect::<Vec<_>>()
         .join(" ");
     let routed_task: &str = if policy_free_request.is_empty() {
@@ -502,9 +505,15 @@ fn plan_routed_capability_step_in(
     // is the catalog, because the recipe path also composes programs no
     // contract pins.
     let engine_answerable_program = super::code_artifact::catalog_claims(routed_task);
+    // The dialogue half: "hi" or "thanks" on its own is an exchange the engine
+    // answers in the reply, not a bare term for the open web.
+    let engine_answerable_dialogue = crate::capability_routing::is_dialogue_utterance(routed_task);
     if stage == RoutingStage::OpenWeb
         && !crate::capability_routing::names_open_web(routed_task)
-        && (engine_answerable_concept || engine_answerable_fact || engine_answerable_program)
+        && (engine_answerable_concept
+            || engine_answerable_fact
+            || engine_answerable_program
+            || engine_answerable_dialogue)
     {
         return None;
     }
@@ -550,10 +559,20 @@ fn plan_routed_capability_step_in(
     // b.md") names no mutating cue and keeps its route (issue #1021:
     // "copy a.txt to b.txt" planned `cat`, and a traversal the safety rule
     // refused answered as a one-file cat of the operand that survived).
+    // Every observing capability defers the same way: "Create a directory
+    // named src." routed to `list_dir` on the word "directory" and answered
+    // with a listing instead of `mkdir src` (PR #1188 dogfooding). A run
+    // defers too: "Rename the file a to b" is the shell arm's verified recipe,
+    // never a bare `mv` (PR #1188 G24).
     if (capability == Capability::ReadMany
-        || (capability == Capability::Run && lowered_from.as_deref() == Some("read_many")))
+        || capability == Capability::Run
+        || OBSERVING_SLUGS.contains(&decided))
         && super::shell_command::names_mutating_shell_intent(routed_task)
     {
+        return None;
+    }
+    // ReadMany requires structural Read operands from the full original request.
+    if decided == "read_many" && routed_read_many_paths(task).is_empty() {
         return None;
     }
     if super::tool_result::has_latest_turn_result(messages) {
@@ -601,12 +620,34 @@ fn plan_routed_capability_step_in(
     if capability == Capability::Read
         && super::write_request::states_write_action(routed_task)
         && super::write_request::stated_write_target(routed_task).is_some()
+        && (super::general_planner::has_file_write_intent(routed_task)
+            || !retrieval_owns_write_cue(routed_task))
+    {
+        return None;
+    }
+    // Nor is it one of several files to read (PR #1188 G102).
+    if decided == "read_many"
+        && super::write_request::states_write_action(routed_task)
+        && super::write_request::stated_write_target(routed_task)
+            .is_some_and(|target| file_tokens(routed_task).contains(&target.as_str()))
     {
         return None;
     }
     let tool = tool_for(tool_names, capability)?;
-    let arguments = routed_arguments(capability, lowered_from.as_deref(), routed_task)?;
-    Some(plan_one(tool, arguments))
+    // Classification may omit policy; writable operands retain original statement spans.
+    let operand_task = if decided == "read_many" {
+        task
+    } else if matches!(capability, Capability::Write | Capability::Read) {
+        first_block
+    } else {
+        routed_task
+    };
+    let arguments = routed_arguments(capability, lowered_from.as_deref(), operand_task)?;
+    let plan = plan_one(tool, arguments);
+    if decided == "read_many" && super::file_read::read_policy_blocks_plan(task, &plan) {
+        return None;
+    }
+    Some(plan)
 }
 
 /// The command a `grep` lowered to the shell runs when the shell vocabulary
@@ -667,13 +708,34 @@ fn routed_arguments(
             Some(json!({ "query": query }).to_string())
         }
         Capability::Read => {
-            let path = crate::capability_routing::first_path(task)?;
+            let super::file_read::FileReadTask::Direct { path, .. } =
+                super::file_read::file_read_task_for(task)?
+            else {
+                return None;
+            };
             Some(json!({"path": path, "filePath": path, "file_path": path}).to_string())
         }
         Capability::Write => {
-            let path = crate::capability_routing::first_path(task)?;
-            let content = crate::capability_routing::explicit_content(task)?;
-            Some(super::planner::write_arguments(&path, &content))
+            // A removal never writes new content over the file (PR #1188 T29:
+            // a line deletion was routed here and the file became one quoted
+            // line).
+            let outside = crate::engine::normalize_prompt(
+                &crate::solver_handlers::text_outside_quoted_segments(task),
+            );
+            if seed::lexicon().mentions_role("coding_text_remove_action", &outside) {
+                return None;
+            }
+            // Neither does an edit the edit composer could not read: unless the
+            // request states a whole-file write, its edit word asks for a change
+            // inside the file (U17: `In notes.txt replace with ','` wrote `','`).
+            if seed::lexicon().mentions_role(seed::ROLE_FILE_EDIT_ACTION_CUE, &outside)
+                && !super::literal_write_guard::writes_whole_file(task)
+            {
+                return None;
+            }
+            let bound = super::general_planner::compose_general_change_plan(task)?;
+            (bound.mode == super::general_planner::GeneralPlanMode::LiteralFile)
+                .then(|| super::planner::write_arguments(&bound.target, &bound.content))
         }
         Capability::MultiEdit => {
             // The table routes a set of files transformed in place here; the
@@ -741,7 +803,9 @@ fn arguments_for(capability: Capability, task: &str) -> String {
             let pattern = wildcard_token(task).unwrap_or("*");
             json!({"pattern": pattern, "path": "."}).to_string()
         }
-        Capability::ListDir => json!({"path": "."}).to_string(),
+        Capability::ListDir => {
+            json!({"path": super::directory_listing::listed_directory(task)}).to_string()
+        }
         Capability::Todo => json!({
             "todos": [{"content": task, "status": "pending"}],
             "plan": [{"step": task, "status": "pending"}],
@@ -756,7 +820,7 @@ fn arguments_for(capability: Capability, task: &str) -> String {
         .to_string(),
         Capability::AskUser => String::new(),
         Capability::ReadMany => {
-            let paths = file_tokens(task);
+            let paths = routed_read_many_paths(task);
             json!({"paths": paths, "file_paths": paths}).to_string()
         }
         _ => json!({"prompt": task}).to_string(),
@@ -780,8 +844,23 @@ fn file_tokens(task: &str) -> Vec<&str> {
                 && !token.starts_with('.')
                 && !token.ends_with('.')
                 && !token.contains("//")
+                && !token.contains(|c: char| FRAGMENT_MARKS.contains(c))
         })
         .collect()
+}
+
+/// Marks that a path never holds: a token that still holds one after
+/// trimming is a fragment of quoted text or code (`fn(«x»`), never a file to
+/// read (PR #1188 G102; mirrors `FRAGMENT_MARKS`).
+const FRAGMENT_MARKS: &str = "«»“”‘’()[]{}<>`\"'";
+
+/// Structural Read operands, without filename-token inference.
+fn routed_read_many_paths(task: &str) -> Vec<String> {
+    match super::file_read::file_read_task_for(task) {
+        Some(super::file_read::FileReadTask::DirectMany { paths, .. }) => paths,
+        Some(super::file_read::FileReadTask::Direct { path, .. }) => vec![path],
+        _ => Vec::new(),
+    }
 }
 
 fn shell_fallback(capability: Capability, task: &str) -> Option<String> {
@@ -797,13 +876,20 @@ fn shell_fallback(capability: Capability, task: &str) -> Option<String> {
             command.push('\'');
             Some(command)
         }
-        Capability::ListDir => Some(String::from("ls")),
+        Capability::ListDir => {
+            let directory = super::directory_listing::listed_directory(task);
+            Some(if directory == "." {
+                String::from("ls")
+            } else {
+                format!("ls {}", shell_quote(&directory))
+            })
+        }
         Capability::ReadMany => {
-            let paths = file_tokens(task);
+            let paths = routed_read_many_paths(task);
             (!paths.is_empty()).then(|| {
                 let paths = paths
                     .into_iter()
-                    .map(shell_quote)
+                    .map(|path| shell_quote(&path))
                     .collect::<Vec<_>>()
                     .join(" ");
                 let mut command = String::from("cat");
@@ -818,4 +904,20 @@ fn shell_fallback(capability: Capability, task: &str) -> Option<String> {
 
 fn shell_quote(value: &str) -> String {
     format!("'{}'", value.replace('\'', "'\\''"))
+}
+
+/// A seeded retrieval phrase may own the very token also used as a write cue.
+fn retrieval_owns_write_cue(task: &str) -> bool {
+    let tokens = super::write_request::tokens(task);
+    let Some(start) = super::write_request::first_action_cue_start(&tokens) else {
+        return false;
+    };
+    let action = crate::engine::normalize_prompt(&task[start..]);
+    seed::lexicon()
+        .words_for_role(seed::ROLE_CAPABILITY_ACT_RETRIEVE)
+        .iter()
+        .any(|surface| {
+            let cue = crate::engine::normalize_prompt(surface);
+            !cue.is_empty() && action.starts_with(&cue)
+        })
 }

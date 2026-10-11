@@ -1,0 +1,474 @@
+TAP version 13
+# Subtest: R848-2/R848-7: source creation renders executable bytes and observes them
+    # Subtest: function, constant and test requests write exact source
+    ok 1 - function, constant and test requests write exact source
+      ---
+      duration_ms: 1605.222958
+      ...
+    # Subtest: the same request in russian, chinese and hindi generates the same shape of source
+    ok 2 - the same request in russian, chinese and hindi generates the same shape of source
+      ---
+      duration_ms: 169.874417
+      ...
+    1..2
+ok 1 - R848-2/R848-7: source creation renders executable bytes and observes them
+  ---
+  duration_ms: 2052.278333
+  type: 'suite'
+  ...
+# Subtest: R848-5: repository search uses the named code subject
+    # Subtest: seven subject shapes each become one focused grep
+    ok 1 - seven subject shapes each become one focused grep
+      ---
+      duration_ms: 1710.307125
+      ...
+    1..1
+ok 2 - R848-5: repository search uses the named code subject
+  ---
+  duration_ms: 1710.5215
+  type: 'suite'
+  ...
+# Subtest: R848-6: a structured collection edit transforms the workspace bytes
+    # Subtest: read, transform, write and observe the excluded_folders array
+    ok 1 - read, transform, write and observe the excluded_folders array
+      ---
+      duration_ms: 30.916542
+      ...
+    1..1
+ok 3 - R848-6: a structured collection edit transforms the workspace bytes
+  ---
+  duration_ms: 31.044375
+  type: 'suite'
+  ...
+# Subtest: R848-10: symbol refactors and composite module requests terminate verified
+    # Subtest: an identifier rename is a grounded rewrite, not a file move
+    ok 1 - an identifier rename is a grounded rewrite, not a file move
+      ---
+      duration_ms: 38.2095
+      ...
+    # Subtest: an Agent CLI absolute read path gets one bounded whole-word rewrite and a digest check
+    ok 2 - an Agent CLI absolute read path gets one bounded whole-word rewrite and a digest check
+      ---
+      duration_ms: 34.325958
+      ...
+    # Subtest: a composite request writes the module, then registers it, observing both
+    ok 3 - a composite request writes the module, then registers it, observing both
+      ---
+      duration_ms: 33.9755
+      ...
+    # Subtest: an Agent CLI composite registers the module with a compact edit and a digest check
+    ok 4 - an Agent CLI composite registers the module with a compact edit and a digest check
+      ---
+      duration_ms: 33.194458
+      ...
+    1..4
+ok 4 - R848-10: symbol refactors and composite module requests terminate verified
+  ---
+  duration_ms: 139.988959
+  type: 'suite'
+  ...
+# Subtest: L07 derives a real canonical greeting edit and fulfills every whole-node obligation
+ok 5 - L07 derives a real canonical greeting edit and fulfills every whole-node obligation
+  ---
+  duration_ms: 2659.344416
+  ...
+# Subtest: the changed Links Notation greeting lexeme reaches the production greeting caller
+ok 6 - the changed Links Notation greeting lexeme reaches the production greeting caller
+  ---
+  duration_ms: 833.633125
+  ...
+# Subtest: digest normalization preserves Unicode and line-ending byte identities
+ok 7 - digest normalization preserves Unicode and line-ending byte identities
+  ---
+  duration_ms: 1258.820041
+  ...
+# Subtest: failed receipts cannot verify even when stdout contains the exact digest
+ok 8 - failed receipts cannot verify even when stdout contains the exact digest
+  ---
+  duration_ms: 0.968
+  ...
+# Subtest: grounded workspace edit verifies receipt payload, preserving actual failed status
+ok 9 - grounded workspace edit verifies receipt payload, preserving actual failed status
+  ---
+  duration_ms: 339.481583
+  ...
+# Subtest: an advertised multi_edit capability receives every explicitly named path
+ok 10 - an advertised multi_edit capability receives every explicitly named path
+  ---
+  duration_ms: 1853.664125
+  ...
+# Subtest: G104: an edit naming files listed with `and` or commas is declined, naming every file
+    # Subtest: `In a.mjs and b.mjs, …` names both files and changes neither
+    ok 1 - `In a.mjs and b.mjs, …` names both files and changes neither
+      ---
+      duration_ms: 124.346083
+      ...
+    # Subtest: a comma list of three files names all three
+    ok 2 - a comma list of three files names all three
+      ---
+      duration_ms: 11.5435
+      ...
+    # Subtest: a path in a later sentence (the ladder leaf asking for evidence) is no edit target
+    ok 3 - a path in a later sentence (the ladder leaf asking for evidence) is no edit target
+      ---
+      duration_ms: 776.598834
+      ...
+    # Subtest: one file followed by a comma and the edit is still one edit
+    ok 4 - one file followed by a comma and the edit is still one edit
+      ---
+      duration_ms: 42.548542
+      ...
+    1..4
+ok 11 - G104: an edit naming files listed with `and` or commas is declined, naming every file
+  ---
+  duration_ms: 956.086417
+  type: 'suite'
+  ...
+# Subtest: G99: edits joined by a sequence cue are planned step by step
+    # Subtest: `…, then delete …` inserts and then deletes, each over the file the step before left
+    ok 1 - `…, then delete …` inserts and then deletes, each over the file the step before left
+      ---
+      duration_ms: 269.934667
+      ...
+    # Subtest: a step that names no file takes the file the other names
+    ok 2 - a step that names no file takes the file the other names
+      ---
+      duration_ms: 228.25975
+      ...
+    # Subtest: the Russian cue `затем` is a step too, answered in Russian
+    ok 3 - the Russian cue `затем` is a step too, answered in Russian
+      ---
+      duration_ms: 180.303375
+      ...
+    # Subtest: a cue that opens no clause, or a step without a quoted text, is no sequence
+    ok 4 - a cue that opens no clause, or a step without a quoted text, is no sequence
+      ---
+      duration_ms: 0.303125
+      ...
+    1..4
+ok 12 - G99: edits joined by a sequence cue are planned step by step
+  ---
+  duration_ms: 679.205
+  type: 'suite'
+  ...
+# Subtest: G106: several Replaces apply all or decline, never drop one
+    # Subtest: `and then replace` applies both
+    ok 1 - `and then replace` applies both
+      ---
+      duration_ms: 270.645042
+      ...
+    # Subtest: a second clause that is no quoted replacement is named, and nothing changes
+    ok 2 - a second clause that is no quoted replacement is named, and nothing changes
+      ---
+      duration_ms: 5.090917
+      ...
+    1..2
+ok 13 - G106: several Replaces apply all or decline, never drop one
+  ---
+  duration_ms: 275.840583
+  type: 'suite'
+  ...
+# Subtest: G90: a quoted text holding its own quote mark is declined, naming the quote
+    # Subtest: single-quoted texts holding single quotes (T471)
+    ok 1 - single-quoted texts holding single quotes (T471)
+      ---
+      duration_ms: 2.012917
+      ...
+    # Subtest: double-quoted texts ending in a double quote of their own (T377)
+    ok 2 - double-quoted texts ending in a double quote of their own (T377)
+      ---
+      duration_ms: 3.364959
+      ...
+    # Subtest: the same texts in «» are edited
+    ok 3 - the same texts in «» are edited
+      ---
+      duration_ms: 33.5085
+      ...
+    1..3
+ok 14 - G90: a quoted text holding its own quote mark is declined, naming the quote
+  ---
+  duration_ms: 39.188416
+  type: 'suite'
+  ...
+# Subtest: G107: a backticked payload whose inner spans pair runs to its own close
+    # Subtest: a sentence end inside the payload keeps the whole replacement
+    ok 1 - a sentence end inside the payload keeps the whole replacement
+      ---
+      duration_ms: 36.20325
+      ...
+    # Subtest: the T794 shape: paths, a semicolon and a sentence end inside the payload
+    ok 2 - the T794 shape: paths, a semicolon and a sentence end inside the payload
+      ---
+      duration_ms: 42.686292
+      ...
+    # Subtest: the payload ends where its own mark closes, before a later sentence
+    ok 3 - the payload ends where its own mark closes, before a later sentence
+      ---
+      duration_ms: 0.240834
+      ...
+    1..3
+ok 15 - G107: a backticked payload whose inner spans pair runs to its own close
+  ---
+  duration_ms: 79.263458
+  type: 'suite'
+  ...
+# Subtest: G102: a file described rather than given is never written from a failed or refused step
+    # Subtest: a create request whose names and values are «» fragments writes nothing
+    ok 1 - a create request whose names and values are «» fragments writes nothing
+      ---
+      duration_ms: 868.07725
+      ...
+    1..1
+ok 16 - G102: a file described rather than given is never written from a failed or refused step
+  ---
+  duration_ms: 868.16425
+  type: 'suite'
+  ...
+# Subtest: G109: copy then comma-joined replacements preserves the source
+ok 17 - G109: copy then comma-joined replacements preserves the source
+  ---
+  duration_ms: 3443.344166
+  ...
+# Subtest: G109: move then a quoted edit runs in order
+ok 18 - G109: move then a quoted edit runs in order
+  ---
+  duration_ms: 3331.495416
+  ...
+# Subtest: G108: scalar payload code spans keep comma-separated backticks whole
+ok 19 - G108: scalar payload code spans keep comma-separated backticks whole
+  ---
+  duration_ms: 0.341708
+  ...
+# Subtest: G110: payload file paths and cues cannot become the creation target
+ok 20 - G110: payload file paths and cues cannot become the creation target
+  ---
+  duration_ms: 44.996583
+  ...
+# Subtest: G113: exact quoted content retains indentation and terminal newline
+ok 21 - G113: exact quoted content retains indentation and terminal newline
+  ---
+  duration_ms: 59.55025
+  ...
+# Subtest: G114: an objective label in quoted source is data
+ok 22 - G114: an objective label in quoted source is data
+  ---
+  duration_ms: 0.344792
+  ...
+# Subtest: G115: replacement preserves a new-only source newline escape
+ok 23 - G115: replacement preserves a new-only source newline escape
+  ---
+  duration_ms: 32.396375
+  ...
+# Subtest: formal rewrite queries validate escaped literals before the prose quote guard
+ok 24 - formal rewrite queries validate escaped literals before the prose quote guard
+  ---
+  duration_ms: 28.652208
+  ...
+# Subtest: G132: an underspecified test stays a clarification and creates no evidence
+ok 25 - G132: an underspecified test stays a clarification and creates no evidence
+  ---
+  duration_ms: 14.725042
+  ...
+# Subtest: G132: an observed file finding can still be delivered
+ok 26 - G132: an observed file finding can still be delivered
+  ---
+  duration_ms: 481.966292
+  ...
+# Subtest: G132: another sentence acceptance command is no test-authoring question
+ok 27 - G132: another sentence acceptance command is no test-authoring question
+  ---
+  duration_ms: 0.766083
+  ...
+# Subtest: G132: unknown finals and observed failures cannot be delivery findings
+ok 28 - G132: unknown finals and observed failures cannot be delivery findings
+  ---
+  duration_ms: 11.011625
+  ...
+# Subtest: G132: a certificate belongs only to its selected final bytes
+ok 29 - G132: a certificate belongs only to its selected final bytes
+  ---
+  duration_ms: 0.102917
+  ...
+# Subtest: numbered lines are removed (T30)
+    # Subtest: a range, a "to" range and one line
+    ok 1 - a range, a "to" range and one line
+      ---
+      duration_ms: 865.228583
+      ...
+    # Subtest: every registered language names the range
+    ok 2 - every registered language names the range
+      ---
+      duration_ms: 126.684625
+      ...
+    # Subtest: a line past the end is an honest failure and the file is untouched
+    ok 3 - a line past the end is an honest failure and the file is untouched
+      ---
+      duration_ms: 8.327292
+      ...
+    # Subtest: a numbered line and the line above it (T29 shape, numbered)
+    ok 4 - a numbered line and the line above it (T29 shape, numbered)
+      ---
+      duration_ms: 19.915542
+      ...
+    1..4
+ok 30 - numbered lines are removed (T30)
+  ---
+  duration_ms: 1316.589417
+  type: 'suite'
+  ...
+# Subtest: a quoted line and its neighbour are removed together (T29)
+    # Subtest: the line and the named line directly above it
+    ok 1 - the line and the named line directly above it
+      ---
+      duration_ms: 26.934875
+      ...
+    # Subtest: each removed line is a list value even when it contains backticks
+    ok 2 - each removed line is a list value even when it contains backticks
+      ---
+      duration_ms: 25.46625
+      ...
+    # Subtest: a scalar removal payload retains placeholder-shaped text
+    ok 3 - a scalar removal payload retains placeholder-shaped text
+      ---
+      duration_ms: 25.763333
+      ...
+    # Subtest: a neighbour that is not the named line is refused, never guessed
+    ok 4 - a neighbour that is not the named line is refused, never guessed
+      ---
+      duration_ms: 12.556042
+      ...
+    # Subtest: a removal is never routed to a whole-file write
+    ok 5 - a removal is never routed to a whole-file write
+      ---
+      duration_ms: 120.361167
+      ...
+    1..5
+ok 31 - a quoted line and its neighbour are removed together (T29)
+  ---
+  duration_ms: 211.553583
+  type: 'suite'
+  ...
+# Subtest: an insert anchored at a numbered line (T33)
+    # Subtest: after and before line N
+    ok 1 - after and before line N
+      ---
+      duration_ms: 126.429459
+      ...
+    # Subtest: in Russian
+    ok 2 - in Russian
+      ---
+      duration_ms: 41.047458
+      ...
+    1..2
+ok 32 - an insert anchored at a numbered line (T33)
+  ---
+  duration_ms: 167.724625
+  type: 'suite'
+  ...
+# Subtest: a quoted path is the payload when the file is named unquoted (T35)
+    # Subtest: every line containing the path goes from the named file
+    ok 1 - every line containing the path goes from the named file
+      ---
+      duration_ms: 711.119916
+      ...
+    1..1
+ok 33 - a quoted path is the payload when the file is named unquoted (T35)
+  ---
+  duration_ms: 711.495625
+  type: 'suite'
+  ...
+# Subtest: a line is moved, never duplicated (G4)
+    # Subtest: to the top, to the end, after another line
+    ok 1 - to the top, to the end, after another line
+      ---
+      duration_ms: 88.959167
+      ...
+    1..1
+ok 34 - a line is moved, never duplicated (G4)
+  ---
+  duration_ms: 89.180583
+  type: 'suite'
+  ...
+# Subtest: two lines are swapped (G3)
+    # Subtest: the two whole lines exchange places
+    ok 1 - the two whole lines exchange places
+      ---
+      duration_ms: 30.119125
+      ...
+    1..1
+ok 35 - two lines are swapped (G3)
+  ---
+  duration_ms: 30.203708
+  type: 'suite'
+  ...
+# Subtest: a computed change never leaves a fragment of the file (T29)
+    # Subtest: a removal by content that would drop most of the file is refused
+    ok 1 - a removal by content that would drop most of the file is refused
+      ---
+      duration_ms: 11.854
+      ...
+    # Subtest: a numbered range states its extent and may
+    ok 2 - a numbered range states its extent and may
+      ---
+      duration_ms: 20.818542
+      ...
+    1..2
+ok 36 - a computed change never leaves a fragment of the file (T29)
+  ---
+  duration_ms: 32.77475
+  type: 'suite'
+  ...
+# Subtest: whole Write fallback performs read, actual mutation, fresh digest, and exact final answer
+ok 37 - whole Write fallback performs read, actual mutation, fresh digest, and exact final answer
+  ---
+  duration_ms: 1594.94125
+  ...
+# Subtest: bare digest and explicit successful receipts preserve the existing digest contract
+ok 38 - bare digest and explicit successful receipts preserve the existing digest contract
+  ---
+  duration_ms: 2.659208
+  ...
+# Subtest: wrong digest, explicit nonzero, transport error, and outer failure cannot certify current bytes
+ok 39 - wrong digest, explicit nonzero, transport error, and outer failure cannot certify current bytes
+  ---
+  duration_ms: 2.826458
+  ...
+# Subtest: digest observations and command calls before the mutation remain stale
+ok 40 - digest observations and command calls before the mutation remain stale
+  ---
+  duration_ms: 1.3015
+  ...
+# Subtest: latest failed or changed-content writes invalidate an earlier success
+ok 41 - latest failed or changed-content writes invalidate an earlier success
+  ---
+  duration_ms: 0.964625
+  ...
+# Subtest: relative suffix paths and unrelated commands cannot donate receipt evidence
+ok 42 - relative suffix paths and unrelated commands cannot donate receipt evidence
+  ---
+  duration_ms: 1.525458
+  ...
+# Subtest: Unicode, BOM, CRLF and large expected sources are hashed as full UTF8 bytes
+ok 43 - Unicode, BOM, CRLF and large expected sources are hashed as full UTF8 bytes
+  ---
+  duration_ms: 18.156167
+  ...
+# Subtest: unchanged actual Agent CLI source task advances via a genuine fresh digest: 1.1.1.1.1
+ok 44 - unchanged actual Agent CLI source task advances via a genuine fresh digest: 1.1.1.1.1
+  ---
+  duration_ms: 1108.340458
+  ...
+# Subtest: unchanged actual Agent CLI source task advances via a genuine fresh digest: 1.1.2.1.2
+ok 45 - unchanged actual Agent CLI source task advances via a genuine fresh digest: 1.1.2.1.2
+  ---
+  duration_ms: 413.175792
+  ...
+1..45
+# tests 69
+# suites 17
+# pass 69
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12442.392958

@@ -3,7 +3,9 @@
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
-use crate::seed::{Lexicon, Meaning, ROLE_MEASUREMENT_UNIT, ROLE_PHYSICAL_DIMENSION, lexicon};
+use crate::seed::{
+    Lexicon, Meaning, ROLE_MEASUREMENT_UNIT, ROLE_PHYSICAL_DIMENSION, lexicon, localized_response,
+};
 use crate::solver_handlers::finalize_simple;
 
 /// Detect queries that ask to convert between dimensionally incompatible units.
@@ -24,15 +26,18 @@ pub fn try_incompatible_units(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let (unit_a, dim_a, unit_b, dim_b) = detect_incompatible_unit_pair(normalized)?;
+    let pair = detect_incompatible_unit_pair(normalized)?;
+    let body = localized_response(
+        "unit_incompatibility",
+        crate::language::detect(prompt).slug(),
+    )?
+    .replace("{unit_a}", pair.0)
+    .replace("{dim_a}", pair.1)
+    .replace("{unit_b}", pair.2)
+    .replace("{dim_b}", pair.3);
     log.append(
         "unit_incompatibility",
-        format!("{unit_a}:{dim_a} vs {unit_b}:{dim_b}"),
-    );
-    let body = format!(
-        "{unit_a} measures {dim_a}; {unit_b} measures {dim_b}. \
-         These are different physical dimensions and cannot be converted into each other. \
-         The incompatibility is recorded as a `unit_incompatibility` link in the network."
+        format!("{}:{} vs {}:{}", pair.0, pair.1, pair.2, pair.3),
     );
     Some(finalize_simple(
         prompt,
@@ -88,13 +93,20 @@ fn contains_unit_word(normalized: &str, unit: &str) -> bool {
         return normalized.contains(unit);
     }
     let boundary_ok = |ch: Option<char>| ch.is_none_or(|c| !c.is_alphabetic());
+    // Issue #1176: unspaced Chinese glues the unit to the sentence on one side
+    // ("26.2英里是多少公里？"), so a CJK unit also counts when a digit precedes
+    // it or a non-letter follows it; "天气" and "弗拉克斯" still fail both.
+    let cjk = crate::coding::contains_cjk(unit);
     let mut search_from = 0;
     while let Some(offset) = normalized[search_from..].find(unit) {
         let start = search_from + offset;
         let end = start + unit.len();
         let before = normalized[..start].chars().next_back();
         let after = normalized[end..].chars().next();
-        if boundary_ok(before) && boundary_ok(after) {
+        let cjk_edge = cjk
+            && (before.is_some_and(|c| c.is_ascii_digit())
+                || after.is_some_and(|c| !c.is_alphabetic()));
+        if (boundary_ok(before) && boundary_ok(after)) || cjk_edge {
             return true;
         }
         // Advance past this occurrence. `end` is always a char boundary (the

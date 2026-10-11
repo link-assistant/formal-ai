@@ -117,7 +117,7 @@ fn native_search_executes_both_published_component_boundaries() {
         live.component_boundaries,
         ["web-capture:search", "web-search:merger"]
     );
-    assert!(live.component_diagnostics.is_empty());
+    assert_eq!(live.component_diagnostics, [] as [std::string::String; 0]);
 
     let offline = CachedSourceClient::new(&cache, transport);
     let replay = execute_duckduckgo_search(&offline, "formal ai")
@@ -210,6 +210,7 @@ fn published_web_search_merger_remains_available_without_the_server_feature() {
 }
 
 #[test]
+#[allow(clippy::literal_string_with_formatting_args)]
 fn desktop_budget_bounds_the_published_component_cold_build() {
     let workflow = fs::read_to_string(format!(
         "{}/../.github/workflows/desktop-release.yml",
@@ -223,7 +224,7 @@ fn desktop_budget_bounds_the_published_component_cold_build() {
     // unchanged, so it is asserted against the values rather than against one
     // expression's spelling: the job is bounded by its matrix cap, every packaged
     // target carries one, and the three legs that pay for the published crates'
-    // unconditional graph carry strictly more headroom than the rest.
+    // unconditional graph now compile in the bound native stage before packaging.
     assert!(
         workflow.contains("    timeout-minutes: ${{ matrix.capmin }}\n"),
         "the desktop build job must stay bounded by a cap it declares"
@@ -231,7 +232,16 @@ fn desktop_budget_bounds_the_published_component_cold_build() {
 
     let mut heavy = Vec::new();
     let mut light = Vec::new();
-    for entry in workflow.lines().filter(|line| line.contains("capmin:")) {
+    for entry in workflow
+        .split("  build:\n")
+        .nth(1)
+        .expect("desktop build job")
+        .split("\n  cli:\n")
+        .next()
+        .expect("desktop job boundary")
+        .lines()
+        .filter(|line| line.contains("capmin:"))
+    {
         let label = entry
             .split("label: \"")
             .nth(1)
@@ -256,12 +266,75 @@ fn desktop_budget_bounds_the_published_component_cold_build() {
         "macOS x64 and both Windows targets must each declare a cap"
     );
     assert!(!light.is_empty(), "the remaining targets must declare caps");
-    let smallest_heavy = heavy.iter().map(|(_, cap)| *cap).min().expect("heavy caps");
-    let largest_light = light.iter().map(|(_, cap)| *cap).max().expect("light caps");
+    // Cold compilation moved to the independently bound native producer;
+    // equal package clocks may not drop that compilation or its startup checks.
     assert!(
-        smallest_heavy > largest_light,
-        "macOS x64 and both Windows targets need bounded headroom for the published crates' \
-         unconditional graph, but the caps are {heavy:?} against {light:?}"
+        heavy
+            .iter()
+            .chain(&light)
+            .all(|(_, cap)| (1..=30).contains(cap))
+    );
+    let native = workflow
+        .split("  native:\n")
+        .nth(1)
+        .expect("independent native producer")
+        .split("\n  build:\n")
+        .next()
+        .expect("native job boundary");
+    assert!(native.contains("    timeout-minutes: 30\n"));
+    assert!(native.contains("toolchain: ${{ needs.native-source.outputs.toolchain }}"));
+    let compile = native.find("cargo build --manifest-path rust/Cargo.toml --target-dir target --release --bin formal-ai --locked --target").unwrap();
+    let receipt = native
+        .find("Record exact native executable receipt")
+        .unwrap();
+    let verify = native
+        .find("Verify executable bytes and actual startup")
+        .unwrap();
+    let upload = native
+        .find("name: native-release-${{ matrix.target }}")
+        .unwrap();
+    assert!(compile < receipt && receipt < verify && verify < upload);
+    assert_eq!(native.matches("cargo build ").count(), 1);
+
+    let package = workflow
+        .split("  build:\n")
+        .nth(1)
+        .expect("desktop package job")
+        .split("\n  cli:\n")
+        .next()
+        .expect("desktop package boundary");
+    assert!(package.contains("needs: [resolve, native-source, native]"));
+    assert!(
+        package.contains("NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}")
+    );
+    assert!(
+        package.contains(
+            "NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}"
+        )
+    );
+    let import = package
+        .find("Import and verify exact source selection")
+        .unwrap();
+    let download = package
+        .find("Download the same-run target executable")
+        .unwrap();
+    let verify = package
+        .find("Verify native receipt, bytes and startup before packaging")
+        .unwrap();
+    let prepare = package
+        .find("Prepare desktop resources (web + bundled binary + version sync)")
+        .unwrap();
+    assert!(import < download && download < verify && verify < prepare);
+    assert!(package.contains("name: native-release-${{ matrix.target }}"));
+    assert!(package.contains("FORMAL_AI_DESKTOP_REQUIRE_BINARY: \"true\""));
+    assert!(
+        package.contains("FORMAL_AI_DESKTOP_BINARY: ${{ env.FORMAL_AI_VERIFIED_NATIVE_BINARY }}")
+    );
+    assert!(
+        !package
+            .lines()
+            .filter(|line| !line.trim_start().starts_with('#'))
+            .any(|line| line.contains("cargo build "))
     );
 }
 

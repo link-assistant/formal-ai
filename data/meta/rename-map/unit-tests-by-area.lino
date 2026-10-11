@@ -1,0 +1,627 @@
+rename-map
+
+  tree unit-tests-by-area
+    rename
+      from "rust/tests/unit/agentic_backend_actions.rs"
+      to "rust/tests/unit/agentic-coding/agentic_backend_actions.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 21"
+    rename
+      from "rust/tests/unit/agentic_coding.rs"
+      to "rust/tests/unit/agentic-coding/agentic_coding.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 12"
+    rename
+      from "rust/tests/unit/agentic_general_planner.rs"
+      to "rust/tests/unit/agentic-coding/agentic_general_planner.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 21"
+    rename
+      from "rust/tests/unit/agentic_surfaces.rs"
+      to "rust/tests/unit/agentic-coding/agentic_surfaces.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 12"
+    rename
+      from "rust/tests/unit/budget_search.rs"
+      to "rust/tests/unit/solver/budget_search.rs"
+      reason "imported module family and documentation evidence: solver; score 5"
+    rename
+      from "rust/tests/unit/capability_first_tool_routing.rs"
+      to "rust/tests/unit/agentic-coding/capability_first_tool_routing.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 11"
+    rename
+      from "rust/tests/unit/codex_patch_writes.rs"
+      to "rust/tests/unit/agentic-coding/codex_patch_writes.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 20"
+    rename
+      from "rust/tests/unit/file_creation_writes.rs"
+      to "rust/tests/unit/agentic-coding/file_creation_writes.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 20"
+    rename
+      from "rust/tests/unit/file_read_tool_calls.rs"
+      to "rust/tests/unit/agentic-coding/file_read_tool_calls.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/issue_1021_recoverable_memory.rs"
+      to "rust/tests/unit/memory/issue_1021_recoverable_memory.rs"
+      reason "imported module family and documentation evidence: memory; score 11"
+    rename
+      from "rust/tests/unit/issue_1021_verified_move.rs"
+      to "rust/tests/unit/agentic-coding/issue_1021_verified_move.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 20"
+    rename
+      from "rust/tests/unit/issue_1069_ladder_change_tasks.rs"
+      to "rust/tests/unit/agentic-coding/issue_1069_ladder_change_tasks.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 11"
+    rename
+      from "rust/tests/unit/issue_1069_structural_edit.rs"
+      to "rust/tests/unit/agentic-coding/issue_1069_structural_edit.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/issue_1085_link_edit_rules.rs"
+      to "rust/tests/unit/agentic-coding/issue_1085_link_edit_rules.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 30"
+    rename
+      from "rust/tests/unit/issue_1085_requirement_resolution.rs"
+      to "rust/tests/unit/agentic-coding/issue_1085_requirement_resolution.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 20"
+    rename
+      from "rust/tests/unit/issue_1085_rule_interpreter.rs"
+      to "rust/tests/unit/seed/issue_1085_rule_interpreter.rs"
+      reason "imported module family and documentation evidence: seed; score 21"
+    rename
+      from "rust/tests/unit/issue_1085_seed_links.rs"
+      to "rust/tests/unit/seed/issue_1085_seed_links.rs"
+      reason "imported module family and documentation evidence: seed; score 31"
+    rename
+      from "rust/tests/unit/issue_1096_edit_is_not_generation.rs"
+      to "rust/tests/unit/agentic-coding/issue_1096_edit_is_not_generation.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 20"
+    rename
+      from "rust/tests/unit/issue_1099_multiple_obligations.rs"
+      to "rust/tests/unit/agentic-coding/issue_1099_multiple_obligations.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 30"
+    rename
+      from "rust/tests/unit/issue_1110_portable_rewrite.rs"
+      to "rust/tests/unit/protocol/issue_1110_portable_rewrite.rs"
+      reason "imported module family and documentation evidence: protocol; score 20"
+    rename
+      from "rust/tests/unit/issue_1131_member_insertion_guard.rs"
+      to "rust/tests/unit/agentic-coding/issue_1131_member_insertion_guard.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/issue_1133_browser_is_not_a_fetch_tool.rs"
+      to "rust/tests/unit/agentic-coding/issue_1133_browser_is_not_a_fetch_tool.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/issue_1136_mcp_search_precedence.rs"
+      to "rust/tests/unit/agentic-coding/issue_1136_mcp_search_precedence.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/issue_1138_agent_cli_ladder_recall.rs"
+      to "rust/tests/unit/protocol/issue_1138_agent_cli_ladder_recall.rs"
+      reason "imported module family and documentation evidence: protocol; score 76"
+    rename
+      from "rust/tests/unit/issue_1138_capability_routing.rs"
+      to "rust/tests/unit/capability-routing/issue_1138_capability_routing.rs"
+      reason "imported module family and documentation evidence: capability-routing; score 12"
+    rename
+      from "rust/tests/unit/issue_1138_command_allowlist.rs"
+      to "rust/tests/unit/repository-workspace/issue_1138_command_allowlist.rs"
+      reason "imported module family and documentation evidence: repository-workspace; score 21"
+    rename
+      from "rust/tests/unit/issue_1138_dogfood_translation.rs"
+      to "rust/tests/unit/seed/issue_1138_dogfood_translation.rs"
+      reason "imported module family and documentation evidence: seed; score 20"
+    rename
+      from "rust/tests/unit/issue_1138_frontier_classes.rs"
+      to "rust/tests/unit/capability-routing/issue_1138_frontier_classes.rs"
+      reason "imported module family and documentation evidence: capability-routing; score 12"
+    rename
+      from "rust/tests/unit/issue_1138_install_scope.rs"
+      to "rust/tests/unit/prerequisite/issue_1138_install_scope.rs"
+      reason "imported module family and documentation evidence: prerequisite; score 40"
+    rename
+      from "rust/tests/unit/issue_1138_intent_phrase_migration.rs"
+      to "rust/tests/unit/seed/issue_1138_intent_phrase_migration.rs"
+      reason "imported module family and documentation evidence: seed; score 30"
+    rename
+      from "rust/tests/unit/issue_1138_locate_targets.rs"
+      to "rust/tests/unit/repository-workspace/issue_1138_locate_targets.rs"
+      reason "imported module family and documentation evidence: repository-workspace; score 20"
+    rename
+      from "rust/tests/unit/issue_1138_membership_taxonomy.rs"
+      to "rust/tests/unit/seed/issue_1138_membership_taxonomy.rs"
+      reason "imported module family and documentation evidence: seed; score 11"
+    rename
+      from "rust/tests/unit/issue_1138_named_tests.rs"
+      to "rust/tests/unit/repository-workspace/issue_1138_named_tests.rs"
+      reason "imported module family and documentation evidence: repository-workspace; score 30"
+    rename
+      from "rust/tests/unit/issue_1138_object_type.rs"
+      to "rust/tests/unit/capability-routing/issue_1138_object_type.rs"
+      reason "imported module family and documentation evidence: capability-routing; score 10"
+    rename
+      from "rust/tests/unit/issue_1138_planner_precedence.rs"
+      to "rust/tests/unit/seed/issue_1138_planner_precedence.rs"
+      reason "imported module family and documentation evidence: seed; score 21"
+    rename
+      from "rust/tests/unit/issue_1138_prerequisite_need.rs"
+      to "rust/tests/unit/prerequisite/issue_1138_prerequisite_need.rs"
+      reason "imported module family and documentation evidence: prerequisite; score 21"
+    rename
+      from "rust/tests/unit/issue_1138_repository_workspace.rs"
+      to "rust/tests/unit/repository-workspace/issue_1138_repository_workspace.rs"
+      reason "imported module family and documentation evidence: repository-workspace; score 32"
+    rename
+      from "rust/tests/unit/issue_1138_repository_world_model.rs"
+      to "rust/tests/unit/repository-workspace/issue_1138_repository_world_model.rs"
+      reason "imported module family and documentation evidence: repository-workspace; score 11"
+    rename
+      from "rust/tests/unit/issue_1138_self_use_concept_lookup.rs"
+      to "rust/tests/unit/solver/issue_1138_self_use_concept_lookup.rs"
+      reason "imported module family and documentation evidence: solver; score 10"
+    rename
+      from "rust/tests/unit/issue_1138_self_use_intent_routing.rs"
+      to "rust/tests/unit/capability-routing/issue_1138_self_use_intent_routing.rs"
+      reason "imported module family and documentation evidence: capability-routing; score 12"
+    rename
+      from "rust/tests/unit/issue_1138_self_use_repository_workspace.rs"
+      to "rust/tests/unit/solver/issue_1138_self_use_repository_workspace.rs"
+      reason "imported module family and documentation evidence: solver; score 10"
+    rename
+      from "rust/tests/unit/issue_1138_self_use_toolchain.rs"
+      to "rust/tests/unit/solver/issue_1138_self_use_toolchain.rs"
+      reason "imported module family and documentation evidence: solver; score 10"
+    rename
+      from "rust/tests/unit/issue_1138_self_use_verifiable_task.rs"
+      to "rust/tests/unit/solver/issue_1138_self_use_verifiable_task.rs"
+      reason "imported module family and documentation evidence: solver; score 10"
+    rename
+      from "rust/tests/unit/issue_1138_setup_publisher.rs"
+      to "rust/tests/unit/prerequisite/issue_1138_setup_publisher.rs"
+      reason "imported module family and documentation evidence: prerequisite; score 70"
+    rename
+      from "rust/tests/unit/issue_1138_toolchain_ledger.rs"
+      to "rust/tests/unit/prerequisite/issue_1138_toolchain_ledger.rs"
+      reason "imported module family and documentation evidence: prerequisite; score 30"
+    rename
+      from "rust/tests/unit/issue_1138_toolchain_probe.rs"
+      to "rust/tests/unit/prerequisite/issue_1138_toolchain_probe.rs"
+      reason "imported module family and documentation evidence: prerequisite; score 10"
+    rename
+      from "rust/tests/unit/issue_1138_translate_agent_tool.rs"
+      to "rust/tests/unit/agentic-coding/issue_1138_translate_agent_tool.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/issue_1154_progress_arguments.rs"
+      to "rust/tests/unit/agentic-coding/issue_1154_progress_arguments.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 30"
+    rename
+      from "rust/tests/unit/issue_1155_read_validation.rs"
+      to "rust/tests/unit/agentic-coding/issue_1155_read_validation.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/issue_1161_client_registry_environment.rs"
+      to "rust/tests/unit/seed/issue_1161_client_registry_environment.rs"
+      reason "imported module family and documentation evidence: seed; score 11"
+    rename
+      from "rust/tests/unit/issue_1167_grammar_coverage.rs"
+      to "rust/tests/unit/seed/issue_1167_grammar_coverage.rs"
+      reason "imported module family and documentation evidence: seed; score 11"
+    rename
+      from "rust/tests/unit/issue_1172_fact_derivation.rs"
+      to "rust/tests/unit/seed/issue_1172_fact_derivation.rs"
+      reason "imported module family and documentation evidence: seed; score 11"
+    rename
+      from "rust/tests/unit/issue_1172_factual_qa_gate.rs"
+      to "rust/tests/unit/web-engine-core/issue_1172_factual_qa_gate.rs"
+      reason "imported module family and documentation evidence: web-engine-core; score 11"
+    rename
+      from "rust/tests/unit/issue_1172_factual_qa_subject_match.rs"
+      to "rust/tests/unit/web-engine-core/issue_1172_factual_qa_subject_match.rs"
+      reason "imported module family and documentation evidence: web-engine-core; score 13"
+    rename
+      from "rust/tests/unit/issue_1172_live_fact_answer.rs"
+      to "rust/tests/unit/seed/issue_1172_live_fact_answer.rs"
+      reason "imported module family and documentation evidence: seed; score 21"
+    rename
+      from "rust/tests/unit/issue_1173_local_requests_route.rs"
+      to "rust/tests/unit/solver/issue_1173_local_requests_route.rs"
+      reason "imported module family and documentation evidence: solver; score 4"
+    rename
+      from "rust/tests/unit/issue_1173_route2_probes.rs"
+      to "rust/tests/unit/capability-routing/issue_1173_route2_probes.rs"
+      reason "imported module family and documentation evidence: capability-routing; score 21"
+    rename
+      from "rust/tests/unit/issue_1173_route3_probes.rs"
+      to "rust/tests/unit/seed/issue_1173_route3_probes.rs"
+      reason "imported module family and documentation evidence: seed; score 11"
+    rename
+      from "rust/tests/unit/issue_1173_route3_recurrence.rs"
+      to "rust/tests/unit/solver/issue_1173_route3_recurrence.rs"
+      reason "imported module family and documentation evidence: solver; score 4"
+    rename
+      from "rust/tests/unit/issue_1174_text_transform.rs"
+      to "rust/tests/unit/web-engine-core/issue_1174_text_transform.rs"
+      reason "imported module family and documentation evidence: web-engine-core; score 11"
+    rename
+      from "rust/tests/unit/issue_1175_claim_routing.rs"
+      to "rust/tests/unit/capability-routing/issue_1175_claim_routing.rs"
+      reason "imported module family and documentation evidence: capability-routing; score 12"
+    rename
+      from "rust/tests/unit/issue_1175_claim_routing_operands.rs"
+      to "rust/tests/unit/capability-routing/issue_1175_claim_routing_operands.rs"
+      reason "imported module family and documentation evidence: capability-routing; score 12"
+    rename
+      from "rust/tests/unit/issue_1175_phrase_vocabulary.rs"
+      to "rust/tests/unit/seed/issue_1175_phrase_vocabulary.rs"
+      reason "imported module family and documentation evidence: seed; score 21"
+    rename
+      from "rust/tests/unit/issue_1175_routing_probes.rs"
+      to "rust/tests/unit/solver/issue_1175_routing_probes.rs"
+      reason "imported module family and documentation evidence: solver; score 5"
+    rename
+      from "rust/tests/unit/issue_1177_code_task_handlers.rs"
+      to "rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs"
+      reason "imported module family and documentation evidence: web-engine-core; score 13"
+    rename
+      from "rust/tests/unit/issue_1177_requirement_closure.rs"
+      to "rust/tests/unit/web-engine-core/issue_1177_requirement_closure.rs"
+      reason "imported module family and documentation evidence: web-engine-core; score 11"
+    rename
+      from "rust/tests/unit/issue_1178_creative_composition.rs"
+      to "rust/tests/unit/web-engine-core/issue_1178_creative_composition.rs"
+      reason "imported module family and documentation evidence: web-engine-core; score 11"
+    rename
+      from "rust/tests/unit/issue_1180_history_context.rs"
+      to "rust/tests/unit/memory/issue_1180_history_context.rs"
+      reason "imported module family and documentation evidence: memory; score 31"
+    rename
+      from "rust/tests/unit/issue_1185_error_repair_loop.rs"
+      to "rust/tests/unit/agentic-coding/issue_1185_error_repair_loop.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 32"
+    rename
+      from "rust/tests/unit/issue_1185_repair_apply.rs"
+      to "rust/tests/unit/agentic-coding/issue_1185_repair_apply.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 30"
+    rename
+      from "rust/tests/unit/issue_1186_formalization_probe_set.rs"
+      to "rust/tests/unit/web-engine-core/issue_1186_formalization_probe_set.rs"
+      reason "imported module family and documentation evidence: web-engine-core; score 11"
+    rename
+      from "rust/tests/unit/issue_1186_formalization_task.rs"
+      to "rust/tests/unit/web-engine-core/issue_1186_formalization_task.rs"
+      reason "imported module family and documentation evidence: web-engine-core; score 12"
+    rename
+      from "rust/tests/unit/issue_1186_prover_step.rs"
+      to "rust/tests/unit/solver/issue_1186_prover_step.rs"
+      reason "imported module family and documentation evidence: solver; score 20"
+    rename
+      from "rust/tests/unit/issue_1186_rml_export.rs"
+      to "rust/tests/unit/solver/issue_1186_rml_export.rs"
+      reason "imported module family and documentation evidence: solver; score 14"
+    rename
+      from "rust/tests/unit/issue_447_dialog_politeness.rs"
+      to "rust/tests/unit/seed/issue_447_dialog_politeness.rs"
+      reason "imported module family and documentation evidence: seed; score 11"
+    rename
+      from "rust/tests/unit/issue_498_google_trends_catalog.rs"
+      to "rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 30"
+    rename
+      from "rust/tests/unit/issue_498_google_trends_learning.rs"
+      to "rust/tests/unit/agentic-coding/issue_498_google_trends_learning.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 50"
+    rename
+      from "rust/tests/unit/issue_527_question_catalog.rs"
+      to "rust/tests/unit/agentic-coding/issue_527_question_catalog.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 101"
+    rename
+      from "rust/tests/unit/issue_531_pattern_inference.rs"
+      to "rust/tests/unit/solver/issue_531_pattern_inference.rs"
+      reason "imported module family and documentation evidence: solver; score 7"
+    rename
+      from "rust/tests/unit/issue_538_agentic.rs"
+      to "rust/tests/unit/agentic-coding/issue_538_agentic.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 11"
+    rename
+      from "rust/tests/unit/issue_540_agent_cli.rs"
+      to "rust/tests/unit/agentic-coding/issue_540_agent_cli.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/issue_558_change_request.rs"
+      to "rust/tests/unit/agentic-coding/issue_558_change_request.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 101"
+    rename
+      from "rust/tests/unit/issue_558_learning_ledger.rs"
+      to "rust/tests/unit/agentic-coding/issue_558_learning_ledger.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 60"
+    rename
+      from "rust/tests/unit/issue_558_rebuild_plan.rs"
+      to "rust/tests/unit/agentic-coding/issue_558_rebuild_plan.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 121"
+    rename
+      from "rust/tests/unit/issue_558_repair_strategy.rs"
+      to "rust/tests/unit/agentic-coding/issue_558_repair_strategy.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 101"
+    rename
+      from "rust/tests/unit/issue_558_self_explanation.rs"
+      to "rust/tests/unit/agentic-coding/issue_558_self_explanation.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 81"
+    rename
+      from "rust/tests/unit/issue_558_self_healing.rs"
+      to "rust/tests/unit/agentic-coding/issue_558_self_healing.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 11"
+    rename
+      from "rust/tests/unit/issue_558_source_links.rs"
+      to "rust/tests/unit/agentic-coding/issue_558_source_links.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 41"
+    rename
+      from "rust/tests/unit/issue_657_self_hosting_learning.rs"
+      to "rust/tests/unit/agentic-coding/issue_657_self_hosting_learning.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 30"
+    rename
+      from "rust/tests/unit/issue_659_hardcoded_language_learning.rs"
+      to "rust/tests/unit/agentic-coding/issue_659_hardcoded_language_learning.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 30"
+    rename
+      from "rust/tests/unit/issue_660_lexeme_import_learning.rs"
+      to "rust/tests/unit/agentic-coding/issue_660_lexeme_import_learning.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 30"
+    rename
+      from "rust/tests/unit/issue_661_agentic_statement_audit.rs"
+      to "rust/tests/unit/agentic-coding/issue_661_agentic_statement_audit.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 11"
+    rename
+      from "rust/tests/unit/issue_663_handler_precedence_learning.rs"
+      to "rust/tests/unit/agentic-coding/issue_663_handler_precedence_learning.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 20"
+    rename
+      from "rust/tests/unit/issue_671_planner_tool_alias.rs"
+      to "rust/tests/unit/protocol/issue_671_planner_tool_alias.rs"
+      reason "imported module family and documentation evidence: protocol; score 11"
+    rename
+      from "rust/tests/unit/issue_676_naming.rs"
+      to "rust/tests/unit/solver/issue_676_naming.rs"
+      reason "imported module family and documentation evidence: solver; score 4"
+    rename
+      from "rust/tests/unit/issue_686_agent_cli.rs"
+      to "rust/tests/unit/agentic-coding/issue_686_agent_cli.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/issue_686_associative_persistence.rs"
+      to "rust/tests/unit/memory/issue_686_associative_persistence.rs"
+      reason "imported module family and documentation evidence: memory; score 24"
+    rename
+      from "rust/tests/unit/issue_698_external_benchmark_learning.rs"
+      to "rust/tests/unit/agentic-coding/issue_698_external_benchmark_learning.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 20"
+    rename
+      from "rust/tests/unit/issue_699_handler_migration.rs"
+      to "rust/tests/unit/seed/issue_699_handler_migration.rs"
+      reason "imported module family and documentation evidence: seed; score 21"
+    rename
+      from "rust/tests/unit/issue_708_memory_program.rs"
+      to "rust/tests/unit/memory/issue_708_memory_program.rs"
+      reason "imported module family and documentation evidence: memory; score 11"
+    rename
+      from "rust/tests/unit/issue_708_memory_program_contract.rs"
+      to "rust/tests/unit/memory/issue_708_memory_program_contract.rs"
+      reason "imported module family and documentation evidence: memory; score 11"
+    rename
+      from "rust/tests/unit/issue_708_memory_program_execution.rs"
+      to "rust/tests/unit/memory/issue_708_memory_program_execution.rs"
+      reason "imported module family and documentation evidence: memory; score 21"
+    rename
+      from "rust/tests/unit/issue_708_memory_query_language_execution.rs"
+      to "rust/tests/unit/memory/issue_708_memory_query_language_execution.rs"
+      reason "imported module family and documentation evidence: memory; score 51"
+    rename
+      from "rust/tests/unit/issue_708_memory_query_languages.rs"
+      to "rust/tests/unit/memory/issue_708_memory_query_languages.rs"
+      reason "imported module family and documentation evidence: memory; score 41"
+    rename
+      from "rust/tests/unit/issue_712_routing_learning.rs"
+      to "rust/tests/unit/agentic-coding/issue_712_routing_learning.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/issue_714_agentic_mode.rs"
+      to "rust/tests/unit/memory/issue_714_agentic_mode.rs"
+      reason "imported module family and documentation evidence: memory; score 20"
+    rename
+      from "rust/tests/unit/issue_715_code_rewrite_learning.rs"
+      to "rust/tests/unit/agentic-coding/issue_715_code_rewrite_learning.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/issue_715_memory_link_query.rs"
+      to "rust/tests/unit/memory/issue_715_memory_link_query.rs"
+      reason "imported module family and documentation evidence: memory; score 11"
+    rename
+      from "rust/tests/unit/issue_716_agentic_execution.rs"
+      to "rust/tests/unit/agentic-coding/issue_716_agentic_execution.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 11"
+    rename
+      from "rust/tests/unit/issue_716_execution_learning.rs"
+      to "rust/tests/unit/agentic-coding/issue_716_execution_learning.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/issue_724_response_language_binding.rs"
+      to "rust/tests/unit/seed/issue_724_response_language_binding.rs"
+      reason "imported module family and documentation evidence: seed; score 21"
+    rename
+      from "rust/tests/unit/issue_749_shell_routing.rs"
+      to "rust/tests/unit/agentic-coding/issue_749_shell_routing.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 30"
+    rename
+      from "rust/tests/unit/issue_819_narration.rs"
+      to "rust/tests/unit/protocol/issue_819_narration.rs"
+      reason "imported module family and documentation evidence: protocol; score 12"
+    rename
+      from "rust/tests/unit/issue_840_route_ladder.rs"
+      to "rust/tests/unit/solver/issue_840_route_ladder.rs"
+      reason "imported module family and documentation evidence: solver; score 11"
+    rename
+      from "rust/tests/unit/issue_847_task_decomposition.rs"
+      to "rust/tests/unit/solver/issue_847_task_decomposition.rs"
+      reason "imported module family and documentation evidence: solver; score 10"
+    rename
+      from "rust/tests/unit/issue_848_coding_ladder.rs"
+      to "rust/tests/unit/agentic-coding/issue_848_coding_ladder.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 31"
+    rename
+      from "rust/tests/unit/issue_869_meeting_scheduling.rs"
+      to "rust/tests/unit/solver/issue_869_meeting_scheduling.rs"
+      reason "imported module family and documentation evidence: solver; score 5"
+    rename
+      from "rust/tests/unit/issue_870_routing.rs"
+      to "rust/tests/unit/agentic-coding/issue_870_routing.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/issue_918_browser_twins.rs"
+      to "rust/tests/unit/memory/issue_918_browser_twins.rs"
+      reason "imported module family and documentation evidence: memory; score 21"
+    rename
+      from "rust/tests/unit/issue_938_meta_algorithm_builder.rs"
+      to "rust/tests/unit/solver/issue_938_meta_algorithm_builder.rs"
+      reason "imported module family and documentation evidence: solver; score 4"
+    rename
+      from "rust/tests/unit/issue_996_markdown.rs"
+      to "rust/tests/unit/agentic-coding/issue_996_markdown.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 20"
+    rename
+      from "rust/tests/unit/location_and_edit_routing.rs"
+      to "rust/tests/unit/agentic-coding/location_and_edit_routing.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 20"
+    rename
+      from "rust/tests/unit/meta_reasoner.rs"
+      to "rust/tests/unit/memory/meta_reasoner.rs"
+      reason "imported module family and documentation evidence: memory; score 60"
+    rename
+      from "rust/tests/unit/overrides.rs"
+      to "rust/tests/unit/seed/overrides.rs"
+      reason "imported module family and documentation evidence: seed; score 10"
+    rename
+      from "rust/tests/unit/playwright_script.rs"
+      to "rust/tests/unit/solver/playwright_script.rs"
+      reason "imported module family and documentation evidence: solver; score 4"
+    rename
+      from "rust/tests/unit/proactive_failure_reports.rs"
+      to "rust/tests/unit/agentic-coding/proactive_failure_reports.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 11"
+    rename
+      from "rust/tests/unit/pull_request_1188_addition_guard.rs"
+      to "rust/tests/unit/agentic-coding/pull_request_1188_addition_guard.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/pull_request_1188_cifix.rs"
+      to "rust/tests/unit/agentic-coding/pull_request_1188_cifix.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/pull_request_1188_cifix2.rs"
+      to "rust/tests/unit/agentic-coding/pull_request_1188_cifix2.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/pull_request_1188_destructive_edit.rs"
+      to "rust/tests/unit/seed/pull_request_1188_destructive_edit.rs"
+      reason "imported module family and documentation evidence: seed; score 11"
+    rename
+      from "rust/tests/unit/pull_request_1188_dialogue_utterance.rs"
+      to "rust/tests/unit/seed/pull_request_1188_dialogue_utterance.rs"
+      reason "imported module family and documentation evidence: seed; score 20"
+    rename
+      from "rust/tests/unit/pull_request_1188_edit_composer_gaps.rs"
+      to "rust/tests/unit/agentic-coding/pull_request_1188_edit_composer_gaps.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 20"
+    rename
+      from "rust/tests/unit/pull_request_1188_module_function.rs"
+      to "rust/tests/unit/agentic-coding/pull_request_1188_module_function.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 21"
+    rename
+      from "rust/tests/unit/pull_request_1188_quoted_path_payload.rs"
+      to "rust/tests/unit/agentic-coding/pull_request_1188_quoted_path_payload.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 20"
+    rename
+      from "rust/tests/unit/pull_request_1188_requirement_extraction.rs"
+      to "rust/tests/unit/agentic-coding/pull_request_1188_requirement_extraction.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/pull_request_1188_subagent_folder.rs"
+      to "rust/tests/unit/agentic-coding/pull_request_1188_subagent_folder.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 11"
+    rename
+      from "rust/tests/unit/recipe_evidence.rs"
+      to "rust/tests/unit/agentic-coding/recipe_evidence.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 10"
+    rename
+      from "rust/tests/unit/reference_closure.rs"
+      to "rust/tests/unit/seed/reference_closure.rs"
+      reason "imported module family and documentation evidence: seed; score 10"
+    rename
+      from "rust/tests/unit/report_context_collection.rs"
+      to "rust/tests/unit/agentic-coding/report_context_collection.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 31"
+    rename
+      from "rust/tests/unit/repository_extraction_routing.rs"
+      to "rust/tests/unit/capability-routing/repository_extraction_routing.rs"
+      reason "imported module family and documentation evidence: capability-routing; score 2"
+    rename
+      from "rust/tests/unit/self_coding.rs"
+      to "rust/tests/unit/agentic-coding/self_coding.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 11"
+    rename
+      from "rust/tests/unit/semantic_facets.rs"
+      to "rust/tests/unit/seed/semantic_facets.rs"
+      reason "imported module family and documentation evidence: seed; score 10"
+    rename
+      from "rust/tests/unit/semantic_grounding.rs"
+      to "rust/tests/unit/seed/semantic_grounding.rs"
+      reason "imported module family and documentation evidence: seed; score 10"
+    rename
+      from "rust/tests/unit/semantic_root.rs"
+      to "rust/tests/unit/seed/semantic_root.rs"
+      reason "imported module family and documentation evidence: seed; score 10"
+    rename
+      from "rust/tests/unit/sequences_compression.rs"
+      to "rust/tests/unit/sequences/sequences_compression.rs"
+      reason "imported module family and documentation evidence: sequences; score 11"
+    rename
+      from "rust/tests/unit/sequences_converter.rs"
+      to "rust/tests/unit/sequences/sequences_converter.rs"
+      reason "imported module family and documentation evidence: sequences; score 11"
+    rename
+      from "rust/tests/unit/sequences_grid_2d.rs"
+      to "rust/tests/unit/sequences/sequences_grid_2d.rs"
+      reason "imported module family and documentation evidence: sequences; score 11"
+    rename
+      from "rust/tests/unit/sequences_inference.rs"
+      to "rust/tests/unit/sequences/sequences_inference.rs"
+      reason "imported module family and documentation evidence: sequences; score 11"
+    rename
+      from "rust/tests/unit/sequences_patterns_1d.rs"
+      to "rust/tests/unit/sequences/sequences_patterns_1d.rs"
+      reason "imported module family and documentation evidence: sequences; score 21"
+    rename
+      from "rust/tests/unit/sequences_store.rs"
+      to "rust/tests/unit/sequences/sequences_store.rs"
+      reason "imported module family and documentation evidence: sequences; score 21"
+    rename
+      from "rust/tests/unit/sequences_symbols.rs"
+      to "rust/tests/unit/sequences/sequences_symbols.rs"
+      reason "imported module family and documentation evidence: sequences; score 11"
+    rename
+      from "rust/tests/unit/system_diagrams.rs"
+      to "rust/tests/unit/agentic-coding/system_diagrams.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 22"
+    rename
+      from "rust/tests/unit/tool_result_presentation.rs"
+      to "rust/tests/unit/protocol/tool_result_presentation.rs"
+      reason "imported module family and documentation evidence: protocol; score 14"
+    rename
+      from "rust/tests/unit/weighted_statement_formalization.rs"
+      to "rust/tests/unit/solver/weighted_statement_formalization.rs"
+      reason "imported module family and documentation evidence: solver; score 6"
+    rename
+      from "rust/tests/unit/word_surface_grammar.rs"
+      to "rust/tests/unit/seed/word_surface_grammar.rs"
+      reason "imported module family and documentation evidence: seed; score 11"
+    rename
+      from "rust/tests/unit/work_item_planning.rs"
+      to "rust/tests/unit/agentic-coding/work_item_planning.rs"
+      reason "imported module family and documentation evidence: agentic-coding; score 121"

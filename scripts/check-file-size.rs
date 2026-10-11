@@ -1,5 +1,6 @@
 #!/usr/bin/env rust-script
-//! Check Rust files for maximum and warning line-count thresholds
+//! Check maintained files (Rust at 1000 lines, every other authored text
+//! format at 1500) for maximum and warning line-count thresholds
 //! Exits with error code 1 if any files exceed the hard limit
 //!
 //! Usage: rust-script scripts/check-file-size.rs
@@ -12,6 +13,7 @@
 //! walkdir = "2"
 //! ```
 
+use std::collections::BTreeSet;
 use std::fs;
 use std::path::Path;
 #[cfg(not(test))]
@@ -52,11 +54,39 @@ const WORKER_JS_LIMIT: FileLimit = FileLimit {
 /// template's ceiling, so the debt is visible on every run and cannot grow.
 const WORKFLOW_YAML_LIMIT: FileLimit = FileLimit {
     extension: "yml",
-    max_lines: 2_000,
-    warn_lines: 1_500,
+    max_lines: 1_500,
+    warn_lines: 1_400,
     label: "GitHub Actions workflow",
 };
-const EXCLUDE_PATTERNS: &[&str] = &["target", ".git", "node_modules"];
+/// The maintainer's rule (2026-10-07): no maintained source, data or document
+/// file may be larger than 1500 lines, or it cannot be maintained. Every text
+/// format the repository authors is measured at that ceiling; Rust keeps its
+/// stricter 1000.
+const MAINTAINED_LIMIT: FileLimit = FileLimit {
+    extension: "*",
+    max_lines: 1_500,
+    warn_lines: 1_400,
+    label: "Maintained",
+};
+const MAINTAINED_EXTENSIONS: &[&str] = &[
+    "js", "mjs", "cjs", "jsx", "ts", "tsx", "css", "html", "md", "py", "sh", "json", "toml", "yml",
+    "yaml", "txt", "tsv", "csv",
+];
+/// Files nobody edits by hand are not maintained text: dependency lock files,
+/// verbatim captures of upstream sources (kept byte-for-byte as evidence, often
+/// checked by sha256), and minified build outputs.
+const UNMAINTAINED_FILE_NAMES: &[&str] = &["package-lock.json", "bun.lock", "yarn.lock"];
+const UNMAINTAINED_PATH_FRAGMENTS: &[&str] = &[
+    "docs/case-studies/",
+    // Verbatim upstream web-tree-sitter build and grammar (issue #1180 R11),
+    // sha256-pinned by js/vendor/tree-sitter/provenance.lino.
+    "js/vendor/tree-sitter/",
+    "rust/tests/fixtures/coding-discovery/python-docs/",
+    "rust/tests/fixtures/coding-discovery/captured/",
+    "rust/tests/fixtures/meta-reasoner/captures/",
+];
+const UNMAINTAINED_SUFFIXES: &[&str] = &[".bundle.js", ".min.js", ".min.css"];
+const EXCLUDE_PATTERNS: &[&str] = &["target", ".git", "node_modules", ".claude"];
 /// Issue #960 (R222-1): `data/cache/wikidata/` used to sit outside the gate, so
 /// the one hard number the maintainer gave for cached data — "each .lino file
 /// cannot be larger than 1500 lines" — was unenforced exactly where the
@@ -132,7 +162,29 @@ fn file_limit(path: &Path) -> Option<&'static FileLimit> {
 
     let ext = path.extension().and_then(|ext| ext.to_str())?;
 
-    FILE_LIMITS.iter().find(|limit| limit.extension == ext)
+    FILE_LIMITS
+        .iter()
+        .find(|limit| limit.extension == ext)
+        .or_else(|| is_maintained_text(path, ext).then_some(&MAINTAINED_LIMIT))
+}
+
+/// Whether a file is authored text the 1500-line rule applies to.
+fn is_maintained_text(path: &Path, ext: &str) -> bool {
+    let path_str = normalized_path(path);
+    let name = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("");
+    let data_cache_capture = path_str.contains("data/cache/") && ext == "json";
+    MAINTAINED_EXTENSIONS.contains(&ext)
+        && !data_cache_capture
+        && !UNMAINTAINED_FILE_NAMES.contains(&name)
+        && !UNMAINTAINED_SUFFIXES
+            .iter()
+            .any(|suffix| name.ends_with(suffix))
+        && !UNMAINTAINED_PATH_FRAGMENTS
+            .iter()
+            .any(|fragment| path_str.contains(fragment))
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -196,7 +248,16 @@ fn is_embedded_lino_data_line(line: &str) -> bool {
     declares_lino && (trimmed.contains("= [") || trimmed.contains("= `"))
 }
 
+#[cfg(test)]
 fn check_directory(cwd: &Path) -> CheckResult {
+    check_listed_files(cwd, None)
+}
+
+/// Measure the files under `cwd`, or only those in `listed` when it is given.
+/// A file git ignores can never be committed (a local session transcript, a
+/// sandbox), so inside a work tree the gate measures what a commit can carry,
+/// the same files CI's checkout holds.
+fn check_listed_files(cwd: &Path, listed: Option<&BTreeSet<String>>) -> CheckResult {
     let mut result = CheckResult {
         warnings: Vec::new(),
         violations: Vec::new(),
@@ -210,7 +271,9 @@ fn check_directory(cwd: &Path) -> CheckResult {
     {
         let path = entry.path();
 
-        if should_exclude(path) {
+        if should_exclude(path)
+            || listed.is_some_and(|listed| !listed.contains(&relative_path(path, cwd)))
+        {
             continue;
         }
 
@@ -314,6 +377,29 @@ fn growing_paths_from_numstat(numstat: &str) -> Vec<String> {
         .collect()
 }
 
+/// The files a commit can carry: tracked, or untracked and not ignored.
+/// `None` outside a git work tree, where every file is measured.
+#[cfg(not(test))]
+fn committable_paths() -> Option<BTreeSet<String>> {
+    let output = Command::new("git")
+        .args([
+            "ls-files",
+            "-z",
+            "--cached",
+            "--others",
+            "--exclude-standard",
+        ])
+        .output()
+        .ok()?;
+    output.status.success().then(|| {
+        String::from_utf8_lossy(&output.stdout)
+            .split('\0')
+            .filter(|path| !path.is_empty())
+            .map(str::to_owned)
+            .collect()
+    })
+}
+
 #[cfg(not(test))]
 fn growing_paths_since(base: &str) -> Option<Vec<String>> {
     if base.is_empty() || base.chars().all(|character| character == '0') {
@@ -398,11 +484,11 @@ fn print_embedded_data_violations(violations: &[EmbeddedDataFinding]) {
 #[cfg(not(test))]
 fn main() {
     println!(
-        "\nChecking configured file line limits for Rust, Links Notation, worker JavaScript, and GitHub Actions workflow files...\n"
+        "\nChecking file line limits: Rust 1000, every other maintained text format 1500...\n"
     );
 
     let cwd = std::env::current_dir().expect("Failed to get current directory");
-    let result = check_directory(&cwd);
+    let result = check_listed_files(&cwd, committable_paths().as_ref());
     let warning_base = std::env::var("FILE_SIZE_WARNING_BASE").unwrap_or_default();
     if let Some(growing_paths) = growing_paths_since(&warning_base) {
         let warnings = warnings_for_growing_paths(&result.warnings, &growing_paths);
@@ -473,6 +559,34 @@ mod tests {
         assert_eq!(
             classify_line_count(rust_limit.max_lines, rust_limit),
             LineStatus::Warning
+        );
+    }
+
+    #[test]
+    fn maintained_text_is_measured_and_captures_are_not() {
+        assert_eq!(
+            file_limit(Path::new("js/app/main.jsx")),
+            Some(&MAINTAINED_LIMIT)
+        );
+        assert_eq!(
+            file_limit(Path::new("CHANGELOG.md")),
+            Some(&MAINTAINED_LIMIT)
+        );
+        assert_eq!(
+            file_limit(Path::new("js/styles.css")),
+            Some(&MAINTAINED_LIMIT)
+        );
+        assert_eq!(file_limit(Path::new("vscode/package-lock.json")), None);
+        assert_eq!(file_limit(Path::new("js/vendor.bundle.js")), None);
+        assert_eq!(
+            file_limit(Path::new("data/cache/wikidata/lexeme/L3302.json")),
+            None
+        );
+        assert_eq!(
+            file_limit(Path::new(
+                "rust/tests/fixtures/coding-discovery/python-docs/stdtypes.html"
+            )),
+            None
         );
     }
 
@@ -582,7 +696,7 @@ mod tests {
         let worker_dir = repo.join("js/worker");
         fs::create_dir_all(&worker_dir).unwrap();
         write_js_file_with_lines(
-            &worker_dir.join("formal_ai_worker_00.js"),
+            &worker_dir.join("formal_ai_worker_seed_responses_and_language.js"),
             WORKER_JS_LIMIT.max_lines + 1,
         );
 
@@ -591,7 +705,7 @@ mod tests {
         assert_eq!(
             result.violations,
             vec![Finding {
-                file: "js/worker/formal_ai_worker_00.js".to_string(),
+                file: "js/worker/formal_ai_worker_seed_responses_and_language.js".to_string(),
                 lines: WORKER_JS_LIMIT.max_lines + 1,
                 max_lines: WORKER_JS_LIMIT.max_lines,
                 warn_lines: WORKER_JS_LIMIT.warn_lines,
@@ -601,16 +715,24 @@ mod tests {
     }
 
     #[test]
-    fn check_directory_does_not_apply_worker_limit_to_legacy_js() {
-        let repo = temp_dir("legacy-js-thresholds");
+    fn check_directory_applies_the_maintained_limit_to_app_js() {
+        let repo = temp_dir("app-js-thresholds");
         let app_dir = repo.join("js/app");
         fs::create_dir_all(&app_dir).unwrap();
-        write_js_file_with_lines(&app_dir.join("main.js"), WORKER_JS_LIMIT.max_lines + 1);
+        write_js_file_with_lines(&app_dir.join("main.js"), MAINTAINED_LIMIT.max_lines + 1);
 
         let result = check_directory(&repo);
 
-        assert_eq!(result.violations, Vec::new());
-        assert_eq!(result.warnings, Vec::new());
+        assert_eq!(
+            result.violations,
+            vec![Finding {
+                file: "js/app/main.js".to_string(),
+                lines: MAINTAINED_LIMIT.max_lines + 1,
+                max_lines: MAINTAINED_LIMIT.max_lines,
+                warn_lines: MAINTAINED_LIMIT.warn_lines,
+                label: MAINTAINED_LIMIT.label,
+            }]
+        );
     }
 
     #[test]
@@ -619,7 +741,7 @@ mod tests {
         let worker_dir = repo.join("js/worker");
         fs::create_dir_all(&worker_dir).unwrap();
         fs::write(
-            worker_dir.join("formal_ai_worker_00.js"),
+            worker_dir.join("formal_ai_worker_seed_responses_and_language.js"),
             "const MEANINGS_LINO = [\n  \"meaning fact\",\n].join(\"\\n\");\n",
         )
         .unwrap();
@@ -629,7 +751,7 @@ mod tests {
         assert_eq!(
             result.embedded_data_violations,
             vec![EmbeddedDataFinding {
-                file: "js/worker/formal_ai_worker_00.js".to_string(),
+                file: "js/worker/formal_ai_worker_seed_responses_and_language.js".to_string(),
                 line: 1,
                 message: "Worker JavaScript must load Links Notation data from data/seed via seed_loader.js, not embed _LINO arrays or template literals.".to_string(),
             }]
@@ -723,6 +845,28 @@ mod tests {
 
         assert_eq!(result.violations, Vec::new());
         assert_eq!(result.warnings, Vec::new());
+    }
+
+    /// PR #1188: a session transcript git ignores sat at the repository root
+    /// and failed the gate locally although no commit could ever carry it.
+    #[test]
+    fn check_listed_files_measures_only_the_listed_files() {
+        let repo = temp_dir("listed-files");
+        let rust_limit = FILE_LIMITS[0];
+        write_rust_file_with_lines(&repo.join("kept.rs"), rust_limit.max_lines + 1);
+        write_rust_file_with_lines(&repo.join("ignored.rs"), rust_limit.max_lines + 1);
+        let listed = BTreeSet::from(["kept.rs".to_string()]);
+
+        let result = check_listed_files(&repo, Some(&listed));
+
+        assert_eq!(
+            result
+                .violations
+                .iter()
+                .map(|finding| finding.file.as_str())
+                .collect::<Vec<_>>(),
+            ["kept.rs"]
+        );
     }
 
     #[test]

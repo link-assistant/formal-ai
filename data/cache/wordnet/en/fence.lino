@@ -1,0 +1,40 @@
+language en
+lemma fence
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a barrier that serves to enclose an area"
+    id oewn-03332179-n
+    partOfSpeech n
+    synonyms (fencing)
+  entry
+    definition "a dealer in stolen property"
+    id oewn-10104870-n
+    partOfSpeech n
+  entry
+    definition "enclose with a fence"
+    examples ("we fenced in our yard")
+    id oewn-01591055-v
+    partOfSpeech v
+    synonyms ("fence in")
+  entry
+    definition "receive stolen goods"
+    id oewn-02215536-v
+    partOfSpeech v
+  entry
+    definition "fight with fencing swords"
+    id oewn-01149384-v
+    partOfSpeech v
+  entry
+    definition "surround with a wall in order to fortify"
+    id oewn-01133033-v
+    partOfSpeech v
+    synonyms (wall palisade "fence in" surround)
+  entry
+    definition "have an argument about something"
+    id oewn-00775477-v
+    partOfSpeech v
+    synonyms (argue contend debate)
+source "oewn:2024"

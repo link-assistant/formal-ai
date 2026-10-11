@@ -1,0 +1,155 @@
+{
+  "entities": {
+    "Q108": {
+      "type": "item",
+      "id": "Q108",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "January"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "январь"
+        },
+        "es": {
+          "language": "es",
+          "value": "enero"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "1月"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जनवरी"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "first month in the Julian and Gregorian calendars"
+        },
+        "es": {
+          "language": "es",
+          "value": "primer mes del año en los calendarios juliano y gregoriano"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "первый месяц года в юлианском и григорианском календарях"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "公曆及儒略曆中第一個月份"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जूलियन और ग्रेगोरियन कैलेंडर में पहला महीना"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "一月"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Jan"
+          },
+          {
+            "language": "en",
+            "value": "1. month"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "января"
+          },
+          {
+            "language": "ru",
+            "value": "янв."
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "mes de Jano"
+          },
+          {
+            "language": "es",
+            "value": "mes del dios Jano"
+          },
+          {
+            "language": "es",
+            "value": "primer mes"
+          },
+          {
+            "language": "es",
+            "value": "1.° mes"
+          },
+          {
+            "language": "es",
+            "value": "mes primero"
+          },
+          {
+            "language": "es",
+            "value": "mes 1.°"
+          },
+          {
+            "language": "es",
+            "value": "1"
+          },
+          {
+            "language": "es",
+            "value": "mes del dios de las puertas"
+          },
+          {
+            "language": "es",
+            "value": "Ene"
+          },
+          {
+            "language": "es",
+            "value": "Ene."
+          },
+          {
+            "language": "es",
+            "value": "En"
+          },
+          {
+            "language": "es",
+            "value": "En."
+          },
+          {
+            "language": "es",
+            "value": "mes 1"
+          },
+          {
+            "language": "es",
+            "value": "mes de las puertas"
+          },
+          {
+            "language": "es",
+            "value": "mes de los portales"
+          },
+          {
+            "language": "es",
+            "value": "mes del dios de los portales"
+          },
+          {
+            "language": "es",
+            "value": "janero"
+          },
+          {
+            "language": "es",
+            "value": "E"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,17 +1,20 @@
 Q23397
   aliases
     en (lakes)
+    es (lagos lagunas laguna)
     hi ("सरोवर")
     ru ("озёра")
     zh ("湖" "潭")
   descriptions
     en "body of relatively still water, localized in a basin"
+    es "cuerpo de agua relativamente quieto, localizado en una cuenca"
     hi "हिराकुद"
     ru "естественный водоём"
     zh "水体类型"
   id Q23397
   labels
     en lake
+    es lago
     hi "झील"
     ru "озеро"
     zh "湖泊"

@@ -1,0 +1,205 @@
+# Issue #1187 (E151), R4: isolation without tokens.
+#
+# The architect's rule for workloads that need a separate tree to test in:
+# "without tokens, test on a separate branch … with separate tree". A
+# separate REPOSITORY is used only when the resolver reports
+# can-create-repositories: true (the GitHub App layer); every other layer
+# gets the same isolation as an orphan branch in this repository.
+#
+# An orphan branch has no parent commit, so its tree shares nothing with
+# main: `git checkout --orphan` then populating only the files the test
+# needs gives the workload a genuinely separate tree. The lifecycle is
+# closed on both ends: the run opens an issue labelled `e2e-task` and a
+# pull request whose base is the orphan branch, and the cleanup job closes
+# both and deletes the branches.
+#
+# This repository's own pull_request workflows ignore `e2e/**` base
+# branches (`branches-ignore: ['e2e/**']` on every `pull_request` trigger,
+# pinned by rust/tests/unit/issue_1187_credentials.rs) so an isolated run
+# never triggers the main pipeline.
+name: e2e-isolation
+
+on:
+  workflow_dispatch:
+    inputs:
+      purpose:
+        description: What the isolated run tests (becomes part of the branch name)
+        type: string
+        required: true
+      files:
+        description: "Space-separated paths the isolated tree needs (default: the replayed task fixtures)"
+        type: string
+        default: "rust/ data/ docs/ scripts/"
+      keep:
+        description: Keep the orphan branch and tracking issue after the run (cleanup skips)
+        type: boolean
+        default: false
+  workflow_call:
+    inputs:
+      purpose:
+        type: string
+        required: true
+      files:
+        type: string
+        default: "rust/ data/ docs/ scripts/"
+      keep:
+        type: boolean
+        default: false
+
+permissions: {}
+
+jobs:
+  isolate:
+    name: orphan-branch run (${{ inputs.purpose }})
+    runs-on: ubuntu-latest
+    # The workload is a placeholder today; the cap keeps a hung `gh` call
+    # from inheriting the 360-minute default (issue #1017).
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      # Issue #1079: this checkout keeps persist-credentials (the default)
+      # because the orphan-branch steps below push with it.
+      - uses: actions/checkout@v7
+        with:
+          # Full history is not needed to create an orphan; a shallow clone
+          # of the dispatching ref is enough.
+          fetch-depth: 1
+
+      # R1: the one resolver. With nothing configured this reports layer
+      # `default`, and the isolation proceeds anyway -- that is the point.
+      - id: creds
+        uses: ./.github/actions/automation-token
+        with:
+          app-id: ${{ secrets.AUTOMATION_APP_ID }}
+          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          automation-token: ${{ secrets.AUTOMATION_TOKEN }}
+
+      - name: Create the orphan branch with only the needed files
+        id: orphan
+        env:
+          GH_TOKEN: ${{ steps.creds.outputs.token }}
+          PURPOSE: ${{ inputs.purpose }}
+          FILES: ${{ inputs.files }}
+          SEPARATE_REPOSITORY: ${{ steps.creds.outputs.can-create-repositories }}
+        run: |
+          set -euo pipefail
+
+          run_id="$(date -u +%Y%m%d%H%M%S)-${GITHUB_RUN_ID}"
+          # R4's layout: e2e/<purpose>/<run_id>/<name>; the name is short
+          # and readable in the branch list.
+          name="run"
+          branch="e2e/${PURPOSE}/${run_id}/${name}"
+
+          # The push helper is copied out first: `git rm` below empties the
+          # tree it lives in (issue #1081, D13 -- every push goes through it).
+          cp scripts/push-to-shared-branch.sh "${RUNNER_TEMP}/push-to-shared-branch.sh"
+
+          # The orphan branch: no parents, no shared tree with main.
+          git checkout --orphan "$branch"
+          git rm -rf --quiet .
+          # Restore exactly the paths the test needs from the dispatching
+          # commit's tree.
+          # shellcheck disable=SC2086 # FILES is a space-separated path list.
+          git checkout "${GITHUB_SHA}" -- $FILES
+          git -c user.name="formal-ai-e2e" -c user.email="noreply@users.noreply.github.com" \
+            commit --no-verify -m "e2e: isolated tree for ${PURPOSE} (${run_id})"
+          target_repo="${GITHUB_REPOSITORY}"
+          if [ "$SEPARATE_REPOSITORY" = "true" ]; then
+            # R4: only the App layer may create repositories, so only then
+            # does the isolated tree get a repository of its own. It is
+            # private, named after the run, and deleted by the cleanup step.
+            target_repo="${GITHUB_REPOSITORY_OWNER}/formal-ai-e2e-${run_id}"
+            gh repo create "$target_repo" --private \
+              --description "Isolated e2e run ${PURPOSE} from ${GITHUB_REPOSITORY} (${GITHUB_RUN_ID})"
+            gh label create e2e-task --repo "$target_repo" --color BFD4F2 >/dev/null 2>&1 || true
+            git remote add isolated "https://x-access-token:${GH_TOKEN}@github.com/${target_repo}.git"
+            bash "${RUNNER_TEMP}/push-to-shared-branch.sh" isolated "$branch"
+          else
+            bash "${RUNNER_TEMP}/push-to-shared-branch.sh" origin "$branch"
+          fi
+
+          {
+            echo "branch=$branch"
+            echo "run-id=$run_id"
+            echo "repository=$target_repo"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open the tracking issue and pull request
+        id: track
+        env:
+          GH_TOKEN: ${{ steps.creds.outputs.token }}
+          BRANCH: ${{ steps.orphan.outputs.branch }}
+          PURPOSE: ${{ inputs.purpose }}
+          TARGET_REPO: ${{ steps.orphan.outputs.repository }}
+        run: |
+          set -euo pipefail
+
+          issue_url="$(gh issue create --repo "$TARGET_REPO" \
+            --title "e2e: ${PURPOSE} (${GITHUB_RUN_ID})" \
+            --label e2e-task \
+            --body "Isolated run of **${PURPOSE}**.
+
+          - orphan branch: \`${BRANCH}\`
+          - dispatched by: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          - credential layer: ${{ steps.creds.outputs.layer }}
+
+          The cleanup job closes this issue and deletes the branch at the end of the run.")"
+          issue_number="${issue_url##*/}"
+
+          gh pr create --repo "$TARGET_REPO" \
+            --base "$BRANCH" --head "$BRANCH-run" >/dev/null 2>&1 || true
+          # A PR needs two refs; the run's own work commits onto a child
+          # branch of the orphan when it produces changes to review. When
+          # nothing has changed yet, the tracking issue alone carries the
+          # run and the PR step is skipped -- isolation without a PR is
+          # still isolation.
+          remote=origin
+          if [ "$TARGET_REPO" != "$GITHUB_REPOSITORY" ]; then remote=isolated; fi
+          bash "${RUNNER_TEMP}/push-to-shared-branch.sh" "$remote" "${BRANCH}-run" >/dev/null 2>&1 || true
+
+          echo "issue=${issue_number}" >> "$GITHUB_OUTPUT"
+          echo "issue-url=${issue_url}" >> "$GITHUB_OUTPUT"
+
+      - name: Run the isolated workload
+        env:
+          E2E_BRANCH: ${{ steps.orphan.outputs.branch }}
+          E2E_ISSUE: ${{ steps.track.outputs.issue }}
+          E2E_REPOSITORY: ${{ steps.orphan.outputs.repository }}
+          GH_TOKEN: ${{ steps.creds.outputs.token }}
+          PURPOSE: ${{ inputs.purpose }}
+        run: |
+          # The workload itself: the replayed task, the end-to-end test, or
+          # the self-coding ladder step (issue #1170) that needed the
+          # separate tree. It runs against the orphan branch checked out
+          # above and records its result on the tracking issue.
+          echo "isolated workload runs here (purpose: ${PURPOSE})"
+          gh issue comment "$E2E_ISSUE" --repo "$E2E_REPOSITORY" --body "workload: started on ${E2E_BRANCH}"
+
+      - name: Cleanup
+        if: ${{ !inputs.keep }}
+        env:
+          GH_TOKEN: ${{ steps.creds.outputs.token }}
+          BRANCH: ${{ steps.orphan.outputs.branch }}
+          ISSUE: ${{ steps.track.outputs.issue }}
+          TARGET_REPO: ${{ steps.orphan.outputs.repository }}
+        run: |
+          set -euo pipefail
+          if [ -n "$TARGET_REPO" ] && [ "$TARGET_REPO" != "$GITHUB_REPOSITORY" ]; then
+            # The App-layer run owns its whole repository; deleting it
+            # closes the issue, the pull request and the branches at once.
+            gh repo delete "$TARGET_REPO" --yes
+            exit 0
+          fi
+          # Close the issue and pull request, delete the branches (R4's
+          # "they close the issue and pull request and delete the branches
+          # at the end"). With layer `default` these calls still work --
+          # github.token may close what it opened on its own repository.
+          gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --comment "isolated run finished; cleaning up" || true
+          # Branch deletion goes over the API, which reads GH_TOKEN, rather
+          # than a bare `git push --delete` (issue #1081).
+          for ref in "${BRANCH}" "${BRANCH}-run"; do
+            gh api -X DELETE "repos/${GITHUB_REPOSITORY}/git/refs/heads/${ref}" >/dev/null 2>&1 || true
+          done

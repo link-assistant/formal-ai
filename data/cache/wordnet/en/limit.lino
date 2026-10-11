@@ -1,0 +1,56 @@
+language en
+lemma limit
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the greatest possible degree of something"
+    examples ("what he did was beyond the bounds of acceptable behavior" "to the limit of his ability")
+    id oewn-05131322-n
+    partOfSpeech n
+    synonyms (bound boundary)
+  entry
+    definition "final or latest limiting point"
+    id oewn-15293814-n
+    partOfSpeech n
+    synonyms ("terminus ad quem" "terminal point")
+  entry
+    definition "as far as something can go"
+    id oewn-08610686-n
+    partOfSpeech n
+  entry
+    definition "the boundary of a specific area"
+    id oewn-08610212-n
+    partOfSpeech n
+    synonyms (demarcation "demarcation line")
+  entry
+    definition "the mathematical value toward which a function goes as the independent variable approaches infinity"
+    id oewn-13780696-n
+    partOfSpeech n
+    synonyms ("limit point" "point of accumulation")
+  entry
+    definition "the greatest amount of something that is possible or allowed"
+    examples ("there are limits on the amount you can bet" "it is growing rapidly with no limitation in sight")
+    id oewn-13780436-n
+    partOfSpeech n
+    synonyms (limitation)
+  entry
+    definition "place limits on (extent or amount or access)"
+    examples ("restrict the use of this parking lot" "limit the time you can spend with your friends")
+    id oewn-00234091-v
+    partOfSpeech v
+    synonyms (restrict trammel bound confine throttle)
+  entry
+    definition "restrict or confine within limits"
+    examples ("I limit you to two visits to the pub a day" "please confine your questions to the topic" "our actions are circumscribed by our biology, personality, and by the social and cultural context into which we are born")
+    id oewn-00236085-v
+    partOfSpeech v
+    synonyms (circumscribe "confine to")
+  entry
+    definition "decide upon or fix definitely"
+    examples ("fix the variables" "specify the parameters")
+    id oewn-00949109-v
+    partOfSpeech v
+    synonyms (specify set determine define fix)
+source "oewn:2024"

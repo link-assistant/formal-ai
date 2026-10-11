@@ -1,0 +1,208 @@
+# Repository-history formalization rules (issue #1180, E145).
+#
+# Read by rust/src/history_context.rs. The importer maps every record kind
+# onto the memory event schema through the `record` rows below, so the
+# kind spelling, id prefix, and author role of each surface are seed data,
+# not Rust literals. Trailer and merge patterns use `%number%` as the
+# placeholder for the decimal reference they capture; `evidence` and
+# `conversation` say where that captured number lands on the event.
+# `source` rows name the structural census each file suffix is diffed
+# with when a commit changes it, and the `item_keyword` words that open a
+# named top-level item in that language, so a commit records which
+# functions, types and impls it added, removed or modified by name. An
+# `item_span_keyword` names its item by the whole header (an impl is its
+# trait and type), and `item_modifier` words may precede any keyword. The
+# `coauthor_trailer` row turns each co-author trailer line into evidence.
+# `state_transition` rows name the lifecycle states a captured issue or
+# pull request passed through and the timestamp fields that date each one
+# (gh CLI camelCase, then REST snake_case), so the transitions land as
+# dated `state_evidence` in chronological order (R1180-3). The
+# `requirement_statement` row reads a body line that opens with the marker
+# and a number (after any `lead`) as one requirement statement. The
+# `lineage_cue` rows are the phrases, per language, that ask for the
+# history of a repository path; the lineage route answers them from
+# `git log --follow` on the working repository (R1180-10). The
+# `status_cue` rows name the self-development status a question asks
+# about, and `status_rule` names the script that checks it, the ledger that
+# records its floor and target, and the release tags its range starts at.
+# The `definition_cue` rows ask what a symbol does, and `definition_source`
+# says where the self-AST census lives, which directory its targets are
+# relative to, and how a documentation comment and an attribute line open.
+history_formalization
+  record
+    kind commit
+    id_prefix "commit:"
+    role author
+    content subject_and_body
+    timestamp committer_date
+  record
+    kind issue
+    id_prefix "issue:"
+    role reporter
+    content title_and_body
+    timestamp created_at
+  record
+    kind pull_request
+    id_prefix "pull:"
+    role author
+    content title_and_body
+    timestamp created_at
+  record
+    kind review
+    id_prefix "review:"
+    role author
+    content body
+    timestamp created_at
+  record
+    kind ci_run
+    id_prefix "ci_run:"
+    role workflow
+    content workflow_and_conclusion
+    timestamp created_at
+  trailer
+    pattern "Refs #%number%"
+    evidence "issue:%number%"
+    conversation "issue-%number%"
+  trailer
+    pattern "Closes #%number%"
+    evidence "issue:%number%"
+    conversation "issue-%number%"
+  merge
+    pattern "Merge pull request #%number%"
+    evidence "pr:%number%"
+  coauthor_trailer
+    prefix "Co-Authored-By:"
+    evidence_prefix "coauthor:"
+  state_transition
+    state "opened"
+    field "createdAt"
+    field "created_at"
+  state_transition
+    state "closed"
+    field "closedAt"
+    field "closed_at"
+  state_transition
+    state "merged"
+    field "mergedAt"
+    field "merged_at"
+  state_evidence
+    prefix "state:"
+  requirement_statement
+    marker "R"
+    lead "- "
+    lead "* "
+    lead "**"
+    evidence_prefix "requirement:"
+  lineage_cue
+    language en
+    phrase "which issue"
+    phrase "which pull request"
+    phrase "which commit"
+    phrase "history of"
+    phrase "lineage of"
+    phrase "who introduced"
+  lineage_cue
+    language ru
+    phrase "какая задача"
+    phrase "какой пулл-реквест"
+    phrase "какой коммит"
+    phrase "история"
+    phrase "кто добавил"
+  lineage_cue
+    language hi
+    phrase "कौन सा इश्यू"
+    phrase "कौन सा कमिट"
+    phrase "इतिहास"
+  lineage_cue
+    language zh
+    phrase "哪个问题"
+    phrase "哪个提交"
+    phrase "历史"
+    phrase "来历"
+  lineage_cue
+    language es
+    phrase "qué issue"
+    phrase "qué pull request"
+    phrase "qué commit"
+    phrase "historia de"
+  status_cue
+    language en
+    phrase "self-development status"
+    phrase "self-development floor"
+  status_cue
+    language ru
+    phrase "статус саморазработки"
+  status_cue
+    language hi
+    phrase "स्व-विकास स्थिति"
+  status_cue
+    language zh
+    phrase "自我开发状态"
+  status_cue
+    language es
+    phrase "estado de autodesarrollo"
+  status_rule
+    script "scripts/check-self-development-release.rs"
+    ledger "data/meta/self-hosting-ledger.lino"
+    tag_match "v[0-9]*"
+  definition_cue
+    language en
+    phrase "what does"
+    phrase "what is the purpose of"
+  definition_cue
+    language ru
+    phrase "что делает"
+  definition_cue
+    language hi
+    phrase "क्या करता है"
+    phrase "क्या करती है"
+  definition_cue
+    language zh
+    phrase "做什么"
+    phrase "有什么用"
+  definition_cue
+    language es
+    phrase "qué hace"
+  definition_source
+    census "data/meta/self-ast/src"
+    source_root "rust"
+    doc_prefix "///"
+    attribute_prefix "#["
+  path_evidence
+    prefix "path:"
+  symbol_evidence
+    prefix "symbol:"
+  source
+    id ast_census
+    applies_to ".rs"
+    item_keyword "fn"
+    item_keyword "struct"
+    item_keyword "enum"
+    item_keyword "trait"
+    item_keyword "type"
+    item_keyword "const"
+    item_keyword "static"
+    item_keyword "mod"
+    item_keyword "union"
+    item_keyword "macro_rules!"
+    item_span_keyword "impl"
+  source
+    id es_meta_extract
+    applies_to ".js"
+    applies_to ".ts"
+    item_keyword "function"
+    item_keyword "class"
+    item_keyword "const"
+    item_keyword "let"
+    item_keyword "var"
+    item_keyword "interface"
+    item_keyword "type"
+    item_keyword "enum"
+  item_modifier "pub"
+  item_modifier "async"
+  item_modifier "unsafe"
+  item_modifier "extern"
+  item_modifier "default"
+  item_modifier "export"
+  item_modifier "declare"
+  item_modifier "abstract"

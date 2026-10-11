@@ -32,6 +32,9 @@
   var STORE_NAME = "events";
   var ROOT_HEADER = "demo_memory";
   var BUNDLE_HEADER = "formal_ai_bundle";
+  var SEED_BODY_ENCODING_FIELD = "seed_body_encoding";
+  var SEED_LITERAL_LINE_ENCODING = "literal-lf-v1";
+  var SEED_BODY_ENCODING_LINE = '  ' + SEED_BODY_ENCODING_FIELD + ' "' + SEED_LITERAL_LINE_ENCODING + '"';
   var LINK_STORE_SCHEMA_VERSION = "0.2.0";
   // Schema is intentionally additive. Older logs without "kind" still parse
   // as plain user/assistant turns. New "kind" values record reasoning steps,
@@ -694,8 +697,7 @@
   function indentBlock(text, indent) {
     var prefix = indent || "  ";
     return String(text || "")
-      .split(/\r?\n/)
-      .filter(function (line) { return line.length > 0; })
+      .split("\n")
       .map(function (line) { return prefix + line; })
       .join("\n");
   }
@@ -728,6 +730,7 @@
     var preferences = settings.preferences || null;
     var lines = ["formal_ai_bundle"];
     lines.push('  exported_at "' + escapeValue(new Date().toISOString()) + '"');
+    lines.push(SEED_BODY_ENCODING_LINE);
     var preferredInfoFields = [
       "version",
       "url",
@@ -781,7 +784,7 @@
     }
     lines.push("  " + ROOT_HEADER);
     events.forEach(function (event) {
-      lines.push("  " + formatEvent(event));
+      lines.push(indentBlock(formatEvent(event), "  "));
     });
     return lines.join("\n") + "\n";
   }
@@ -828,7 +831,8 @@
   // files). The parser is forgiving: unknown sub-sections are skipped, and a
   // truncated document still yields whatever events were recoverable.
   function parseBundleDocument(text) {
-    var lines = text.split(/\r?\n/);
+    var preserveSeedBytes = new RegExp("^" + SEED_BODY_ENCODING_LINE + "$", "m").test(text);
+    var lines = preserveSeedBytes ? text.split("\n") : text.split(/\r?\n/);
     var info = {};
     var seedFiles = {};
     var preferences = null;
@@ -836,6 +840,7 @@
     var memoryLines = [];
     var section = null; // null | "seed_files" | "preferences" | "memory"
     var currentSeedFile = null;
+    var currentSeedLineCount = 0;
     var index = 0;
     while (index < lines.length) {
       var line = lines[index];
@@ -878,15 +883,17 @@
           if (fileMatch) {
             currentSeedFile = unescapeValue(fileMatch[1]);
             seedFiles[currentSeedFile] = "";
+            currentSeedLineCount = 0;
           }
           continue;
         }
         if (currentSeedFile && indent >= 6) {
           // Body lines for the current seed file. Strip the 6-space prefix.
           var body = line.length >= 6 ? line.slice(6) : "";
-          if (seedFiles[currentSeedFile].length > 0) {
+          if (currentSeedLineCount > 0) {
             seedFiles[currentSeedFile] += "\n";
           }
+          currentSeedLineCount += 1;
           seedFiles[currentSeedFile] += body;
         }
         continue;

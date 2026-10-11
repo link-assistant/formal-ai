@@ -1,6 +1,8 @@
 //! Behavior-rule inspection tests.
 
-use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
+use formal_ai::{
+    ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver, knowledge_links_notation,
+};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -420,4 +422,45 @@ fn behavior_rule_detail_answer_is_localized_for_russian() {
     assert!(response.answer.contains("Резервное правило"));
     assert!(!response.answer.contains("Unknown fallback rule"));
     assert!(!response.answer.contains("To change this behavior"));
+}
+
+#[test]
+fn a_rule_detail_is_asked_for_through_the_seeded_openings_in_every_language() {
+    // R1188-U1: the openings are the seeded rule_detail_request role, not an
+    // inline prefix list; the browser twin pins the same prompts in
+    // rust/tests/web/behavior-rule-catalog.test.mjs.
+    for (prompt, label) in [
+        ("Show Behaviour Rule farewell", "Farewell rule"),
+        ("读取规则 rule_identity", "身份规则"),
+        ("नियम पढ़ो rule_identity", "पहचान नियम"),
+    ] {
+        let response = answer(prompt);
+        assert_eq!(response.intent, "behavior_rule_detail", "{prompt}");
+        assert_eq!(response.answer.lines().next(), Some(label), "{prompt}");
+    }
+    assert_eq!(
+        answer("muestra la regla capabilities").intent,
+        "behavior_rule_detail"
+    );
+}
+
+#[test]
+fn the_knowledge_export_reads_its_example_prompts_from_the_seed() {
+    // R1188-U1: the examples are `example` lines of data/seed/intent-routing.lino,
+    // joined with `; ` since an example may hold a comma.
+    let notation = knowledge_links_notation();
+    assert!(
+        notation.contains("examples \"Hi; Hello; Hey\""),
+        "{notation}"
+    );
+    assert!(
+        notation.contains("examples \"I am fine, thank you; thanks\""),
+        "{notation}"
+    );
+    assert!(
+        notation.contains(
+            "examples \"Write me hello world program in Rust; Write a Python program that counts to three\""
+        ),
+        "{notation}"
+    );
 }

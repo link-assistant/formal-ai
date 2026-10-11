@@ -1,14 +1,17 @@
 Q168639
   aliases
+    es ("escalera portátil" "escalera portatil" "escalera portable" escala)
     ru ("стремянка")
     zh ("梯")
   descriptions
     en "vertical set of rungs or steps for climbing or descending"
+    es "escalera vertical y, normalmente, portable"
     ru "специальная, как правило, переносная лестница"
     zh "攀登工具"
   id Q168639
   labels
     en ladder
+    es "escalera de mano"
     hi "सीढ़ी"
     ru "лестница-стремянка"
     zh "梯子"

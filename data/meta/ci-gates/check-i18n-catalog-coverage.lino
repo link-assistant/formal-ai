@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_i18n_catalog_coverage
+ci_gate check-i18n-catalog-coverage
   stage web
   description "Every user-facing string has a translation in every registered language."
   run "npm run --prefix rust/tests/e2e check:i18n"
+  justification "Missing catalog entries caused the UI to display untranslated placeholder keys in non-English locales; the coverage check was introduced in #117 (R137-R140) to ensure every UI string has a catalog entry in all supported languages."

@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2924-byte-check.json",
+  "sha256": "b5a153225390a6dda873beda49af736854b66d090955f39feb95d4683bf8a30a",
+  "rawUtf8": "{\n  \"taskId\": \"T2924\",\n  \"target\": \"compiled-skill-prototype.test.mjs\",\n  \"byteEqual\": true\n}\n"
+}

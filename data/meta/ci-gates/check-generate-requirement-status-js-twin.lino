@@ -1,0 +1,5 @@
+ci_gate check-generate-requirement-status-js-twin
+  stage web
+  description "PR #1188: the JavaScript twin scripts/generate-requirement-status.mjs prints the same lines, exits with the same code and checks the same bytes as scripts/generate-requirement-status.rs on this tree, so the requirement-status ledger is generated locally without compiling Rust."
+  run "node scripts/lib/requirements-twin-parity.mjs 'rust-script scripts/generate-requirement-status.rs' 'node scripts/generate-requirement-status.mjs'"
+  justification "Agents run the JavaScript twins locally instead of rust-script, whose compile cache grew to 3.7 GB (#1188); a twin that drifted from its Rust original would pass a stale requirement-status ledger locally that CI then rejects."

@@ -3,26 +3,11 @@ market_price_references
     label Ethereum
     grounded-in Q16783523
     quote-currency USDT
-    lexeme en
-      surface
-        text "$ETH"
-      surface
-        text "ethereum"
-      surface
-        text "etherium"
-      surface
-        text "eth"
-    lexeme ru
-      surface
-        text "эфириум"
-      surface
-        text "эфир"
-    lexeme hi
-      surface
-        text "एथेरियम"
-    lexeme zh
-      surface
-        text "以太坊"
+    lexeme en "$ETH" "ethereum" "etherium" "eth"
+    lexeme ru "эфириум" "эфир"
+    lexeme hi "एथेरियम"
+    lexeme zh "以太坊"
+    lexeme es ethereum éter ether
     reference 2021
       source-id "binance_ethusdt_1d_2021"
       source-label "Binance ETHUSDT daily klines"
@@ -59,26 +44,11 @@ market_price_references
     label Bitcoin
     grounded-in Q131723
     quote-currency USDT
-    lexeme en
-      surface
-        text "$BTC"
-      surface
-        text "bitcoin"
-      surface
-        text "btc"
-    lexeme ru
-      surface
-        text "биткоин"
-      surface
-        text "биткойн"
-    lexeme hi
-      surface
-        text "बिटकॉइन"
-    lexeme zh
-      surface
-        text "比特币"
-      surface
-        text "比特幣"
+    lexeme en "$BTC" "bitcoin" "btc"
+    lexeme ru "биткоин" "биткойн"
+    lexeme hi "बिटकॉइन"
+    lexeme zh "比特币" "比特幣"
+    lexeme es bitcoin bitcóin
     reference 2024
       source-id "binance_btcusdt_1d_2024"
       source-label "Binance BTCUSDT daily klines"

@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_calendar_offset.js"
+  ceiling 532
+  rationale "Stated weekday offsets for the calendar relation handler (issue #1176). JavaScript-first twin of native handler keys (calendar_reasoning), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth. Ceiling moved 261 to 466 for the month-offset twin (R1176-4, 2026-10-07): modulo-12 month arithmetic, the weekday-plus-months clarification with its Gregorian day span, and the shared numeral-plus-unit reader. Ceiling moved 466 to 570 for the date-weekday twin (R1017, 2026-10-07): an ISO-like or month-name date read from the prompt and counted from 1970-01-01, twin of rust/src/solver_handlers/calendar/date_weekday.rs. Ceiling lowered 570 to 532 for the issue #918 calendar batch (2026-10-08): the Spanish weekday map and the per-language label switch read the calendar_weekday_label table of data/seed/handler-rules.lino."

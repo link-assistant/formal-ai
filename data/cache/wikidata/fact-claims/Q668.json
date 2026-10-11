@@ -1,0 +1,203 @@
+{
+  "entities": {
+    "Q668": {
+      "type": "item",
+      "id": "Q668",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "India"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Индия"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "भारत"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "印度"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "印度"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Republic of India"
+          },
+          {
+            "language": "en",
+            "value": "Bharatvarsh"
+          },
+          {
+            "language": "en",
+            "value": "Hindustan"
+          },
+          {
+            "language": "en",
+            "value": "Bharata"
+          },
+          {
+            "language": "en",
+            "value": "Hindoostan"
+          },
+          {
+            "language": "en",
+            "value": "Indostan"
+          },
+          {
+            "language": "en",
+            "value": "Bharat Ganarajya"
+          },
+          {
+            "language": "en",
+            "value": "Al Hind"
+          },
+          {
+            "language": "en",
+            "value": "Tianzhu"
+          },
+          {
+            "language": "en",
+            "value": "Tenjiku"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Республика Индия"
+          },
+          {
+            "language": "ru",
+            "value": "Бхарат"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "हिंदुस्तान"
+          },
+          {
+            "language": "hi",
+            "value": "भारतवर्ष"
+          },
+          {
+            "language": "hi",
+            "value": "इंडिया"
+          },
+          {
+            "language": "hi",
+            "value": "भारत गणराज्य"
+          },
+          {
+            "language": "hi",
+            "value": "इण्डिया"
+          },
+          {
+            "language": "hi",
+            "value": "हिन्दोस्तान"
+          },
+          {
+            "language": "hi",
+            "value": "हिन्दुस्तान"
+          },
+          {
+            "language": "hi",
+            "value": "आर्यवर्त"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "印"
+          },
+          {
+            "language": "zh",
+            "value": "天竺"
+          },
+          {
+            "language": "zh",
+            "value": "身毒"
+          },
+          {
+            "language": "zh",
+            "value": "贤督"
+          },
+          {
+            "language": "zh",
+            "value": "賢豆"
+          },
+          {
+            "language": "zh",
+            "value": "神督"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "India"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Индия"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "भारत"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "印度"
+        }
+      },
+      "claims": {
+        "P36": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P36",
+              "hash": "c3d26bb09ec5cc1ef7122e9f7212c0594cc8b1ec",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 987,
+                  "id": "Q987"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [
+      "P36"
+    ],
+    "claim_ranks": "truthy"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "Q206904": {
+      "type": "item",
+      "id": "Q206904",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "आर"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "R"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "R语言"
+        },
+        "en": {
+          "language": "en",
+          "value": "R"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "programming language for statistical analysis"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "язык программирования для статистической обработки данных и работы с графикой"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "用于统计计算的编程语言"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "R编程语言"
+          },
+          {
+            "language": "zh",
+            "value": "R软件"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "GNU R"
+          },
+          {
+            "language": "ru",
+            "value": "R (язык программирования)"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "GNU R"
+          },
+          {
+            "language": "en",
+            "value": "GNU S"
+          },
+          {
+            "language": "en",
+            "value": "R language"
+          },
+          {
+            "language": "en",
+            "value": "R programming language"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,25 @@
+view
+  id M-3e3ae2250623
+  lemma on
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "in operation or operational"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(of events) planned or scheduled"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "with a forward motion"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "indicates continuity or persistence or concentration"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in a state required for something to function or be effective"
+    provenance (wordnet)

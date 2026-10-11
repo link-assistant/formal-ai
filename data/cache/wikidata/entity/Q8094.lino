@@ -3,11 +3,13 @@ Q8094
     hi ("हवा")
   descriptions
     en "flow of gases or air on a large scale"
+    es "movimiento natural del aire u otros gases en relación con la superficie de un planeta"
     hi "गतिशील वायु"
     ru "направленный, сильный поток воздушных масс у поверхности планеты"
   id Q8094
   labels
     en wind
+    es viento
     hi "पवन"
     ru "ветер"
     zh "風"

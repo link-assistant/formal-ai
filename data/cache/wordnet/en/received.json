@@ -1,0 +1,32 @@
+{
+  "lemma": "received",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02305339-a",
+      "partOfSpeech": "a",
+      "definition": "conforming to the established language usage of educated native speakers",
+      "examples": [
+        "standard (American) English",
+        "received standard English is sometimes called the King's English"
+      ],
+      "synonyms": [
+        "standard"
+      ]
+    },
+    {
+      "id": "oewn-00608270-s",
+      "partOfSpeech": "s",
+      "definition": "widely accepted as true or worthy",
+      "examples": [
+        "a received moral idea",
+        "Received political wisdom says not; surveys show otherwise"
+      ]
+    }
+  ]
+}

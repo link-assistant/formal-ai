@@ -1,0 +1,17 @@
+
+test('legacy Fetch diagnostic uses failure evidence while successful JSON remains source bytes',()=>{
+ const messages=[{role:'user',content:request}];
+ observe(messages,'fetch_url',{url},'Error: 404 Not Found');
+ const failed=Progress.scan(messages);assert.equal(failed.fetched_text,null);assert.deepEqual(failed.fetched_pages,[]);
+ assert.equal(failed.attempts[0].succeeded,false);assert.equal(failed.failedWorkItemReadOf(url),'Error: 404 Not Found');
+ for(const body of ['{"error":"failed","exit_code":9,"content":"exact fetched article"}',
+  '{"success":false,"complete":false,"is_error":true,"text":"exact fetched article"}',
+  'The report describes a failed deployment; this is document content.']) {
+  const successful=[{role:'user',content:request}];observe(successful,'fetch_url',{url},body);
+  const found=Progress.scan(successful);assert.equal(found.fetched_text,body);assert.deepEqual(found.fetched_pages,[[url,body]]);
+  assert.equal(found.failedWorkItemReadOf(url),null);assert.equal(found.attempts[0].succeeded,true);
+ }
+ const retry=[...messages];observe(retry,'fetch_url',{url},'The requested source answered successfully.');
+ const recovered=Progress.scan(retry);assert.equal(recovered.failedWorkItemReadOf(url),null);
+ assert.equal(recovered.fetched_text,'The requested source answered successfully.');
+});

@@ -1,26 +1,9 @@
 use super::*;
 
 #[test]
-fn bare_dot_is_detected_only_for_non_decimal_periods() {
-    // Issue #334 OOM triggers: a `.` that is not flanked by digits.
-    for unsafe_expr in ["2. 3", "2+2. 3+3", "5. 5", ".5", "5.", "2 .3", "a.b"] {
-        assert!(
-            has_bare_dot(unsafe_expr),
-            "{unsafe_expr:?} contains a bare dot and must be rejected"
-        );
-    }
-    // Genuine decimals / dot-grouped digits stay on the link-calculator path.
-    for safe_expr in ["3.14", "3.14 + 2.5", "1.000.000", "2024.01.01", "8% of 500"] {
-        assert!(
-            !has_bare_dot(safe_expr),
-            "{safe_expr:?} is a valid decimal expression and must stay safe"
-        );
-    }
-}
-
-#[test]
-fn link_calculator_path_is_skipped_for_bare_dot_expressions() {
-    // Before the guard this aborted the process with a multi-GB allocation.
+fn link_calculator_rejects_bare_dot_expressions_as_recoverable_errors() {
+    // link-calculator <= 0.17.2 aborted the process with a multi-GB allocation
+    // here (issue #334); since 0.18.0 it returns an error (calculator#168).
     assert!(evaluate_with_link_calculator("2. 3").is_err());
     assert!(evaluate_with_link_calculator("2+2. 3+3").is_err());
     // Real decimals still reach the upstream calculator and evaluate.
@@ -167,4 +150,28 @@ fn arithmetic_word_tables_match_seed() {
         "src/arithmetic_word_tables.rs WORD_VALUE_PHRASES is stale; regenerate with \
              `cargo run -p formal-ai --example issue_386_gen_arith_table`"
     );
+}
+
+#[test]
+fn source_seed_registry_retains_every_canonical_cardinal_value() {
+    let files = crate::seed::seed_files();
+    let number_words = files
+        .iter()
+        .find(|(path, _)| *path == "data/seed/meanings-number-words.lino")
+        .unwrap();
+    assert_eq!(
+        number_words.1,
+        include_str!("../../../../../data/seed/meanings-number-words.lino")
+    );
+    let lexicon = crate::seed::lexicon();
+    for value in 0..=10 {
+        let numeral = value.to_string();
+        assert_eq!(
+            lexicon
+                .meanings_with_role(crate::seed::ROLE_CARDINAL_NUMBER_WORD)
+                .filter(|meaning| meaning.words().any(|word| word == numeral))
+                .count(),
+            1
+        );
+    }
 }

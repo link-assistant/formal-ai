@@ -10,6 +10,8 @@ use crate::calculation_word_problem::normalize_word_problem_detailed;
 use crate::fuzzy::is_close_token_typo;
 use crate::seed;
 
+mod function_phrase;
+
 /// Engine that produced a calculation result.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CalculationEngine {
@@ -55,42 +57,12 @@ pub struct PromptInterpretation {
     pub corrected: String,
 }
 
-/// Issue #334: `link-calculator` (≤ 0.17.2) attempts a multi-gigabyte
-/// allocation and aborts the whole process when handed an expression that
-/// contains a *bare* period — a `.` that is not a decimal point flanked by
-/// digits on both sides. The prompt "What is 2+2. What is 3+3." reduces to the
-/// expression `2+2. 3+3` after the "what is" wrapper is stripped, and the
-/// minimal trigger is as small as `2. 3`. A Rust allocation failure aborts via
-/// `SIGABRT`/`SIGKILL` and cannot be caught with `catch_unwind`, so the only
-/// safe option is to never hand such an expression to the upstream parser.
-///
-/// Genuine decimals (`3.14`), thousands/date dot groups (`1.000.000`,
-/// `2024.01.01`) keep every `.` between two digits and stay on the fast path;
-/// anything else falls through to the local fallback evaluator, which rejects
-/// it with a clean `Unparseable` error instead of crashing.
-///
-/// Reported upstream: <https://github.com/link-assistant/calculator/issues/168>.
-fn has_bare_dot(expression: &str) -> bool {
-    let bytes = expression.as_bytes();
-    bytes.iter().enumerate().any(|(index, &byte)| {
-        if byte != b'.' {
-            return false;
-        }
-        let prev_is_digit = index
-            .checked_sub(1)
-            .and_then(|i| bytes.get(i))
-            .is_some_and(u8::is_ascii_digit);
-        let next_is_digit = bytes.get(index + 1).is_some_and(u8::is_ascii_digit);
-        !(prev_is_digit && next_is_digit)
-    })
-}
-
 fn evaluate_with_link_calculator(
     expression: &str,
 ) -> Result<CalculationEvaluation, ArithmeticError> {
-    if has_bare_dot(expression) {
-        return Err(ArithmeticError::Unparseable);
-    }
+    // A bare `.` (`2. 3`) is rejected by link-calculator itself as a
+    // recoverable parse error since 0.18.0 (link-assistant/calculator#168), so
+    // it falls through to the local evaluator like any other upstream error.
     let mut calculator = link_calculator::Calculator::new();
     let (_expression, value, steps, lino) = calculator
         .calculate_with_value(expression)
@@ -419,10 +391,28 @@ pub fn contains_word_operator(expression: &str) -> bool {
     )
 }
 
+/// Whether an expression that failed to evaluate still reads as a calculator
+/// request, so its failure is an arithmetic answer. The browser worker's
+/// extractor keeps only a colon-free expression over the calculator charset, or
+/// one a word operator spells; pasted code (a backtick span, `x = [i*i …]`
+/// after "what does this code do:") is the code handler's.
+#[must_use]
+pub fn reads_as_calculator_expression(expression: &str) -> bool {
+    const SYMBOLS: &str = "+-*/%^().=?_×·÷−,";
+    !expression.contains(':')
+        && (expression.chars().all(|character| {
+            character.is_ascii_alphanumeric()
+                || character.is_whitespace()
+                || SYMBOLS.contains(character)
+        }) || contains_word_operator(expression))
+}
+
 /// Evaluate an expression, delegating calculator-supported syntax to
 /// `link-calculator` and preserving the in-repo evaluator as a fallback for
 /// syntax the upstream crate does not support yet.
 pub fn evaluate_calculation(expression: &str) -> Result<CalculationEvaluation, ArithmeticError> {
+    let split = split_glued_operator_words(expression);
+    let expression = split.as_str();
     if let Ok(evaluation) = evaluate_with_link_calculator(expression) {
         return Ok(evaluation);
     }
@@ -438,6 +428,36 @@ pub fn evaluate_calculation(expression: &str) -> Result<CalculationEvaluation, A
         lino: None,
         steps: Vec::new(),
     })
+}
+
+/// Split the seeded CJK operator surfaces off the operands they are glued to.
+///
+/// `12乘以7` reads `12 * 7`. Those scripts write no space between an operator
+/// word and a numeral, so neither `link-calculator` nor the whitespace token
+/// normalizer would see the word. The surfaces are the
+/// `arithmetic_operator_word` meanings' spelled forms, longest first so `乘以`
+/// is rewritten before the `乘` it contains. Mirrors the CJK split in
+/// `normalizeArithmeticWords` (`js/worker/formal_ai_worker_concept_queries_and_arithmetic.js`).
+fn split_glued_operator_words(expression: &str) -> String {
+    if !crate::coding::contains_cjk(expression) {
+        return expression.to_owned();
+    }
+    let mut glued: Vec<(String, char)> = Vec::new();
+    for operator in seed::lexicon().arithmetic_operators() {
+        let symbol = operator.symbol;
+        for word in operator.spelled {
+            if crate::coding::contains_cjk(&word) {
+                glued.push((word, symbol));
+            }
+        }
+    }
+    glued.sort_by_key(|(word, _)| core::cmp::Reverse(word.chars().count()));
+    let split = glued
+        .iter()
+        .fold(expression.to_owned(), |current, (word, symbol)| {
+            current.replace(word.as_str(), &format!(" {symbol} "))
+        });
+    split.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
 fn trim_prompt_punctuation(value: &str) -> &str {
@@ -882,6 +902,8 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
     let cue_prefixes = calculation_request_prefixes();
     let (stripped, explicit, interpretations) =
         strip_calculation_wrappers_with_prefixes(trimmed, &cue_prefixes);
+    // R1017: "the square root of 144" is the call `sqrt(144)`.
+    let stripped = function_phrase::rewrite_function_phrases(&stripped).unwrap_or(stripped);
     let mut candidates = Vec::new();
 
     let embedded_slices = if explicit {
@@ -904,6 +926,8 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
     for embedded in embedded_slices {
         let (embedded_stripped, _, embedded_interpretations) =
             strip_calculation_wrappers_with_prefixes(embedded, &cue_prefixes);
+        let embedded_stripped = function_phrase::rewrite_function_phrases(&embedded_stripped)
+            .unwrap_or(embedded_stripped);
         if !embedded_stripped.is_empty() && has_calculation_signal(&embedded_stripped, true) {
             push_calculation_candidate(
                 &mut candidates,

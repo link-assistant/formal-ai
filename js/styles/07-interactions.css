@@ -1,0 +1,229 @@
+/* Shared topbar hover / focus interaction layer and later feature additions
+ * (engine banner, autocomplete, composer grid, accessibility media queries).
+ *
+ * Part of the app stylesheet split from the former js/styles.css. The
+ * files in js/styles/ are linked in numeric order by js/app/index.html and
+ * together form one cascade: keep that order when editing.
+ */
+
+/* ===================================================================
+ * Issues #541 (R1) + #1963 + #550 (P4/P5): theme + interaction parity,
+ * now expressed through the design tokens in 01-tokens.css.
+ * ===================================================================
+ * Historically each of these surfaces needed THREE hand-written copies of
+ * every colour (a light base + `:root[data-theme="dark"]` + the
+ * `@media (prefers-color-scheme: dark)` fallback). A surface went dark, or a
+ * control gained a hover/focus state, only when every copy was authored — and
+ * new code routinely missed one, which is exactly how P4 ("services box still
+ * not themed in dark") and P5 ("only some topbar buttons react to hover")
+ * happened in the first place.
+ *
+ * Those surfaces now read their colours from the `--fa-*` tokens, so each light
+ * rule themes itself in BOTH dark layers automatically — only the token value
+ * is overridden, in one place in 01-tokens.css. The large R1 + P4
+ * dark-only duplicate blocks that used to live here are therefore gone: their
+ * light rules above carry the tokens (e.g. `.desktop-service`,
+ * `.desktop-service-token`, `.tool-mode`, `.mode-status`). What remains below
+ * is the genuinely shared interaction layer — one hover, one active-hover, and
+ * one :focus-visible ring (WCAG 2.4.7 / 1.4.11) applied uniformly to every
+ * topbar control, all token-driven so mouse and keyboard users get the same
+ * affordance in every theme.
+ * =================================================================== */
+
+/* One uniform hover for every topbar control (themes via --fa-control-*). */
+.mode-toggle:hover,
+.diagnostics-toggle:hover,
+.mode-option:hover,
+.mobile-menu-toggle:hover,
+.sidebar-toggle:hover,
+.report-button:hover,
+.source-code-button:hover,
+.download-button:hover,
+.memory-button:hover {
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
+}
+
+/* Active/pressed segmented controls keep their solid green meaning; on hover
+   they deepen instead of taking the light tint, so the hover is still legible
+   without dropping the "selected" state. Higher specificity than the generic
+   hover above, so it wins regardless of source order. */
+.mode-toggle[aria-pressed="true"]:hover,
+.diagnostics-toggle[aria-pressed="true"]:hover,
+.mode-option[aria-checked="true"]:hover,
+.mode-option.is-active:hover,
+.mobile-menu-toggle[aria-pressed="true"]:hover {
+  border-color: var(--fa-control-active-hover-border);
+  background: var(--fa-control-active-hover-bg);
+}
+
+/* Keyboard parity (WCAG 2.4.7): one focus ring shared by every topbar control,
+   pairing the accent color with a visible outline (not color alone). */
+.mode-toggle:focus-visible,
+.diagnostics-toggle:focus-visible,
+.mode-option:focus-visible,
+.mobile-menu-toggle:focus-visible,
+.sidebar-toggle:focus-visible,
+.report-button:focus-visible,
+.source-code-button:focus-visible,
+.download-button:focus-visible,
+.memory-button:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Issue #934: engine-unavailable is loud, not silent. The banner sits in the
+   topbar so it is visible without diagnostics mode, and doubles as an alert
+   for screen readers. */
+.engine-unavailable {
+  color: var(--fa-danger, #d33);
+  font-weight: 600;
+  padding: 0 6px;
+  white-space: nowrap;
+}
+.setting-row-diagnostic-js-fallback .setting-warning {
+  margin: 4px 0 0;
+}
+
+/* Issue #825: the shared autocomplete listbox for every own-input-box
+ * surface. Rendered in flow directly above the composer grid; tokens theme
+ * it for light/dark automatically. */
+.autocomplete-menu {
+  width: min(860px, 100%);
+  margin: 0 auto 8px;
+  padding: 4px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid var(--fa-border-control);
+  border-radius: 8px;
+  background: var(--fa-surface-card);
+  box-shadow: 0 6px 18px rgba(20, 33, 41, 0.14);
+}
+
+.autocomplete-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fa-text-body);
+  font: inherit;
+  font-size: 0.93rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.autocomplete-item.is-active,
+.autocomplete-item:hover {
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-strong);
+}
+
+.autocomplete-item-hint {
+  flex: none;
+  color: var(--fa-text-muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Issue #557: one input surface contains both actions, including touch layouts.
+ * Issue #112: the text keeps equal padding on every side, so the surface is the
+ * grid row itself (action | text | send) and the textarea draws no box of its
+ * own; padding the textarea around overlaid buttons would unbalance it. */
+.composer-grid {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 2px;
+  align-items: end;
+  padding: 3px;
+  border: 1px solid #b9c6ca;
+  border-radius: 8px;
+  background: #ffffff;
+}
+.composer-grid:focus-within { outline: 2px solid #2d6cdf; outline-offset: 1px; }
+.composer-grid:has(textarea:disabled) { background: #edf1f3; }
+.composer-grid textarea,
+.composer-grid textarea:disabled { border-color: transparent; background: transparent; }
+.composer-grid textarea:focus { outline: none; }
+.composer-grid .composer-action-button { border-color: transparent; background: transparent; }
+.composer-grid .composer-action-button,
+.composer-grid .send-button { min-width: 44px; width: 44px; height: 44px; padding: 0; }
+.composer-grid .send-label { display: none; }
+.composer-style-glass-soft .composer-grid { background: rgba(255, 255, 255, 0.74); }
+.composer-style-glass-clear .composer-grid { background: rgba(255, 255, 255, 0.52); }
+.ui-skin-contrast .composer-grid { border-color: #25313a; }
+:root[data-theme="dark"] .composer-grid { border-color: #4a524e; background: #202322; }
+:root[data-theme="dark"] .composer-grid:focus-within { outline-color: #7aa5ff; }
+:root[data-theme="dark"] .composer-grid:has(textarea:disabled) { background: #272b2a; }
+:root[data-theme="dark"] .composer-style-glass-soft .composer-grid { background: rgba(32, 35, 34, 0.74); }
+:root[data-theme="dark"] .composer-style-glass-clear .composer-grid { background: rgba(32, 35, 34, 0.52); }
+:root[data-theme="dark"] .ui-skin-contrast .composer-grid { border-color: #c9c1b6; }
+:root[data-theme="dark"] .composer-grid textarea,
+:root[data-theme="dark"] .composer-grid .composer-action-button { border-color: transparent; background: transparent; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .composer-grid { border-color: #4a524e; background: #202322; }
+  :root:not([data-theme="light"]) .composer-grid:focus-within { outline-color: #7aa5ff; }
+  :root:not([data-theme="light"]) .composer-grid:has(textarea:disabled) { background: #272b2a; }
+  :root:not([data-theme="light"]) .composer-style-glass-soft .composer-grid { background: rgba(32, 35, 34, 0.74); }
+  :root:not([data-theme="light"]) .composer-style-glass-clear .composer-grid { background: rgba(32, 35, 34, 0.52); }
+  :root:not([data-theme="light"]) .ui-skin-contrast .composer-grid { border-color: #c9c1b6; }
+  :root:not([data-theme="light"]) .composer-grid textarea,
+  :root:not([data-theme="light"]) .composer-grid .composer-action-button { border-color: transparent; background: transparent; }
+}
+.ui-skin-material { --fa-focus-ring: #6750a4; }
+.ui-skin-material .message-body,
+.ui-skin-material .sidebar-section-body { border-radius: 16px; box-shadow: 0 2px 6px rgb(0 0 0 / 12%); }
+.ui-skin-material .composer-grid { border-radius: 28px; border-color: var(--fa-control-border, #79747e); }
+.ui-skin-material .topbar { box-shadow: 0 2px 8px rgb(0 0 0 / 12%); }
+.ui-skin-material button:focus-visible { outline: 3px solid var(--fa-focus-ring); outline-offset: 2px; }
+@media (prefers-reduced-transparency: reduce) {
+  .ui-skin-glass { --fa-glass-opacity: 1 !important; }
+  .ui-skin-glass * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+}
+@media (forced-colors: active) {
+  .composer-grid { border: 1px solid CanvasText; }
+  .composer-grid button { background: Canvas; color: ButtonText; }
+}
+
+/* Issue #447: a short viewport scrolls the complete navigation column. */
+.context-panel {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+}
+/* Issue #27 R3 keeps the accordion: expanded sections still share the column
+ * equally (flex-basis 0) and each body scrolls by itself. The #447 floor stops
+ * them shrinking into clipped slivers: once the viewport is shorter than the
+ * floors the column overflows and scrolls as a whole. */
+.context-panel > .drawer-brand,
+.context-panel > .sidebar-section.is-collapsed {
+  flex: 0 0 auto;
+}
+.context-panel > .sidebar-section.is-expanded {
+  flex: 1 1 0;
+  min-height: 6rem;
+}
+.context-panel .sidebar-section-header { flex-shrink: 0; }
+.context-panel :focus-visible { scroll-margin-block: 12px; }
+
+/* Issue #667: four projections remain readable as panes collapse on mobile. */
+/* The debugger sits above the messages: its own row, so the messages keep the
+   scrolling 1fr row and the composer stays last (R383). */
+.chat-panel:has(> .debugger-view) { grid-template-rows: auto minmax(0, 1fr) auto; }
+.debugger-view { min-height: 0; max-height: 50vh; overflow: auto; border-block-end: 1px solid var(--fa-border-subtle, #bbb); padding: 12px; }
+.debugger-view header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.debugger-panes { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.debugger-panes section { min-width: 0; max-height: 36vh; overflow: auto; }
+.debugger-panes pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; }
+.debugger-panes h2 { font-size: 14px; }
+.debugger-graph svg { max-width: 100%; height: auto; }
+@media (max-width: 1100px) { .debugger-panes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .debugger-panes { grid-template-columns: minmax(0, 1fr); } }

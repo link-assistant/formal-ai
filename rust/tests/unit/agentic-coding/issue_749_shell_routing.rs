@@ -1,0 +1,443 @@
+//! Regression coverage for issue #749 shell-command passthrough.
+
+use formal_ai::agentic_coding::mutating_action::verified_recipe;
+use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+use formal_ai::{ChatMessage, ToolCall};
+
+/// The command a prompt is carried out by, driven to the end of its plan.
+///
+/// A command that changes the workspace is not issued once: since issue #944 it
+/// is planned as the verified recipe its seed intent declares, so the first tool
+/// call for *"copy a.txt to b.txt"* is `test -e a.txt` and the copy itself comes
+/// three steps later. This helper therefore drives the plan the way a client
+/// would — reporting each step as having succeeded — and returns the one step
+/// whose complete recipe equals the observed sequence, so a preparatory mkdir
+/// cannot outrank the actual copy or move. For every
+/// read-only command the plan is a single step and that step is the answer, so
+/// the question this helper asks is unchanged.
+fn shell_command(prompt: &str) -> Option<String> {
+    let mut messages = vec![ChatMessage::user(prompt)];
+    let mut commands: Vec<String> = Vec::new();
+    while commands.len() <= MAX_PLAN_STEPS {
+        let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["exec_command"])
+        else {
+            break;
+        };
+        let call = calls.first()?;
+        let arguments: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+        let command = arguments["command"].as_str()?.to_owned();
+        let id = format!("call_{}", messages.len());
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            id.clone(),
+            call.tool.clone(),
+            call.arguments.clone(),
+        )]));
+        messages.push(ChatMessage::tool_result(
+            id,
+            &call.tool,
+            format!("Command: {command}\nOutput: (empty)\nExit Code: 0"),
+        ));
+        commands.push(command);
+    }
+    commands
+        .iter()
+        .find(|command| verified_recipe(command).is_some_and(|recipe| recipe == commands))
+        .or_else(|| commands.first())
+        .cloned()
+}
+
+/// A plan longer than this is a runaway, not an answer; the longest recipe the
+/// seed declares is six steps.
+const MAX_PLAN_STEPS: usize = 12;
+
+include!("../../fixtures/native-protocol-observation.rs");
+#[test]
+fn explicit_shell_forms_pass_the_complete_command_through() {
+    for (prompt, expected) in [
+        ("execute date", "date"),
+        ("run bash: echo hi", "echo hi"),
+        ("run the command wc -l foo.txt", "wc -l foo.txt"),
+        ("execute ln -s a b", "ln -s a b"),
+        ("execute sort foo.txt", "sort foo.txt"),
+        (
+            "execute arbitrary-tool --alpha beta",
+            "arbitrary-tool --alpha beta",
+        ),
+        ("bash -c 'ls -la'", "bash -c 'ls -la'"),
+        ("powershell Get-Location", "powershell Get-Location"),
+        ("pwsh -c 'Get-ChildItem'", "pwsh -c 'Get-ChildItem'"),
+    ] {
+        assert_eq!(shell_command(prompt).as_deref(), Some(expected), "{prompt}");
+    }
+}
+
+#[test]
+fn natural_shell_intents_cover_file_vcs_build_and_search_tasks() {
+    for (language, prompt, expected) in [
+        ("English", "show current directory", "pwd"),
+        (
+            "en",
+            "create an empty file called note.txt",
+            "touch note.txt",
+        ),
+        ("en", "delete the file old.txt", "rm old.txt"),
+        ("en", "copy a.txt to b.txt", "cp a.txt b.txt"),
+        ("en", "rename old.txt to new.txt", "mv old.txt new.txt"),
+        ("en", "remove the directory build", "rmdir build"),
+        ("en", "create a symbolic link from a to b", "ln -s a b"),
+        ("en", "show environment variables", "env"),
+        ("en", "show metadata for Cargo.toml", "stat Cargo.toml"),
+        ("en", "show git log", "git log"),
+        ("en", "what changed in git", "git diff"),
+        // "commit my changes" is a `git_commit_request` surface (PR #1188
+        // dogfooding), planned as the non-interactive commit recipe — a bare
+        // `git commit` would wait on an editor — and the JavaScript planner
+        // plans the same command.
+        (
+            "en",
+            "commit my changes",
+            "git add -A && git commit -q -m 'chore: commit pending changes' && if test -n \"$(git remote)\"; then git push -q origin HEAD; fi && git rev-parse HEAD",
+        ),
+        ("ru", "удали файл old.txt", "rm old.txt"),
+        ("ru", "скопируй a.txt в b.txt", "cp a.txt b.txt"),
+        ("hi", "फ़ाइल old.txt हटाओ", "rm old.txt"),
+        ("zh", "删除文件 old.txt", "rm old.txt"),
+    ] {
+        assert_eq!(
+            shell_command(prompt).as_deref(),
+            Some(expected),
+            "{language}: {prompt}"
+        );
+    }
+}
+
+/// Restores the process working directory when dropped, including on the
+/// panic path of the assertions that run inside the controlled workspace.
+struct RestoreCwd(std::path::PathBuf);
+
+impl Drop for RestoreCwd {
+    fn drop(&mut self) {
+        std::env::set_current_dir(&self.0).expect("restore the working directory");
+    }
+}
+
+/// The build-family intents resolve through `formal-ai:workspace-test` and its
+/// siblings, which pick the command from the first marker file in the process's
+/// working directory. The repository root stopped being a cargo workspace when
+/// plan 16 L1 moved the manifest to `rust/`, so a runner that invokes cargo
+/// from the root legitimately resolves the bun workspace markers there. These
+/// pins therefore hold in a cargo workspace the test controls, not in whatever
+/// directory the runner happened to start from.
+#[test]
+fn workspace_intents_follow_the_cargo_marker_of_the_current_directory() {
+    let previous = std::env::current_dir().expect("current directory");
+    let workspace = std::env::temp_dir().join(format!(
+        "formal-ai-issue-749-workspace-{}",
+        std::process::id()
+    ));
+    std::fs::create_dir_all(&workspace).expect("create the controlled workspace");
+    std::fs::write(workspace.join("Cargo.toml"), "[package]\n").expect("write the marker");
+    let restore = RestoreCwd(previous);
+    std::env::set_current_dir(&workspace).expect("enter the controlled workspace");
+    for (language, prompt, expected) in [
+        ("en", "run the tests", "cargo test"),
+        ("en", "install dependencies", "cargo fetch"),
+        ("en", "build the project", "cargo build"),
+        ("hi", "प्रोजेक्ट बनाएँ", "cargo build"),
+        ("zh", "运行测试", "cargo test"),
+    ] {
+        assert_eq!(
+            shell_command(prompt).as_deref(),
+            Some(expected),
+            "{language}: {prompt}"
+        );
+    }
+    drop(restore);
+    std::fs::remove_dir_all(&workspace).expect("remove the controlled workspace");
+}
+
+#[test]
+fn explicit_and_listing_routes_win_over_embedded_semantic_cues() {
+    assert_eq!(
+        shell_command("execute echo show current directory").as_deref(),
+        Some("echo show current directory")
+    );
+    assert_eq!(
+        shell_command("print a directory listing of the current working directory").as_deref(),
+        Some("ls")
+    );
+    assert_eq!(
+        shell_command("Run ls to list files here").as_deref(),
+        Some("ls")
+    );
+}
+
+#[test]
+fn bare_web_search_imperative_is_not_mistaken_for_find_command() {
+    let messages = vec![ChatMessage::user(
+        "find information about the 2022 FIFA World Cup winner",
+    )];
+    if let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["bash"]) {
+        assert!(
+            calls.iter().all(|call| call.tool != "bash"),
+            "web-search prose must not become a shell call: {calls:?}"
+        );
+    }
+}
+
+#[test]
+fn local_search_is_shell_routed_instead_of_web_searched() {
+    for prompt in [
+        "search for TODO in the code",
+        "find FIXME in the repository",
+        "grep for error in local files",
+        "найди TODO в коде",
+        "कोड में TODO खोजें",
+        "在代码中搜索 TODO",
+    ] {
+        // Since PR #1188 T90 the planner's workspace-search arm answers a
+        // local content search ahead of the shell-intent lowering (which still
+        // reads `rg --fixed-strings`, pinned on `shellCommandForTask` in
+        // rust/tests/web/agentic-core.test.mjs). It runs the seeded
+        // `content_search` command of data/seed/shell-intents.lino: `grep -rnH`
+        // prints the `path:line:text` hits the arm answers with, needs no `rg`
+        // installed, skips `.git`, and matches an identifier as a whole word
+        // (`-w`), so `TODO` does not also find `TODOS`. CIFIX2 kept it.
+        let command = shell_command(prompt).expect(prompt);
+        assert!(
+            command.starts_with("grep -rnHw --exclude-dir=.git -- '"),
+            "{prompt}: {command}"
+        );
+        assert!(command.ends_with("' '.'"), "{prompt}: {command}");
+    }
+}
+
+#[test]
+fn explicit_passthrough_covers_the_full_command_taxonomy() {
+    for command in [
+        "pwd",
+        "cd workspace",
+        "ls -la",
+        "whoami",
+        "id",
+        "date",
+        "uname -a",
+        "env",
+        "which cargo",
+        "stat Cargo.toml",
+        "file Cargo.toml",
+        "touch note.txt",
+        "mkdir build",
+        "rmdir build",
+        "rm note.txt",
+        "cp a.txt b.txt",
+        "mv a.txt b.txt",
+        "ln -s a b",
+        "chmod 644 note.txt",
+        "chown user note.txt",
+        "cat note.txt",
+        "head -n 5 note.txt",
+        "tail -n 5 note.txt",
+        "wc -l note.txt",
+        "sort note.txt",
+        "uniq note.txt",
+        "cut -d: -f1 note.txt",
+        "tr a-z A-Z",
+        "sed s/a/b/ note.txt",
+        "awk '{print $1}' note.txt",
+        "grep TODO note.txt",
+        "find . -name '*.rs'",
+        "du -sh .",
+        "df -h",
+        "curl https://example.com",
+        "wget https://example.com",
+        "ping localhost",
+        "git status",
+        "git log -1",
+        "git diff",
+        "git add note.txt",
+        "git commit -m test",
+        "git branch",
+        "git checkout main",
+        "git push",
+        "git pull",
+        "npm test",
+        "pnpm test",
+        "yarn test",
+        "bun test",
+        "cargo test",
+        "pip install demo",
+        "poetry install",
+        "make test",
+        "go test ./...",
+        "mvn test",
+        "gradle test",
+        "ps aux",
+        "kill 1234",
+    ] {
+        let prompt = format!("execute {command}");
+        assert_eq!(shell_command(&prompt).as_deref(), Some(command), "{prompt}");
+    }
+}
+
+#[test]
+fn passthrough_prefixes_have_language_parity() {
+    for (language, prompt, expected) in [
+        ("en", "execute date", "date"),
+        ("en", "run env", "env"),
+        ("en", "run the command stat file.txt", "stat file.txt"),
+        ("en", "run shell: wc -l file.txt", "wc -l file.txt"),
+        ("en", "run bash: echo hello world", "echo hello world"),
+        ("en", "run powershell: Get-Date", "Get-Date"),
+        ("ru", "выполни date", "date"),
+        ("ru", "запусти env", "env"),
+        ("ru", "выполни команду stat file.txt", "stat file.txt"),
+        ("ru", "запусти команду wc -l file.txt", "wc -l file.txt"),
+        ("ru", "запусти bash: echo привет мир", "echo привет мир"),
+        ("ru", "запусти powershell: Get-Date", "Get-Date"),
+        ("hi", "चलाओ date", "date"),
+        ("hi", "चलाएँ env", "env"),
+        ("hi", "कमांड चलाओ stat file.txt", "stat file.txt"),
+        ("hi", "निष्पादित wc -l file.txt", "wc -l file.txt"),
+        ("hi", "bash चलाओ: echo नमस्ते", "echo नमस्ते"),
+        ("hi", "powershell चलाओ: Get-Date", "Get-Date"),
+        ("zh", "执行 date", "date"),
+        ("zh", "运行 env", "env"),
+        ("zh", "执行命令 stat file.txt", "stat file.txt"),
+        ("zh", "运行命令 wc -l file.txt", "wc -l file.txt"),
+        ("zh", "运行 bash: echo 你好", "echo 你好"),
+        ("zh", "运行 powershell: Get-Date", "Get-Date"),
+    ] {
+        assert_eq!(
+            shell_command(prompt).as_deref(),
+            Some(expected),
+            "{language}: {prompt}"
+        );
+    }
+}
+
+#[test]
+fn opencode_outer_prompt_quotes_do_not_hide_the_command() {
+    assert_eq!(
+        shell_command("\"execute echo ISSUE749_OPENCODE_TWO_WORDS SECOND_ARGUMENT\"").as_deref(),
+        Some("echo ISSUE749_OPENCODE_TWO_WORDS SECOND_ARGUMENT"),
+    );
+}
+
+#[test]
+fn committed_agent_cli_session_is_byte_reproducible() {
+    const TASK: &str = "execute printf 'issue-749-driver=passed\\n'";
+    let committed = include_str!(
+        "../../../../docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/shell.json"
+    );
+    assert_protocol_transition(
+        include_str!("../../../../docs/case-studies/issue-749/agent-cli-evidence/session.json"),
+        committed,
+    );
+    let archived: serde_json::Value = serde_json::from_str(committed).expect("capture JSON");
+    let tools = archived["tools_advertised"]
+        .as_array()
+        .expect("recorded tools")
+        .iter()
+        .map(|tool| tool.as_str().expect("tool name"))
+        .collect::<Vec<_>>();
+    let fresh = formal_ai::agentic_coding::run_agentic_task_with_tools(TASK, &tools)
+        .expect("offline replay with exact captured tools");
+    assert_eq!(
+        committed.trim(),
+        serde_json::to_string_pretty(&fresh.session_json())
+            .expect("session JSON")
+            .trim()
+    );
+}
+
+#[test]
+fn file_operation_cues_do_not_come_from_path_operands() {
+    for word in ["rename", "move", "delete", "remove", "word", "line", "text"] {
+        for prefix in ["", "/tmp/"] {
+            let source = format!("{prefix}{word}-source.txt");
+            let target = format!("{prefix}{word}-destination.mjs");
+            for (opening, closing) in [("", ""), ("«", "»"), ("“", "”")] {
+                let prompt =
+                    format!("Copy {opening}{source}{closing} to {opening}{target}{closing}");
+                assert_eq!(
+                    shell_command(&prompt),
+                    Some(format!("cp {source} {target}"))
+                );
+            }
+        }
+    }
+    for verb in [
+        "Delete",
+        "Remove",
+        "удали",
+        "удалить",
+        "हटाओ",
+        "删除",
+        "移除",
+        "elimina",
+        "borra",
+    ] {
+        let prompt = format!("{verb} malformed-regression.test.mjs");
+        assert_eq!(
+            shell_command(&prompt),
+            Some(String::from("rm malformed-regression.test.mjs"))
+        );
+    }
+}
+#[test]
+fn g128_explicit_command_payload_does_not_become_research() {
+    let command = r#"node -e 'console.log("search Wikipedia for proof and source")'"#;
+    let messages = [ChatMessage::user(format!("Run {command}"))];
+    let Some(AgenticPlan::ToolCalls(calls)) =
+        plan_chat_step(&messages, &["exec_command", "read", "write", "websearch"])
+    else {
+        panic!("explicit command must be executable");
+    };
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0].tool, "exec_command");
+    let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    assert_eq!(arguments["command"].as_str(), Some(command));
+}
+
+#[test]
+fn explicit_shell_quoted_apostrophe_remains_command_data() {
+    let command = r#"node -e 'process.stdout.write("don'\''t expand $HOME")'"#;
+    let prompt = format!("Run {command}");
+    assert_eq!(shell_command(&prompt).as_deref(), Some(command));
+    assert!(shell_command("Run node -e 'unclosed").is_none());
+}
+
+#[test]
+fn source_members_do_not_authorize_whole_file_shell_mutations() {
+    for prompt in [
+        "Move the function parse from source.rs to destination.rs",
+        "перемести функцию parse из source.rs в destination.rs",
+        "स्थानांतरित करो फ़ंक्शन parse source.rs में destination.rs",
+        "移动函数 parse source.rs 到 destination.rs",
+        "mueve la función parse de source.rs a destination.rs",
+        "Move tests from source.rs to destination.rs",
+        "перемести тест из source.rs в destination.rs",
+        "स्थानांतरित करो परीक्षण source.rs में destination.rs",
+        "移动测试 source.rs 到 destination.rs",
+        "mueve la prueba de source.rs a destination.rs",
+        "Copy methods from source.rs to destination.rs",
+        "Copy regression from source.rs to destination.rs",
+        "Move the two existing seed-byte roundtrip tests from rust/src/memory/bundle.rs into rust/tests/fixtures/renamed.rs",
+    ] {
+        if let Some(command) = shell_command(prompt) {
+            let executable = command.split_whitespace().next().unwrap_or_default();
+            assert!(
+                !["mv", "cp", "rm"].contains(&executable),
+                "{prompt}: {command}"
+            );
+        }
+    }
+    for word in ["test", "tests", "function", "methods", "regression"] {
+        for (verb, executable) in [("Copy", "cp"), ("Move", "mv")] {
+            let prompt = format!("{verb} {word}-source.rs to {word}-destination.rs");
+            let expected = format!("{executable} {word}-source.rs {word}-destination.rs");
+            assert_eq!(shell_command(&prompt).as_deref(), Some(expected.as_str()));
+        }
+    }
+}

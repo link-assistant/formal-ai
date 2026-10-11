@@ -1,0 +1,46 @@
+link-action: makes link from any-of-reference # concept link-action	acción de enlace
+any-of-reference: reference repeatable-from-zero # concept any-of-reference	cualquier referencia
+any-of-link: link repeatable-from-zero # concept any-of-link	cualquier enlace
+repeatable-from-zero: same link-action zero-or-more # concept repeatable-from-zero	repetible desde cero
+zero-or-more: zero or-else more # concept zero-or-more	cero o más
+makes: link-action action # concept makes	crea
+point-at: reference-action to link # concept point-at	apuntar a
+of: belonging from part to whole # concept of	de
+to: target end direction # concept to	hacia
+and: together-with # concept and	y
+not: not (not not) # concept not	no
+same: not (not same) link # concept same	mismo
+other: not same # concept other	otro
+single: not other # concept single	único
+or-else: choice between other # concept or-else	o bien
+more: one and one # concept more	más
+is-identity: same # concept is-identity	es identidad
+is-a-kind-of: subtype supertype direction # concept is-a-kind-of	es un tipo de
+subtype: is-a-kind-of type # concept subtype	subtipo
+supertype: type type # concept supertype	supertipo
+held-by: from property to entity # concept held-by	poseído por
+amount: count any-of-link # concept amount	monto	importe
+size: extent single link # concept size	tamaño
+count: amount distinct reference # concept count	recuento
+extent: size single reference # concept extent	extensión
+distinct: other # concept distinct	distinto
+any: quantity not fixed # concept any	cualquier
+fixed: same repeatable-from-zero # concept fixed	fijo
+empty: any-of-reference zero # concept empty	vacío
+source: relation direction # concept source	origen
+target: relation direction # concept target	destino
+end: relation direction # concept end	extremo
+direction: relation source target # concept direction	dirección
+belonging: relation part whole # concept belonging	pertenencia
+part: link whole # concept part	parte
+whole: link part # concept whole	todo
+together-with: relation and # concept together-with	junto con
+choice: relation # concept choice	elección
+semantic-facet: relation # concept semantic-facet	faceta semántica
+lexical-sense: denotation concept # concept lexical-sense	sentido léxico
+self-equation: semantic-facet same # concept self-equation	autoecuación
+symbol: reference notation # concept symbol	símbolo
+one-symbol-one-meaning: symbol single lexical-sense # concept one-symbol-one-meaning	un símbolo un significado
+sense-split: lexical-sense other symbol # concept sense-split	división de sentidos
+bank-river: sense-split part whole # concept bank-river	orilla del río
+bank-money: sense-split entity property # concept bank-money	banco financiero

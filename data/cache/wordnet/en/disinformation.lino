@@ -1,0 +1,11 @@
+language en
+lemma disinformation
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "misinformation that is deliberately disseminated in order to influence or confuse rivals (foreign enemies or business competitors etc.)"
+    id oewn-06647838-n
+    partOfSpeech n
+source "oewn:2024"

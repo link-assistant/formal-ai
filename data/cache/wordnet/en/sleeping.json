@@ -1,0 +1,39 @@
+{
+  "lemma": "sleeping",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05688958-n",
+      "partOfSpeech": "n",
+      "definition": "the state of being asleep"
+    },
+    {
+      "id": "oewn-01066787-n",
+      "partOfSpeech": "n",
+      "definition": "quiet and inactive restfulness",
+      "synonyms": [
+        "quiescence",
+        "quiescency",
+        "dormancy"
+      ]
+    },
+    {
+      "id": "oewn-00859826-n",
+      "partOfSpeech": "n",
+      "definition": "the suspension of consciousness and decrease in metabolic rate"
+    },
+    {
+      "id": "oewn-01241787-s",
+      "partOfSpeech": "s",
+      "definition": "lying with head on paws as if sleeping",
+      "synonyms": [
+        "dormant"
+      ]
+    }
+  ]
+}

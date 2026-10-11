@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "戰爭"
+        },
+        "es": {
+          "language": "es",
+          "value": "guerra"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "國與國之間有組織的長期衝突"
+        },
+        "es": {
+          "language": "es",
+          "value": "tipo de conflicto social violento"
         }
       },
       "aliases": {
@@ -64,6 +72,20 @@
           {
             "language": "zh",
             "value": "战争"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "guerras"
+          },
+          {
+            "language": "es",
+            "value": "conflicto bélico"
+          },
+          {
+            "language": "es",
+            "value": "conflicto belico"
           }
         ]
       }

@@ -1,0 +1,88 @@
+>> bash {"command":"node --test rust/tests/web/seed-routing-ci-regressions.test.mjs"}
+   Output: TAP version 13
+   # Subtest: complete commit cues own an existing-tree commit in every seeded language
+   ok 1 - complete commit cues own an existing-tree commit in every seeded language
+     ---
+     duration_ms: 658.551541
+     ...
+   # Subtest: commit cue masking preserves independent authoring and token boundaries
+   ok 2 - commit cue masking preserves independent authoring and token boundaries
+     ---
+     duration_ms: 0.671125
+     ...
+   # Subtest: avoidance aliases cover contracted and expanded seeded instruction forms
+   ok 3 - avoidance aliases cover contracted and expanded seeded instruction forms
+     ---
+     duration_ms: 162.947042
+     ...
+   # Subtest: named transform metadata retains the original content-addressed provenance
+   ok 4 - named transform metadata retains the original content-addressed provenance
+     ---
+     duration_ms: 0.154833
+     ...
+   # Subtest: proof promotion belongs to leading proof directives, not embedded test wording
+   ok 5 - proof promotion belongs to leading proof directives, not embedded test wording
+     ---
+     duration_ms: 11.905875
+     ...
+   # Subtest: authored returning concept loads all five languages and distinguishes return from equality
+   ok 6 - authored returning concept loads all five languages and distinguishes return from equality
+     ---
+     duration_ms: 38.575167
+     ...
+   1..6
+   # tests 6
+   # suites 0
+   # pass 6
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 1031.621541
+   
+   Exit Code: 0
+== answer ==
+The `node --test rust/tests/web/seed-routing-ci-regressions.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: complete commit cues own an existing-tree commit in every seeded language
+ok 1 - complete commit cues own an existing-tree commit in every seeded language
+  ---
+  duration_ms: 658.551541
+  ...
+# Subtest: commit cue masking preserves independent authoring and token boundaries
+ok 2 - commit cue masking preserves independent authoring and token boundaries
+  ---
+  duration_ms: 0.671125
+  ...
+# Subtest: avoidance aliases cover contracted and expanded seeded instruction forms
+ok 3 - avoidance aliases cover contracted and expanded seeded instruction forms
+  ---
+  duration_ms: 162.947042
+  ...
+# Subtest: named transform metadata retains the original content-addressed provenance
+ok 4 - named transform metadata retains the original content-addressed provenance
+  ---
+  duration_ms: 0.154833
+  ...
+# Subtest: proof promotion belongs to leading proof directives, not embedded test wording
+ok 5 - proof promotion belongs to leading proof directives, not embedded test wording
+  ---
+  duration_ms: 11.905875
+  ...
+# Subtest: authored returning concept loads all five languages and distinguishes return from equality
+ok 6 - authored returning concept loads all five languages and distinguishes return from equality
+  ---
+  duration_ms: 38.575167
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1031.621541
+```

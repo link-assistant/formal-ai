@@ -1,0 +1,26 @@
+[
+  {
+    "taskId": "T2041",
+    "request": "Set the contents of output.mjs to «Error: this is the diagnostic example.\n»",
+    "content": "Error: this is the diagnostic example.\n",
+    "actual": "Error: this is the diagnostic example.\n",
+    "answer": "Completed the general change request for output.mjs and verified it with `cat output.mjs`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\n```lino\ngeneral_change_plan\n  id \"general_change_plan_f228a19c6202f5f7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Set the contents of output.mjs to «Error: this is the diagnostic example.\\n»\"\n  target \"output.mjs\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_f30d18ab1074e179\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to output.mjs\"\n    expected_evidence \"workspace file output.mjs\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"Error: this is the diagnostic example.\\n\"\n    command \"cat output.mjs\"\n  verification_command \"cat output.mjs\"\n```",
+    "calls": [
+      "bash",
+      "write",
+      "bash"
+    ]
+  },
+  {
+    "taskId": "T2043",
+    "request": "Set the contents of output.mjs to «{\"z\":\"failed: recorded attempt\",\"a\":\"fixture\"}\n»",
+    "content": "{\"z\":\"failed: recorded attempt\",\"a\":\"fixture\"}\n",
+    "actual": "{\"z\":\"failed: recorded attempt\",\"a\":\"fixture\"}\n",
+    "answer": "Completed the general change request for output.mjs and verified it with `cat output.mjs`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\n```lino\ngeneral_change_plan\n  id \"general_change_plan_69dc9d5743b6dcc1\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Set the contents of output.mjs to «{\\\"z\\\":\\\"failed: recorded attempt\\\",\\\"a\\\":\\\"fixture\\\"}\\n»\"\n  target \"output.mjs\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_e59cca3320834ef3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to output.mjs\"\n    expected_evidence \"workspace file output.mjs\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"{\\\"z\\\":\\\"failed: recorded attempt\\\",\\\"a\\\":\\\"fixture\\\"}\\n\"\n    command \"cat output.mjs\"\n  verification_command \"cat output.mjs\"\n```",
+    "calls": [
+      "bash",
+      "write",
+      "bash"
+    ]
+  }
+]

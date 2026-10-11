@@ -1,0 +1,137 @@
+# Small-model catalog for formalization matching (issue #483).
+#
+# Candidates for the smallest models that can actually help with
+# formalization matching against grounded knowledge (Wikipedia/Wikidata
+# Q-ids) — given a surface and a list of candidate entities, pick the
+# best match. Two shapes matter -- tiny instruct decoders (the
+# link-assistant/model-in-browser experiment runs SmolLM2-135M-Instruct
+# via Candle-in-WASM, ~270 MB of weights, ~512 MB free memory) and
+# small encoder rerankers (cross-encoders built exactly for
+# pick-the-match-from-options, and far smaller).
+#
+# `ram_required_mb` is the total working-set estimate (weights +
+# runtime) and `disk_required_mb` the download size, both rounded up;
+# the gate that hides non-fitting models reads them. `rating` is a
+# public-standing score on a 0-100 scale, rounded and approximate --
+# drawn from the Open LLM Leaderboard for decoders and MTEB retrieval
+# scores for encoders -- and only ever used for *sorting and flooring*
+# (`rating_source` names where the number came from), never as a
+# correctness claim. Verify the two or three rows you act on before
+# wiring a download URL into a release.
+#
+# Every row is `packaged false` — nothing here ships in the application
+# package or the web UI; downloads happen on demand, only after the
+# user enables the feature (`SmallModelOptions::default()` is off).
+# Plain data fields only -- no lexeme blocks, so no language-parity
+# gaps open.
+small_model_catalog
+  record_type "small_model_catalog"
+  schema_version 1
+  policy formal_first
+  steering "llms_never_at_steering_wheel"
+  default_state off
+  download "on_demand_only"
+small_model
+  model_id smollm2_135m_instruct
+  kind decoder
+  family SmolLM2
+  params_m 135
+  ram_required_mb 512
+  disk_required_mb 270
+  rating 38
+  rating_source "Open LLM Leaderboard (approx, smallest tier)"
+  task_affinity "formalization matching with options"
+  license apache_2
+  packaged false
+  note "runs fully client-side via Candle-in-WASM (link-assistant/model-in-browser)"
+small_model
+  model_id smollm2_360m_instruct
+  kind decoder
+  family SmolLM2
+  params_m 360
+  ram_required_mb 1024
+  disk_required_mb 700
+  rating 45
+  rating_source "Open LLM Leaderboard (approx)"
+  task_affinity "formalization matching with options"
+  license apache_2
+  packaged false
+  note "same family, better accuracy, still browser-sized"
+small_model
+  model_id qwen2_5_0_5b_instruct
+  kind decoder
+  family Qwen2.5
+  params_m 500
+  ram_required_mb 1024
+  disk_required_mb 450
+  rating 52
+  rating_source "Open LLM Leaderboard (approx)"
+  task_affinity "formalization matching with options"
+  license apache_2
+  packaged false
+  note "strong multilingual coverage for the size"
+small_model
+  model_id minilm_l6_crossencoder
+  kind encoder
+  family MiniLM
+  params_m 22
+  ram_required_mb 128
+  disk_required_mb 90
+  rating 58
+  rating_source "MTEB reranking tier (approx)"
+  task_affinity "pick the best match from given options"
+  license apache_2
+  packaged false
+  note "cross-encoder reranker: built for exactly the options-then-select shape, English"
+small_model
+  model_id multilingual_e5_small
+  kind encoder
+  family E5
+  params_m 118
+  ram_required_mb 384
+  disk_required_mb 130
+  rating 62
+  rating_source "MTEB multilingual retrieval tier (approx)"
+  task_affinity "pick the best match from given options"
+  license mit
+  packaged false
+  note "multilingual (ru/hi/zh included) retrieval encoder"
+small_model
+  model_id qwen2_5_1_5b_instruct
+  kind decoder
+  family Qwen2.5
+  params_m 1500
+  ram_required_mb 3072
+  disk_required_mb 1100
+  rating 66
+  rating_source "Open LLM Leaderboard (approx)"
+  task_affinity "formalization matching with options"
+  license apache_2
+  packaged false
+  note "laptop-class; hidden on small-RAM machines by the gate"
+small_model
+  model_id gemma_2_2b_it
+  kind decoder
+  family Gemma 2
+  params_m 2600
+  ram_required_mb 4096
+  disk_required_mb 1700
+  rating 70
+  rating_source "Open LLM Leaderboard (approx)"
+  task_affinity "formalization matching with options"
+  license gemma
+  packaged false
+  note "laptop-class; hidden on small-RAM machines by the gate"
+small_model
+  model_id phi_3_5_mini
+  kind decoder
+  family Phi-3.5
+  params_m 3800
+  ram_required_mb 6144
+  disk_required_mb 2300
+  rating 74
+  rating_source "Open LLM Leaderboard (approx)"
+  task_affinity "formalization matching with options"
+  license mit
+  packaged false
+  note "desktop-class; hidden on small-RAM machines by the gate"

@@ -16,7 +16,8 @@ handler_promotions
         all
           substring undefined of cleaned
           substring function of cleaned
-    because "an explicit execution failure must be explained before source text is treated as a new task"
+        evidence undefined_call
+    because "an explicit execution failure must be explained before source text is treated as a new task; issue 1173 R3: a request whose program calls a function nothing defines (the undefined_call operand) fails the same way whatever the function is named"
   promotion calendar_create_event
     rank 30
     when
@@ -31,10 +32,10 @@ handler_promotions
             role calendar_hour_reference of padded
             shape digit of trimmed
           all
-            role calendar_date_marker of padded
+            role calendar-date-marker of padded
             any
-              role temporal_preposition of padded
-              shape time_separator of trimmed
+              role temporal-preposition of padded
+              shape time-separator of trimmed
     because "issue 869 and issue 595 — a date signal conjoined with a scheduling act, or an elliptical clock hour that only the calendar handler's entity context can ground"
   promotion program_synthesis
     rank 40
@@ -72,6 +73,17 @@ handler_promotions
           substring divided of lowercase
           role arithmetic_operator_word of lowercase
     because "a digit and an arithmetic operator form an executable arithmetic expression"
+  promotion statistics
+    rank 65
+    when
+      all
+        role statistics_operation of cleaned
+        shape digit of trimmed
+        substring "," of lowercase
+        any
+          substring "?" of lowercase
+          substring "？" of lowercase
+    because "issue 1176: a question naming a statistic over a stated list of values is computed from that list before a search or a measurement lookup reads the statistic as a term to look up"
   promotion task_decomposition
     rank 70
     when
@@ -100,16 +112,16 @@ handler_promotions
     rank 80
     when
       any
-        role_prefix procedural_request of cleaned
+        role-prefix procedural_request of cleaned
         all
-          role_prefix procedural_request_elided_lead of cleaned
+          role-prefix procedural_request_elided_lead of cleaned
           role procedural_action_verb forms of cleaned
     because "a seeded procedural request with a concrete action reaches procedure discovery"
   promotion proof_request
     rank 90
     when
       any
-        role proof_directive of cleaned
+        role-prefix proof_directive of cleaned
         role proof_request_lead of cleaned
     because "an explicit request for proof reaches formal proof handling before opinion routing"
   promotion fact_checking
@@ -196,8 +208,10 @@ handler_promotions
   promotion verifiable_task
     rank 180
     when
-      role verifiable_expectation of lowercase
-    because "issues 531 and 1138: every seeded checkable expectation outranks generic retrieval; slot-backed paraphrases remain data and are interpreted by the shared rule grammar"
+      any
+        role verifiable_expectation of lowercase
+        role verifiable_expectation_pattern of lowercase
+    because "issues 531 and 1138: every seeded checkable expectation, the pattern expectation the data-gated pattern arm reads included, outranks generic retrieval; slot-backed paraphrases remain data and are interpreted by the shared rule grammar; the verifiable_spec claim still denies a pattern word with no run of atoms or grid, so a definition question falls through to concept_lookup"
   promotion concept_lookup
     rank 190
     when

@@ -139,263 +139,603 @@ multilingual_responses
     intent coding_identifier_renamed
     language es
     text "Se renombró `{old}` a `{new}` en `{path}` y se verificó el resultado."
-  response response_coding_workspace_effect_observed_en
-    intent coding_workspace_effect_observed
+  response response_file_edit_position_end_en
+    intent file_edit_position_end
     language en
-    text "Created or updated and observed `{path}` through the workspace tools."
-  response response_coding_workspace_effect_observed_ru
-    intent coding_workspace_effect_observed
+    text "Appended `{new}` to the end of `{path}` and observed the result."
+  response response_file_edit_position_end_ru
+    intent file_edit_position_end
     language ru
-    text "Файл `{path}` создан или обновлён и проверен через инструменты рабочей области."
-  response response_coding_workspace_effect_observed_hi
-    intent coding_workspace_effect_observed
+    text "В конец `{path}` добавлено `{new}`, результат проверен."
+  response response_file_edit_position_end_hi
+    intent file_edit_position_end
     language hi
-    text "`{path}` को कार्यक्षेत्र उपकरणों के माध्यम से बनाया या बदला और सत्यापित किया गया।"
-  response response_coding_workspace_effect_observed_zh
-    intent coding_workspace_effect_observed
+    text "`{path}` के अंत में `{new}` जोड़ा और परिणाम सत्यापित किया।"
+  response response_file_edit_position_end_zh
+    intent file_edit_position_end
     language zh
-    text "已通过工作区工具创建或更新并验证 `{path}`。"
-  response response_coding_workspace_effect_observed_es
-    intent coding_workspace_effect_observed
+    text "已在 `{path}` 末尾追加 `{new}` 并验证了结果。"
+  response response_file_edit_position_end_es
+    intent file_edit_position_end
     language es
-    text "Se creó o actualizó `{path}` y se comprobó mediante las herramientas del espacio de trabajo."
-  response response_coding_workspace_written_unverified_en
-    intent coding_workspace_written_unverified
+    text "Se añadió `{new}` al final de `{path}` y se verificó el resultado."
+  response response_file_edit_position_start_en
+    intent file_edit_position_start
     language en
-    text "Created `{path}` through the workspace file tools without read-back verification."
-  response response_coding_workspace_written_unverified_ru
-    intent coding_workspace_written_unverified
+    text "Added `{new}` to the start of `{path}` and observed the result."
+  response response_file_edit_position_start_ru
+    intent file_edit_position_start
     language ru
-    text "Файл `{path}` создан через файловые инструменты рабочей области без проверки чтением."
-  response response_coding_workspace_written_unverified_hi
-    intent coding_workspace_written_unverified
+    text "В начало `{path}` добавлено `{new}`, результат проверен."
+  response response_file_edit_position_start_hi
+    intent file_edit_position_start
     language hi
-    text "`{path}` को कार्यक्षेत्र फ़ाइल उपकरणों के माध्यम से बिना पुनः पढ़कर सत्यापन के बनाया गया।"
-  response response_coding_workspace_written_unverified_zh
-    intent coding_workspace_written_unverified
+    text "`{path}` की शुरुआत में `{new}` जोड़ा और परिणाम सत्यापित किया।"
+  response response_file_edit_position_start_zh
+    intent file_edit_position_start
     language zh
-    text "已通过工作区文件工具创建 `{path}`，但未进行回读验证。"
-  response response_coding_workspace_written_unverified_es
-    intent coding_workspace_written_unverified
+    text "已在 `{path}` 开头添加 `{new}` 并验证了结果。"
+  response response_file_edit_position_start_es
+    intent file_edit_position_start
     language es
-    text "Se creó `{path}` mediante las herramientas de archivos del espacio de trabajo, sin verificación de lectura."
-  response response_coding_workspace_verification_failed_en
-    intent coding_workspace_verification_failed
+    text "Se añadió `{new}` al principio de `{path}` y se verificó el resultado."
+  response response_file_edit_blank_line_en
+    intent file_edit_blank_line
     language en
-    text "Verification failed for `{path}`: the observed bytes differ from the planned workspace effect."
-  response response_coding_workspace_verification_failed_ru
-    intent coding_workspace_verification_failed
+    text "Added an empty line to `{path}` and observed the result."
+  response response_file_edit_blank_line_ru
+    intent file_edit_blank_line
     language ru
-    text "Проверка `{path}` не удалась: считанные байты отличаются от запланированного изменения рабочей области."
-  response response_coding_workspace_verification_failed_hi
-    intent coding_workspace_verification_failed
+    text "В `{path}` добавлена пустая строка, результат проверен."
+  response response_file_edit_blank_line_hi
+    intent file_edit_blank_line
     language hi
-    text "`{path}` का सत्यापन विफल रहा: पढ़े गए बाइट नियोजित कार्यक्षेत्र परिवर्तन से अलग हैं।"
-  response response_coding_workspace_verification_failed_zh
-    intent coding_workspace_verification_failed
+    text "`{path}` में एक खाली पंक्ति जोड़ी और परिणाम सत्यापित किया।"
+  response response_file_edit_blank_line_zh
+    intent file_edit_blank_line
     language zh
-    text "`{path}` 验证失败：读取的字节与计划的工作区更改不同。"
-  response response_coding_workspace_verification_failed_es
-    intent coding_workspace_verification_failed
+    text "已在 `{path}` 中添加一个空行并验证了结果。"
+  response response_file_edit_blank_line_es
+    intent file_edit_blank_line
     language es
-    text "La verificación de `{path}` falló: los bytes observados difieren del cambio planificado en el espacio de trabajo."
-  response response_tool_result_failed_exit_code_en
-    intent tool_result_failed_exit_code
+    text "Se añadió una línea vacía a `{path}` y se verificó el resultado."
+  response response_file_edit_position_after_en
+    intent file_edit_position_after
     language en
-    text "The command failed: `{tool}` exited with code {exit_code}.\n\n```text\n{error}\n```"
-  response response_tool_result_failed_exit_code_ru
-    intent tool_result_failed_exit_code
+    text "Inserted `{new}` after `{anchor}` in `{path}` and observed the result."
+  response response_file_edit_position_after_ru
+    intent file_edit_position_after
     language ru
-    text "Команда завершилась с ошибкой: `{tool}` завершилась с кодом {exit_code}.\n\n```text\n{error}\n```"
-  response response_tool_result_failed_exit_code_hi
-    intent tool_result_failed_exit_code
+    text "В `{path}` после `{anchor}` вставлено `{new}`, результат проверен."
+  response response_file_edit_position_after_hi
+    intent file_edit_position_after
     language hi
-    text "कमांड विफल रही: `{tool}` कोड {exit_code} के साथ समाप्त हुई।\n\n```text\n{error}\n```"
-  response response_tool_result_failed_exit_code_zh
-    intent tool_result_failed_exit_code
+    text "`{path}` में `{anchor}` के बाद `{new}` जोड़ा और परिणाम सत्यापित किया।"
+  response response_file_edit_position_after_zh
+    intent file_edit_position_after
     language zh
-    text "命令失败：`{tool}` 以代码 {exit_code} 退出。\n\n```text\n{error}\n```"
-  response response_tool_result_failed_exit_code_es
-    intent tool_result_failed_exit_code
+    text "已在 `{path}` 中 `{anchor}` 之后插入 `{new}` 并验证了结果。"
+  response response_file_edit_position_after_es
+    intent file_edit_position_after
     language es
-    text "El comando falló: `{tool}` terminó con código {exit_code}.\n\n```text\n{error}\n```"
-  response response_mutating_action_completed_en
-    intent mutating_action_completed
+    text "Se insertó `{new}` después de `{anchor}` en `{path}` y se verificó el resultado."
+  response response_file_edit_position_before_en
+    intent file_edit_position_before
     language en
-    text "Completed the action `{action}` and verified it with {checks}."
-  response response_mutating_action_completed_ru
-    intent mutating_action_completed
+    text "Inserted `{new}` before `{anchor}` in `{path}` and observed the result."
+  response response_file_edit_position_before_ru
+    intent file_edit_position_before
     language ru
-    text "Действие `{action}` выполнено и проверено командами {checks}."
-  response response_mutating_action_completed_hi
-    intent mutating_action_completed
+    text "В `{path}` перед `{anchor}` вставлено `{new}`, результат проверен."
+  response response_file_edit_position_before_hi
+    intent file_edit_position_before
     language hi
-    text "क्रिया `{action}` पूरी हुई और {checks} से सत्यापित की गई।"
-  response response_mutating_action_completed_zh
-    intent mutating_action_completed
+    text "`{path}` में `{anchor}` से पहले `{new}` जोड़ा और परिणाम सत्यापित किया।"
+  response response_file_edit_position_before_zh
+    intent file_edit_position_before
     language zh
-    text "已完成操作 `{action}`，并通过 {checks} 进行了验证。"
-  response response_mutating_action_completed_es
-    intent mutating_action_completed
+    text "已在 `{path}` 中 `{anchor}` 之前插入 `{new}` 并验证了结果。"
+  response response_file_edit_position_before_es
+    intent file_edit_position_before
     language es
-    text "Se completó la acción `{action}` y se verificó con {checks}."
-  response response_mutating_action_blocked_en
-    intent mutating_action_blocked
+    text "Se insertó `{new}` antes de `{anchor}` en `{path}` y se verificó el resultado."
+  response response_coding_text_remove_en
+    intent coding_text_remove
     language en
-    text "I did not run `{action}`. The check `{check}` exited {exit_code}, so the action was skipped and nothing in the workspace changed."
-  response response_mutating_action_blocked_ru
-    intent mutating_action_blocked
+    text "Removed `{old}` from `{path}` and observed the result."
+  response response_coding_text_remove_ru
+    intent coding_text_remove
     language ru
-    text "Я не выполнил `{action}`. Проверка `{check}` завершилась с кодом {exit_code}, поэтому действие пропущено и в рабочем каталоге ничего не изменилось."
-  response response_mutating_action_blocked_hi
-    intent mutating_action_blocked
+    text "Из `{path}` удалено `{old}`, результат проверен."
+  response response_coding_text_remove_hi
+    intent coding_text_remove
     language hi
-    text "मैंने `{action}` नहीं चलाया। जाँच `{check}` {exit_code} कोड के साथ समाप्त हुई, इसलिए क्रिया छोड़ दी गई और कार्यक्षेत्र में कुछ नहीं बदला।"
-  response response_mutating_action_blocked_zh
-    intent mutating_action_blocked
+    text "`{path}` से `{old}` हटाया और परिणाम सत्यापित किया।"
+  response response_coding_text_remove_zh
+    intent coding_text_remove
     language zh
-    text "我没有执行 `{action}`。检查 `{check}` 以退出码 {exit_code} 结束，因此跳过了该操作，工作区没有发生任何变化。"
-  response response_mutating_action_blocked_es
-    intent mutating_action_blocked
+    text "已从 `{path}` 中删除 `{old}` 并验证了结果。"
+  response response_coding_text_remove_es
+    intent coding_text_remove
     language es
-    text "No ejecuté `{action}`. La comprobación `{check}` terminó con código {exit_code}, así que se omitió la acción y nada cambió en el espacio de trabajo."
-  response response_coding_repository_source_observation_en
-    intent coding_repository_source_observation
+    text "Se eliminó `{old}` de `{path}` y se verificó el resultado."
+  response response_line_en
+    intent line
     language en
-    text "{result} (observed in repository source)."
-  response response_coding_repository_source_observation_ru
-    intent coding_repository_source_observation
+    text "Deleted {count} line(s) containing `{old}` from `{path}` and observed the result."
+  response response_line_ru
+    intent line
     language ru
-    text "{result} (наблюдается в исходном коде репозитория)."
-  response response_coding_repository_source_observation_hi
-    intent coding_repository_source_observation
+    text "Из `{path}` удалены строки, содержащие `{old}` ({count}), результат проверен."
+  response response_line_hi
+    intent line
     language hi
-    text "{result} (रिपॉज़िटरी स्रोत में देखा गया)।"
-  response response_coding_repository_source_observation_zh
-    intent coding_repository_source_observation
+    text "`{path}` से `{old}` वाली {count} पंक्ति(याँ) हटाईं और परिणाम सत्यापित किया।"
+  response response_line_zh
+    intent line
     language zh
-    text "{result}（在仓库源代码中观察到）。"
-  response response_coding_repository_source_observation_es
-    intent coding_repository_source_observation
+    text "已从 `{path}` 中删除包含 `{old}` 的 {count} 行并验证了结果。"
+  response response_line_es
+    intent line
     language es
-    text "{result} (observado en el código fuente del repositorio)."
-  response response_coding_repository_result_observation_en
-    intent coding_repository_result_observation
+    text "Se eliminaron {count} línea(s) con `{old}` de `{path}` y se verificó el resultado."
+  response response_file_text_unit_en
+    intent file_text_unit
     language en
-    text "Observed repository result: {result}"
-  response response_coding_repository_result_observation_ru
-    intent coding_repository_result_observation
+    text "No edit I can verify reads this request against `{path}`, so nothing was changed. The request names text inside the file, not the file itself, so I did not delete it."
+  response response_file_text_unit_ru
+    intent file_text_unit
     language ru
-    text "Результат, наблюдаемый в репозитории: {result}"
-  response response_coding_repository_result_observation_hi
-    intent coding_repository_result_observation
+    text "Ни одна проверяемая правка не прочитала этот запрос для `{path}`, поэтому ничего не изменено. Запрос говорит о тексте внутри файла, а не о самом файле, поэтому файл не удалён."
+  response response_file_text_unit_hi
+    intent file_text_unit
     language hi
-    text "रिपॉज़िटरी में देखा गया परिणाम: {result}"
-  response response_coding_repository_result_observation_zh
-    intent coding_repository_result_observation
+    text "`{path}` के लिए इस अनुरोध को कोई सत्यापन-योग्य संपादन नहीं पढ़ सका, इसलिए कुछ नहीं बदला गया। अनुरोध फ़ाइल के भीतर के पाठ के बारे में है, फ़ाइल के बारे में नहीं, इसलिए फ़ाइल नहीं हटाई गई।"
+  response response_file_text_unit_zh
+    intent file_text_unit
     language zh
-    text "在仓库中观察到的结果：{result}"
-  response response_coding_repository_result_observation_es
-    intent coding_repository_result_observation
+    text "没有可验证的编辑能针对 `{path}` 读懂这个请求，因此未做任何更改。请求说的是文件中的文本，而不是文件本身，所以没有删除该文件。"
+  response response_file_text_unit_es
+    intent file_text_unit
     language es
-    text "Resultado observado en el repositorio: {result}"
-  response response_agentic_formalization_report_en
-    intent agentic_formalization_report
+    text "Ninguna edición verificable interpreta esta solicitud sobre `{path}`, así que no se cambió nada. La solicitud nombra texto dentro del archivo, no el archivo, así que no lo eliminé."
+  response response_test_expectation_missing_en
+    intent test_expectation_missing
     language en
-    text "Formalized {subject} into a Links Notation knowledge base: {records} records realising {covered_count} of {primitive_count} protocol primitives ({coverage}).\n\nKnowledge base ({path}):\n\n{kb}"
-  response response_agentic_formalization_report_ru
-    intent agentic_formalization_report
+    text "What should the test in `{path}` check: which call, and what result? The request states no expected result, so nothing was written or run. Say what the function should return for which inputs."
+  response response_test_expectation_missing_ru
+    intent test_expectation_missing
     language ru
-    text "Источник {subject} формализован в базу знаний Links Notation: {records} записей, реализовано {covered_count} из {primitive_count} примитивов протокола ({coverage}).\n\nБаза знаний ({path}):\n\n{kb}"
-  response response_agentic_formalization_report_hi
-    intent agentic_formalization_report
+    text "Что должен проверять тест в `{path}`: какой вызов и какой результат? В запросе не указан ожидаемый результат, поэтому ничего не записано и не запущено. Укажите, что функция должна вернуть и для каких входных данных."
+  response response_test_expectation_missing_hi
+    intent test_expectation_missing
     language hi
-    text "{subject} को Links Notation ज्ञान आधार में औपचारिक किया: {records} रिकॉर्ड, {primitive_count} में से {covered_count} प्रोटोकॉल मूल तत्व मौजूद हैं ({coverage})।\n\nज्ञान आधार ({path}):\n\n{kb}"
-  response response_agentic_formalization_report_zh
-    intent agentic_formalization_report
+    text "`{path}` में परीक्षण क्या जाँचे: कौन-सा कॉल, और कौन-सा परिणाम? अनुरोध में अपेक्षित परिणाम नहीं बताया गया, इसलिए कुछ भी लिखा या चलाया नहीं गया। बताइए कि फ़ंक्शन किन इनपुट के लिए क्या लौटाए।"
+  response response_test_expectation_missing_zh
+    intent test_expectation_missing
     language zh
-    text "已将 {subject} 形式化为 Links Notation 知识库：{records} 条记录，实现了 {primitive_count} 种协议原语中的 {covered_count} 种（{coverage}）。\n\n知识库（{path}）：\n\n{kb}"
-  response response_agentic_formalization_report_es
-    intent agentic_formalization_report
+    text "`{path}` 中的测试应检查什么：哪个调用，什么结果？请求没有说明预期结果，因此没有写入或运行任何内容。请说明函数在哪些输入下应返回什么。"
+  response response_test_expectation_missing_es
+    intent test_expectation_missing
     language es
-    text "Se formalizó {subject} en una base de conocimiento Links Notation: {records} registros que representan {covered_count} de {primitive_count} primitivas del protocolo ({coverage}).\n\nBase de conocimiento ({path}):\n\n{kb}"
-  response response_agentic_formalization_need_report_en
-    intent agentic_formalization_need_report
+    text "¿Qué debe comprobar la prueba en `{path}`: qué llamada y qué resultado? La solicitud no indica un resultado esperado, así que no se escribió ni se ejecutó nada. Diga qué debe devolver la función y para qué entradas."
+  response response_file_edit_anchor_repeated_en
+    intent file_edit_anchor_repeated
     language en
-    text "needs_raised {total}; needs_grounded {grounded}."
-  response response_agentic_formalization_need_report_ru
-    intent agentic_formalization_need_report
+    text "The line `{anchor}` occurs {count} times in `{path}`, so I cannot tell which one places the insert, and nothing was changed. Quote more of the line, or name it by its line number."
+  response response_file_edit_anchor_repeated_ru
+    intent file_edit_anchor_repeated
     language ru
-    text "Потребностей поднято: {total}; обосновано: {grounded}."
-  response response_agentic_formalization_need_report_hi
-    intent agentic_formalization_need_report
+    text "Строка `{anchor}` встречается в `{path}` {count} раз(а), поэтому я не могу понять, рядом с какой вставлять, и ничего не изменено. Процитируйте строку полнее или назовите её номер."
+  response response_file_edit_anchor_repeated_hi
+    intent file_edit_anchor_repeated
     language hi
-    text "उठाई गई आवश्यकताएँ: {total}; प्रमाणित: {grounded}।"
-  response response_agentic_formalization_need_report_zh
-    intent agentic_formalization_need_report
+    text "पंक्ति `{anchor}` `{path}` में {count} बार आती है, इसलिए मैं नहीं बता सकता कि किसके पास जोड़ना है, और कुछ नहीं बदला गया। पंक्ति का अधिक भाग उद्धृत करें, या उसकी पंक्ति संख्या बताएँ।"
+  response response_file_edit_anchor_repeated_zh
+    intent file_edit_anchor_repeated
     language zh
-    text "提出的需求 {total}；已获依据 {grounded}。"
-  response response_agentic_formalization_need_report_es
-    intent agentic_formalization_need_report
+    text "行 `{anchor}` 在 `{path}` 中出现了 {count} 次，因此无法确定插入到哪一处，未做任何更改。请引用该行的更多内容，或给出它的行号。"
+  response response_file_edit_anchor_repeated_es
+    intent file_edit_anchor_repeated
     language es
-    text "Necesidades planteadas: {total}; fundamentadas: {grounded}."
-  response response_file_analysis_heading_en
-    intent file_analysis_heading
+    text "La línea `{anchor}` aparece {count} veces en `{path}`, así que no puedo saber junto a cuál insertar y no se cambió nada. Cite más de la línea o indique su número de línea."
+  response response_file_edit_scope_unapplied_en
+    intent file_edit_scope_unapplied
     language en
-    text "Bounded audit evidence from {count} file(s):"
-  response response_file_analysis_heading_ru
-    intent file_analysis_heading
+    text "`{old}` occurs {count} times in `{path}`, and I cannot tell which of them lie in {scope}, so nothing was changed. Quote more of the text around the one to replace."
+  response response_file_edit_scope_unapplied_ru
+    intent file_edit_scope_unapplied
     language ru
-    text "Ограниченные данные аудита из файлов ({count}):"
-  response response_file_analysis_heading_hi
-    intent file_analysis_heading
+    text "`{old}` встречается в `{path}` {count} раз(а), и я не могу определить, какие из них относятся к «{scope}», поэтому ничего не изменено. Процитируйте больше текста вокруг заменяемого места."
+  response response_file_edit_scope_unapplied_hi
+    intent file_edit_scope_unapplied
     language hi
-    text "{count} फ़ाइलों से सीमित ऑडिट साक्ष्य:"
-  response response_file_analysis_heading_zh
-    intent file_analysis_heading
+    text "`{old}` `{path}` में {count} बार आता है, और मैं नहीं बता सकता कि इनमें से कौन {scope} में है, इसलिए कुछ नहीं बदला गया। बदले जाने वाले स्थान के आसपास का अधिक पाठ उद्धृत करें।"
+  response response_file_edit_scope_unapplied_zh
+    intent file_edit_scope_unapplied
     language zh
-    text "来自 {count} 个文件的有界审计证据："
-  response response_file_analysis_heading_es
-    intent file_analysis_heading
+    text "`{old}` 在 `{path}` 中出现了 {count} 次，无法确定其中哪些位于{scope}，因此未做任何更改。请引用要替换处周围的更多文本。"
+  response response_file_edit_scope_unapplied_es
+    intent file_edit_scope_unapplied
     language es
-    text "Evidencia de auditoría acotada de {count} archivo(s):"
-  response response_file_analysis_no_marker_en
-    intent file_analysis_no_marker
+    text "`{old}` aparece {count} veces en `{path}` y no puedo saber cuáles están en {scope}, así que no se cambió nada. Cite más del texto alrededor del que hay que reemplazar."
+  response response_test_assertion_added_en
+    intent test_assertion_added
     language en
-    text "No explicit gap marker was observed in the bounded evidence."
-  response response_file_analysis_no_marker_ru
-    intent file_analysis_no_marker
+    text "Added `{assertion}` to `{path}` and ran `{command}`."
+  response response_test_assertion_added_ru
+    intent test_assertion_added
     language ru
-    text "В ограниченных данных не обнаружен явный маркер незавершённой работы."
-  response response_file_analysis_no_marker_hi
-    intent file_analysis_no_marker
+    text "В `{path}` добавлено `{assertion}`, затем запущено `{command}`."
+  response response_test_assertion_added_hi
+    intent test_assertion_added
     language hi
-    text "सीमित साक्ष्य में कोई स्पष्ट अपूर्णता चिह्न नहीं मिला।"
-  response response_file_analysis_no_marker_zh
-    intent file_analysis_no_marker
+    text "`{path}` में `{assertion}` जोड़ा गया और `{command}` चलाया गया।"
+  response response_test_assertion_added_zh
+    intent test_assertion_added
     language zh
-    text "有界证据中未观察到明确的缺口标记。"
-  response response_file_analysis_no_marker_es
-    intent file_analysis_no_marker
+    text "已向 `{path}` 添加 `{assertion}`，并运行了 `{command}`。"
+  response response_test_assertion_added_es
+    intent test_assertion_added
     language es
-    text "No se observó ningún marcador explícito de trabajo incompleto en la evidencia acotada."
-  response response_file_analysis_absence_boundary_en
-    intent file_analysis_absence_boundary
+    text "Se añadió `{assertion}` a `{path}` y se ejecutó `{command}`."
+  response response_test_file_written_en
+    intent test_file_written
     language en
-    text "Absence of an explicit marker in this bounded evidence does not prove completion."
-  response response_file_analysis_absence_boundary_ru
-    intent file_analysis_absence_boundary
+    text "Wrote `{path}` with `{assertion}` and ran `{command}`."
+  response response_test_file_written_ru
+    intent test_file_written
     language ru
-    text "Отсутствие явного маркера в этих ограниченных данных не доказывает завершённость."
-  response response_file_analysis_absence_boundary_hi
-    intent file_analysis_absence_boundary
+    text "Записан `{path}` с `{assertion}`, затем запущено `{command}`."
+  response response_test_file_written_hi
+    intent test_file_written
     language hi
-    text "इस सीमित साक्ष्य में स्पष्ट चिह्न का न होना पूर्णता सिद्ध नहीं करता।"
-  response response_file_analysis_absence_boundary_zh
-    intent file_analysis_absence_boundary
+    text "`{path}` को `{assertion}` के साथ लिखा गया और `{command}` चलाया गया।"
+  response response_test_file_written_zh
+    intent test_file_written
     language zh
-    text "此有界证据中没有明确标记并不能证明工作已经完成。"
-  response response_file_analysis_absence_boundary_es
-    intent file_analysis_absence_boundary
+    text "已写入含 `{assertion}` 的 `{path}`，并运行了 `{command}`。"
+  response response_test_file_written_es
+    intent test_file_written
     language es
-    text "La ausencia de un marcador explícito en esta evidencia acotada no demuestra que el trabajo esté completo."
+    text "Se escribió `{path}` con `{assertion}` y se ejecutó `{command}`."
+  response response_coding_texts_replaced_en
+    intent coding_texts_replaced
+    language en
+    text "Made {count} replacements in `{path}`, in order: {pairs}; and observed the result."
+  response response_coding_texts_replaced_ru
+    intent coding_texts_replaced
+    language ru
+    text "В `{path}` сделано замен по порядку: {count} ({pairs}); результат проверен."
+  response response_coding_texts_replaced_hi
+    intent coding_texts_replaced
+    language hi
+    text "`{path}` में क्रम से {count} बदलाव किए गए: {pairs}; और परिणाम देखा गया।"
+  response response_coding_texts_replaced_zh
+    intent coding_texts_replaced
+    language zh
+    text "已在 `{path}` 中按顺序完成 {count} 处替换：{pairs}；并核对了结果。"
+  response response_coding_texts_replaced_es
+    intent coding_texts_replaced
+    language es
+    text "Se hicieron {count} reemplazos en `{path}`, en orden: {pairs}; y se observó el resultado."
+  response response_line_range_moved_end_en
+    intent line_range_moved_end
+    language en
+    text "Moved lines {lines} of `{source}` to the end of `{path}` and observed the result."
+  response response_line_range_moved_end_ru
+    intent line_range_moved_end
+    language ru
+    text "Перенёс строки {lines} из `{source}` в конец `{path}` и проверил результат."
+  response response_line_range_moved_end_hi
+    intent line_range_moved_end
+    language hi
+    text "`{source}` की पंक्तियाँ {lines} `{path}` के अंत में ले जाईं और परिणाम देखा।"
+  response response_line_range_moved_end_zh
+    intent line_range_moved_end
+    language zh
+    text "已将 `{source}` 的第 {lines} 行移到 `{path}` 末尾，并核对了结果。"
+  response response_line_range_moved_end_es
+    intent line_range_moved_end
+    language es
+    text "Moví las líneas {lines} de `{source}` al final de `{path}` y comprobé el resultado."
+  response response_line_range_moved_start_en
+    intent line_range_moved_start
+    language en
+    text "Moved lines {lines} of `{source}` to the start of `{path}` and observed the result."
+  response response_line_range_moved_start_ru
+    intent line_range_moved_start
+    language ru
+    text "Перенёс строки {lines} из `{source}` в начало `{path}` и проверил результат."
+  response response_line_range_moved_start_hi
+    intent line_range_moved_start
+    language hi
+    text "`{source}` की पंक्तियाँ {lines} `{path}` की शुरुआत में ले जाईं और परिणाम देखा।"
+  response response_line_range_moved_start_zh
+    intent line_range_moved_start
+    language zh
+    text "已将 `{source}` 的第 {lines} 行移到 `{path}` 开头，并核对了结果。"
+  response response_line_range_moved_start_es
+    intent line_range_moved_start
+    language es
+    text "Moví las líneas {lines} de `{source}` al principio de `{path}` y comprobé el resultado."
+  response response_line_number_moved_end_en
+    intent line_number_moved_end
+    language en
+    text "Moved line {lines} of `{source}` to the end of `{path}` and observed the result."
+  response response_line_number_moved_end_ru
+    intent line_number_moved_end
+    language ru
+    text "Перенёс строку {lines} из `{source}` в конец `{path}` и проверил результат."
+  response response_line_number_moved_end_hi
+    intent line_number_moved_end
+    language hi
+    text "`{source}` की पंक्ति {lines} `{path}` के अंत में ले गया और परिणाम देखा।"
+  response response_line_number_moved_end_zh
+    intent line_number_moved_end
+    language zh
+    text "已将 `{source}` 的第 {lines} 行移到 `{path}` 末尾，并核对了结果。"
+  response response_line_number_moved_end_es
+    intent line_number_moved_end
+    language es
+    text "Moví la línea {lines} de `{source}` al final de `{path}` y comprobé el resultado."
+  response response_line_number_moved_start_en
+    intent line_number_moved_start
+    language en
+    text "Moved line {lines} of `{source}` to the start of `{path}` and observed the result."
+  response response_line_number_moved_start_ru
+    intent line_number_moved_start
+    language ru
+    text "Перенёс строку {lines} из `{source}` в начало `{path}` и проверил результат."
+  response response_line_number_moved_start_hi
+    intent line_number_moved_start
+    language hi
+    text "`{source}` की पंक्ति {lines} `{path}` की शुरुआत में ले गया और परिणाम देखा।"
+  response response_line_number_moved_start_zh
+    intent line_number_moved_start
+    language zh
+    text "已将 `{source}` 的第 {lines} 行移到 `{path}` 开头，并核对了结果。"
+  response response_line_number_moved_start_es
+    intent line_number_moved_start
+    language es
+    text "Moví la línea {lines} de `{source}` al principio de `{path}` y comprobé el resultado."
+  response response_line_range_outside_file_en
+    intent line_range_outside_file
+    language en
+    text "`{path}` has {count} lines, so it has no lines {lines} to move, and nothing was changed."
+  response response_line_range_outside_file_ru
+    intent line_range_outside_file
+    language ru
+    text "В `{path}` {count} строк, поэтому строк {lines} для переноса нет, и ничего не изменено."
+  response response_line_range_outside_file_hi
+    intent line_range_outside_file
+    language hi
+    text "`{path}` में {count} पंक्तियाँ हैं, इसलिए ले जाने के लिए पंक्तियाँ {lines} नहीं हैं, और कुछ नहीं बदला गया।"
+  response response_line_range_outside_file_zh
+    intent line_range_outside_file
+    language zh
+    text "`{path}` 只有 {count} 行，没有可移动的第 {lines} 行，因此未做任何更改。"
+  response response_line_range_outside_file_es
+    intent line_range_outside_file
+    language es
+    text "`{path}` tiene {count} líneas, así que no tiene las líneas {lines} que mover, y no se cambió nada."
+  response response_coding_text_not_found_en
+    intent coding_text_not_found
+    language en
+    text "`{old}` does not occur in `{path}`, so nothing was changed."
+  response response_coding_text_not_found_ru
+    intent coding_text_not_found
+    language ru
+    text "`{old}` не встречается в `{path}`, поэтому ничего не изменено."
+  response response_coding_text_not_found_hi
+    intent coding_text_not_found
+    language hi
+    text "`{old}` `{path}` में नहीं है, इसलिए कुछ नहीं बदला गया।"
+  response response_coding_text_not_found_zh
+    intent coding_text_not_found
+    language zh
+    text "`{path}` 中没有 `{old}`，因此未做任何更改。"
+  response response_coding_text_not_found_es
+    intent coding_text_not_found
+    language es
+    text "`{old}` no aparece en `{path}`, así que no se cambió nada."
+  response response_coding_text_already_replaced_en
+    intent coding_text_already_replaced
+    language en
+    text "`{path}` already holds `{new}` and no `{old}`: the replacement is already made, and nothing changed."
+  response response_coding_text_already_replaced_ru
+    intent coding_text_already_replaced
+    language ru
+    text "`{path}` уже содержит `{new}` и не содержит `{old}`: замена уже сделана, ничего не изменено."
+  response response_coding_text_already_replaced_hi
+    intent coding_text_already_replaced
+    language hi
+    text "`{path}` में पहले से `{new}` है और `{old}` नहीं है: बदलाव पहले ही हो चुका है, कुछ नहीं बदला गया।"
+  response response_coding_text_already_replaced_zh
+    intent coding_text_already_replaced
+    language zh
+    text "`{path}` 已包含 `{new}` 且没有 `{old}`：替换早已完成，未做任何更改。"
+  response response_coding_text_already_replaced_es
+    intent coding_text_already_replaced
+    language es
+    text "`{path}` ya contiene `{new}` y no `{old}`: el reemplazo ya está hecho y no cambió nada."
+  response response_coding_text_replaced_unchecked_en
+    intent coding_text_replaced_unchecked
+    language en
+    text "Replaced `{old}` with `{new}` in `{path}`; the edit tool reported no error."
+  response response_coding_text_replaced_unchecked_ru
+    intent coding_text_replaced_unchecked
+    language ru
+    text "В `{path}` `{old}` заменено на `{new}`; инструмент правки не сообщил об ошибке."
+  response response_coding_text_replaced_unchecked_hi
+    intent coding_text_replaced_unchecked
+    language hi
+    text "`{path}` में `{old}` को `{new}` से बदला गया; संपादन टूल ने कोई त्रुटि नहीं बताई।"
+  response response_coding_text_replaced_unchecked_zh
+    intent coding_text_replaced_unchecked
+    language zh
+    text "已在 `{path}` 中将 `{old}` 替换为 `{new}`；编辑工具未报告错误。"
+  response response_coding_text_replaced_unchecked_es
+    intent coding_text_replaced_unchecked
+    language es
+    text "Se reemplazó `{old}` por `{new}` en `{path}`; la herramienta de edición no informó ningún error."
+  response response_file_addition_unquoted_en
+    intent file_addition_unquoted
+    language en
+    text "What exact text should go into `{path}`, and where? The request names the addition without quoting it, so I cannot tell the text to add from words that describe it, and nothing was changed. Quote the text and say where it goes, for example: Append the line «…» to {path}."
+  response response_file_addition_unquoted_ru
+    intent file_addition_unquoted
+    language ru
+    text "Какой именно текст добавить в `{path}` и куда? В запросе добавляемый текст не заключён в кавычки, поэтому я не могу отличить сам текст от слов, которые его описывают, и ничего не изменено. Заключите текст в кавычки «» и укажите, куда его добавить."
+  response response_file_addition_unquoted_hi
+    intent file_addition_unquoted
+    language hi
+    text "`{path}` में कौन-सा सटीक पाठ और कहाँ जोड़ना है? अनुरोध जोड़े जाने वाले पाठ को उद्धरण चिह्नों में नहीं देता, इसलिए मैं उस पाठ को उसका वर्णन करने वाले शब्दों से अलग नहीं कर सकता, और कुछ नहीं बदला गया। पाठ को «» में लिखें और बताएँ कि उसे कहाँ जोड़ना है।"
+  response response_file_addition_unquoted_zh
+    intent file_addition_unquoted
+    language zh
+    text "要向 `{path}` 添加哪段确切文本，加在哪里？请求没有用引号标出要添加的文本，因此我无法区分文本本身和描述它的词语，未做任何更改。请用 «» 标出文本，并说明添加位置。"
+  response response_file_addition_unquoted_es
+    intent file_addition_unquoted
+    language es
+    text "¿Qué texto exacto debe ir en `{path}` y dónde? La solicitud nombra lo que se añade sin citarlo, así que no puedo distinguir el texto de las palabras que lo describen y no se cambió nada. Cite el texto con «» y diga dónde va."
+  response response_request_quote_escaped_en
+    intent request_quote_escaped
+    language en
+    text "A backslash before a quote in this request (`{fragment}`) leaves its quoted text unpaired, so I cannot tell the quoted text from the instruction, and nothing was done. Quote the text without backslashes, using «» or backticks when it holds quotes of its own."
+  response response_request_quote_escaped_ru
+    intent request_quote_escaped
+    language ru
+    text "Обратная косая черта перед кавычкой в этом запросе (`{fragment}`) оставляет цитируемый текст без пары, поэтому я не могу отличить цитату от инструкции, и ничего не сделано. Заключите текст в кавычки без обратной косой черты, а если в нём есть свои кавычки, используйте «» или обратные апострофы."
+  response response_request_quote_escaped_hi
+    intent request_quote_escaped
+    language hi
+    text "इस अनुरोध में उद्धरण चिह्न से पहले का बैकस्लैश (`{fragment}`) उद्धृत पाठ को बिना जोड़ी के छोड़ देता है, इसलिए मैं उद्धृत पाठ को निर्देश से अलग नहीं कर सकता, और कुछ नहीं किया गया। पाठ को बिना बैकस्लैश के उद्धृत करें; यदि उसमें अपने उद्धरण चिह्न हों तो «» या बैकटिक का उपयोग करें।"
+  response response_request_quote_escaped_zh
+    intent request_quote_escaped
+    language zh
+    text "此请求中引号前的反斜杠（`{fragment}`）使引用的文本无法配对，因此我无法区分引用的文本和指令，未做任何操作。请不用反斜杠引用文本；文本本身含有引号时，请使用 «» 或反引号。"
+  response response_request_quote_escaped_es
+    intent request_quote_escaped
+    language es
+    text "Una barra invertida antes de una comilla en esta solicitud (`{fragment}`) deja sin pareja el texto citado, así que no puedo distinguir el texto citado de la instrucción y no se hizo nada. Cite el texto sin barras invertidas, con «» o comillas invertidas cuando contenga comillas propias."
+  response response_request_quote_unpaired_en
+    intent request_quote_unpaired
+    language en
+    text "A quote in this request opens and never closes (`{fragment}`), so I cannot tell the quoted text from the instruction, and nothing was done. Close the quote, or use «» or backticks when the text holds quotes of its own."
+  response response_request_quote_unpaired_ru
+    intent request_quote_unpaired
+    language ru
+    text "Кавычка в этом запросе открывается и не закрывается (`{fragment}`), поэтому я не могу отличить цитату от инструкции, и ничего не сделано. Закройте кавычку или используйте «» или обратные апострофы, если в тексте есть свои кавычки."
+  response response_request_quote_unpaired_hi
+    intent request_quote_unpaired
+    language hi
+    text "इस अनुरोध में एक उद्धरण चिह्न खुलता है और कभी बंद नहीं होता (`{fragment}`), इसलिए मैं उद्धृत पाठ को निर्देश से अलग नहीं कर सकता, और कुछ नहीं किया गया। उद्धरण चिह्न बंद करें, या पाठ में अपने उद्धरण चिह्न हों तो «» या बैकटिक का उपयोग करें।"
+  response response_request_quote_unpaired_zh
+    intent request_quote_unpaired
+    language zh
+    text "此请求中的一个引号只有开头没有结尾（`{fragment}`），因此我无法区分引用的文本和指令，未做任何操作。请闭合该引号；文本本身含有引号时，请使用 «» 或反引号。"
+  response response_request_quote_unpaired_es
+    intent request_quote_unpaired
+    language es
+    text "Una comilla de esta solicitud se abre y nunca se cierra (`{fragment}`), así que no puedo distinguir el texto citado de la instrucción y no se hizo nada. Cierre la comilla, o use «» o comillas invertidas cuando el texto contenga comillas propias."
+  response response-request-quote-nested-en
+    intent request-quote-nested
+    language en
+    text "A quoted text in this request holds its own quote mark (`{fragment}`), so I cannot tell where it ends, and nothing was done. Quote such a text with «», or with a mark it does not hold."
+  response response-request-quote-nested-ru
+    intent request-quote-nested
+    language ru
+    text "Цитируемый текст в этом запросе содержит свою же кавычку (`{fragment}`), поэтому я не могу понять, где он заканчивается, и ничего не сделано. Заключите такой текст в «» или в кавычки, которых в нём нет."
+  response response-request-quote-nested-hi
+    intent request-quote-nested
+    language hi
+    text "इस अनुरोध के एक उद्धृत पाठ में उसका अपना ही उद्धरण चिह्न है (`{fragment}`), इसलिए मैं नहीं बता सकता कि वह कहाँ समाप्त होता है, और कुछ नहीं किया गया। ऐसे पाठ को «» में, या ऐसे चिह्न में उद्धृत करें जो उसमें न हो।"
+  response response-request-quote-nested-zh
+    intent request-quote-nested
+    language zh
+    text "此请求中的一段引用文本含有与其自身相同的引号（`{fragment}`），因此我无法判断它在哪里结束，未做任何操作。请用 «» 或文本中没有的引号来引用这样的文本。"
+  response response-request-quote-nested-es
+    intent request-quote-nested
+    language es
+    text "Un texto citado en esta solicitud contiene su propia comilla (`{fragment}`), así que no puedo saber dónde termina y no se hizo nada. Cite ese texto con «» o con una comilla que no contenga."
+  response response-request-edit-clause-unplanned-en
+    intent request-edit-clause-unplanned
+    language en
+    text "This request asks for several edits, and I cannot read `{clause}` as a replacement of quoted text, so nothing was changed. Quote its old and new texts, or ask for that edit on its own."
+  response response-request-edit-clause-unplanned-ru
+    intent request-edit-clause-unplanned
+    language ru
+    text "Этот запрос просит несколько правок, и я не могу прочитать `{clause}` как замену текста в кавычках, поэтому ничего не изменено. Заключите старый и новый текст в кавычки или попросите эту правку отдельно."
+  response response-request-edit-clause-unplanned-hi
+    intent request-edit-clause-unplanned
+    language hi
+    text "यह अनुरोध कई संपादन माँगता है, और मैं `{clause}` को उद्धृत पाठ के प्रतिस्थापन के रूप में नहीं पढ़ सकता, इसलिए कुछ नहीं बदला गया। उसके पुराने और नए पाठ को उद्धृत करें, या वह संपादन अलग से माँगें।"
+  response response-request-edit-clause-unplanned-zh
+    intent request-edit-clause-unplanned
+    language zh
+    text "此请求要求多处编辑，而我无法把 `{clause}` 读作对引用文本的替换，因此未做任何更改。请为它的旧文本和新文本加上引号，或单独提出这项编辑。"
+  response response-request-edit-clause-unplanned-es
+    intent request-edit-clause-unplanned
+    language es
+    text "Esta solicitud pide varias ediciones y no puedo leer `{clause}` como un reemplazo de texto citado, así que no se cambió nada. Cite su texto antiguo y el nuevo, o pida esa edición por separado."
+  response response_request_several_edit_targets_en
+    intent request_several_edit_targets
+    language en
+    text "This edit names several files (`{files}`), and one edit request changes one file, so nothing was changed. Ask for the edit once for each file."
+  response response_request_several_edit_targets_ru
+    intent request_several_edit_targets
+    language ru
+    text "Эта правка называет несколько файлов (`{files}`), а один запрос на правку меняет один файл, поэтому ничего не изменено. Попросите правку отдельно для каждого файла."
+  response response_request_several_edit_targets_hi
+    intent request_several_edit_targets
+    language hi
+    text "यह संपादन कई फ़ाइलों का नाम लेता है (`{files}`), और एक संपादन अनुरोध एक ही फ़ाइल बदलता है, इसलिए कुछ नहीं बदला गया। हर फ़ाइल के लिए संपादन अलग से माँगें।"
+  response response_request_several_edit_targets_zh
+    intent request_several_edit_targets
+    language zh
+    text "此编辑指定了多个文件（`{files}`），而一个编辑请求只修改一个文件，因此未做任何更改。请为每个文件分别提出编辑请求。"
+  response response_request_several_edit_targets_es
+    intent request_several_edit_targets
+    language es
+    text "Esta edición nombra varios archivos (`{files}`), y una solicitud de edición cambia un solo archivo, así que no se cambió nada. Pide la edición una vez para cada archivo."
+  response response-file-addition-position-unknown-en
+    intent file-addition-position-unknown
+    language en
+    text "Specify exactly one insertion position for `{path}` (start or end) before adding text."
+  response response-file-addition-position-unknown-ru
+    intent file-addition-position-unknown
+    language ru
+    text "Укажите ровно одно место вставки для `{path}` (начало или конец), прежде чем добавлять текст."
+  response response-file-addition-position-unknown-hi
+    intent file-addition-position-unknown
+    language hi
+    text "`{path}` में पाठ जोड़ने से पहले ठीक एक स्थान बताएँ (शुरुआत या अंत)।"
+  response response-file-addition-position-unknown-zh
+    intent file-addition-position-unknown
+    language zh
+    text "向 `{path}` 添加文本前，请明确一个插入位置（开头或末尾）。"
+  response response-file-addition-position-unknown-es
+    intent file-addition-position-unknown
+    language es
+    text "Indica una única posición de inserción en `{path}` (inicio o final) antes de añadir texto."
+  response response-file-addition-unverified-en
+    intent file-addition-unverified
+    language en
+    text "I cannot verify the requested addition to `{path}` from the available complete source reads and declared tools."
+  response response-file-addition-unverified-ru
+    intent file-addition-unverified
+    language ru
+    text "Не могу проверить запрошенное добавление в `{path}` по доступным полным чтениям исходного файла и объявленным инструментам."
+  response response-file-addition-unverified-hi
+    intent file-addition-unverified
+    language hi
+    text "उपलब्ध पूर्ण स्रोत पठन और घोषित उपकरणों से `{path}` में अनुरोधित जोड़ सत्यापित नहीं कर सकता।"
+  response response-file-addition-unverified-zh
+    intent file-addition-unverified
+    language zh
+    text "无法根据可用的完整源文件读取和已声明工具验证向 `{path}` 请求的添加操作。"
+  response response-file-addition-unverified-es
+    intent file-addition-unverified
+    language es
+    text "No puedo verificar la adición solicitada en `{path}` con las lecturas completas disponibles y las herramientas declaradas."

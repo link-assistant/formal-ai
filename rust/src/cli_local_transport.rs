@@ -33,6 +33,12 @@ pub struct ServeArgs {
     /// Print local transport connection, signaling, and lifecycle diagnostics.
     #[arg(long, default_value_t = false)]
     transport_trace: bool,
+
+    /// Hold every solved turn for step-through debugging (issue #667): loopback
+    /// binds only; the session token is `FORMAL_AI_DEBUG_SESSION_TOKEN`, else it
+    /// is generated and printed (docs/vscode/debugger.md).
+    #[arg(long, conflicts_with_all = ["ws", "webrtc"], default_value_t = false)]
+    debug_session: bool,
 }
 
 #[derive(Debug, ClapArgs)]
@@ -82,6 +88,10 @@ pub fn run_serve(args: &ServeArgs) -> Result<(), Box<dyn Error>> {
     } else if args.webrtc {
         serve_webrtc(&address, args.transport_trace).map_err(|error| transport_error(&error))?;
     } else {
+        if args.debug_session {
+            let session = formal_ai::server::enable_debug_session(&args.host)?;
+            eprintln!("{}", formal_ai::server::debug_session_banner(session));
+        }
         formal_ai::serve(&address)?;
     }
     Ok(())

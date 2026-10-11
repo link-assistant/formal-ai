@@ -1,0 +1,21 @@
+self_ast_census
+  target src/solver_handlers/calendar/month.rs
+  language rust
+  fidelity signature
+  byte_len 9539
+  line_count 234
+  content_id source_module_89a85f2a2144d40a
+  symbol_count 12
+  symbols
+    const MONTH_UNIT_SLUG 27 27
+    const MONTH_SLUGS 31 31
+    const MONTHS_PER_YEAR 47 47
+    function try_month_offset 52 115
+    function render_unresolved 119 161
+    function detect_month 166 180
+    function month_slug 183 186
+    function month_label 190 195
+    function month_span_days 200 219
+    const FIRST_YEAR 201 201
+    const CYCLE_YEARS 202 202
+    function days_from_civil 226 234

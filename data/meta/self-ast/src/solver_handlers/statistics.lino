@@ -1,0 +1,58 @@
+self_ast_census
+  target src/solver_handlers/statistics.rs
+  language rust
+  fidelity signature
+  byte_len 36808
+  line_count 975
+  content_id source_module_0919faad367eb2f3
+  symbol_count 49
+  symbols
+    module primality 30 30
+    module word_relations 31 31
+    const MARKER_UNIT_PRICE 34 34
+    const MARKER_PAYMENT 35 35
+    const MARKER_CHANGE 36 36
+    const MARKER_TOTAL 37 37
+    const MAX_MANTISSA 43 43
+    const MAX_SCALE 45 45
+    const MAX_VALUES 47 47
+    struct Decimal 56 59
+    function parse 65 100
+    function rescaled 105 114
+    function add 116 124
+    function sub 126 134
+    function mul 138 143
+    function div 148 156
+    function mul_div 161 176
+    function from_quotient 180 201
+    function compare 205 210
+    function is_negative 212 214
+    function negate 216 221
+    function ratio 224 226
+    function render 229 254
+    enum Op 259 267
+    const OP_ORDER 271 271
+    const MAX_RANK_SUFFIX_CHARS 283 283
+    const MAX_RANK_LEAD_CHARS 286 286
+    function meaning_slug 291 301
+    function evidence_kind 304 314
+    struct OpResult 319 322
+    function mentions_marker 327 333
+    function detect_ops 337 347
+    function stated_numbers 351 363
+    function nearest_before 367 374
+    function mean_of 378 399
+    function median_of 403 433
+    function mode_of 438 459
+    function variance_fraction 465 481
+    function variance_of 483 539
+    function std_dev_of 546 579
+    function range_of 582 597
+    function percentile_of 605 641
+    function surface_span 645 655
+    function percentile_rank_index 663 695
+    function render_approx 699 705
+    function handle_statistics 709 804
+    function marker_position 808 815
+    function one_item_change 823 865
+    function handle_word_problem 872 975

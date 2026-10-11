@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check-formal-ai-tally
+  stage web
+  description "R1188-U13: docs/case-studies/pull-request-1188/formal-ai-tally.md is the tally the ladder of formal-ai-dogfood.md generates (tasks, outcomes and resolutions per agent), every failure row is resolved, and fixed failures that name no regression test stay at the ceiling in data/meta/formal-ai-tally-ratchet.lino."
+  run "node scripts/tally-formal-ai-dogfood.mjs --check"
+  justification "PR #1188 (R1188-U13) asks for the tally of edits delegated to Formal AI and for every failure to be fixed generally with a regression test; a hand-kept tally drifts and nothing checked the test."

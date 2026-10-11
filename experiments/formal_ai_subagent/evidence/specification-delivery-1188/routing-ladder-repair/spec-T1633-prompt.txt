@@ -1,0 +1,24 @@
+Set the contents of experiments/formal_ai_subagent/evidence/specification-delivery-1188/routing-ladder-repair/delivery-tally.json to «{
+  "first_task": "T1600",
+  "last_task": "T1632",
+  "invocations": 33,
+  "failed_task_outcomes": 6,
+  "non_plan_write_edit_calls": 24,
+  "manual_source_document_test_edits": 0,
+  "actual_model_tokens": null,
+  "actual_cost": null,
+  "closest_regressions": {
+    "new_and_authored_passed": 18,
+    "local_search_selected_passed": 21,
+    "unselected_skipped": 25
+  },
+  "native_validation": "Standalone rustfmt; native compile and runtime tests remain CI only.",
+  "worker_budget": "Unchanged ceilings; check passed.",
+  "G126": "Authored literal pin and content cue scope repaired.",
+  "G127": "Direct workspace listing vs catalog alias and later existential clause repaired.",
+  "G112": "Broad source implementation asks remain open.",
+  "L07": "Obsolete GREETING_EXAMPLES task remains failed; current canonical seed task separately proves source effect, proof and greeting caller.",
+  "T1631": "Quoted Node evidence collector misrouted to websearch; remains an open shell capability failure. T1632 simpler copier is a recorded workaround.",
+  "transcript_bytes": 2616350
+}
+»

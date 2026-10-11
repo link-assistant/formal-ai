@@ -38,10 +38,10 @@ fn no_non_linux_job_was_removed() {
         workflow.contains("uses: ./.github/workflows/macos-core-tests.yml"),
         "the reusable macOS workflow must still be called"
     );
-    assert!(
-        workflow.contains("{ os: macos-15-intel, test-suite: specification }"),
-        "the macOS matrix leg must still be listed"
-    );
+    // PR #1188 (R1188-U9) removed the unsharded macOS specification leg of
+    // the test matrix: issue #1059 runs on macOS only the tests whose
+    // behaviour can differ from Linux, which macos-core-tests.yml does, and a
+    // 3600s compile-and-run leg could not fit the test job's 30-minute cap.
 }
 
 /// Both non-Linux surfaces consult the switch.
@@ -103,7 +103,10 @@ fn the_build_accepts_a_skipped_macos_job_but_not_a_failed_one() {
 fn the_linux_leg_is_not_guarded_by_the_switch() {
     let workflow = release_workflow();
     assert!(
-        workflow.contains("{ os: ubuntu-latest, test-suite: full }"),
+        workflow
+            .matches("{ os: ubuntu-latest, test-suite: full,")
+            .count()
+            == 5,
         "the Linux leg must still run the full suite"
     );
     let test_job = job_block(&workflow, "test");

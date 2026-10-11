@@ -1,0 +1,41 @@
+view
+  id M-8f80d9300064
+  lemma limit
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the greatest possible degree of something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "final or latest limiting point"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "as far as something can go"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the boundary of a specific area"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the mathematical value toward which a function goes as the independent variable approaches infinity"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the greatest amount of something that is possible or allowed"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "place limits on (extent or amount or access)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "restrict or confine within limits"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "decide upon or fix definitely"
+    provenance (wordnet)

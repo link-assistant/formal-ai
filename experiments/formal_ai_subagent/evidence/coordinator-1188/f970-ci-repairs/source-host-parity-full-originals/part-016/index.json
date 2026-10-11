@@ -1,0 +1,43 @@
+{
+  "ok": true,
+  "part": 16,
+  "totalParts": 16,
+  "originalUnionIndexSHA256": "4f5f0ba3db76f699666a920b28985c0c9f55067941fec33673935ce544b8bd2c",
+  "originalLogicalMembersAcrossThisFiniteSelection": 283,
+  "logicalMembersThisPart": 283,
+  "currentControllerMembers": 4,
+  "selectedInputsThisPart": 268,
+  "sourceAndControllerInputBytes": 15980554,
+  "inputLimitBytes": 33554432,
+  "uniqueEncodedBlobs": 243,
+  "newEncodedBlobs": 203,
+  "reusedPreviousEncodedBlobs": 40,
+  "newCompressedBytes": 3776875,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 287
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 243
+    }
+  ],
+  "selectionSHA256": "89997eb6454f2179161aac80de0bc24f8b58b5ca6284e999e520a3378a200477",
+  "allCurrentSourceGuardsExact": true,
+  "originalInputBytesPreserved": true,
+  "knownLosses": [],
+  "pending": [
+    "hostport7082 dependency repair",
+    "fresh four partitions after8163",
+    "full requirements/native/release acceptance"
+  ],
+  "ownRunningReceiptExcluded": true,
+  "autonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "actualCost": "Unknown",
+  "productionAcceptance": "Pending"
+}

@@ -81,5 +81,5 @@ our server changed, not because an upstream CLI shipped overnight."
 
 When the upstream issue closes, run `run.sh <candidate-version>`. A `PASS` is
 the evidence that the pin in `.github/workflows/release.yml` can move; the
-assertions in `tests/unit/ci-cd/issue_1021.rs` name the version, so the bump is
+assertions in `tests/unit/ci-cd/third_party_cli_version_pins.rs` name the version, so the bump is
 a deliberate commit rather than an overnight drift.

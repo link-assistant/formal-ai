@@ -1,0 +1,16 @@
+language en
+lemma psi
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a unit of pressure"
+    id oewn-13733675-n
+    partOfSpeech n
+    synonyms ("pounds per square inch")
+  entry
+    definition "the 23rd letter of the Greek alphabet"
+    id oewn-06849543-n
+    partOfSpeech n
+source "oewn:2024"

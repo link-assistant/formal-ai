@@ -14,6 +14,9 @@ use super::{
     parse_links_notation, parse_quoted, split_first_token,
 };
 
+const SEED_BODY_ENCODING_FIELD: &str = "seed_body_encoding";
+const SEED_LITERAL_LINE_ENCODING: &str = "literal-lf-v1";
+
 /// Build a single Links Notation bundle document.
 ///
 /// Contains the static seed plus the dynamic memory log plus arbitrary
@@ -26,16 +29,18 @@ pub fn export_bundle(seed_files: &[(&str, &str)], events: &[MemoryEvent]) -> Str
     out.push_str("  exported_at \"");
     out.push_str(&escape_value(&isoformat_now()));
     out.push_str("\"\n");
+    push_optional_info(
+        &mut out,
+        SEED_BODY_ENCODING_FIELD,
+        Some(SEED_LITERAL_LINE_ENCODING),
+    );
     if !seed_files.is_empty() {
         out.push_str("  seed_files\n");
         for (name, contents) in seed_files {
             out.push_str("    file \"");
             out.push_str(&escape_value(name));
             out.push_str("\"\n");
-            for line in contents.lines() {
-                if line.is_empty() {
-                    continue;
-                }
+            for line in contents.split('\n') {
                 out.push_str("      ");
                 out.push_str(line);
                 out.push('\n');
@@ -183,6 +188,11 @@ pub fn export_full_memory(
     out.push_str("  exported_at \"");
     out.push_str(&escape_value(&exported_at));
     out.push_str("\"\n");
+    push_optional_info(
+        &mut out,
+        SEED_BODY_ENCODING_FIELD,
+        Some(SEED_LITERAL_LINE_ENCODING),
+    );
     push_optional_info(&mut out, "version", info.version.as_deref());
     push_optional_info(&mut out, "url", info.url.as_deref());
     push_optional_info(&mut out, "user_agent", info.user_agent.as_deref());
@@ -194,10 +204,7 @@ pub fn export_full_memory(
             out.push_str("    file \"");
             out.push_str(&escape_value(name));
             out.push_str("\"\n");
-            for line in contents.lines() {
-                if line.is_empty() {
-                    continue;
-                }
+            for line in contents.split('\n') {
                 out.push_str("      ");
                 out.push_str(line);
                 out.push('\n');
@@ -271,11 +278,28 @@ fn parse_bundle_document(text: &str) -> ParsedBundle {
     let mut section: Option<&'static str> = None;
     let mut current_seed_file: Option<String> = None;
     let mut current_seed_body = String::new();
+    let mut current_seed_lines = 0_usize;
     let mut memory_lines: Vec<String> = Vec::new();
-    for line in text.lines() {
+    let preserve_seed_bytes = text.split('\n').any(|line| {
+        let indent = line.bytes().take_while(|byte| *byte == b' ').count();
+        indent == 2
+            && split_first_token(&line[indent..]).is_some_and(|(key, value)| {
+                key == SEED_BODY_ENCODING_FIELD
+                    && parse_quoted(value).as_deref() == Some(SEED_LITERAL_LINE_ENCODING)
+            })
+    });
+    for line in text.split('\n').map(|line| {
+        if preserve_seed_bytes {
+            line
+        } else {
+            line.strip_suffix('\r').unwrap_or(line)
+        }
+    }) {
         if line.is_empty() {
-            if section == Some("seed_files") && current_seed_file.is_some() {
+            if !preserve_seed_bytes && section == Some("seed_files") && current_seed_file.is_some()
+            {
                 current_seed_body.push('\n');
+                current_seed_lines += 1;
             }
             continue;
         }
@@ -340,12 +364,14 @@ fn parse_bundle_document(text: &str) -> ParsedBundle {
                     {
                         current_seed_file = Some(value);
                         current_seed_body = String::new();
+                        current_seed_lines = 0;
                     }
                 } else if current_seed_file.is_some() && indent >= 6 {
                     let body = if line.len() >= 6 { &line[6..] } else { "" };
-                    if !current_seed_body.is_empty() {
+                    if current_seed_lines > 0 {
                         current_seed_body.push('\n');
                     }
+                    current_seed_lines += 1;
                     current_seed_body.push_str(body);
                 }
             }
@@ -453,3 +479,7 @@ pub fn suggest_migrations(
     }
     out
 }
+
+#[cfg(test)]
+#[path = "../../tests/fixtures/memory-seed-byte-roundtrips.rs"]
+mod seed_byte_roundtrip_tests;

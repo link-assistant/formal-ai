@@ -1,0 +1,13 @@
+skill_procedure_trigger	cuando yo 	siempre que 	cada vez que 
+skill_procedure_separator	y	luego	después	después de eso
+skill_procedure_fetch	obtén	recupera	consulta	trae
+skill_procedure_transform	acorta	resume	limpia
+skill_procedure_translate	traduce	traducir
+skill_procedure_store	guarda	almacena	recuerda
+skill_procedure_reply	responde	contesta	muéstrame
+skill_procedure_condition	solo si	sólo si	si es
+skill_procedure_object_link	enlace	url	dirección
+skill_procedure_object_title	título	titular
+skill_procedure_object_content	contenido	texto	cuerpo
+skill_procedure_object_translation	traducción
+skill_procedure_object_both	ambos	ambas	los dos

@@ -1,0 +1,20 @@
+>> bash {"command":"test -e data/seed/learned-program-rules.lino"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"test ! -e rust/tests/web/issue-1028-all-mode-sharding.test.mjs"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"mkdir -p -- rust/tests/web"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"cp data/seed/learned-program-rules.lino rust/tests/web/issue-1028-all-mode-sharding.test.mjs"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"test -e rust/tests/web/issue-1028-all-mode-sharding.test.mjs"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"test -e data/seed/learned-program-rules.lino"}
+   Output: 
+   Exit Code: 0
+== answer ==
+Completed the action `cp data/seed/learned-program-rules.lino rust/tests/web/issue-1028-all-mode-sharding.test.mjs` and verified it with `test -e rust/tests/web/issue-1028-all-mode-sharding.test.mjs`, `test -e data/seed/learned-program-rules.lino`.

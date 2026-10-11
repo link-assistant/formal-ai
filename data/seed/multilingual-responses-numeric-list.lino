@@ -1,0 +1,209 @@
+# Response templates for numeric-list code answers (issue #918).
+#
+# Each operation of data/seed/numeric-list-operations.lino introduces its
+# generated program with one numeric_list_intro_<operation> sentence; English
+# names the value noun ({noun}: numbers or strings). {lang} is the program
+# language and {given} the list as given. Filled in one pass by
+# rust/src/solver_handlers/numeric_list/mod.rs and the browser twin in
+# js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js.
+multilingual_responses
+  response response_numeric_list_intro_sort_en
+    intent numeric_list_intro_sort
+    language en
+    text "Here is {lang} code that sorts the {noun} {given} in ascending order:"
+  response response_numeric_list_intro_reverse_sort_en
+    intent numeric_list_intro_reverse_sort
+    language en
+    text "Here is {lang} code that sorts the {noun} {given} in descending order:"
+  response response_numeric_list_intro_reverse_en
+    intent numeric_list_intro_reverse
+    language en
+    text "Here is {lang} code that reverses the {noun} {given}:"
+  response response_numeric_list_intro_sum_en
+    intent numeric_list_intro_sum
+    language en
+    text "Here is {lang} code that sums the {noun} {given}:"
+  response response_numeric_list_intro_product_en
+    intent numeric_list_intro_product
+    language en
+    text "Here is {lang} code that multiplies the {noun} {given}:"
+  response response_numeric_list_intro_minimum_en
+    intent numeric_list_intro_minimum
+    language en
+    text "Here is {lang} code that finds the smallest of the {noun} {given}:"
+  response response_numeric_list_intro_maximum_en
+    intent numeric_list_intro_maximum
+    language en
+    text "Here is {lang} code that finds the largest of the {noun} {given}:"
+  response response_numeric_list_intro_sort_ru
+    intent numeric_list_intro_sort
+    language ru
+    text "Вот код на {lang}, который сортирует числа {given} по возрастанию:"
+  response response_numeric_list_intro_reverse_sort_ru
+    intent numeric_list_intro_reverse_sort
+    language ru
+    text "Вот код на {lang}, который сортирует числа {given} по убыванию:"
+  response response_numeric_list_intro_reverse_ru
+    intent numeric_list_intro_reverse
+    language ru
+    text "Вот код на {lang}, который переворачивает числа {given}:"
+  response response_numeric_list_intro_sum_ru
+    intent numeric_list_intro_sum
+    language ru
+    text "Вот код на {lang}, который суммирует числа {given}:"
+  response response_numeric_list_intro_product_ru
+    intent numeric_list_intro_product
+    language ru
+    text "Вот код на {lang}, который перемножает числа {given}:"
+  response response_numeric_list_intro_minimum_ru
+    intent numeric_list_intro_minimum
+    language ru
+    text "Вот код на {lang}, который находит наименьшее из чисел {given}:"
+  response response_numeric_list_intro_maximum_ru
+    intent numeric_list_intro_maximum
+    language ru
+    text "Вот код на {lang}, который находит наибольшее из чисел {given}:"
+  response response_numeric_list_intro_sort_hi
+    intent numeric_list_intro_sort
+    language hi
+    text "यह {lang} कोड है जो संख्याओं {given} को आरोही क्रम में क्रमबद्ध करता है:"
+  response response_numeric_list_intro_reverse_sort_hi
+    intent numeric_list_intro_reverse_sort
+    language hi
+    text "यह {lang} कोड है जो संख्याओं {given} को अवरोही क्रम में क्रमबद्ध करता है:"
+  response response_numeric_list_intro_reverse_hi
+    intent numeric_list_intro_reverse
+    language hi
+    text "यह {lang} कोड है जो संख्याओं {given} को उलट देता है:"
+  response response_numeric_list_intro_sum_hi
+    intent numeric_list_intro_sum
+    language hi
+    text "यह {lang} कोड है जो संख्याओं {given} का योग करता है:"
+  response response_numeric_list_intro_product_hi
+    intent numeric_list_intro_product
+    language hi
+    text "यह {lang} कोड है जो संख्याओं {given} का गुणनफल निकालता है:"
+  response response_numeric_list_intro_minimum_hi
+    intent numeric_list_intro_minimum
+    language hi
+    text "यह {lang} कोड है जो संख्याओं {given} में से सबसे छोटी ढूँढता है:"
+  response response_numeric_list_intro_maximum_hi
+    intent numeric_list_intro_maximum
+    language hi
+    text "यह {lang} कोड है जो संख्याओं {given} में से सबसे बड़ी ढूँढता है:"
+  response response_numeric_list_intro_sort_zh
+    intent numeric_list_intro_sort
+    language zh
+    text "这是用 {lang} 编写的将数字 {given} 按升序排序的代码:"
+  response response_numeric_list_intro_sort_es
+    intent numeric_list_intro_sort
+    language es
+    text "Aquí tienes código {lang} que ordena la lista de {noun} {given} de forma ascendente:"
+  response response_numeric_list_intro_reverse_sort_zh
+    intent numeric_list_intro_reverse_sort
+    language zh
+    text "这是用 {lang} 编写的将数字 {given} 按降序排序的代码:"
+  response response_numeric_list_intro_reverse_sort_es
+    intent numeric_list_intro_reverse_sort
+    language es
+    text "Aquí tienes código {lang} que ordena la lista de {noun} {given} de forma descendente:"
+  response response_numeric_list_intro_reverse_zh
+    intent numeric_list_intro_reverse
+    language zh
+    text "这是用 {lang} 编写的将数字 {given} 反转的代码:"
+  response response_numeric_list_intro_reverse_es
+    intent numeric_list_intro_reverse
+    language es
+    text "Aquí tienes código {lang} que invierte la lista de {noun} {given}:"
+  response response_numeric_list_intro_sum_zh
+    intent numeric_list_intro_sum
+    language zh
+    text "这是用 {lang} 编写的对数字 {given} 求和的代码:"
+  response response_numeric_list_intro_sum_es
+    intent numeric_list_intro_sum
+    language es
+    text "Aquí tienes código {lang} que suma la lista de {noun} {given}:"
+  response response_numeric_list_intro_product_zh
+    intent numeric_list_intro_product
+    language zh
+    text "这是用 {lang} 编写的计算数字 {given} 乘积的代码:"
+  response response_numeric_list_intro_product_es
+    intent numeric_list_intro_product
+    language es
+    text "Aquí tienes código {lang} que multiplica la lista de {noun} {given}:"
+  response response_numeric_list_intro_minimum_zh
+    intent numeric_list_intro_minimum
+    language zh
+    text "这是用 {lang} 编写的求数字 {given} 最小值的代码:"
+  response response_numeric_list_intro_minimum_es
+    intent numeric_list_intro_minimum
+    language es
+    text "Aquí tienes código {lang} que encuentra el valor menor de la lista de {noun} {given}:"
+  response response_numeric_list_intro_maximum_zh
+    intent numeric_list_intro_maximum
+    language zh
+    text "这是用 {lang} 编写的求数字 {given} 最大值的代码:"
+  response response_numeric_list_intro_maximum_es
+    intent numeric_list_intro_maximum
+    language es
+    text "Aquí tienes código {lang} que encuentra el valor mayor de la lista de {noun} {given}:"
+  response response_numeric_list_result_label_en
+    intent numeric_list_result_label
+    language en
+    text "Result:"
+  response response_numeric_list_result_label_ru
+    intent numeric_list_result_label
+    language ru
+    text "Результат:"
+  response response_numeric_list_result_label_hi
+    intent numeric_list_result_label
+    language hi
+    text "परिणाम:"
+  response response_numeric_list_result_label_zh
+    intent numeric_list_result_label
+    language zh
+    text "结果:"
+  response response_numeric_list_result_label_es
+    intent numeric_list_result_label
+    language es
+    text "Resultado:"
+  response response_numeric_list_noun_strings_en
+    intent numeric_list_noun_strings
+    language en
+    text "strings"
+  response response_numeric_list_noun_strings_ru
+    intent numeric_list_noun_strings
+    language ru
+    text "строки"
+  response response_numeric_list_noun_strings_hi
+    intent numeric_list_noun_strings
+    language hi
+    text "स्ट्रिंग्स"
+  response response_numeric_list_noun_strings_zh
+    intent numeric_list_noun_strings
+    language zh
+    text "字符串"
+  response response_numeric_list_noun_strings_es
+    intent numeric_list_noun_strings
+    language es
+    text "cadenas"
+  response response_numeric_list_noun_numbers_en
+    intent numeric_list_noun_numbers
+    language en
+    text "numbers"
+  response response_numeric_list_noun_numbers_ru
+    intent numeric_list_noun_numbers
+    language ru
+    text "числа"
+  response response_numeric_list_noun_numbers_hi
+    intent numeric_list_noun_numbers
+    language hi
+    text "संख्याएँ"
+  response response_numeric_list_noun_numbers_zh
+    intent numeric_list_noun_numbers
+    language zh
+    text "数字"
+  response response_numeric_list_noun_numbers_es
+    intent numeric_list_noun_numbers
+    language es
+    text "números"

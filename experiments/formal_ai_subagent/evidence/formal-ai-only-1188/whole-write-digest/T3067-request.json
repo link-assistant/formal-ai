@@ -1,0 +1,9 @@
+{
+  "id": "T3067",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Implement a general fresh post-mutation digest verification capability in js/agentic/workspace_change.mjs and rust/src/agentic_coding/workspace_change.rs. Read both current sources before any modification. Reuse the existing planDigestVerification and plan_digest_verification operations for the whole-file Write fallback of grounded rewrites. Bind the exact expected UTF8 content to its latest matching authored Write and require the digest observation after that mutation. Preserve path identity, actual outer tool error flags and explicit nonzero failures. Unknown-status bare SHA output is only the existing digest observation contract, never a fabricated explicit exit-zero receipt. Earlier digest observations, wrong targets and failed later writes cannot certify the current effect. Keep observedBytesMatch and independent proof/effect record readback behavior unchanged; composite source creation and registration continuation are separate. Preserve existing Edit verification behavior and native byte semantics. Add meaningful external tests for bare actual Agent CLI digest, wrong digest, nonzero status, outer failure, stale observations, later failed writes and relative versus absolute path ownership. Do not compile Rust locally.",
+  "before": {
+    "js/agentic/workspace_change.mjs": "e879be4d9a79d08710a770e4d2d7f4726bbd8bd75fcd2800775dae1dadf9a636",
+    "rust/src/agentic_coding/workspace_change.rs": "b070fd7b9135e2ca5cd3116c6fb88baf0a4bac7bb4f30b555ee5554c79ea86a6"
+  }
+}

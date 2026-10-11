@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "玻璃"
+        },
+        "es": {
+          "language": "es",
+          "value": "vidrio"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "可作为建筑材料的材质"
+        },
+        "es": {
+          "language": "es",
+          "value": "material inorgánico transparente y amorfo"
         }
       }
     }

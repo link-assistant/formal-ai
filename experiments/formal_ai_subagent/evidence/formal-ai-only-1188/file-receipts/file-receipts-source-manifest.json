@@ -1,0 +1,22 @@
+[
+  {
+    "path": "js/agentic/task_obligations.mjs",
+    "bytes": 7443,
+    "sha256": "9c177f762abe402487e9caeba7ab04a3f67af4523d579ebcf774684be5d4bbf1"
+  },
+  {
+    "path": "rust/src/agentic_coding/task_obligations.rs",
+    "bytes": 13165,
+    "sha256": "23debeab5edd02c300d7b5b26b54c0fe3f0338207801454c2bac92f13a599b23"
+  },
+  {
+    "path": "rust/tests/unit/agentic-coding/issue_1099_multiple_obligations.rs",
+    "bytes": 9881,
+    "sha256": "49c7f0ca91000e926d21370b9428e1f276905168a3ea67161027428f27c8a012"
+  },
+  {
+    "path": "rust/tests/web/file-obligation-receipts.test.mjs",
+    "bytes": 5423,
+    "sha256": "a95d8e7c9ec79577bc47f6031268ecec6cdfc2fc6602ccce6adf4e2e3d5051f7"
+  }
+]

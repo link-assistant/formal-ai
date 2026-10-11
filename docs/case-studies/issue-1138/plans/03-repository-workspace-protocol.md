@@ -270,6 +270,7 @@ languages below one code path rather than five.
 
 ```
 src/repository_workspace/mod.rs          (RepositoryWorkspace, WorkspaceProtocol, ProtocolOutcome)
+src/repository_workspace/operation.rs    (R1138 source-bound observation goals, selected Cargo test targets and permitted commands)
 src/repository_workspace/clone.rs        (WorkspaceSpec, clone_at_base)
 src/repository_workspace/locate.rs       (locate_targets, Location, LocationEvidence)
 src/repository_workspace/edit.rs         (apply_change)
@@ -281,6 +282,8 @@ src/repository_workspace/world_model.rs  (plan 15: evidence-backed current-to-go
                                           repository work items)
 src/repository_workspace/protocol-header.txt (plan 03 L8: the header the regenerated protocol
                                           document carries, so rediscovery hits the same content id)
+src/repository_workspace/trace.rs        (R1138-3-5: the repository-protocol.lino evidence every
+                                          protocol caller writes, one line per declared stage)
 src/cli_solve.rs                         (`formal-ai solve`)
 data/meta/repository-workspace-protocol.lino
 data/seed/repository-task-verbs.lino

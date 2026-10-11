@@ -1,0 +1,17 @@
+language en
+lemma newton
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "English mathematician and physicist; remembered for developing the calculus and for his law of gravitation and his three laws of motion (1642-1726)"
+    id oewn-11225365-n
+    partOfSpeech n
+    synonyms ("Isaac Newton" "Sir Isaac Newton")
+  entry
+    definition "a unit of force equal to the force that imparts an acceleration of 1 m/sec/sec to a mass of 1 kilogram; equal to 100,000 dynes"
+    id oewn-13669285-n
+    partOfSpeech n
+    synonyms (N)
+source "oewn:2024"

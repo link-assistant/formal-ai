@@ -38,7 +38,7 @@ run_step "seed inventory (src/seed/embedded_registry.rs, js/seed-files.js)" \
   rust-script scripts/generate-seed-registry.rs --write
 run_step "trusted-source recurrence cache (js/source-cache/wikifunctions-recurrences.lino)" \
   cargo run --manifest-path rust/Cargo.toml --quiet --example generate_recurrence_source_cache -- --write
-run_step "requirements document (REQUIREMENTS.md)" \
+run_step "requirements document (REQUIREMENTS.md, docs/requirements/assembled/)" \
   rust-script scripts/assemble-requirements.rs --write
 run_step "requirement status ledger (data/meta/requirement-status-ledger/)" \
   rust-script scripts/generate-requirement-status.rs --write
@@ -51,7 +51,7 @@ run_step "status surfaces (docs/status.md, docs/benchmarks.md, README.md)" \
 # grounding work list and writes nothing, so it is not a derived artifact and
 # has no step here. The honest number it reports is ratcheted by
 # `data/meta/closure-audit.lino`.
-run_step "seed metadata gaps (data/meta/seed-metadata-gaps-*.lino)" \
+run_step "seed metadata gaps (data/meta/seed-metadata-gaps/, one file per seed source)" \
   rust-script scripts/audit-seed-metadata.rs --write
 run_step "hardcoded-language allowlist (scripts/hardcoded-language-allowlist.txt)" \
   rust-script scripts/check-hardcoded-language.rs --write

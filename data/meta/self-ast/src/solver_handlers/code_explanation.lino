@@ -1,0 +1,32 @@
+self_ast_census
+  target src/solver_handlers/code_explanation.rs
+  language rust
+  fidelity signature
+  byte_len 20331
+  line_count 600
+  content_id source_module_b6c3a5a80f363dda
+  symbol_count 23
+  symbols
+    const CUES_PATH 21 21
+    const STRUCTURES_PATH 22 22
+    const INTENT 23 23
+    const BUILTINS 25 30
+    function seed_text 33 38
+    function cue_phrases 42 73
+    function template 76 82
+    struct Structure 86 93
+    function child_ids 96 102
+    function structures 104 128
+    struct FunctionIntent 131 136
+    function function_intents 138 171
+    function function_name 174 190
+    function identifier_at 193 198
+    function inside_parens 201 216
+    type LineExplanation 220 220
+    function head_rest 224 237
+    function match_seed_head 242 267
+    function match_seed_infix 270 292
+    function match_call 295 308
+    function explain_line 312 479
+    function triggered 483 488
+    function handle_code_explanation 493 600

@@ -1,0 +1,31 @@
+{
+  "lemma": "calorie",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13748672-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of heat equal to the amount of heat required to raise the temperature of one kilogram of water by one degree at one atmosphere pressure; used by nutritionists to characterize the energy-producing potential in food",
+      "synonyms": [
+        "kilogram calorie",
+        "kilocalorie",
+        "large calorie",
+        "nutritionist's calorie"
+      ]
+    },
+    {
+      "id": "oewn-13748406-n",
+      "partOfSpeech": "n",
+      "definition": "unit of heat defined as the quantity of heat required to raise the temperature of 1 gram of water by 1 degree centigrade at atmospheric pressure",
+      "synonyms": [
+        "gram calorie",
+        "small calorie"
+      ]
+    }
+  ]
+}

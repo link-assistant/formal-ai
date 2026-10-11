@@ -1,0 +1,323 @@
+{
+  "lemma": "bound",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00253820-a",
+      "partOfSpeech": "a",
+      "definition": "confined by bonds",
+      "examples": [
+        "bound and gagged hostages"
+      ]
+    },
+    {
+      "id": "oewn-01062553-a",
+      "partOfSpeech": "a",
+      "definition": "held with another element, substance or material in chemical or physical union"
+    },
+    {
+      "id": "oewn-00257502-a",
+      "partOfSpeech": "a",
+      "definition": "secured with a cover or binding; often used as a combining form",
+      "examples": [
+        "bound volumes",
+        "leather-bound volumes"
+      ]
+    },
+    {
+      "id": "oewn-13926085-n",
+      "partOfSpeech": "n",
+      "definition": "a line determining the limits of an area",
+      "synonyms": [
+        "boundary",
+        "edge"
+      ]
+    },
+    {
+      "id": "oewn-08529331-n",
+      "partOfSpeech": "n",
+      "definition": "the line or plane indicating the limit or extent of something",
+      "synonyms": [
+        "boundary",
+        "bounds"
+      ]
+    },
+    {
+      "id": "oewn-05131322-n",
+      "partOfSpeech": "n",
+      "definition": "the greatest possible degree of something",
+      "examples": [
+        "what he did was beyond the bounds of acceptable behavior",
+        "to the limit of his ability"
+      ],
+      "synonyms": [
+        "limit",
+        "boundary"
+      ]
+    },
+    {
+      "id": "oewn-00121022-n",
+      "partOfSpeech": "n",
+      "definition": "a light, self-propelled movement upwards or forwards",
+      "synonyms": [
+        "leap",
+        "leaping",
+        "spring",
+        "saltation",
+        "bounce"
+      ]
+    },
+    {
+      "id": "oewn-00341524-s",
+      "partOfSpeech": "s",
+      "definition": "(usually followed by ‘to’) governed by fate",
+      "examples": [
+        "bound to happen",
+        "an old house destined to be demolished",
+        "he is destined to be famous"
+      ],
+      "synonyms": [
+        "destined"
+      ]
+    },
+    {
+      "id": "oewn-01962316-s",
+      "partOfSpeech": "s",
+      "definition": "covered or wrapped with a bandage",
+      "examples": [
+        "the bandaged wound on the back of his head",
+        "an injury bound in fresh gauze"
+      ],
+      "synonyms": [
+        "bandaged"
+      ]
+    },
+    {
+      "id": "oewn-01687482-s",
+      "partOfSpeech": "s",
+      "definition": "headed or intending to head in a certain direction; often used as a combining form as in ‘college-bound students’",
+      "examples": [
+        "children bound for school",
+        "a flight destined for New York"
+      ],
+      "synonyms": [
+        "destined"
+      ]
+    },
+    {
+      "id": "oewn-02380063-s",
+      "partOfSpeech": "s",
+      "definition": "bound by an oath",
+      "examples": [
+        "a bound official"
+      ]
+    },
+    {
+      "id": "oewn-01068495-s",
+      "partOfSpeech": "s",
+      "definition": "bound by contract",
+      "synonyms": [
+        "apprenticed",
+        "articled",
+        "indentured"
+      ]
+    },
+    {
+      "id": "oewn-00641418-s",
+      "partOfSpeech": "s",
+      "definition": "confined in the bowels",
+      "examples": [
+        "he is bound in the belly"
+      ]
+    },
+    {
+      "id": "oewn-01359453-v",
+      "partOfSpeech": "v",
+      "definition": "stick to firmly",
+      "examples": [
+        "Will this wallpaper adhere to the wall?"
+      ],
+      "synonyms": [
+        "adhere",
+        "hold fast",
+        "bond",
+        "bind",
+        "stick",
+        "stick to"
+      ]
+    },
+    {
+      "id": "oewn-01967949-v",
+      "partOfSpeech": "v",
+      "definition": "move forward by leaps and bounds",
+      "examples": [
+        "The horse bounded across the meadow",
+        "The child leapt across the puddle",
+        "Can you jump over the fence?"
+      ],
+      "synonyms": [
+        "jump",
+        "leap",
+        "spring"
+      ]
+    },
+    {
+      "id": "oewn-02543752-v",
+      "partOfSpeech": "v",
+      "definition": "create social or emotional ties",
+      "examples": [
+        "The grandparents want to bond with the child"
+      ],
+      "synonyms": [
+        "bind",
+        "tie",
+        "attach",
+        "bond"
+      ]
+    },
+    {
+      "id": "oewn-02716547-v",
+      "partOfSpeech": "v",
+      "definition": "form the boundary of; be contiguous to",
+      "synonyms": [
+        "border"
+      ]
+    },
+    {
+      "id": "oewn-01305902-v",
+      "partOfSpeech": "v",
+      "definition": "make fast; tie or secure, with or as if with a rope",
+      "examples": [
+        "The Chinese would bind the feet of their women"
+      ],
+      "synonyms": [
+        "bind"
+      ]
+    },
+    {
+      "id": "oewn-00234091-v",
+      "partOfSpeech": "v",
+      "definition": "place limits on (extent or amount or access)",
+      "examples": [
+        "restrict the use of this parking lot",
+        "limit the time you can spend with your friends"
+      ],
+      "synonyms": [
+        "restrict",
+        "trammel",
+        "limit",
+        "confine",
+        "throttle"
+      ]
+    },
+    {
+      "id": "oewn-01306207-v",
+      "partOfSpeech": "v",
+      "definition": "wrap around with something so as to cover or enclose",
+      "synonyms": [
+        "bind",
+        "bandage"
+      ]
+    },
+    {
+      "id": "oewn-01896097-v",
+      "partOfSpeech": "v",
+      "definition": "spring back; spring away from an impact",
+      "examples": [
+        "The rubber ball bounced",
+        "These particles do not resile but they unite after they collide"
+      ],
+      "synonyms": [
+        "bounce",
+        "resile",
+        "take a hop",
+        "spring",
+        "rebound",
+        "recoil",
+        "reverberate",
+        "ricochet"
+      ]
+    },
+    {
+      "id": "oewn-01289516-v",
+      "partOfSpeech": "v",
+      "definition": "secure with or as if with ropes",
+      "examples": [
+        "tie down the prisoners",
+        "tie up the old newspapers and bring them to the recycling shed"
+      ],
+      "synonyms": [
+        "tie down",
+        "tie up",
+        "bind",
+        "truss"
+      ]
+    },
+    {
+      "id": "oewn-00886738-v",
+      "partOfSpeech": "v",
+      "definition": "bind by an obligation; cause to be indebted",
+      "examples": [
+        "He's held by a contract",
+        "I'll hold you by your promise"
+      ],
+      "synonyms": [
+        "oblige",
+        "bind",
+        "hold",
+        "obligate"
+      ]
+    },
+    {
+      "id": "oewn-01338486-v",
+      "partOfSpeech": "v",
+      "definition": "provide with a binding",
+      "examples": [
+        "bind the books in leather"
+      ],
+      "synonyms": [
+        "bind"
+      ]
+    },
+    {
+      "id": "oewn-01288043-v",
+      "partOfSpeech": "v",
+      "definition": "fasten or secure with a rope, string, or cord",
+      "examples": [
+        "They tied their victim to the chair"
+      ],
+      "synonyms": [
+        "tie",
+        "bind"
+      ]
+    },
+    {
+      "id": "oewn-00568368-v",
+      "partOfSpeech": "v",
+      "definition": "form a chemical bond with",
+      "examples": [
+        "The hydrogen binds the oxygen"
+      ],
+      "synonyms": [
+        "bind"
+      ]
+    },
+    {
+      "id": "oewn-00074311-v",
+      "partOfSpeech": "v",
+      "definition": "cause to be constipated",
+      "examples": [
+        "These foods tend to constipate you"
+      ],
+      "synonyms": [
+        "constipate",
+        "bind"
+      ]
+    }
+  ]
+}

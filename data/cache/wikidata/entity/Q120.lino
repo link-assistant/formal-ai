@@ -1,0 +1,20 @@
+Q120
+  aliases
+    en (Jun "6. month")
+    es (Jun Jun. "6" "mes de Juno" "mes 6" "sexto mes" "mes sexto")
+    ru ("июня" "июн.")
+  descriptions
+    en "sixth month of the year in the Julian and Gregorian calendars"
+    es "sexto mes del año en los calendarios juliano y gregoriano"
+    hi "जूलियन और ग्रेगोरियन कैलेंडर में छठा महीना"
+    ru "шестой месяц года в юлианском и григорианском календарях"
+    zh "公历及儒略历中第六个月份"
+  id Q120
+  labels
+    en June
+    es junio
+    hi "जून"
+    ru "июнь"
+    zh "6月"
+  type item
+success 1

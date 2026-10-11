@@ -1,0 +1,10 @@
+| T3838 | Partial | Fail | Stronger unchanged independent create/edit full-planner probes: 0/2; global multi-file refusal or wrong-target edit. [Request](raw/T3838-request.json.gz), [trace](raw/T3838-transcript.json.gz). |
+| T3839 | Fail | Pass | Reviewed owner-bound Goal/Need and existing request_sequence replay; original two-artifact probes + baseline helpers 28/28. [Request](raw/T3839-request.json.gz), [trace](raw/T3839-transcript.json.gz). |
+| T3840 | Partial | Fail | Expanded heldouts 38/39; Unicode multiline payload greedily swallowed outer edit. [Request](raw/T3840-request.json.gz), [trace](raw/T3840-transcript.json.gz). |
+| T3841 | Fail | Partial | Unicode outer edit repaired; new same-clause tail control fails, 39/40. [Request](raw/T3841-request.json.gz), [trace](raw/T3841-transcript.json.gz). |
+| T3842 | Fail | Pass | Closed-delimiter ownership and unknown tail refusal; 41/41 scratch controls. [Request](raw/T3842-request.json.gz), [trace](raw/T3842-transcript.json.gz). |
+| T3843 | Partial | Fail | Unchanged original baseline transplant 49/53; three real scheduling/context regressions and one fixture URL relocation error. [Request](raw/T3843-request.json.gz), [trace](raw/T3843-transcript.json.gz). |
+| T3844 | Fail | Partial | Original literal-only/underivable ledger preserved, three baseline regressions repaired; independent Run no-plan remains, 93/94. [Request](raw/T3844-request.json.gz), [trace](raw/T3844-transcript.json.gz). |
+| T3845 | Fail | Pass | Later unsupported Need preserved as Gap after physical known artifact; all 94/94. [Request](raw/T3845-request.json.gz), [trace](raw/T3845-transcript.json.gz). |
+| T3846 | Partial | Pass | Canonical original clause/UTF8 gap projection and native UTF8 proposal formatted; 94/94 JS. Native compilation pending CI. [Request](raw/T3846-request.json.gz), [trace](raw/T3846-transcript.json.gz). |
+| T3847 | Fail | Fail | Unchanged 616B broad implementation ask: no-plan/zero tools, all ten original source identities unchanged; G112 Open. [Request](raw/T3847-request.json.gz), [trace](raw/T3847-transcript.json.gz). |

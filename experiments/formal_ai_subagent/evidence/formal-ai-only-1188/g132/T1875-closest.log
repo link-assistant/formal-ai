@@ -1,0 +1,293 @@
+TAP version 13
+# Subtest: fenced creation preserves source with task labels, command cues and paths
+ok 1 - fenced creation preserves source with task labels, command cues and paths
+  ---
+  duration_ms: 740.338834
+  ...
+# Subtest: closed quoted whole-content consent replaces an existing source file
+ok 2 - closed quoted whole-content consent replaces an existing source file
+  ---
+  duration_ms: 45.357833
+  ...
+# Subtest: a plain replacement stays an edit even when its new literal names a file write
+ok 3 - a plain replacement stays an edit even when its new literal names a file write
+  ---
+  duration_ms: 32.063666
+  ...
+# Subtest: longer fences preserve payloads containing their own Markdown examples
+ok 4 - longer fences preserve payloads containing their own Markdown examples
+  ---
+  duration_ms: 69.301125
+  ...
+# Subtest: literal verification reads failure narratives and compact JSON as authored data
+ok 5 - literal verification reads failure narratives and compact JSON as authored data
+  ---
+  duration_ms: 67.077417
+  ...
+# Subtest: explicit verification failure still vetoes exact literal output
+ok 6 - explicit verification failure still vetoes exact literal output
+  ---
+  duration_ms: 1.204709
+  ...
+# Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes
+  ---
+  duration_ms: 285.7465
+  ...
+# Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content
+  ---
+  duration_ms: 142.481291
+  ...
+# Subtest: G125: quoted edit payloads with skill cues stay data
+ok 9 - G125: quoted edit payloads with skill cues stay data
+  ---
+  duration_ms: 37.695584
+  ...
+# Subtest: G125: genuine unquoted skill teaching keeps its guard
+ok 10 - G125: genuine unquoted skill teaching keeps its guard
+  ---
+  duration_ms: 0.920458
+  ...
+# Subtest: G125: a malformed quoted replacement changes nothing
+ok 11 - G125: a malformed quoted replacement changes nothing
+  ---
+  duration_ms: 1.718208
+  ...
+# Subtest: an advertised multi_edit capability receives every explicitly named path
+ok 12 - an advertised multi_edit capability receives every explicitly named path
+  ---
+  duration_ms: 969.798625
+  ...
+# Subtest: G104: an edit naming files listed with `and` or commas is declined, naming every file
+    # Subtest: `In a.mjs and b.mjs, …` names both files and changes neither
+    ok 1 - `In a.mjs and b.mjs, …` names both files and changes neither
+      ---
+      duration_ms: 71.515333
+      ...
+    # Subtest: a comma list of three files names all three
+    ok 2 - a comma list of three files names all three
+      ---
+      duration_ms: 3.337834
+      ...
+    # Subtest: a path in a later sentence (the ladder leaf asking for evidence) is no edit target
+    ok 3 - a path in a later sentence (the ladder leaf asking for evidence) is no edit target
+      ---
+      duration_ms: 58.065083
+      ...
+    # Subtest: one file followed by a comma and the edit is still one edit
+    ok 4 - one file followed by a comma and the edit is still one edit
+      ---
+      duration_ms: 15.26775
+      ...
+    1..4
+ok 13 - G104: an edit naming files listed with `and` or commas is declined, naming every file
+  ---
+  duration_ms: 148.387958
+  type: 'suite'
+  ...
+# Subtest: G99: edits joined by a sequence cue are planned step by step
+    # Subtest: `…, then delete …` inserts and then deletes, each over the file the step before left
+    ok 1 - `…, then delete …` inserts and then deletes, each over the file the step before left
+      ---
+      duration_ms: 127.274125
+      ...
+    # Subtest: a step that names no file takes the file the other names
+    ok 2 - a step that names no file takes the file the other names
+      ---
+      duration_ms: 118.039833
+      ...
+    # Subtest: the Russian cue `затем` is a step too, answered in Russian
+    ok 3 - the Russian cue `затем` is a step too, answered in Russian
+      ---
+      duration_ms: 111.332083
+      ...
+    # Subtest: a cue that opens no clause, or a step without a quoted text, is no sequence
+    ok 4 - a cue that opens no clause, or a step without a quoted text, is no sequence
+      ---
+      duration_ms: 0.21925
+      ...
+    1..4
+ok 14 - G99: edits joined by a sequence cue are planned step by step
+  ---
+  duration_ms: 357.21425
+  type: 'suite'
+  ...
+# Subtest: G106: several Replaces apply all or decline, never drop one
+    # Subtest: `and then replace` applies both
+    ok 1 - `and then replace` applies both
+      ---
+      duration_ms: 190.185833
+      ...
+    # Subtest: a second clause that is no quoted replacement is named, and nothing changes
+    ok 2 - a second clause that is no quoted replacement is named, and nothing changes
+      ---
+      duration_ms: 3.540833
+      ...
+    1..2
+ok 15 - G106: several Replaces apply all or decline, never drop one
+  ---
+  duration_ms: 193.809417
+  type: 'suite'
+  ...
+# Subtest: G90: a quoted text holding its own quote mark is declined, naming the quote
+    # Subtest: single-quoted texts holding single quotes (T471)
+    ok 1 - single-quoted texts holding single quotes (T471)
+      ---
+      duration_ms: 1.350333
+      ...
+    # Subtest: double-quoted texts ending in a double quote of their own (T377)
+    ok 2 - double-quoted texts ending in a double quote of their own (T377)
+      ---
+      duration_ms: 1.656875
+      ...
+    # Subtest: the same texts in «» are edited
+    ok 3 - the same texts in «» are edited
+      ---
+      duration_ms: 23.044
+      ...
+    1..3
+ok 16 - G90: a quoted text holding its own quote mark is declined, naming the quote
+  ---
+  duration_ms: 26.252333
+  type: 'suite'
+  ...
+# Subtest: G107: a backticked payload whose inner spans pair runs to its own close
+    # Subtest: a sentence end inside the payload keeps the whole replacement
+    ok 1 - a sentence end inside the payload keeps the whole replacement
+      ---
+      duration_ms: 26.229583
+      ...
+    # Subtest: the T794 shape: paths, a semicolon and a sentence end inside the payload
+    ok 2 - the T794 shape: paths, a semicolon and a sentence end inside the payload
+      ---
+      duration_ms: 32.259917
+      ...
+    # Subtest: the payload ends where its own mark closes, before a later sentence
+    ok 3 - the payload ends where its own mark closes, before a later sentence
+      ---
+      duration_ms: 0.2285
+      ...
+    1..3
+ok 17 - G107: a backticked payload whose inner spans pair runs to its own close
+  ---
+  duration_ms: 58.820833
+  type: 'suite'
+  ...
+# Subtest: G102: a file described rather than given is never written from a failed or refused step
+    # Subtest: a create request whose names and values are «» fragments writes nothing
+    ok 1 - a create request whose names and values are «» fragments writes nothing
+      ---
+      duration_ms: 693.353333
+      ...
+    1..1
+ok 18 - G102: a file described rather than given is never written from a failed or refused step
+  ---
+  duration_ms: 693.404542
+  type: 'suite'
+  ...
+# Subtest: G109: copy then comma-joined replacements preserves the source
+ok 19 - G109: copy then comma-joined replacements preserves the source
+  ---
+  duration_ms: 2623.427334
+  ...
+# Subtest: G109: move then a quoted edit runs in order
+ok 20 - G109: move then a quoted edit runs in order
+  ---
+  duration_ms: 2569.632541
+  ...
+# Subtest: G108: scalar payload code spans keep comma-separated backticks whole
+ok 21 - G108: scalar payload code spans keep comma-separated backticks whole
+  ---
+  duration_ms: 0.2475
+  ...
+# Subtest: G110: payload file paths and cues cannot become the creation target
+ok 22 - G110: payload file paths and cues cannot become the creation target
+  ---
+  duration_ms: 26.479375
+  ...
+# Subtest: G113: exact quoted content retains indentation and terminal newline
+ok 23 - G113: exact quoted content retains indentation and terminal newline
+  ---
+  duration_ms: 47.405959
+  ...
+# Subtest: G114: an objective label in quoted source is data
+ok 24 - G114: an objective label in quoted source is data
+  ---
+  duration_ms: 0.320208
+  ...
+# Subtest: G115: replacement preserves a new-only source newline escape
+ok 25 - G115: replacement preserves a new-only source newline escape
+  ---
+  duration_ms: 27.107666
+  ...
+# Subtest: formal rewrite queries validate escaped literals before the prose quote guard
+ok 26 - formal rewrite queries validate escaped literals before the prose quote guard
+  ---
+  duration_ms: 21.902458
+  ...
+# Subtest: G132: an underspecified test stays a clarification and creates no evidence
+not ok 27 - G132: an underspecified test stays a clarification and creates no evidence
+  ---
+  duration_ms: 198.686583
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/pull-request-1188-fix-gaps.test.mjs:320:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'grep'
+    + ]
+    - []
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'grep'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/pull-request-1188-fix-gaps.test.mjs:322:10)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: G132: an observed file finding can still be delivered
+not ok 28 - G132: an observed file finding can still be delivered
+  ---
+  duration_ms: 213.2975
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/pull-request-1188-fix-gaps.test.mjs:328:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(answer?.includes('report.md'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/pull-request-1188-fix-gaps.test.mjs:333:10)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: G132: another sentence acceptance command is no test-authoring question
+ok 29 - G132: another sentence acceptance command is no test-authoring question
+  ---
+  duration_ms: 0.524333
+  ...
+# Subtest: G132: unknown finals and observed failures cannot be delivery findings
+ok 30 - G132: unknown finals and observed failures cannot be delivery findings
+  ---
+  duration_ms: 8.009583
+  ...
+1..30
+# tests 41
+# suites 6
+# pass 39
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8316.860667

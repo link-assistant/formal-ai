@@ -1,0 +1,1330 @@
+# Recognition cues and word maps for the code-task handlers (issue #1177).
+#
+# `cues` records hold the trigger phrases for one handler intent (lowercase,
+# English and Russian side by side; an optional `role` splits a record into
+# named lists — e.g. the shell composer needs action verbs and file-context
+# tokens as a conjunction, the format converter needs the two directions).
+# Phrases are matched as substrings of the normalized prompt (which collapses
+# punctuation to spaces and lowercases) and of the raw prompt lowercased.
+#
+# `map` records hold the word→value vocabulary the composers consult —
+# numbers, regex separators and classes, SQL comparatives, shell extensions,
+# size units, and the test-property slugs. Rust holds no cue literals.
+# `shell_cue` maps each shell-request word to the role the shell composer
+# reads it in (`last`/`first` line slices, `containment`, `directory`,
+# `count` for a `| wc -l` pipe, `suffix_lead` for "ending in .ext",
+# `program_artifact` for a requested function/program the composer leaves
+# to program synthesis, ...);
+# both runtimes read the role words in seed order.
+#
+# `test_cases` records hold the sample inputs the test generator renders for
+# each recognized problem shape. `test_example_relation` holds the words that
+# join a stated example call to its expected value ("square(3) returns 9",
+# "square(3) == 9", "square(3) возвращает 9"); the generator turns each stated
+# example into its own case, so a function outside every shape is tested from
+# what the request itself says it must return.
+#
+# Read by the handlers in `rust/src/solver_handlers/` through
+# `crate::seed::seed_files()`.
+cues
+  intent code_debugging
+    phrase "find the bug"
+    phrase "spot the bug"
+    phrase "where is the bug"
+    phrase "debug this"
+    phrase "debug the"
+    phrase "debug my"
+    phrase "what is wrong with"
+    phrase "what's wrong with"
+    phrase "whats wrong with"
+    phrase "why does this fail"
+    phrase "why does this code fail"
+    phrase "why is this failing"
+    phrase "why doesn't this work"
+    phrase "why does this not work"
+    phrase "найди ошибку"
+    phrase "найди баг"
+    phrase "найди неисправность"
+    phrase "в чём ошибка"
+    phrase "в чем ошибка"
+    phrase "отладь"
+    phrase "отладить"
+    phrase "отладка"
+    phrase "почему это не работает"
+    phrase "почему этот код не работает"
+cues
+  intent regex_synthesis
+    phrase "write a regular expression"
+    phrase "regular expression that"
+    phrase "regular expression which"
+    phrase "regular expression for"
+    phrase "regex for"
+    phrase "regex that"
+    phrase "regex which"
+    phrase "write a regex"
+    phrase "compose a regex"
+    phrase "build a regex"
+    phrase "regex pattern"
+    phrase "регулярное выражение"
+    phrase "регулярку"
+    phrase "regex для"
+    phrase "正则表达式"
+    phrase "रेगुलर एक्सप्रेशन"
+cues
+  intent sql_synthesis
+    phrase "sql query"
+    phrase "sql запрос"
+    phrase "write sql"
+    phrase "напиши sql"
+    phrase "sql для"
+    phrase "select all"
+    phrase "выбери всех"
+    phrase "выбери все"
+cues
+  intent shell_command_compose
+    role action
+    phrase "find"
+    phrase "list"
+    phrase "show"
+    phrase "display"
+    phrase "print"
+    phrase "search"
+    phrase "count"
+    phrase "finds"
+    phrase "lists"
+    phrase "shows"
+    phrase "searches"
+    phrase "counts"
+    phrase "найди"
+    phrase "покажи"
+    phrase "выведи"
+    phrase "перечисли"
+    phrase "поищи"
+    phrase "посчитай"
+    phrase "подсчитай"
+cues
+  intent format_conversion
+    role to_yaml
+    phrase "json to yaml"
+    phrase "из json в yaml"
+    phrase "json в yaml"
+    phrase "конвертируй json"
+    phrase "переведи json в yaml"
+cues
+  intent format_conversion
+    role to_json
+    phrase "yaml to json"
+    phrase "из yaml в json"
+    phrase "yaml в json"
+    phrase "конвертируй yaml"
+    phrase "переведи yaml в json"
+cues
+  intent format_conversion
+    role csv_to_json
+    phrase "csv to json"
+    phrase "из csv в json"
+    phrase "csv в json"
+    phrase "конвертируй csv"
+    phrase "переведи csv в json"
+cues
+  intent format_conversion
+    role json_target
+    phrase "convert to json"
+    phrase "convert this to json"
+    phrase "преобразуй в json"
+    phrase "конвертируй в json"
+    phrase "переведи в json"
+cues
+  intent code_explanation
+    phrase "explain this code"
+    phrase "explain the code"
+    phrase "explain this function"
+    phrase "explain the following"
+    phrase "what does this do"
+    phrase "what does this code do"
+    phrase "what does this function do"
+    phrase "what does the code"
+    phrase "what does the following"
+    phrase "объясни код"
+    phrase "объясни этот код"
+    phrase "поясни код"
+    phrase "что делает этот код"
+    phrase "что делает код"
+    phrase "что делает функция"
+    phrase "как работает этот код"
+cues
+  intent code_review
+    phrase "review this code"
+    phrase "code review"
+    phrase "review the code"
+    phrase "review the following"
+    phrase "ревью кода"
+    phrase "проведи ревью"
+    phrase "проверь код"
+    phrase "рецензия на код"
+    phrase "посмотри код"
+cues
+  intent test_generation
+    role request
+    phrase "write tests for"
+    phrase "write pytest tests"
+    phrase "write unit tests"
+    phrase "write test cases"
+    phrase "generate tests for"
+    phrase "generate test cases"
+    phrase "напиши тесты"
+    phrase "сгенерируй тесты"
+    phrase "тесты для"
+    phrase "юнит тесты"
+cues
+  intent test_generation
+    role framework
+    phrase "pytest"
+    phrase "unittest"
+cues
+  intent code_refactoring
+    phrase "refactor this code"
+    phrase "refactor:"
+    phrase "refactor the"
+    phrase "rewrite this"
+    phrase "rewrite the"
+    phrase "convert this promise"
+    phrase "promise chain"
+    phrase "async await version"
+    phrase "перепиши код"
+    phrase "рефактори"
+    phrase "рефакторинг"
+# The shell-command rewrite (issue #552) reads the same cue sets the native
+# handler reads from data/meta/cue-lexicon.lino (`shell_infinite_loop`,
+# `shell_screen_execution`), plus the command heads and prose leads its
+# command detector weighs (both runtimes, issue #918), so the browser twin
+# answers from seed data.
+cues
+  intent shell_command_transform
+    role infinite_loop
+    phrase "loop"
+    phrase "infinite"
+    phrase "forever"
+    phrase "repeatedly"
+    phrase "цикл"
+    phrase "бесконеч"
+    phrase "लूप"
+    phrase "अनंत"
+    phrase "बार-बार"
+    phrase "循环"
+    phrase "无限"
+    phrase "一直"
+cues
+  intent shell_command_transform
+    role screen_execution
+    phrase "single line"
+    phrase "one line"
+    phrase "execute"
+    phrase "run"
+    phrase "inside"
+    phrase "одной строк"
+    phrase "внутри"
+    phrase "выполн"
+    phrase "एक पंक्ति"
+    phrase "अंदर"
+    phrase "चल"
+    phrase "निष्पादित"
+    phrase "单行"
+    phrase "一行"
+    phrase "执行"
+    phrase "里面"
+cues
+  intent shell_command_transform
+    role command_head
+    phrase "awk"
+    phrase "bash"
+    phrase "cargo"
+    phrase "curl"
+    phrase "docker"
+    phrase "find"
+    phrase "git"
+    phrase "grep"
+    phrase "hive-cleanup"
+    phrase "jq"
+    phrase "make"
+    phrase "node"
+    phrase "npm"
+    phrase "python"
+    phrase "python3"
+    phrase "sed"
+    phrase "sh"
+    phrase "sleep"
+    phrase "tar"
+    phrase "while"
+cues
+  intent shell_command_transform
+    role prose_lead
+    phrase "make a "
+    phrase "can we "
+# The shell syntax the rewrite reads and writes (issue #918): the loop and the
+# detached-session templates (the session program is the first token of the
+# screen template, and a command already in loop form is one the loop template
+# brackets), the joiners that make any line a command sequence, and the
+# interactive prompt markers a pasted command follows. Each is verbatim shell
+# text, so it is a `code` field, where `|` is shell syntax, not a packed list.
+map
+  name shell_syntax
+    entry
+      word loop_template
+      code "while true; do {command}; done"
+    entry
+      word screen_template
+      code "screen -dmS {session} bash -c {command}"
+    entry
+      word joiner
+      code " && "
+    entry
+      word joiner
+      code " || "
+    entry
+      word joiner
+      code " | "
+    entry
+      word joiner
+      code "; "
+    entry
+      word prompt_marker
+      code "$ "
+    entry
+      word prompt_marker
+      code "# "
+    entry
+      word prompt_marker
+      code "% "
+# The concept-lookup query reader (rust/src/concepts.rs and the worker's
+# extractConceptQuery, issue #918): the request leads it strips ahead of a
+# question, the inverted "who X is" frame and the copulas it refuses as a
+# subject, the meaning-question leads and tails, the words that are never the
+# interrogated subject, the idiom tails and the articles a term sheds. Every
+# list is read in seed order.
+cues
+  intent concept_lookup
+    role request_prefix
+    phrase "please tell me,"
+    phrase "please tell me"
+    phrase "tell me,"
+    phrase "tell me"
+cues
+  intent concept_lookup
+    role question_start
+    phrase "who "
+    phrase "what "
+    phrase "what's "
+    phrase "who's "
+cues
+  intent concept_lookup
+    role inverted_who_lead
+    phrase "who "
+cues
+  intent concept_lookup
+    role inverted_who_tail
+    phrase " is"
+cues
+  intent concept_lookup
+    role inverted_who_copula
+    phrase "is"
+    phrase "was"
+    phrase "are"
+cues
+  intent concept_lookup
+    role meaning_prefix
+    phrase "what is the meaning of "
+    phrase "what's the meaning of "
+    phrase "what is meaning of "
+    phrase "meaning of "
+cues
+  intent concept_lookup
+    role meaning_suffix
+    phrase " mean"
+    phrase " means"
+    phrase " meaning"
+cues
+  intent concept_lookup
+    role meaning_stem_prefix
+    phrase "what does the word "
+    phrase "what does "
+    phrase "what do "
+    phrase "what did "
+    phrase "what is the word "
+    phrase "what is "
+    phrase "what's "
+    phrase "what i "
+cues
+  intent concept_lookup
+    role meaning_non_subject
+    phrase "it"
+    phrase "that"
+    phrase "this"
+    phrase "word"
+    phrase "the word"
+    phrase "mean"
+    phrase "means"
+    phrase "meaning"
+    phrase "i"
+cues
+  intent concept_lookup
+    role idiom_suffix
+    phrase " mean"
+    phrase " stand for"
+cues
+  intent concept_lookup
+    role article
+    phrase "the "
+    phrase "a "
+    phrase "an "
+# The network snapshot (the network_query rules of handler-rules.lino) renders
+# the link network; the browser's rule records are the seeded intents
+# knowledge_links_notation (engine.rs) renders, in that order.
+cues
+  intent network_snapshot_record
+    role rule
+    phrase greeting
+    phrase courtesy_response
+    phrase assistant_free_time
+    phrase identity
+    phrase assistant_name
+    phrase test_status
+    phrase write_program
+    phrase unknown
+map
+  name number
+    entry
+      word zero
+      value "0"
+    entry
+      word one
+      value "1"
+    entry
+      word two
+      value "2"
+    entry
+      word three
+      value "3"
+    entry
+      word four
+      value "4"
+    entry
+      word five
+      value "5"
+    entry
+      word six
+      value "6"
+    entry
+      word seven
+      value "7"
+    entry
+      word eight
+      value "8"
+    entry
+      word nine
+      value "9"
+    entry
+      word ten
+      value "10"
+    entry
+      word eleven
+      value "11"
+    entry
+      word twelve
+      value "12"
+map
+  name separator
+    entry
+      word hyphen
+      value "-"
+    entry
+      word dash
+      value "-"
+    entry
+      word minus
+      value "-"
+    entry
+      word dot
+      value "\\."
+    entry
+      word period
+      value "\\."
+    entry
+      word slash
+      value "/"
+    entry
+      word colon
+      value ":"
+    entry
+      word comma
+      value ","
+    entry
+      word underscore
+      value "_"
+    entry
+      word underline
+      value "_"
+    entry
+      word space
+      value " "
+map
+  name class
+    entry
+      word digit
+      value "\\d"
+      label digits
+    entry
+      word digits
+      value "\\d"
+      label digits
+    entry
+      word number
+      value "\\d"
+      label digits
+    entry
+      word numbers
+      value "\\d"
+      label digits
+    entry
+      word letter
+      value "[A-Za-z]"
+      label letters
+    entry
+      word letters
+      value "[A-Za-z]"
+      label letters
+    entry
+      word uppercase
+      value "[A-Z]"
+      label "uppercase letters"
+    entry
+      word lowercase
+      value "[a-z]"
+      label "lowercase letters"
+    entry
+      word character
+      value "."
+      label characters
+    entry
+      word characters
+      value "."
+      label characters
+map
+  name optional_marker
+    entry
+      word optional
+    entry
+      word optionally
+map
+  name anchor_exception
+    entry
+      word contains
+    entry
+      word "match anywhere"
+    entry
+      word anywhere
+map
+  name sql_comparative
+    entry
+      word older
+      column age
+      operator ">"
+    entry
+      word younger
+      column age
+      operator "<"
+    entry
+      word старше
+      column age
+      operator ">"
+    entry
+      word моложе
+      column age
+      operator "<"
+    entry
+      word taller
+      column height
+      operator ">"
+    entry
+      word shorter
+      column height
+      operator "<"
+    entry
+      word cheaper
+      column price
+      operator "<"
+    entry
+      word expensive
+      column price
+      operator ">"
+map
+  name index_bound_past_end
+    entry
+      word "range(len({c}) + 1)"
+      fix "range(len({c}))"
+    entry
+      word "<= len({c})"
+      fix "< len({c})"
+    entry
+      word "<= {c}.length"
+      fix "< {c}.length"
+    entry
+      word "<= {c}.size()"
+      fix "< {c}.size()"
+    entry
+      word "<= {c}.len()"
+      fix "< {c}.len()"
+map
+  name assignment_in_condition
+    entry
+      word "if ("
+    entry
+      word "if("
+    entry
+      word "while ("
+    entry
+      word "while("
+map
+  name sql_join
+    entry
+      word joined
+      value join
+    entry
+      word join
+      value join
+    entry
+      word joining
+      value join
+    entry
+      word соедини
+      value join
+    entry
+      word соединив
+      value join
+    entry
+      word with
+      value filler
+    entry
+      word the
+      value filler
+    entry
+      word table
+      value filler
+    entry
+      word с
+      value filler
+    entry
+      word таблицей
+      value filler
+    entry
+      word on
+      value key
+    entry
+      word using
+      value key
+    entry
+      word по
+      value key
+map
+  name sql_grouping
+    entry
+      word per
+      skip 0
+    entry
+      word each
+      skip 0
+    entry
+      word grouped
+      skip 1
+    entry
+      word каждого
+      skip 0
+    entry
+      word каждой
+      skip 0
+map
+  name sql_having
+    entry
+      word having
+    entry
+      word with
+    entry
+      word имеющих
+map
+  name sql_threshold
+    entry
+      word more
+      operator ">"
+      offset 2
+    entry
+      word greater
+      operator ">"
+      offset 2
+    entry
+      word больше
+      operator ">"
+      offset 2
+    entry
+      word fewer
+      operator "<"
+      offset 2
+    entry
+      word less
+      operator "<"
+      offset 2
+    entry
+      word меньше
+      operator "<"
+      offset 2
+    entry
+      word least
+      operator ">="
+      offset 1
+    entry
+      word most
+      operator "<="
+      offset 1
+map
+  name extension
+    entry
+      word log
+      value "*.log"
+    entry
+      word python
+      value "*.py"
+    entry
+      word py
+      value "*.py"
+    entry
+      word javascript
+      value "*.js"
+    entry
+      word js
+      value "*.js"
+    entry
+      word typescript
+      value "*.ts"
+    entry
+      word rust
+      value "*.rs"
+    entry
+      word text
+      value "*.txt"
+    entry
+      word txt
+      value "*.txt"
+    entry
+      word json
+      value "*.json"
+    entry
+      word yaml
+      value "*.yaml"
+    entry
+      word yml
+      value "*.yml"
+    entry
+      word markdown
+      value "*.md"
+    entry
+      word md
+      value "*.md"
+    entry
+      word csv
+      value "*.csv"
+    entry
+      word html
+      value "*.html"
+    entry
+      word css
+      value "*.css"
+    entry
+      word xml
+      value "*.xml"
+    entry
+      word png
+      value "*.png"
+    entry
+      word jpg
+      value "*.jpg"
+    entry
+      word jpeg
+      value "*.jpeg"
+    entry
+      word gif
+      value "*.gif"
+    entry
+      word pdf
+      value "*.pdf"
+    entry
+      word tar
+      value "*.tar"
+    entry
+      word gz
+      value "*.gz"
+    entry
+      word zip
+      value "*.zip"
+map
+  name size_unit
+    entry
+      word mb
+      value "M"
+    entry
+      word mib
+      value "M"
+    entry
+      word m
+      value "M"
+    entry
+      word kb
+      value "k"
+    entry
+      word kib
+      value "k"
+    entry
+      word k
+      value "k"
+    entry
+      word gb
+      value "G"
+    entry
+      word gib
+      value "G"
+    entry
+      word g
+      value "G"
+    entry
+      word bytes
+      value "c"
+    entry
+      word byte
+      value "c"
+    entry
+      word b
+      value "c"
+map
+  name file_context
+    entry
+      word files
+    entry
+      word file
+    entry
+      word logs
+    entry
+      word log
+    entry
+      word lines
+    entry
+      word line
+    entry
+      word directory
+    entry
+      word directories
+    entry
+      word folder
+    entry
+      word файлов
+    entry
+      word файлы
+    entry
+      word строк
+    entry
+      word журнал
+map
+  name shell_cue
+    entry
+      word replace
+      value substitute
+    entry
+      word substitute
+      value substitute
+    entry
+      word замени
+      value substitute
+    entry
+      word заменить
+      value substitute
+    entry
+      word with
+      value substitute_with
+    entry
+      word на
+      value substitute_with
+    entry
+      word larger
+      value size_qualifier
+    entry
+      word bigger
+      value size_qualifier
+    entry
+      word over
+      value size_qualifier
+    entry
+      word more
+      value size_qualifier
+    entry
+      word least
+      value size_qualifier
+    entry
+      word больше
+      value size_qualifier
+    entry
+      word days
+      value day
+    entry
+      word day
+      value day
+    entry
+      word дней
+      value day
+    entry
+      word дня
+      value day
+    entry
+      word older
+      value older
+    entry
+      word старше
+      value older
+    entry
+      word last
+      value last
+    entry
+      word последние
+      value last
+    entry
+      word последних
+      value last
+    entry
+      word first
+      value first
+    entry
+      word первые
+      value first
+    entry
+      word первых
+      value first
+    entry
+      word lines
+      value line
+    entry
+      word line
+      value line
+    entry
+      word строк
+      value line
+    entry
+      word строки
+      value line
+    entry
+      word contain
+      value containment
+    entry
+      word contains
+      value containment
+    entry
+      word containing
+      value containment
+    entry
+      word содержат
+      value containment
+    entry
+      word содержит
+      value containment
+    entry
+      word содержащие
+      value containment
+    entry
+      word содержащих
+      value containment
+    entry
+      word search
+      value search
+    entry
+      word поищи
+      value search
+    entry
+      word for
+      value search_object
+    entry
+      word for
+      value pattern_lead
+    entry
+      word containing
+      value pattern_lead
+    entry
+      word contains
+      value pattern_lead
+    entry
+      word contain
+      value pattern_lead
+    entry
+      word содержащие
+      value pattern_lead
+    entry
+      word содержащих
+      value pattern_lead
+    entry
+      word "ending in"
+      value suffix_lead
+    entry
+      word "ending with"
+      value suffix_lead
+    entry
+      word "ends in"
+      value suffix_lead
+    entry
+      word "ends with"
+      value suffix_lead
+    entry
+      word "заканчивающиеся на"
+      value suffix_lead
+    entry
+      word "заканчивающихся на"
+      value suffix_lead
+    entry
+      word "оканчивающиеся на"
+      value suffix_lead
+    entry
+      word "оканчивающихся на"
+      value suffix_lead
+    entry
+      word ignore
+      value ignore_case
+    entry
+      word insensitive
+      value ignore_case
+    entry
+      word регистр
+      value ignore_case
+    entry
+      word case
+      value ignore_case
+    entry
+      word регистру
+      value ignore_case
+    entry
+      word which
+      value names_only
+    entry
+      word names
+      value names_only
+    entry
+      word имена
+      value names_only
+    entry
+      word files
+      value files_noun
+    entry
+      word файлы
+      value files_noun
+    entry
+      word файлов
+      value files_noun
+    entry
+      word directories
+      value directory
+    entry
+      word directory
+      value directory
+    entry
+      word dirs
+      value directory
+    entry
+      word директории
+      value directory
+    entry
+      word папки
+      value directory
+    entry
+      word long
+      value long
+    entry
+      word detailed
+      value long
+    entry
+      word подробно
+      value long
+    entry
+      word hidden
+      value hidden
+    entry
+      word скрыт
+      value hidden
+    entry
+      word скрытые
+      value hidden
+    entry
+      word all
+      value all
+    entry
+      word все
+      value all
+    entry
+      word recursive
+      value recursive
+    entry
+      word рекурсив
+      value recursive
+    entry
+      word поддиректории
+      value recursive
+    entry
+      word function
+      value program_artifact
+    entry
+      word functions
+      value program_artifact
+    entry
+      word method
+      value program_artifact
+    entry
+      word class
+      value program_artifact
+    entry
+      word program
+      value program_artifact
+    entry
+      word функцию
+      value program_artifact
+    entry
+      word функция
+      value program_artifact
+    entry
+      word функции
+      value program_artifact
+    entry
+      word метод
+      value program_artifact
+    entry
+      word класс
+      value program_artifact
+    entry
+      word программу
+      value program_artifact
+    entry
+      word программа
+      value program_artifact
+    entry
+      word count
+      value count
+    entry
+      word counts
+      value count
+    entry
+      word counting
+      value count
+    entry
+      word посчитай
+      value count
+    entry
+      word подсчитай
+      value count
+    entry
+      word посчитать
+      value count
+map
+  name test_property
+    entry
+      word "ignoring case"
+      value case
+    entry
+      word "case insensitive"
+      value case
+    entry
+      word "регистр"
+      value case
+    entry
+      word "ignoring spaces"
+      value spaces
+    entry
+      word "ignoring space"
+      value spaces
+    entry
+      word "ignoring punctuation"
+      value punctuation
+    entry
+      word "spaces"
+      value spaces
+    entry
+      word "punctuation"
+      value punctuation
+map
+  name test_example_relation
+    entry
+      word "should return"
+    entry
+      word "must return"
+    entry
+      word "should give"
+    entry
+      word "returns"
+    entry
+      word "return"
+    entry
+      word "gives"
+    entry
+      word "yields"
+    entry
+      word "is"
+    entry
+      word "=="
+    entry
+      word "->"
+    entry
+      word "=>"
+    entry
+      word "→"
+    entry
+      word "должна вернуть"
+    entry
+      word "должна возвращать"
+    entry
+      word "возвращает"
+    entry
+      word "возвращать"
+    entry
+      word "даёт"
+    entry
+      word "дает"
+    entry
+      word "равно"
+    entry
+      word "返回"
+    entry
+      word "लौटाता है"
+    entry
+      word "लौटाए"
+test_cases
+  shape palindrome
+    trigger palindrome
+    trigger палиндром
+    case
+      input "RaceCar"
+      outcome true
+    case
+      input "hello"
+      outcome false
+    case
+      input "never odd or even"
+      outcome true
+    case
+      input ""
+      outcome true
+test_cases
+  shape average
+    trigger average
+    trigger mean
+    trigger среднее
+    case
+      input "[2, 4, 6]"
+      output "4"
+    case
+      input "[5]"
+      output "5"
+test_cases
+  shape max
+    trigger max
+    trigger maximum
+    trigger максимальн
+    case
+      input "[3, 1, 2]"
+      output "3"
+    case
+      input "[-5, -1, -2]"
+      output "-1"
+# Issue 1173 R1173-3: the callables a script language provides without a
+# definition. The undefined_call claim operand (rust/src/capability_routing/
+# claim_operands.rs, js/worker/formal_ai_worker_claim_operands.js) skips a
+# call of one of these, so only a call of a function nothing defines is
+# reported as a failing run. Each `word` is a verbatim, lowercased identifier.
+map
+  name script_builtin_callable
+    entry
+      word print
+    entry
+      word input
+    entry
+      word len
+    entry
+      word range
+    entry
+      word int
+    entry
+      word str
+    entry
+      word float
+    entry
+      word bool
+    entry
+      word list
+    entry
+      word dict
+    entry
+      word set
+    entry
+      word tuple
+    entry
+      word sorted
+    entry
+      word sum
+    entry
+      word min
+    entry
+      word max
+    entry
+      word abs
+    entry
+      word round
+    entry
+      word open
+    entry
+      word type
+    entry
+      word isinstance
+    entry
+      word enumerate
+    entry
+      word zip
+    entry
+      word map
+    entry
+      word filter
+    entry
+      word repr
+    entry
+      word format
+    entry
+      word help
+    entry
+      word exit
+    entry
+      word alert
+    entry
+      word fetch
+    entry
+      word parseint
+    entry
+      word parsefloat
+    entry
+      word settimeout
+    entry
+      word setinterval
+    entry
+      word require
+    entry
+      word eval
+    entry
+      word string
+    entry
+      word number
+    entry
+      word boolean
+    entry
+      word array
+    entry
+      word object
+    entry
+      word date
+    entry
+      word promise

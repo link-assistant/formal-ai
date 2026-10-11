@@ -1,0 +1,52 @@
+language en
+lemma duplicate
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "something additional of the same kind"
+    examples ("he always carried extras in case of an emergency")
+    id oewn-03312926-n
+    partOfSpeech n
+    synonyms (extra)
+  entry
+    definition "a copy that corresponds to an original exactly"
+    examples ("he made a duplicate for the files")
+    id oewn-03262046-n
+    partOfSpeech n
+    synonyms (duplication)
+  entry
+    definition "identically copied from an original"
+    examples ("a duplicate key")
+    id oewn-02071307-s
+    partOfSpeech s
+  entry
+    definition "being two identical"
+    id oewn-01490161-s
+    partOfSpeech s
+    synonyms (matching twin twinned)
+  entry
+    definition "make or do or perform again"
+    examples ("He could never replicate his brilliant performance of the magic trick")
+    id oewn-01738383-v
+    partOfSpeech v
+    synonyms (reduplicate double repeat replicate)
+  entry
+    definition "duplicate or match"
+    examples ("The polished surface twinned his face and chest in reverse")
+    id oewn-02665436-v
+    partOfSpeech v
+    synonyms (twin parallel)
+  entry
+    definition "make a duplicate or duplicates of"
+    examples ("Could you please duplicate this letter for me?")
+    id oewn-01739189-v
+    partOfSpeech v
+  entry
+    definition "increase twofold"
+    examples ("The population doubled within 50 years")
+    id oewn-00247103-v
+    partOfSpeech v
+    synonyms (double)
+source "oewn:2024"

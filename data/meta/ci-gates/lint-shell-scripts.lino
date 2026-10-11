@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate lint_shell_scripts
+ci_gate lint-shell-scripts
   stage rust
   description "Every committed shell script passes shellcheck."
   run "bash scripts/lint-shell-scripts.sh"
+  justification "Shell scripts with undetected bugs caused CI jobs to appear cancelled rather than failed because GitHub Actions reports timeouts as cancelled; lint-shell-scripts.sh was introduced in #977 to enforce ShellCheck hygiene and surface real script errors."

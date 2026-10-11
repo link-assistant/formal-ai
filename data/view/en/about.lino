@@ -1,0 +1,37 @@
+view
+  id M-216edf35d3ce
+  lemma about
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "(of quantities) imprecise but fairly close to correct"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "all around or on all sides"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in the area or vicinity"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "used of movement to or among many different places or in no particular direction"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in or to a reversed position or direction"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in rotation or succession"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "(of actions or states) slightly short of or not quite accomplished; all but"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "on the move"
+    provenance (wordnet)

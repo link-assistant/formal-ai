@@ -19,7 +19,7 @@ fn answer(prompt: &str) -> SymbolicAnswer {
 #[test]
 fn knowledge_export_is_non_empty_links_notation() {
     let notation = knowledge_links_notation();
-    assert!(!notation.is_empty());
+    assert_ne!(notation, "");
     assert!(notation.contains("formal_ai_knowledge"));
 }
 
@@ -35,7 +35,7 @@ fn knowledge_records_parse_as_links_notation() {
 #[test]
 fn every_answer_includes_links_notation_trace() {
     let response = answer("Hi");
-    assert!(!response.links_notation.is_empty());
+    assert_ne!(response.links_notation, "");
     let (id, _root) =
         parse_indented(&response.links_notation).expect("trace should be valid Links Notation");
     assert!(id.starts_with("answer_"));
@@ -177,4 +177,55 @@ fn ill_formed_links_notation_input_is_rejected() {
             .any(|link| link.starts_with("error:")),
         "malformed teach-the-network inputs must surface a parser error link"
     );
+}
+
+// Keep source-qualified parser fixtures in the integration test harness.
+#[path = "../../fixtures/source-qualified-definition-slots.rs"]
+mod source_qualified_definition_slots;
+
+#[test]
+fn answer_record_keeps_six_ordered_fields_and_response_link_thinking() {
+    let response = answer("Hi");
+    assert_eq!(response.answer, "Hi, how may I help you?");
+    let lines: Vec<_> = response.links_notation.lines().take(7).collect();
+    assert_eq!(lines[0], "answer_prompt_09275f07b5bb95ba");
+    assert_eq!(lines[1], "  prompt \"Hi\"");
+    assert_eq!(lines[2], "  intent \"greeting\"");
+    assert_eq!(lines[3], "  answer \"Hi, how may I help you?\"");
+    assert!(lines[4].starts_with("  trace \"trace_"));
+    assert!(lines[5].starts_with("  steps "));
+    assert!(lines[6].starts_with("  thinking_steps "));
+    let (_, fields) = parse_indented(&response.links_notation).expect("actual answer record");
+    assert_eq!(fields.len(), 6);
+    assert!(
+        fields
+            .get("steps")
+            .expect("steps field")
+            .starts_with("step_0 impulse Hi;")
+    );
+    let thinking = fields.get("thinking_steps").expect("thinking steps field");
+    assert!(thinking.starts_with("step_0 impulse high impulse Hi;"));
+    assert!(thinking.ends_with("deformalize high response response:greeting"));
+    assert_eq!(
+        response.thinking_steps.last().unwrap().detail,
+        response.answer
+    );
+}
+
+#[test]
+fn answer_record_retains_actual_prior_turns_before_the_current_impulse() {
+    use formal_ai::{ConversationTurn, solve_with_history};
+    let prior = answer("Hi");
+    assert_eq!(prior.answer, "Hi, how may I help you?");
+    let history = [
+        ConversationTurn::user("Hi"),
+        ConversationTurn::assistant(&prior.answer),
+    ];
+    let response = solve_with_history("What is 2 + 2?", &history);
+    assert_eq!(response.answer, "2 + 2 = 4");
+    let (_, fields) =
+        parse_indented(&response.links_notation).expect("actual history answer record");
+    let steps = fields.get("steps").expect("steps field");
+    assert!(steps.starts_with("step_0 prior_turn:user Hi; step_1 prior_turn:assistant Hi, how may I help you?; step_2 impulse What is 2 + 2?;"));
+    assert!(steps.contains("calculation:engine link-calculator;"));
 }

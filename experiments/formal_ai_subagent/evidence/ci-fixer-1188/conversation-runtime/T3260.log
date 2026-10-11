@@ -1,0 +1,903 @@
+>> read {"filePath":"data/seed/capability-routing.lino","file_path":"data/seed/capability-routing.lino","path":"data/seed/capability-routing.lino"}
+   <file>
+   00001| capability_routing
+   00002|   issue 1138
+   00003|   routing_enabled true
+   00004|   routing_note "Plan 10 leaf 9 wired the table ahead of the cue-phrase path behind this field, and leaf 11 flipped it on. Setting it to false returns routing to data/seed/agentic-tool-capabilities.lino cue matching, which is how the two are compared without a Rust edit."
+   00005|   purpose "Capability is a function of the object in the request, the act asked for, and where the effect lands. Verbs select the act; they never select the capability. A triple with no row asks rather than guesses."
+   00006|   dialogue_utterance_note "A request made only of the surfaces of these roles (and function words) is a dialogue act the engine answers in the reply -- a bare hi is a greeting, not a bare term to search the web for (the opencode greeting leg searched it and read a dictionary page)."
+   00007|   dialogue_utterance_role social_greeting
+   00008|   dialogue_utterance_role social_wellbeing
+   00009|   dialogue_utterance_role social_farewell
+   00010|   dialogue_utterance_role social_courtesy_response
+   00011|   dialogue_utterance_role social_test_status
+   00012|   dialogue_utterance_role social_assistant_name
+   00013|   dialogue_utterance_role social_identity
+   00014|   dialogue_utterance_role social_assistant_free_time
+   00015|   route
+   00016|     object url
+   00017|     act retrieve
+   00018|     locus web
+   00019|     capability web_fetch
+   00020|     because "issue 745: a concrete URL is unambiguous whatever the verb"
+   00021|   route
+   00022|     object url
+   00023|     act learn
+   00024|     locus web
+   00025|     capability learn_from_source
+   00026|     because "issue 499: a learning directive about a declared source teaches the engine, it does not fetch the URL once"
+   00027|   route
+   00028|     object path
+   00029|     act retrieve
+   00030|     locus workspace
+   00031|     capability read_file
+   00032|   route
+   00033|     object bare_term
+   00034|     act retrieve
+   00035|     locus workspace
+   00036|     capability grep
+   00037|     fallback shell
+   00038|     because "issue 758: code navigation must never reach web_search"
+   00039|   route
+   00040|     object bare_term
+   00041|     act retrieve
+   00042|     locus web
+   00043|     capability web_search
+   00044|   route
+   00045|     object path_scope
+   00046|     act enumerate
+   00047|     locus workspace
+   00048|     capability list_dir
+   00049|     fallback shell
+   00050|   route
+   00051|     object time_expression
+   00052|     act schedule
+   00053|     locus dialogue
+   00054|     capability calendar_create_event
+   00055|   route
+   00056|     object language_name
+   00057|     act demonstrate
+   00058|     locus dialogue
+   00059|     capability response_language_demonstration
+   00060|   route
+   00061|     object quantity_question
+   00062|     act retrieve
+   00063|     locus web
+   00064|     capability concept_measurement_lookup
+   00065|   route
+   00066|     object self_surface
+   00067|     act record
+   00068|     locus self
+   00069|     capability report_issue
+   00070|   route
+   00071|     object url
+   00072|     act enumerate
+   00073|     locus web
+   00074|     capability web_fetch
+   00075|     because "issue 745: listing what a page holds is still fetching that page"
+   00076|   route
+   00077|     object url
+   00078|     act explain
+   00079|     locus web
+   00080|     capability web_fetch
+   00081|     because "issue 745: explaining a page begins by retrieving it"
+   00082|   route
+   00083|     object url
+   00084|     act transform
+   00085|     locus web
+   00086|     capability web_fetch
+   00087|     because "issue 745: a page cannot be rewritten before it is fetched"
+   00088|   route
+   00089|     object url
+   00090|     act compose
+   00091|     locus web
+   00092|     capability web_fetch
+   00093|     because "issue 745: composing from a named page fetches that page first"
+   00094|   route
+   00095|     object path
+   00096|     act enumerate
+   00097|     locus workspace
+   00098|     capability read_file
+   00099|     fallback shell
+   00100|     because "issue 745: listing the contents of a file is reading that file"
+   00101|   route
+   00102|     object path
+   00103|     act explain
+   00104|     locus workspace
+   00105|     capability read_file
+   00106|     fallback shell
+   00107|     because "issue 745: explaining a named file begins by reading it"
+   00108|   route
+   00109|     object path
+   00110|     act compose
+   00111|     locus workspace
+   00112|     capability write_file
+   00113|     fallback shell
+   00114|     because "issue 745: composing content at a named path writes that file"
+   00115|   route
+   00116|     object path
+   00117|     act transform
+   00118|     locus workspace
+   00119|     capability write_file
+   00120|     fallback shell
+   00121|     because "issue 745: rewriting a named file writes that file"
+   00122|   route
+   00123|     object quoted_content
+   00124|     act compose
+   00125|     locus workspace
+   00126|     capability write_file
+   00127|     fallback shell
+   00128|     because "issue 745: explicit content landing in the workspace is a write"
+   00129|   route
+   00130|     object path_scope
+   00131|     act retrieve
+   00132|     locus workspace
+   00133|     capability list_dir
+   00134|     fallback shell
+   00135|     because "issue 1138: locating a named folder is a directory listing, never a web search"
+   00136|   route
+   00137|     object path_scope
+   00138|     act explain
+   00139|     locus workspace
+   00140|     capability list_dir
+   00141|     fallback shell
+   00142|     because "issue 1138: describing what a folder holds is a directory listing"
+   00143|   route
+   00144|     object bare_term
+   00145|     act compose
+   00146|     locus web
+   00147|     capability compose_from_sources
+   00148|     because "issue 722: an extended written piece is composed from retrieved sources, not written blind and not saved to a file nobody asked for"
+   00149|   route
+   00150|     object bare_term
+   00151|     act explain
+   00152|     locus web
+   00153|     capability web_search
+   00154|     because "issue 1138: explaining a term nothing local scopes begins with a search"
+   00155|   route
+   00156|     object bare_term
+   00157|     act enumerate
+   00158|     locus web
+   00159|     capability web_search
+   00160|     because "issue 1138: enumerating what the open web holds is a search"
+   00161|   route
+   00162|     object bare_term
+   00163|     act demonstrate
+   00164|     locus web
+   00165|     capability web_search
+   00166|     because "issue 1138: a demonstration of a term nothing local scopes begins with a search"
+   00167|   route
+   00168|     object bare_term
+   00169|     act transform
+   00170|     locus web
+   00171|     capability web_search
+   00172|     because "issue 1138: transforming a term nothing local scopes begins with a search"
+   00173|   route
+   00174|     object bare_term
+   00175|     act enumerate
+   00176|     locus workspace
+   00177|     capability grep
+   00178|     fallback shell
+   00179|     because "issue 758: code navigation must never reach web_search, whichever act it names"
+   00180|   route
+   00181|     object bare_term
+   00182|     act explain
+   00183|     locus workspace
+   00184|     capability grep
+   00185|     fallback shell
+   00186|     because "issue 758: explaining a symbol is answered from the workspace that defines it"
+   00187|   route
+   00188|     object quantity_question
+   00189|     act explain
+   00190|     locus web
+   00191|     capability concept_measurement_lookup
+   00192|     fallback web_search
+   00193|     because "issue 1063: a magnitude question is answered from a measured property with a unit"
+   00194|   route
+   00195|     object quantity_question
+   00196|     act enumerate
+   00197|     locus web
+   00198|     capability concept_measurement_lookup
+   00199|     fallback web_search
+   00200|     because "issue 1063: enumerating magnitudes is still a measurement lookup"
+   00201|   route
+   00202|     object time_expression
+   00203|     act record
+   00204|     locus dialogue
+   00205|     capability calendar_create_event
+   00206|     because "issue 869: placing an event in time is a calendar entry however it is worded"
+   00207|   route
+   00208|     object time_expression
+   00209|     act compose
+   00210|     locus dialogue
+   00211|     capability calendar_create_event
+   00212|     because "issue 869: composing an entry at a named time is a calendar entry"
+   00213|   route
+   00214|     object relative_period
+   00215|     act retrieve
+   00216|     locus dialogue
+   00217|     capability web_search
+   00218|     because "issue 1138 news_07: a summary of a recent period, with links, is a digest of fresh web events, not a silent unknown"
+   00219|   route
+   00220|     object language_name
+   00221|     act retrieve
+   00222|     locus dialogue
+   00223|     capability response_language_demonstration
+   00224|     because "issue 724: the object is a language and the effect lands in the reply, so the reply is given in that language rather than searched for"
+   00225|   route
+   00226|     object language_name
+   00227|     act compose
+   00228|     locus dialogue
+   00229|     capability response_language_demonstration
+   00230|     because "issue 724: writing a line in a named language is answering in it"
+   00231|   route
+   00232|     object language_name
+   00233|     act explain
+   00234|     locus dialogue
+   00235|     capability response_language_demonstration
+   00236|     because "issue 724: explaining in a named language is answering in it"
+   00237|   route
+   00238|     object language_name
+   00239|     act transform
+   00240|     locus dialogue
+   00241|     capability response_language_demonstration
+   00242|     because "issue 724: switching to a named language is answering in it"
+   00243|   route
+   00244|     object language_name
+   00245|     act enumerate
+   00246|     locus dialogue
+   00247|     capability response_language_demonstration
+   00248|     because "issue 724: listing something in a named language is answering in it"
+   00249|   route
+   00250|     object self_surface
+   00251|     act explain
+   00252|     locus dialogue
+   00253|     capability explain_previous_turn
+   00254|     because "issue 721: the object is the previous turn and the effect lands in the dialogue, so the previous turn is re-rendered rather than searched for"
+   00255|   route
+   00256|     object self_surface
+   00257|     act retrieve
+   00258|     locus dialogue
+   00259|     capability explain_previous_turn
+   00260|     because "issue 721: asking again for what was just said is a re-render"
+   00261|   route
+   00262|     object self_surface
+   00263|     act transform
+   00264|     locus dialogue
+   00265|     capability explain_previous_turn
+   00266|     because "issue 721: asking for the same thing put differently is a re-render"
+   00267|   route
+   00268|     object self_surface
+   00269|     act enumerate
+   00270|     locus dialogue
+   00271|     capability explain_previous_turn
+   00272|     because "issue 721: asking for the previous turn broken into parts is a re-render"
+   00273|   route
+   00274|     object self_surface
+   00275|     act compose
+   00276|     locus dialogue
+   00277|     capability explain_previous_turn
+   00278|     because "issue 721: asking for the previous turn written out again is a re-render"
+   00279|   route
+   00280|     object self_surface
+   00281|     act demonstrate
+   00282|     locus dialogue
+   00283|     capability explain_previous_turn
+   00284|     because "issue 721: asking to be shown the previous turn again is a re-render"
+   00285|   route
+   00286|     object self_surface
+   00287|     act explain
+   00288|     locus self
+   00289|     capability report_issue
+   00290|     because "issue 447: a complaint about the assistant own surface is recorded, not explained away"
+   00291|   route
+   00292|     object self_surface
+   00293|     act transform
+   00294|     locus self
+   00295|     capability report_issue
+   00296|     because "issue 447: asking for the assistant own surface to be changed is a report"
+   00297|   route
+   00298|     object self_surface
+   00299|     act retrieve
+   00300|     locus self
+   00301|     capability report_issue
+   00302|     because "issue 447: naming a defect in the assistant own surface is a report"
+   00303|   route
+   00304|     object pattern
+   00305|     act enumerate
+   00306|     locus workspace
+   00307|     capability glob
+   00308|     fallback shell
+   00309|     because "issue 758: a wildcard names a pattern to match, never one file to read"
+   00310|   route
+   00311|     object pattern
+   00312|     act retrieve
+   00313|     locus workspace
+   00314|     capability glob
+   00315|     fallback shell
+   00316|     because "issue 758: locating what a pattern names is still a glob, whatever the verb"
+   00317|   route
+   00318|     object path_set
+   00319|     act retrieve
+   00320|     locus workspace
+   00321|     capability read_many
+   00322|     fallback shell
+   00323|     because "issue 758: a batch of named files is one read-many step, not a web search"
+   00324|   route
+   00325|     object path_set
+   00326|     act transform
+   00327|     locus workspace
+   00328|     capability multi_edit
+   00329|     fallback shell
+   00330|     because "issue 758: the same edit across named files is a multi-edit, not a rewrite of one"
+   00331|   route
+   00332|     object task_list
+   00333|     act retrieve
+   00334|     locus dialogue
+   00335|     capability todo
+   00336|     because "issue 758: a named task list is tracked as a plan whatever the verb"
+   00337|   route
+   00338|     object task_list
+   00339|     act record
+   00340|     locus dialogue
+   00341|     capability todo
+   00342|     because "issue 758: recording tasks is the todo capability's own subject"
+   00343|   route
+   00344|     object task_list
+   00345|     act compose
+   00346|     locus dialogue
+   00347|     capability todo
+   00348|     because "issue 758: drafting a plan of work is a todo entry, not an essay"
+   00349|   route
+   00350|     object task_list
+   00351|     act enumerate
+   00352|     locus dialogue
+   00353|     capability todo
+   00354|     because "issue 758: listing the tracked tasks is a todo read"
+   00355|   route
+   00356|     object delegation
+   00357|     act retrieve
+   00358|     locus dialogue
+   00359|     capability subagent
+   00360|     because "issue 758: handing work to another agent is delegation, not a search for it"
+   00361|   route
+   00362|     object delegation
+   00363|     act transform
+   00364|     locus dialogue
+   00365|     capability subagent
+   00366|     because "issue 758: passing a task to an agent transforms its executor, not its subject"
+   00367|   route
+   00368|     object delegation
+   00369|     act record
+   00370|     locus dialogue
+   00371|     capability subagent
+   00372|     because "issue 758: assigning a task to an agent is recorded as delegation"
+   00373|   claim_note "Issue 1175 R3: claim rows are consulted after formalization and before a handler runs. A handler with a row is offered the prompt only when one of its admits_on evidence kinds holds in the prompt's structure, so no surface word alone can claim it; a handler with no row is admitted as before."
+   00374|   claim_note "Issue 1175 R3 refusal lane: a row that names a refusal_event admits its handler without the evidence to refuse only. The handler runs, and its answer is kept only when the handler recorded that refusal event, so a cued request without its operand keeps its honest named refusal while no answer can be claimed on the cue alone."
+   00375|   claim
+   00376|     handler software_project
+   00377|     browser_handler trySoftwareProjectRequest
+   00378|     admits_on object_phrase_artifact
+   00379|     admits_on approval_of_a_proposal
+   00380|     because "issue 1175 R2: the artifact kind is the head noun of the authoring verb's object phrase, never an artifact word elsewhere in the prompt; a bare go-ahead moves an earlier plan forward"
+   00381|   claim
+   00382|     handler terminal_command
+   00383|     browser_handler tryTerminalCommand
+   00384|     admits_on shell_command_shape
+   00385|     admits_on semantic_shell_task
+   00386|     because "issue 1175 R1: a leading shell token claims only when the rest parses as command arguments, so a sentence that opens with an English word that is also a command is prose"
+   00387|   claim
+   00388|     handler repository_lineage
+   00389|     admits_on repository_subject
+   00390|     because "issue 1180 R10: a history cue claims only with an existing path, a status phrase or a census symbol to answer about"
+   00391|   claim
+   00392|     handler page_query_text
+   00393|     browser_handler tryPageQueryText
+   00394|     admits_on supplied_page
+   00395|     because "issue 1175 R3: a page query claims only a prompt whose first line is the query and whose remaining lines are the page it supplies; a question that merely mentions a page is not one"
+   00396|   claim
+   00397|     handler javascript_execution
+   00398|     browser_handler tryJavaScriptExecution
+   00399|     admits_on javascript_program
+   00400|     because "issue 1175 R3: running a program claims only when a program can be extracted from the prompt, never on a run word alone"
+   00401|   claim
+   00402|     handler incompatible_units
+   00403|     browser_handler tryIncompatibleUnits
+   00404|     admits_on incompatible_unit_pair
+   00405|     because "issue 1175 R3: an incompatibility claims only when two measurement units of different physical dimensions are both named"
+   00406|   claim
+   00407|     handler http_fetch
+   00408|     admits_on fetch_url
+   00409|     because "issue 1175 R3: a fetch claims only with a URL operand the request asks to retrieve, never on a fetch word alone"
+   00410|   claim
+   00411|     handler url_navigate
+   00412|     admits_on navigation_url
+   00413|     because "issue 1175 R3: a navigation claims only with a URL operand the request asks to open"
+   00414|   claim
+   00415|     handler calendar_create_event
+   00416|     admits_on calendar_date_signal
+   00417|     because "issue 1175 R3: an event claims only with a date signal backed by an entity such as a clock hour, a timezone or a participant, or an explicit scheduling act"
+   00418|   claim
+   00419|     handler code_debugging
+   00420|     browser_handler tryCodeDebugging
+   00421|     admits_on code_artifact
+   00422|     because "issue 1175 R3: a debugging request claims only with the code it debugs, a fenced block, a code-shaped backtick span, a definition or the payload after a command colon"
+   00423|   claim
+   00424|     handler code_explanation
+   00425|     browser_handler tryCodeExplanation
+   00426|     admits_on code_artifact
+   00427|     because "issue 1175 R3: an explanation of code claims only with the code it explains, never on an explain word alone"
+   00428|   claim
+   00429|     handler code_review
+   00430|     browser_handler tryCodeReview
+   00431|     admits_on code_artifact
+   00432|     because "issue 1175 R3: a review claims only with the code it reviews, never on a review word alone"
+   00433|   claim
+   00434|     handler summarization_text
+   00435|     browser_handler trySummarizationText
+   00436|     admits_on supplied_text
+   00437|     because "issue 1175 R3: a free-text summary claims only with the text the request carries after a command colon, a line break or quotes"
+   00438|   claim
+   00439|     handler requirement_listing
+   00440|     browser_handler requirement_listing
+   00441|     admits_on supplied_text
+   00442|     because "R1188-U20: a requirement listing claims only with the text the request carries after a command colon, a line break or quotes"
+   00443|   claim
+   00444|     handler text_rewrite
+   00445|     browser_handler tryTextRewrite
+   00446|     admits_on supplied_text
+   00447|     because "issue 1175 R3: a rewrite, a correction or a genre rendering claims only with the text the request carries, never on a rewrite word alone"
+   00448|   claim
+   00449|     handler statistics
+   00450|     browser_handler tryStatistics
+   00451|     admits_on stated_number
+   00452|     because "issue 1175 R3: a statistics or one-number primality question claims only with the numbers it states, never on a measure or property word alone"
+   00453|   claim
+   00454|     handler word_problem
+   00455|     browser_handler tryWordProblem
+   00456|     admits_on stated_number
+   00457|     because "issue 1175 R3: a word problem claims only with the quantities it states, never on a price, gain or share word alone"
+   00458|   claim
+   00459|     handler arithmetic
+   00460|     browser_handler tryArithmetic
+   00461|     admits_on calculation_expression
+   00462|     admits_on currency_rate_basis
+   00463|     because "issue 1175 R3: a calculation claims only with the expression the calculator reader extracts, or the named currency pair whose rate basis it asks"
+   00464|   claim
+   00465|     handler compound_interest
+   00466|     browser_handler tryCompoundInterest
+   00467|     admits_on investment_terms
+   00468|     admits_on conversion_target_currency
+   00469|     because "issue 1175 R3: an interest problem claims only with its principal, rate, compounding and term, and its follow-up only with the currency the earlier final amount converts to"
+   00470|   claim
+   00471|     handler number_constraint_reasoning
+   00472|     browser_handler tryNumberConstraintReasoning
+   00473|     admits_on interval_bounds
+   00474|     because "issue 1175 R3: a hidden-number riddle claims only with the lower and upper bound it states"
+   00475|   claim
+   00476|     handler unit_conversion
+   00477|     browser_handler tryUnitConversion
+   00478|     admits_on measured_quantity
+   00479|     because "issue 1175 R3: a conversion claims only with a stated number and exactly two named units, never on a convert word alone"
+   00480|   claim
+   00481|     handler calendar_reasoning
+   00482|     browser_handler tryCalendarReasoning
+   00483|     admits_on calendar_date_signal
+   00484|     admits_on calendar_anchor
+   00485|     because "issue 1175 R3: calendar arithmetic claims only with the day it starts from, a weekday, a month, a stated date or today, or with an event's date signal"
+   00486|   default ask
+   00487|   claim
+   00488|     handler test_generation
+   00489|     browser_handler tryTestGeneration
+   00490|     admits_on function_under_test
+   00491|     refusal_event "test_generation:refusal"
+   00492|     because "issue 1175 R3: a test request claims a suite only with the function under test it names; without one it is admitted to the refusal lane, where only its named refusal is kept"
+   00493|   claim
+   00494|     handler code_refactoring
+   00495|     browser_handler tryCodeRefactoring
+   00496|     admits_on code_artifact
+   00497|     refusal_event "code_refactoring:refusal"
+   00498|     because "issue 1175 R3: a refactoring request claims a rewrite only with the code it rewrites; without code it is admitted to the refusal lane, where only its named refusal is kept"
+   00499|   claim
+   00500|     handler format_conversion
+   00501|     browser_handler tryFormatConversion
+   00502|     admits_on structured_document
+   00503|     refusal_event "format_conversion:refusal"
+   00504|     because "issue 1175 R3: a conversion request claims a converted document only with the document it converts; without one it is admitted to the refusal lane, where only its named refusal is kept"
+   00505|   claim_note "Issue 1175 R3 classes b, c and e: a follow-up admits on the earlier turn it continues (its dialogue evidence reads the prior turns, never the prompt alone), a composer on the specification it builds from with its cannot-compose answer in the refusal lane, and a lookup or policy on the subject or shape its own reader extracts."
+   00506|   claim
+   00507|     handler brainstorm_composition
+   00508|     browser_handler tryBrainstormComposition
+   00509|     admits_on composition_topic
+   00510|     refusal_event "brainstorming:refusal"
+   00511|     because "issue 1175 R3: a naming brainstorm composes only from the topic words it reads; without one it is admitted to the refusal lane"
+   00512|   claim
+   00513|     handler creative_writing
+   00514|     browser_handler tryCreativeWritingRequest
+   00515|     admits_on composition_topic
+   00516|     refusal_event "creative_writing:refusal"
+   00517|     because "issue 1175 R3: verse is composed only about the topic the request states; without one it is admitted to the refusal lane"
+   00518|   claim
+   00519|     handler advice_request
+   00520|     browser_handler tryAdviceRequest
+   00521|     admits_on advice_topic
+   00522|     refusal_event "advice:refusal"
+   00523|     because "issue 1175 R3: advice is given only on a topic the cited recommendation table covers; any other topic is admitted to the refusal lane"
+   00524|   claim
+   00525|     handler planning_request
+   00526|     browser_handler tryPlanningRequest
+   00527|     admits_on cached_destination
+   00528|     refusal_event "planning:refusal"
+   00529|     because "issue 1175 R3: an itinerary is planned only for a destination whose places are cached; any other is admitted to the refusal lane"
+   00530|   claim
+   00531|     handler regex_synthesis
+   00532|     browser_handler tryRegexSynthesis
+   00533|     admits_on pattern_constraints
+   00534|     refusal_event "regex_synthesis:refusal"
+   00535|     because "issue 1175 R3: a regular expression is composed only from the character classes and separators the request names; without them it is admitted to the refusal lane"
+   00536|   claim
+   00537|     handler sql_synthesis
+   00538|     browser_handler trySqlSynthesis
+   00539|     admits_on table_reference
+   00540|     refusal_event "sql_synthesis:refusal"
+   00541|     because "issue 1175 R3: a query is composed only over the table the request names; without one it is admitted to the refusal lane"
+   00542|   claim
+   00543|     handler shell_command_compose
+   00544|     browser_handler tryShellCommandCompose
+   00545|     admits_on filesystem_object
+   00546|     refusal_event "shell_command_compose:refusal"
+   00547|     because "issue 1175 R3: a shell command is composed only over the files or directories the request acts on, or a complete substitution; a request no manual page covers is admitted to the refusal lane"
+   00548|   claim
+   00549|     handler program_synthesis
+   00550|     browser_handler tryProgramSynthesis
+   00551|     admits_on function_spec
+   00552|     because "issue 1175 R3: a function is synthesized only from the signature, assertion or sourced recurrence that names it"
+   00553|   claim
+   00554|     handler write_script
+   00555|     browser_handler tryWriteScript
+   00556|     admits_on script_language
+   00557|     because "issue 1175 R3: a minimal script is written only in a catalogued language the request names"
+   00558|   claim
+   00559|     handler document_generation_plan
+   00560|     browser_handler tryDocumentGenerationPlan
+   00561|     admits_on document_format
+   00562|     because "issue 1175 R3: a document plan claims only with the document format the authoring verb governs"
+   00563|   claim
+   00564|     handler installation_conversion
+   00565|     browser_handler tryInstallationConversion
+   00566|     admits_on install_steps
+   00567|     because "issue 1175 R3: a conversion claims only with the installation commands it converts"
+   00568|   claim
+   00569|     handler execution_failure
+   00570|     browser_handler tryExecutionFailure
+   00571|     admits_on call_expression
+   00572|     because "issue 1175 R3: a failure trace claims only with the call expression whose execution fails"
+   00573|   claim
+   00574|     handler concept_lookup
+   00575|     browser_handler tryConceptLookup
+   00576|     admits_on concept_subject
+   00577|     because "issue 1175 R3: a definition claims only with the subject the concept reader extracts from the question"
+   00578|   claim
+   00579|     handler definition_merge
+   00580|     browser_handler tryDefinitionMerge
+   00581|     admits_on definition_merge_term
+   00582|     because "issue 1175 R3: a definition merge claims only with the term whose definitions it merges"
+   00583|   claim
+   00584|     handler who_is
+   00585|     browser_handler tryWhoIsQuestion
+   00586|     admits_on concept_subject
+   00587|     because "issue 1175 R3: a person question claims only with the name the concept reader extracts"
+   00588|   claim
+   00589|     handler how_it_works
+   00590|     browser_handler tryHowItWorks
+   00591|     admits_on mechanism_subject
+   00592|     admits_on prior_reply
+   00593|     refusal_event "how_it_works:refusal"
+   00594|     because "issue 1175 R3: a mechanism question claims with the subject it names or the earlier reply it elaborates; a bare question with neither is admitted to the refusal lane, where it explains how to ask"
+   00595|   claim
+   00596|     handler procedural_how_to
+   00597|     browser_handler tryProceduralHowTo
+   00598|     admits_on procedure_task
+   00599|     because "issue 1175 R3: a procedure claims only with the task the how-to reader extracts"
+   00600|   claim
+   00601|     handler procedural_how_to_followup
+   00602|     browser_handler tryProceduralHowToFollowup
+   00603|     admits_on prior_procedure
+   00604|     because "issue 1175 R3: an elaboration claims only when the earlier turn was an answered how-to request whose task re-parses"
+   00605|   claim
+   00606|     handler web_search
+   00607|     browser_handler tryWebSearch
+   00608|     admits_on search_focus
+   00609|     because "issue 1175 R3: a search claims only with the query focus the search reader extracts"
+   00610|   claim
+   00611|     handler conversation_topic
+   00612|     admits_on conversation_topic_subject
+   00613|     because "issue 1175 R3: a conversation opener claims only with the topic it names"
+   00614|   claim
+   00615|     handler learn_from_source
+   00616|     browser_handler tryLearnFromSource
+   00617|     admits_on learnable_source
+   00618|     because "issue 1175 R3: a learning directive claims only with a declared source the engine can learn from"
+   00619|   claim
+   00620|     handler product_search
+   00621|     browser_handler tryProductSearch
+   00622|     admits_on marketplace_scope
+   00623|     refusal_event "product_search:refusal"
+   00624|     because "issue 1175 R3: a product search claims only with the marketplace it is scoped to; issue 1173 R3: a product request that names no marketplace is admitted to the refusal lane, where only its named refusal (the catalogued marketplaces, no guessed store) is kept"
+   00625|   claim
+   00626|     handler verifiable_task
+   00627|     browser_handler tryVerifiableTask
+   00628|     admits_on verifiable_spec
+   00629|     because "issue 1175 R3: a verifiable task claims only with the expectation the task reader formalizes"
+   00630|   claim
+   00631|     handler legality_warning
+   00632|     browser_handler tryLegalityWarning
+   00633|     admits_on legality_assessment
+   00634|     because "issue 1175 R3: a legality advisory claims only when the catalogue assesses the request, through a trigger phrase or an act whose object phrase names a protected object"
+   00635|   claim
+   00636|     handler opinion_question
+   00637|     browser_handler tryOpinionQuestion
+   00638|     admits_on assistant_addressee
+   00639|     because "issue 1175 R3: the no-opinion policy claims only a question addressed to the assistant"
+   00640|   claim
+   00641|     handler physical_action_question
+   00642|     browser_handler tryPhysicalActionQuestion
+   00643|     admits_on assistant_addressee
+   00644|     because "issue 1175 R3: the physical-action policy claims only a question addressed to the assistant"
+   00645|   claim
+   00646|     handler punctuation_only_prompt
+   00647|     browser_handler tryPunctuationOnlyPrompt
+   00648|     admits_on punctuation_only
+   00649|     because "issue 1175 R3: the punctuation clarification claims only a prompt that carries no word at all"
+   00650|   claim
+   00651|     handler ill_formed
+   00652|     browser_handler tryIllFormed
+   00653|     admits_on unbalanced_brackets
+   00654|     because "issue 1175 R3: the ill-formed notation answer claims only a prompt whose brackets do not balance"
+   00655|   claim
+   00656|     handler shell_refusal
+   00657|     browser_handler tryShellRefusal
+   00658|     admits_on shell_command_shape
+   00659|     because "issue 1175 R3: the bounded-autonomy refusal claims only a request that carries a shell command"
+   00660|   claim
+   00661|     handler link_native_synthesis
+   00662|     browser_handler tryLinkNativeSynthesis
+   00663|     admits_on stated_number
+   00664|     because "issue 1175 R3: a link-native synthesis claims only with the quantities it substitutes or sells"
+   00665|   claim
+   00666|     handler software_project_followup
+   00667|     browser_handler trySoftwareProjectFollowup
+   00668|     admits_on prior_software_project
+   00669|     because "issue 1175 R3: a project follow-up claims only when the earlier reply formalized a software project request"
+   00670|   claim
+   00671|     handler research_result_followup
+   00672|     browser_handler tryResearchResultFollowup
+   00673|     admits_on prior_research_request
+   00674|     because "issue 1175 R3: a result follow-up claims only when the earlier request was research"
+   00675|   claim
+   00676|     handler research_comparison_table
+   00677|     browser_handler tryResearchComparisonTable
+   00678|     admits_on prior_research_request
+   00679|     because "issue 1175 R3: a comparison table claims only over the topics of the earlier research request"
+   00680|   claim
+   00681|     handler coreference
+   00682|     browser_handler tryCoreferenceFactLookup
+   00683|     admits_on coreference_antecedent
+   00684|     because "issue 1175 R3: a pronoun claims only when the earlier request names its antecedent"
+   00685|   claim
+   00686|     handler response_language_followup
+   00687|     browser_handler tryResponseLanguageFollowup
+   00688|     admits_on prior_user_request
+   00689|     because "issue 1175 R3: a language retarget claims only when an earlier request exists to answer again"
+   00690|   claim
+   00691|     handler numeric_list
+   00692|     browser_handler tryNumericList
+   00693|     admits_on list_items
+   00694|     admits_on prior_numeric_list
+   00695|     because "issue 1175 R3: a list operation claims only with the numbers or quoted values it lists, or the list, language or code request the earlier turn established"
+   00696|   claim
+   00697|     handler text_manipulation
+   00698|     browser_handler tryTextManipulation
+   00699|     admits_on text_operation
+   00700|     because "issue 1175 R3: a text operation claims only with the input text and operations it parses, from the request or the earlier reply"
+   00701|   claim
+   00702|     handler shell_command_transform
+   00703|     browser_handler tryShellCommandTransform
+   00704|     admits_on shell_command_operand
+   00705|     admits_on prior_reply
+   00706|     because "issue 1175 R3: a command rewrite claims only with the command it rewrites, from the request or the earlier reply"
+   00707|   claim
+   00708|     handler write_program_coreference
+   00709|     browser_handler tryWriteProgramCoreference
+   00710|     admits_on prior_program
+   00711|     because "issue 1175 R3: a bare program follow-up claims only when an earlier turn established the program's task and language"
+   00712|   claim
+   00713|     handler write_program_concrete
+   00714|     browser_handler tryWriteProgramConcrete
+   00715|     admits_on program_task
+   00716|     because "issue 1175 R3: a concrete program claims only with the task and language the program reader extracts"
+   00717|   claim
+   00718|     handler program_blueprint_from_prompt
+   00719|     browser_handler tryProgramBlueprintFromPrompt
+   00720|     admits_on program_task
+   00721|     because "issue 1175 R3: a program blueprint claims only with the task and language the program reader extracts"
+   00722|   claim
+   00723|     handler software_project_request
+   00724|     browser_handler trySoftwareProjectRequest
+   00725|     admits_on object_phrase_artifact
+   00726|     admits_on approval_of_a_proposal
+   00727|     because "issue 1175 R2: the browser-only project row reads the same object phrase and approval as the software_project row"
+   00728|   claim
+   00729|     handler memory_program
+   00730|     browser_handler tryMemoryProgram
+   00731|     admits_on memory_program_reading
+   00732|     because "issue 1175 R3: a memory program claims only when a seeded program family compiles from the request"
+   00733|   claim
+   00734|     handler memory_program_gap
+   00735|     browser_handler tryMemoryProgramGap
+   00736|     admits_on memory_program_reading
+   00737|     because "issue 1175 R3: a memory program gap claims only when the request reads as a seeded program family"
+   00738|   claim_note "Issue 1175 R3 follow-up round: a handler that used to answer without its input now records a named refusal event in that branch, so its row admits on the input and keeps the no-input answer through the refusal lane; the assistant itself is the subject of a question that addresses it or names no other subject."
+   00739|   claim
+   00740|     handler conversation_control
+   00741|     admits_on backticked_term
+   00742|     admits_on prior_reply
+   00743|     refusal_event "conversation_control:refusal"
+   00744|     because "issue 1175 R3: a preference claims with the backticked term it avoids and a correction with the earlier action it corrects; a correction with no earlier turn is admitted to the refusal lane"
+   00745|   claim
+   00746|     handler agentic_continuation
+   00747|     browser_handler tryAgenticContinuation
+   00748|     admits_on prior_reply
+   00749|     refusal_event "agentic_continuation:refusal"
+   00750|     because "issue 1175 R3: a continuation claims with the earlier task it resumes; with nothing to resume it is admitted to the refusal lane"
+   00751|   claim
+   00752|     handler clarification
+   00753|     browser_handler tryClarification
+   00754|     admits_on prior_reply
+   00755|     refusal_event "clarification:refusal"
+   00756|     because "issue 1175 R3: a clarification request claims with the earlier reply it asks about; with none it is admitted to the refusal lane"
+   00757|   claim
+   00758|     handler current_dialogue_fact_checking
+   00759|     browser_handler tryCurrentDialogueFactChecking
+   00760|     admits_on prior_user_request
+   00761|     refusal_event "current_dialogue_fact_checking:refusal"
+   00762|     because "issue 1175 R3: a dialogue fact check claims with the earlier statements it checks; with none it is admitted to the refusal lane"
+   00763|   claim
+   00764|     handler historical
+   00765|     browser_handler tryHistorical
+   00766|     admits_on dialogue_turn
+   00767|     admits_on name_assignment
+   00768|     refusal_event "conversation_recall:refusal"
+   00769|     because "issue 1175 R3: a recap or recall claims with the earlier turns it reads, a naming with the name it assigns; a recall with no earlier message is admitted to the refusal lane"
+   00770|   claim
+   00771|     handler conversation_memory
+   00772|     admits_on dialogue_turn
+   00773|     admits_on name_assignment
+   00774|     admits_on recall_query_term
+   00775|     admits_on supplied_payload
+   00776|     refusal_event "conversation_recall:refusal"
+   00777|     because "issue 1175 R3: a conversation recall claims with the earlier turns, the name it assigns, the term it recalls or the text it summarizes; a request with none of them is admitted to the refusal lane"
+   00778|   claim
+   00779|     handler summarization
+   00780|     admits_on summary_topic
+   00781|     refusal_event "summarization:refusal"
+   00782|     because "issue 1175 R3: a topic summary claims with the seeded topic it summarizes; any other topic is admitted to the refusal lane"
+   00783|   claim
+   00784|     handler brainstorming
+   00785|     browser_handler tryBrainstormingRequest
+   00786|     admits_on brainstorm_category
+   00787|     refusal_event "brainstorming:refusal"
+   00788|     because "issue 1175 R3: a brainstorm list claims with the category its keywords name; the default category is admitted to the refusal lane"
+   00789|   claim
+   00790|     handler roleplay
+   00791|     browser_handler tryRoleplayRequest
+   00792|     admits_on persona_or_topic
+   00793|     refusal_event "roleplay:refusal"
+   00794|     because "issue 1175 R3: a roleplay claims with the persona or topic it names; the default persona on the fallback topic is admitted to the refusal lane"
+   00795|   claim
+   00796|     handler document_originality_check
+   00797|     browser_handler tryDocumentOriginalityCheck
+   00798|     admits_on document_operand
+   00799|     refusal_event "document_originality_check:refusal"
+   00800|     because "issue 1175 R3: an originality check claims with the document it checks, an attachment, a text sample or a supplied text; a named but unsupplied document is admitted to the refusal lane"
+   00801|   claim
+   00802|     handler translation
+   00803|     browser_handler tryTranslation
+   00804|     admits_on translation_text
+   00805|     refusal_event "translation:refusal"
+   00806|     because "issue 1175 R3: a translation claims with the text it translates; a request with no source phrase is admitted to the refusal lane"
+   00807|   claim
+   00808|     handler triz_resolution
+   00809|     browser_handler tryTrizResolution
+   00810|     admits_on triz_precedent
+   00811|     refusal_event "triz_resolution:refusal"
+   00812|     because "issue 1175 R3: a contradiction question claims with the precedent its words overlap; with none it is admitted to the refusal lane"
+   00813|   claim
+   00814|     handler algorithm
+   00815|     browser_handler tryAlgorithm
+   00816|     admits_on algorithm_operation
+   00817|     refusal_event "algorithm:refusal"
+   00818|     because "issue 1175 R3: an algorithm request claims with the operation it names; with none it is admitted to the refusal lane"
+   00819|   claim
+   00820|     handler source_refresh
+   00821|     browser_handler trySourceRefresh
+   00822|     admits_on source_reference
+   00823|     refusal_event "source_refresh:refusal"
+   00824|     because "issue 1175 R3: a refresh claims with the source it names, a URL or a path; with none it is admitted to the refusal lane"
+   00825|   claim
+   00826|     handler proof_request
+   00827|     browser_handler tryProofRequest
+   00828|     admits_on stated_claim
+   00829|     refusal_event "proof_request:refusal"
+   00830|     because "issue 1175 R3: a proof request claims with the claim it states beyond its directive; with none it is admitted to the refusal lane"
+   00831|   claim
+   00832|     handler capabilities
+   00833|     browser_handler tryCapabilities
+   00834|     admits_on assistant_subject
+   00835|     because "issue 1175 R3: a capability question claims only when its subject is the assistant, addressed or left unnamed, never when it names another subject"
+   00836|   claim
+   00837|     handler meta_explanation
+   00838|     browser_handler tryMetaExplanation
+   00839|     admits_on assistant_subject
+   00840|     because "issue 1175 R3: a question about how or why the assistant answers claims only when its subject is the assistant, addressed or left unnamed"
+   00841|   claim
+   00842|     handler network_query
+   00843|     browser_handler tryNetworkSnapshot
+   00844|     admits_on assistant_subject
+   00845|     because "issue 1175 R3: a network question claims only when its subject is the assistant's own network, addressed or left unnamed"
+   00846|   claim
+   00847|     handler exact_memory_query
+   00848|     browser_handler tryExactMemoryQuery
+   00849|     admits_on memory_query_statement
+   00850|     because "issue 1175 R3: an exact memory query claims only with a statement in a memory query dialect"
+   00851|   claim
+   00852|     handler fact_lookup
+   00853|     admits_on fact_subject
+   00854|     because "issue 1175 R3: a fact question claims only with the subject one of its arms resolves: a question over supplied text, a comparison of seeded subjects, the gated record, a live relation and subject, or the concept an explanation researches"
+   00855|   claim_note "Issue 1175 R3 last five rows: each handler that read nothing but its cue now reads the operand its answer is about, through a reader the rule interpreter also captures the operand with (value <name> operand <kind>), so the row and the answer read the same thing."
+   00856|   claim
+   00857|     handler docs_method_explanation
+   00858|     browser_handler tryDocsMethodExplanation
+   00859|     admits_on documented_method
+   00860|     because "issue 1175 R3: a documentation explanation claims only when the prompt names the project and the method of a seeded documentation page, never on an explanation lead alone"
+   00861|   claim
+   00862|     handler kupi_slona
+   00863|     browser_handler tryKupiSlona
+   00864|     admits_on idiom_utterance
+   00865|     because "issue 1175 R3: the circular idiom claims only when it is the whole utterance, framed at most by particles and function words, never when the phrase merely occurs inside another request"
+   00866|   claim
+   00867|     handler source_conflict
+   00868|     browser_handler trySourceConflict
+   00869|     admits_on attributed_alternatives
+   00870|     refusal_event "source_conflict:refusal"
+   00871|     because "issue 1175 R3: a source conflict claims an answer only with the two alternatives it attributes to sources, and names them; a cued conflict without them is admitted to the refusal lane"
+   00872|   claim
+   00873|     handler github_repository_traffic
+   00874|     browser_handler tryGithubRepositoryTraffic
+   00875|     admits_on named_repository
+   00876|     refusal_event "github_repository_traffic:refusal"
+   00877|     because "issue 1175 R3: a traffic answer names a repository only when the prompt names it, as an owner/name slug or URL or as the assistant's own; a question about an unnamed repository is admitted to the refusal lane, which states the policy for any repository"
+   00878|   claim
+   00879|     handler formalization_request
+   00880|     browser_handler tryFormalizationRequest
+   00881|     admits_on formalization_statement
+   00882|     refusal_event "formalization_request:refusal"
+   00883|     because "issue 1175 R3: a formalization claims only with a statement beyond its cue, or the formal clause a deformalization reads; a cue without one is admitted to the refusal lane"
+   00884| 
+   
+   (End of file - total 884 lines)
+   </file>
+>> edit {"filePath":"data/seed/capability-routing.lino","file_path":"data/seed/capability-routing.lino","new":"    handler historical\n    browser_handler tryHistorical\n    admits_on dialogue_turn\n    admits_on name_assignment\n    admits_on recall_query_term","newString":"    handler historical\n    browser_handler tryHistorical\n    admits_on dialogue_turn\n    admits_on name_assignment\n    admits_on recall_query_term","new_str":"    handler historical\n    browser_handler tryHistorical\n    admits_on dialogue_turn\n    admits_on name_assignment\n    admits_on recall_query_term","new_string":"    handler historical\n    browser_handler tryHistorical\n    admits_on dialogue_turn\n    admits_on name_assignment\n    admits_on recall_query_term","old":"    handler historical\n    browser_handler tryHistorical\n    admits_on dialogue_turn\n    admits_on name_assignment","oldString":"    handler historical\n    browser_handler tryHistorical\n    admits_on dialogue_turn\n    admits_on name_assignment","old_str":"    handler historical\n    browser_handler tryHistorical\n    admits_on dialogue_turn\n    admits_on name_assignment","old_string":"    handler historical\n    browser_handler tryHistorical\n    admits_on dialogue_turn\n    admits_on name_assignment","path":"data/seed/capability-routing.lino"}
+>> bash {"command":"sha256sum -- data/seed/capability-routing.lino"}
+   Output: 06c1f06200b80485440b9b9a6370885656c0b22cfdd03cd0e2538ee48087e1c5  data/seed/capability-routing.lino
+   
+   Exit Code: 0
+== answer ==
+Replaced `    handler historical
+    browser_handler tryHistorical
+    admits_on dialogue_turn
+    admits_on name_assignment` with `    handler historical
+    browser_handler tryHistorical
+    admits_on dialogue_turn
+    admits_on name_assignment
+    admits_on recall_query_term` in `data/seed/capability-routing.lino` and observed the result.

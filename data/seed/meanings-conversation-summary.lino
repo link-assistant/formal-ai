@@ -1,0 +1,87 @@
+meanings
+  conversation_summary_directive
+    defined-by inquiry
+    defined-by answer
+    role conversation_summary_directive
+    lexeme en summarize summarise summary
+    lexeme ru суммируй суммируйте резюмируй резюмируйте резюме
+    lexeme hi सारांश संक्षेप सारांशित
+    lexeme zh 总结 總結 概括 摘要 归纳 歸納
+    lexeme es resume resumir resumen
+  conversation_reference
+    defined-by inquiry
+    defined-by answer
+    role conversation_reference
+    lexeme en conversation chat dialogue dialog discussion
+    lexeme ru беседа беседы беседу беседе разговор разговора разговоре разговором чат чата чате диалог диалога
+    lexeme hi बातचीत संवाद वार्तालाप
+    lexeme zh 对话 對話 聊天 会话 會話 谈话 談話
+    lexeme es conversación chat diálogo charla discusión
+  conversation_summary_phrase
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_summary_phrase
+    lexeme en
+      words "what have we talked about" "what did we talk about" "what we were talking about"
+      words "what were we talking about" "what have we discussed" "remind me what we discussed" "summary of our chat"
+      words "summary of our conversation" "summarize so far" "summarise so far" "what did we do so far"
+      words "what have we done so far"
+    lexeme ru
+      words "о чём мы разговаривали" "о чем мы разговаривали" "о чём мы говорили" "о чем мы говорили" "что мы сделали"
+      words "что мы уже сделали"
+    lexeme hi "हमने किस बारे में बात की" "हमने क्या बात की" "हमने अब तक क्या किया" "हमने क्या किया"
+    lexeme zh 我们聊了什么 我们谈了什么 我们说了什么 我們聊了什麼 我们做了什么 我们刚才做了什么
+    lexeme es
+      words "de qué hemos hablado" "de qué hablamos" "qué hemos hecho hasta ahora" "qué hicimos hasta ahora"
+      words "resumen de nuestra conversación" "recuérdame de qué hablamos"
+  conversation_summary_courtesy
+    defined-by inquiry
+    defined-by conversation_summary_directive
+    role conversation_summary_courtesy
+    lexeme en "give me a summary" "can you summarize" "can you summarise" "please summarize" "please summarise"
+    lexeme ru "подведи итог" "подведи итоги" "краткое резюме" "сделай резюме" "краткое содержание"
+    lexeme hi "सार दो" "सारांश दो" "संक्षेप में बताओ"
+    lexeme zh 帮我总结 帮我概括 请总结 请概括 总结一下 概括一下
+    lexeme es "dame un resumen" "puedes resumir" "por favor resume" "haz un resumen"
+  conversation_return_recap
+    defined-by inquiry
+    defined-by conversation_reference
+    defined-by conversation_summary_directive
+    role conversation_return_recap
+    lexeme en "the user stepped away and is coming back" "i am back after stepping away"
+    lexeme ru "пользователь отошёл и возвращается" "я вернулся после перерыва"
+    lexeme hi "उपयोगकर्ता वापस आ रहा है" "मैं विराम के बाद वापस आया हूँ"
+    lexeme zh 用户离开后回来了 我离开后回来了
+    lexeme es "el usuario se alejó y está regresando" "he vuelto después de ausentarme"
+  conversation-recall-empty
+    defined-by conversation_reference
+    defined-by answer
+    lexeme en "empty conversation recall"
+    lexeme ru "пустое воспоминание о разговоре"
+    lexeme hi "खाली बातचीत स्मरण"
+    lexeme zh 空的对话回忆
+    lexeme es "recuerdo de conversación vacío"
+  conversation-recall-header
+    defined-by conversation_reference
+    defined-by answer
+    lexeme en "conversation recall header"
+    lexeme ru "заголовок воспоминания о разговоре"
+    lexeme hi "बातचीत स्मरण शीर्षक"
+    lexeme zh 对话回忆标题
+    lexeme es "encabezado del recuerdo de conversación"
+  conversation-recall-turn
+    defined-by conversation_reference
+    defined-by answer
+    lexeme en "recalled conversation turn"
+    lexeme ru "вспомненная реплика разговора"
+    lexeme hi "याद किया गया बातचीत संदेश"
+    lexeme zh 回忆的对话轮次
+    lexeme es "turno de conversación recordado"
+  conversation-summary-envelope
+    defined-by conversation_reference
+    defined-by conversation_summary_directive
+    lexeme en "conversation summary envelope"
+    lexeme ru "оболочка резюме разговора"
+    lexeme hi "बातचीत सारांश आवरण"
+    lexeme zh 对话摘要封装
+    lexeme es "envoltura del resumen de conversación"

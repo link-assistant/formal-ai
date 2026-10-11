@@ -1,0 +1,138 @@
+>> bash {"command":"node --test compiled-skill-prototype.test.mjs"}
+   Output: TAP version 13
+   # Subtest: actual native source constants produce exact content-addressed package and handler IDs
+   ok 1 - actual native source constants produce exact content-addressed package and handler IDs
+     ---
+     duration_ms: 236.028833
+     ...
+   # Subtest: real native package notation has all fourteen ordered fields and valid codec bytes
+   ok 2 - real native package notation has all fourteen ordered fields and valid codec bytes
+     ---
+     duration_ms: 1.037542
+     ...
+   # Subtest: all E1 links retain native field sequence, source identity and independently verified doublet IDs
+   ok 3 - all E1 links retain native field sequence, source identity and independently verified doublet IDs
+     ---
+     duration_ms: 1.569208
+     ...
+   # Subtest: all original native multilingual teaching rows compile and replay without rewriting responses
+   ok 4 - all original native multilingual teaching rows compile and replay without rewriting responses
+     ---
+     duration_ms: 1.398917
+     ...
+   # Subtest: arbitrary held-out literals preserve Unicode, punctuation, quote bytes and actual normalization
+   ok 5 - arbitrary held-out literals preserve Unicode, punctuation, quote bytes and actual normalization
+     ---
+     duration_ms: 0.62075
+     ...
+   # Subtest: structured IR and unrecognized prose stay unsupported instead of fabricating deterministic replay
+   ok 6 - structured IR and unrecognized prose stay unsupported instead of fabricating deterministic replay
+     ---
+     duration_ms: 0.490084
+     ...
+   # Subtest: replay uses latest matching user package, ignores assistant teaching, and deduplicates actual package IDs
+   ok 7 - replay uses latest matching user package, ignores assistant teaching, and deduplicates actual package IDs
+     ---
+     duration_ms: 7.312
+     ...
+   # Subtest: unchanged original native session retains and passes all five assertions in actual scratch compiler runtime
+   ok 8 - unchanged original native session retains and passes all five assertions in actual scratch compiler runtime
+     ---
+     duration_ms: 204.230792
+     ...
+   # Subtest: nonmatching original worker execution is unchanged by the scratch dispatcher
+   ok 9 - nonmatching original worker execution is unchanged by the scratch dispatcher
+     ---
+     duration_ms: 45.498333
+     ...
+   # Subtest: actual production worker dispatch and event projection replay the compiled package in a selected memory overlay
+   ok 10 - actual production worker dispatch and event projection replay the compiled package in a selected memory overlay
+     ---
+     duration_ms: 600.53575
+     ...
+   # Subtest: real worker overlay keeps held-out latest-rule selection and nonmatching dispatch truthful
+   ok 11 - real worker overlay keeps held-out latest-rule selection and nonmatching dispatch truthful
+     ---
+     duration_ms: 674.209791
+     ...
+   1..11
+   # tests 11
+   # suites 0
+   # pass 11
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 2326.247792
+   
+   Exit Code: 0
+== answer ==
+The `node --test compiled-skill-prototype.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: actual native source constants produce exact content-addressed package and handler IDs
+ok 1 - actual native source constants produce exact content-addressed package and handler IDs
+  ---
+  duration_ms: 236.028833
+  ...
+# Subtest: real native package notation has all fourteen ordered fields and valid codec bytes
+ok 2 - real native package notation has all fourteen ordered fields and valid codec bytes
+  ---
+  duration_ms: 1.037542
+  ...
+# Subtest: all E1 links retain native field sequence, source identity and independently verified doublet IDs
+ok 3 - all E1 links retain native field sequence, source identity and independently verified doublet IDs
+  ---
+  duration_ms: 1.569208
+  ...
+# Subtest: all original native multilingual teaching rows compile and replay without rewriting responses
+ok 4 - all original native multilingual teaching rows compile and replay without rewriting responses
+  ---
+  duration_ms: 1.398917
+  ...
+# Subtest: arbitrary held-out literals preserve Unicode, punctuation, quote bytes and actual normalization
+ok 5 - arbitrary held-out literals preserve Unicode, punctuation, quote bytes and actual normalization
+  ---
+  duration_ms: 0.62075
+  ...
+# Subtest: structured IR and unrecognized prose stay unsupported instead of fabricating deterministic replay
+ok 6 - structured IR and unrecognized prose stay unsupported instead of fabricating deterministic replay
+  ---
+  duration_ms: 0.490084
+  ...
+# Subtest: replay uses latest matching user package, ignores assistant teaching, and deduplicates actual package IDs
+ok 7 - replay uses latest matching user package, ignores assistant teaching, and deduplicates actual package IDs
+  ---
+  duration_ms: 7.312
+  ...
+# Subtest: unchanged original native session retains and passes all five assertions in actual scratch compiler runtime
+ok 8 - unchanged original native session retains and passes all five assertions in actual scratch compiler runtime
+  ---
+  duration_ms: 204.230792
+  ...
+# Subtest: nonmatching original worker execution is unchanged by the scratch dispatcher
+ok 9 - nonmatching original worker execution is unchanged by the scratch dispatcher
+  ---
+  duration_ms: 45.498333
+  ...
+# Subtest: actual production worker dispatch and event projection replay the compiled package in a selected memory overlay
+ok 10 - actual production worker dispatch and event projection replay the compiled package in a selected memory overlay
+  ---
+  duration_ms: 600.53575
+  ...
+# Subtest: real worker overlay keeps held-out latest-rule selection and nonmatching dispatch truthful
+ok 11 - real worker overlay keeps held-out latest-rule selection and nonmatching dispatch truthful
+  ---
+  duration_ms: 674.209791
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2326.247792
+```

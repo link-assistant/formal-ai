@@ -1,0 +1,5 @@
+>> bash {"command":"rustfmt --edition 2024 rust/tests/support/http_auxiliary_workspace.rs rust/tests/integration/issue_680_intent_routing.rs rust/tests/integration/issue_712_intent_routing.rs rust/tests/integration/issue_755_file_read_write.rs"}
+   Output: 
+   Exit Code: 0
+== answer ==
+The command completed successfully without output.

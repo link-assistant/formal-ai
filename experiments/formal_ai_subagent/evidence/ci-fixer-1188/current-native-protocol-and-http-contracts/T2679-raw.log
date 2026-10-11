@@ -1,0 +1,1495 @@
+>> read {"filePath":".github/workflows/release.yml","file_path":".github/workflows/release.yml","path":".github/workflows/release.yml"}
+   <file>
+   00001| name: CI/CD Pipeline
+   00002| on:
+   00003|   push:
+   00004|     branches:
+   00005|       - main
+   00006|   pull_request:
+   00007|     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+   00008|     # never triggers this repository's own pipeline.
+   00009|     branches-ignore: ['e2e/**']
+   00010|     types: [opened, synchronize, reopened]
+   00011|   workflow_dispatch:
+   00012|     inputs:
+   00013|       # Issue #1187 R3: a dispatch runs the checks only unless a release mode
+   00014|       # is chosen explicitly, and every release, publish and tag job also
+   00015|       # requires the main ref.
+   00016|       mode:
+   00017|         description: 'checks: run the pull-request checks on the dispatched branch'
+   00018|         required: false
+   00019|         default: checks
+   00020|         type: choice
+   00021|         options: [checks]
+   00022|       pull-request:
+   00023|         description: 'Pull request number whose checks are dispatched (informational)'
+   00024|         required: false
+   00025|         type: string
+   00026|       release_mode:
+   00027|         description: 'Manual release mode (checks runs no release job)'
+   00028|         required: false
+   00029|         type: choice
+   00030|         default: checks
+   00031|         options:
+   00032|           - checks
+   00033|           - instant
+   00034|           - changelog-pr
+   00035|       bump_type:
+   00036|         description: 'Version bump type'
+   00037|         required: false
+   00038|         default: patch
+   00039|         type: choice
+   00040|         options:
+   00041|           - patch
+   00042|           - minor
+   00043|           - major
+   00044|       description:
+   00045|         description: 'Release description (optional)'
+   00046|         required: false
+   00047|         type: string
+   00048| permissions:
+   00049|   contents: read
+   00050| env:
+   00051|   GIT_CONFIG_COUNT: '1'
+   00052|   GIT_CONFIG_KEY_0: init.defaultBranch
+   00053|   GIT_CONFIG_VALUE_0: main
+   00054|   CARGO_NET_RETRY: '10'
+   00055|   CARGO_HTTP_MULTIPLEXING: 'false'
+   00056|   CARGO_TERM_COLOR: always
+   00057|   # Set this repository variable to true only while investigating sccache
+   00058|   # backend failures. The shared setup action otherwise leaves logging off.
+   00059|   FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
+   00060|   # TEMPORARY (issue #1111): non-Linux CI is skipped, not deleted; set this to
+   00061|   # `run` to restore it. docs/case-studies/linux-only-ci/PLAN.md
+   00062|   FORMAL_AI_NON_LINUX_CI: ${{ vars.FORMAL_AI_NON_LINUX_CI || 'skip' }}
+   00063|   RUSTFLAGS: -Dwarnings
+   00064|   CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+   00065|   CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+   00066|   GHCR_IMAGE: ghcr.io/${{ github.repository }}
+   00067|   # Issue #1131: these were read from repository configuration that was never
+   00068|   # set, so `configure-dockerhub-publishing.sh` disabled Docker Hub on every
+   00069|   # release and the release still reported success. hive-mind names its image
+   00070|   # in the workflow the same way (`IMAGE_NAME: konard/hive-mind`). A fork still
+   00071|   # overrides either through `vars`, and a fork without DOCKERHUB_TOKEN skips
+   00072|   # Docker Hub entirely -- the token, not the image, is what opts in.
+   00073|   DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE || 'konard/formal-ai' }}
+   00074| jobs:
+   00075|   detect-changes:
+   00076|     name: Detect Changes
+   00077|     runs-on: ubuntu-latest
+   00078|     timeout-minutes: 5
+   00079|     concurrency:
+   00080|       group: ${{ github.workflow }}-${{ github.ref }}-detect-changes
+   00081|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   00082|     if: github.event_name == 'push' || github.event_name == 'pull_request'
+   00083|     outputs:
+   00084|       rs-changed: ${{ steps.changes.outputs.rs-changed }}
+   00085|       toml-changed: ${{ steps.changes.outputs.toml-changed }}
+   00086|       docs-changed: ${{ steps.changes.outputs.docs-changed }}
+   00087|       workflow-changed: ${{ steps.changes.outputs.workflow-changed }}
+   00088|       # Only the files a pipeline job executes (its definition, a composite action
+   00089|       # it calls, or a script those run): `workflow-changed` fires for any workflow
+   00090|       # file, which made a scheduled benchmark's edit pay for the whole pipeline (#1107).
+   00091|       pipeline-changed: ${{ steps.changes.outputs.pipeline-changed }}
+   00092|       agentic-routing-changed: ${{ steps.changes.outputs.agentic-routing-changed }}
+   00093|       any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+   00094|     steps:
+   00095|       - uses: actions/checkout@v7
+   00096|         with:
+   00097|           persist-credentials: false
+   00098|           fetch-depth: 0
+   00099|       - name: Setup Rust
+   00100|         uses: dtolnay/rust-toolchain@stable
+   00101|       - name: Install rust-script
+   00102|         run: bash scripts/install-rust-script.sh
+   00103|       - name: Detect changes
+   00104|         id: changes
+   00105|         env:
+   00106|           GITHUB_EVENT_NAME: ${{ github.event_name }}
+   00107|           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+   00108|           # A fragment waiting on main runs lint/test/build, so Auto Release runs (#1064).
+   00109|           RELEASE_PIPELINE: 'true'
+   00110|         run: rust-script scripts/detect-code-changes.rs
+   00111|   changelog:
+   00112|     name: Changelog Fragment Check
+   00113|     runs-on: ubuntu-latest
+   00114|     timeout-minutes: 10
+   00115|     concurrency:
+   00116|       group: ${{ github.workflow }}-${{ github.ref }}-changelog
+   00117|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   00118|     needs: [detect-changes, build-artifacts]
+   00119|     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+   00120|     steps:
+   00121|       - uses: actions/checkout@v7
+   00122|         with:
+   00123|           persist-credentials: false
+   00124|           fetch-depth: 0
+   00125|       - name: Setup Rust
+   00126|         uses: dtolnay/rust-toolchain@stable
+   00127|       - name: Install rust-script
+   00128|         run: bash scripts/install-rust-script.sh
+   00129|       - name: Check for changelog fragments
+   00130|         env:
+   00131|           GITHUB_BASE_REF: ${{ github.base_ref }}
+   00132|         run: rust-script scripts/check-changelog-fragment.rs
+   00133|   docker-build:
+   00134|     name: Docker Image Build & Runtime Check
+   00135|     runs-on: ubuntu-latest
+   00136|     permissions:
+   00137|       contents: read
+   00138|       packages: read
+   00139|     timeout-minutes: 30
+   00140|     concurrency:
+   00141|       group: ${{ github.workflow }}-${{ github.ref }}-docker-build
+   00142|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   00143|     needs: [detect-changes, build-artifacts]
+   00144|     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+   00145|     steps:
+   00146|       - uses: actions/checkout@v7
+   00147|         with:
+   00148|           persist-credentials: false
+   00149|       - name: Skip when identical inputs already passed
+   00150|         id: ledger
+   00151|         uses: ./.github/actions/green-ledger
+   00152|         with:
+   00153|           check: docker-image
+   00154|           paths: >-
+   00155|             rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock Dockerfile docker scripts .github/workflows/release.yml .github/actions
+   00156|           enabled: ${{ github.ref != 'refs/heads/main' }}
+   00157|       - name: Free up runner disk space
+   00158|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00159|         run: bash scripts/free-runner-disk.sh
+   00160|       - uses: ./.github/actions/download-formal-ai-binary
+   00161|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00162|       - name: Set up Docker Buildx
+   00163|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00164|         uses: ./.github/actions/setup-buildx-resilient
+   00165|       - name: Build image
+   00166|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00167|         # Issue #1076: a step-level cap reports an overrun as a step *failure*;
+   00168|         # the job cap reports it as `cancelled` and turns nothing red. 15m is
+   00169|         # 1.7x the worst of thirteen measured pull-request builds (8.6 min).
+   00170|         timeout-minutes: 15
+   00171|         uses: docker/build-push-action@v7
+   00172|         with:
+   00173|           context: .
+   00174|           push: false
+   00175|           load: true
+   00176|           tags: formal-ai:pr-check
+   00177|           # Publish jobs keep the default `compile`, so what ships is still
+   00178|           # built from source (issue #1051).
+   00179|           build-args: BINARY_SOURCE=prebuilt
+   00180|           cache-from: type=gha,scope=docker-image
+   00181|           # Issue #1057: prebuilt binary, nothing worth caching; exports were
+   00182|           # evicting sccache from the shared 10GB pool.
+   00183|           cache-to: type=inline
+   00184|       - name: Verify image runtime contract
+   00185|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00186|         run: |
+   00187|           set -euo pipefail
+   00188|           docker run --rm --privileged formal-ai:pr-check verify-formal-ai-dind
+   00189|       - name: Log in to GHCR for the released upgrade fixture
+   00190|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00191|         uses: docker/login-action@v4
+   00192|         with:
+   00193|           registry: ghcr.io
+   00194|           username: ${{ github.actor }}
+   00195|           password: ${{ secrets.GITHUB_TOKEN }}
+   00196|       - name: Test released-to-candidate memory upgrade
+   00197|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00198|         run: experiments/issue_982_memory_upgrade/run_container_upgrade.sh
+   00199|       - if: ${{ !cancelled() }}
+   00200|         run: scripts/prune-docker.sh
+   00201|   docker-slim:
+   00202|     name: Slim Docker build and runtime
+   00203|     concurrency:
+   00204|       group: ${{ github.workflow }}-docker-slim-${{ github.ref }}
+   00205|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   00206|     needs: [detect-changes, build-artifacts]
+   00207|     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+   00208|     uses: ./.github/workflows/docker-slim.yml
+   00209|     permissions:
+   00210|       contents: read
+   00211|   secrets-scan:
+   00212|     name: Secrets Scan
+   00213|     runs-on: ubuntu-latest
+   00214|     timeout-minutes: 10
+   00215|     concurrency:
+   00216|       group: ${{ github.workflow }}-${{ github.ref }}-secrets-scan
+   00217|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   00218|     needs: [detect-changes]
+   00219|     if: |
+   00220|       !cancelled() && (
+   00221|         github.event_name == 'workflow_dispatch' ||
+   00222|         needs.detect-changes.outputs.any-code-changed == 'true' ||
+   00223|         needs.detect-changes.outputs.docs-changed == 'true' ||
+   00224|         needs.detect-changes.outputs.pipeline-changed == 'true'
+   00225|       )
+   00226|     steps:
+   00227|       - uses: actions/checkout@v7
+   00228|         with:
+   00229|           persist-credentials: false
+   00230|           fetch-depth: 0
+   00231|       - name: Setup Node
+   00232|         uses: actions/setup-node@v7
+   00233|         with:
+   00234|           node-version: 22
+   00235|       - name: Check for secrets
+   00236|         env:
+   00237|           BASE_REF: ${{ github.base_ref || github.event.before || 'HEAD~1' }}
+   00238|         run: bash scripts/check-secrets.sh
+   00239|   version-check:
+   00240|     name: Version Modification Check
+   00241|     runs-on: ubuntu-latest
+   00242|     timeout-minutes: 5
+   00243|     concurrency:
+   00244|       group: ${{ github.workflow }}-${{ github.ref }}-version-check
+   00245|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   00246|     if: github.event_name == 'pull_request'
+   00247|     steps:
+   00248|       - uses: actions/checkout@v7
+   00249|         with:
+   00250|           persist-credentials: false
+   00251|           fetch-depth: 0
+   00252|       - name: Setup Rust
+   00253|         uses: dtolnay/rust-toolchain@stable
+   00254|       - name: Install rust-script
+   00255|         run: bash scripts/install-rust-script.sh
+   00256|       - name: Check for manual version changes
+   00257|         env:
+   00258|           GITHUB_EVENT_NAME: ${{ github.event_name }}
+   00259|           GITHUB_HEAD_REF: ${{ github.head_ref }}
+   00260|           GITHUB_BASE_REF: ${{ github.base_ref }}
+   00261|         run: rust-script scripts/check-version-modification.rs
+   00262|   # Issue #1081: principle 16 of docs/CI-CD-BEST-PRACTICES.md -- "prove you can
+   00263|   # publish before you build". Every release credential used to be exercised
+   00264|   # only by the step that needed it, near the end of a 90-minute release job, so
+   00265|   # a revoked crates.io token or an expired Docker Hub access token cost a full
+   00266|   # build before anyone learned the release could not happen. This job asks the
+   00267|   # same registries the same question in seconds, and the release jobs below
+   00268|   # need it. On anything that is not a release it reports instead of failing: a
+   00269|   # fork's pull request has no secrets to probe, and the code can still be
+   00270|   # tested.
+   00271|   release-preflight:
+   00272|     name: Release Preflight
+   00273|     runs-on: ubuntu-latest
+   00274|     timeout-minutes: 5
+   00275|     concurrency:
+   00276|       group: ${{ github.workflow }}-${{ github.ref }}-release-preflight
+   00277|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   00278|     permissions:
+   00279|       contents: read
+   00280|       # The GHCR probe opens and cancels a blob upload session, which is the
+   00281|       # only question ghcr.io answers differently for "may push" and "may pull".
+   00282|       packages: write
+   00283|     steps:
+   00284|       - uses: actions/checkout@v7
+   00285|         with:
+   00286|           persist-credentials: false
+   00287|       - name: Probe every release credential
+   00288|         env:
+   00289|           PREFLIGHT_MODE: >-
+   00290|             ${{ ((github.event_name == 'push' && github.ref == 'refs/heads/main')
+   00291|             || (github.event_name == 'workflow_dispatch'
+   00292|             && github.event.inputs.release_mode == 'instant'
+   00293|             && github.ref == 'refs/heads/main'))
+   00294|             && 'release' || 'report' }}
+   00295|           PREFLIGHT_VERBOSE: ${{ env.FORMAL_AI_CI_VERBOSE == 'true' && '1' || '0' }}
+   00296|           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   00297|           DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard' }}
+   00298|           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+   00299|         run: bash scripts/preflight-credentials.sh
+   00300|   # Issue #1017 (D19): one commit for every base-branch merge in this run.
+   00301|   base:
+   00302|     concurrency:
+   00303|       group: check-${{ github.workflow }}-${{ github.ref }}-base
+   00304|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   00305|     uses: ./.github/workflows/pin-base-commit.yml
+   00306|     permissions:
+   00307|       contents: read
+   00308|   lint:
+   00309|     name: Lint and Format Check (lane ${{ matrix.lane }})
+   00310|     runs-on: ubuntu-latest
+   00311|     # Issue #1076 (D5) raised the one serial job's cap 15 -> 25 -> 45 minutes
+   00312|     # (run 35806556194 was killed mid-gate at 25). PR #1188 runs the gates as
+   00313|     # parallel lanes instead (`lane` in data/meta/ci-gates/, CI_GATE_LANE
+   00314|     # below; run-ci-gates.rs --check fails a gate no lane runs); lane 1 also
+   00315|     # runs the wasm and web stages. 30 holds the slowest lane (~15 min).
+   00316|     timeout-minutes: 30
+   00317|     strategy:
+   00318|       fail-fast: false
+   00319|       matrix:
+   00320|         lane: [1, 2, 3, 4]
+   00321|     concurrency:
+   00322|       group: ${{ github.workflow }}-${{ github.ref }}-lint-${{ matrix.lane }}
+   00323|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   00324|     needs: [detect-changes, base]
+   00325|     if: |
+   00326|       !cancelled() && (
+   00327|         github.event_name == 'workflow_dispatch' ||
+   00328|         needs.detect-changes.outputs.any-code-changed == 'true' ||
+   00329|         needs.detect-changes.outputs.rs-changed == 'true' ||
+   00330|         needs.detect-changes.outputs.toml-changed == 'true' ||
+   00331|         needs.detect-changes.outputs.docs-changed == 'true' ||
+   00332|         needs.detect-changes.outputs.pipeline-changed == 'true' ||
+   00333|         needs.detect-changes.outputs.workflow-changed == 'true'
+   00334|       )
+   00335|     steps:
+   00336|       - uses: actions/checkout@v7
+   00337|         with:
+   00338|           persist-credentials: false
+   00339|           fetch-depth: 0
+   00340|       - name: Simulate fresh merge with base branch (PR only)
+   00341|         if: github.event_name == 'pull_request'
+   00342|         env:
+   00343|           BASE_REF: ${{ github.base_ref }}
+   00344|           BASE_COMMIT: ${{ needs.base.outputs.commit }}  # issue #1017: see `base`
+   00345|         run: bash scripts/simulate-fresh-merge.sh
+   00346|       - name: Setup Rust
+   00347|         uses: dtolnay/rust-toolchain@stable
+   00348|         with:
+   00349|           components: rustfmt, clippy
+   00350|           targets: wasm32-unknown-unknown
+   00351|       - uses: ./.github/actions/setup-sccache
+   00352|       - name: Setup Bun
+   00353|         uses: oven-sh/setup-bun@v2
+   00354|         with:
+   00355|           bun-version-file: .bun-version
+   00356|       - name: Install rust-script
+   00357|         run: bash scripts/install-rust-script.sh
+   00358|       - uses: ./.github/actions/cache-cargo-registry
+   00359|       - name: Run registered gates (stage rust)
+   00360|         # Issue #991: the gate list lives in data/meta/ci-gates/, one file per
+   00361|         # gate, so adding a gate no longer edits this file.
+   00362|         env:
+   00363|           FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+   00364|           PR_BODY: ${{ github.event.pull_request.body }}
+   00365|           GITHUB_BASE_REF: ${{ github.base_ref }}
+   00366|           CI_GATE_LANE: ${{ matrix.lane }}
+   00367|         run: rust-script scripts/run-ci-gates.rs --stage rust
+   00368|       - name: Build Rust→WASM worker
+   00369|         if: matrix.lane == 1
+   00370|         run: sh js/wasm-worker/build.sh
+   00371|       # The rebuilt worker is published so a stale checked-in binary can be
+   00372|       # replaced with CI's exact bytes (the toolchain is CI's stable, which a
+   00373|       # contributor's machine may not match); check_wasm_worker_current below
+   00374|       # still fails until it is committed.
+   00375|       - name: Upload rebuilt WASM worker
+   00376|         if: matrix.lane == 1
+   00377|         uses: actions/upload-artifact@v7
+   00378|         with:
+   00379|           name: formal-ai-worker-wasm
+   00380|           path: js/formal_ai_worker.wasm
+   00381|           retention-days: 3
+   00382|       - name: Run registered gates (stage wasm)
+   00383|         if: matrix.lane == 1
+   00384|         run: rust-script scripts/run-ci-gates.rs --stage wasm
+   00385|       - name: Install web bundle dependencies
+   00386|         if: matrix.lane == 1
+   00387|         run: bun install --frozen-lockfile
+   00388|       - name: Build web vendor bundle
+   00389|         if: matrix.lane == 1
+   00390|         run: bun run build:web
+   00391|       - name: Check web bundles are current
+   00392|         if: matrix.lane == 1
+   00393|         run: git diff --exit-code -- js/vendor.bundle.js js/web-search-component.bundle.js js/ocr.bundle.js js/app.js
+   00394|       - name: Setup Node
+   00395|         if: matrix.lane == 1
+   00396|         uses: actions/setup-node@v7
+   00397|         with:
+   00398|           node-version: 22
+   00399|           cache: npm
+   00400|           cache-dependency-path: rust/tests/e2e/package-lock.json
+   00401|       - name: Install web test dependencies
+   00402|         if: matrix.lane == 1
+   00403|         run: npm ci --prefix rust/tests/e2e --no-audit --no-fund
+   00404|       - name: Run registered gates (stage web)
+   00405|         if: matrix.lane == 1
+   00406|         env:
+   00407|           GITHUB_BASE_REF: ${{ github.base_ref }}
+   00408|         run: rust-script scripts/run-ci-gates.rs --stage web
+   00409|   test:
+   00410|     name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards) || '' }}
+   00411|     runs-on: ${{ matrix.os }}
+   00412|     # Issue #1017: the cap is the backstop, the step budget the deadline (run
+   00413|     # 31937348472 used 1415s of a 1500s cap). PR #1188 (R1188-U9): no job runs
+   00414|     # over 30 minutes. Nothing compiles here any more -- both suites run the
+   00415|     # test executables `build-artifacts` built once -- and each budgeted group
+   00416|     # (the full lane's 1080s gates or 1080s tests, the specification shard's
+   00417|     # 1080s) stays at 60% of the cap, inside the 70% share
+   00418|     # `tests/unit/ci-cd/job_budget_fit.rs` holds.
+   00419|     timeout-minutes: 30
+   00420|     concurrency:
+   00421|       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}-${{ matrix.shard || 1 }}
+   00422|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   00423|     needs: [detect-changes, base, build-artifacts]
+   00424|     if: |
+   00425|       !cancelled() && (
+   00426|         github.event_name == 'workflow_dispatch' ||
+   00427|         needs.detect-changes.outputs.any-code-changed == 'true' ||
+   00428|         needs.detect-changes.outputs.rs-changed == 'true' ||
+   00429|         needs.detect-changes.outputs.toml-changed == 'true' ||
+   00430|         needs.detect-changes.outputs.pipeline-changed == 'true'
+   00431|       )
+   00432|     strategy:
+   00433|       fail-fast: false
+   00434|       matrix:
+   00435|         include:
+   00436|           # Five parallel shards of the full lane, planned longest-first from
+   00437|           # data/meta/test-durations.lino (run 37802763478: 296-743s of tests
+   00438|           # at four). The entry without `shard` is shard 1 (data + census
+   00439|           # gates); shard 2 runs doc tests.
+   00440|           - { os: ubuntu-latest, test-suite: full, shards: 5 }
+   00441|           - { os: ubuntu-latest, test-suite: full, shard: 2, shards: 5 }
+   00442|           - { os: ubuntu-latest, test-suite: full, shard: 3, shards: 5 }
+   00443|           - { os: ubuntu-latest, test-suite: full, shard: 4, shards: 5 }
+   00444|           - { os: ubuntu-latest, test-suite: full, shard: 5, shards: 5 }
+   00445|           # The specification suite on Linux closes the blind spot of issue
+   00446|           # #1107. PR #1188 runs it as four shards of the prebuilt unit
+   00447|           # executable (its longest test took 520s; run 37802763478 ran three
+   00448|           # shards in 417-590s plus a 220-362s compile each). Its unsharded
+   00449|           # macOS leg is gone: issue #1059 runs on macOS only the tests whose
+   00450|           # behaviour can differ from Linux (data/meta/macos-platform-tests.lino,
+   00451|           # macos-core-tests.yml), and a 3600s compile-and-run leg could not fit
+   00452|           # the 30-minute cap.
+   00453|           - { os: ubuntu-latest, test-suite: specification, shard: 1, shards: 4 }
+   00454|           - { os: ubuntu-latest, test-suite: specification, shard: 2, shards: 4 }
+   00455|           - { os: ubuntu-latest, test-suite: specification, shard: 3, shards: 4 }
+   00456|           - { os: ubuntu-latest, test-suite: specification, shard: 4, shards: 4 }
+   00457|     steps:
+   00458|       - uses: actions/checkout@v7
+   00459|         with:
+   00460|           persist-credentials: false
+   00461|           fetch-depth: 0
+   00462|       - name: Simulate fresh merge with base branch (PR only)
+   00463|         if: github.event_name == 'pull_request'
+   00464|         env:
+   00465|           BASE_REF: ${{ github.base_ref }}
+   00466|           BASE_COMMIT: ${{ needs.base.outputs.commit }}  # issue #1017: see `base`
+   00467|         run: bash scripts/simulate-fresh-merge.sh
+   00468|       # Issue #1111: a reported skip, never a silent one.
+   00469|       - name: Skip non-Linux while non-Linux CI is switched off
+   00470|         id: non_linux
+   00471|         if: ${{ !startsWith(matrix.os, 'ubuntu') && vars.FORMAL_AI_NON_LINUX_CI != 'run' }}
+   00472|         env:
+   00473|           LEG: ${{ matrix.os }} / ${{ matrix.test-suite }}
+   00474|         run: |
+   00475|           set -euo pipefail
+   00476|           echo "skip=true" >> "$GITHUB_OUTPUT"
+   00477|           echo "::notice title=$LEG skipped::non-Linux CI is switched off (issue #1111); set FORMAL_AI_NON_LINUX_CI to run to restore it"
+   00478|           printf '### %s: skipped, not run\n\nNothing on this platform was verified. Set FORMAL_AI_NON_LINUX_CI to run to restore it (issue #1111).\n' "$LEG" >> "$GITHUB_STEP_SUMMARY"
+   00479|       - name: Skip when identical inputs already passed
+   00480|         id: ledger
+   00481|         if: ${{ steps.non_linux.outputs.skip != 'true' }}
+   00482|         uses: ./.github/actions/green-ledger
+   00483|         with:
+   00484|           check: unit-tests-${{ matrix.os }}-${{ matrix.test-suite }}${{ matrix.shard && format('-shard-{0}', matrix.shard) || '' }}
+   00485|           paths: >-
+   00486|             rust/src rust/tests data rust/examples rust/build.rs rust/Cargo.toml rust/Cargo.lock scripts .github/workflows/release.yml .github/actions
+   00487|           enabled: ${{ github.ref != 'refs/heads/main' }}
+   00488|       - name: Free up runner disk space
+   00489|         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+   00490|         run: bash scripts/free-runner-disk.sh
+   00491|       - name: Setup Rust
+   00492|         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+   00493|         uses: dtolnay/rust-toolchain@stable
+   00494|         with:
+   00495|           targets: wasm32-unknown-unknown
+   00496|       - uses: ./.github/actions/setup-sccache
+   00497|         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+   00498|       - uses: ./.github/actions/cache-cargo-registry
+   00499|         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+   00500|         with:
+   00501|           restore-only: 'true'
+   00502|       # Issue #1081: this is the ubuntu leg's first compiling step, worst
+   00503|       # measured 484s over 39 runs, and it had no deadline of its own -- only
+   00504|       # the job cap, whose expiry reports `cancelled` rather than `failure`
+   00505|       # (issue #977).
+   00506|       - name: Check LiNo data integrity
+   00507|         if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && !matrix.shard }}
+   00508|         env:
+   00509|           TEST_BUDGET_SECONDS: 780
+   00510|           TEST_WARN_RATIO_PERCENT: 70
+   00511|         run: |
+   00512|           scripts/run-with-budget-warning.sh \
+   00513|             "$TEST_BUDGET_SECONDS" "LiNo data integrity" \
+   00514|             cargo test --manifest-path rust/Cargo.toml --test unit data_files -- --nocapture
+   00515|       - name: sccache counters after the first compiling step
+   00516|         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+   00517|         run: sccache --show-stats
+   00518|       - name: Check self-AST census freshness
+   00519|         if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && !matrix.shard }}
+   00520|         env:
+   00521|           # Issue #1081: 153s worst measured over 39 runs.
+   00522|           TEST_BUDGET_SECONDS: 300
+   00523|           TEST_WARN_RATIO_PERCENT: 70
+   00524|         run: |
+   00525|           scripts/run-with-budget-warning.sh \
+   00526|             "$TEST_BUDGET_SECONDS" "self-AST census" \
+   00527|             cargo test --manifest-path rust/Cargo.toml --test unit self_ast_census -- --nocapture
+   00528|       # Issue #1055: built once above; this only runs them. The binary comes
+   00529|       # too, because `CARGO_BIN_EXE_formal-ai` bakes `rust/target/release/formal-ai`
+   00530|       # into each executable at compile time -- 109 call sites across 36 test
+   00531|       # files spawn it -- so the path has to exist here as well.
+   00532|       - name: Download test executables
+   00533|         if: ${{ !cancelled() && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+   00534|         uses: actions/download-artifact@v8
+   00535|         env:
+   00536|           NODE_OPTIONS: --disable-warning=DEP0005
+   00537|         with:
+   00538|           name: formal-ai-test-executables
+   00539|           path: dist/tests
+   00540|       - uses: ./.github/actions/download-formal-ai-binary
+   00541|         if: ${{ !cancelled() && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+   00542|       - name: Run tests
+   00543|         if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+   00544|         env:
+   00545|           # PR #1188: five shards planned longest-first; run 37802763478 ran
+   00546|           # four in 296-743s, so a fifth of the work is about 450s and 1080s
+   00547|           # holds it at about 42%. The benchmark corpus gate runs in its own
+   00548|           # workflow (benchmark-corpus-gate.yml), skipped by run-prebuilt-tests.sh.
+   00549|           TEST_BUDGET_SECONDS: 1080
+   00550|           TEST_SUITE: full
+   00551|           SHARD_INDEX: ${{ matrix.shard || 1 }}
+   00552|           SHARD_TOTAL: ${{ matrix.shards }}
+   00553|           # PR #1188: seconds a shard spends in other steps (shard 1 the LiNo and
+   00554|           # census gates, shard 2 the doc tests; run 37802763478), planned around.
+   00555|           SHARD_RESERVED_SECONDS: 1=330,2=110
+   00556|           RECORD_TEST_TIMES: ${{ vars.FORMAL_AI_RECORD_TEST_TIMES == 'true' }}
+   00557|           TEST_WARN_RATIO_PERCENT: 70
+   00558|         run: |
+   00559|           chmod +x dist/tests/*
+   00560|           scripts/run-with-budget-warning.sh \
+   00561|             "$TEST_BUDGET_SECONDS" "Test suite" \
+   00562|             bash scripts/run-prebuilt-tests.sh
+   00563|       # PR #1188 (R1188-U9): the specification shards run the unit executable
+   00564|       # `build-artifacts` compiled once (release, all features) instead of each
+   00565|       # compiling its own, which took 220-362s per shard on run 37802763478 and
+   00566|       # 1201s cold on run 34095902681.
+   00567|       - name: Run specification tests from the prebuilt executable
+   00568|         if: ${{ !cancelled() && (matrix.test-suite == 'specification') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+   00569|         env:
+   00570|           # The longest specification test took 520s and three debug shards
+   00571|           # 417-590s (run 37802763478); four release shards fit well inside 1080s.
+   00572|           TEST_BUDGET_SECONDS: 1080
+   00573|           TEST_SUITE: specification
+   00574|           SHARD_INDEX: ${{ matrix.shard || 1 }}
+   00575|           SHARD_TOTAL: ${{ matrix.shards }}
+   00576|           RECORD_TEST_TIMES: ${{ vars.FORMAL_AI_RECORD_TEST_TIMES == 'true' }}
+   00577|           TEST_WARN_RATIO_PERCENT: 70
+   00578|         run: |
+   00579|           chmod +x dist/tests/*
+   00580|           scripts/run-with-budget-warning.sh \
+   00581|             "$TEST_BUDGET_SECONDS" "Specification test shard" \
+   00582|             bash scripts/run-prebuilt-tests.sh
+   00583|       - name: Run doc tests
+   00584|         if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && matrix.shard == 2 }}
+   00585|         env:
+   00586|           # Issue #1081: 28s worst measured; budgeted because an unbudgeted
+   00587|           # step is one the audit cannot see.
+   00588|           TEST_BUDGET_SECONDS: 120
+   00589|           TEST_WARN_RATIO_PERCENT: 70
+   00590|         run: |
+   00591|           scripts/run-with-budget-warning.sh \
+   00592|             "$TEST_BUDGET_SECONDS" "Doc tests" \
+   00593|             cargo test --manifest-path rust/Cargo.toml --doc --verbose
+   00594|   macos-core-tests:
+   00595|     name: macOS Core Tests
+   00596|     needs: [detect-changes, base]
+   00597|     # Issue #1017: the heaviest lane here (one archive build plus sixteen Intel
+   00598|     # macOS slices at 10x the Linux rate) had no concurrency group, so a second
+   00599|     # push doubled it. `main` never cancels, keeping issue #977's rule intact.
+   00600|     concurrency:
+   00601|       group: check-${{ github.workflow }}-${{ github.ref }}-macos-core-tests
+   00602|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   00603|     if: |
+   00604|       !cancelled() && vars.FORMAL_AI_NON_LINUX_CI == 'run' && (
+   00605|         github.event_name == 'workflow_dispatch' ||
+   00606|         needs.detect-changes.outputs.any-code-changed == 'true' ||
+   00607|         needs.detect-changes.outputs.rs-changed == 'true' ||
+   00608|         needs.detect-changes.outputs.toml-changed == 'true' ||
+   00609|         needs.detect-changes.outputs.pipeline-changed == 'true'
+   00610|       )
+   00611|     uses: ./.github/workflows/macos-core-tests.yml
+   00612|     # Issue #1017: archive and slices must merge the same base commit.
+   00613|     with:
+   00614|       base-commit: ${{ needs.base.outputs.commit }}
+   00615|     permissions:
+   00616|       contents: read
+   00617|   build:
+   00618|     name: Build Package
+   00619|     runs-on: ubuntu-latest
+   00620|     # Issue #1076 (D5): 11.6 min worst case (the run that missed its cargo
+   00621|     # cache) was 77.0% of 15; 20 puts it at 57.8%, inside the 70% share.
+   00622|     timeout-minutes: 20
+   00623|     concurrency:
+   00624|       group: ${{ github.workflow }}-${{ github.ref }}-build
+   00625|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   00626|     needs: [lint, test, macos-core-tests, build-artifacts]
+   00627|     # Issue #1111: `skipped` is off, not broken; `failure` still blocks.
+   00628|     if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' && (needs.macos-core-tests.result == 'success' || needs.macos-core-tests.result == 'skipped') }}
+   00629|     steps:
+   00630|       - uses: actions/checkout@v7
+   00631|         with:
+   00632|           persist-credentials: false
+   00633|       - name: Setup Rust
+   00634|         uses: dtolnay/rust-toolchain@stable
+   00635|       - uses: ./.github/actions/setup-sccache
+   00636|       - name: Install rust-script
+   00637|         run: bash scripts/install-rust-script.sh
+   00638|       - uses: ./.github/actions/cache-cargo-registry
+   00639|         with:
+   00640|           prefix: build-
+   00641|       # Issue #1055: the binary exists; packaging needs no rebuild.
+   00642|       - uses: ./.github/actions/download-formal-ai-binary
+   00643|       - name: Check package
+   00644|         run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
+   00645|       - name: Check crate package size
+   00646|         run: rust-script scripts/check-crate-package-size.rs
+   00647|   server-parity:
+   00648|     name: Server parity (JavaScript vs Rust)
+   00649|     runs-on: ubuntu-latest
+   00650|     # R1015: the JavaScript server must answer the parity corpus exactly as the
+   00651|     # release binary does before that binary ships; it reuses the binary
+   00652|     # build-artifacts already built (issue #1055), so no extra compile.
+   00653|     timeout-minutes: 15
+   00654|     concurrency:
+   00655|       group: ${{ github.workflow }}-${{ github.ref }}-server-parity
+   00656|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   00657|     needs: [build-artifacts]
+   00658|     if: ${{ !cancelled() && needs.build-artifacts.result == 'success' }}
+   00659|     steps:
+   00660|       - uses: actions/checkout@v7
+   00661|         with:
+   00662|           persist-credentials: false
+   00663|       - name: Setup Node
+   00664|         uses: actions/setup-node@v7
+   00665|         with:
+   00666|           node-version: 22
+   00667|       - uses: ./.github/actions/download-formal-ai-binary
+   00668|       - name: Both servers answer the parity corpus alike (R1013-R1015)
+   00669|         run: node scripts/check-server-parity.mjs --rust-binary rust/target/release/formal-ai --list
+   00670|   auto-release:
+   00671|     name: Auto Release
+   00672|     concurrency:
+   00673|       group: formal-ai-repository-writes
+   00674|       queue: max
+   00675|     needs:
+   00676|       [
+   00677|         lint,
+   00678|         test,
+   00679|         build,
+   00680|         secrets-scan,
+   00681|         test-e2e-local,
+   00682|         test-agent-cli-e2e,
+   00683|         release-preflight,
+   00684|         server-parity,
+   00685|       ]
+   00686|     if: |
+   00687|       !cancelled() &&
+   00688|       github.event_name == 'push' &&
+   00689|       github.ref == 'refs/heads/main' &&
+   00690|       needs.build.result == 'success' &&
+   00691|       needs.release-preflight.result == 'success' &&
+   00692|       (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
+   00693|       (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
+   00694|       (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped') &&
+   00695|       (needs.server-parity.result == 'success' || needs.server-parity.result == 'skipped')
+   00696|     runs-on: ubuntu-latest
+   00697|     # Issue #1076 (D5): 50.6 min worst case was 84.4% of the old 60m cap, and
+   00698|     # the 45m GHCR budget below must fire before the cap. 90m puts it at 56.2%.
+   00699|     timeout-minutes: 90
+   00700|     outputs:
+   00701|       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
+   00702|       pages_version: ${{ steps.release_pages_ref.outputs.version }}
+   00703|     env:
+   00704|       DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard' }}
+   00705|       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+   00706|     permissions:
+   00707|       contents: write
+   00708|       packages: write
+   00709|     steps:
+   00710|       # This job and `manual-release` are two of the four checkouts in this
+   00711|       # repository that keep their credential (issue #1079); every other one
+   00712|       # sets `persist-credentials: false`. `scripts/version-and-commit.rs`
+   00713|       # below runs `git push` and `git push --tags` to publish the version
+   00714|       # bump, and `scripts/git-config.rs` sets only `user.name`/`user.email`,
+   00715|       # so that push authenticates with exactly the credential
+   00716|       # `persist-credentials: false` removes. This job requires
+   00717|       # `github.event_name == 'push' && github.ref == 'refs/heads/main'` and
+   00718|       # `manual-release` requires `workflow_dispatch`, so neither ever
+   00719|       # persists the credential on a pull request.
+   00720|       - uses: actions/checkout@v7
+   00721|         with:
+   00722|           fetch-depth: 0
+   00723|           token: ${{ secrets.GITHUB_TOKEN }}
+   00724|       - name: Setup Rust
+   00725|         uses: dtolnay/rust-toolchain@stable
+   00726|       - name: Install rust-script
+   00727|         run: bash scripts/install-rust-script.sh
+   00728|       - name: Configure git
+   00729|         run: rust-script scripts/git-config.rs
+   00730|       - name: Determine bump type from changelog fragments
+   00731|         id: bump_type
+   00732|         run: rust-script scripts/get-bump-type.rs
+   00733|       - name: Check if version already released or no fragments
+   00734|         id: check
+   00735|         env:
+   00736|           HAS_FRAGMENTS: ${{ steps.bump_type.outputs.has_fragments }}
+   00737|           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   00738|         run: rust-script scripts/check-release-needed.rs
+   00739|       # Issue #1085 (D3.5): the self-development floor no longer gates the
+   00740|       # release. It is measured and reported red-until-true by
+   00741|       # `.github/workflows/self-development-status.yml` on every push to
+   00742|       # `main`; a release is cut on CI correctness alone, and the ledger row
+   00743|       # it records says honestly what the model authored in it.
+   00744|       - name: Collect changelog and bump version
+   00745|         id: version
+   00746|         if: steps.check.outputs.should_release == 'true' && steps.check.outputs.skip_bump != 'true'
+   00747|         env:
+   00748|           # Issue #1085 (D3.3): the ledger row names who opened each qualifying
+   00749|           # pull request, read through `gh` with the job token.
+   00750|           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   00751|           FORMAL_AI_PULL_REQUEST_AUTHOR_LOOKUP: gh
+   00752|         run: |
+   00753|           rust-script scripts/version-and-commit.rs \
+   00754|             --bump-type "${{ steps.bump_type.outputs.bump_type }}" \
+   00755|             --resume-prepared \
+   00756|             --branch main
+   00757|       - name: Get current version
+   00758|         id: current_version
+   00759|         if: steps.check.outputs.should_release == 'true'
+   00760|         run: rust-script scripts/get-version.rs
+   00761|       # Re-read publication state after the version command has synchronized
+   00762|       # with main. A rerun may have resumed a version prepared by the first
+   00763|       # attempt, so the pre-sync `check` output can describe the wrong version.
+   00764|       - name: Recheck prepared release state
+   00765|         id: prepared
+   00766|         if: steps.check.outputs.should_release == 'true'
+   00767|         env:
+   00768|           HAS_FRAGMENTS: 'false'
+   00769|           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   00770|         run: rust-script scripts/check-release-needed.rs
+   00771|       - name: Build release
+   00772|         if: steps.check.outputs.should_release == 'true'
+   00773|         run: cargo build --manifest-path rust/Cargo.toml --release
+   00774|       - name: Verify packaged crate archive
+   00775|         if: steps.check.outputs.should_release == 'true'
+   00776|         run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
+   00777|       - name: Publish to Crates.io
+   00778|         if: steps.check.outputs.should_release == 'true' && steps.prepared.outputs.crate_published != 'true'
+   00779|         id: publish-crate
+   00780|         env:
+   00781|           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+   00782|           CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+   00783|         run: rust-script scripts/publish-crate.rs
+   00784|       - name: Wait for Crate availability on Crates.io
+   00785|         if: |
+   00786|           steps.check.outputs.should_release == 'true' && (
+   00787|             steps.prepared.outputs.crate_published == 'true' ||
+   00788|             steps.publish-crate.outputs.publish_result == 'success'
+   00789|           )
+   00790|         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
+   00791|       - name: Smoke test the published crate
+   00792|         if: |
+   00793|           steps.check.outputs.should_release == 'true' && (
+   00794|             steps.prepared.outputs.crate_published == 'true' ||
+   00795|             steps.publish-crate.outputs.publish_result == 'success'
+   00796|           )
+   00797|         run: scripts/smoke-test-published-crate.sh "${{ steps.current_version.outputs.version }}"
+   00798|       - name: Free up runner disk space
+   00799|         if: |
+   00800|           steps.check.outputs.should_release == 'true' && (
+   00801|             steps.prepared.outputs.crate_published == 'true' ||
+   00802|             steps.publish-crate.outputs.publish_result == 'success'
+   00803|           )
+   00804|         run: bash scripts/free-runner-disk.sh
+   00805|       - name: Log in to GitHub Container Registry
+   00806|         if: |
+   00807|           steps.check.outputs.should_release == 'true' && (
+   00808|             steps.prepared.outputs.crate_published == 'true' ||
+   00809|             steps.publish-crate.outputs.publish_result == 'success'
+   00810|           )
+   00811|         uses: docker/login-action@v4
+   00812|         with:
+   00813|           registry: ghcr.io
+   00814|           username: ${{ github.actor }}
+   00815|           password: ${{ secrets.GITHUB_TOKEN }}
+   00816|       - name: Set up Docker Buildx
+   00817|         if: |
+   00818|           steps.check.outputs.should_release == 'true' && (
+   00819|             steps.prepared.outputs.crate_published == 'true' ||
+   00820|             steps.publish-crate.outputs.publish_result == 'success'
+   00821|           )
+   00822|         uses: ./.github/actions/setup-buildx-resilient
+   00823|       - name: Extract GHCR Docker metadata
+   00824|         if: |
+   00825|           steps.check.outputs.should_release == 'true' && (
+   00826|             steps.prepared.outputs.crate_published == 'true' ||
+   00827|             steps.publish-crate.outputs.publish_result == 'success'
+   00828|           )
+   00829|         id: ghcr-meta
+   00830|         uses: docker/metadata-action@v6
+   00831|         with:
+   00832|           images: ${{ env.GHCR_IMAGE }}
+   00833|           tags: |
+   00834|             type=raw,value=latest
+   00835|             type=raw,value=${{ steps.current_version.outputs.version }}
+   00836|           labels: |
+   00837|             org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
+   00838|       - name: Publish Docker image to GHCR
+   00839|         if: |
+   00840|           steps.check.outputs.should_release == 'true' && (
+   00841|             steps.prepared.outputs.crate_published == 'true' ||
+   00842|             steps.publish-crate.outputs.publish_result == 'success'
+   00843|           )
+   00844|         # Issue #1076: a step-level cap, unlike the job cap, reports an overrun
+   00845|         # as a step *failure*, and run 33955786226 spent 24.6 of the job's 60
+   00846|         # minutes here with seven steps pending and nothing red. 45m is 1.4x
+   00847|         # the worst measured build (32.5 min); see the D15 note in dev/log.
+   00848|         timeout-minutes: 45
+   00849|         uses: docker/build-push-action@v7
+   00850|         with:
+   00851|           context: .
+   00852|           push: true
+   00853|           tags: ${{ steps.ghcr-meta.outputs.tags }}
+   00854|           labels: ${{ steps.ghcr-meta.outputs.labels }}
+   00855|           cache-from: type=gha,scope=docker-image
+   00856|           cache-to: type=gha,mode=max,scope=docker-image
+   00857|       - name: Publish and verify the slim GHCR sidecar
+   00858|         if: |
+   00859|           steps.check.outputs.should_release == 'true' && (
+   00860|             steps.prepared.outputs.crate_published == 'true' ||
+   00861|             steps.publish-crate.outputs.publish_result == 'success'
+   00862|           )
+   00863|         timeout-minutes: 15
+   00864|         uses: ./.github/actions/publish-slim-image
+   00865|         with:
+   00866|           image: ${{ env.GHCR_IMAGE }}
+   00867|           version: ${{ steps.current_version.outputs.version }}
+   00868|       - name: Verify the published GHCR image is anonymously pullable
+   00869|         if: |
+   00870|           steps.check.outputs.should_release == 'true' && (
+   00871|             steps.prepared.outputs.crate_published == 'true' ||
+   00872|             steps.publish-crate.outputs.publish_result == 'success'
+   00873|           )
+   00874|         run: bash scripts/verify-ghcr-visibility.sh
+   00875|       - name: Configure Docker Hub publishing
+   00876|         if: |
+   00877|           steps.check.outputs.should_release == 'true' && (
+   00878|             steps.prepared.outputs.crate_published == 'true' ||
+   00879|             steps.publish-crate.outputs.publish_result == 'success'
+   00880|           )
+   00881|         id: dockerhub
+   00882|         run: bash scripts/configure-dockerhub-publishing.sh
+   00883|       - name: Log in to Docker Hub
+   00884|         if: steps.dockerhub.outputs.enabled == 'true'
+   00885|         uses: docker/login-action@v4
+   00886|         with:
+   00887|           username: ${{ env.DOCKERHUB_USERNAME }}
+   00888|           password: ${{ env.DOCKERHUB_TOKEN }}
+   00889|       - name: Extract Docker metadata
+   00890|         if: steps.dockerhub.outputs.enabled == 'true'
+   00891|         id: docker-meta
+   00892|         uses: docker/metadata-action@v6
+   00893|         with:
+   00894|           images: ${{ env.DOCKERHUB_IMAGE }}
+   00895|           tags: |
+   00896|             type=raw,value=latest
+   00897|             type=raw,value=${{ steps.current_version.outputs.version }}
+   00898|           labels: |
+   00899|             org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
+   00900|       - name: Publish Docker image to Docker Hub
+   00901|         if: steps.dockerhub.outputs.enabled == 'true'
+   00902|         # Issue #1076: reuses the layers the GHCR step above exported, so 20m
+   00903|         # is generous; 45m + 20m still fires before the 90m job cap.
+   00904|         timeout-minutes: 20
+   00905|         uses: docker/build-push-action@v7
+   00906|         with:
+   00907|           context: .
+   00908|           push: true
+   00909|           tags: ${{ steps.docker-meta.outputs.tags }}
+   00910|           labels: ${{ steps.docker-meta.outputs.labels }}
+   00911|           cache-from: type=gha,scope=docker-image
+   00912|           # Issue #1057: the GHCR leg above already exported these layers.
+   00913|           cache-to: type=inline
+   00914|       - name: Create GitHub Release
+   00915|         if: |
+   00916|           steps.check.outputs.should_release == 'true' && (
+   00917|             steps.prepared.outputs.crate_published == 'true' ||
+   00918|             steps.publish-crate.outputs.publish_result == 'success'
+   00919|           )
+   00920|         env:
+   00921|           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   00922|           GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
+   00923|           DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
+   00924|           RELEASE_VERSION: ${{ steps.version.outputs.new_version || steps.current_version.outputs.version }}
+   00925|         run: bash scripts/invoke-create-github-release.sh
+   00926|       - name: Resolve Pages deploy ref
+   00927|         id: release_pages_ref
+   00928|         if: always()
+   00929|         run: |
+   00930|           sha="$(git rev-parse HEAD)"
+   00931|           echo "sha=${sha}" >> "$GITHUB_OUTPUT"
+   00932|           rust-script scripts/get-version.rs
+   00933|   manual-release:
+   00934|     name: Instant Release
+   00935|     concurrency:
+   00936|       group: formal-ai-repository-writes
+   00937|       queue: max
+   00938|     needs:
+   00939|       [
+   00940|         lint,
+   00941|         test,
+   00942|         build,
+   00943|         secrets-scan,
+   00944|         test-e2e-local,
+   00945|         test-agent-cli-e2e,
+   00946|         release-preflight,
+   00947|         server-parity,
+   00948|       ]
+   00949|     if: |
+   00950|       !cancelled() &&
+   00951|       github.event_name == 'workflow_dispatch' &&
+   00952|       github.event.inputs.release_mode == 'instant' &&
+   00953|       github.ref == 'refs/heads/main' &&
+   00954|       needs.build.result == 'success' &&
+   00955|       needs.release-preflight.result == 'success' &&
+   00956|       (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
+   00957|       (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
+   00958|       (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped') &&
+   00959|       (needs.server-parity.result == 'success' || needs.server-parity.result == 'skipped')
+   00960|     runs-on: ubuntu-latest
+   00961|     # Issue #1076 (D5): same shape as `auto-release` -- publishes the same
+   00962|     # image with the same 45m budget, so the same 90m backstop applies.
+   00963|     timeout-minutes: 90
+   00964|     outputs:
+   00965|       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
+   00966|       pages_version: ${{ steps.release_pages_ref.outputs.version }}
+   00967|     env:
+   00968|       DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard' }}
+   00969|       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+   00970|     permissions:
+   00971|       contents: write
+   00972|       packages: write
+   00973|     steps:
+   00974|       # No `persist-credentials: false` here, for the same reason as in
+   00975|       # `auto-release` above (issue #1079): `scripts/version-and-commit.rs`
+   00976|       # pushes the version bump and its tag, and nothing else in this job
+   00977|       # supplies auth for that push.
+   00978|       - uses: actions/checkout@v7
+   00979|         with:
+   00980|           fetch-depth: 0
+   00981|           token: ${{ secrets.GITHUB_TOKEN }}
+   00982|       - name: Setup Rust
+   00983|         uses: dtolnay/rust-toolchain@stable
+   00984|       - name: Install rust-script
+   00985|         run: bash scripts/install-rust-script.sh
+   00986|       - name: Configure git
+   00987|         run: rust-script scripts/git-config.rs
+   00988|       - name: Version and commit
+   00989|         id: version
+   00990|         env:
+   00991|           BUMP_TYPE: ${{ github.event.inputs.bump_type }}
+   00992|           DESCRIPTION: ${{ github.event.inputs.description }}
+   00993|         run: rust-script scripts/version-and-commit.rs --bump-type "$BUMP_TYPE" --description "$DESCRIPTION"
+   00994|       - name: Build release
+   00995|         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+   00996|         run: cargo build --manifest-path rust/Cargo.toml --release
+   00997|       - name: Verify packaged crate archive
+   00998|         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+   00999|         run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
+   01000|       - name: Publish to Crates.io
+   01001|         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+   01002|         id: publish-crate
+   01003|         env:
+   01004|           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+   01005|           CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+   01006|         run: rust-script scripts/publish-crate.rs
+   01007|       - name: Wait for Crate availability on Crates.io
+   01008|         if: |
+   01009|           (steps.version.outputs.version_committed == 'true' ||
+   01010|             steps.version.outputs.already_released == 'true') &&
+   01011|           steps.publish-crate.outputs.publish_result == 'success'
+   01012|         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.version.outputs.new_version }}"
+   01013|       - name: Smoke test the published crate
+   01014|         if: |
+   01015|           (steps.version.outputs.version_committed == 'true' ||
+   01016|             steps.version.outputs.already_released == 'true') &&
+   01017|           steps.publish-crate.outputs.publish_result == 'success'
+   01018|         run: scripts/smoke-test-published-crate.sh "${{ steps.version.outputs.new_version }}"
+   01019|       - name: Free up runner disk space
+   01020|         if: |
+   01021|           (steps.version.outputs.version_committed == 'true' ||
+   01022|             steps.version.outputs.already_released == 'true') &&
+   01023|           steps.publish-crate.outputs.publish_result == 'success'
+   01024|         run: bash scripts/free-runner-disk.sh
+   01025|       - name: Log in to GitHub Container Registry
+   01026|         if: |
+   01027|           (steps.version.outputs.version_committed == 'true' ||
+   01028|             steps.version.outputs.already_released == 'true') &&
+   01029|           steps.publish-crate.outputs.publish_result == 'success'
+   01030|         uses: docker/login-action@v4
+   01031|         with:
+   01032|           registry: ghcr.io
+   01033|           username: ${{ github.actor }}
+   01034|           password: ${{ secrets.GITHUB_TOKEN }}
+   01035|       - name: Set up Docker Buildx
+   01036|         if: |
+   01037|           (steps.version.outputs.version_committed == 'true' ||
+   01038|             steps.version.outputs.already_released == 'true') &&
+   01039|           steps.publish-crate.outputs.publish_result == 'success'
+   01040|         uses: ./.github/actions/setup-buildx-resilient
+   01041|       - name: Extract GHCR Docker metadata
+   01042|         if: |
+   01043|           (steps.version.outputs.version_committed == 'true' ||
+   01044|             steps.version.outputs.already_released == 'true') &&
+   01045|           steps.publish-crate.outputs.publish_result == 'success'
+   01046|         id: ghcr-meta
+   01047|         uses: docker/metadata-action@v6
+   01048|         with:
+   01049|           images: ${{ env.GHCR_IMAGE }}
+   01050|           tags: |
+   01051|             type=raw,value=latest
+   01052|             type=raw,value=${{ steps.version.outputs.new_version }}
+   01053|           labels: |
+   01054|             org.opencontainers.image.version=${{ steps.version.outputs.new_version }}
+   01055|       - name: Publish Docker image to GHCR
+   01056|         if: |
+   01057|           (steps.version.outputs.version_committed == 'true' ||
+   01058|             steps.version.outputs.already_released == 'true') &&
+   01059|           steps.publish-crate.outputs.publish_result == 'success'
+   01060|         # Issue #1076: a step-level cap, unlike the job cap, reports an overrun
+   01061|         # as a step *failure*, and run 33955786226 spent 24.6 of the job's 60
+   01062|         # minutes here with seven steps pending and nothing red. 45m is 1.4x
+   01063|         # the worst measured build (32.5 min); see the D15 note in dev/log.
+   01064|         timeout-minutes: 45
+   01065|         uses: docker/build-push-action@v7
+   01066|         with:
+   01067|           context: .
+   01068|           push: true
+   01069|           tags: ${{ steps.ghcr-meta.outputs.tags }}
+   01070|           labels: ${{ steps.ghcr-meta.outputs.labels }}
+   01071|           cache-from: type=gha,scope=docker-image
+   01072|           cache-to: type=gha,mode=max,scope=docker-image
+   01073|       - name: Publish and verify the slim GHCR sidecar
+   01074|         if: |
+   01075|           (steps.version.outputs.version_committed == 'true' ||
+   01076|             steps.version.outputs.already_released == 'true') &&
+   01077|           steps.publish-crate.outputs.publish_result == 'success'
+   01078|         timeout-minutes: 15
+   01079|         uses: ./.github/actions/publish-slim-image
+   01080|         with:
+   01081|           image: ${{ env.GHCR_IMAGE }}
+   01082|           version: ${{ steps.version.outputs.new_version }}
+   01083|       - name: Verify the published GHCR image is anonymously pullable
+   01084|         if: |
+   01085|           (steps.version.outputs.version_committed == 'true' ||
+   01086|             steps.version.outputs.already_released == 'true') &&
+   01087|           steps.publish-crate.outputs.publish_result == 'success'
+   01088|         run: bash scripts/verify-ghcr-visibility.sh
+   01089|       - name: Configure Docker Hub publishing
+   01090|         if: |
+   01091|           (steps.version.outputs.version_committed == 'true' ||
+   01092|             steps.version.outputs.already_released == 'true') &&
+   01093|           steps.publish-crate.outputs.publish_result == 'success'
+   01094|         id: dockerhub
+   01095|         run: bash scripts/configure-dockerhub-publishing.sh
+   01096|       - name: Log in to Docker Hub
+   01097|         if: steps.dockerhub.outputs.enabled == 'true'
+   01098|         uses: docker/login-action@v4
+   01099|         with:
+   01100|           username: ${{ env.DOCKERHUB_USERNAME }}
+   01101|           password: ${{ env.DOCKERHUB_TOKEN }}
+   01102|       - name: Extract Docker metadata
+   01103|         if: steps.dockerhub.outputs.enabled == 'true'
+   01104|         id: docker-meta
+   01105|         uses: docker/metadata-action@v6
+   01106|         with:
+   01107|           images: ${{ env.DOCKERHUB_IMAGE }}
+   01108|           tags: |
+   01109|             type=raw,value=latest
+   01110|             type=raw,value=${{ steps.version.outputs.new_version }}
+   01111|           labels: |
+   01112|             org.opencontainers.image.version=${{ steps.version.outputs.new_version }}
+   01113|       - name: Publish Docker image to Docker Hub
+   01114|         if: steps.dockerhub.outputs.enabled == 'true'
+   01115|         # Issue #1076: reuses the layers the GHCR step above exported, so 20m
+   01116|         # is generous; 45m + 20m still fires before the 90m job cap.
+   01117|         timeout-minutes: 20
+   01118|         uses: docker/build-push-action@v7
+   01119|         with:
+   01120|           context: .
+   01121|           push: true
+   01122|           tags: ${{ steps.docker-meta.outputs.tags }}
+   01123|           labels: ${{ steps.docker-meta.outputs.labels }}
+   01124|           cache-from: type=gha,scope=docker-image
+   01125|           # Issue #1057: the GHCR leg above already exported these layers.
+   01126|           cache-to: type=inline
+   01127|       - name: Create GitHub Release
+   01128|         if: |
+   01129|           (steps.version.outputs.version_committed == 'true' ||
+   01130|             steps.version.outputs.already_released == 'true') &&
+   01131|           steps.publish-crate.outputs.publish_result == 'success'
+   01132|         env:
+   01133|           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   01134|           GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
+   01135|           DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
+   01136|           RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
+   01137|         run: bash scripts/invoke-create-github-release.sh
+   01138|       - name: Resolve Pages deploy ref
+   01139|         id: release_pages_ref
+   01140|         if: always()
+   01141|         run: |
+   01142|           sha="$(git rev-parse HEAD)"
+   01143|           echo "sha=${sha}" >> "$GITHUB_OUTPUT"
+   01144|           rust-script scripts/get-version.rs
+   01145|   changelog-pr:
+   01146|     name: Create Changelog PR
+   01147|     concurrency:
+   01148|       group: formal-ai-repository-writes
+   01149|       queue: max
+   01150|     if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'changelog-pr' && github.ref == 'refs/heads/main'
+   01151|     runs-on: ubuntu-latest
+   01152|     timeout-minutes: 10
+   01153|     permissions:
+   01154|       contents: write
+   01155|       pull-requests: write
+   01156|     steps:
+   01157|       # The last of this repository's four checkouts that keep their
+   01158|       # credential (issue #1079); every other one sets
+   01159|       # `persist-credentials: false`. `peter-evans/create-pull-request` below
+   01160|       # commits the generated fragment and pushes a new branch, and this job
+   01161|       # only runs on `workflow_dispatch`, so the credential exists solely for a
+   01162|       # manually triggered release and never on a pull request.
+   01163|       - uses: actions/checkout@v7
+   01164|         with:
+   01165|           fetch-depth: 0
+   01166|       - name: Setup Rust
+   01167|         uses: dtolnay/rust-toolchain@stable
+   01168|       - name: Install rust-script
+   01169|         run: bash scripts/install-rust-script.sh
+   01170|       - name: Create changelog fragment
+   01171|         env:
+   01172|           BUMP_TYPE: ${{ github.event.inputs.bump_type }}
+   01173|           DESCRIPTION: ${{ github.event.inputs.description }}
+   01174|         run: rust-script scripts/create-changelog-fragment.rs --bump-type "$BUMP_TYPE" --description "$DESCRIPTION"
+   01175|       - name: Create Pull Request
+   01176|         uses: peter-evans/create-pull-request@v8
+   01177|         with:
+   01178|           token: ${{ secrets.GITHUB_TOKEN }}
+   01179|           commit-message: 'chore: add changelog for manual ${{ github.event.inputs.bump_type }} release'
+   01180|           branch: changelog-manual-release-${{ github.run_id }}
+   01181|           delete-branch: true
+   01182|           title: 'chore: manual ${{ github.event.inputs.bump_type }} release'
+   01183|           body: |
+   01184|             This PR was created by a manual workflow trigger to prepare a **${{ github.event.inputs.bump_type }}** release.
+   01185|             - **Type:** ${{ github.event.inputs.bump_type }}
+   01186|             - **Description:** ${{ github.event.inputs.description || 'Manual release' }}
+   01187|             - **Triggered by:** @${{ github.actor }}
+   01188|             1. Review the changelog fragment in this PR
+   01189|             2. Merge this PR to main
+   01190|             3. The automated release workflow will publish to crates.io and create a GitHub release
+   01191|   test-e2e-local:
+   01192|     name: E2E Tests (local web app)
+   01193|     concurrency:
+   01194|       group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-local
+   01195|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   01196|     needs: [detect-changes]
+   01197|     if: |
+   01198|       !cancelled() && (
+   01199|         github.event_name == 'workflow_dispatch' ||
+   01200|         needs.detect-changes.outputs.any-code-changed == 'true'
+   01201|       )
+   01202|     # Issue #1138 moved the 83 lines of steps behind this call into
+   01203|     # `.github/workflows/e2e-local.yml`, returning this file to the 1500-line
+   01204|     # warning band; the reasoning is in that file's header. The cap moved with
+   01205|     # them, because a caller job declares none.
+   01206|     uses: ./.github/workflows/e2e-local.yml
+   01207|     permissions:
+   01208|       contents: read
+   01209|   test-agent-cli-e2e:
+   01210|     name: E2E Tests (agent CLI ↔ formal-ai)
+   01211|     concurrency:
+   01212|       group: ${{ github.workflow }}-${{ github.ref }}-test-agent-cli-e2e
+   01213|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   01214|     needs: [detect-changes, build-artifacts]
+   01215|     if: |
+   01216|       !cancelled() && (
+   01217|         github.event_name == 'workflow_dispatch' ||
+   01218|         needs.detect-changes.outputs.any-code-changed == 'true' ||
+   01219|         needs.detect-changes.outputs.rs-changed == 'true' ||
+   01220|         needs.detect-changes.outputs.toml-changed == 'true' ||
+   01221|         needs.detect-changes.outputs.pipeline-changed == 'true'
+   01222|       )
+   01223|     # Issue #1081 moved the 51 steps behind this call into their own file; the
+   01224|     # reasoning is in its header. The cap moved with them, because a caller job
+   01225|     # declares none.
+   01226|     uses: ./.github/workflows/agent-cli-e2e.yml
+   01227|     # Issue #1107 (item 4): the full replay is 25 of the pipeline's minutes. On
+   01228|     # `main`, on a schedule and on manual dispatch it runs in full. Issue #1137
+   01229|     # also requires it before merge whenever the PR changes the agentic routing
+   01230|     # subsystem, because agent, OpenCode, Claude, and Codex expose different
+   01231|     # tools. Other feature branches keep the held-out generalization gates.
+   01232|     with:
+   01233|       full-replay: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (github.event_name == 'pull_request' && needs.detect-changes.outputs.agentic-routing-changed == 'true') }}
+   01234|     permissions:
+   01235|       contents: read
+   01236|   # Build the host binary once for the seven Box image legs. The audited run
+   01237|   # compiled the same Linux binary seven times and reported 1,131 cache write
+   01238|   # errors across those legs; the available logs do not include backend error
+   01239|   # details, so opt-in diagnostics live in the shared sccache setup action.
+   01240|   build-artifacts:
+   01241|     name: Build binaries and tests
+   01242|     concurrency:
+   01243|       group: ${{ github.workflow }}-${{ github.ref }}-build-artifacts
+   01244|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   01245|     runs-on: ubuntu-latest
+   01246|     timeout-minutes: 20
+   01247|     needs: [detect-changes]
+   01248|     if: |
+   01249|       !cancelled() && (
+   01250|         github.event_name == 'workflow_dispatch' ||
+   01251|         needs.detect-changes.outputs.any-code-changed == 'true' ||
+   01252|         needs.detect-changes.outputs.rs-changed == 'true' ||
+   01253|         needs.detect-changes.outputs.toml-changed == 'true' ||
+   01254|         needs.detect-changes.outputs.pipeline-changed == 'true'
+   01255|       )
+   01256|     steps:
+   01257|       - uses: actions/checkout@v7
+   01258|         with:
+   01259|           persist-credentials: false
+   01260|       - name: Free up runner disk space
+   01261|         run: bash scripts/free-runner-disk.sh
+   01262|       - name: Setup Rust
+   01263|         uses: dtolnay/rust-toolchain@stable
+   01264|       - uses: ./.github/actions/setup-sccache
+   01265|       - uses: ./.github/actions/cache-cargo-registry
+   01266|         with:
+   01267|           prefix: artifacts-
+   01268|       # Issue #1055: one compile per platform; consumers download the results.
+   01269|       - name: Build binaries and test executables
+   01270|         run: cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests --all-features
+   01271|       - name: Collect the build artifacts
+   01272|         run: bash scripts/collect-build-artifacts.sh
+   01273|       - name: Upload formal-ai binaries
+   01274|         uses: actions/upload-artifact@v7
+   01275|         with:
+   01276|           name: formal-ai-release-binary
+   01277|           path: dist/*
+   01278|           retention-days: 1
+   01279|       - name: Upload test executables
+   01280|         uses: actions/upload-artifact@v7
+   01281|         with:
+   01282|           name: formal-ai-test-executables
+   01283|           path: dist/tests
+   01284|           retention-days: 1
+   01285|   # Issue #932 (follow-up of PR #119): a generated project for a language is
+   01286|   # built and run inside the link-foundation/box image that matches that
+   01287|   # language, using the language's own init commands. The matrix keeps each
+   01288|   # image on its own runner, so one leg only pulls the toolchain it needs.
+   01289|   box-language-projects:
+   01290|     name: Box Image Projects (${{ matrix.language }})
+   01291|     concurrency:
+   01292|       group: ${{ github.workflow }}-${{ github.ref }}-box-language-projects-${{ matrix.language }}
+   01293|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   01294|     runs-on: ubuntu-latest
+   01295|     timeout-minutes: 30
+   01296|     needs: [detect-changes, build-artifacts]
+   01297|     if: |
+   01298|       !cancelled() && (
+   01299|         github.event_name == 'workflow_dispatch' ||
+   01300|         needs.detect-changes.outputs.any-code-changed == 'true' ||
+   01301|         needs.detect-changes.outputs.rs-changed == 'true' ||
+   01302|         needs.detect-changes.outputs.toml-changed == 'true' ||
+   01303|         needs.detect-changes.outputs.pipeline-changed == 'true'
+   01304|       )
+   01305|     strategy:
+   01306|       fail-fast: false
+   01307|       matrix:
+   01308|         # Kept in step with `data/meta/box-language-projects.lino` by
+   01309|         # `tests/unit/ci-cd/box_language_release_legs.rs`.
+   01310|         language: [rust, python, javascript, typescript, go, java, ruby]
+   01311|     steps:
+   01312|       - uses: actions/checkout@v7
+   01313|         with:
+   01314|           persist-credentials: false
+   01315|       - name: Skip when identical inputs already passed
+   01316|         id: ledger
+   01317|         uses: ./.github/actions/green-ledger
+   01318|         with:
+   01319|           check: box-project-${{ matrix.language }}
+   01320|           paths: >-
+   01321|             rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/box_language_projects scripts .github/workflows/release.yml .github/actions
+   01322|           enabled: ${{ github.ref != 'refs/heads/main' }}
+   01323|       # A box unpacks to 4-8 GB, more than a stock runner has spare after setup.
+   01324|       - name: Free up runner disk space
+   01325|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   01326|         run: bash scripts/free-runner-disk.sh
+   01327|       - uses: ./.github/actions/download-formal-ai-binary
+   01328|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   01329|       - name: Generate the ${{ matrix.language }} project from Formal-AI answers
+   01330|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   01331|         run: scripts/generate-box-language-corpus.sh ${{ matrix.language }}
+   01332|       - name: Build and run it inside its link-foundation/box image
+   01333|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   01334|         run: STRICT=1 SKIP_GENERATE=1 scripts/verify-box-language-projects.sh ${{ matrix.language }}
+   01335|       - name: Upload the generated project
+   01336|         if: ${{ (always()) && steps.ledger.outputs.already-green != 'true' }}
+   01337|         uses: actions/upload-artifact@v7
+   01338|         with:
+   01339|           name: box-language-corpus-${{ matrix.language }}
+   01340|           path: target/box-language-corpus/${{ matrix.language }}/
+   01341|           retention-days: 7
+   01342|           # `always()` also covers a leg that failed before generating anything.
+   01343|           if-no-files-found: warn
+   01344|       - if: ${{ !cancelled() }}
+   01345|         run: scripts/prune-docker.sh
+   01346|   build-pages:
+   01347|     name: Build GitHub Pages artifact
+   01348|     needs: [build, auto-release, manual-release]
+   01349|     if: |
+   01350|       !cancelled() &&
+   01351|       needs.build.result == 'success' && (
+   01352|         (github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.auto-release.result == 'success') ||
+   01353|         (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && github.ref == 'refs/heads/main' && needs.manual-release.result == 'success')
+   01354|       )
+   01355|     # The bundle and cargo doc build under their own 30-minute cap (R1188-U9).
+   01356|     uses: ./.github/workflows/pages-artifact.yml
+   01357|     with:
+   01358|       sha: ${{ needs.auto-release.outputs.pages_sha || needs.manual-release.outputs.pages_sha || github.sha }}
+   01359|     permissions:
+   01360|       contents: read
+   01361|   deploy-pages:
+   01362|     name: Deploy Web App to GitHub Pages
+   01363|     concurrency:
+   01364|       group: formal-ai-repository-writes
+   01365|       queue: max
+   01366|     needs: [build-pages]
+   01367|     outputs:
+   01368|       page_url: ${{ steps.deployment.outputs.page_url }}
+   01369|       pages_sha: ${{ needs.build-pages.outputs.pages_sha }}
+   01370|     # A writing job states its own dispatch guard (R1187-3).
+   01371|     if: |
+   01372|       !cancelled() &&
+   01373|       needs.build-pages.result == 'success' && (
+   01374|         (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+   01375|         (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && github.ref == 'refs/heads/main')
+   01376|       )
+   01377|     runs-on: ubuntu-latest
+   01378|     # Covers the Pages deployment queue, whose wait the action caps at 10 minutes.
+   01379|     timeout-minutes: 15
+   01380|     permissions:
+   01381|       contents: read
+   01382|       pages: write
+   01383|       id-token: write
+   01384|     environment:
+   01385|       name: github-pages
+   01386|       url: ${{ steps.deployment.outputs.page_url }}
+   01387|     steps:
+   01388|       - name: Configure GitHub Pages
+   01389|         uses: actions/configure-pages@v6
+   01390|       - name: Deploy Pages artifact
+   01391|         id: deployment
+   01392|         uses: actions/deploy-pages@v5
+   01393|         with:
+   01394|           timeout: 600000
+   01395|         env:
+   01396|           # deploy-pages upstream issue #434 tracks its core punycode deprecation.
+   01397|           NODE_OPTIONS: --disable-warning=DEP0040
+   01398|   test-e2e-pages:
+   01399|     name: E2E Tests (GitHub Pages)
+   01400|     concurrency:
+   01401|       group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-pages
+   01402|       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+   01403|     needs: [deploy-pages]
+   01404|     if: |
+   01405|       !cancelled() &&
+   01406|       needs.deploy-pages.result == 'success'
+   01407|     runs-on: ubuntu-latest
+   01408|     timeout-minutes: 15
+   01409|     steps:
+   01410|       - uses: actions/checkout@v7
+   01411|         with:
+   01412|           persist-credentials: false
+   01413|       - name: Setup Node.js
+   01414|         uses: actions/setup-node@v7
+   01415|         with:
+   01416|           node-version: '24.x'
+   01417|           cache: npm
+   01418|           cache-dependency-path: rust/tests/e2e/package-lock.json
+   01419|       - name: Install Playwright and dependencies
+   01420|         run: |
+   01421|           cd rust/tests/e2e
+   01422|           npm ci --no-audit --no-fund
+   01423|       - name: Cache Playwright browsers
+   01424|         id: playwright-cache
+   01425|         uses: actions/cache@v6
+   01426|         with:
+   01427|           path: ~/.cache/ms-playwright
+   01428|           key: ${{ runner.os }}-playwright-${{ hashFiles('rust/tests/e2e/package-lock.json') }}
+   01429|           restore-keys: |
+   01430|             ${{ runner.os }}-playwright-
+   01431|       - name: Install Playwright system dependencies (best effort)
+   01432|         timeout-minutes: 6
+   01433|         continue-on-error: true
+   01434|         run: |
+   01435|           cd rust/tests/e2e
+   01436|           npx playwright install-deps chromium
+   01437|       - name: Install Playwright browsers
+   01438|         timeout-minutes: 10
+   01439|         run: |
+   01440|           cd rust/tests/e2e
+   01441|           npx playwright install chromium
+   01442|       - name: Wait for GitHub Pages deployment
+   01443|         env:
+   01444|           PAGES_DEPLOY_SHA: ${{ needs.deploy-pages.outputs.pages_sha || github.sha }}
+   01445|         run: scripts/wait-for-pages-deployment.sh "${{ needs.deploy-pages.outputs.page_url }}" "$PAGES_DEPLOY_SHA"
+   01446|       - name: Run GitHub Pages e2e tests
+   01447|         run: |
+   01448|           cd rust/tests/e2e
+   01449|           PAGES_URL="${{ needs.deploy-pages.outputs.page_url }}" npx playwright test --config=playwright.pages.config.js
+   01450|       - name: Upload Playwright report on failure
+   01451|         if: failure()
+   01452|         uses: actions/upload-artifact@v7
+   01453|         with:
+   01454|           name: playwright-report-pages
+   01455|           path: rust/tests/e2e/playwright-report/
+   01456|           retention-days: 7
+   01457|   pipeline-status:
+   01458|     name: Pipeline Status
+   01459|     runs-on: ubuntu-latest
+   01460|     timeout-minutes: 5
+   01461|     if: always()
+   01462|     needs: [detect-changes, changelog, docker-build, docker-slim, secrets-scan,
+   01463|             version-check, release-preflight, base, lint, test, macos-core-tests, build,
+   01464|             auto-release, manual-release,
+   01465|             changelog-pr, test-e2e-local, test-agent-cli-e2e,
+   01466|             build-artifacts, box-language-projects, build-pages, deploy-pages,
+   01467|             test-e2e-pages, server-parity]
+   01468|     steps:
+   01469|       - uses: actions/checkout@v7
+   01470|         with:
+   01471|           persist-credentials: false
+   01472|       - name: Fail the run when a required job was cancelled or failed
+   01473|         env:
+   01474|           NEEDS_JSON: ${{ toJSON(needs) }}
+   01475|           IS_MAIN: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+   01476|         run: bash scripts/check-pipeline-status.sh
+   01477| 
+   
+   (End of file - total 1477 lines)
+   </file>
+>> edit {"filePath":".github/workflows/release.yml","file_path":".github/workflows/release.yml","new":"      - name: Collect the build artifacts\n        run: bash scripts/collect-build-artifacts.sh\n      - name: Bind native test artifacts to their actual build inputs\n        run: node scripts/native-test-artifact.mjs write dist/tests release all\n      - name: Upload formal-ai binaries","newString":"      - name: Collect the build artifacts\n        run: bash scripts/collect-build-artifacts.sh\n      - name: Bind native test artifacts to their actual build inputs\n        run: node scripts/native-test-artifact.mjs write dist/tests release all\n      - name: Upload formal-ai binaries","new_str":"      - name: Collect the build artifacts\n        run: bash scripts/collect-build-artifacts.sh\n      - name: Bind native test artifacts to their actual build inputs\n        run: node scripts/native-test-artifact.mjs write dist/tests release all\n      - name: Upload formal-ai binaries","new_string":"      - name: Collect the build artifacts\n        run: bash scripts/collect-build-artifacts.sh\n      - name: Bind native test artifacts to their actual build inputs\n        run: node scripts/native-test-artifact.mjs write dist/tests release all\n      - name: Upload formal-ai binaries","old":"      - name: Collect the build artifacts\n        run: bash scripts/collect-build-artifacts.sh\n      - name: Upload formal-ai binaries","oldString":"      - name: Collect the build artifacts\n        run: bash scripts/collect-build-artifacts.sh\n      - name: Upload formal-ai binaries","old_str":"      - name: Collect the build artifacts\n        run: bash scripts/collect-build-artifacts.sh\n      - name: Upload formal-ai binaries","old_string":"      - name: Collect the build artifacts\n        run: bash scripts/collect-build-artifacts.sh\n      - name: Upload formal-ai binaries","path":".github/workflows/release.yml"}
+>> bash {"command":"sha256sum -- .github/workflows/release.yml"}
+   Output: 36651d5cbe49ed3c9e8e578e1c712bdd465759981d0456dcacc471be0debd21c  .github/workflows/release.yml
+   
+   Exit Code: 0
+== answer ==
+Replaced `      - name: Collect the build artifacts
+        run: bash scripts/collect-build-artifacts.sh
+      - name: Upload formal-ai binaries` with `      - name: Collect the build artifacts
+        run: bash scripts/collect-build-artifacts.sh
+      - name: Bind native test artifacts to their actual build inputs
+        run: node scripts/native-test-artifact.mjs write dist/tests release all
+      - name: Upload formal-ai binaries` in `.github/workflows/release.yml` and observed the result.

@@ -1,0 +1,53 @@
+>> read {"filePath":"experiments/issue_1028_agent_cli_ladder/import-children.py","file_path":"experiments/issue_1028_agent_cli_ladder/import-children.py","path":"experiments/issue_1028_agent_cli_ladder/import-children.py"}
+   <file>
+   00001| #!/usr/bin/env python3
+   00002| """Import only verified current-run leaf artifacts for composite node legs."""
+   00003| import shutil
+   00004| import sys
+   00005| from pathlib import Path
+   00006| from evidence import IDENTITY, digest, fail, validate
+   00007| 
+   00008| 
+   00009| def main():
+   00010|     source, target = map(Path, sys.argv[1:3])
+   00011|     commit, tree, rules = sys.argv[3:6]
+   00012|     values, rows, chosen, verdicts = validate(source)
+   00013|     expected = dict(zip(IDENTITY, (rules, commit, tree, digest(target / "tree.tsv"), digest(target / "leaves.tsv"))))
+   00014|     if any(values[key] != expected[key] for key in IDENTITY) or values["requested_depth"] != "5":
+   00015|         fail("child evidence belongs to another source tree, corpus, rule mode or depth")
+   00016|     for node in sorted(chosen):
+   00017|         if rows[node][0] != 5 or verdicts[node] != "PASS":
+   00018|             continue
+   00019|         effect = source / node / "effect.lino"
+   00020|         diff = source / node / "change.diff"
+   00021|         fields = effect.read_text().splitlines()
+   00022|         if f"node_path={node}" not in fields or "node_kind=leaf" not in fields or not diff.is_file() or not diff.stat().st_size:
+   00023|             fail(f"verified leaf {node} has no matching effect and diff")
+   00024|         shutil.copytree(source / node, target / node, dirs_exist_ok=False)
+   00025|         print(f"{node}\t{target / node / 'effect.lino'}")
+   00026| 
+   00027| 
+   00028| if __name__ == "__main__":
+   00029|     try:
+   00030|         main()
+   00031|     except (ValueError, OSError) as error:
+   00032|         print(f"::error title=Invalid current-run child evidence::{error}", file=sys.stderr)
+   00033|         raise SystemExit(1)
+   00034| 
+   
+   (End of file - total 34 lines)
+   </file>
+>> edit {"filePath":"experiments/issue_1028_agent_cli_ladder/import-children.py","file_path":"experiments/issue_1028_agent_cli_ladder/import-children.py","new":"    parents = [row.split(\"\\t\")[0] for row in (target / \"selected.tsv\").read_text().splitlines()]\n    needed = set()\n    for parent in parents:\n        if parent not in rows or rows[parent][0] != 4:\n            fail(\"child imports are only valid for selected depth-four composites\")\n        needed.update(rows[parent][1].split(\"\\t\")[4:6])\n    if not needed or not needed <= chosen:\n        fail(\"child evidence omits a selected composite's expected leaves\")\n    for node in sorted(needed):","newString":"    parents = [row.split(\"\\t\")[0] for row in (target / \"selected.tsv\").read_text().splitlines()]\n    needed = set()\n    for parent in parents:\n        if parent not in rows or rows[parent][0] != 4:\n            fail(\"child imports are only valid for selected depth-four composites\")\n        needed.update(rows[parent][1].split(\"\\t\")[4:6])\n    if not needed or not needed <= chosen:\n        fail(\"child evidence omits a selected composite's expected leaves\")\n    for node in sorted(needed):","new_str":"    parents = [row.split(\"\\t\")[0] for row in (target / \"selected.tsv\").read_text().splitlines()]\n    needed = set()\n    for parent in parents:\n        if parent not in rows or rows[parent][0] != 4:\n            fail(\"child imports are only valid for selected depth-four composites\")\n        needed.update(rows[parent][1].split(\"\\t\")[4:6])\n    if not needed or not needed <= chosen:\n        fail(\"child evidence omits a selected composite's expected leaves\")\n    for node in sorted(needed):","new_string":"    parents = [row.split(\"\\t\")[0] for row in (target / \"selected.tsv\").read_text().splitlines()]\n    needed = set()\n    for parent in parents:\n        if parent not in rows or rows[parent][0] != 4:\n            fail(\"child imports are only valid for selected depth-four composites\")\n        needed.update(rows[parent][1].split(\"\\t\")[4:6])\n    if not needed or not needed <= chosen:\n        fail(\"child evidence omits a selected composite's expected leaves\")\n    for node in sorted(needed):","old":"    for node in sorted(chosen):","oldString":"    for node in sorted(chosen):","old_str":"    for node in sorted(chosen):","old_string":"    for node in sorted(chosen):","path":"experiments/issue_1028_agent_cli_ladder/import-children.py"}
+>> bash {"command":"sha256sum -- experiments/issue_1028_agent_cli_ladder/import-children.py"}
+   a14d25724af5fa18fbde0422ba59d111cb35d9e62ca3efdafebef0ff0ed53206  experiments/issue_1028_agent_cli_ladder/import-children.py
+   
+== answer ==
+Replaced `    for node in sorted(chosen):` with `    parents = [row.split("\t")[0] for row in (target / "selected.tsv").read_text().splitlines()]
+    needed = set()
+    for parent in parents:
+        if parent not in rows or rows[parent][0] != 4:
+            fail("child imports are only valid for selected depth-four composites")
+        needed.update(rows[parent][1].split("\t")[4:6])
+    if not needed or not needed <= chosen:
+        fail("child evidence omits a selected composite's expected leaves")
+    for node in sorted(needed):` in `experiments/issue_1028_agent_cli_ladder/import-children.py` and observed the result.

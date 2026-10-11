@@ -1,0 +1,18 @@
+language en
+lemma missing
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "not able to be found"
+    examples ("missing in action" "a missing person")
+    id oewn-01452957-s
+    partOfSpeech s
+  entry
+    definition nonexistent
+    examples ("the thumb is absent" "her appetite was lacking")
+    id oewn-00931073-s
+    partOfSpeech s
+    synonyms (lacking absent wanting)
+source "oewn:2024"

@@ -104,6 +104,8 @@ pub struct SourceRecord {
     pub asserted_tier: Option<SourceTier>,
     /// API template with `{placeholder}` slots.
     pub api: String,
+    /// Declared alternate endpoint, consulted only after a missing resource.
+    pub api_fallback: String,
     /// The same source's own endpoint for every language `api` does not serve.
     ///
     /// Issue #1138, plan 01 L10. A project can publish its material through two
@@ -288,6 +290,7 @@ pub fn source_registry() -> Vec<SourceRecord> {
                 primacy,
                 asserted_tier: tier_from_slug(entry.find_child_value("source_tier")),
                 api: entry.find_child_value("api").to_owned(),
+                api_fallback: entry.find_child_value("api-fallback").to_owned(),
                 language_api: entry.find_child_value("language_api").to_owned(),
                 license_name: entry.find_child_value("license_name").to_owned(),
                 license_url: entry.find_child_value("license_url").to_owned(),
@@ -339,13 +342,11 @@ pub fn sources_for_need_kind(kind: NeedKind) -> Vec<SourceRecord> {
     });
     selected
 }
-
 /// Look one source up by registry id.
 #[must_use]
 pub fn source_record(id: &str) -> Option<SourceRecord> {
     source_registry().into_iter().find(|record| record.id == id)
 }
-
 /// Every distinct settings key that can opt a service out, in registry order.
 #[must_use]
 pub fn external_service_settings_keys() -> Vec<String> {
@@ -357,7 +358,6 @@ pub fn external_service_settings_keys() -> Vec<String> {
     }
     keys
 }
-
 /// Percent-encode a query/path parameter with the unreserved set from RFC 3986.
 #[must_use]
 pub fn percent_encode(value: &str) -> String {

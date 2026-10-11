@@ -148,9 +148,8 @@ pub fn document_profile_is_recognized(format: &str, text: &str) -> bool {
 
 /// Whether package bytes are recognized by the format's package layer.
 ///
-/// meta-language 0.45 exposes an OPC ZIP package profile for DOCX. Other
-/// document formats currently have no separate package wrapper in the upstream
-/// API, so they return `false`.
+/// DOCX uses the upstream OPC ZIP package profile. PDF uses the upstream
+/// uncompressed text profile, whose rendered text is the actual PDF container.
 #[must_use]
 pub fn document_package_is_recognized(format: &str, bytes: &[u8]) -> bool {
     #[cfg(not(feature = "meta-language"))]
@@ -162,6 +161,7 @@ pub fn document_package_is_recognized(format: &str, bytes: &[u8]) -> bool {
     {
         match canonical_document_format(format) {
             Some("DOCX") => docx_package_is_recognized(bytes),
+            Some("PDF") => std::str::from_utf8(bytes).is_ok_and(pdf_profile_is_recognized),
             _ => false,
         }
     }
@@ -198,15 +198,83 @@ pub fn convert_document_format(
     }
 }
 
+/// An HTML or Markdown document read through the generic page formalizer
+/// (issue #1163 R13): the formalizer as a document-conversion source.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FormalizedDocumentSource {
+    /// The format the document was read as (the seed's `document_source`
+    /// name, e.g. `html` or `markdown`).
+    pub source_format: String,
+    /// The mime hint the formalizer parsed it under.
+    pub mime_hint: String,
+    /// Every block's kind and text in document order (`heading`,
+    /// `paragraph`, `list_item`, `table_row`, `code_block`).
+    pub blocks: Vec<(String, String)>,
+    /// The language tag of each code block, in document order.
+    pub code_languages: Vec<String>,
+}
+
+/// Read a document as a conversion source through the generic page formalizer.
+///
+/// Issue #1163 R13: the formats it accepts, and the mime hint each is parsed
+/// under, are the `document_source` rows of
+/// `data/seed/page-formalization-rules.lino` (HTML and Markdown); any other
+/// format yields `None`, and so does a build without `meta-language`.
+#[must_use]
+pub fn formalize_document_source(
+    source_format: &str,
+    source_text: &str,
+) -> Option<FormalizedDocumentSource> {
+    #[cfg(not(feature = "meta-language"))]
+    {
+        let _ = (source_format, source_text);
+        return None;
+    }
+    #[cfg(feature = "meta-language")]
+    {
+        use crate::web_formalize::{PageBlock, document_source, formalize_page_with_context};
+        let canonical = canonical_document_format(source_format).unwrap_or(source_format);
+        let (name, hint) = document_source(canonical).or_else(|| document_source(source_format))?;
+        let (_, nodes) = formalize_page_with_context(source_text.as_bytes(), Some(&hint), None);
+        let mut blocks = Vec::new();
+        let mut code_languages = Vec::new();
+        for (_, block) in nodes {
+            let (kind, text) = match block {
+                PageBlock::Heading { text, .. } => ("heading", text),
+                PageBlock::Paragraph { text, .. } => ("paragraph", text),
+                PageBlock::ListItem { text } => ("list_item", text),
+                PageBlock::TableRow { cells } => ("table_row", cells),
+                PageBlock::CodeBlock { language, text } => {
+                    code_languages.push(language);
+                    ("code_block", text)
+                }
+            };
+            blocks.push((kind.to_owned(), text));
+        }
+        Some(FormalizedDocumentSource {
+            source_format: name,
+            mime_hint: hint,
+            blocks,
+            code_languages,
+        })
+    }
+}
+
 #[cfg(feature = "meta-language")]
 fn package_bytes_for_target(
     source_format: &str,
     target_format: &str,
     source_text: &str,
 ) -> Option<Vec<u8>> {
-    if target_format != "DOCX" {
+    if !matches!(target_format, "DOCX" | "PDF") {
         return None;
     }
     let document = parse_markup_document(source_format, source_text)?;
-    (!document.blocks.is_empty()).then(|| render_docx_package(&document))
+    if document.blocks.is_empty() {
+        return None;
+    }
+    Some(match target_format {
+        "PDF" => meta_language::render_pdf_document(&document).into_bytes(),
+        _ => render_docx_package(&document),
+    })
 }

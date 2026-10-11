@@ -1,0 +1,9 @@
+view
+  id M-3ebebb04a415
+  lemma destructive
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "causing destruction or much damage"
+    provenance (wordnet)

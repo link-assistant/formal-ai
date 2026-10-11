@@ -1,0 +1,5 @@
+document_format_conversion	"通过 link-foundation/meta-language（{engine}）进行文档格式转换。\n源：{source}；目标：{target}。\n支持的文档格式：{formats}。"
+document_format_conversion_fallback	"- {concept} -> {fallback}"
+document_format_conversion_fallbacks	"目标格式中有文档记载的回退方式："
+document_format_conversion_native_concepts	"目标格式的原生概念：{concepts}。"
+document_format_conversion_package	"包层：DOCX OPC 存储条目配置中共 {bytes} 字节。"

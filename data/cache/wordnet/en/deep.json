@@ -1,0 +1,246 @@
+{
+  "lemma": "deep",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00696211-a",
+      "partOfSpeech": "a",
+      "definition": "relatively deep or strong; affecting one deeply",
+      "examples": [
+        "a deep breath",
+        "a deep sigh",
+        "deep concentration",
+        "deep emotion",
+        "a deep trance",
+        "in a deep sleep"
+      ]
+    },
+    {
+      "id": "oewn-00693335-a",
+      "partOfSpeech": "a",
+      "definition": "having great spatial extension or penetration downward or inward from an outer surface or backward or laterally or outward from a center; sometimes used in combination",
+      "examples": [
+        "a deep well",
+        "a deep dive",
+        "deep water",
+        "a deep casserole",
+        "a deep gash",
+        "deep massage",
+        "deep pressure receptors in muscles",
+        "deep shelves",
+        "a deep closet",
+        "surrounded by a deep yard",
+        "hit the ball to deep center field",
+        "in deep space",
+        "waist-deep"
+      ]
+    },
+    {
+      "id": "oewn-15292202-n",
+      "partOfSpeech": "n",
+      "definition": "the central and most intense or profound part",
+      "examples": [
+        "in the deep of night",
+        "in the deep of winter"
+      ]
+    },
+    {
+      "id": "oewn-09484445-n",
+      "partOfSpeech": "n",
+      "definition": "a long steep-sided depression in the ocean floor",
+      "synonyms": [
+        "trench",
+        "oceanic abyss"
+      ]
+    },
+    {
+      "id": "oewn-09286717-n",
+      "partOfSpeech": "n",
+      "definition": "literary term for an ocean",
+      "examples": [
+        "denizens of the deep"
+      ]
+    },
+    {
+      "id": "oewn-00306956-r",
+      "partOfSpeech": "r",
+      "definition": "to a great depth; far down or in",
+      "examples": [
+        "dived deeply",
+        "dug deep"
+      ],
+      "synonyms": [
+        "deeply"
+      ]
+    },
+    {
+      "id": "oewn-00307214-r",
+      "partOfSpeech": "r",
+      "definition": "to an advanced time",
+      "examples": [
+        "deep into the night",
+        "talked late into the evening"
+      ],
+      "synonyms": [
+        "late"
+      ]
+    },
+    {
+      "id": "oewn-00307076-r",
+      "partOfSpeech": "r",
+      "definition": "to a great distance",
+      "examples": [
+        "penetrated deep into enemy territory",
+        "went deep into the woods"
+      ]
+    },
+    {
+      "id": "oewn-01879131-s",
+      "partOfSpeech": "s",
+      "definition": "marked by depth of thinking",
+      "examples": [
+        "deep thoughts",
+        "a deep allegory"
+      ]
+    },
+    {
+      "id": "oewn-00447971-s",
+      "partOfSpeech": "s",
+      "definition": "very distant in time or space",
+      "examples": [
+        "deep in the past",
+        "deep in enemy territory",
+        "deep in the woods",
+        "a deep space probe"
+      ]
+    },
+    {
+      "id": "oewn-01515033-s",
+      "partOfSpeech": "s",
+      "definition": "intense or extreme",
+      "examples": [
+        "in deep trouble",
+        "deep happiness"
+      ]
+    },
+    {
+      "id": "oewn-01218606-s",
+      "partOfSpeech": "s",
+      "definition": "having or denoting a low vocal or instrumental range",
+      "examples": [
+        "a deep voice",
+        "a bass voice is lower than a baritone voice",
+        "a bass clarinet"
+      ],
+      "synonyms": [
+        "bass"
+      ]
+    },
+    {
+      "id": "oewn-00404462-s",
+      "partOfSpeech": "s",
+      "definition": "strong; intense",
+      "examples": [
+        "deep purple",
+        "a rich red"
+      ],
+      "synonyms": [
+        "rich"
+      ]
+    },
+    {
+      "id": "oewn-02419779-s",
+      "partOfSpeech": "s",
+      "definition": "relatively thick from top to bottom",
+      "examples": [
+        "deep carpets",
+        "deep snow"
+      ]
+    },
+    {
+      "id": "oewn-02572121-s",
+      "partOfSpeech": "s",
+      "definition": "extending relatively far inward",
+      "examples": [
+        "a deep border"
+      ]
+    },
+    {
+      "id": "oewn-01517859-s",
+      "partOfSpeech": "s",
+      "definition": "(of darkness) densely dark",
+      "examples": [
+        "thick night",
+        "thick darkness",
+        "a face in deep shadow",
+        "deep night"
+      ],
+      "synonyms": [
+        "thick"
+      ]
+    },
+    {
+      "id": "oewn-01387980-s",
+      "partOfSpeech": "s",
+      "definition": "large in quantity or size",
+      "examples": [
+        "deep cuts in the budget"
+      ]
+    },
+    {
+      "id": "oewn-01209588-s",
+      "partOfSpeech": "s",
+      "definition": "with head or back bent low",
+      "examples": [
+        "a deep bow"
+      ]
+    },
+    {
+      "id": "oewn-00942713-s",
+      "partOfSpeech": "s",
+      "definition": "of an obscure nature",
+      "examples": [
+        "the new insurance policy is written without cryptic or mysterious terms",
+        "a deep dark secret",
+        "the inscrutable workings of Providence",
+        "in its mysterious past it encompasses all the dim origins of life",
+        "rituals totally mystifying to visitors from other lands"
+      ],
+      "synonyms": [
+        "cryptic",
+        "cryptical",
+        "inscrutable",
+        "mysterious",
+        "mystifying"
+      ]
+    },
+    {
+      "id": "oewn-00902519-s",
+      "partOfSpeech": "s",
+      "definition": "difficult to penetrate; incomprehensible to one of ordinary understanding or knowledge",
+      "examples": [
+        "the professor's lectures were so abstruse that students tended to avoid them",
+        "a deep metaphysical theory",
+        "some recondite problem in historiography"
+      ],
+      "synonyms": [
+        "abstruse",
+        "recondite"
+      ]
+    },
+    {
+      "id": "oewn-00150388-s",
+      "partOfSpeech": "s",
+      "definition": "exhibiting great cunning usually with secrecy",
+      "examples": [
+        "deep political machinations",
+        "a deep plot"
+      ]
+    }
+  ]
+}

@@ -463,7 +463,7 @@ mod tests {
             "(\"GET\", \"/v1/network\" | \"/api/formal-ai/v1/network\") => handle,",
             &mut routes,
         );
-        assert!(routes.is_empty());
+        assert_eq!(routes, [] as [RouteViolation; 0]);
     }
 
     #[test]

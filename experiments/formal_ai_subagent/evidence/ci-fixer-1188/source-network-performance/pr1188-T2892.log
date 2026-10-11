@@ -1,0 +1,28 @@
+>> bash {"command":"node /private/tmp/pr1188-source-network-large-comparison.mjs"}
+   Output: {"upstream":"eb0574d5528babd3b4aadece81590d8e2230b99b","path":"ts/worker/formal_ai_worker_facts_and_software_phrases.ts","sourceSha256":"ce3985becef2e51d0f777532287f871a51b71c9ee9ef038907cf668662454f03","sourceBytes":50132,"serializedBytes":3458046,"baseline":{"milliseconds":13606.947167,"decodes":2},"optimized":{"milliseconds":11367.217249999998,"decodes":1},"fullNetworkBytesEqual":true,"compressedBytesEqual":true,"receiptEqual":true,"physicalSourceUnchanged":true}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/pr1188-source-network-large-comparison.mjs` command completed. Output:
+
+```json
+{
+  "baseline": {
+    "decodes": 2,
+    "milliseconds": 13606.947167
+  },
+  "compressedBytesEqual": true,
+  "fullNetworkBytesEqual": true,
+  "optimized": {
+    "decodes": 1,
+    "milliseconds": 11367.217249999998
+  },
+  "path": "ts/worker/formal_ai_worker_facts_and_software_phrases.ts",
+  "physicalSourceUnchanged": true,
+  "receiptEqual": true,
+  "serializedBytes": 3458046,
+  "sourceBytes": 50132,
+  "sourceSha256": "ce3985becef2e51d0f777532287f871a51b71c9ee9ef038907cf668662454f03",
+  "upstream": "eb0574d5528babd3b4aadece81590d8e2230b99b"
+}
+```

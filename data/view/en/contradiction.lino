@@ -1,0 +1,17 @@
+view
+  id M-7230a7ad342f
+  lemma contradiction
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "opposition between two conflicting forces or ideas"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(logic) a statement that is necessarily false"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the speech act of contradicting someone"
+    provenance (wordnet)

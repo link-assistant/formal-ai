@@ -73,9 +73,11 @@ fn whole_shell_task_matrix_routes_without_web_search() {
         ("copy a.txt to b.txt", "cp a.txt b.txt"),
         ("what changed in git", "git diff"),
         ("run the tests", "cargo test"),
+        // A content search is the workspace-search arm's grep, which lists
+        // file:line hits (PR #1188 T90).
         (
             "search for TODO in the code",
-            "rg --fixed-strings -- 'TODO' .",
+            "grep -rnHw --exclude-dir=.git -- 'TODO' '.'",
         ),
     ] {
         // A command that changes the workspace is carried out as the verified

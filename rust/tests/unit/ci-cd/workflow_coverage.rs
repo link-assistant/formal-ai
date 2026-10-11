@@ -23,11 +23,33 @@ fn coverage_jobs_enforce_and_publish_the_ratchet() {
         "the ratchet's threshold and baseline-update logic must be tested, not trusted"
     );
 
+    // PR #1188 split the one instrumented run into a build, parallel shards
+    // and the `coverage` verdict that merges their profiles; the denominator
+    // is still measured by cargo-llvm-cov, over the same executables.
     let workflow = coverage_workflow();
+    let build = job_block(&workflow, "coverage-build");
+    assert!(
+        build.contains("cargo llvm-cov show-env --export-prefix")
+            && build.contains("cargo test --manifest-path rust/Cargo.toml --all-features --no-run"),
+        "the instrumented executables are built once, with cargo-llvm-cov's own instrumentation"
+    );
+    let shard = job_block(&workflow, "coverage-shard");
+    assert!(
+        shard.contains("bash scripts/run-coverage-shard.sh coverage-tests.tsv")
+            && shard.contains("--skip no_benchmark_prompt_reaches_the_unknown_opener"),
+        "every shard runs its slice of the whole suite, minus the corpus gate"
+    );
     let coverage = job_block(&workflow, "coverage");
     assert!(
-        coverage.contains("cargo llvm-cov --manifest-path rust/Cargo.toml --all-features --lcov --output-path lcov.info"),
-        "the rust denominator is measured with cargo-llvm-cov"
+        coverage.contains(
+            "cargo llvm-cov report --manifest-path rust/Cargo.toml --lcov --output-path lcov.info"
+        ),
+        "the rust denominator is reported by cargo-llvm-cov from the merged shard profiles"
+    );
+    assert!(
+        coverage.contains("bash scripts/check-shard-results.sh")
+            && coverage.contains("JOBS: coverage-build coverage-shard"),
+        "a failed, timed-out or skipped shard is a missing measurement, never a pass"
     );
     assert!(
         coverage.contains("rust-script scripts/check-coverage-ratchet.rs --only rust"),
@@ -39,11 +61,29 @@ fn coverage_jobs_enforce_and_publish_the_ratchet() {
         "coverage must be published in both a human-readable and a machine-readable form"
     );
 
+    let browser_shards = job_block(&workflow, "browser-coverage-shard");
+    assert!(
+        browser_shards.contains("shard: [1, 2, 3, 4, 5, 6]")
+            && browser_shards.contains("fail-fast: false")
+            && browser_shards.contains("npm run coverage:web -- run")
+            && browser_shards.contains("browser-coverage-shard-${{ matrix.shard }}")
+            && browser_shards.contains("if-no-files-found: error"),
+        "all six browser slices must execute and retain complete individual receipts"
+    );
+
     let browser = job_block(&workflow, "browser-coverage");
     assert!(
         browser.contains("npm run coverage:web"),
         "the browser denominator is measured by the tests/web suite"
     );
+    assert!(
+        browser.contains("JOBS: browser-coverage-shard")
+            && browser.contains("bash scripts/check-shard-results.sh")
+            && browser.contains("merge-multiple: false")
+            && browser.contains("npm run coverage:web -- collect coverage/browser-shards"),
+        "the original browser verdict rejects missing, failed or cancelled slices before the unchanged ratchet"
+    );
+
     assert!(
         browser.contains("rust-script scripts/check-coverage-ratchet.rs --only browser"),
         "the browser denominator is ratcheted too, separately from rust"
@@ -54,7 +94,8 @@ fn coverage_jobs_enforce_and_publish_the_ratchet() {
         "browser coverage must be published in both forms as well"
     );
     assert!(
-        browser.contains("needs: [detect-changes]") && browser.contains("!cancelled()"),
+        browser.contains("needs: [detect-changes, browser-coverage-shard]")
+            && browser.contains("!cancelled()"),
         "browser-coverage follows the same change-gating contract as the other jobs"
     );
 }
@@ -70,34 +111,34 @@ fn coverage_workflow_keeps_the_timeout_and_change_gating_contract() {
 
     assert_eq!(
         workflow_job_names(&workflow),
-        vec!["detect-changes", "coverage", "browser-coverage"]
+        vec![
+            "detect-changes",
+            "coverage-build",
+            "coverage-shard",
+            "coverage",
+            "browser-coverage-shard",
+            "browser-coverage"
+        ]
     );
 
     for (job_name, timeout_minutes) in [
         ("detect-changes", 5),
-        // Issue #812 raised this from 15 (worst case then: 14.1 min). Issue
-        // #895 re-measured the last eight green runs on main -- 17.2..19.6 min
-        // -- and raised it again, because 19.6 of 25 is the same one-slow-run
-        // margin #812 was filed about.
-        //
-        // Issue #1076 raised it to 60, and this number is now a backstop rather
-        // than the control. The cap alone cannot report a failure: hitting
-        // `timeout-minutes` *cancels* the job, and a cancelled job is not a red
-        // check. Run 33955786082 spent 33m08s inside `cargo llvm-cov` and was
-        // cancelled at the 40-minute cap, which the pipeline read as "not
-        // failed". The step now owns a 4200s budget of its own
-        // (`run-with-budget-warning.sh`, asserted in ci_cd::issue_1076), so the
-        // deadline that actually fires exits 124 with an `::error` annotation.
-        // Issue #1138 re-measured: run 36046809360 had 2553 tests finished when
-        // the old 2400s budget killed the lane -- ordinary progress, no hanger
-        // -- while the uninstrumented twin lane ran all 2856 in 1235.57s, so
-        // the lane outgrew 2400s instrumented. 105 minutes leaves the 4200s
-        // budget room to fire first: 4200s is 66.7% of the cap, inside the 70%
-        // ceiling issue #1017 pinned.
-        ("coverage", 105),
+        // Issue #812 raised the single job's cap from 15, issue #895 to 25,
+        // issue #1076 to 60 and issues #1138/#1149 to 135 minutes, each time
+        // because the instrumented suite outgrew it (run 37652295937: 6m21s
+        // compiling, then 4310s in the `unit` target alone). PR #1188 splits
+        // the work instead: one build, ten shards, one merged report. Each cap
+        // is a backstop over its step budget, inside the 70% share issue
+        // #1017 enforces: 1260s of 30m, 1200s of 30m and 900s of 25m.
+        // The original 40-minute literal covered the previous producer layout;
+        // complete instrumentation/artifact obligations are checked below.
+        ("coverage-build", 30),
+        ("coverage-shard", 30),
+        ("coverage", 25),
         // Issue #895: the browser denominator. `node --test` over tests/web/
         // needs no cargo build, so the budget is dominated by checkout plus the
         // rust-script install for the ratchet gate.
+        ("browser-coverage-shard", 15),
         ("browser-coverage", 15),
     ] {
         let job = job_block(&workflow, job_name);
@@ -108,7 +149,53 @@ fn coverage_workflow_keeps_the_timeout_and_change_gating_contract() {
         );
     }
 
-    for job_name in ["coverage", "browser-coverage"] {
+    let producer = job_block(&workflow, "coverage-build");
+    assert!(producer.contains("TEST_BUDGET_SECONDS: 1260"));
+    let producer_budget: u32 = producer
+        .split("TEST_BUDGET_SECONDS:")
+        .nth(1)
+        .and_then(|tail| tail.lines().next())
+        .and_then(|value| value.trim().parse().ok())
+        .expect("numeric producer step budget");
+    assert!(producer_budget * 100 <= 30 * 60 * 70);
+    for operation in [
+        "cargo llvm-cov",
+        "show-env --sh",
+        "cargo test --manifest-path rust/Cargo.toml --all-features --no-run",
+        "--message-format=json-render-diagnostics",
+        "coverage-tests.tsv",
+        "coverage-objects.txt",
+        "tar -cf coverage-objects.tar",
+        "name: coverage-objects",
+        "if-no-files-found: error",
+    ] {
+        assert!(
+            producer.contains(operation),
+            "instrumented producer operation missing: {operation}"
+        );
+    }
+    let shard = job_block(&workflow, "coverage-shard");
+    assert!(shard.contains("name: coverage-objects"));
+    assert!(shard.contains("tar -xf coverage-objects/coverage-objects.tar"));
+    let reducer = job_block(&workflow, "coverage");
+    for operation in [
+        "check-shard-results.sh",
+        "name: coverage-objects",
+        "pattern: coverage-profile-*",
+        "tar -xf coverage-objects/coverage-objects.tar",
+        "merge -sparse",
+        "cargo llvm-cov report",
+        "check-coverage-ratchet.rs --only rust",
+        "name: rust-lcov",
+    ] {
+        assert!(
+            reducer.contains(operation),
+            "coverage reduction operation missing: {operation}"
+        );
+    }
+
+    // The shards inherit the gate through `needs: [coverage-build]`.
+    for job_name in ["coverage-build", "coverage", "browser-coverage"] {
         let preamble = job_block(&workflow, job_name)
             .split("    steps:\n")
             .next()
@@ -138,7 +225,12 @@ fn coverage_workflow_keeps_the_timeout_and_change_gating_contract() {
 fn coverage_jobs_never_depend_on_a_skipped_upstream_check() {
     let workflow = coverage_workflow();
 
-    for job_name in ["coverage", "browser-coverage"] {
+    for job_name in [
+        "coverage-build",
+        "coverage-shard",
+        "coverage",
+        "browser-coverage",
+    ] {
         // Inspect only effective YAML (skip `#` comment lines) so a rationale
         // comment quoting the old buggy clause doesn't trip the guard.
         let has_skip_dependency = job_block(&workflow, job_name)

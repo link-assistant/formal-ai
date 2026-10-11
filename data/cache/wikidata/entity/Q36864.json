@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "指甲"
+        },
+        "es": {
+          "language": "es",
+          "value": "uña"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "शारिरिक अंग"
+        },
+        "es": {
+          "language": "es",
+          "value": "placa córnea que cubre y protege parte de la superficie dorsal de los dedos"
         }
       },
       "aliases": {
@@ -56,6 +64,12 @@
           {
             "language": "zh",
             "value": "趾甲"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Uñas"
           }
         ]
       }

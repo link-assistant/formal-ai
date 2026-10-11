@@ -214,10 +214,9 @@ fn released_zero_byte_store_is_readable_and_upgradeable() {
     let receipt = formal_ai::migrate_memory(&memory_path, Some(&backup_path), None)
         .expect("upgrade released empty store");
     assert!(receipt.changed);
-    assert!(
-        std::fs::read(&backup_path)
-            .expect("read empty backup")
-            .is_empty()
+    assert_eq!(
+        std::fs::read(&backup_path).expect("read empty backup"),
+        [] as [u8; 0]
     );
     assert_eq!(
         std::fs::read_to_string(&memory_path).expect("read migrated empty store"),
@@ -667,4 +666,139 @@ fn first_write_to_a_new_store_uses_the_target_schema() {
     assert!(persisted.starts_with("demo_memory\n  schema_version \"2\"\n"));
     assert!(!formal_ai::preflight_memory_upgrade(&memory_path).migration_required);
     let _ = std::fs::remove_dir_all(dir);
+}
+
+#[test]
+fn conflicting_backup_is_refused_and_the_default_backup_is_content_addressed() {
+    let dir = fixture_dir("backup-contract");
+    let memory_path = dir.join("memory.lino");
+    let released = released_fixture();
+    std::fs::write(&memory_path, released).expect("write released fixture");
+
+    // A backup path already holding other bytes is never overwritten: the
+    // migration refuses before staging, and both files keep their bytes.
+    let conflicting = dir.join("conflicting.lino");
+    std::fs::write(&conflicting, "demo_memory\n").expect("write conflicting backup");
+    let error = formal_ai::migrate_memory(&memory_path, Some(&conflicting), None)
+        .expect_err("a conflicting backup must refuse the migration");
+    assert_eq!(error.code(), "backup_conflict");
+    assert_eq!(
+        std::fs::read_to_string(&memory_path).expect("memory after refusal"),
+        released
+    );
+    assert_eq!(
+        std::fs::read_to_string(&conflicting).expect("conflicting backup after refusal"),
+        "demo_memory\n"
+    );
+    std::fs::remove_file(&conflicting).expect("remove conflicting backup");
+
+    // Without --backup the rollback copy is named by the source digest, so an
+    // interrupted run's retry re-verifies the same file instead of writing a
+    // second one; the receipt names every path and both digests.
+    let digest = formal_ai::sha256_hex(released.as_bytes());
+    let backup_path = dir.join(format!("memory.lino.schema-1.{}.backup", &digest[..12]));
+    let receipt_path = dir.join("memory.lino.upgrade-receipt.json");
+    let receipt =
+        formal_ai::migrate_memory(&memory_path, None, None).expect("migrate with default paths");
+    assert_eq!(
+        std::fs::read_to_string(&backup_path).expect("read content-addressed backup"),
+        released
+    );
+    let migrated = std::fs::read(&memory_path).expect("read migrated memory");
+    assert_eq!(
+        receipt,
+        formal_ai::MemoryMigrationReceipt {
+            binary_version: String::from(env!("CARGO_PKG_VERSION")),
+            changed: true,
+            migration_id: Some(String::from("demo_memory_v1_to_v2")),
+            from_schema_version: Some(1),
+            to_schema_version: 2,
+            memory_path: memory_path.display().to_string(),
+            backup_path: Some(backup_path.display().to_string()),
+            receipt_path: Some(receipt_path.display().to_string()),
+            original_sha256: Some(digest),
+            migrated_sha256: Some(formal_ai::sha256_hex(&migrated)),
+            event_count: 2,
+            rollback_supported: true,
+            rollback_strategy: String::from("restore_backup_path"),
+        }
+    );
+    let durable: serde_json::Value = serde_json::from_slice(
+        &std::fs::read(&receipt_path).expect("read default durable receipt"),
+    )
+    .expect("receipt file must be JSON");
+    assert_eq!(
+        durable,
+        serde_json::to_value(receipt).expect("receipt serializes")
+    );
+
+    let retry = formal_ai::migrate_memory(&memory_path, None, None).expect("idempotent retry");
+    assert!(!retry.changed);
+    assert_eq!(retry.rollback_strategy, "not_required");
+    assert_eq!(
+        std::fs::read(&memory_path).expect("memory after retry"),
+        migrated
+    );
+    let backups = std::fs::read_dir(&dir)
+        .expect("list backup fixture")
+        .filter(|entry| {
+            entry
+                .as_ref()
+                .expect("entry")
+                .file_name()
+                .to_string_lossy()
+                .ends_with(".backup")
+        })
+        .count();
+    assert_eq!(backups, 1, "a retry must not write a second backup");
+    let _ = std::fs::remove_dir_all(dir);
+}
+
+#[test]
+fn container_upgrade_harness_runs_in_ci_from_released_write_to_released_reopen() {
+    // The two-image proof needs Docker and the published release image, so it
+    // runs in the release workflow right after the candidate image is built.
+    // This pins that wiring and the order of the harness stages.
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("the repository root sits one level above the crate");
+    let workflow = std::fs::read_to_string(root.join(".github/workflows/release.yml"))
+        .expect("read the release workflow");
+    let built = workflow
+        .find("tags: formal-ai:pr-check")
+        .expect("the candidate image is built");
+    let exercised = workflow
+        .find("run: experiments/issue_982_memory_upgrade/run_container_upgrade.sh")
+        .expect("the release workflow runs the upgrade harness");
+    assert!(
+        built < exercised,
+        "the harness runs after the candidate build"
+    );
+
+    let harness = std::fs::read_to_string(
+        root.join("experiments/issue_982_memory_upgrade/run_container_upgrade.sh"),
+    )
+    .expect("read the upgrade harness");
+    let stages = [
+        "ghcr.io/link-assistant/formal-ai:0.335.0",
+        "run_image \"$PREVIOUS_IMAGE\" formal-ai memory import",
+        "run_image \"$CANDIDATE_IMAGE\" formal-ai memory upgrade-status",
+        "fail \"preflight modified released memory\"",
+        "run_image \"$CANDIDATE_IMAGE\" formal-ai memory migrate",
+        "fail \"rollback backup is not byte-exact\"",
+        "run_image \"$CANDIDATE_IMAGE\" formal-ai memory query",
+        "fail \"candidate export dropped unknown metadata\"",
+        "formal-ai serve --host 0.0.0.0 --port 8080",
+        "assert_json_contract \"$workdir/health.json\" health",
+        "cp '$BACKUP_PATH' '$MEMORY_PATH'",
+        "fail \"rollback was not byte-exact\"",
+        "fail \"released container could not reopen rolled-back memory\"",
+    ];
+    let mut cursor = 0;
+    for stage in stages {
+        let offset = harness[cursor..]
+            .find(stage)
+            .unwrap_or_else(|| panic!("harness stage missing or out of order: {stage}"));
+        cursor += offset + stage.len();
+    }
 }

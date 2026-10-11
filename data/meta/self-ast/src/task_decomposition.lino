@@ -2,10 +2,10 @@ self_ast_census
   target src/task_decomposition.rs
   language rust
   fidelity signature
-  byte_len 24236
-  line_count 693
-  content_id source_module_2461ca91da8e1fc3
-  symbol_count 43
+  byte_len 26728
+  line_count 761
+  content_id source_module_5d7e900d9550ebe2
+  symbol_count 49
   symbols
     module artifact 38 38
     module learning 39 39
@@ -38,15 +38,21 @@ self_ast_census
     function split_once_checkable_with_ledger 451 462
     function is_checkable 470 472
     function completion_criterion_for 474 485
-    function segment 489 495
-    function split_sentences 499 514
-    function split_clauses 519 528
-    function split_on_markers 532 542
-    function split_piece_on_marker 544 570
-    function distribute_head_action 580 598
-    function head_action 601 610
-    function merge_uncheckable 617 637
-    function join 639 646
-    function push_trimmed 648 653
-    function record_task_decomposition 660 679
-    function emit_sub_impulses 681 693
+    function segment 494 506
+    const LITERAL_MASK_BASE 510 510
+    const LITERAL_MASK_SLOTS 511 511
+    function literal_mask 513 518
+    function literal_mask_index 520 525
+    function mask_quoted_literals 530 551
+    function unmask_quoted_literals 553 563
+    function split_sentences 567 582
+    function split_clauses 587 596
+    function split_on_markers 600 610
+    function split_piece_on_marker 612 638
+    function distribute_head_action 648 666
+    function head_action 669 678
+    function merge_uncheckable 685 705
+    function join 707 714
+    function push_trimmed 716 721
+    function record_task_decomposition 728 747
+    function emit_sub_impulses 749 761

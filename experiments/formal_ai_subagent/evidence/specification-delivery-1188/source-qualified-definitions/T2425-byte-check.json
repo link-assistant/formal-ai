@@ -1,0 +1,5 @@
+{
+  "taskId": "T2425",
+  "target": "rust/tests/web/source-qualified-definition.test.mjs",
+  "byteEqual": true
+}

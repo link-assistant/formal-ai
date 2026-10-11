@@ -22,6 +22,11 @@ meanings
         text 助手
       surface
         text 助理
+    lexeme es
+      surface
+        text asistente
+      surface
+        text "asistente de ia"
   user
     defined-by inquiry
     defined-by entity
@@ -38,6 +43,11 @@ meanings
     lexeme zh
       surface
         text 用户
+    lexeme es
+      surface
+        text usuario
+      surface
+        text usuaria
   inquiry
     defined-by answer
     defined-by user
@@ -64,6 +74,13 @@ meanings
         text 询问
       surface
         text 请求
+    lexeme es
+      surface
+        text consulta
+      surface
+        text pregunta
+      surface
+        text solicitud
   answer
     defined-by inquiry
     defined-by assistant
@@ -88,6 +105,11 @@ meanings
         text 回答
       surface
         text 答复
+    lexeme es
+      surface
+        text respuesta
+      surface
+        text contestación
   self_reference
     defined-by assistant
     role conversational_concept
@@ -109,6 +131,15 @@ meanings
     lexeme zh
       surface
         text 自己
+    lexeme es
+      surface
+        text "ti mismo"
+      surface
+        text "ti misma"
+      surface
+        text "mí mismo"
+      surface
+        text "mí misma"
   capability
     defined-by assistant
     defined-by answer
@@ -131,6 +162,11 @@ meanings
         text 能力
       surface
         text 功能
+    lexeme es
+      surface
+        text capacidad
+      surface
+        text habilidad
   knowledge
     defined-by assistant
     defined-by fact
@@ -147,6 +183,9 @@ meanings
     lexeme zh
       surface
         text 知识
+    lexeme es
+      surface
+        text conocimiento
   fact
     defined-by knowledge
     role conversational_concept
@@ -169,6 +208,11 @@ meanings
         text 事实
       surface
         text 事實
+    lexeme es
+      surface
+        text hecho
+      surface
+        text hechos
   fact_check_current_dialogue_query
     defined-by inquiry
     defined-by fact
@@ -198,6 +242,15 @@ meanings
         text 核查此对话中的事实
       surface
         text 核查每个陈述
+    lexeme es
+      surface
+        text "verifica los hechos de este diálogo"
+      surface
+        text "comprueba los hechos de este diálogo"
+      surface
+        text "verifica cada afirmación"
+      surface
+        text "comprueba todas las afirmaciones"
   knowledge_inventory_probe
     defined-by inquiry
     role knowledge_inventory_interrogative
@@ -249,6 +302,15 @@ meanings
         text 你有
       surface
         text 您有
+    lexeme es
+      surface
+        text qué
+      surface
+        text cuáles
+      surface
+        text lista
+      surface
+        text muestra
   assistant_knowing
     defined-by knowledge
     defined-by assistant
@@ -305,6 +367,19 @@ meanings
         text 你有
       surface
         text 您有
+    lexeme es
+      surface
+        text sabes
+      surface
+        text conoces
+      surface
+        text tienes
+      surface
+        text "qué sabes"
+      surface
+        text "te es conocido"
+      surface
+        text "en tu conocimiento"
   knowledge_inventory_query
     defined-by knowledge
     defined-by fact
@@ -347,6 +422,15 @@ meanings
         text 您知道什么
       surface
         text 你知道哪些
+    lexeme es
+      surface
+        text "qué sabes en general"
+      surface
+        text "qué sabes del mundo"
+      surface
+        text "qué te es conocido"
+      surface
+        text "qué conocimientos tienes"
   introduction
     defined-by self_reference
     defined-by answer
@@ -363,6 +447,9 @@ meanings
     lexeme zh
       surface
         text 介绍
+    lexeme es
+      surface
+        text presentación
   clarification
     defined-by inquiry
     defined-by answer
@@ -379,6 +466,9 @@ meanings
     lexeme zh
       surface
         text 澄清
+    lexeme es
+      surface
+        text aclaración
   understanding
     defined-by clarification
     defined-by knowledge
@@ -395,6 +485,9 @@ meanings
     lexeme zh
       surface
         text 理解
+    lexeme es
+      surface
+        text comprensión
   clarification_request
     defined-by clarification
     defined-by understanding
@@ -402,25 +495,27 @@ meanings
     role clarification_request
     lexeme en
       surface
-        text "i don t understand"
+        text "i do not understand"
       surface
         text "i dont understand"
       surface
-        text "i didn t understand"
+        text "i did not understand"
       surface
         text "i didnt understand"
       surface
-        text "don t understand"
-      surface
         text "dont understand"
-      surface
-        text "didn t understand"
       surface
         text "didnt understand"
       surface
-        text "what do you mean"
+        text "do not understand"
       surface
-        text "i m confused"
+        text "did not understand"
+      surface
+        text "dont get it"
+      surface
+        text "do not get it"
+      surface
+        text "what do you mean"
       surface
         text "im confused"
       surface
@@ -446,6 +541,21 @@ meanings
         text 不明白
       surface
         text 听不懂
+    lexeme es
+      surface
+        text "no entiendo"
+      surface
+        text "no lo entiendo"
+      surface
+        text "no entendí"
+      surface
+        text "no comprendo"
+      surface
+        text "qué quieres decir"
+      surface
+        text "estoy confundido"
+      surface
+        text "estoy confundida"
   capability_query
     defined-by capability
     defined-by inquiry
@@ -469,6 +579,10 @@ meanings
         text "how can you help"
       surface
         text "what are your features"
+      surface
+        text "what are you able to do"
+      surface
+        text "what can you help"
     lexeme ru
       surface
         text "что ты умеешь"
@@ -522,6 +636,27 @@ meanings
         text "你可以帮我做什么"
       surface
         text "你有哪些功能"
+    lexeme es
+      surface
+        text "qué puedes hacer"
+      surface
+        text "qué sabes hacer"
+      surface
+        text "cuáles son tus capacidades"
+      surface
+        text "de qué eres capaz"
+      surface
+        text "qué haces"
+      surface
+        text "muéstrame lo que puedes hacer"
+      surface
+        text "qué funciones tienes"
+      surface
+        text "cómo puedes ayudar"
+      surface
+        text "cómo me puedes ayudar"
+      surface
+        text "en qué puedes ayudar"
   capability_query_more
     defined-by capability_query
     defined-by capability
@@ -556,6 +691,13 @@ meanings
         text 你还能做什么
       surface
         text 你还会做什么
+    lexeme es
+      surface
+        text "qué más puedes hacer"
+      surface
+        text "qué más sabes hacer"
+      surface
+        text "qué otras cosas puedes hacer"
   self_fact_query
     defined-by fact
     defined-by self_reference
@@ -585,6 +727,13 @@ meanings
         text 关于你自己的事实
       surface
         text 自我事实
+    lexeme es
+      surface
+        text "hechos que sabes sobre ti"
+      surface
+        text "hechos sobre ti"
+      surface
+        text "datos sobre ti"
   personal_facts_listing_request
     defined-by fact
     defined-by self_reference
@@ -688,6 +837,17 @@ meanings
         text 认识一下吧
       surface
         text 让我们认识一下
+    lexeme es
+      surface
+        text "háblame de ti"
+      surface
+        text "cuéntame sobre ti"
+      surface
+        text preséntate
+      surface
+        text conozcámonos
+      surface
+        text "vamos a conocernos"
   assistant_name_assignment
     defined-by assistant
     role assistant_name_assignment
@@ -756,252 +916,6 @@ meanings
         text "te llamaré"
       surface
         text "te voy a llamar"
-  conversation_summary_directive
-    defined-by inquiry
-    defined-by answer
-    role conversation_summary_directive
-    lexeme en
-      surface
-        text summarize
-      surface
-        text summarise
-      surface
-        text summary
-    lexeme ru
-      surface
-        text суммируй
-      surface
-        text суммируйте
-      surface
-        text резюмируй
-      surface
-        text резюмируйте
-      surface
-        text резюме
-    lexeme hi
-      surface
-        text सारांश
-      surface
-        text संक्षेप
-      surface
-        text सारांशित
-    lexeme zh
-      surface
-        text 总结
-      surface
-        text 總結
-      surface
-        text 概括
-      surface
-        text 摘要
-      surface
-        text 归纳
-      surface
-        text 歸納
-  conversation_reference
-    defined-by inquiry
-    defined-by answer
-    role conversation_reference
-    lexeme en
-      surface
-        text conversation
-      surface
-        text chat
-      surface
-        text dialogue
-      surface
-        text dialog
-      surface
-        text discussion
-    lexeme ru
-      surface
-        text беседа
-      surface
-        text беседы
-      surface
-        text беседу
-      surface
-        text беседе
-      surface
-        text разговор
-      surface
-        text разговора
-      surface
-        text разговоре
-      surface
-        text разговором
-      surface
-        text чат
-      surface
-        text чата
-      surface
-        text чате
-      surface
-        text диалог
-      surface
-        text диалога
-    lexeme hi
-      surface
-        text बातचीत
-      surface
-        text संवाद
-      surface
-        text वार्तालाप
-    lexeme zh
-      surface
-        text 对话
-      surface
-        text 對話
-      surface
-        text 聊天
-      surface
-        text 会话
-      surface
-        text 會話
-      surface
-        text 谈话
-      surface
-        text 談話
-  conversation_summary_phrase
-    defined-by inquiry
-    defined-by conversation_reference
-    role conversation_summary_phrase
-    lexeme en
-      surface
-        text "what have we talked about"
-      surface
-        text "what did we talk about"
-      surface
-        text "what we were talking about"
-      surface
-        text "what were we talking about"
-      surface
-        text "what have we discussed"
-      surface
-        text "remind me what we discussed"
-      surface
-        text "summary of our chat"
-      surface
-        text "summary of our conversation"
-      surface
-        text "summarize so far"
-      surface
-        text "summarise so far"
-      surface
-        text "what did we do so far"
-      surface
-        text "what have we done so far"
-    lexeme ru
-      surface
-        text "о чём мы разговаривали"
-      surface
-        text "о чем мы разговаривали"
-      surface
-        text "о чём мы говорили"
-      surface
-        text "о чем мы говорили"
-      surface
-        text "что мы сделали"
-      surface
-        text "что мы уже сделали"
-    lexeme hi
-      surface
-        text "हमने किस बारे में बात की"
-      surface
-        text "हमने क्या बात की"
-      surface
-        text "हमने अब तक क्या किया"
-      surface
-        text "हमने क्या किया"
-    lexeme zh
-      surface
-        text 我们聊了什么
-      surface
-        text 我们谈了什么
-      surface
-        text 我们说了什么
-      surface
-        text 我們聊了什麼
-      surface
-        text 我们做了什么
-      surface
-        text 我们刚才做了什么
-  conversation_summary_courtesy
-    defined-by inquiry
-    defined-by conversation_summary_directive
-    role conversation_summary_courtesy
-    lexeme en
-      surface
-        text "give me a summary"
-      surface
-        text "can you summarize"
-      surface
-        text "can you summarise"
-      surface
-        text "please summarize"
-      surface
-        text "please summarise"
-    lexeme ru
-      surface
-        text "подведи итог"
-      surface
-        text "подведи итоги"
-      surface
-        text "краткое резюме"
-      surface
-        text "сделай резюме"
-      surface
-        text "краткое содержание"
-    lexeme hi
-      surface
-        text "सार दो"
-      surface
-        text "सारांश दो"
-      surface
-        text "संक्षेप में बताओ"
-    lexeme zh
-      surface
-        text 帮我总结
-      surface
-        text 帮我概括
-      surface
-        text 请总结
-      surface
-        text 请概括
-      surface
-        text 总结一下
-      surface
-        text 概括一下
-  conversation_return_recap
-    defined-by inquiry
-    defined-by conversation_reference
-    defined-by conversation_summary_directive
-    role conversation_return_recap
-    lexeme en
-      surface
-        text "the user stepped away and is coming back"
-      surface
-        text "i am back after stepping away"
-    lexeme ru
-      surface
-        text "пользователь отошёл и возвращается"
-      surface
-        text "я вернулся после перерыва"
-    lexeme hi
-      surface
-        text "उपयोगकर्ता वापस आ रहा है"
-      surface
-        text "मैं विराम के बाद वापस आया हूँ"
-    lexeme zh
-      surface
-        text 用户离开后回来了
-      surface
-        text 我离开后回来了
-    lexeme es
-      surface
-        text "el usuario se alejó y está regresando"
-      surface
-        text "he vuelto después de ausentarme"
   who_is_question
     defined-by inquiry
     role who_question_lead
@@ -1032,6 +946,15 @@ meanings
         text …是谁
       surface
         text …是誰
+    lexeme es
+      surface
+        text "quién es …"
+      surface
+        text "quién era …"
+      surface
+        text "quiénes son …"
+      surface
+        text "quién fue …"
   interrogative_opener
     defined-by inquiry
     role interrogative_opener
@@ -1093,6 +1016,23 @@ meanings
         text 如何
       surface
         text 哪个
+    lexeme es
+      surface
+        text qué
+      surface
+        text quién
+      surface
+        text "por qué"
+      surface
+        text dónde
+      surface
+        text cuándo
+      surface
+        text cómo
+      surface
+        text cuál
+      surface
+        text cuáles
   set_assistant_name
     defined-by action
     role assistant_name_assignment
@@ -1103,6 +1043,18 @@ meanings
     lexeme en
       surface
         text "set assistant name intent"
+    lexeme ru
+      surface
+        text "намерение задать имя ассистента"
+    lexeme hi
+      surface
+        text "सहायक का नाम तय करने का इरादा"
+    lexeme zh
+      surface
+        text 设置助手名称意图
+    lexeme es
+      surface
+        text "intención de establecer el nombre del asistente"
   assistant_name_recall
     defined-by inquiry
     role assistant_name_recall
@@ -1113,6 +1065,18 @@ meanings
     lexeme en
       surface
         text "assistant name recall intent"
+    lexeme ru
+      surface
+        text "намерение вспомнить имя ассистента"
+    lexeme hi
+      surface
+        text "सहायक का नाम याद करने का इरादा"
+    lexeme zh
+      surface
+        text 回忆助手名称意图
+    lexeme es
+      surface
+        text "intención de recordar el nombre del asistente"
   ambiguous_modification_clarification
     defined-by inquiry
     role program_modification_reference
@@ -1123,6 +1087,18 @@ meanings
     lexeme en
       surface
         text "ambiguous modification clarification intent"
+    lexeme ru
+      surface
+        text "намерение уточнить неоднозначное изменение"
+    lexeme hi
+      surface
+        text "अस्पष्ट बदलाव स्पष्ट करने का इरादा"
+    lexeme zh
+      surface
+        text 澄清模糊修改意图
+    lexeme es
+      surface
+        text "intención de aclarar una modificación ambigua"
   localized_response_template
     defined-by answer
     role localized_response_template
@@ -1130,9 +1106,6 @@ meanings
     effect "the matching localized response text is available for rendering"
     unit "not applicable"
     example "Which program or result should I modify?"
-    lexeme en
-      surface
-        text "localized response template"
   response_set_assistant_name_en
     defined-by answer
     role localized_response_template
@@ -1140,9 +1113,6 @@ meanings
     effect "an English assistant-name confirmation is emitted"
     unit "not applicable"
     example "Nice to meet you! I'll go by Nova from now on."
-    lexeme en
-      surface
-        text "response set assistant name en"
   response_set_assistant_name_ru
     defined-by answer
     role localized_response_template
@@ -1150,9 +1120,6 @@ meanings
     effect "a Russian assistant-name confirmation is emitted"
     unit "not applicable"
     example "Отлично, теперь меня зовут Нова. Приятно познакомиться!"
-    lexeme en
-      surface
-        text "response set assistant name ru"
   response_set_assistant_name_hi
     defined-by answer
     role localized_response_template
@@ -1160,9 +1127,6 @@ meanings
     effect "a Hindi assistant-name confirmation is emitted"
     unit "not applicable"
     example "बढ़िया, अब से मेरा नाम नोवा है। आपसे मिलकर अच्छा लगा!"
-    lexeme en
-      surface
-        text "response set assistant name hi"
   response_set_assistant_name_zh
     defined-by answer
     role localized_response_template
@@ -1170,9 +1134,6 @@ meanings
     effect "a Chinese assistant-name confirmation is emitted"
     unit "not applicable"
     example "好的，从现在起就叫我诺瓦吧。很高兴认识你！"
-    lexeme en
-      surface
-        text "response set assistant name zh"
   response_set_assistant_name_es
     defined-by answer
     role localized_response_template
@@ -1180,9 +1141,6 @@ meanings
     effect "a Spanish assistant-name confirmation is emitted"
     unit "not applicable"
     example "¡Encantado! A partir de ahora usaré el nombre Nova."
-    lexeme en
-      surface
-        text "response set assistant name es"
   response_assistant_name_recall_en
     defined-by answer
     role localized_response_template
@@ -1190,9 +1148,6 @@ meanings
     effect "the assigned assistant name is recalled in English"
     unit "not applicable"
     example "My name is Nova — that's what you named me."
-    lexeme en
-      surface
-        text "response assistant name recall en"
   response_assistant_name_recall_ru
     defined-by answer
     role localized_response_template
@@ -1200,9 +1155,6 @@ meanings
     effect "the assigned assistant name is recalled in Russian"
     unit "not applicable"
     example "Меня зовут Нова — так вы меня назвали."
-    lexeme en
-      surface
-        text "response assistant name recall ru"
   response_assistant_name_recall_hi
     defined-by answer
     role localized_response_template
@@ -1210,9 +1162,6 @@ meanings
     effect "the assigned assistant name is recalled in Hindi"
     unit "not applicable"
     example "मेरा नाम नोवा है — यह नाम आपने मुझे दिया था।"
-    lexeme en
-      surface
-        text "response assistant name recall hi"
   response_assistant_name_recall_zh
     defined-by answer
     role localized_response_template
@@ -1220,9 +1169,6 @@ meanings
     effect "the assigned assistant name is recalled in Chinese"
     unit "not applicable"
     example "我叫诺瓦，这是你给我起的名字。"
-    lexeme en
-      surface
-        text "response assistant name recall zh"
   response_assistant_name_recall_es
     defined-by answer
     role localized_response_template
@@ -1230,9 +1176,6 @@ meanings
     effect "the assigned assistant name is recalled in Spanish"
     unit "not applicable"
     example "Me llamo Nova; ese es el nombre que me diste."
-    lexeme en
-      surface
-        text "response assistant name recall es"
   response_ambiguous_modification_clarification_en
     defined-by answer
     role localized_response_template
@@ -1240,9 +1183,6 @@ meanings
     effect "an English request for the missing modification target is emitted"
     unit "not applicable"
     example "Which program or result should I modify?"
-    lexeme en
-      surface
-        text "response ambiguous modification clarification en"
   response_ambiguous_modification_clarification_ru
     defined-by answer
     role localized_response_template
@@ -1250,9 +1190,6 @@ meanings
     effect "a Russian request for the missing modification target is emitted"
     unit "not applicable"
     example "Какую программу или результат нужно изменить?"
-    lexeme en
-      surface
-        text "response ambiguous modification clarification ru"
   response_ambiguous_modification_clarification_hi
     defined-by answer
     role localized_response_template
@@ -1260,9 +1197,6 @@ meanings
     effect "a Hindi request for the missing modification target is emitted"
     unit "not applicable"
     example "मुझे किस प्रोग्राम या परिणाम को बदलना चाहिए?"
-    lexeme en
-      surface
-        text "response ambiguous modification clarification hi"
   response_ambiguous_modification_clarification_zh
     defined-by answer
     role localized_response_template
@@ -1270,9 +1204,6 @@ meanings
     effect "a Chinese request for the missing modification target is emitted"
     unit "not applicable"
     example "我应该修改哪个程序或结果？"
-    lexeme en
-      surface
-        text "response ambiguous modification clarification zh"
   response_ambiguous_modification_clarification_es
     defined-by answer
     role localized_response_template
@@ -1280,9 +1211,6 @@ meanings
     effect "a Spanish request for the missing modification target is emitted"
     unit "not applicable"
     example "¿Qué programa o resultado debo modificar?"
-    lexeme en
-      surface
-        text "response ambiguous modification clarification es"
   response_assistant_free_time_es
     defined-by answer
     role localized_response_template
@@ -1290,6 +1218,3 @@ meanings
     effect "the assistant's availability is explained in Spanish"
     unit "not applicable"
     example "No tengo tiempo libre como una persona."
-    lexeme en
-      surface
-        text "response assistant free time es"

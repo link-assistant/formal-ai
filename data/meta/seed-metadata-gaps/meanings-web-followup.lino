@@ -1,0 +1,9 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-web-followup.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-1b59daa3cd4b7921
+    record "clause_continuation_marker"
+  gap seed-metadata-gap-22cbd99d4ca983a2
+    record "followup_instruction_verb"

@@ -1,0 +1,100 @@
+{
+  "entries": [
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3808-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/fetched-auxiliary-and-structured-digest/raw/T3808-request.json.gz",
+      "bytes": 518,
+      "sha256": "c599179f076b8764cbc3077e5e8feb7f7783bca75d231524989bde8d16a7c29a"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3808-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/fetched-auxiliary-and-structured-digest/raw/T3808-transcript.json.gz",
+      "bytes": 20923,
+      "sha256": "8e66c6b9a1f6cbe9546bf31cd75607e6901e651bef03eaf826fc398f0ccce369"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3808.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/fetched-auxiliary-and-structured-digest/raw/T3808.log.gz",
+      "bytes": 20923,
+      "sha256": "8e66c6b9a1f6cbe9546bf31cd75607e6901e651bef03eaf826fc398f0ccce369"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3809-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/fetched-auxiliary-and-structured-digest/raw/T3809-request.json.gz",
+      "bytes": 26764,
+      "sha256": "3339aa8c893410933efc149b63292af50300fcdff8bb59fdfc8261896aa35f14"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3809-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/fetched-auxiliary-and-structured-digest/raw/T3809-transcript.json.gz",
+      "bytes": 5148,
+      "sha256": "dddcaddffc0bf148b39364d2c67b55f9a92b9d03d41b3aaa47ead7046954f87d"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3809.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/fetched-auxiliary-and-structured-digest/raw/T3809.log.gz",
+      "bytes": 5148,
+      "sha256": "dddcaddffc0bf148b39364d2c67b55f9a92b9d03d41b3aaa47ead7046954f87d"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3810-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/fetched-auxiliary-and-structured-digest/raw/T3810-request.json.gz",
+      "bytes": 76547,
+      "sha256": "9ad6618bec511472ed943a28cbcef706ab528076fca8d893d704c872e0b8f45e"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3810-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/fetched-auxiliary-and-structured-digest/raw/T3810-transcript.json.gz",
+      "bytes": 21876,
+      "sha256": "2cf079d40545ec4c5f549f3546f7edc63041fbfb480b60f2076ef7c47e5b19f0"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3810.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/fetched-auxiliary-and-structured-digest/raw/T3810.log.gz",
+      "bytes": 21876,
+      "sha256": "2cf079d40545ec4c5f549f3546f7edc63041fbfb480b60f2076ef7c47e5b19f0"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/ci-fetched-prose-before.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/fetched-auxiliary-and-structured-digest/raw/ci-fetched-prose-before.json.gz",
+      "bytes": 6300,
+      "sha256": "556c2b38dfe09324c67627e794185b852e56e3890579e7f8deaf7a69159e947c"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3809-tests.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/fetched-auxiliary-and-structured-digest/raw/T3809-tests.log.gz",
+      "bytes": 1261,
+      "sha256": "de50a64fb852b03a4a490b95e76e675fafc2050a3cdb87e84f93a458c46ed5f6"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3810-tests.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/fetched-auxiliary-and-structured-digest/raw/T3810-tests.log.gz",
+      "bytes": 9276,
+      "sha256": "23ca9ea01af4f1d8b715ab4dd64ceb82bd85155b83457a88772fa2b9e0c46fcb"
+    }
+  ],
+  "sources": [
+    {
+      "path": "rust/tests/unit/agent_cli_entry_point.rs",
+      "bytes": 11084,
+      "sha256": "8b1a479e969106f25edcb538f7d3b3932f7041388a0dacc6977664c7becb9249"
+    },
+    {
+      "path": "rust/tests/fixtures/literal-obligation-transaction.rs",
+      "bytes": 24282,
+      "sha256": "6da3c6e93b0904d4853a815129d6031a7980aca4ad0c22f99f97915fc2a74445"
+    },
+    {
+      "path": "rust/tests/web/fetched-issue-auxiliary-safety.test.mjs",
+      "bytes": 3779,
+      "sha256": "277f43fb146a91467d4d5225df27f6791cd86dc84754bd9769a8f1258e4ea893"
+    },
+    {
+      "path": "rust/tests/web/algorithm-learning-command-receipts.test.mjs",
+      "bytes": 12449,
+      "sha256": "fbccabadfa44fbeafdba184bbf118c9b7d7bcd3266af2d5c60f1eeebeed58707"
+    }
+  ],
+  "manualSourceWrites": 0,
+  "autonomousUsefulCode": 0
+}

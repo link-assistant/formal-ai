@@ -121,7 +121,7 @@ fn the_learning_cycle_emits_promotion_proposals_in_the_issue_656_shape() {
                 .starts_with("learning_frontier:google-trends:")
         );
         assert_eq!(proposal.edit.seed_file, LEARNED_REQUEST_OPENERS_SEED_FILE);
-        assert!(!proposal.edit.lino.is_empty());
+        assert_ne!(proposal.edit.lino, "");
     }
 }
 
@@ -232,4 +232,18 @@ fn every_idle_dreaming_run_leaves_a_proposal_only_learning_cycle_record() {
 
     let _ = std::fs::remove_file(&memory_path);
     let _ = std::fs::remove_file(&record_path);
+}
+
+#[test]
+fn a_fixture_frontier_renders_the_exact_learning_cycle_record() {
+    // The JavaScript server writes the same record from the same fixture
+    // (rust/tests/web/server-learning-cycle.test.mjs), so both runtimes are
+    // pinned to one byte-exact artifact: a validated two-language proposal, a
+    // held-out failure, a frame disagreement, and an unsupported class.
+    let items = parse_frontier_record(include_str!("../fixtures/learning-cycle/frontier.lino"));
+    let run = formal_ai::learning_cycle::run_learning_cycle("fixture", &items);
+    assert_eq!(
+        format!("{}\n", run.links_notation()),
+        include_str!("../fixtures/learning-cycle/record.lino")
+    );
 }

@@ -1,0 +1,1 @@
+The Pages artifact caller releases superseded builds using its own concurrency group. Debug-stage coverage pins the observed absence of a browser raw emitter for native rule verification. Routing fixtures identify the complete verified copy/move recipe rather than a preparatory directory recipe; all requested-command comparisons and destination checks remain intact.

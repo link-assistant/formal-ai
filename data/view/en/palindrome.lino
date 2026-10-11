@@ -1,0 +1,9 @@
+view
+  id M-4f161aca2dba
+  lemma palindrome
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a word or phrase that reads the same backward as forward"
+    provenance (wordnet)

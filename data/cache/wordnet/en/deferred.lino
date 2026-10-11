@@ -1,0 +1,19 @@
+language en
+lemma deferred
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "hold back to a later time"
+    examples ("let's postpone the exam")
+    id oewn-02648898-v
+    partOfSpeech v
+    synonyms (postpone prorogue "hold over" "put over" table shelve "set back" defer remit "put off")
+  entry
+    definition "yield to another's wish or opinion"
+    examples ("The government bowed to the military pressure")
+    id oewn-00879879-v
+    partOfSpeech v
+    synonyms (submit bow defer accede "give in")
+source "oewn:2024"

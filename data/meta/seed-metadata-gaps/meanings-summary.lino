@@ -1,0 +1,21 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-summary.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-6e88bf5a08359218
+    record "summary_kind_example"
+  gap seed-metadata-gap-621381be0adedf08
+    record "summary_kind_feature"
+  gap seed-metadata-gap-e65bfddc1faf2bed
+    record "summary_kind_install"
+  gap seed-metadata-gap-b749be04ee99e554
+    record "summary_kind_language"
+  gap seed-metadata-gap-884b6d61b9799fb4
+    record "summary_kind_purpose"
+  gap seed-metadata-gap-dc328aab95f9260f
+    record "summary_kind_stars"
+  gap seed-metadata-gap-e53e53961035b266
+    record "summary_kind_use_case"
+  gap seed-metadata-gap-cd0648ff75f66da7
+    record "summary_statement_kind"

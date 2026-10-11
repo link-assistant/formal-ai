@@ -1,0 +1,48 @@
+{
+  "lemma": "attached",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00161690-a",
+      "partOfSpeech": "a",
+      "definition": "used of buildings joined by common sidewalls",
+      "examples": [
+        "a block of attached houses"
+      ]
+    },
+    {
+      "id": "oewn-00159190-a",
+      "partOfSpeech": "a",
+      "definition": "associated in an exclusive sexual relationship",
+      "synonyms": [
+        "committed"
+      ]
+    },
+    {
+      "id": "oewn-01980375-s",
+      "partOfSpeech": "s",
+      "definition": "being joined in close association",
+      "examples": [
+        "affiliated clubs",
+        "all art schools whether independent or attached to universities"
+      ],
+      "synonyms": [
+        "affiliated",
+        "connected"
+      ]
+    },
+    {
+      "id": "oewn-01468358-s",
+      "partOfSpeech": "s",
+      "definition": "fond and affectionate",
+      "examples": [
+        "she was very attached to her father"
+      ]
+    }
+  ]
+}

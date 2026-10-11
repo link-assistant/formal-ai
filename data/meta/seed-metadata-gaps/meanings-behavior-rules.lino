@@ -1,0 +1,21 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-behavior-rules.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-d20c36c71521cce6
+    record "assistant_own_ruleset"
+  gap seed-metadata-gap-a7edfb895260f8eb
+    record "behavior_domain"
+  gap seed-metadata-gap-a4edfeb74e132619
+    record "behavior_rule"
+  gap seed-metadata-gap-4755e6d1cabc139a
+    record "behavior_rule_set_phrase"
+  gap seed-metadata-gap-5f0769ac0eaa120b
+    record "rule_brief_request"
+  gap seed-metadata-gap-095908459ba7e800
+    record "rule_count_request"
+  gap seed-metadata-gap-d255be88465895fd
+    record "rule_count_scope"
+  gap seed-metadata-gap-d26e57d9ccc1e96c
+    record "rule_enumeration_request"

@@ -1,0 +1,13 @@
+{
+  "id": "T3549",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Read js/agentic/general_planner.mjs, js/agentic/write_request.mjs and js/worker/formal_ai_worker_obligation_plans.js. Propose a reusable cycle-free literal-content decision and raw parser leaf shared by the composer and worker, positively scoped source-links intent ownership, and a typed MissingContract when semantic implementation lacks a source-bound plan. Preserve exact authoritative literal bytes, closed quoted semicolons, Unicode raw spans, ordinary reads and genuine source-links requests. Explain dependencies and closest validation; this is a read-only general repair planning request.",
+  "tools": [
+    "read",
+    "grep"
+  ],
+  "readOnly": true,
+  "originalGeneralCapabilityPlan": true,
+  "unchangedOriginal": "T3539",
+  "promptByteIdentical": true
+}

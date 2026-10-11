@@ -1,0 +1,1476 @@
+>> read {"filePath":"js/worker/formal_ai_worker_meaning_lexicon.js","file_path":"js/worker/formal_ai_worker_meaning_lexicon.js","path":"js/worker/formal_ai_worker_meaning_lexicon.js"}
+   <file>
+   00001| // The seed meaning lexicon (roles, word forms, surfaces), program task and
+   00002| // language detection, units, memory surfaces and the links-notation pattern
+   00003| // matcher.
+   00004| // Loaded by ../formal_ai_worker.js.
+   00005| // Issue #1165 R1165-4: a language the documentation route rediscovers a
+   00006| // program for is answered from the captured page before any cached snapshot
+   00007| // (mirrors `documented_oracle_snippet` in Rust).
+   00008| function codingOracleDocumentedSnippet(taskSlug, language) {
+   00009|   const slug = String(language || "").trim().toLowerCase();
+   00010|   const documented = slug && taskSlug ? documentedProgram(taskSlug, slug) : null;
+   00011|   if (!documented || !documented.recipe) return null;
+   00012|   return {
+   00013|     taskSlug: taskSlug,
+   00014|     languageSlug: slug,
+   00015|     languageLabel: documented.languageName || slug,
+   00016|     source: "documentation-capture",
+   00017|     sourceUrl: documented.recipe.rediscovery_source,
+   00018|     code: documented.recipe.entry,
+   00019|     expectedOutput: documented.recipe.verified_output,
+   00020|   };
+   00021| }
+   00022| 
+   00023| function codingOracleAnswer(taskSlug, language) {
+   00024|   const snippet = codingOracleDocumentedSnippet(taskSlug, language) || codingOracleLookup(taskSlug, language);
+   00025|   if (!snippet) return null;
+   00026|   const sourceMeta = KNOWLEDGE_SOURCES[snippet.source];
+   00027|   const content =
+   00028|     `Here is a minimal ${snippet.languageLabel} program (${snippet.taskSlug.replace(/_/g, " ")}):\n\n` +
+   00029|     "```" +
+   00030|     `${snippet.languageSlug}\n${snippet.code}\n` +
+   00031|     "```" +
+   00032|     `\n\nOutput:\n` +
+   00033|     "```text\n" +
+   00034|     `${snippet.expectedOutput}\n` +
+   00035|     "```" +
+   00036|     `\nSource: ${sourceMeta.displayName} (${snippet.sourceUrl}), cached locally as a popular example.`;
+   00037|   return {
+   00038|     intent: `write_program_oracle_${snippet.taskSlug}_${snippet.languageSlug}`,
+   00039|     content,
+   00040|     confidence: 1.0,
+   00041|     evidence: [
+   00042|       `response:write_program:${snippet.taskSlug}:${snippet.languageSlug}:${snippet.source}`,
+   00043|       `knowledge_source:${snippet.source}`,
+   00044|       `knowledge_source_url:${snippet.sourceUrl}`,
+   00045|       "execution_status:not run (cached external snippet)",
+   00046|       "execution_environment:no compile/run sandbox configured for cached external snippets",
+   00047|       `program_parameter:language:${snippet.languageSlug}`,
+   00048|       `program_parameter:task:${snippet.taskSlug}`,
+   00049|     ],
+   00050|     steps: undefined,
+   00051|     trace: undefined,
+   00052|   };
+   00053| }
+   00054| 
+   00055| function normalizeProgramPrompt(prompt) {
+   00056|   return normalizePrompt(String(prompt || "").replace(/c\+\+/gi, " cpp ").replace(/c#/gi, " csharp "));
+   00057| }
+   00058| 
+   00059| // CJK scripts have no inter-word spaces, so the whitespace-based phrase/token
+   00060| // matchers never isolate a CJK word. When the expected alias itself contains a
+   00061| // CJK ideograph we fall back to a substring test (issue #312). Mirrors
+   00062| // `coding::catalog::contains_cjk` on the Rust side.
+   00063| function containsCjk(text) {
+   00064|   return /[㐀-䶿一-鿿豈-﫿぀-ヿ㄀-ㄯ]/.test(
+   00065|     String(text || ""),
+   00066|   );
+   00067| }
+   00068| 
+   00069| // Devanagari (Hindi, …) is written without spaces between words, so the
+   00070| // whitespace-based phrase/token matchers never isolate a Devanagari word —
+   00071| // exactly as for CJK above. Mirrors `coding::catalog::contains_devanagari` on
+   00072| // the Rust side (range U+0900–U+097F): lets a handler split a role's word forms
+   00073| // by script (Devanagari vs. Han) straight from the seed, so the head-final
+   00074| // Hindi and Chinese extraction strategies never name a raw word (issue #386).
+   00075| function containsDevanagari(text) {
+   00076|   return /[ऀ-ॿ]/.test(String(text || ""));
+   00077| }
+   00078| 
+   00079| // Whether every character of `text` is ASCII. Mirrors Rust's `str::is_ascii`:
+   00080| // the calculator-domain signal builder shapes a surface differently by script,
+   00081| // matching an ASCII code on a word boundary but a non-ASCII surface as a raw
+   00082| // substring (issue #386).
+   00083| function isAsciiText(text) {
+   00084|   return /^[\x00-\x7f]*$/.test(String(text || ""));
+   00085| }
+   00086| 
+   00087| function containsProgramToken(normalized, token) {
+   00088|   if (containsCjk(token)) return String(normalized || "").includes(token);
+   00089|   return String(normalized || "")
+   00090|     .split(/\s+/)
+   00091|     .includes(token);
+   00092| }
+   00093| 
+   00094| // A Han character beside a Latin phrase is a word boundary (`写一个hello world程序`).
+   00095| function containsProgramPhrase(normalized, phrase) {
+   00096|   if (containsCjk(phrase)) return normalized.includes(phrase);
+   00097|   const boundary = (character) => character === undefined || /\s/u.test(character) || containsCjk(character);
+   00098|   for (let at = normalized.indexOf(phrase); at !== -1; at = normalized.indexOf(phrase, at + 1)) {
+   00099|     if (boundary(normalized[at - 1]) && boundary(normalized[at + phrase.length])) return true;
+   00100|   }
+   00101|   return false;
+   00102| }
+   00103| 
+   00104| function programTaskFromPrompt(normalized) {
+   00105|   // The request phrasings live in each task's `program_task_<slug>` meaning, not
+   00106|   // inline on WRITE_PROGRAM_TASKS — read them by slug (issue #386). Declaration
+   00107|   // order (Object.keys) is the catalog priority order, identical to Rust.
+   00108|   return (
+   00109|     Object.keys(WRITE_PROGRAM_TASKS).find((slug) =>
+   00110|       wordsForMeaning(`program_task_${slug}`).some((alias) =>
+   00111|         containsProgramPhrase(normalized, alias),
+   00112|       ),
+   00113|     ) || null
+   00114|   );
+   00115| }
+   00116| 
+   00117| // Issue #386: the function words that introduce an *unknown* implementation
+   00118| // language ("write a program in <name>", "на языке <name>") are seed data, not
+   00119| // literals baked into the worker. Mirror src/intent_formalization.rs by sourcing
+   00120| // the head-initial English/Russian surfaces of the target-preposition and
+   00121| // "language" noun roles from the lexicon. The WRITE_PROGRAM_LANGUAGES catalog
+   00122| // scan below already resolves every *known* language across all four supported
+   00123| // languages; this fallback only reads the bare name trailing the marker, so it
+   00124| // consults the two head-initial languages whose name follows the marker (the
+   00125| // head-final Hindi/Chinese surfaces are carried in the seed for coverage but
+   00126| // place the name before the marker, which this scan does not chase).
+   00127| const ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION =
+   00128|   "implementation_language_preposition";
+   00129| const ROLE_IMPLEMENTATION_LANGUAGE_NOUN = "implementation_language_noun";
+   00130| // Issue #906: the closed class of determiners, prepositions, copulas and
+   00131| // coordinators — exactly the words that can never *name* a language. Mirrors
+   00132| // ROLE_STATEMENT_FUNCTION_WORD as read by src/implementation_language.rs.
+   00133| const ROLE_STATEMENT_FUNCTION_WORD = "statement_function_word";
+   00134| 
+   00135| // Does the catalogue or the cached coding oracle know this slug? Mirrors
+   00136| // `implementation_language::is_known` in Rust.
+   00137| function knownImplementationLanguage(slug) {
+   00138|   return Boolean(WRITE_PROGRAM_LANGUAGES[slug]) || codingOracleKnowsLanguage(slug);
+   00139| }
+   00140| 
+   00141| // Issue #906: find the first `"<preposition> [language] <name>"` span whose name
+   00142| // may actually be a language, returning { start, end, name } or null. Mirrors
+   00143| // `modifier_span` in src/implementation_language.rs: an unknown name is still
+   00144| // accepted ("hello world in elvish"), but a closed-class word is admitted only
+   00145| // when the wording independently evidences a language — which is what stops
+   00146| // "in the current directory" from routing as language `the`.
+   00147| function implementationLanguageSpan(tokens) {
+   00148|   const prepositions = wordsForRoleInLanguages(
+   00149|     ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION,
+   00150|     ["en", "ru"],
+   00151|   );
+   00152|   const languageNouns = wordsForRoleInLanguages(
+   00153|     ROLE_IMPLEMENTATION_LANGUAGE_NOUN,
+   00154|     ["en", "ru"],
+   00155|   );
+   00156|   const functionWords = wordsForRoleInLanguages(ROLE_STATEMENT_FUNCTION_WORD, [
+   00157|     "en",
+   00158|     "ru",
+   00159|     "hi",
+   00160|     "zh",
+   00161|   ]);
+   00162|   for (let start = 0; start < tokens.length; start += 1) {
+   00163|     if (!prepositions.includes(tokens[start])) continue;
+   00164|     let cursor = start + 1;
+   00165|     // The head noun ("in language X", "на языке X") is explicit evidence that
+   00166|     // whatever follows is meant as a language name; a determiner in between
+   00167|     // ("in the current directory") is evidence of nothing.
+   00168|     let namedByNoun = false;
+   00169|     let skippedFunctionWord = false;
+   00170|     while (cursor < tokens.length) {
+   00171|       if (languageNouns.includes(tokens[cursor])) {
+   00172|         namedByNoun = true;
+   00173|         cursor += 1;
+   00174|         continue;
+   00175|       }
+   00176|       if (
+   00177|         functionWords.includes(tokens[cursor]) &&
+   00178|         !knownImplementationLanguage(tokens[cursor])
+   00179|       ) {
+   00180|         skippedFunctionWord = true;
+   00181|         cursor += 1;
+   00182|         continue;
+   00183|       }
+   00184|       break;
+   00185|     }
+   00186|     const candidate = tokens[cursor];
+   00187|     if (!candidate) continue;
+   00188|     let end = cursor + 1;
+   00189|     // "in the elvish language" names the noun after the candidate.
+   00190|     if (languageNouns.includes(tokens[end])) {
+   00191|       namedByNoun = true;
+   00192|       end += 1;
+   00193|     }
+   00194|     // A name can only be a language when it has letters: "in 3 steps" names none.
+   00195|     if (!/\p{L}/u.test(candidate)) continue;
+   00196|     // A bare unknown name is read as a language only when it *ends* the phrase:
+   00197|     // "hello world in elvish" names a language, "print the numbers in reverse
+   00198|     // order" names an ordering.
+   00199|     const phraseFinal = tokens
+   00200|       .slice(end)
+   00201|       .every((next) => functionWords.includes(next));
+   00202|     const accepted =
+   00203|       knownImplementationLanguage(candidate) ||
+   00204|       namedByNoun ||
+   00205|       (!skippedFunctionWord && phraseFinal);
+   00206|     if (!accepted) continue;
+   00207|     return { start, end, name: candidate };
+   00208|   }
+   00209|   return null;
+   00210| }
+   00211| 
+   00212| function programLanguageFromPrompt(normalized) {
+   00213|   const delimited = normalized.replace(/(\p{Script=Han})(?=[a-z0-9])|([a-z0-9])(?=\p{Script=Han})/giu, "$1$2 ");
+   00214|   const tokens = delimited.split(/\s+/).filter(Boolean);
+   00215|   // Each language's alias surfaces live in its `program_language_<slug>` meaning,
+   00216|   // not inline on WRITE_PROGRAM_LANGUAGES — read them by slug (issue #386). Names
+   00217|   // are single tokens, matched on whitespace boundaries exactly as in Rust.
+   00218|   //
+   00219|   // Framework targets are consulted first, mirroring `program_language_by_alias`:
+   00220|   // a request that names both a framework and the language it is written in —
+   00221|   // `напиши мне код на PHP Laravel`, issue #723 — names the framework, and
+   00222|   // answering in the base language throws away the part of the request that was
+   00223|   // hardest to satisfy.
+   00224|   const slugs = Object.keys(WRITE_PROGRAM_LANGUAGES);
+   00225|   const isFramework = (slug) => Boolean(WRITE_PROGRAM_LANGUAGES[slug].frameworkOf);
+   00226|   for (const slug of slugs.filter(isFramework).concat(slugs.filter((s) => !isFramework(s)))) {
+   00227|     const surfaces = wordsForMeaning(`program_language_${slug}`);
+   00228|     if (surfaces.some((alias) => containsProgramToken(delimited, alias))) return slug;
+   00229|   }
+   00230|   const span = implementationLanguageSpan(tokens);
+   00231|   return span ? span.name : null;
+   00232| }
+   00233| 
+   00234| // ---------------------------------------------------------------------------
+   00235| // Issue #324 R4/R7: the program-modification step as a data-driven Links
+   00236| // Notation substitution pipeline. This mirrors `src/program_plan.rs` (the
+   00237| // pipeline) and `src/substitution.rs` (the engine). The rule text below is
+   00238| // byte-identical to `data/seed/program-plan-rules.lino`; the parity experiment
+   00239| // (`experiments/issue-324-js-worker.mjs`) keeps the two copies in lockstep.
+   00240| //
+   00241| // Adding a new modifier transform is rule data; recognition is constrained by
+   00242| // the operation slugs declared in that rule data.
+   00243| // ---------------------------------------------------------------------------
+   00244| 
+   00245| // PROGRAM_PLAN_RULES_LINO is loaded from synced seed/*.lino data during loadSeed().
+   00246| 
+   00247| const TASK_NODE = "request:task";
+   00248| const MODIFIER_NODE = "request:modifier";
+   00249| 
+   00250| // Issue #386: the FULL multilingual operation vocabulary, embedded inline and
+   00251| // byte-identical to data/seed/operation-vocabulary.lino (regenerated by
+   00252| // experiments/issue-386-sync-worker-lexicon.mjs). The JS mirror of
+   00253| // OperationVocabulary in src/seed/operation_vocabulary.rs: the CODE matches
+   00254| // canonical concept tokens (write / function / reverse_sort …),
+   00255| // while the per-language surface phrases live once here in the seed data — never
+   00256| // a hardcoded per-language word list in code.
+   00257| // OPERATION_VOCABULARY_LINO is loaded from synced seed/*.lino data during loadSeed().
+   00258| 
+   00259| let cachedOperationVocabulary = null;
+   00260| let cachedCountingCues = [];
+   00261| // Parse the embedded operation vocabulary into language-pooled triggers
+   00262| // ({ slug, phrases, combos, inverse? }). Mirrors operation_vocabulary() in
+   00263| // src/seed/operation_vocabulary.rs; phrases/combos are pooled across every
+   00264| // language because operationFormMatches (below) is language-agnostic.
+   00265| function operationVocabulary() {
+   00266|   if (cachedOperationVocabulary) return cachedOperationVocabulary;
+   00267|   const root = parseLinoTree(OPERATION_VOCABULARY_LINO);
+   00268|   const container =
+   00269|     root.children.find((child) => child.name === "operation_vocabulary") || root;
+   00270|   const operations = [];
+   00271|   cachedCountingCues = container.children
+   00272|     .filter((node) => node.name === "counting_cue")
+   00273|     .flatMap((node) => node.children.flatMap((language) => language.children))
+   00274|     .filter((form) => form.name === "phrase")
+   00275|     .map((form) => form.value);
+   00276|   for (const operationNode of container.children) {
+   00277|     if (operationNode.name !== "operation") continue;
+   00278|     const phrases = [];
+   00279|     const combos = [];
+   00280|     const exclusions = [];
+   00281|     const units = [];
+   00282|     const members = [];
+   00283|     // Phrases whose argument the language states before them (hi, zh).
+   00284|     const argumentBefore = new Set();
+   00285|     let inverse = null;
+   00286|     for (const child of operationNode.children) {
+   00287|       if (child.name === "inverse") inverse = child.value;
+   00288|       else if (child.name === "language") {
+   00289|         const before = child.children.some((form) => form.name === "argument" && form.value === "before");
+   00290|         for (const form of child.children) {
+   00291|           if (form.name === "phrase") {
+   00292|             phrases.push(form.value);
+   00293|             if (before) argumentBefore.add(form.value);
+   00294|           } else if (form.name === "unit") units.push(form.value);
+   00295|           else if (form.name === "members") members.push(form.value);
+   00296|           else if (form.name === "exclude") exclusions.push(form.value);
+   00297|           else if (form.name === "combo") {
+   00298|             combos.push(
+   00299|               form.value
+   00300|                 .split("+")
+   00301|                 .map((token) => token.trim())
+   00302|                 .filter(Boolean),
+   00303|             );
+   00304|           }
+   00305|         }
+   00306|       }
+   00307|     }
+   00308|     const operation = { slug: operationNode.value, phrases, combos, exclusions, units, members, argumentBefore };
+   00309|     if (inverse) operation.inverse = inverse;
+   00310|     operations.push(operation);
+   00311|   }
+   00312|   cachedOperationVocabulary = operations;
+   00313|   return cachedOperationVocabulary;
+   00314| }
+   00315| 
+   00316| let cachedProgramModifierSlugs = null;
+   00317| function literalPatternValue(node) {
+   00318|   return node && node.kind === "literal" ? node.value : null;
+   00319| }
+   00320| 
+   00321| function programModifierSlugs() {
+   00322|   if (cachedProgramModifierSlugs) return cachedProgramModifierSlugs;
+   00323|   const slugs = new Set();
+   00324|   for (const rule of programPlanRules().rules) {
+   00325|     for (const condition of rule.conditions || []) {
+   00326|       const from = literalPatternValue(condition.from);
+   00327|       const to = literalPatternValue(condition.to);
+   00328|       if (from === MODIFIER_NODE && to) slugs.add(to);
+   00329|     }
+   00330|   }
+   00331|   cachedProgramModifierSlugs = slugs;
+   00332|   return slugs;
+   00333| }
+   00334| 
+   00335| // An `exclude` phrase names a sense of the trigger word that is not this
+   00336| // operation ("smallest first" orders a list; it does not ask for the minimum).
+   00337| // Mirrors OperationTrigger::matches in src/seed/operation_vocabulary.rs.
+   00338| function operationFormMatches(normalized, operation) {
+   00339|   const source = String(normalized || "");
+   00340|   if ((operation.exclusions || []).some((phrase) => source.includes(phrase))) return false;
+   00341|   return (
+   00342|     (operation.phrases || []).some((phrase) => source.includes(phrase)) ||
+   00343|     (operation.combos || []).some((combo) =>
+   00344|       combo.every((token) => source.includes(String(token || ""))),
+   00345|     )
+   00346|   );
+   00347| }
+   00348| 
+   00349| // Where the earliest phrase, or the earliest token of a fully present combo,
+   00350| // starts in `normalized`; null when the operation is not named. Mirrors
+   00351| // OperationVocabulary::position in src/seed/operation_vocabulary.rs.
+   00352| function operationFirstPosition(normalized, operation) {
+   00353|   const source = String(normalized || "");
+   00354|   if (!operationFormMatches(source, operation)) return null;
+   00355|   const positions = (operation.phrases || []).map((phrase) => source.indexOf(phrase));
+   00356|   for (const combo of operation.combos || []) {
+   00357|     const tokens = combo.map((token) => source.indexOf(String(token || "")));
+   00358|     if (tokens.length && tokens.every((index) => index >= 0)) positions.push(Math.min(...tokens));
+   00359|   }
+   00360|   const found = positions.filter((index) => index >= 0);
+   00361|   return found.length ? Math.min(...found) : null;
+   00362| }
+   00363| 
+   00364| // Issue #386: every canonical operation token whose phrasing appears in
+   00365| // `normalized`, in declaration order. Mirrors OperationVocabulary::detect in
+   00366| // src/seed/operation_vocabulary.rs (substring match, so a native verb still
+   00367| // matches when punctuation such as the danda `।` is glued to it).
+   00368| function detectOperations(normalized) {
+   00369|   const detected = [];
+   00370|   for (const operation of operationVocabulary()) {
+   00371|     if (operationFormMatches(normalized, operation)) detected.push(operation.slug);
+   00372|   }
+   00373|   return detected;
+   00374| }
+   00375| 
+   00376| // Issue #386: append canonical English operation tokens to a normalized prompt so
+   00377| // handlers keep matching canonical concepts while accepting native verbs from
+   00378| // data/seed/operation-vocabulary.lino. Mirrors
+   00379| // OperationVocabulary::canonicalized_prompt — additive (never removes text), so
+   00380| // English prompts are unchanged and multilingual prompts gain boundary-matchable
+   00381| // tokens (e.g. a Hindi "लिखें।" yields an appended " write").
+   00382| function canonicalizedPrompt(normalized) {
+   00383|   const detected = detectOperations(normalized);
+   00384|   if (!detected.length) return String(normalized || "");
+   00385|   let out = String(normalized || "");
+   00386|   for (const canonical of detected) {
+   00387|     out += ` ${canonical}`;
+   00388|     const phrase = canonical.replace(/_/g, " ");
+   00389|     if (phrase !== canonical) out += ` ${phrase}`;
+   00390|   }
+   00391|   return out;
+   00392| }
+   00393| 
+   00394| // Issue #386: the language-independent *meaning* lexicon — the JS mirror of
+   00395| // `data/seed/meanings.lino` and `src/seed/meanings.rs`. Recognition references
+   00396| // semantic *roles* (which surface words evidence a program artifact / a program
+   00397| // modification, in any language), never a hardcoded per-language word list. This
+   00398| // is an inline copy generated from the canonical seed by
+   00399| // `scripts/migrate-meaning-seed.rs` (the same convention as
+   00400| // PROGRAM_PLAN_RULES_LINO) so the worker stays self-contained when no seed has
+   00401| // been fetched; parity is guarded by `experiments/issue-386-js-cancel-sort.mjs`.
+   00402| // MEANINGS_LINO is loaded from synced seed/*.lino data during loadSeed().
+   00403| 
+   00404| // Semantic role: a thing a program produces that a later turn can refer back to
+   00405| // (a result, an output, the program/script/code itself, an ordering).
+   00406| const ROLE_PROGRAM_ARTIFACT = "program_artifact";
+   00407| // Semantic role: an operation a follow-up turn can request against the active
+   00408| // program (sort, reverse, cancel, change, …) — additive or subtractive.
+   00409| const ROLE_PROGRAM_MODIFICATION = "program_modification";
+   00410| const ROLE_PROGRAM_MODIFICATION_REFERENCE = "program_modification_reference";
+   00411| // Semantic role: a kind of program artifact a user can ask to be authored
+   00412| // (a program, a script, code, a function, a class) — the noun side of "write a <kind>".
+   00413| const ROLE_PROGRAM_KIND = "program_kind";
+   00414| // Semantic role: a verb that requests a program artifact be produced (write,
+   00415| // create, show, generate, make, build) — the verb side of "write a <kind>".
+   00416| const ROLE_PROGRAM_REQUEST = "program_request";
+   00417| // Program-synthesis request roles. Task identity and structure are parsed from
+   00418| // each prompt rather than represented by benchmark-specific lexicon entries.
+   00419| const ROLE_PROGRAM_SYNTHESIS_SUBJECT = "program_synthesis_subject";
+   00420| const ROLE_PROGRAM_SYNTHESIS_DOMAIN = "program_synthesis_domain";
+   00421| const ROLE_PROGRAM_SYNTHESIS_ACTION = "program_synthesis_action";
+   00422| // Issue #386 conversational-intent roles — mirror the ROLE_CLARIFICATION_REQUEST
+   00423| // / ROLE_CAPABILITY_QUERY* / ROLE_SELF_FACT_QUERY / ROLE_SELF_INTRODUCTION_REQUEST
+   00424| // consts in src/seed/meanings.rs. Their surface words live in
+   00425| // data/seed/meanings-intent.lino (loaded into MEANINGS_LINO); the
+   00426| // recognizers below ask the lexicon by meaning instead of hardcoding phrases.
+   00427| const ROLE_CLARIFICATION_REQUEST = "clarification_request";
+   00428| const ROLE_CONVERSATION_PREFERENCE_AVOID = "conversation_preference_avoid";
+   00429| const ROLE_UNAUTHORIZED_MUTATION_CORRECTION = "unauthorized_mutation_correction";
+   00430| const ROLE_MEMORY_LINK_COUNT_QUERY = "memory_link_count_query";
+   00431| const ROLE_MEMORY_INVENTORY_QUERY = "memory_inventory_query";
+   00432| const ROLE_MEMORY_ROOT_LINKS_QUERY = "memory_root_links_query";
+   00433| const ROLE_MEMORY_RETRIEVAL_CORRECTION = "memory_retrieval_correction";
+   00434| const ROLE_CAPABILITY_QUERY = "capability_query";
+   00435| const ROLE_CAPABILITY_QUERY_MORE = "capability_query_more";
+   00436| const ROLE_SELF_FACT_QUERY = "self_fact_query";
+   00437| const ROLE_FACT_CHECK_CURRENT_DIALOGUE_QUERY = "fact_check_current_dialogue_query";
+   00438| const ROLE_SELF_INTRODUCTION_REQUEST = "self_introduction_request";
+   00439| const ROLE_ASSISTANT_NAME_ASSIGNMENT = "assistant_name_assignment";
+   00440| // Issue #386 known-facts inventory roles — mirror the ROLE_KNOWLEDGE_INVENTORY_*
+   00441| // / ROLE_KNOWLEDGE_POSSESSION consts in src/seed/roles.rs. Their surface words
+   00442| // live in data/seed/meanings-intent.lino (the shared `fact` noun plus the
+   00443| // knowledge_inventory_probe / assistant_knowing / knowledge_inventory_query
+   00444| // meanings, loaded into MEANINGS_LINO); isKnownFactQuery composes these
+   00445| // roles instead of hardcoding per-language phrase arrays.
+   00446| const ROLE_KNOWLEDGE_INVENTORY_NOUN = "knowledge_inventory_noun";
+   00447| const ROLE_KNOWLEDGE_INVENTORY_INTERROGATIVE = "knowledge_inventory_interrogative";
+   00448| const ROLE_KNOWLEDGE_POSSESSION = "knowledge_possession";
+   00449| const ROLE_KNOWLEDGE_INVENTORY_PHRASE = "knowledge_inventory_phrase";
+   00450| 
+   00451| // Issue #386 conversation-summary roles — mirror the
+   00452| // ROLE_CONVERSATION_SUMMARY_DIRECTIVE / ROLE_CONVERSATION_REFERENCE /
+   00453| // ROLE_CONVERSATION_SUMMARY_PHRASE / ROLE_CONVERSATION_SUMMARY_COURTESY consts
+   00454| // in src/seed/roles.rs. Their per-language surface words live once in the
+   00455| // loaded MEANINGS_LINO (data/seed/meanings-intent.lino); the
+   00456| // isSummarizePrompt recogniser composes these roles instead of hardcoding
+   00457| // per-language phrase / regex arrays.
+   00458| const ROLE_CONVERSATION_SUMMARY_DIRECTIVE = "conversation_summary_directive";
+   00459| const ROLE_CONVERSATION_REFERENCE = "conversation_reference";
+   00460| const ROLE_CONVERSATION_SUMMARY_PHRASE = "conversation_summary_phrase";
+   00461| const ROLE_CONVERSATION_SUMMARY_COURTESY = "conversation_summary_courtesy";
+   00462| // Issue #858 returning-user recap role; its multilingual surfaces likewise
+   00463| // live in data/seed/meanings-intent.lino.
+   00464| const ROLE_CONVERSATION_RETURN_RECAP = "conversation_return_recap";
+   00465| // Issue #529 previous-message recall role — mirrors
+   00466| // ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE in src/seed/roles/intent.rs. Its
+   00467| // bare surface phrases ("what was written in the previous message", "что было
+   00468| // написано в прошлом сообщении", …) live in data/seed/meanings-conversation.lino
+   00469| // (loaded into MEANINGS_LINO); tryRecallPreviousMessage composes this role via
+   00470| // lexiconMentionsRole instead of matching per-language phrases in JS.
+   00471| const ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE = "conversation_recall_previous_message";
+   00472| // Previous-user and recall-search roles share the conversation seed file; the
+   00473| // history recall handlers use them to distinguish "what did I ask?" from
+   00474| // "what was written in the previous message?" without per-language literals.
+   00475| const ROLE_CONVERSATION_RECALL_PREVIOUS_USER_MESSAGE =
+   00476|   "conversation_recall_previous_user_message";
+   00477| const ROLE_CONVERSATION_RECALL_QUERY = "conversation_recall_query";
+   00478| const ROLE_CONVERSATION_RECALL_OTHER_QUERY = "conversation_recall_other_query";
+   00479| // Issue #529 whole-memory write roles — mirror ROLE_MEMORY_* in
+   00480| // src/seed/roles/intent.rs. Their surfaces live in
+   00481| // data/seed/meanings-conversation.lino (loaded into MEANINGS_LINO) and drive the
+   00482| // Turing-complete read+write memory primitive in tryMemoryWrite: a
+   00483| // Slot::Prefix append directive ("remember …"/"запомни …"/"याद रखो …"/"记住…"),
+   00484| // a memory scope phrase that distinguishes a memory rewrite from a plain coding
+   00485| // request ("in memory"/"в памяти"/"स्मृति में"/"在记忆中"), the substitution
+   00486| // verb ("replace"/"замени"/"बदलो"/"把"), and the old→new connector
+   00487| // ("with"/"на"/"की जगह"/"换成").
+   00488| const ROLE_MEMORY_APPEND_DIRECTIVE = "memory_append_directive";
+   00489| const ROLE_MEMORY_SCOPE = "memory_scope";
+   00490| const ROLE_MEMORY_SUBSTITUTION_CONNECTOR = "memory_substitution_connector";
+   00491| const ROLE_MEMORY_SUBSTITUTION_DIRECTIVE = "memory_substitution_directive";
+   00492| // Issue #386 conversation-opener role — mirrors ROLE_CONVERSATION_TOPIC_OPENER
+   00493| // in src/seed/roles.rs. Its slot-marked surface words live in
+   00494| // data/seed/meanings-conversation.lino (loaded into MEANINGS_LINO);
+   00495| // conversationTopic asks the lexicon for these forms by meaning instead of
+   00496| // hardcoding a per-language opener array.
+   00497| const ROLE_CONVERSATION_TOPIC_OPENER = "conversation_topic_opener";
+   00498| // Issue #386 how-cluster roles — mirror the ROLE_MECHANISM_INQUIRY /
+   00499| // ROLE_PROCEDURAL_REQUEST consts in src/seed/meanings.rs. Their slot-marked
+   00500| // surface words live in data/seed/meanings-how.lino (loaded into MEANINGS_LINO
+   00501| // above); extractHowItWorksSubject / extractProceduralHowToTask ask the lexicon
+   00502| // for these forms by meaning instead of hardcoding per-language phrase arrays.
+   00503| const ROLE_MECHANISM_INQUIRY = "mechanism_inquiry";
+   00504| const ROLE_PROCEDURAL_REQUEST = "procedural_request";
+   00505| const ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD = "procedural_request_elided_lead";
+   00506| const ROLE_PROCEDURAL_ACTION_VERB = "procedural_action_verb";
+   00507| // Issue #386 procedural-cluster cleanup roles — mirror the
+   00508| // ROLE_PROCEDURAL_TASK_MODIFIER / ROLE_COMMON_TYPO consts in src/seed/roles.rs.
+   00509| // cleanProceduralFragment / correctCommonProceduralTypos ask the lexicon for
+   00510| // these forms by meaning instead of hardcoding per-language modifier and typo
+   00511| // arrays.
+   00512| const ROLE_PROCEDURAL_TASK_MODIFIER = "procedural_task_modifier";
+   00513| // Issue #444: a follow-up that asks for the concrete steps of an active
+   00514| // procedure ("give me specific instructions", "step by step", "дай конкретные
+   00515| // инструкции", "具体步骤", …). Its surfaces live in data/seed/meanings-how.lino
+   00516| // (loaded into MEANINGS_LINO); tryProceduralHowToFollowup asks the lexicon
+   00517| // for this role by meaning instead of hardcoding per-language phrase arrays.
+   00518| // Mirrors ROLE_PROCEDURAL_ELABORATION in src/seed/roles/intent.rs.
+   00519| const ROLE_PROCEDURAL_ELABORATION = "procedural_elaboration";
+   00520| const ROLE_COMMON_TYPO = "common_typo";
+   00521| // Issue #386 mechanism-subject cleanup roles — mirror the
+   00522| // ROLE_MECHANISM_PREDICATE / ROLE_DETAIL_MODIFIER / ROLE_NON_REFERENTIAL_SUBJECT
+   00523| // consts in src/seed/roles.rs. stripMechanismTail / cleanMechanismSubject ask
+   00524| // the lexicon for these forms by meaning instead of hardcoding per-language
+   00525| // predicate, modifier, and pronoun arrays.
+   00526| const ROLE_MECHANISM_PREDICATE = "mechanism_predicate";
+   00527| const ROLE_DETAIL_MODIFIER = "detail_modifier";
+   00528| const ROLE_NON_REFERENTIAL_SUBJECT = "non_referential_subject";
+   00529| 
+   00530| // Slot marker (U+2026 …) carried inside a surface word's text to mark the open
+   00531| // subject/task position. Mirrors the `split_once('…')` slot derivation on
+   00532| // WordForm in src/seed/meanings.rs (issue #386).
+   00533| const SLOT_MARKER = "…";
+   00534| 
+   00535| // Build a surface form { text, action, description, slot, before, after } from a
+   00536| // raw surface word, its optional canonical action, and its self-describing note.
+   00537| // The slot classification and the literal text on either side are derived from
+   00538| // the position of the … marker, exactly as WordForm::slot/before_slot/after_slot
+   00539| // do in src/seed/meanings.rs: no marker = "bare"; trailing marker = "prefix";
+   00540| // leading marker = "suffix"; a marker with text on both sides = "circumfix".
+   00541| function makeWordForm(text, action, description) {
+   00542|   const idx = text.indexOf(SLOT_MARKER);
+   00543|   if (idx === -1) {
+   00544|     return {
+   00545|       text,
+   00546|       action: action || "",
+   00547|       description: description || "",
+   00548|       slot: "bare",
+   00549|       before: text,
+   00550|       after: "",
+   00551|     };
+   00552|   }
+   00553|   const before = text.slice(0, idx);
+   00554|   const after = text.slice(idx + SLOT_MARKER.length);
+   00555|   let slot = "bare";
+   00556|   if (before && after) slot = "circumfix";
+   00557|   else if (before) slot = "prefix";
+   00558|   else if (after) slot = "suffix";
+   00559|   return {
+   00560|     text,
+   00561|     action: action || "",
+   00562|     description: description || "",
+   00563|     slot,
+   00564|     before,
+   00565|     after,
+   00566|   };
+   00567| }
+   00568| 
+   00569| let cachedMeaningLexicon = null;
+   00570| // Parse the embedded lexicon once. Each meaning keeps the semantic roles it
+   00571| // plays, the surface words (across every language) that evidence it, and the
+   00572| // richer per-form data (action + self-describing note + derived slot) in
+   00573| // declaration order. Mirrors parse_lexicon in src/seed/meanings.rs.
+   00574| function meaningLexicon() {
+   00575|   if (cachedMeaningLexicon) return cachedMeaningLexicon;
+   00576|   const root = parseLinoTree(MEANINGS_LINO);
+   00577|   // The lexicon is split across several files (program, units, …), each
+   00578|   // wrapping its records under a top-level `meanings` node. Concatenated, the
+   00579|   // document therefore holds one-or-more `meanings` containers; collect the
+   00580|   // records from every one. If none is present the records sit at the document
+   00581|   // root (kept for robustness). Mirrors parse_lexicon in src/seed/meanings.rs.
+   00582|   const containers = root.children.filter((child) => child.name === "meanings");
+   00583|   const sources = containers.length ? containers : [root];
+   00584|   const meanings = [];
+   00585|   for (const container of sources) {
+   00586|     for (const node of container.children) {
+   00587|       if (node.name === "meanings") continue;
+   00588|       const slug = meaningSlug(node);
+   00589|       if (!slug) continue;
+   00590|       const roles = [];
+   00591|       const definedBy = [];
+   00592|       const words = [];
+   00593|       const wordForms = [];
+   00594|       // Per-language word groups, so a handler can partition a role's vocabulary
+   00595|       // by language (e.g. head-initial vs. head-final translation verbs) without
+   00596|       // losing the language tag the flat `words` list drops. Mirrors the
+   00597|       // `lexemes` field on Meaning in src/seed/meanings.rs (issue #386).
+   00598|       const lexemes = [];
+   00599|       if (node.name !== "meaning" && node.value) {
+   00600|         definedBy.push(...node.value.split(/\s+/).filter(Boolean));
+   00601|       }
+   00602|       for (const child of node.children) {
+   00603|         if (child.name === "role") roles.push(child.value);
+   00604|         else if (child.name === "defined_by" || child.name === "defined-by") {
+   00605|           definedBy.push(child.value);
+   00606|         }
+   00607|         else if (child.name === "lexeme") {
+   00608|           const lexemeWords = [];
+   00609|           for (const lexWord of child.children) {
+   00610|             if (lexWord.name !== "word" && lexWord.name !== "surface") continue;
+   00611|             const text = surfaceText(lexWord);
+   00612|             words.push(text);
+   00613|             lexemeWords.push(text);
+   00614|             let action = "";
+   00615|             let description = "";
+   00616|             for (const attr of lexWord.children) {
+   00617|               if (attr.name === "action") action = attr.value;
+   00618|               else if (attr.name === "description") description = attr.value;
+   00619|             }
+   00620|             wordForms.push(
+   00621|               makeWordForm(text, action, description || generatedWordDescription(slug, text)),
+   00622|             );
+   00623|           }
+   00624|           lexemes.push({ language: lexemeLanguage(child), words: lexemeWords });
+   00625|         } else if (child.name === "surface") {
+   00626|           const text = surfaceText(child);
+   00627|           words.push(text);
+   00628|           let action = "";
+   00629|           let description = "";
+   00630|           for (const attr of child.children) {
+   00631|             if (attr.name === "action") action = attr.value;
+   00632|             else if (attr.name === "description") description = attr.value;
+   00633|           }
+   00634|           wordForms.push(
+   00635|             makeWordForm(text, action, description || generatedWordDescription(slug, text)),
+   00636|           );
+   00637|           lexemes.push({ language: childValue(child, "language"), words: [text] });
+   00638|         }
+   00639|       }
+   00640|       meanings.push({ slug, roles, definedBy, words, wordForms, lexemes });
+   00641|     }
+   00642|   }
+   00643|   cachedMeaningLexicon = meanings;
+   00644|   return cachedMeaningLexicon;
+   00645| }
+   00646| 
+   00647| function childValue(node, name) {
+   00648|   const child = (node.children || []).find((candidate) => candidate.name === name);
+   00649|   return child ? child.value : "";
+   00650| }
+   00651| 
+   00652| function meaningSlug(node) {
+   00653|   return node.name === "meaning" ? node.value : node.name;
+   00654| }
+   00655| 
+   00656| function lexemeLanguage(node) {
+   00657|   return childValue(node, "language") || node.value || "";
+   00658| }
+   00659| 
+   00660| function decodeCodepoints(raw) {
+   00661|   return String(raw || "")
+   00662|     .split(/\s+/)
+   00663|     .filter(Boolean)
+   00664|     .map((part) => {
+   00665|       const trimmed = part.trim();
+   00666|       const radix = /^0x/i.test(trimmed) ? 16 : 10;
+   00667|       const parsed = parseInt(radix === 16 ? trimmed.slice(2) : trimmed, radix);
+   00668|       return String.fromCodePoint(Number.isFinite(parsed) ? parsed : 0);
+   00669|     })
+   00670|     .join("");
+   00671| }
+   00672| 
+   00673| function surfaceText(node) {
+   00674|   // Issue #398: surfaces now carry a readable `text` child; the legacy
+   00675|   // `codepoints` byte-dump is still decoded for backward compatibility.
+   00676|   const text = childValue(node, "text");
+   00677|   if (text) return text;
+   00678|   const codepoints = childValue(node, "codepoints");
+   00679|   return codepoints ? decodeCodepoints(codepoints) : node.value;
+   00680| }
+   00681| 
+   00682| function generatedWordDescription(parentMeaning, text) {
+   00683|   return text ? `${text} denotes ${parentMeaning}` : parentMeaning;
+   00684| }
+   00685| 
+   00686| // Does `expected` (a surface word or multi-word phrase) appear in `normalized`?
+   00687| // CJK surfaces match as substrings; everything else matches on whitespace
+   00688| // boundaries (whole token or whole phrase). Mirrors surface_present in
+   00689| // src/seed/meanings.rs — stricter than a raw substring, so a short surface like
+   00690| // "hp" never matches inside "php" and a phrase like "each step" matches only on
+   00691| // word boundaries.
+   00692| function surfacePresent(normalized, expected) {
+   00693|   if (!expected) return false;
+   00694|   const text = String(normalized || "");
+   00695|   if (containsCjk(expected)) return text.includes(expected);
+   00696|   return (
+   00697|     text === expected ||
+   00698|     text.startsWith(`${expected} `) ||
+   00699|     text.endsWith(` ${expected}`) ||
+   00700|     text.includes(` ${expected} `)
+   00701|   );
+   00702| }
+   00703| 
+   00704| // Is any surface word (any language) of `meaning` evidenced in `normalized`?
+   00705| // Mirrors Meaning::evidenced_in in src/seed/meanings.rs.
+   00706| function meaningEvidencedIn(meaning, normalized) {
+   00707|   return meaning.words.some((word) => surfacePresent(normalized, word));
+   00708| }
+   00709| 
+   00710| // Does `normalized` mention any surface word of any meaning carrying `role`?
+   00711| // Mirrors Lexicon::mentions_role in src/seed/meanings.rs — the boundary-aware,
+   00712| // phrase-capable surface_present contract (CJK substring vs. whitespace token).
+   00713| function lexiconMentionsRole(role, normalized) {
+   00714|   return meaningsWithRole(role).some((meaning) => meaningEvidencedIn(meaning, normalized));
+   00715| }
+   00716| 
+   00717| // Like lexiconMentionsRole but ignores a meaning's script-independent *value
+   00718| // surfaces* — word forms with no alphabetic character, such as the operator
+   00719| // symbol "+" or the numeral "10". Those forms exist so the arithmetic normalizer
+   00720| // can read a meaning's machine value; they are not spelled words, so operator-
+   00721| // *word* detection skips them and a bare "+" is recognised as an operator symbol
+   00722| // by the symbol scan, not double-counted here. Mirrors Lexicon::mentions_role_spelled
+   00723| // in src/seed/meanings.rs.
+   00724| function lexiconMentionsRoleSpelled(role, normalized) {
+   00725|   return meaningsWithRole(role).some((meaning) =>
+   00726|     meaning.words
+   00727|       .filter((word) => /\p{Alphabetic}/u.test(word))
+   00728|       .some((word) => surfacePresent(normalized, word)),
+   00729|   );
+   00730| }
+   00731| 
+   00732| // The first meaning (declaration order) carrying `role` that is evidenced in
+   00733| // `normalized`, or null. Declaration order encodes priority. Mirrors
+   00734| // Lexicon::first_role_match in src/seed/meanings.rs.
+   00735| function firstRoleMatch(role, normalized) {
+   00736|   return meaningsWithRole(role).find((meaning) => meaningEvidencedIn(meaning, normalized)) || null;
+   00737| }
+   00738| 
+   00739| // Issue #386 calendar roles — mirror the ROLE_CALENDAR_* consts in
+   00740| // src/seed/meanings.rs. Their surface words live in
+   00741| // data/seed/meanings-calendar.lino (loaded into MEANINGS_LINO). The
+   00742| // calendar handler uses its own boundary-aware matcher (containsCalendarTerm)
+   00743| // rather than lexiconMentionsRole, so these come with dedicated accessors.
+   00744| const ROLE_CALENDAR_WEEKDAY = "calendar_weekday";
+   00745| const ROLE_CALENDAR_DIRECTION_NEXT = "calendar_direction_next";
+   00746| const ROLE_CALENDAR_DIRECTION_PREVIOUS = "calendar_direction_previous";
+   00747| const ROLE_CALENDAR_TODAY = "calendar_today";
+   00748| const ROLE_CALENDAR_DAY_REFERENCE = "calendar_day_reference";
+   00749| const ROLE_CALENDAR_QUESTION = "calendar_question";
+   00750| 
+   00751| // Issue #404: new calendar create/schedule roles (mirror src/solver_handlers/calendar.rs
+   00752| // + data/seed/meanings-calendar.lino). Use the same wordsForRole + containsCalendarTerm
+   00753| // pattern as the existing weekday helpers.
+   00754| const ROLE_CALENDAR_SCHEDULE_ACTION = "calendar_schedule_action";
+   00755| const ROLE_CALENDAR_EVENT = "calendar_event";
+   00756| const ROLE_CALENDAR_TIME = "calendar_time";
+   00757| // Issue #435: relative-date words ("завтра"/"tomorrow"/"послезавтра"/…) that
+   00758| // anchor a scheduled event to a day offset from today. Mirrors
+   00759| // ROLE_CALENDAR_RELATIVE_DATE in src/solver_handlers/calendar.rs.
+   00760| const ROLE_CALENDAR_RELATIVE_DATE = "calendar_relative_date";
+   00761| 
+   00762| // Every meaning carrying `role`, in lexicon (declaration) order. Mirrors
+   00763| // Lexicon::meanings_with_role in src/seed/meanings.rs.
+   00764| function meaningsWithRole(role) {
+   00765|   return meaningLexicon().filter((meaning) => meaning.roles.includes(role));
+   00766| }
+   00767| 
+   00768| // Every slot-marked surface form carrying `role`, flattened across all meanings
+   00769| // and languages in declaration order. Recognition code buckets the result by
+   00770| // form.slot ("bare" / "prefix" / "suffix" / "circumfix") to derive its
+   00771| // affix-matching strategy from the data. Mirrors Lexicon::role_word_forms in
+   00772| // src/seed/meanings.rs (issue #386).
+   00773| function roleWordForms(role) {
+   00774|   const forms = [];
+   00775|   for (const meaning of meaningsWithRole(role)) {
+   00776|     for (const form of meaning.wordForms) forms.push(form);
+   00777|   }
+   00778|   return forms;
+   00779| }
+   00780| 
+   00781| // The meaning identified by `slug`, or null. Mirrors Lexicon::meaning in
+   00782| // src/seed/meanings.rs.
+   00783| function findMeaning(slug) {
+   00784|   return meaningLexicon().find((meaning) => meaning.slug === slug) || null;
+   00785| }
+   00786| 
+   00787| function wordInLanguage(meaning, language) {
+   00788|   const lexeme = (meaning.lexemes || []).find((candidate) => candidate.language === language);
+   00789|   return lexeme && lexeme.words.length > 0 ? lexeme.words[0] : null;
+   00790| }
+   00791| 
+   00792| function dimensionLabelForUnit(unit) {
+   00793|   for (const slug of unit.definedBy || []) {
+   00794|     const dimension = findMeaning(slug);
+   00795|     if (!dimension || !dimension.roles.includes(ROLE_PHYSICAL_DIMENSION)) continue;
+   00796|     return wordInLanguage(dimension, "en") || dimension.words[0] || null;
+   00797|   }
+   00798|   return null;
+   00799| }
+   00800| 
+   00801| function isAlphabeticCharacter(ch) {
+   00802|   return !!ch && /\p{Alphabetic}/u.test(ch);
+   00803| }
+   00804| 
+   00805| // Mirrors contains_unit_word in src/solver_handler_units.rs: ASCII and CJK unit
+   00806| // surfaces need alphabetic boundaries so "gram" inside "program" and "克" inside
+   00807| // an unrelated CJK compound do not count, while inflected alphabetic scripts can
+   00808| // still match suffix forms such as Russian "килограмм" in "килограмме".
+   00809| function containsUnitWord(normalized, unit) {
+   00810|   if (!unit) return false;
+   00811|   const text = String(normalized || "");
+   00812|   if (!/[^\x00-\x7F]/.test(unit) || containsCjk(unit)) {
+   00813|     let searchFrom = 0;
+   00814|     while (searchFrom <= text.length) {
+   00815|       const start = text.indexOf(unit, searchFrom);
+   00816|       if (start < 0) return false;
+   00817|       const end = start + unit.length;
+   00818|       const before = Array.from(text.slice(0, start)).pop() || "";
+   00819|       const after = Array.from(text.slice(end))[0] || "";
+   00820|       if (!isAlphabeticCharacter(before) && !isAlphabeticCharacter(after)) {
+   00821|         return true;
+   00822|       }
+   00823|       searchFrom = end;
+   00824|     }
+   00825|     return false;
+   00826|   }
+   00827|   return text.includes(unit);
+   00828| }
+   00829| 
+   00830| function detectIncompatibleUnitPair(normalized) {
+   00831|   const found = [];
+   00832|   for (const unit of meaningsWithRole(ROLE_MEASUREMENT_UNIT)) {
+   00833|     const dimension = dimensionLabelForUnit(unit);
+   00834|     if (!dimension || found.some((entry) => entry.dimension === dimension)) {
+   00835|       continue;
+   00836|     }
+   00837|     const matched = unit.words.find((word) => containsUnitWord(normalized, word));
+   00838|     if (matched) {
+   00839|       found.push({ unit: matched, dimension });
+   00840|     }
+   00841|   }
+   00842|   if (found.length < 2) return null;
+   00843|   return [found[0], found[1]];
+   00844| }
+   00845| 
+   00846| function tryIncompatibleUnits(prompt, normalized) {
+   00847|   const pair = detectIncompatibleUnitPair(normalized);
+   00848|   if (!pair) return null;
+   00849|   const [a, b] = pair;
+   00850|   const content = nativeLaneRender(answerFor("unit_incompatibility", detectLanguage(prompt)),
+   00851|     { unit_a: a.unit, dim_a: a.dimension, unit_b: b.unit, dim_b: b.dimension });
+   00852|   return {
+   00853|     intent: "unit_incompatibility",
+   00854|     content,
+   00855|     confidence: 1.0,
+   00856|     evidence: [
+   00857|       `unit_incompatibility:${a.unit}:${a.dimension}:vs:${b.unit}:${b.dimension}`,
+   00858|       "response:unit_incompatibility",
+   00859|     ],
+   00860|     trace: [
+   00861|       `unit_incompatibility:${a.unit}:${a.dimension} vs ${b.unit}:${b.dimension}`,
+   00862|     ],
+   00863|     steps: [
+   00864|       {
+   00865|         step: "unit_incompatibility",
+   00866|         detail: `${a.unit}:${a.dimension} vs ${b.unit}:${b.dimension}`,
+   00867|       },
+   00868|     ],
+   00869|   };
+   00870| }
+   00871| 
+   00872| // Distinct surface words (across all languages) carried by the meaning `slug`,
+   00873| // or an empty array when no such meaning exists. The coding catalog reads each
+   00874| // language's and task's alias surfaces from the `program_language_<slug>` /
+   00875| // `program_task_<slug>` meanings by slug (issue #386), so the matchers name only
+   00876| // the concept while the words stay self-describing seed data. Mirrors the Rust
+   00877| // `coding::catalog::alias_surfaces` helper.
+   00878| function wordsForMeaning(slug) {
+   00879|   return findMeaning(slug)?.words || [];
+   00880| }
+   00881| 
+   00882| // Distinct surface words (across all languages) for `role`, declaration order.
+   00883| // Mirrors Lexicon::words_for_role in src/seed/meanings.rs.
+   00884| function wordsForRole(role) {
+   00885|   const seen = new Set();
+   00886|   const words = [];
+   00887|   for (const meaning of meaningsWithRole(role)) {
+   00888|     for (const word of meaning.words) {
+   00889|       if (!seen.has(word)) {
+   00890|         seen.add(word);
+   00891|         words.push(word);
+   00892|       }
+   00893|     }
+   00894|   }
+   00895|   return words;
+   00896| }
+   00897| 
+   00898| // Issue #529 memory-write surface utilities. They mirror the boundary-aware
+   00899| // span helpers in src/solver_handlers/conversation_memory/memory_write.rs so the
+   00900| // browser worker recognises append + substitution requests from the same seed
+   00901| // vocabulary the Rust runtime uses.
+   00902| 
+   00903| // Leftmost boundary-aware [start, end) span of `surface` within `haystack`, or
+   00904| // null. Mirrors surface_span: a CJK surface matches as a substring (no
+   00905| // inter-word spaces); a space-delimited surface must be a whole whitespace token
+   00906| // or phrase bounded by the string ends or by spaces.
+   00907| function memorySurfaceSpan(haystack, surface) {
+   00908|   if (!surface) return null;
+   00909|   if (containsCjk(surface)) {
+   00910|     const start = haystack.indexOf(surface);
+   00911|     return start === -1 ? null : [start, start + surface.length];
+   00912|   }
+   00913|   let search = 0;
+   00914|   while (search <= haystack.length) {
+   00915|     const rel = haystack.slice(search).indexOf(surface);
+   00916|     if (rel === -1) return null;
+   00917|     const start = search + rel;
+   00918|     const end = start + surface.length;
+   00919|     const leftOk = start === 0 || haystack[start - 1] === " ";
+   00920|     const rightOk = end === haystack.length || haystack[end] === " ";
+   00921|     if (leftOk && rightOk) return [start, end];
+   00922|     search = start + 1;
+   00923|   }
+   00924|   return null;
+   00925| }
+   00926| 
+   00927| // Leftmost boundary-aware span of any surface word of `role` in `haystack`. On a
+   00928| // tie at the same start offset the longest surface wins. Mirrors
+   00929| // best_surface_span in memory_write.rs.
+   00930| function bestMemorySurfaceSpan(haystack, role) {
+   00931|   let best = null;
+   00932|   for (const surface of wordsForRole(role)) {
+   00933|     const span = memorySurfaceSpan(haystack, surface);
+   00934|     if (!span) continue;
+   00935|     if (
+   00936|       !best ||
+   00937|       span[0] < best[0] ||
+   00938|       (span[0] === best[0] && span[1] > best[1])
+   00939|     ) {
+   00940|       best = span;
+   00941|     }
+   00942|   }
+   00943|   return best;
+   00944| }
+   00945| 
+   00946| function collapseMemoryWs(text) {
+   00947|   return String(text || "")
+   00948|     .split(/\s+/)
+   00949|     .filter(Boolean)
+   00950|     .join(" ");
+   00951| }
+   00952| 
+   00953| // Remove the leftmost occurrence of any surface word of `role`, returning the
+   00954| // remaining text with surrounding whitespace collapsed. Mirrors
+   00955| // strip_first_surface in memory_write.rs.
+   00956| function stripFirstMemorySurface(haystack, role) {
+   00957|   const span = bestMemorySurfaceSpan(haystack, role);
+   00958|   if (!span) return null;
+   00959|   return collapseMemoryWs(`${haystack.slice(0, span[0])} ${haystack.slice(span[1])}`);
+   00960| }
+   00961| 
+   00962| // Split `span` once on the leftmost surface word of `role`, returning the
+   00963| // [before, after] operands around the connector. Mirrors split_once_surface.
+   00964| function splitOnceMemorySurface(span, role) {
+   00965|   const found = bestMemorySurfaceSpan(span, role);
+   00966|   if (!found) return null;
+   00967|   return [span.slice(0, found[0]), span.slice(found[1])];
+   00968| }
+   00969| 
+   00970| // Trim wrapping punctuation/quotes and collapse whitespace, returning null when
+   00971| // nothing remains. Mirrors clean_memory_write_text in memory_write.rs.
+   00972| function cleanMemoryWriteText(raw) {
+   00973|   const stripped = String(raw || "").replace(
+   00974|     /^[\s`"':\-_.,?!()]+|[\s`"':\-_.,?!()]+$/gu,
+   00975|     "",
+   00976|   );
+   00977|   const text = collapseMemoryWs(stripped);
+   00978|   return text ? text : null;
+   00979| }
+   00980| 
+   00981| // Issue #386 translation-command role — mirrors ROLE_TRANSLATION_ACTION in
+   00982| // src/seed/roles.rs. The per-language command verbs (translate, переведи/
+   00983| // перевести/опиши, अनुवाद, 翻译/翻譯) live once in the loaded MEANINGS_LINO
+   00984| // (data/seed/meanings-translation.lino) under the `translate` meaning; the gate
+   00985| // and source-inferencer reference the concept, not the raw words.
+   00986| const ROLE_TRANSLATION_ACTION = "translation_action";
+   00987| 
+   00988| // Distinct surface words for `role` limited to `languages`, declaration order.
+   00989| // Mirrors Lexicon::words_for_role_in_languages in src/seed/meanings.rs (#386).
+   00990| function wordsForRoleInLanguages(role, languages) {
+   00991|   const out = [];
+   00992|   for (const meaning of meaningsWithRole(role)) {
+   00993|     for (const lexeme of meaning.lexemes) {
+   00994|       if (!languages.includes(lexeme.language)) continue;
+   00995|       for (const word of lexeme.words) {
+   00996|         if (!out.includes(word)) out.push(word);
+   00997|       }
+   00998|     }
+   00999|   }
+   01000|   return out;
+   01001| }
+   01002| 
+   01003| // The first language in `priority` whose surface word for `role` appears in
+   01004| // `normalized` (raw substring), or null when none is present. Answers "which
+   01005| // language did the user issue this command in?". Mirrors
+   01006| // Lexicon::first_role_language in src/seed/meanings.rs (#386).
+   01007| function firstRoleLanguage(role, normalized, priority) {
+   01008|   for (const lang of priority) {
+   01009|     const present = meaningsWithRole(role).some((meaning) =>
+   01010|       meaning.lexemes.some(
+   01011|         (lexeme) =>
+   01012|           lexeme.language === lang &&
+   01013|           lexeme.words.some((word) => normalized.includes(word)),
+   01014|       ),
+   01015|     );
+   01016|     if (present) return lang;
+   01017|   }
+   01018|   return null;
+   01019| }
+   01020| 
+   01021| // The first surface word `meaning` lexicalises in `language`, or null. Mirrors
+   01022| // Meaning::word_in in src/seed/meanings.rs (issue #386).
+   01023| function wordIn(meaning, language) {
+   01024|   for (const lexeme of meaning.lexemes) {
+   01025|     if (lexeme.language !== language) continue;
+   01026|     for (const word of lexeme.words) {
+   01027|       if (word) return word;
+   01028|     }
+   01029|   }
+   01030|   return null;
+   01031| }
+   01032| 
+   01033| // Translate `surface` from `source` to `target` through the meaning carrying
+   01034| // `role` that lexicalises it: the first such meaning (declaration order) whose
+   01035| // `source` lexeme lists `surface`, returning its first `target` form, or null.
+   01036| // Mirrors Lexicon::role_surface_translation in src/seed/meanings.rs (issue #386).
+   01037| function roleSurfaceTranslation(role, source, target, surface) {
+   01038|   for (const meaning of meaningsWithRole(role)) {
+   01039|     const lists = meaning.lexemes.some(
+   01040|       (lexeme) => lexeme.language === source && lexeme.words.includes(surface),
+   01041|     );
+   01042|     if (lists) return wordIn(meaning, target);
+   01043|   }
+   01044|   return null;
+   01045| }
+   01046| 
+   01047| // Does any meaning carrying `role` lexicalise `surface` in `language`? Mirrors
+   01048| // Lexicon::role_lists_surface in src/seed/meanings.rs (issue #386).
+   01049| function roleListsSurface(role, language, surface) {
+   01050|   return meaningsWithRole(role).some((meaning) =>
+   01051|     meaning.lexemes.some(
+   01052|       (lexeme) => lexeme.language === language && lexeme.words.includes(surface),
+   01053|     ),
+   01054|   );
+   01055| }
+   01056| 
+   01057| // Like roleSurfaceTranslation but the `source` form must also carry the per-form
+   01058| // grammatical `action` tag (e.g. "genitive"). The worker keeps per-form action on
+   01059| // the flat wordForms array (no language) and raw strings on each lexeme, so a
+   01060| // form qualifies when the source lexeme lists `surface` and some wordForm has the
+   01061| // same text and `action`. Mirrors Lexicon::role_action_surface_translation in
+   01062| // src/seed/meanings.rs (issue #386).
+   01063| function roleActionSurfaceTranslation(role, action, source, target, surface) {
+   01064|   for (const meaning of meaningsWithRole(role)) {
+   01065|     const listsInSource = meaning.lexemes.some(
+   01066|       (lexeme) => lexeme.language === source && lexeme.words.includes(surface),
+   01067|     );
+   01068|     const tagged = meaning.wordForms.some(
+   01069|       (form) => form.text === surface && form.action === action,
+   01070|     );
+   01071|     if (listsInSource && tagged) return wordIn(meaning, target);
+   01072|   }
+   01073|   return null;
+   01074| }
+   01075| 
+   01076| // Issue #386 software-project follow-up roles — mirror the
+   01077| // ROLE_SOFTWARE_FOLLOWUP_* consts in src/seed/meanings.rs. Their surface words
+   01078| // live in data/seed/meanings-software-project.lino (loaded into MEANINGS_LINO
+   01079| // above). detectSoftwareFollowUp matches them as raw substrings (not whole
+   01080| // tokens), so they come with a dedicated accessor.
+   01081| const ROLE_SOFTWARE_FOLLOWUP_VERIFICATION = "software_followup_verification";
+   01082| const ROLE_SOFTWARE_FOLLOWUP_EXECUTION = "software_followup_execution";
+   01083| const ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION = "software_followup_demonstration";
+   01084| 
+   01085| // Issue #386 behavior-rules-list roles — mirror the ROLE_RULE_LISTING_* consts
+   01086| // in src/seed/roles.rs. Their surface words live in
+   01087| // data/seed/meanings-behavior-rules.lino (loaded into MEANINGS_LINO).
+   01088| // isBehaviorRulesList ANDs the three compositional dimensions within one
+   01089| // language (subject + request + scope) and ORs the standalone phrase role.
+   01090| // isBehaviorRulesCount reuses the subject/scope roles plus count-specific
+   01091| // request/scope roles, matching every surface as a raw substring exactly like
+   01092| // the Rust recogniser.
+   01093| const ROLE_RULE_LISTING_SUBJECT = "rule_listing_subject";
+   01094| const ROLE_RULE_LISTING_REQUEST = "rule_listing_request";
+   01095| const ROLE_RULE_LISTING_SCOPE = "rule_listing_scope";
+   01096| const ROLE_RULE_LISTING_PHRASE = "rule_listing_phrase";
+   01097| const ROLE_RULE_COUNT_REQUEST = "rule_count_request";
+   01098| const ROLE_RULE_COUNT_SCOPE = "rule_count_scope";
+   01099| const ROLE_RULE_BRIEF_REQUEST = "rule_brief_request";
+   01100| 
+   01101| // Does `normalized` contain any surface word of any meaning carrying `role`,
+   01102| // matched as a raw substring? Unlike lexiconMentionsRole (whole-token, via
+   01103| // containsProgramToken), follow-up markers are multi-word phrases ("run the
+   01104| // tests", "show me"), so a token-boundary match would never find them. Mirrors
+   01105| // the raw `.contains()` in follow_up_kind
+   01106| // (src/solver_handlers/software_project_followup.rs).
+   01107| function lexiconMentionsRoleSubstring(role, normalized) {
+   01108|   return meaningLexicon().some(
+   01109|     (meaning) =>
+   01110|       meaning.roles.includes(role) &&
+   01111|       meaning.words.some((word) => word && normalized.includes(word)),
+   01112|   );
+   01113| }
+   01114| 
+   01115| // Does any surface form `meaning` lexicalises in one of `languages` appear in
+   01116| // `normalized` as a raw substring (String.includes)? The language-restricted,
+   01117| // raw-substring sibling of meaningEvidencedIn. Mirrors
+   01118| // Meaning::mentions_in_languages_raw in src/seed/meanings.rs (issue #386).
+   01119| function meaningMentionsInLanguagesRaw(meaning, normalized, languages) {
+   01120|   return meaning.lexemes.some(
+   01121|     (lexeme) =>
+   01122|       languages.includes(lexeme.language) &&
+   01123|       lexeme.words.some((word) => word && normalized.includes(word)),
+   01124|   );
+   01125| }
+   01126| 
+   01127| // The first meaning (declaration order) carrying `role` whose `languages`
+   01128| // surface forms occur in `normalized` as a raw substring, or null. Declaration
+   01129| // order encodes priority. Mirrors Lexicon::first_role_match_in_languages_raw in
+   01130| // src/seed/meanings.rs (issue #386).
+   01131| function firstRoleMatchInLanguagesRaw(role, normalized, languages) {
+   01132|   return (
+   01133|     meaningsWithRole(role).find((meaning) =>
+   01134|       meaningMentionsInLanguagesRaw(meaning, normalized, languages),
+   01135|     ) || null
+   01136|   );
+   01137| }
+   01138| 
+   01139| // Does any meaning carrying `role` mention one of its `languages` surface forms
+   01140| // in `normalized` as a raw substring? Mirrors
+   01141| // Lexicon::mentions_role_in_languages_raw in src/seed/meanings.rs (issue #386).
+   01142| function mentionsRoleInLanguagesRaw(role, normalized, languages) {
+   01143|   return meaningsWithRole(role).some((meaning) =>
+   01144|     meaningMentionsInLanguagesRaw(meaning, normalized, languages),
+   01145|   );
+   01146| }
+   01147| 
+   01148| function detectedProgramModifiers(normalized) {
+   01149|   const slugs = [];
+   01150|   const validModifiers = programModifierSlugs();
+   01151|   for (const operation of operationVocabulary()) {
+   01152|     if (validModifiers.has(operation.slug) && operationFormMatches(normalized, operation)) {
+   01153|       slugs.push(operation.slug);
+   01154|     }
+   01155|   }
+   01156|   return slugs;
+   01157| }
+   01158| 
+   01159| // --- Substitution engine (mirror of src/substitution.rs) -------------------
+   01160| 
+   01161| function unescapeLinoValue(value) {
+   01162|   let out = "";
+   01163|   for (let index = 0; index < value.length; index += 1) {
+   01164|     const ch = value[index];
+   01165|     // Links Notation doubles a delimiter to escape it; the seed corpus now
+   01166|     // writes that canonical form, so both dialects are read.
+   01167|     if (ch === '"' && value[index + 1] === '"') {
+   01168|       out += '"';
+   01169|       index += 1;
+   01170|       continue;
+   01171|     }
+   01172|     if (ch === "\\" && index + 1 < value.length) {
+   01173|       const next = value[index + 1];
+   01174|       if (next === "n" || next === "t" || next === "r") {
+   01175|         out += { n: "\n", t: "\t", r: "\r" }[next];
+   01176|         index += 1;
+   01177|         continue;
+   01178|       }
+   01179|       if (next === '"' || next === "\\") {
+   01180|         out += next;
+   01181|         index += 1;
+   01182|         continue;
+   01183|       }
+   01184|     }
+   01185|     out += ch;
+   01186|   }
+   01187|   return out;
+   01188| }
+   01189| 
+   01190| function unescapeSingleLinoValue(value) {
+   01191|   let out = "";
+   01192|   for (let index = 0; index < value.length; index += 1) {
+   01193|     const ch = value[index];
+   01194|     if (ch === "\\" && index + 1 < value.length) {
+   01195|       const next = value[index + 1];
+   01196|       if (next === "n") {
+   01197|         out += "\n";
+   01198|         index += 1;
+   01199|         continue;
+   01200|       }
+   01201|       if (next === "\\") {
+   01202|         out += "\\";
+   01203|         index += 1;
+   01204|         continue;
+   01205|       }
+   01206|       if (next === "x" && value.slice(index + 2, index + 4) === "27") {
+   01207|         out += "'";
+   01208|         index += 3;
+   01209|         continue;
+   01210|       }
+   01211|     }
+   01212|     out += ch;
+   01213|   }
+   01214|   return out;
+   01215| }
+   01216| 
+   01217| function decodeRawReference(raw) {
+   01218|   const value = String(raw || "").trim();
+   01219|   if (value === "unformalized-raw" || value === "codepoints") return "";
+   01220|   if (value.startsWith("unformalized-raw ")) {
+   01221|     return decodeCodepoints(value.slice("unformalized-raw ".length));
+   01222|   }
+   01223|   if (value.startsWith("codepoints ")) {
+   01224|     return decodeCodepoints(value.slice("codepoints ".length));
+   01225|   }
+   01226|   return value;
+   01227| }
+   01228| 
+   01229| function stripLinoComment(line) {
+   01230|   // Mirrors rust/src/seed/parser.rs strip_comment: any of the three quote
+   01231|   // characters opens a string the comment rule must not see into, a doubled
+   01232|   // single quote is an escape, and a backslash escapes inside double quotes
+   01233|   // and backticks.
+   01234|   let quote = null;
+   01235|   let escaped = false;
+   01236|   let previousWasSpace = true;
+   01237|   for (let index = 0; index < line.length; index += 1) {
+   01238|     const ch = line[index];
+   01239|     if (quote) {
+   01240|       if (escaped) {
+   01241|         escaped = false;
+   01242|       } else if ((quote === '"' || quote === "`") && ch === "\\") {
+   01243|         escaped = true;
+   01244|       } else if (quote === "'" && ch === "'" && line[index + 1] === "'") {
+   01245|         index += 1;
+   01246|       } else if (ch === quote) {
+   01247|         quote = null;
+   01248|       }
+   01249|       continue;
+   01250|     }
+   01251|     if (ch === '"' || ch === "'" || ch === "`") {
+   01252|       quote = ch;
+   01253|       previousWasSpace = false;
+   01254|       continue;
+   01255|     }
+   01256|     if (ch === "#" && previousWasSpace) return line.slice(0, index);
+   01257|     previousWasSpace = /\s/.test(ch);
+   01258|   }
+   01259|   return line;
+   01260| }
+   01261| 
+   01262| function parseLinoValue(raw) {
+   01263|   const trimmed = raw.trim(); // a backtick string unescapes as a double-quoted one (decode_quoted_reference)
+   01264|   if (trimmed.length >= 2 && ['"', "`"].some((quote) => trimmed.startsWith(quote) && trimmed.endsWith(quote))) {
+   01265|     return unescapeLinoValue(trimmed.slice(1, -1));
+   01266|   }
+   01267|   if (trimmed.length >= 2 && trimmed.startsWith("'") && trimmed.endsWith("'")) {
+   01268|     return unescapeSingleLinoValue(trimmed.slice(1, -1));
+   01269|   }
+   01270|   return decodeRawReference(trimmed);
+   01271| }
+   01272| 
+   01273| function parseLinoTree(text) {
+   01274|   const root = { name: "", value: "", depth: -1, children: [] };
+   01275|   const stack = [root];
+   01276|   const expanded = typeof FormalAiSeed !== "undefined"
+   01277|     ? FormalAiSeed.expandConciseLexemes(text) : text;
+   01278|   for (const line of expanded.split("\n")) {
+   01279|     const stripped = stripLinoComment(line);
+   01280|     if (!stripped.trim()) continue;
+   01281|     const indent = stripped.length - stripped.trimStart().length;
+   01282|     const depth = indent / 2;
+   01283|     const rest = stripped.trim();
+   01284|     const colonIndex = rest.indexOf(":");
+   01285|     const whitespaceIndex = rest.search(/\s/);
+   01286|     let name = "";
+   01287|     let value = "";
+   01288|     if (colonIndex !== -1 && (whitespaceIndex === -1 || colonIndex < whitespaceIndex)) {
+   01289|       name = rest.slice(0, colonIndex).trim();
+   01290|       value = parseLinoValue(rest.slice(colonIndex + 1));
+   01291|     } else if (whitespaceIndex === -1) {
+   01292|       name = rest;
+   01293|     } else {
+   01294|       name = rest.slice(0, whitespaceIndex);
+   01295|       value = parseLinoValue(rest.slice(whitespaceIndex + 1));
+   01296|     }
+   01297|     const node = { name, value, depth, children: [] };
+   01298|     while (stack.length && stack[stack.length - 1].depth >= depth) stack.pop();
+   01299|     stack[stack.length - 1].children.push(node);
+   01300|     stack.push(node);
+   01301|   }
+   01302|   return root;
+   01303| }
+   01304| 
+   01305| function parsePatternNode(text) {
+   01306|   if (!text) throw new Error("pattern node is empty");
+   01307|   if (text.startsWith("$")) return { kind: "variable", variable: text.slice(1) };
+   01308|   const dollar = text.indexOf("$");
+   01309|   if (dollar !== -1) {
+   01310|     return { kind: "prefix", prefix: text.slice(0, dollar), variable: text.slice(dollar + 1) };
+   01311|   }
+   01312|   return { kind: "literal", value: text };
+   01313| }
+   01314| 
+   01315| function parseLinkPattern(text) {
+   01316|   const index = text.indexOf("->");
+   01317|   if (index === -1) throw new Error(`expected \`from -> to\`, got \`${text}\``);
+   01318|   return {
+   01319|     from: parsePatternNode(text.slice(0, index).trim()),
+   01320|     to: parsePatternNode(text.slice(index + 2).trim()),
+   01321|   };
+   01322| }
+   01323| 
+   01324| function parseCrudEvent(value) {
+   01325|   const map = {
+   01326|     manual: "manual",
+   01327|     apply: "manual",
+   01328|     create: "create",
+   01329|     created: "create",
+   01330|     read: "read",
+   01331|     select: "read",
+   01332|     query: "read",
+   01333|     update: "update",
+   01334|     updated: "update",
+   01335|     delete: "delete",
+   01336|     deleted: "delete",
+   01337|   };
+   01338|   const key = String(value).trim().toLowerCase();
+   01339|   if (!map[key]) throw new Error(`invalid CRUD event: ${value}`);
+   01340|   return map[key];
+   01341| }
+   01342| 
+   01343| function parseSubstitutionRule(node) {
+   01344|   const rule = { id: node.value, order: 0, events: [], conditions: [], actions: [] };
+   01345|   for (const child of node.children) {
+   01346|     switch (child.name) {
+   01347|       case "order": {
+   01348|         const parsed = parseInt(child.value, 10);
+   01349|         rule.order = Number.isNaN(parsed) ? 0 : parsed;
+   01350|         break;
+   01351|       }
+   01352|       case "event":
+   01353|         rule.events.push(parseCrudEvent(child.value));
+   01354|         break;
+   01355|       case "when":
+   01356|         rule.conditions.push(parseLinkPattern(child.value));
+   01357|         break;
+   01358|       case "replace": {
+   01359|         const add = child.children
+   01360|           .filter((grandchild) => grandchild.name === "with")
+   01361|           .map((grandchild) => parseLinkPattern(grandchild.value));
+   01362|         rule.actions.push({ remove: parseLinkPattern(child.value), add });
+   01363|         break;
+   01364|       }
+   01365|       default:
+   01366|         break;
+   01367|     }
+   01368|   }
+   01369|   return rule;
+   01370| }
+   01371| 
+   01372| function parseSubstitutionRules(text) {
+   01373|   const tree = parseLinoTree(text.trim());
+   01374|   const root = tree.children[0];
+   01375|   if (!root || root.name !== "substitution_rules") {
+   01376|     throw new Error("not a substitution_rules document");
+   01377|   }
+   01378|   const idNode = root.children.find((child) => child.name === "id");
+   01379|   const id = idNode ? idNode.value : "";
+   01380|   const rules = root.children
+   01381|     .filter((child) => child.name === "rule")
+   01382|     .map(parseSubstitutionRule);
+   01383|   rules.sort((left, right) =>
+   01384|     left.order - right.order ||
+   01385|     (left.id < right.id ? -1 : left.id > right.id ? 1 : 0),
+   01386|   );
+   01387|   return { id, rules };
+   01388| }
+   01389| 
+   01390| const LINK_KEY_SEPARATOR = "\u0000";
+   01391| const linkKey = (link) => `${link.from}${LINK_KEY_SEPARATOR}${link.to}`;
+   01392| const linkFromKey = (key) => {
+   01393|   const [from, to] = key.split(LINK_KEY_SEPARATOR);
+   01394|   return { from, to };
+   01395| };
+   01396| 
+   01397| function sortedLinksFromSet(linkSet) {
+   01398|   return Array.from(linkSet, linkFromKey).sort((left, right) =>
+   01399|     left.from < right.from
+   01400|       ? -1
+   01401|       : left.from > right.from
+   01402|         ? 1
+   01403|         : left.to < right.to
+   01404|           ? -1
+   01405|           : left.to > right.to
+   01406|             ? 1
+   01407|             : 0,
+   01408|   );
+   01409| }
+   01410| 
+   01411| function bindVariable(bindings, variable, value) {
+   01412|   if (Object.prototype.hasOwnProperty.call(bindings, variable)) {
+   01413|     return bindings[variable] === value;
+   01414|   }
+   01415|   bindings[variable] = value;
+   01416|   return true;
+   01417| }
+   01418| 
+   01419| function nodeMatches(pattern, value, bindings) {
+   01420|   if (pattern.kind === "literal") return pattern.value === value;
+   01421|   if (pattern.kind === "variable") return bindVariable(bindings, pattern.variable, value);
+   01422|   if (!value.startsWith(pattern.prefix)) return false;
+   01423|   return bindVariable(bindings, pattern.variable, value.slice(pattern.prefix.length));
+   01424| }
+   01425| 
+   01426| function patternMatchesLink(pattern, link, bindings) {
+   01427|   return (
+   01428|     nodeMatches(pattern.from, link.from, bindings) &&
+   01429|     nodeMatches(pattern.to, link.to, bindings)
+   01430|   );
+   01431| }
+   01432| 
+   01433| function instantiateNode(node, bindings) {
+   01434|   if (node.kind === "literal") return node.value;
+   01435|   if (node.kind === "variable") {
+   01436|     return Object.prototype.hasOwnProperty.call(bindings, node.variable)
+   01437|       ? bindings[node.variable]
+   01438|       : null;
+   01439|   }
+   01440|   const value = bindings[node.variable];
+   01441|   return value === undefined ? null : node.prefix + value;
+   01442| }
+   01443| 
+   01444| function instantiatePattern(pattern, bindings) {
+   01445|   const from = instantiateNode(pattern.from, bindings);
+   01446|   const to = instantiateNode(pattern.to, bindings);
+   01447|   if (from === null || to === null) return null;
+   01448|   return { from, to };
+   01449| }
+   01450| 
+   01451| function findBindings(links, patterns, index, bindings) {
+   01452|   if (index >= patterns.length) return bindings;
+   01453|   const pattern = patterns[index];
+   01454|   for (const link of links) {
+   01455|     const candidate = Object.assign({}, bindings);
+   01456|     if (patternMatchesLink(pattern, link, candidate)) {
+   01457|       const found = findBindings(links, patterns, index + 1, candidate);
+   01458|       if (found) return found;
+   01459|     }
+   01460|   }
+   01461|   return null;
+   01462| }
+   01463| 
+   
+   (End of file - total 1463 lines)
+   </file>
+>> edit {"filePath":"js/worker/formal_ai_worker_meaning_lexicon.js","file_path":"js/worker/formal_ai_worker_meaning_lexicon.js","new":"for (const line of (globalThis.FormalAiSeed?.expandConciseLexemes(text) ?? text).split(\"\\n\")) {","newString":"for (const line of (globalThis.FormalAiSeed?.expandConciseLexemes(text) ?? text).split(\"\\n\")) {","new_str":"for (const line of (globalThis.FormalAiSeed?.expandConciseLexemes(text) ?? text).split(\"\\n\")) {","new_string":"for (const line of (globalThis.FormalAiSeed?.expandConciseLexemes(text) ?? text).split(\"\\n\")) {","old":"const expanded = typeof FormalAiSeed !== \"undefined\"\n    ? FormalAiSeed.expandConciseLexemes(text) : text;\n  for (const line of expanded.split(\"\\n\")) {","oldString":"const expanded = typeof FormalAiSeed !== \"undefined\"\n    ? FormalAiSeed.expandConciseLexemes(text) : text;\n  for (const line of expanded.split(\"\\n\")) {","old_str":"const expanded = typeof FormalAiSeed !== \"undefined\"\n    ? FormalAiSeed.expandConciseLexemes(text) : text;\n  for (const line of expanded.split(\"\\n\")) {","old_string":"const expanded = typeof FormalAiSeed !== \"undefined\"\n    ? FormalAiSeed.expandConciseLexemes(text) : text;\n  for (const line of expanded.split(\"\\n\")) {","path":"js/worker/formal_ai_worker_meaning_lexicon.js"}
+>> bash {"command":"sha256sum -- js/worker/formal_ai_worker_meaning_lexicon.js"}
+   b3bf55038b2c72cd82f19733c27b0a2093fee663643467b6ae544a31f1898bf5  js/worker/formal_ai_worker_meaning_lexicon.js
+   
+== answer ==
+Replaced `const expanded = typeof FormalAiSeed !== "undefined"
+    ? FormalAiSeed.expandConciseLexemes(text) : text;
+  for (const line of expanded.split("\n")) {` with `for (const line of (globalThis.FormalAiSeed?.expandConciseLexemes(text) ?? text).split("\n")) {` in `js/worker/formal_ai_worker_meaning_lexicon.js` and observed the result.

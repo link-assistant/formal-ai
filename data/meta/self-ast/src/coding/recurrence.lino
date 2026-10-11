@@ -2,26 +2,37 @@ self_ast_census
   target src/coding/recurrence.rs
   language rust
   fidelity signature
-  byte_len 15749
-  line_count 443
-  content_id source_module_898af6b93ff12502
-  symbol_count 18
+  byte_len 21431
+  line_count 608
+  content_id source_module_74aecba1231debc0
+  symbol_count 29
   symbols
-    enum Operation 17 25
-    enum Expression 28 33
-    struct Recurrence 36 48
-    function suggested_identifier 53 55
-    function render_python 58 63
-    function to_links_notation 66 106
-    function identifier_from_source_label 110 127
-    function formalize 131 191
-    function resolve_expression 193 254
-    function operation_for_descriptor 256 291
-    function validate_boundary 293 306
-    function contains_recur 308 314
-    function collect_offsets 316 334
-    function predecessor_offset 336 353
-    function render_expression 355 386
-    function binary 388 394
-    function serialize_expression 396 421
-    function python_assertions 424 443
+    module cache 8 8
+    enum Operation 19 27
+    enum Expression 30 35
+    struct Recurrence 38 50
+    struct SourceCallableContract 54 58
+    function read_positions 62 64
+    function render_python 67 69
+    function bound_to 72 106
+    function expression_calls_self 109 115
+    function plain_declared_signature 117 133
+    function read_formal_parameter_positions 137 149
+    function collect_reads 151 172
+    function bind_expression_parameters 176 209
+    function render_callable_python 211 216
+    function suggested_identifier 221 223
+    function render_python 226 228
+    function to_links_notation 231 271
+    function identifier_from_source_label 275 292
+    function formalize 296 356
+    function resolve_expression 358 419
+    function operation_for_descriptor 421 456
+    function validate_boundary 458 471
+    function contains_recur 473 479
+    function collect_offsets 481 499
+    function predecessor_offset 501 518
+    function render_expression 520 551
+    function binary 553 559
+    function serialize_expression 561 586
+    function python_assertions 589 608

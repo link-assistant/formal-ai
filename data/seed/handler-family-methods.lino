@@ -1,12 +1,12 @@
-handler_family_methods
+handler-family-methods
   issue 1138
   purpose "Generic method families selected from reusable evidence groups. Every family uses the same matcher; adding a paraphrase adds lexical knowledge here, not a Rust branch or a memorized answer."
-  family dialogue_state_query
+  family dialogue-state-query
     priority 10
     preempts capability_gap
     preempts compose_from_sources
     preempts concept_measurement_lookup
-    evidence_group dialogue_reference
+    evidence_group dialogue-reference
       cue earlier
       cue "this conversation"
       cue "so far"
@@ -64,7 +64,7 @@ handler_family_methods
       cue "en el orden"
       cue "cambiar de tema"
       cue "justo antes"
-    evidence_group dialogue_object
+    evidence_group dialogue-object
       cue asked
       cue "ask you"
       cue question
@@ -115,13 +115,13 @@ handler_family_methods
     response hi "यह संवाद-अवस्था का प्रश्न है। इस अलग अनुरोध में कोई पिछला संवाद उपलब्ध नहीं है, इसलिए बताने के लिए संवाद-साक्ष्य नहीं है।"
     response zh "这是对话状态查询。这个独立请求没有更早的对话轮次，因此没有可报告的对话证据。"
     response es "Esta es una consulta sobre el estado del diálogo. En esta solicitud aislada no hay turnos anteriores, así que no hay evidencia de conversación que informar."
-  family procedure_interpreter
+  family procedure-interpreter
     priority 20
     preempts capability_gap
     preempts task_decomposition
-    evidence_group source_document
+    evidence_group source-document
       cue readme
-    evidence_group target_procedure_surface
+    evidence_group target-procedure-surface
       cue powershell
       cue makefile
       cue fish
@@ -132,15 +132,15 @@ handler_family_methods
     response hi "स्रोत को प्रक्रिया में बदलने का अनुरोध मिला, लेकिन इस संदेश में संदर्भित दस्तावेज़ नहीं है। क्रमबद्ध चरण निकालने, प्रस्तुत करने और जाँचने के लिए उसका पाठ या URL दें।"
     response zh "已识别出从来源到过程的转换，但本轮没有所引用的文档。请提供文本或 URL，以便提取、呈现并验证有序步骤。"
     response es "Identifiqué una conversión de una fuente a un procedimiento, pero este turno no contiene el documento referido. Proporciona su texto o URL para extraer, representar y verificar los pasos ordenados."
-  family structural_operator
+  family structural-operator
     priority 30
     preempts capability_gap
     preempts pattern_inference
     preempts verifiable_task
     preempts write_script
-    minimum_numbers 2
-    declines_when_served_by numeric_list
-    evidence_group code_target
+    minimum-numbers 2
+    declines-when-served-by numeric_list
+    evidence_group code-target
       word go
       cue kotlin
       cue swift
@@ -157,7 +157,7 @@ handler_family_methods
     preempts web_search
     preempts compose_from_sources
     preempts capability_gap
-    evidence_group source_request
+    evidence_group source-request
       cue source
       cue "where you found"
       cue "read about"
@@ -172,7 +172,7 @@ handler_family_methods
       cue fuente
       cue "dónde lo encontraste"
       cue "dónde puedo leer"
-    evidence_group retrieval_act
+    evidence_group retrieval-act
       cue "what is"
       cue "look up"
       cue explain
@@ -203,11 +203,11 @@ handler_family_methods
     response hi "स्रोत-समर्थित खोज अनुरोध पहचाना गया, लेकिन इस अलग संदेश में विषय की सत्यापित प्रति नहीं है। सारांश बताने से पहले विश्वसनीय स्रोतों की खोज आवश्यक है।"
     response zh "已识别出需要来源支持的检索请求，但这个独立轮次没有该主题的已验证采集。必须先遍历可信来源，才能断言摘要。"
     response es "Identifiqué una solicitud de recuperación respaldada por fuentes, pero este turno aislado no contiene una captura verificada del tema. Hace falta recorrer fuentes confiables antes de afirmar un resumen."
-    response_with_capture en "{gloss} -- source {source_name}, {source_url}, {license_name}."
-    response_with_capture ru "{gloss} -- источник {source_name}, {source_url}, {license_name}."
-    response_with_capture hi "{gloss} -- स्रोत {source_name}, {source_url}, {license_name}."
-    response_with_capture zh "{gloss} -- 来源 {source_name}，{source_url}，{license_name}。"
-    response_with_capture es "{gloss} -- fuente {source_name}, {source_url}, {license_name}."
+    response-with-capture en "{gloss} -- source {source_name}, {source_url}, {license_name}."
+    response-with-capture ru "{gloss} -- источник {source_name}, {source_url}, {license_name}."
+    response-with-capture hi "{gloss} -- स्रोत {source_name}, {source_url}, {license_name}."
+    response-with-capture zh "{gloss} -- 来源 {source_name}，{source_url}，{license_name}。"
+    response-with-capture es "{gloss} -- fuente {source_name}, {source_url}, {license_name}."
   family rule_interpreter
     priority 50
     preempts capability_gap

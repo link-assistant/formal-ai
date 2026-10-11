@@ -115,7 +115,7 @@ fn checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages() 
             seen_ranks.insert(topic.rank),
             "rank should be unique: {topic:?}"
         );
-        assert!(!topic.query.trim().is_empty());
+        assert_ne!(topic.query.trim(), "");
 
         let languages: BTreeSet<String> = topic
             .prompts
@@ -162,7 +162,7 @@ fn checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages() 
 
         for answered in &topic.answered {
             assert!(answered.prompt.ends_with('?'));
-            assert!(!answered.answer.trim().is_empty());
+            assert_ne!(answered.answer.trim(), "");
             assert!(
                 answered
                     .evidence_links

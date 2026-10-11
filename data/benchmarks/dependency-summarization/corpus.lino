@@ -1,0 +1,38 @@
+# R1188-U21 dependency summarization corpus. The cached Wikipedia intros of
+# data/benchmarks/web-formalization/ (every page, every language) and the
+# issue bodies listed below, which the requirement extraction benchmark caches
+# under data/benchmarks/issue-requirements/ (the first thirty by issue number
+# when this list was written). An issue body is read as prose: fenced code,
+# tables, block quotes, HTML tags and link targets are left out.
+dependency-summarization-corpus
+  pages "data/benchmarks/web-formalization"
+  issue "data/benchmarks/issue-requirements/issue-1.md"
+  issue "data/benchmarks/issue-requirements/issue-6.md"
+  issue "data/benchmarks/issue-requirements/issue-8.md"
+  issue "data/benchmarks/issue-requirements/issue-10.md"
+  issue "data/benchmarks/issue-requirements/issue-12.md"
+  issue "data/benchmarks/issue-requirements/issue-14.md"
+  issue "data/benchmarks/issue-requirements/issue-16.md"
+  issue "data/benchmarks/issue-requirements/issue-18.md"
+  issue "data/benchmarks/issue-requirements/issue-63.md"
+  issue "data/benchmarks/issue-requirements/issue-78.md"
+  issue "data/benchmarks/issue-requirements/issue-80.md"
+  issue "data/benchmarks/issue-requirements/issue-96.md"
+  issue "data/benchmarks/issue-requirements/issue-103.md"
+  issue "data/benchmarks/issue-requirements/issue-115.md"
+  issue "data/benchmarks/issue-requirements/issue-117.md"
+  issue "data/benchmarks/issue-requirements/issue-127.md"
+  issue "data/benchmarks/issue-requirements/issue-129.md"
+  issue "data/benchmarks/issue-requirements/issue-133.md"
+  issue "data/benchmarks/issue-requirements/issue-159.md"
+  issue "data/benchmarks/issue-requirements/issue-162.md"
+  issue "data/benchmarks/issue-requirements/issue-187.md"
+  issue "data/benchmarks/issue-requirements/issue-195.md"
+  issue "data/benchmarks/issue-requirements/issue-196.md"
+  issue "data/benchmarks/issue-requirements/issue-207.md"
+  issue "data/benchmarks/issue-requirements/issue-244.md"
+  issue "data/benchmarks/issue-requirements/issue-278.md"
+  issue "data/benchmarks/issue-requirements/issue-279.md"
+  issue "data/benchmarks/issue-requirements/issue-283.md"
+  issue "data/benchmarks/issue-requirements/issue-327.md"
+  issue "data/benchmarks/issue-requirements/issue-349.md"

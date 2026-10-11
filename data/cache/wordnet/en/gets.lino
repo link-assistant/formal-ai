@@ -1,0 +1,228 @@
+language en
+lemma gets
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a return on a shot that seemed impossible to reach and would normally have resulted in a point for the opponent"
+    id oewn-00568933-n
+    partOfSpeech n
+    synonyms (get)
+  entry
+    definition "come into the possession of something concrete or abstract"
+    examples ("She got a lot of paintings from her uncle" "They acquired a new pet" "Get your results the next day" "Get permission to take a few days off from work")
+    id oewn-02215637-v
+    partOfSpeech v
+    synonyms (get acquire)
+  entry
+    definition "enter or assume a certain state or condition"
+    examples ("He became annoyed when he heard the bad news" "It must be getting more serious" "her face went red with anger" "She went into ecstasy" "Get going!")
+    id oewn-00149403-v
+    partOfSpeech v
+    synonyms (become go get)
+  entry
+    definition "cause to move; cause to be in a certain position or condition"
+    examples ("He got his squad on the ball" "This let me in for a big surprise" "He got a girl into trouble")
+    id oewn-00120604-v
+    partOfSpeech v
+    synonyms (get let have)
+  entry
+    definition "receive a specified treatment (abstract)"
+    examples ("These aspects of civilization do not find expression or receive an interpretation" "His movie received a good review" "I got nothing but trouble for my good intentions")
+    id oewn-00523831-v
+    partOfSpeech v
+    synonyms (receive get find obtain incur)
+  entry
+    definition "reach a destination; arrive by movement or progress"
+    examples ("She arrived home at 7 o'clock" "She didn't get to Chicago until after midnight")
+    id oewn-02009962-v
+    partOfSpeech v
+    synonyms (arrive get come)
+  entry
+    definition "go or come after and bring or take back"
+    examples ("Get me those books over there, please" "Could you bring the wine?" "The dog fetched the hat")
+    id oewn-01435927-v
+    partOfSpeech v
+    synonyms (bring get convey fetch)
+  entry
+    definition "go through (mental or physical states or experiences)"
+    examples ("get an idea" "experience vertigo" "get nauseous" "receive injuries" "have a feeling")
+    id oewn-02112480-v
+    partOfSpeech v
+    synonyms (experience receive have get)
+  entry
+    definition "take vengeance on or get even"
+    examples ("We'll get them!" "That'll fix him good!" "This time I got him")
+    id oewn-01156413-v
+    partOfSpeech v
+    synonyms ("pay back" "pay off" get fix)
+  entry
+    definition "achieve a point or goal"
+    examples ("Nicklaus had a 70" "The Brazilian team got 4 goals" "She made 29 points that day")
+    id oewn-02360592-v
+    partOfSpeech v
+    synonyms (have get make)
+  entry
+    definition "cause to do; cause to act in a specified manner"
+    examples ("The ads induced me to buy a VCR" "My children finally got me to buy a computer" "My wife made me buy a new sofa")
+    id oewn-00772482-v
+    partOfSpeech v
+    synonyms (induce stimulate cause have get make)
+  entry
+    definition "succeed in catching or seizing, especially after a chase"
+    examples ("We finally got the suspect" "Did you catch the thief?")
+    id oewn-01217985-v
+    partOfSpeech v
+    synonyms (get catch capture)
+  entry
+    definition "come to have or undergo a change of (physical features and attributes)"
+    examples ("He grew a beard" "The patient developed abdominal pains" "I got funny spots all over my body" "Well-developed breasts")
+    id oewn-00094214-v
+    partOfSpeech v
+    synonyms (grow develop produce get acquire)
+  entry
+    definition "be stricken by an illness, fall victim to an illness"
+    examples ("He got AIDS" "She came down with pneumonia" "She took a chill")
+    id oewn-00087488-v
+    partOfSpeech v
+    synonyms (contract take get)
+  entry
+    definition "communicate with a place or person; establish communication with, as if by telephone"
+    examples ("Bill called this number and he got Mary" "The operator couldn't get Kobe because of the earthquake")
+    id oewn-01068058-v
+    partOfSpeech v
+    synonyms (get)
+  entry
+    definition "give certain properties to something"
+    examples ("get someone mad" "She made us look silly" "He made a fool of himself at the meeting" "Don't make this into a big deal" "This invention will make you a millionaire" "Make yourself clear")
+    id oewn-00120124-v
+    partOfSpeech v
+    synonyms (make get)
+  entry
+    definition "move into a desired direction of discourse"
+    examples ("What are you driving at?")
+    id oewn-01028984-v
+    partOfSpeech v
+    synonyms (drive get aim)
+  entry
+    definition "grasp with the mind or develop an understanding of"
+    examples ("did you catch that allusion?" "We caught something of his theory in the lecture" "don't catch your meaning" "did you get it?" "She didn't get the joke" "I just don't get him")
+    id oewn-00591299-v
+    partOfSpeech v
+    synonyms (catch get)
+  entry
+    definition "attract and fix"
+    examples ("His look caught her" "She caught his eye" "Catch the attention of the waiter")
+    id oewn-01508590-v
+    partOfSpeech v
+    synonyms (catch arrest get)
+  entry
+    definition "reach with a blow or hit in a particular spot"
+    examples ("the rock caught her in the back of the head" "The blow got him in the back" "The punch caught him in the stomach")
+    id oewn-01403769-v
+    partOfSpeech v
+    synonyms (get catch)
+  entry
+    definition "reach by calculation"
+    examples ("What do you get when you add up these numbers?")
+    id oewn-00641511-v
+    partOfSpeech v
+    synonyms (get)
+  entry
+    definition "acquire as a result of some effort or action"
+    examples ("You cannot get water out of a stone" "Where did she get these news?")
+    id oewn-02364339-v
+    partOfSpeech v
+    synonyms (get)
+  entry
+    definition "purchase"
+    examples ("What did you get at the toy store?")
+    id oewn-02213047-v
+    partOfSpeech v
+    synonyms (get)
+  entry
+    definition "perceive by hearing"
+    examples ("I didn't catch your name" "She didn't get his name when they met the first time")
+    id oewn-02193844-v
+    partOfSpeech v
+    synonyms (catch get)
+  entry
+    definition "suffer from the receipt of"
+    examples ("She will catch hell for this behavior!")
+    id oewn-02114099-v
+    partOfSpeech v
+    synonyms (catch get)
+  entry
+    definition "receive as a retribution or punishment"
+    examples ("He got 5 years in prison")
+    id oewn-02113108-v
+    partOfSpeech v
+    synonyms (get receive)
+  entry
+    definition "leave immediately; used usually in the imperative form"
+    examples ("Scram!")
+    id oewn-02014716-v
+    partOfSpeech v
+    synonyms (scram "buzz off" "fuck off" get "bugger off")
+  entry
+    definition "reach and board"
+    examples ("She got the bus just as it was leaving")
+    id oewn-02010587-v
+    partOfSpeech v
+    synonyms (get)
+  entry
+    definition "irritate"
+    examples ("Her childish behavior really gets to me" "His lying really gets me")
+    id oewn-01775115-v
+    partOfSpeech v
+    synonyms (get "get under one's skin")
+  entry
+    definition "evoke an emotional response"
+    examples ("Brahms's ‘Requiem’ gets me every time")
+    id oewn-01774960-v
+    partOfSpeech v
+    synonyms (get)
+  entry
+    definition "apprehend and reproduce accurately"
+    examples ("She really caught the spirit of the place in her drawings" "She got the mood just right in her photographs")
+    id oewn-01741988-v
+    partOfSpeech v
+    synonyms (catch get)
+  entry
+    definition "earn or achieve a base by being walked by the pitcher"
+    examples ("He drew a base on balls")
+    id oewn-01646839-v
+    partOfSpeech v
+    synonyms (draw get)
+  entry
+    definition "overcome or destroy"
+    examples ("The ice storm got my hibiscus" "the cat got the goldfish")
+    id oewn-01567992-v
+    partOfSpeech v
+    synonyms (get)
+  entry
+    definition "be a mystery or bewildering to"
+    examples ("This beats me!" "Got me — I don't know the answer!" "a vexing problem" "This question really stuck me")
+    id oewn-00624056-v
+    partOfSpeech v
+    synonyms (perplex vex stick get puzzle mystify baffle beat pose bewilder flummox stupefy nonplus gravel amaze dumbfound)
+  entry
+    definition "take the first step or steps in carrying out an action"
+    examples ("We began working at dawn" "Who will start?" "Get working as soon as the sun rises!" "The first tourists began to arrive in Cambodia" "He began early in the day" "Let's get down to work now")
+    id oewn-00346415-v
+    partOfSpeech v
+    synonyms ("get down" begin get "start out" start "set about" "set out" commence)
+  entry
+    definition "undergo (as of injuries and illnesses)"
+    examples ("She suffered a fracture in the accident" "He had an insulin shock after eating three candy bars" "She got a bruise on her leg" "He got his arm broken in the scuffle")
+    id oewn-00065410-v
+    partOfSpeech v
+    synonyms (suffer sustain have get)
+  entry
+    definition "make (offspring) by reproduction"
+    examples ("Abraham begot Isaac" "John fathered four daughters")
+    id oewn-00054345-v
+    partOfSpeech v
+    synonyms (beget get engender father mother sire generate "bring forth")
+source "oewn:2024"

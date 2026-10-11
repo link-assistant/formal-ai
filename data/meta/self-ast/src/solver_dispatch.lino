@@ -2,25 +2,30 @@ self_ast_census
   target src/solver_dispatch.rs
   language rust
   fidelity signature
-  byte_len 20919
-  line_count 469
-  content_id source_module_1c3f18c3d854d5dd
-  symbol_count 17
+  byte_len 27996
+  line_count 594
+  content_id source_module_706d99124cea0d55
+  symbol_count 22
   symbols
-    type NativeHandler 43 43
-    enum SpecializedHandler 48 51
-    function call 56 66
-    function handle_arithmetic 69 75
-    function handle_javascript_execution 77 83
-    function handle_concept_lookup 85 91
-    function response_language_followup_noop 93 99
-    struct ContextualRuntime 102 109
-    function new 113 123
-    enum ContextualOutcome 127 135
-    const CONTEXTUAL_HANDLER_NAMES 153 172
-    const PRELUDE_METHOD_NAMES 180 186
-    function try_contextual_override 188 272
-    const HANDLER_FUNCTIONS 287 386
-    function specialized_handlers 397 442
-    function resolve_handler 444 462
-    function handler_for_method 467 469
+    type NativeHandler 52 52
+    enum SpecializedHandler 57 60
+    function call 65 75
+    function handle_arithmetic 78 90
+    function handle_javascript_execution 92 98
+    function handle_concept_lookup 100 106
+    function response_language_followup_noop 108 114
+    const CODE_ARTIFACT_HANDLERS 120 125
+    function any_handler_claims 129 134
+    function code_artifact_task_claims 140 142
+    function shell_compose_claims 149 151
+    function format_conversion_claims 158 161
+    struct ContextualRuntime 164 171
+    function new 175 185
+    enum ContextualOutcome 189 197
+    const CONTEXTUAL_HANDLER_NAMES 215 239
+    const PRELUDE_METHOD_NAMES 247 253
+    function try_contextual_override 255 346
+    const HANDLER_FUNCTIONS 361 511
+    function specialized_handlers 522 567
+    function resolve_handler 569 587
+    function handler_for_method 592 594

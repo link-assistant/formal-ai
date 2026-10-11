@@ -1,0 +1,16 @@
+{
+  "identifier": "T1497",
+  "prompt": "Run node -e 'const fs=require('\\''node:fs'\\''),cp=require('\\''node:child_process'\\'');const target='\\''.formal-ai/general-change-plan.lino'\\'';const baseline=cp.execFileSync('\\''git'\\'',['\\''show'\\'','\\''HEAD:'\\''+target],{encoding:'\\''utf8'\\''});const observed=fs.readFileSync(target,'\\''utf8'\\'');if(!observed.startsWith(baseline))throw Error('\\''historical prefix changed'\\'');fs.writeFileSync('\\''experiments/formal_ai_subagent/evidence/coordinator-1188/tracked-plan-before-sandbox-repair.lino'\\'',observed);fs.writeFileSync(target,baseline);if(fs.readFileSync(target,'\\''utf8'\\'')!==baseline)throw Error('\\''restore verification failed'\\'');console.log(JSON.stringify({restored:true,preservedAdditionalBytes:Buffer.byteLength(observed)-Buffer.byteLength(baseline)}));'",
+  "result": {
+    "transcript": [
+      {
+        "tool": "bash",
+        "arguments": "{\"command\":\"node -e 'const fs=require('\\\\''node:fs'\\\\''),cp=require('\\\\''node:child_process'\\\\'');const target='\\\\''.formal-ai/general-change-plan.lino'\\\\'';const baseline=cp.execFileSync('\\\\''git'\\\\'',['\\\\''show'\\\\'','\\\\''HEAD:'\\\\''+target],{encoding:'\\\\''utf8'\\\\''});const observed=fs.readFileSync(target,'\\\\''utf8'\\\\'');if(!observed.startsWith(baseline))throw Error('\\\\''historical prefix changed'\\\\'');fs.writeFileSync('\\\\''experiments/formal_ai_subagent/evidence/coordinator-1188/tracked-plan-before-sandbox-repair.lino'\\\\'',observed);fs.writeFileSync(target,baseline);if(fs.readFileSync(target,'\\\\''utf8'\\\\'')!==baseline)throw Error('\\\\''restore verification failed'\\\\'');console.log(JSON.stringify({restored:true,preservedAdditionalBytes:Buffer.byteLength(observed)-Buffer.byteLength(baseline)}));'\"}",
+        "result": "{\"restored\":true,\"preservedAdditionalBytes\":79781}\n"
+      }
+    ],
+    "answer": "The `node -e 'const fs=require('\\''node:fs'\\''),cp=require('\\''node:child_process'\\'');const target='\\''.formal-ai/general-change-plan.lino'\\'';const baseline=cp.execFileSync('\\''git'\\'',['\\''show'\\'','\\''HEAD:'\\''+target],{encoding:'\\''utf8'\\''});const observed=fs.readFileSync(target,'\\''utf8'\\'');if(!observed.startsWith(baseline))throw Error('\\''historical prefix changed'\\'');fs.writeFileSync('\\''experiments/formal_ai_subagent/evidence/coordinator-1188/tracked-plan-before-sandbox-repair.lino'\\'',observed);fs.writeFileSync(target,baseline);if(fs.readFileSync(target,'\\''utf8'\\'')!==baseline)throw Error('\\''restore verification failed'\\'');console.log(JSON.stringify({restored:true,preservedAdditionalBytes:Buffer.byteLength(observed)-Buffer.byteLength(baseline)}));'` command completed. Output:\n\n```json\n{\n  \"preservedAdditionalBytes\": 79781,\n  \"restored\": true\n}\n```",
+    "stop": "final"
+  },
+  "ok": true
+}

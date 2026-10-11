@@ -1,0 +1,55 @@
+{
+  "syntax": true,
+  "results": [
+    {
+      "label": "bare",
+      "result": {
+        "status": "unknown",
+        "complete": false,
+        "source": "failed",
+        "error": null
+      },
+      "byteMatch": false
+    },
+    {
+      "label": "frame",
+      "result": {
+        "status": "unknown",
+        "complete": true,
+        "source": "failed\n",
+        "error": null
+      },
+      "byteMatch": false
+    },
+    {
+      "label": "typed",
+      "result": {
+        "status": "reported-success",
+        "complete": true,
+        "source": "failed",
+        "error": null
+      },
+      "byteMatch": true
+    },
+    {
+      "label": "partial",
+      "result": {
+        "status": "reported-success",
+        "complete": false,
+        "source": "failed",
+        "error": null
+      },
+      "byteMatch": false
+    },
+    {
+      "label": "timeout",
+      "result": {
+        "status": "reported-failure",
+        "complete": false,
+        "source": null,
+        "error": "failed"
+      },
+      "byteMatch": false
+    }
+  ]
+}

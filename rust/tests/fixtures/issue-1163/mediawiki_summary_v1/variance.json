@@ -1,0 +1,6 @@
+{
+  "type": "standard",
+  "title": "Variance",
+  "description": "Statistical measure of how far values spread from their average",
+  "extract": "In probability theory and statistics, variance is the expected value of the squared deviation from the mean of a random variable."
+}

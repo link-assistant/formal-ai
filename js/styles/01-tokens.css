@@ -1,0 +1,367 @@
+/* Design tokens (--fa-*) for the light / dark / OS-preference axis, plus the
+ * UI-skin and chat-style variants that override them.
+ *
+ * Part of the app stylesheet split from the former js/styles.css. The
+ * files in js/styles/ are linked in numeric order by js/app/index.html and
+ * together form one cascade: keep that order when editing.
+ */
+
+:root {
+  color-scheme: light;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: #eef2f1;
+  color: #1e252b;
+
+  /* ===================================================================
+   * Issue #550 (M1/M2/M7): semantic design tokens — one source of truth
+   * for the light/dark axis.
+   * ===================================================================
+   * Root cause of P4 ("services box ignores dark theme") and P5 ("only some
+   * topbar buttons react to hover") was that this stylesheet hand-duplicated
+   * every colour across a light base + `:root[data-theme="dark"]` +
+   * `@media (prefers-color-scheme: dark)` layer, so a new surface or control
+   * went dark / got a hover state ONLY if someone remembered to author the
+   * matching duplicate rule — and newer code routinely missed it.
+   *
+   * These tokens collapse that triplication: a rule written once against a
+   * token (e.g. `background: var(--fa-surface-card)`) automatically themes in
+   * all three states because only the token VALUE is overridden below (in both
+   * dark layers). New surfaces/controls that use the tokens inherit correct
+   * theming and interaction by construction — they can no longer silently miss
+   * a dark or hover rule. This generalises the pre-existing `--code-*` token
+   * pattern (see `.markdown-body`) to the whole chrome and is the documented
+   * step 1 of the tokens → Chakra migration (see the issue-550 case study).
+   *
+   * Light values live here; dark values are overridden once, just below. */
+
+  /* Surfaces */
+  --fa-surface-card: #ffffff;
+  --fa-surface-raised: #f3f6f7;
+  /* Borders */
+  --fa-border-subtle: #d6dde1;
+  --fa-border-control: #c8d2d8;
+  /* Text */
+  --fa-text-body: #1e252b;
+  --fa-text-muted: #657584;
+  --fa-text-strong: #24333d;
+  --fa-mode-status-text: #40515f;
+  /* Accent */
+  --fa-accent-link: #175f4f;
+  --fa-accent-solid-bg: #1f7a5b;
+  --fa-accent-solid-border: #1f7a5b;
+  --fa-accent-solid-text: #ffffff;
+  /* Status */
+  --fa-service-dot-idle: #b4c0c8;
+  --fa-error-text: #b3261e;
+  --fa-sidebar-toggle-collapsed-bg: #eef2f1;
+  /* Reasoning-trace mode badges */
+  --fa-tool-mode-bg: rgba(120, 140, 255, 0.18);
+  --fa-tool-mode-text: #4a5acc;
+  --fa-tool-mode-agent-bg: rgba(255, 170, 90, 0.18);
+  --fa-tool-mode-agent-text: #b66e1a;
+  /* Interactive control states — shared by every topbar control AND every
+   * panel action button so hover/focus is uniform across the whole app. */
+  --fa-control-hover-border: #86b8a7;
+  --fa-control-hover-bg: #edf7f3;
+  --fa-control-active-hover-border: #0f4a3c;
+  --fa-control-active-hover-bg: #0f4a3c;
+  --fa-focus-ring: #175f4f;
+}
+
+/* Dark token values — explicit theme override (wins over the OS preference). */
+:root[data-theme="dark"] {
+  --fa-surface-card: #1d201f;
+  --fa-surface-raised: #242826;
+  --fa-border-subtle: #343a3d;
+  --fa-border-control: #4a524e;
+  --fa-text-body: #ece7df;
+  --fa-text-muted: #c9c1b6;
+  --fa-text-strong: #ece7df;
+  --fa-mode-status-text: #c9c1b6;
+  --fa-accent-link: #91d7bc;
+  --fa-accent-solid-bg: #1f7a5b;
+  --fa-accent-solid-border: #2a8f6a;
+  --fa-accent-solid-text: #ffffff;
+  --fa-service-dot-idle: #4a524e;
+  --fa-error-text: #ef9a9a;
+  --fa-sidebar-toggle-collapsed-bg: #222624;
+  --fa-tool-mode-bg: rgba(120, 140, 255, 0.22);
+  --fa-tool-mode-text: #aebcff;
+  --fa-tool-mode-agent-bg: rgba(255, 170, 90, 0.22);
+  --fa-tool-mode-agent-text: #f2c084;
+  --fa-control-hover-border: #6cc5a6;
+  --fa-control-hover-bg: #28332f;
+  --fa-control-active-hover-border: #2a8f6a;
+  --fa-control-active-hover-bg: #165a49;
+  --fa-focus-ring: #6cc5a6;
+}
+
+/* Dark token values — OS preference fallback (unless light is pinned). The two
+ * dark layers carry IDENTICAL token values; the duplication now lives in ONE
+ * place (these ~20 lines) instead of being scattered across every coloured
+ * rule in the file. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fa-surface-card: #1d201f;
+    --fa-surface-raised: #242826;
+    --fa-border-subtle: #343a3d;
+    --fa-border-control: #4a524e;
+    --fa-text-body: #ece7df;
+    --fa-text-muted: #c9c1b6;
+    --fa-text-strong: #ece7df;
+    --fa-mode-status-text: #c9c1b6;
+    --fa-accent-link: #91d7bc;
+    --fa-accent-solid-bg: #1f7a5b;
+    --fa-accent-solid-border: #2a8f6a;
+    --fa-accent-solid-text: #ffffff;
+    --fa-service-dot-idle: #4a524e;
+    --fa-error-text: #ef9a9a;
+    --fa-sidebar-toggle-collapsed-bg: #222624;
+    --fa-tool-mode-bg: rgba(120, 140, 255, 0.22);
+    --fa-tool-mode-text: #aebcff;
+    --fa-tool-mode-agent-bg: rgba(255, 170, 90, 0.22);
+    --fa-tool-mode-agent-text: #f2c084;
+    --fa-control-hover-border: #6cc5a6;
+    --fa-control-hover-bg: #28332f;
+    --fa-control-active-hover-border: #2a8f6a;
+    --fa-control-active-hover-bg: #165a49;
+    --fa-focus-ring: #6cc5a6;
+  }
+}
+
+.ui-skin-glass .topbar,
+.ui-skin-glass .context-panel,
+.ui-skin-glass .composer,
+.ui-skin-glass .sidebar-section-body,
+.ui-skin-glass .message-body,
+.ui-skin-glass .trace-list div,
+.ui-skin-glass .desktop-shell-panel div,
+.ui-skin-glass .tool,
+.ui-skin-glass .fetch-iframe-container {
+  background: rgba(251, 252, 253, var(--fa-glass-opacity, 0.78));
+  -webkit-backdrop-filter: blur(16px) saturate(1.18);
+  backdrop-filter: blur(16px) saturate(1.18);
+}
+
+.ui-skin-glass .chat-panel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(238, 242, 241, 0.72)),
+    #eef2f1;
+}
+
+.ui-skin-glass .sidebar-section-header,
+.ui-skin-glass .drawer-brand,
+.ui-skin-glass .fetch-iframe-header {
+  background: rgba(238, 242, 241, 0.76);
+  -webkit-backdrop-filter: blur(14px) saturate(1.16);
+  backdrop-filter: blur(14px) saturate(1.16);
+}
+
+.ui-skin-contrast .topbar,
+.ui-skin-contrast .context-panel,
+.ui-skin-contrast .composer,
+.ui-skin-contrast .message-body,
+.ui-skin-contrast .trace-list div,
+.ui-skin-contrast .desktop-shell-panel div,
+.ui-skin-contrast .tool {
+  border-color: #25313a;
+}
+
+.ui-skin-contrast .topbar,
+.ui-skin-contrast .drawer-brand,
+.ui-skin-contrast .sidebar-section-header {
+  background: #ffffff;
+}
+
+.ui-skin-contrast .chat-panel,
+.ui-skin-contrast .sidebar-section-body {
+  background: #f4f7f7;
+}
+
+.ui-skin-contrast .mode-toggle,
+.ui-skin-contrast .diagnostics-toggle,
+.ui-skin-contrast .mode-option,
+.ui-skin-contrast .mobile-menu-toggle,
+.ui-skin-contrast .drawer-close,
+.ui-skin-contrast .drawer-action,
+.ui-skin-contrast .report-button,
+.ui-skin-contrast .memory-button,
+.ui-skin-contrast .composer-action-button,
+.ui-skin-contrast .composer-menu-item,
+.ui-skin-contrast .prompt-list button,
+.ui-skin-contrast .conversation-new,
+.ui-skin-contrast .conversation-purge-deleted,
+.ui-skin-contrast .conversation-entry-button,
+.ui-skin-contrast .conversation-delete,
+.ui-skin-contrast textarea,
+.ui-skin-contrast .setting-row input[type="text"],
+.ui-skin-contrast .setting-row select {
+  border-color: #25313a;
+}
+
+.chat-style-compact .messages {
+  gap: 8px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.chat-style-compact .message {
+  gap: 8px;
+}
+
+.chat-style-compact .message-body {
+  padding: 8px 10px;
+}
+
+.chat-style-compact .message-meta,
+.chat-style-compact .message-actions {
+  font-size: 12px;
+}
+
+.chat-style-bubbles .message {
+  grid-template-columns: 30px minmax(0, min(720px, 100%));
+}
+
+.chat-style-bubbles .message.user {
+  grid-template-columns: minmax(0, min(720px, 100%)) 30px;
+}
+
+.chat-style-bubbles .message-body {
+  border-radius: 18px;
+}
+
+.chat-style-bubbles .message.user .message-body {
+  border-color: #b7d0f8;
+  background: #e9f2ff;
+}
+
+.chat-style-bubbles .message.assistant .message-body {
+  border-color: #c8dad3;
+  background: #f7fbf9;
+}
+
+:root[data-theme="dark"] .ui-skin-glass .topbar,
+:root[data-theme="dark"] .ui-skin-glass .context-panel,
+:root[data-theme="dark"] .ui-skin-glass .composer,
+:root[data-theme="dark"] .ui-skin-glass .sidebar-section-body,
+:root[data-theme="dark"] .ui-skin-glass .message-body,
+:root[data-theme="dark"] .ui-skin-glass .trace-list div,
+:root[data-theme="dark"] .ui-skin-glass .desktop-shell-panel div,
+:root[data-theme="dark"] .ui-skin-glass .tool,
+:root[data-theme="dark"] .ui-skin-glass .fetch-iframe-container {
+  background: rgba(29, 32, 31, var(--fa-glass-opacity, 0.78));
+}
+
+:root[data-theme="dark"] .ui-skin-glass .chat-panel {
+  background:
+    linear-gradient(180deg, rgba(32, 35, 34, 0.62), rgba(24, 26, 27, 0.78)),
+    #181a1b;
+}
+
+:root[data-theme="dark"] .ui-skin-glass .sidebar-section-header,
+:root[data-theme="dark"] .ui-skin-glass .drawer-brand,
+:root[data-theme="dark"] .ui-skin-glass .fetch-iframe-header {
+  background: rgba(34, 38, 36, 0.76);
+}
+
+:root[data-theme="dark"] .ui-skin-contrast .topbar,
+:root[data-theme="dark"] .ui-skin-contrast .context-panel,
+:root[data-theme="dark"] .ui-skin-contrast .composer,
+:root[data-theme="dark"] .ui-skin-contrast .message-body,
+:root[data-theme="dark"] .ui-skin-contrast .trace-list div,
+:root[data-theme="dark"] .ui-skin-contrast .desktop-shell-panel div,
+:root[data-theme="dark"] .ui-skin-contrast .tool,
+:root[data-theme="dark"] .ui-skin-contrast .mode-toggle,
+:root[data-theme="dark"] .ui-skin-contrast .diagnostics-toggle,
+:root[data-theme="dark"] .ui-skin-contrast .mode-option,
+:root[data-theme="dark"] .ui-skin-contrast .mobile-menu-toggle,
+:root[data-theme="dark"] .ui-skin-contrast .drawer-close,
+:root[data-theme="dark"] .ui-skin-contrast .drawer-action,
+:root[data-theme="dark"] .ui-skin-contrast .report-button,
+:root[data-theme="dark"] .ui-skin-contrast .memory-button,
+:root[data-theme="dark"] .ui-skin-contrast .composer-action-button,
+:root[data-theme="dark"] .ui-skin-contrast .composer-menu-item,
+:root[data-theme="dark"] .ui-skin-contrast .prompt-list button,
+:root[data-theme="dark"] .ui-skin-contrast .conversation-new,
+:root[data-theme="dark"] .ui-skin-contrast .conversation-entry-button,
+:root[data-theme="dark"] .ui-skin-contrast .conversation-delete,
+:root[data-theme="dark"] .ui-skin-contrast textarea,
+:root[data-theme="dark"] .ui-skin-contrast .setting-row input[type="text"],
+:root[data-theme="dark"] .ui-skin-contrast .setting-row select {
+  border-color: #c9c1b6;
+}
+
+:root[data-theme="dark"] .chat-style-bubbles .message.user .message-body {
+  border-color: #365878;
+  background: #1e3142;
+}
+
+:root[data-theme="dark"] .chat-style-bubbles .message.assistant .message-body {
+  border-color: #3f514b;
+  background: #202826;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ui-skin-glass .topbar,
+  :root:not([data-theme="light"]) .ui-skin-glass .context-panel,
+  :root:not([data-theme="light"]) .ui-skin-glass .composer,
+  :root:not([data-theme="light"]) .ui-skin-glass .sidebar-section-body,
+  :root:not([data-theme="light"]) .ui-skin-glass .message-body,
+  :root:not([data-theme="light"]) .ui-skin-glass .trace-list div,
+  :root:not([data-theme="light"]) .ui-skin-glass .desktop-shell-panel div,
+  :root:not([data-theme="light"]) .ui-skin-glass .tool,
+  :root:not([data-theme="light"]) .ui-skin-glass .fetch-iframe-container {
+    background: rgba(29, 32, 31, var(--fa-glass-opacity, 0.78));
+  }
+
+  :root:not([data-theme="light"]) .ui-skin-glass .chat-panel {
+    background:
+      linear-gradient(180deg, rgba(32, 35, 34, 0.62), rgba(24, 26, 27, 0.78)),
+      #181a1b;
+  }
+
+  :root:not([data-theme="light"]) .ui-skin-glass .sidebar-section-header,
+  :root:not([data-theme="light"]) .ui-skin-glass .drawer-brand,
+  :root:not([data-theme="light"]) .ui-skin-glass .fetch-iframe-header {
+    background: rgba(34, 38, 36, 0.76);
+  }
+
+  :root:not([data-theme="light"]) .ui-skin-contrast .topbar,
+  :root:not([data-theme="light"]) .ui-skin-contrast .context-panel,
+  :root:not([data-theme="light"]) .ui-skin-contrast .composer,
+  :root:not([data-theme="light"]) .ui-skin-contrast .message-body,
+  :root:not([data-theme="light"]) .ui-skin-contrast .trace-list div,
+  :root:not([data-theme="light"]) .ui-skin-contrast .desktop-shell-panel div,
+  :root:not([data-theme="light"]) .ui-skin-contrast .tool,
+  :root:not([data-theme="light"]) .ui-skin-contrast .mode-toggle,
+  :root:not([data-theme="light"]) .ui-skin-contrast .diagnostics-toggle,
+  :root:not([data-theme="light"]) .ui-skin-contrast .mode-option,
+  :root:not([data-theme="light"]) .ui-skin-contrast .mobile-menu-toggle,
+  :root:not([data-theme="light"]) .ui-skin-contrast .drawer-close,
+  :root:not([data-theme="light"]) .ui-skin-contrast .drawer-action,
+  :root:not([data-theme="light"]) .ui-skin-contrast .report-button,
+  :root:not([data-theme="light"]) .ui-skin-contrast .memory-button,
+  :root:not([data-theme="light"]) .ui-skin-contrast .composer-action-button,
+  :root:not([data-theme="light"]) .ui-skin-contrast .composer-menu-item,
+  :root:not([data-theme="light"]) .ui-skin-contrast .prompt-list button,
+  :root:not([data-theme="light"]) .ui-skin-contrast .conversation-new,
+  :root:not([data-theme="light"]) .ui-skin-contrast .conversation-entry-button,
+  :root:not([data-theme="light"]) .ui-skin-contrast .conversation-delete,
+  :root:not([data-theme="light"]) .ui-skin-contrast textarea,
+  :root:not([data-theme="light"]) .ui-skin-contrast .setting-row input[type="text"],
+  :root:not([data-theme="light"]) .ui-skin-contrast .setting-row select {
+    border-color: #c9c1b6;
+  }
+
+  :root:not([data-theme="light"]) .chat-style-bubbles .message.user .message-body {
+    border-color: #365878;
+    background: #1e3142;
+  }
+
+  :root:not([data-theme="light"]) .chat-style-bubbles .message.assistant .message-body {
+    border-color: #3f514b;
+    background: #202826;
+  }
+}

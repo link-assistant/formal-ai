@@ -14,6 +14,23 @@ name: Self-authored pull request
 # The task contract, the re-run guard and the base-branch rule are documented in
 # the action and in `docs/case-studies/issue-1085/ci-evidence/`.
 on:
+  release:
+    types: [published]
+  workflow_call:
+    inputs:
+      production-run-id:
+        type: string
+        required: true
+      production-run-attempt:
+        type: string
+        required: true
+    secrets:
+      AUTOMATION_APP_ID:
+        required: false
+      AUTOMATION_APP_PRIVATE_KEY:
+        required: false
+      AUTOMATION_TOKEN:
+        required: false
   workflow_dispatch:
     inputs:
       issue:
@@ -24,6 +41,9 @@ on:
   issues:
     types: [labeled]
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     paths:
       - '.github/workflows/self-authored-pull-request.yml'
       - '.github/actions/author-with-formal-ai/**'
@@ -43,36 +63,98 @@ jobs:
     name: Formal AI authors a change and opens the pull request
     if: github.event_name != 'issues' || github.event.label.name == 'formal-ai-solve'
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 30
+    concurrency:
+      group: formal-ai-repository-writes
+      queue: max
     # Scoped to this job, not the workflow: the job pushes the bot branch,
     # opens and comments on the pull request, and comments on the task issue.
+    # `actions: write` lets the job dispatch the bot pull request's checks
+    # (issue #1187 R2); a dispatch run needs no approval.
     permissions:
       contents: write
       pull-requests: write
       issues: write
+      actions: write
     env:
-      # A push or pull request made with GITHUB_TOKEN starts no workflow run.
-      # When the repository provides FORMAL_AI_BOT_TOKEN (a fine-grained token
-      # with contents and pull-requests write), it is used instead so the bot
-      # pull request gets its checks without a human touching the branch.
-      GH_TOKEN: ${{ secrets.FORMAL_AI_BOT_TOKEN || github.token }}
-      FORMAL_AI_BOT_TOKEN: ${{ secrets.FORMAL_AI_BOT_TOKEN }}
       LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
     steps:
       # This checkout keeps its credential (no `persist-credentials: false`):
       # the action's push steps write the bot branch with it when the
-      # repository provides no FORMAL_AI_BOT_TOKEN, and nothing else supplies
+      # resolver below falls back to github.token, and nothing else supplies
       # one (issue #1079).
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-          ref: ${{ github.head_ref || github.ref }}
+          ref: ${{ (github.event_name == 'release' || inputs.production-run-id != '') && github.event.repository.default_branch || github.head_ref || github.ref }}
+
+      # Issue #1187 R1: the one credential resolver -- GitHub App, then
+      # AUTOMATION_TOKEN, then github.token. Nothing is mandatory; the layer
+      # is printed to the log and the job summary.
+      - uses: ./.github/actions/automation-token
+        with:
+          app-id: ${{ secrets.AUTOMATION_APP_ID }}
+          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          automation-token: ${{ secrets.AUTOMATION_TOKEN }}
+        id: automation
+
+      - name: Set up locked source protocol dependencies
+        if: inputs.production-run-id != ''
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: Install locked source protocol dependencies
+        if: inputs.production-run-id != ''
+        timeout-minutes: 5
+        run: bun install --frozen-lockfile --ignore-scripts
+
+      # Source classification is not evidence that a contribution was reviewed or merged.
+      - name: Bind an independently published release to the default author source
+        id: release-context
+        if: github.event_name == 'release' || inputs.production-run-id != ''
+        env:
+          GH_TOKEN: ${{ steps.automation.outputs.token }}
+          EVENT: ${{ github.event_name }}
+          REPOSITORY: ${{ github.repository }}
+          RELEASE_ACTION: ${{ github.event.action }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          PRODUCER_RUN_ID: ${{ inputs.production-run-id }}
+          PRODUCER_RUN_ATTEMPT: ${{ inputs.production-run-attempt }}
+          REFERENCE: ${{ github.ref }}
+          CURRENT_RUN_ID: ${{ github.run_id }}
+          CURRENT_RUN_ATTEMPT: ${{ github.run_attempt }}
+          CURRENT_WORKFLOW_REF: ${{ github.workflow_ref }}
+        run: node scripts/resolve-self-authored-release.mjs
 
       - uses: ./.github/actions/cache-cargo-registry
+        if: github.event_name != 'release' && inputs.production-run-id == '' || steps.release-context.outputs.active == 'true'
         with:
           prefix: self-authored-
 
+      # The action's contract keeps its `FORMAL_AI_BOT_TOKEN` variable name
+      # (consumers in other repositories set it): it is non-empty exactly
+      # when the resolver found a credential that starts workflow runs and
+      # may push workflow files, so the action's workflow-file guard and its
+      # "pushed with GITHUB_TOKEN" notice keep their meaning.
       - uses: ./.github/actions/author-with-formal-ai
+        if: github.event_name != 'release' && inputs.production-run-id == '' || steps.release-context.outputs.active == 'true'
+        id: author
+        env:
+          GH_TOKEN: ${{ steps.automation.outputs.token }}
+          FORMAL_AI_BOT_TOKEN: ${{ steps.automation.outputs.layer != 'default' && steps.automation.outputs.token || '' }}
         with:
           issue: ${{ inputs.issue }}
           formal-ai-source: source
+          base-branch: ${{ steps.release-context.outputs.branch }}
+          starting-ref: ${{ steps.release-context.outputs.branch }}
+
+      # Issue #1187 R2: at layer `default` the push came from github.token,
+      # so every `pull_request` check would wait for a maintainer's approval.
+      # Dispatch them on the bot branch instead -- dispatch runs start at once.
+      - name: Dispatch the bot pull request's checks
+        if: steps.automation.outputs.layer == 'default' && steps.author.outputs.authored == 'true'
+        uses: ./.github/actions/dispatch-checks
+        with:
+          pull-request: ${{ steps.author.outputs.pull-request }}
+          token: ${{ steps.automation.outputs.token }}

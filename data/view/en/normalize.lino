@@ -1,0 +1,17 @@
+view
+  id M-787ee239b9b3
+  lemma normalize
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "become normal or return to its normal state"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make normal or cause to conform to a norm or standard"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "bring to a desired consistency, texture, or hardness by a process of gradually heating and cooling"
+    provenance (wordnet)

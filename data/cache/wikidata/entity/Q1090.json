@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "銀"
+        },
+        "es": {
+          "language": "es",
+          "value": "plata"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "原子序數為47的化學元素"
+        },
+        "es": {
+          "language": "es",
+          "value": "elemento químico con número atómico 47"
         }
       },
       "aliases": {

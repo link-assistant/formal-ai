@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "床"
+        },
+        "es": {
+          "language": "es",
+          "value": "cama"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "एक प्रकार का फ़र्नीचर जिसे शयन एवं लेटने हेतु प्रयोग किया जाता है"
+        },
+        "es": {
+          "language": "es",
+          "value": "mueble utilizado como lugar para dormir o relajarse"
         }
       },
       "aliases": {
@@ -68,6 +76,20 @@
           {
             "language": "zh",
             "value": "牀"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "piltra"
+          },
+          {
+            "language": "es",
+            "value": "catrera"
+          },
+          {
+            "language": "es",
+            "value": "catre"
           }
         ]
       }

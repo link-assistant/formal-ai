@@ -1,0 +1,118 @@
+>> bash {"command":"node --test rust/tests/web/native-test-artifact.test.mjs rust/tests/web/dogfood-driver-tool-schema.test.mjs"}
+   Output: TAP version 13
+   # Subtest: selected actual adapter list is recorded and executes its requested effect
+   ok 1 - selected actual adapter list is recorded and executes its requested effect
+     ---
+     duration_ms: 3.08025
+     ...
+   # Subtest: unavailable or duplicated adapter declarations stop before planner or effects
+   ok 2 - unavailable or duplicated adapter declarations stop before planner or effects
+     ---
+     duration_ms: 1.5705
+     ...
+   # Subtest: an undeclared call vetoes the complete batch before its first side effect
+   ok 3 - an undeclared call vetoes the complete batch before its first side effect
+     ---
+     duration_ms: 0.592833
+     ...
+   # Subtest: caller and planner mutations cannot fabricate advertised availability
+   ok 4 - caller and planner mutations cannot fabricate advertised availability
+     ---
+     duration_ms: 0.554958
+     ...
+   # Subtest: a final answer with no tool availability records an empty actual schema
+   ok 5 - a final answer with no tool availability records an empty actual schema
+     ---
+     duration_ms: 0.09375
+     ...
+   # Subtest: same build identity and bytes execute the exact registered testcase
+   ok 6 - same build identity and bytes execute the exact registered testcase
+     ---
+     duration_ms: 505.163333
+     ...
+   # Subtest: foreign source tree and build variants refuse before executing artifact bytes
+   ok 7 - foreign source tree and build variants refuse before executing artifact bytes
+     ---
+     duration_ms: 4.128
+     ...
+   # Subtest: tampered unit or runtime binary bytes are rejected before execution
+   ok 8 - tampered unit or runtime binary bytes are rejected before execution
+     ---
+     duration_ms: 2.66475
+     ...
+   # Subtest: missing testcase and noncanonical receipt cannot silently run a different test
+   ok 9 - missing testcase and noncanonical receipt cannot silently run a different test
+     ---
+     duration_ms: 107.2205
+     ...
+   1..9
+   # tests 9
+   # suites 0
+   # pass 9
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 660.455042
+   
+   Exit Code: 0
+== answer ==
+The `node --test rust/tests/web/native-test-artifact.test.mjs rust/tests/web/dogfood-driver-tool-schema.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: selected actual adapter list is recorded and executes its requested effect
+ok 1 - selected actual adapter list is recorded and executes its requested effect
+  ---
+  duration_ms: 3.08025
+  ...
+# Subtest: unavailable or duplicated adapter declarations stop before planner or effects
+ok 2 - unavailable or duplicated adapter declarations stop before planner or effects
+  ---
+  duration_ms: 1.5705
+  ...
+# Subtest: an undeclared call vetoes the complete batch before its first side effect
+ok 3 - an undeclared call vetoes the complete batch before its first side effect
+  ---
+  duration_ms: 0.592833
+  ...
+# Subtest: caller and planner mutations cannot fabricate advertised availability
+ok 4 - caller and planner mutations cannot fabricate advertised availability
+  ---
+  duration_ms: 0.554958
+  ...
+# Subtest: a final answer with no tool availability records an empty actual schema
+ok 5 - a final answer with no tool availability records an empty actual schema
+  ---
+  duration_ms: 0.09375
+  ...
+# Subtest: same build identity and bytes execute the exact registered testcase
+ok 6 - same build identity and bytes execute the exact registered testcase
+  ---
+  duration_ms: 505.163333
+  ...
+# Subtest: foreign source tree and build variants refuse before executing artifact bytes
+ok 7 - foreign source tree and build variants refuse before executing artifact bytes
+  ---
+  duration_ms: 4.128
+  ...
+# Subtest: tampered unit or runtime binary bytes are rejected before execution
+ok 8 - tampered unit or runtime binary bytes are rejected before execution
+  ---
+  duration_ms: 2.66475
+  ...
+# Subtest: missing testcase and noncanonical receipt cannot silently run a different test
+ok 9 - missing testcase and noncanonical receipt cannot silently run a different test
+  ---
+  duration_ms: 107.2205
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 660.455042
+```

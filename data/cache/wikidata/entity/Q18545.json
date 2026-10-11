@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "球"
+        },
+        "es": {
+          "language": "es",
+          "value": "balón"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "गोल वस्तु"
+        },
+        "es": {
+          "language": "es",
+          "value": "objeto esférico u ovalado usado en varios deportes y juegos"
         }
       },
       "aliases": {
@@ -54,6 +62,20 @@
           {
             "language": "ru",
             "value": "шар"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "bola"
+          },
+          {
+            "language": "es",
+            "value": "balon"
+          },
+          {
+            "language": "es",
+            "value": "pelota"
           }
         ]
       }

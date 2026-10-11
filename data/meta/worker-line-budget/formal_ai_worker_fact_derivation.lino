@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_fact_derivation.js"
+  ceiling 376
+  rationale "Issue #1172 R9 browser twin of rust/src/seed/fact_derivation.rs, added 2026-10-08. The ten fact records the committed Wikidata captures reproduce were retired from data/seed/facts.lino; this module derives them at seed load from data/seed/fact-captures.lino (the capture projection) and data/seed/fact-realization.lino (sentence templates, Russian case endings, the English article, preferred label variants and recorded prompt surfaces), so no answer, label or form is spelled in the module."

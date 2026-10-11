@@ -1,0 +1,62 @@
+language en
+lemma character
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an imaginary person represented in a work of fiction (play or film or story)"
+    examples ("she is the main character in the novel")
+    id oewn-09610740-n
+    partOfSpeech n
+    synonyms ("fictional character" "fictitious character")
+  entry
+    definition "a characteristic property that defines the apparent individual nature of something"
+    examples ("each town has a quality all its own" "the radical character of our demands")
+    id oewn-05857811-n
+    partOfSpeech n
+    synonyms (quality lineament)
+  entry
+    definition "the inherent complex of attributes that determines a persons moral and ethical actions and reactions"
+    examples ("education has for its object the formation of character")
+    id oewn-04627573-n
+    partOfSpeech n
+    synonyms (fiber fibre)
+  entry
+    definition "an actor's portrayal of someone in a play"
+    examples ("she played the part of Desdemona")
+    id oewn-05937794-n
+    partOfSpeech n
+    synonyms (role "theatrical role" part persona)
+  entry
+    definition "a person of a specified kind (usually with many eccentricities)"
+    examples ("a real character" "a strange character" "a friendly eccentric" "the capable type" "a mental case")
+    id oewn-09928518-n
+    partOfSpeech n
+    synonyms (eccentric type case)
+  entry
+    definition "good repute"
+    examples ("he is a man of character")
+    id oewn-14462159-n
+    partOfSpeech n
+  entry
+    definition "a formal recommendation by a former employer to a potential future employer describing the person's qualifications and dependability"
+    examples ("requests for character references are all too often answered evasively")
+    id oewn-06707541-n
+    partOfSpeech n
+    synonyms (reference "character reference")
+  entry
+    definition "a written symbol that is used to represent speech"
+    examples ("the Greek alphabet has 24 characters")
+    id oewn-06831828-n
+    partOfSpeech n
+    synonyms (graph grapheme "graphic symbol")
+  entry
+    definition "(genetics) an attribute (structural or functional) that is determined by a gene or group of genes"
+    id oewn-04624273-n
+    partOfSpeech n
+  entry
+    definition "engrave or inscribe characters on"
+    id oewn-01325055-v
+    partOfSpeech v
+source "oewn:2024"

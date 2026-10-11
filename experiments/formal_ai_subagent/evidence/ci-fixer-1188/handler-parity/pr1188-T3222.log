@@ -1,0 +1,21 @@
+>> read {"filePath":"data/meta/worker-line-budget/formal_ai_worker_coreference.lino","file_path":"data/meta/worker-line-budget/formal_ai_worker_coreference.lino","path":"data/meta/worker-line-budget/formal_ai_worker_coreference.lino"}
+   <file>
+   00001| substitution_rules
+   00002|   id learned_program_plan_rules
+   00003| 
+   
+   (End of file - total 3 lines)
+   </file>
+>> edit {"filePath":"data/meta/worker-line-budget/formal_ai_worker_coreference.lino","file_path":"data/meta/worker-line-budget/formal_ai_worker_coreference.lino","new":"worker_module_budget\n  module \"formal_ai_worker_coreference.js\"\n  ceiling 119\n  rationale \"Generic seeded conversation references extracted from translation and recall; normalized Unicode surfaces use the existing bounded matcher, and actual resolution carries native typed events. Original worker ceiling only decreases.\"\n","newString":"worker_module_budget\n  module \"formal_ai_worker_coreference.js\"\n  ceiling 119\n  rationale \"Generic seeded conversation references extracted from translation and recall; normalized Unicode surfaces use the existing bounded matcher, and actual resolution carries native typed events. Original worker ceiling only decreases.\"\n","new_str":"worker_module_budget\n  module \"formal_ai_worker_coreference.js\"\n  ceiling 119\n  rationale \"Generic seeded conversation references extracted from translation and recall; normalized Unicode surfaces use the existing bounded matcher, and actual resolution carries native typed events. Original worker ceiling only decreases.\"\n","new_string":"worker_module_budget\n  module \"formal_ai_worker_coreference.js\"\n  ceiling 119\n  rationale \"Generic seeded conversation references extracted from translation and recall; normalized Unicode surfaces use the existing bounded matcher, and actual resolution carries native typed events. Original worker ceiling only decreases.\"\n","old":"substitution_rules\n  id learned_program_plan_rules\n","oldString":"substitution_rules\n  id learned_program_plan_rules\n","old_str":"substitution_rules\n  id learned_program_plan_rules\n","old_string":"substitution_rules\n  id learned_program_plan_rules\n","path":"data/meta/worker-line-budget/formal_ai_worker_coreference.lino"}
+>> bash {"command":"sha256sum -- data/meta/worker-line-budget/formal_ai_worker_coreference.lino"}
+   Output: 5dc169bb6655bbd7bb303f1fc029591ce4518e3d468ed77d99a3000856c18ee7  data/meta/worker-line-budget/formal_ai_worker_coreference.lino
+   
+   Exit Code: 0
+== answer ==
+Replaced `substitution_rules
+  id learned_program_plan_rules
+` with `worker_module_budget
+  module "formal_ai_worker_coreference.js"
+  ceiling 119
+  rationale "Generic seeded conversation references extracted from translation and recall; normalized Unicode surfaces use the existing bounded matcher, and actual resolution carries native typed events. Original worker ceiling only decreases."
+` in `data/meta/worker-line-budget/formal_ai_worker_coreference.lino` and observed the result.

@@ -1,0 +1,19 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-meta.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-ba8f00e8112201ab
+    record "answer_rationale_inquiry"
+  gap seed-metadata-gap-a028b027de897f59
+    record "architecture_concept"
+  gap seed-metadata-gap-d816a2d8cd0c3bfb
+    record "assistant_mechanism_inquiry"
+  gap seed-metadata-gap-db28e03a49280d0c
+    record "assistant_self_reference"
+  gap seed-metadata-gap-db82156a1a8c9040
+    record "causal_interrogative"
+  gap seed-metadata-gap-a59f376f2ee02aef
+    record "operating_principle"
+  gap seed-metadata-gap-7659af4ab70b22cc
+    record "prior_answer_reference"

@@ -1,0 +1,110 @@
+language en
+lemma bar
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a portable .30 caliber automatic rifle operated by gas pressure and fed by cartridges from a magazine; used by United States troops in World War I and in World War II and in the Korean War"
+    id oewn-02910716-n
+    partOfSpeech n
+    synonyms ("Browning automatic rifle")
+  entry
+    definition "a room or establishment where alcoholic drinks are served over a counter"
+    examples ("he drowned his sorrows in whiskey at the bar")
+    id oewn-02800154-n
+    partOfSpeech n
+    synonyms (barroom saloon ginmill taproom)
+  entry
+    definition "a counter where you can obtain food or drink"
+    examples ("he bought a hot dog and a coke at the bar")
+    id oewn-02792510-n
+    partOfSpeech n
+  entry
+    definition "a rigid piece of metal or wood; usually used as a fastening or obstruction or weapon"
+    examples ("there were bars in the windows to prevent escape")
+    id oewn-02791712-n
+    partOfSpeech n
+  entry
+    definition "musical notation for a repeating pattern of musical beats"
+    examples ("the orchestra omitted the last twelve bars of the song")
+    id oewn-06877775-n
+    partOfSpeech n
+    synonyms (measure)
+  entry
+    definition "an obstruction (usually metal) placed at the top of a goal"
+    examples ("it was an excellent kick but the ball hit the bar")
+    id oewn-02792294-n
+    partOfSpeech n
+  entry
+    definition "the act of preventing"
+    examples ("there was no bar against leaving" "money was allocated to study the cause and prevention of influenza")
+    id oewn-01079274-n
+    partOfSpeech n
+    synonyms (prevention)
+  entry
+    definition "(meteorology) a unit of pressure equal to a million dynes per square centimeter"
+    examples ("unfortunately some writers have used bar for one dyne per square centimeter")
+    id oewn-13733960-n
+    partOfSpeech n
+  entry
+    definition "a submerged (or partly submerged) ridge in a river or along a shore"
+    examples ("the boat ran aground on a submerged bar in the river")
+    id oewn-09236967-n
+    partOfSpeech n
+  entry
+    definition "the body of individuals qualified to practice law in a particular jurisdiction"
+    examples ("he was admitted to the bar in New Jersey")
+    id oewn-08129368-n
+    partOfSpeech n
+    synonyms ("legal profession" "legal community")
+  entry
+    definition "a narrow marking of a different color or texture from the background"
+    examples ("a green toad with small black stripes or bars" "may the Stars and Stripes forever wave")
+    id oewn-04690493-n
+    partOfSpeech n
+    synonyms (stripe streak)
+  entry
+    definition "a block of solid substance (such as soap or wax)"
+    examples ("a bar of chocolate")
+    id oewn-02940853-n
+    partOfSpeech n
+    synonyms (cake)
+  entry
+    definition "a horizontal rod that serves as a support for gymnasts as they perform exercises"
+    id oewn-02793177-n
+    partOfSpeech n
+  entry
+    definition "a heating element in an electric fire"
+    examples ("an electric fire with three bars")
+    id oewn-02793035-n
+    partOfSpeech n
+  entry
+    definition "(law) a railing that encloses the part of the courtroom where the judges and lawyers sit and the case is tried"
+    examples ("spectators were not allowed past the bar")
+    id oewn-02792793-n
+    partOfSpeech n
+  entry
+    definition "prevent from entering; keep out"
+    examples ("He was barred from membership in the club")
+    id oewn-00798250-v
+    partOfSpeech v
+    synonyms (debar exclude)
+  entry
+    definition "render unsuitable for passage"
+    examples ("block the way" "barricade the streets" "stop the busy road")
+    id oewn-01480632-v
+    partOfSpeech v
+    synonyms (barricade block blockade stop "block off" "block up")
+  entry
+    definition "expel, as if by official decree"
+    examples ("he was banished from his own country")
+    id oewn-02509452-v
+    partOfSpeech v
+    synonyms (banish relegate)
+  entry
+    definition "secure with, or as if with, bars"
+    examples ("He barred the door")
+    id oewn-01345592-v
+    partOfSpeech v
+source "oewn:2024"

@@ -1,0 +1,90 @@
+self_ast_census
+  target src/agentic_coding/file_read/records.rs
+  language rust
+  fidelity full_ast
+  byte_len 5798
+  line_count 155
+  content_id source_module_aac4afce183a6786
+  symbol_count 9
+  symbols
+    struct ToolResultRecord 5 10
+    function tool_result_records 12 44
+    function tool_result_call 46 63
+    function read_record_for_path 65 84
+    function read_result_for_path 85 90
+    function grep_result_for_path 92 110
+    function same_path 118 127
+    function run_record_for_command 135 148
+    function path_argument 150 155
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 4449
+    named_node_count 947
+    distinct_node_kinds 63
+    node_kinds
+      arguments 84
+      array_expression 2
+      array_type 6
+      binary_expression 17
+      block 16
+      boolean_literal 1
+      call_expression 84
+      char_literal 1
+      closure_expression 21
+      closure_parameters 21
+      continue_expression 1
+      crate 1
+      doc_comment 13
+      expression_statement 6
+      field_declaration 4
+      field_declaration_list 1
+      field_expression 94
+      field_identifier 100
+      field_initializer 2
+      field_initializer_list 1
+      for_expression 1
+      function_item 8
+      generic_function 1
+      generic_type 9
+      identifier 184
+      if_expression 2
+      index_expression 3
+      inner_doc_comment_marker 1
+      integer_literal 4
+      let_declaration 9
+      lifetime 12
+      lifetime_parameter 4
+      line_comment 19
+      mutable_specifier 1
+      outer_doc_comment_marker 12
+      parameter 15
+      parameters 8
+      parenthesized_expression 1
+      primitive_type 13
+      range_expression 2
+      reference_expression 8
+      reference_type 19
+      return_expression 1
+      scoped_identifier 18
+      scoped_type_identifier 2
+      scoped_use_list 2
+      shorthand_field_initializer 2
+      source_file 1
+      string_content 14
+      string_literal 14
+      struct_expression 1
+      struct_item 1
+      super 14
+      try_expression 2
+      tuple_expression 2
+      tuple_pattern 2
+      type_arguments 10
+      type_identifier 26
+      type_parameters 4
+      unary_expression 4
+      use_declaration 2
+      use_list 2
+      visibility_modifier 11

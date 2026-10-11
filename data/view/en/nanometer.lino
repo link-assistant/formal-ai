@@ -1,0 +1,9 @@
+view
+  id M-de406eca1277
+  lemma nanometer
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a metric unit of length equal to one billionth of a meter"
+    provenance (wordnet)

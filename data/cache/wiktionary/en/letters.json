@@ -1,0 +1,151 @@
+[
+  {
+    "word": "letters",
+    "phonetic": "/ˈlɛtəz/",
+    "phonetics": [
+      {
+        "text": "/ˈlɛtəz/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈlɛtɚz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/letters-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1227679",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A symbol in an alphabet.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "There are twenty-six letters in the English alphabet."
+          },
+          {
+            "definition": "A written or printed communication, generally longer and more formal than a note.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I wrote a letter to my sister about my life."
+          },
+          {
+            "definition": "The literal meaning of something, as distinguished from its intended and remoter meaning (often contrasted with the spirit).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(plural) Literature.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Benjamin Franklin was multiskilled – a scientist, politician and a man of letters."
+          },
+          {
+            "definition": "A division unit of a piece of law marked by a letter of the alphabet.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A size of paper, 8½ in × 11 in (215.9 mm × 279.4 mm, US paper sizes rounded to the nearest 5 mm).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A size of paper, 215 mm × 280 mm.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A single type; type, collectively; a style of type.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "bookstaff",
+          "bookstave"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To print, inscribe, or paint letters on something.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(scholastic) To earn a varsity letter (award).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "One who lets, or lets out.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a blood-letter"
+          },
+          {
+            "definition": "One who retards or hinders.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Literature (school subject).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Rickert was the first woman (and second individual) to be awarded a Ph.D. in English letters and philology with that academic honor at the University of Chicago."
+          },
+          {
+            "definition": "The liberal arts, humanities, learning (broad accumulated cultural knowledge).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Though architecture in ancient Rome was not generally considered to belong to the artes liberales, Vitruvius easily qualified as a man of letters because of his wide learning."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An identifying initial of the academic institution that is awarded to a member of a varsity team. It is made from structured cloth, and intended to be sewn to a piece of clothing such as a varsity sweater or varsity jacket.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/letter",
+      "https://en.wiktionary.org/wiki/letters",
+      "https://en.wiktionary.org/wiki/varsity%20letter"
+    ]
+  }
+]

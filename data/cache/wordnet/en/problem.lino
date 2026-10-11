@@ -1,0 +1,24 @@
+language en
+lemma problem
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a state of difficulty that needs to be resolved"
+    examples ("she and her husband are having problems" "it is always a job to contact him" "urban problems such as traffic congestion and smog")
+    id oewn-14434009-n
+    partOfSpeech n
+    synonyms (job)
+  entry
+    definition "a question raised for consideration or solution"
+    examples ("our homework consisted of ten problems to solve")
+    id oewn-06796860-n
+    partOfSpeech n
+  entry
+    definition "a source of difficulty"
+    examples ("one trouble after another delayed the job" "what's the problem?")
+    id oewn-05695143-n
+    partOfSpeech n
+    synonyms (trouble)
+source "oewn:2024"

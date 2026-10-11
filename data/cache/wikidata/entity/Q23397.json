@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "湖泊"
+        },
+        "es": {
+          "language": "es",
+          "value": "lago"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "水体类型"
+        },
+        "es": {
+          "language": "es",
+          "value": "cuerpo de agua relativamente quieto, localizado en una cuenca"
         }
       },
       "aliases": {
@@ -66,6 +74,20 @@
           {
             "language": "zh",
             "value": "潭"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "lagos"
+          },
+          {
+            "language": "es",
+            "value": "lagunas"
+          },
+          {
+            "language": "es",
+            "value": "laguna"
           }
         ]
       }

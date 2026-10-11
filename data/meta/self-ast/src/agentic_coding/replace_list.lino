@@ -1,0 +1,92 @@
+self_ast_census
+  target src/agentic_coding/replace_list.rs
+  language rust
+  fidelity full_ast
+  byte_len 12023
+  line_count 313
+  content_id source_module_809eb895cf7144a6
+  symbol_count 12
+  symbols
+    const LISTED 19 19
+    const CLAUSE_TAIL 22 22
+    function without_tail 25 29
+    function replace_clauses 35 72
+    function replace_list 78 112
+    const SENTENCE_END 115 115
+    function unplanned_edit_clause 126 160
+    function several_edit_targets 168 201
+    function edit_region 208 208
+    function coordinated_paths 232 260
+    function replaced_in_order 266 275
+    function absent_text_answer 283 313
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 9022
+    named_node_count 1820
+    distinct_node_kinds 62
+    node_kinds
+      arguments 150
+      array_expression 5
+      array_type 6
+      assignment_expression 4
+      binary_expression 42
+      block 47
+      break_expression 4
+      call_expression 150
+      char_literal 11
+      closure_expression 25
+      closure_parameters 25
+      compound_assignment_expr 1
+      const_item 3
+      continue_expression 1
+      crate 2
+      doc_comment 55
+      else_clause 4
+      expression_statement 43
+      field_expression 134
+      field_identifier 130
+      for_expression 7
+      function_item 9
+      generic_type 20
+      identifier 411
+      if_expression 15
+      index_expression 10
+      inner_doc_comment_marker 8
+      integer_literal 22
+      let_declaration 53
+      lifetime 1
+      line_comment 61
+      loop_expression 2
+      macro_invocation 2
+      mutable_specifier 10
+      outer_doc_comment_marker 47
+      parameter 19
+      parameters 9
+      parenthesized_expression 2
+      primitive_type 29
+      range_expression 5
+      reference_expression 25
+      reference_pattern 1
+      reference_type 20
+      return_expression 7
+      scoped_identifier 17
+      scoped_use_list 3
+      source_file 1
+      string_content 11
+      string_literal 11
+      super 12
+      token_tree 2
+      try_expression 11
+      tuple_expression 9
+      tuple_pattern 12
+      tuple_struct_pattern 3
+      tuple_type 7
+      type_arguments 20
+      type_identifier 35
+      unary_expression 16
+      use_declaration 4
+      use_list 3
+      visibility_modifier 6

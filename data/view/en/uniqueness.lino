@@ -1,0 +1,9 @@
+view
+  id M-e402013f5924
+  lemma uniqueness
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the quality of being one of a kind"
+    provenance (wordnet)

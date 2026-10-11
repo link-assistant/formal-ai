@@ -7,6 +7,7 @@
 //! direct-calculation proof.
 
 use crate::arithmetic::{ArithmeticError, evaluate_fallback_formatted};
+use crate::proof_engine::library::phrase;
 use crate::proof_engine::types::{Proof, ProofMethod, ProofOutcome, ProofStep, StepKind};
 
 /// Comparison operator extracted from a claim. The variants are written as
@@ -22,23 +23,25 @@ enum Comparison {
 }
 
 impl Comparison {
-    const fn label_en(self) -> &'static str {
+    /// The `relation_*` phrase of `data/seed/proof-library.lino` naming this
+    /// comparison in words.
+    const fn relation_id(self) -> &'static str {
         match self {
-            Self::Eq => "equals",
-            Self::Neq => "is not equal to",
-            Self::Lt => "is less than",
-            Self::Gt => "is greater than",
-            Self::Le => "is at most",
-            Self::Ge => "is at least",
+            Self::Eq => "relation_eq",
+            Self::Neq => "relation_neq",
+            Self::Lt => "relation_lt",
+            Self::Gt => "relation_gt",
+            Self::Le => "relation_le",
+            Self::Ge => "relation_ge",
         }
     }
 }
 
 /// Try to recognize and discharge a purely arithmetic equality / inequality
-/// claim contained in `claim`. Returns `None` when the text does not look like
-/// such a claim.
+/// claim contained in `claim`, wording the proof in `language`. Returns
+/// `None` when the text does not look like such a claim.
 #[must_use]
-pub fn attempt_arithmetic_claim(claim: &str) -> Option<ProofOutcome> {
+pub fn attempt_arithmetic_claim(claim: &str, language: &str) -> Option<ProofOutcome> {
     let (lhs_raw, rhs_raw, comparison) = split_on_comparison(claim)?;
     let lhs = normalize_arithmetic_text(lhs_raw);
     let rhs = normalize_arithmetic_text(rhs_raw);
@@ -52,7 +55,7 @@ pub fn attempt_arithmetic_claim(claim: &str) -> Option<ProofOutcome> {
     let rhs_value = evaluate_fallback_formatted(&rhs);
     let (Ok(lhs_value), Ok(rhs_value)) = (lhs_value, rhs_value) else {
         return Some(ProofOutcome::Inconclusive {
-            reason: arithmetic_failure_reason(&lhs, &rhs),
+            reason: arithmetic_failure_reason(&lhs, &rhs, language),
         });
     };
     let holds = match comparison {
@@ -67,59 +70,61 @@ pub fn attempt_arithmetic_claim(claim: &str) -> Option<ProofOutcome> {
             values_equal(&lhs_value, &rhs_value) || numeric_less_than(&rhs_value, &lhs_value)
         }
     };
-    let statement = format!("{lhs} {} {rhs}", comparison_symbol(comparison));
+    let symbol = comparison_symbol(comparison);
+    let relation = phrase(comparison.relation_id(), language, &[]);
+    let statement = format!("{lhs} {symbol} {rhs}");
+    let values = [
+        ("statement", statement.as_str()),
+        ("lhs", lhs.as_str()),
+        ("rhs", rhs.as_str()),
+        ("lhs_value", lhs_value.as_str()),
+        ("rhs_value", rhs_value.as_str()),
+        ("symbol", symbol),
+        ("relation", relation.as_str()),
+    ];
+    let observed = [
+        ("lhs_value", lhs_value.as_str()),
+        ("rhs_value", rhs_value.as_str()),
+        (
+            "symbol",
+            comparison_symbol(observed_comparison(&lhs_value, &rhs_value)),
+        ),
+    ];
     let steps = vec![
         ProofStep {
             kind: StepKind::Hypothesis,
-            text: format!(
-                "Interpret \"{statement}\" as an arithmetic claim over the rational \
-                 numbers, where each side is a closed expression."
-            ),
+            text: phrase("arithmetic_interpret", language, &values),
         },
         ProofStep {
             kind: StepKind::Inference,
-            text: format!("Evaluate the left-hand side: {lhs} = {lhs_value}."),
+            text: phrase("arithmetic_evaluate_left", language, &values),
         },
         ProofStep {
             kind: StepKind::Inference,
-            text: format!("Evaluate the right-hand side: {rhs} = {rhs_value}."),
+            text: phrase("arithmetic_evaluate_right", language, &values),
         },
         ProofStep {
             kind: StepKind::Inference,
-            text: format!(
-                "Compare the two values: {lhs_value} {} {rhs_value}.",
-                comparison_symbol(observed_comparison(&lhs_value, &rhs_value))
-            ),
+            text: phrase("arithmetic_compare", language, &observed),
         },
     ];
     let outcome = if holds {
         ProofOutcome::Proven {
             proof: Proof {
+                conclusion: phrase("arithmetic_holds", language, &values),
                 statement,
                 steps,
-                conclusion: format!(
-                    "Therefore {lhs} {} {rhs}, so the claim holds. ∎",
-                    comparison.label_en()
-                ),
                 method: ProofMethod::DirectCalculation,
             },
         }
     } else {
         ProofOutcome::Disproven {
-            counterexample: format!(
-                "Evaluated values: {lhs} = {lhs_value}, {rhs} = {rhs_value}. The relation \
-                 {} does not hold.",
-                comparison_symbol(comparison)
-            ),
+            counterexample: phrase("arithmetic_counterexample", language, &values),
             method: ProofMethod::DirectCalculation,
             partial_proof: Some(Proof {
+                conclusion: phrase("arithmetic_contradicted", language, &values),
                 statement,
                 steps,
-                conclusion: format!(
-                    "The evaluated values contradict the asserted relation \"{}\", so the \
-                     original claim is false.",
-                    comparison.label_en()
-                ),
                 method: ProofMethod::DirectCalculation,
             }),
         }
@@ -127,28 +132,18 @@ pub fn attempt_arithmetic_claim(claim: &str) -> Option<ProofOutcome> {
     Some(outcome)
 }
 
-fn arithmetic_failure_reason(lhs: &str, rhs: &str) -> String {
+fn arithmetic_failure_reason(lhs: &str, rhs: &str, language: &str) -> String {
     let lhs_err = describe_arithmetic_error(lhs);
     let rhs_err = describe_arithmetic_error(rhs);
-    match (lhs_err, rhs_err) {
-        (Some(left), Some(right)) => format!(
-            "Could not evaluate either side as a closed arithmetic expression: left side \
-             reported \"{left}\"; right side reported \"{right}\". The proof engine \
-             needs both sides to reduce to numeric values."
-        ),
-        (Some(left), None) => format!(
-            "Could not evaluate the left side as a closed arithmetic expression: \
-             \"{left}\". Restate it with numeric literals and the operators + - * / ( )."
-        ),
-        (None, Some(right)) => format!(
-            "Could not evaluate the right side as a closed arithmetic expression: \
-             \"{right}\". Restate it with numeric literals and the operators + - * / ( )."
-        ),
-        (None, None) => String::from(
-            "The arithmetic evaluator returned no value. Please rewrite the claim using \
-             concrete numeric literals.",
-        ),
-    }
+    let left = lhs_err.as_deref().unwrap_or_default();
+    let right = rhs_err.as_deref().unwrap_or_default();
+    let id = match (&lhs_err, &rhs_err) {
+        (Some(_), Some(_)) => "arithmetic_failure_both",
+        (Some(_), None) => "arithmetic_failure_left",
+        (None, Some(_)) => "arithmetic_failure_right",
+        (None, None) => "arithmetic_failure_none",
+    };
+    phrase(id, language, &[("left", left), ("right", right)])
 }
 
 fn describe_arithmetic_error(expression: &str) -> Option<String> {

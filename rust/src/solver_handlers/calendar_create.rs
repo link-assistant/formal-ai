@@ -15,9 +15,11 @@ use crate::entity_resolution::edit_budget;
 use crate::event_log::EventLog;
 use crate::fuzzy::typo_distance;
 use crate::language::detect as detect_language;
+use crate::rule_interpreter::{handler_table_row, handler_table_rows, handler_table_value};
 use crate::seed::{
     ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_EVENT, ROLE_CALENDAR_RELATIVE_DATE,
-    ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CALENDAR_TIME, lexicon,
+    ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CALENDAR_TIME, ROLE_CALENDAR_WEEKDAY, lexicon,
+    render_localized_once,
 };
 use crate::solver_handlers::calendar_ics::ScheduledEvent;
 use crate::solver_handlers::finalize_simple;
@@ -71,6 +73,14 @@ pub fn try_routed_calendar_create_event(
     // build request that mentions a schedule word is a plan, not an event,
     // whichever entry point the table selected it through.
     if super::software_project_claims(normalized) {
+        return None;
+    }
+    // A trip plan ("составь план поездки в Рим на 3 дня") reads a period off
+    // its day count, but it is the planner's request when the event recognizer
+    // finds no event in it (issue #1175 p215), as the browser twin declines.
+    if !mentions_calendar_create_request(normalized)
+        && lexicon().mentions_role("planning_request", normalized)
+    {
         return None;
     }
     let base = current_utc_date()?;
@@ -133,7 +143,7 @@ pub fn try_routed_calendar_create_event(
         "calendar:parsed_duration_minutes",
         event.duration_minutes.to_string(),
     );
-    if normalized.contains("число") || normalized.contains("number") {
+    if handler_table_row("calendar_day_number_marker", normalized).is_some() {
         log.append("calendar:parsed_via", "day_number".to_owned());
     }
 
@@ -156,14 +166,16 @@ pub fn try_routed_calendar_create_event(
     ))
 }
 
-/// Localized fallback title used when no explicit subject was parsed.
+/// Localized fallback title used when no explicit subject was parsed: the
+/// `calendar_default_title` table of `data/seed/handler-rules.lino`.
 fn default_title(language: &str) -> &'static str {
-    match language {
-        "ru" => "Событие",
-        "hi" => "घटना",
-        "zh" => "事件",
-        _ => "Event",
-    }
+    handler_table_value("calendar_default_title", language).unwrap_or_default()
+}
+
+/// The keys of a calendar vocabulary table of `data/seed/handler-rules.lino`,
+/// in seed order (issue #918): the cue words this module used to list inline.
+fn table_keys(name: &str) -> impl Iterator<Item = &'static str> {
+    handler_table_rows(name).iter().map(|(key, _)| key.as_str())
 }
 
 /// Whether the calendar handler's own gate accepts this prompt: a date
@@ -189,7 +201,12 @@ fn mentions_calendar_create_request(normalized: &str) -> bool {
         .words_for_role(ROLE_CALENDAR_RELATIVE_DATE)
         .iter()
         .any(|w| contains_term(normalized, w));
-    let has_date_signal = has_day_ref || has_clock || has_relative_date;
+    // A named weekday ("on Friday") anchors the event to a day as well.
+    let has_weekday = lex
+        .words_for_role(ROLE_CALENDAR_WEEKDAY)
+        .iter()
+        .any(|w| contains_term(normalized, w));
+    let has_date_signal = has_day_ref || has_clock || has_relative_date || has_weekday;
     if !has_date_signal {
         return false;
     }
@@ -210,17 +227,7 @@ fn mentions_calendar_create_request(normalized: &str) -> bool {
         return true;
     }
 
-    [
-        "забей",
-        "поставь",
-        "создай",
-        "добавь",
-        "schedule",
-        "book",
-        "add to",
-    ]
-    .iter()
-    .any(|verb| contains_term(normalized, verb))
+    table_keys("calendar_schedule_verb").any(|verb| contains_term(normalized, verb))
 }
 
 fn extract_day_number(normalized: &str) -> Option<u32> {
@@ -341,8 +348,11 @@ fn extract_clock_time(normalized: &str) -> Option<(u32, u32)> {
     if let Some(time) = extract_spoken_hour_time(normalized) {
         return Some(time);
     }
-    if let Some(pos) = normalized.find("в ") {
-        let tail = &normalized[pos + 2..];
+    for lead in table_keys("calendar_clock_hour_lead") {
+        let Some(pos) = normalized.find(lead) else {
+            continue;
+        };
+        let tail = &normalized[pos + lead.len()..];
         let mut num = String::new();
         for ch in tail.chars() {
             if ch.is_ascii_digit() {
@@ -361,7 +371,7 @@ fn extract_clock_time(normalized: &str) -> Option<(u32, u32)> {
 }
 
 fn extract_spoken_hour_time(normalized: &str) -> Option<(u32, u32)> {
-    for marker in ["часов", "часа", "час", "часу"] {
+    for marker in table_keys("calendar_spoken_hour_marker") {
         for (pos, _) in normalized.match_indices(marker) {
             let before = normalized[..pos].chars().next_back();
             let after = normalized[pos + marker.len()..].chars().next();
@@ -376,10 +386,9 @@ fn extract_spoken_hour_time(normalized: &str) -> Option<(u32, u32)> {
                 .find(|(_, ch)| !ch.is_ascii_digit())
                 .map_or(0, |(idx, ch)| idx + ch.len_utf8());
             let marker = normalized[..start].trim_end();
-            let allowed_marker = marker
-                .split_whitespace()
-                .next_back()
-                .is_none_or(|word| matches!(word, "в" | "на" | "к"));
+            let allowed_marker = marker.split_whitespace().next_back().is_none_or(|word| {
+                table_keys("calendar_spoken_hour_lead").any(|lead| lead == word)
+            });
             if start == prefix_end || !allowed_marker {
                 continue;
             }
@@ -437,9 +446,9 @@ fn resolve_timezone(normalized: &str) -> Option<PlaceZone> {
                 })
             };
             if mentioned
-                && best.as_ref().is_none_or(|current| {
-                    surface.chars().count() > current.surface.chars().count()
-                })
+                && best
+                    .as_ref()
+                    .is_none_or(|current| surface.chars().count() > current.surface.chars().count())
             {
                 best = Some(PlaceZone {
                     zone: zone.to_owned(),
@@ -472,15 +481,7 @@ fn normalize_zone_text(text: &str) -> String {
 }
 
 fn extract_title(normalized: &str) -> Option<String> {
-    for marker in [
-        "на ",
-        "for ",
-        "встречу ",
-        "meeting with ",
-        "call with ",
-        "के साथ ",
-        "和",
-    ] {
+    for marker in table_keys("calendar_title_marker") {
         if let Some(pos) = normalized.find(marker) {
             let rest = normalized[pos + marker.len()..].trim();
             if let Some(title) = tidy_title(rest) {
@@ -491,7 +492,7 @@ fn extract_title(normalized: &str) -> Option<String> {
     if let Some(title) = extract_participant_title(normalized) {
         return Some(title);
     }
-    for verb in ["забей", "поставь", "создай", "добавь"] {
+    for verb in table_keys("calendar_title_verb") {
         if let Some(pos) = normalized.find(verb) {
             let after = normalized[pos + verb.len()..].trim_start();
             if let Some(title) = tidy_title(after)
@@ -505,28 +506,18 @@ fn extract_title(normalized: &str) -> Option<String> {
 }
 
 fn extract_participant_title(normalized: &str) -> Option<String> {
-    let start = normalized
-        .find(" с ")
-        .map(|pos| pos + 1)
-        .or_else(|| normalized.starts_with("с ").then_some(0))?;
+    let start = table_keys("calendar_participant_marker").find_map(|marker| {
+        normalized
+            .find(&format!(" {marker}"))
+            .map(|pos| pos + 1)
+            .or_else(|| normalized.starts_with(marker).then_some(0))
+    })?;
     tidy_title(&normalized[start..])
 }
 
 fn tidy_title(candidate: &str) -> Option<String> {
     let mut end = candidate.len();
-    for boundary in [
-        " on the ",
-        " on ",
-        " at ",
-        " в ",
-        " по ",
-        " на ",
-        " 在 ",
-        "下午",
-        "上午",
-        " को ",
-        " शाम",
-    ] {
+    for boundary in table_keys("calendar_title_boundary") {
         if let Some(pos) = candidate.find(boundary) {
             end = end.min(pos);
         }
@@ -543,10 +534,7 @@ fn tidy_title(candidate: &str) -> Option<String> {
     if trimmed.is_empty() {
         return None;
     }
-    if matches!(
-        trimmed,
-        "на" | "в" | "во" | "по" | "к" | "for" | "on" | "at"
-    ) {
+    if table_keys("calendar_title_stopword").any(|word| word == trimmed) {
         return None;
     }
     if lexicon()
@@ -561,15 +549,7 @@ fn tidy_title(candidate: &str) -> Option<String> {
 
 fn strip_action_words(value: &str) -> String {
     let mut out = value.to_string();
-    for fragment in [
-        "शेड्यूल करें",
-        "कैलेंडर में जोड़ें",
-        "बनाएँ",
-        "बनाओ",
-        "安排",
-        "添加到日历",
-        "创建",
-    ] {
+    for fragment in table_keys("calendar_title_action_fragment") {
         out = out.replace(fragment, "");
     }
     out.split_whitespace().collect::<Vec<_>>().join(" ")
@@ -582,42 +562,30 @@ fn capitalize_first(value: &str) -> String {
     })
 }
 
+/// Render the confirmation from the seeded `calendar_create_event_confirmation`
+/// response (issue #918).
 fn render_create_confirmation(
     language: &str,
     event: &ScheduledEvent,
     ics: &str,
     google_url: &str,
 ) -> String {
-    let iso = event.iso_date();
+    let date = event.iso_date();
     let time = format!("{:02}:{:02}", event.hour, event.minute);
-    let tz = event.time_zone.as_str();
-    let title = &event.title;
-    let minutes = event.duration_minutes;
-    match language {
-        "ru" => format!(
-            "Создать событие «{title}» на {day} число ({iso}). Время: {time}, часовой пояс: {tz}. Длительность {minutes} минут.\n\
-             Импортируйте этот файл .ics в любой календарь:\n{ics}\n\
-             Или откройте в Google Календаре (вход не требуется):\n{google_url}\n\
-             Ответьте «да», чтобы подтвердить.",
-            day = event.day,
-        ),
-        "hi" => format!(
-            "{iso} ({time}, समय क्षेत्र {tz}) पर «{title}» कार्यक्रम बनाएँ। अवधि {minutes} मिनट।\n\
-             इस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n{ics}\n\
-             या Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n{google_url}\n\
-             पुष्टि के लिए «हाँ» उत्तर दें।",
-        ),
-        "zh" => format!(
-            "在 {iso}（{time}，时区 {tz}）创建事件「{title}」。时长 {minutes} 分钟。\n\
-             将此 .ics 文件导入任何日历：\n{ics}\n\
-             或在 Google 日历中打开（无需登录）：\n{google_url}\n\
-             回复「是」以确认。",
-        ),
-        _ => format!(
-            "Create event «{title}» on {iso}. Time: {time}, timezone: {tz}. Duration {minutes} minutes.\n\
-             Import this .ics file into any calendar:\n{ics}\n\
-             Or open it in Google Calendar (no login required):\n{google_url}\n\
-             Reply 'yes' to confirm.",
-        ),
-    }
+    let day = event.day.to_string();
+    let minutes = event.duration_minutes.to_string();
+    render_localized_once(
+        "calendar_create_event_confirmation",
+        language,
+        &[
+            ("title", event.title.as_str()),
+            ("day", day.as_str()),
+            ("date", date.as_str()),
+            ("time", time.as_str()),
+            ("time_zone", event.time_zone.as_str()),
+            ("minutes", minutes.as_str()),
+            ("ics", ics),
+            ("google_url", google_url),
+        ],
+    )
 }

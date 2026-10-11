@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "律師"
+        },
+        "es": {
+          "language": "es",
+          "value": "abogado"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "幫助客戶並在法庭上代表他們的法律專業人士"
+        },
+        "es": {
+          "language": "es",
+          "value": "profesional autorizado para asesorar y defender los derechos e intereses de otra persona y representarla en un juicio"
         }
       },
       "aliases": {
@@ -118,6 +126,32 @@
           {
             "language": "zh",
             "value": "执业律师"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "abogados"
+          },
+          {
+            "language": "es",
+            "value": "licenciado en derecho"
+          },
+          {
+            "language": "es",
+            "value": "abogada"
+          },
+          {
+            "language": "es",
+            "value": "abogadas"
+          },
+          {
+            "language": "es",
+            "value": "licenciado"
+          },
+          {
+            "language": "es",
+            "value": "licenciada"
           }
         ]
       }

@@ -118,6 +118,9 @@ fn spec(name: &str, sentence: &str, prose_language: &str) -> CodingTaskSpec {
     CodingTaskSpec {
         language: "python".to_owned(),
         artifact_shape: ArtifactShape::Function,
+        callable_binding_origin: formal_ai::coding_task_spec::CallableBindingOrigin::Declared {
+            signature: String::new(),
+        },
         name: name.to_owned(),
         parameters: vec![Parameter {
             name: "items".to_owned(),
@@ -358,6 +361,7 @@ fn retrieved_program(id: &str, composition: &str) -> formal_ai::concept_discover
         language: Some("python".to_owned()),
         code: Some("while b:\n    a, b = b, a % b\nreturn a".to_owned()),
         callable_name: Some("gcd".to_owned()),
+        callable_contract: None,
         source_tests: Vec::new(),
         license: "GFDL-1.2-or-later".to_owned(),
         source_url: "https://rosettacode.org/wiki/Greatest_common_divisor".to_owned(),

@@ -7,18 +7,11 @@ meanings
     effect "the implementation-language concept can be selected"
     unit "not applicable"
     example "programming language"
-    lexeme en
-      surface
-        text "programming language"
-    lexeme ru
-      surface
-        text "язык программирования"
-    lexeme hi
-      surface
-        text "प्रोग्रामिंग भाषा"
-    lexeme zh
-      surface
-        text 编程语言
+    lexeme en "programming language"
+    lexeme ru "язык программирования"
+    lexeme hi "प्रोग्रामिंग भाषा"
+    lexeme zh 编程语言
+    lexeme es "lenguaje de programación"
   program_language_rust
     grounded-in Q575650
     defined-by program_language
@@ -28,22 +21,11 @@ meanings
     effect "the program-language slot is bound to Rust"
     unit "not applicable"
     example "rust"
-    lexeme en
-      surface
-        text rust
-      surface
-        text rs
-    lexeme ru
-      surface
-        text раст
-      surface
-        text расте
-    lexeme hi
-      surface
-        text रस्ट
-    lexeme zh
-      surface
-        text rust
+    lexeme en rust rs
+    lexeme ru раст расте
+    lexeme hi रस्ट
+    lexeme zh rust
+    lexeme es rust
   program_language_python
     grounded-in Q28865
     defined-by program_language
@@ -53,22 +35,11 @@ meanings
     effect "the program-language slot is bound to Python"
     unit "not applicable"
     example "python"
-    lexeme en
-      surface
-        text python
-      surface
-        text py
-    lexeme ru
-      surface
-        text питон
-      surface
-        text питоне
-    lexeme hi
-      surface
-        text पायथन
-    lexeme zh
-      surface
-        text python
+    lexeme en python py
+    lexeme ru питон питоне
+    lexeme hi पायथन
+    lexeme zh python
+    lexeme es python py
   program_language_javascript
     grounded-in Q2005
     defined-by program_language
@@ -78,22 +49,11 @@ meanings
     effect "the program-language slot is bound to JavaScript"
     unit "not applicable"
     example "javascript"
-    lexeme en
-      surface
-        text javascript
-      surface
-        text js
-      surface
-        text node
-    lexeme ru
-      surface
-        text джаваскрипт
-    lexeme hi
-      surface
-        text जावास्क्रिप्ट
-    lexeme zh
-      surface
-        text javascript
+    lexeme en javascript js node
+    lexeme ru джаваскрипт
+    lexeme hi जावास्क्रिप्ट
+    lexeme zh javascript
+    lexeme es javascript js node
   program_language_typescript
     grounded-in Q978185
     defined-by program_language
@@ -102,20 +62,11 @@ meanings
     effect "the program-language slot is bound to TypeScript"
     unit "not applicable"
     example "typescript"
-    lexeme en
-      surface
-        text typescript
-      surface
-        text ts
-    lexeme ru
-      surface
-        text тайпскрипт
-    lexeme hi
-      surface
-        text टाइपस्क्रिप्ट
-    lexeme zh
-      surface
-        text typescript
+    lexeme en typescript ts
+    lexeme ru тайпскрипт
+    lexeme hi टाइपस्क्रिप्ट
+    lexeme zh typescript
+    lexeme es typescript ts
   program_language_go
     grounded-in Q37227
     defined-by program_language
@@ -124,20 +75,11 @@ meanings
     effect "the program-language slot is bound to Go"
     unit "not applicable"
     example "go"
-    lexeme en
-      surface
-        text go
-      surface
-        text golang
-    lexeme ru
-      surface
-        text го
-    lexeme hi
-      surface
-        text गो
-    lexeme zh
-      surface
-        text go
+    lexeme en go golang
+    lexeme ru го
+    lexeme hi गो
+    lexeme zh go
+    lexeme es go golang
   program_language_c
     grounded-in Q15777
     defined-by program_language
@@ -146,18 +88,11 @@ meanings
     effect "the program-language slot is bound to C"
     unit "not applicable"
     example "c"
-    lexeme en
-      surface
-        text c
-    lexeme ru
-      surface
-        text си
-    lexeme hi
-      surface
-        text सी
-    lexeme zh
-      surface
-        text c
+    lexeme en c
+    lexeme ru си
+    lexeme hi सी
+    lexeme zh c
+    lexeme es c
   program_language_cpp
     grounded-in Q2407
     defined-by program_language
@@ -166,22 +101,11 @@ meanings
     effect "the program-language slot is bound to C++"
     unit "not applicable"
     example "cpp"
-    lexeme en
-      surface
-        text cpp
-      surface
-        text c++
-      surface
-        text cplusplus
-    lexeme ru
-      surface
-        text сиплюсплюс
-    lexeme hi
-      surface
-        text सीपीपी
-    lexeme zh
-      surface
-        text c++
+    lexeme en cpp c++ cplusplus
+    lexeme ru сиплюсплюс
+    lexeme hi सीपीपी
+    lexeme zh c++
+    lexeme es c++ cpp
   program_language_java
     grounded-in Q251
     defined-by program_language
@@ -190,18 +114,11 @@ meanings
     effect "the program-language slot is bound to Java"
     unit "not applicable"
     example "java"
-    lexeme en
-      surface
-        text java
-    lexeme ru
-      surface
-        text джава
-    lexeme hi
-      surface
-        text जावा
-    lexeme zh
-      surface
-        text java
+    lexeme en java
+    lexeme ru джава
+    lexeme hi जावा
+    lexeme zh java
+    lexeme es java
   program_language_csharp
     grounded-in Q2370
     defined-by program_language
@@ -210,24 +127,11 @@ meanings
     effect "the program-language slot is bound to C sharp"
     unit "not applicable"
     example "csharp"
-    lexeme en
-      surface
-        text csharp
-      surface
-        text "c#"
-      surface
-        text cs
-      surface
-        text dotnet
-    lexeme ru
-      surface
-        text сишарп
-    lexeme hi
-      surface
-        text सीशार्प
-    lexeme zh
-      surface
-        text "c#"
+    lexeme en csharp "c#" cs dotnet
+    lexeme ru сишарп
+    lexeme hi सीशार्प
+    lexeme zh "c#"
+    lexeme es "c#" csharp
   program_language_ruby
     grounded-in Q161053
     defined-by program_language
@@ -236,20 +140,11 @@ meanings
     effect "the program-language slot is bound to Ruby"
     unit "not applicable"
     example "ruby"
-    lexeme en
-      surface
-        text ruby
-      surface
-        text rb
-    lexeme ru
-      surface
-        text руби
-    lexeme hi
-      surface
-        text रूबी
-    lexeme zh
-      surface
-        text ruby
+    lexeme en ruby rb
+    lexeme ru руби
+    lexeme hi रूबी
+    lexeme zh ruby
+    lexeme es ruby
   program_language_scala
     grounded-in Q460584
     defined-by program_language
@@ -258,18 +153,11 @@ meanings
     effect "the program-language slot is bound to Scala"
     unit "not applicable"
     example "scala"
-    lexeme en
-      surface
-        text scala
-    lexeme ru
-      surface
-        text скала
-    lexeme hi
-      surface
-        text स्काला
-    lexeme zh
-      surface
-        text scala
+    lexeme en scala
+    lexeme ru скала
+    lexeme hi स्काला
+    lexeme zh scala
+    lexeme es scala
   program_language_kotlin
     grounded-in Q3816639
     defined-by program_language
@@ -278,20 +166,11 @@ meanings
     effect "the program-language slot is bound to Kotlin"
     unit "not applicable"
     example "kotlin"
-    lexeme en
-      surface
-        text kotlin
-      surface
-        text kt
-    lexeme ru
-      surface
-        text котлин
-    lexeme hi
-      surface
-        text कोटलिन
-    lexeme zh
-      surface
-        text kotlin
+    lexeme en kotlin kt
+    lexeme ru котлин
+    lexeme hi कोटलिन
+    lexeme zh kotlin
+    lexeme es kotlin
   program_language_php
     grounded-in Q59
     defined-by program_language
@@ -301,20 +180,37 @@ meanings
     effect "the program-language slot is bound to PHP"
     unit "not applicable"
     example "php"
-    lexeme en
-      surface
-        text php
-    lexeme ru
-      surface
-        text php
-      surface
-        text пхп
-    lexeme hi
-      surface
-        text पीएचपी
-    lexeme zh
-      surface
-        text php
+    lexeme en php
+    lexeme ru php пхп
+    lexeme hi पीएचपी
+    lexeme zh php
+    lexeme es php
+  program_language_swift
+    grounded-in Q17118377
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Swift"
+    unit "not applicable"
+    example "swift"
+    lexeme en swift
+    lexeme ru swift свифт
+    lexeme hi swift स्विफ्ट
+    lexeme zh swift
+    lexeme es swift
+  program_language_r
+    grounded-in Q206904
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to R"
+    unit "not applicable"
+    example "r"
+    lexeme en r
+    lexeme ru r
+    lexeme hi r आर
+    lexeme zh r
+    lexeme es r
   program_language_laravel
     grounded-in Q13634357
     defined-by program_language
@@ -324,18 +220,11 @@ meanings
     effect "the program-language slot is bound to Laravel"
     unit "not applicable"
     example "laravel"
-    lexeme en
-      surface
-        text laravel
-    lexeme ru
-      surface
-        text laravel
-    lexeme hi
-      surface
-        text laravel
-    lexeme zh
-      surface
-        text laravel
+    lexeme en laravel
+    lexeme ru laravel
+    lexeme hi laravel
+    lexeme zh laravel
+    lexeme es laravel
   program_task
     defined-by program
     role program_task
@@ -343,18 +232,11 @@ meanings
     effect "the program-task concept can be selected"
     unit "not applicable"
     example "coding task"
-    lexeme en
-      surface
-        text "coding task"
-    lexeme ru
-      surface
-        text "задача программирования"
-    lexeme hi
-      surface
-        text "प्रोग्रामिंग कार्य"
-    lexeme zh
-      surface
-        text 编程任务
+    lexeme en "coding task"
+    lexeme ru "задача программирования"
+    lexeme hi "प्रोग्रामिंग कार्य"
+    lexeme zh 编程任务
+    lexeme es "tarea de programación"
   program_task_hello_world
     defined-by program_task
     defined-by hello_world
@@ -363,18 +245,11 @@ meanings
     effect "the program-task slot is bound to hello world"
     unit "not applicable"
     example "hello world"
-    lexeme en
-      surface
-        text "hello world"
-    lexeme ru
-      surface
-        text "хелло ворлд"
-    lexeme hi
-      surface
-        text "हैलो वर्ल्ड"
-    lexeme zh
-      surface
-        text 你好世界
+    lexeme en "hello world"
+    lexeme ru "хелло ворлд"
+    lexeme hi "हैलो वर्ल्ड"
+    lexeme zh 你好世界
+    lexeme es "hola mundo"
   program_task_count_to_three
     defined-by program_task
     role program_task_alias
@@ -382,30 +257,11 @@ meanings
     effect "the program-task slot is bound to count to three"
     unit "not applicable"
     example "count to three"
-    lexeme en
-      surface
-        text "count to three"
-      surface
-        text "count to 3"
-      surface
-        text "counts to three"
-      surface
-        text "counts to 3"
-    lexeme ru
-      surface
-        text "посчитай до трёх"
-      surface
-        text "посчитай до 3"
-    lexeme hi
-      surface
-        text "तीन तक गिनें"
-      surface
-        text "3 तक गिनें"
-    lexeme zh
-      surface
-        text 数到三
-      surface
-        text 数到3
+    lexeme en "count to three" "count to 3" "counts to three" "counts to 3"
+    lexeme ru "посчитай до трёх" "посчитай до 3"
+    lexeme hi "तीन तक गिनें" "3 तक गिनें"
+    lexeme zh 数到三 数到3
+    lexeme es "cuenta hasta tres" "cuenta hasta 3" "cuente hasta tres" "contar hasta tres" "contar hasta 3"
   program_task_list_files
     defined-by program_task
     role program_task_alias
@@ -414,79 +270,24 @@ meanings
     unit "not applicable"
     example "list files in the current directory"
     lexeme en
-      surface
-        text "list files in the current directory"
-      surface
-        text "list files in current directory"
-      surface
-        text "list files in the directory"
-      surface
-        text "list the files in the current directory"
-      surface
-        text "lists files in the current directory"
-      surface
-        text "lists the files in the current directory"
-      surface
-        text "list files in a directory"
-      surface
-        text "list directory files"
-      surface
-        text "list files"
-      surface
-        text "lists files"
-      surface
-        text "files in the current directory"
-      surface
-        text "files in current directory"
+      words "list files in the current directory" "list files in current directory" "list files in the directory"
+      words "list the files in the current directory" "lists files in the current directory"
+      words "lists the files in the current directory" "list files in a directory" "list directory files" "list files"
+      words "lists files" "files in the current directory" "files in current directory"
     lexeme ru
-      surface
-        text "список файлов в текущей директории"
-      surface
-        text "список файлов в текущем каталоге"
-      surface
-        text "список файлов в директории"
-      surface
-        text "список файлов в каталоге"
-      surface
-        text "выдаёт список файлов"
-      surface
-        text "выдает список файлов"
-      surface
-        text "выводит список файлов"
-      surface
-        text "вывести список файлов"
-      surface
-        text "вывод списка файлов"
-      surface
-        text "список файлов"
-      surface
-        text "файлы в текущей директории"
-      surface
-        text "файлы в текущем каталоге"
+      words "список файлов в текущей директории" "список файлов в текущем каталоге" "список файлов в директории"
+      words "список файлов в каталоге" "выдаёт список файлов" "выдает список файлов" "выводит список файлов"
+      words "вывести список файлов" "вывод списка файлов" "список файлов" "файлы в текущей директории"
+      words "файлы в текущем каталоге"
     lexeme hi
-      surface
-        text "फ़ाइलों की सूची"
-      surface
-        text "फाइलों की सूची"
-      surface
-        text "वर्तमान निर्देशिका की फ़ाइलें"
-      surface
-        text "वर्तमान निर्देशिका की फाइलें"
-      surface
-        text "निर्देशिका की फ़ाइलें"
-    lexeme zh
-      surface
-        text 列出当前目录中的文件
-      surface
-        text 列出当前目录中文件
-      surface
-        text 列出当前目录的文件
-      surface
-        text 列出当前目录文件
-      surface
-        text 列出目录中的文件
-      surface
-        text 列出文件
+      words "फ़ाइलों की सूची" "फाइलों की सूची" "वर्तमान निर्देशिका की फ़ाइलें" "वर्तमान निर्देशिका की फाइलें"
+      words "निर्देशिका की फ़ाइलें"
+    lexeme zh 列出当前目录中的文件 列出当前目录中文件 列出当前目录的文件 列出当前目录文件 列出目录中的文件 列出文件
+    lexeme es
+      words "lista los archivos del directorio actual" "lista los archivos en el directorio actual"
+      words "lista los archivos del directorio" "lista de archivos del directorio actual"
+      words "listar archivos del directorio actual" "listar los archivos" "lista los archivos" "lista de archivos"
+      words "archivos del directorio actual" "archivos en el directorio actual"
   program_task_list_files_arg
     defined-by program_task
     role program_task_alias
@@ -495,33 +296,18 @@ meanings
     unit "not applicable"
     example "list files in the directory given as a path argument"
     lexeme en
-      surface
-        text "list files in the directory given as a path argument"
-      surface
-        text "list files in a directory given as an argument"
-      surface
-        text "list files in the directory passed as an argument"
-      surface
-        text "list files in a path argument"
-      surface
-        text "list files with a path argument"
-      surface
-        text "list files accepting a path argument"
+      words "list files in the directory given as a path argument" "list files in a directory given as an argument"
+      words "list files in the directory passed as an argument" "list files in a path argument"
+      words "list files with a path argument" "list files accepting a path argument"
     lexeme ru
-      surface
-        text "список файлов в каталоге переданном как аргумент"
-      surface
-        text "список файлов в директории переданной как аргумент"
-      surface
-        text "список файлов по пути из аргумента"
-    lexeme hi
-      surface
-        text "पथ तर्क के रूप में दी गई निर्देशिका की फ़ाइलों की सूची"
-    lexeme zh
-      surface
-        text 列出作为路径参数给出的目录中的文件
-      surface
-        text 列出路径参数指定目录中的文件
+      words "список файлов в каталоге переданном как аргумент" "список файлов в директории переданной как аргумент"
+      words "список файлов по пути из аргумента"
+    lexeme hi "पथ तर्क के रूप में दी गई निर्देशिका की फ़ाइलों की सूची"
+    lexeme zh 列出作为路径参数给出的目录中的文件 列出路径参数指定目录中的文件
+    lexeme es
+      words "lista los archivos del directorio indicado como argumento de ruta"
+      words "lista los archivos del directorio pasado como argumento"
+      words "lista los archivos de un directorio dado como argumento" "lista los archivos con un argumento de ruta"
   program_task_list_files_reverse_sort
     defined-by program_task
     role program_task_alias
@@ -530,29 +316,14 @@ meanings
     unit "not applicable"
     example "list files in reverse order"
     lexeme en
-      surface
-        text "list files in reverse order"
-      surface
-        text "list files sorted in reverse order"
-      surface
-        text "list files in descending order"
-      surface
-        text "reverse sorted list files"
-    lexeme ru
-      surface
-        text "список файлов в обратном порядке"
-      surface
-        text "список файлов с обратной сортировкой"
-    lexeme hi
-      surface
-        text "फ़ाइलों की सूची उल्टे क्रम में"
-      surface
-        text "फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें"
-    lexeme zh
-      surface
-        text 按相反顺序列出文件
-      surface
-        text 倒序列出文件
+      words "list files in reverse order" "list files sorted in reverse order" "list files in descending order"
+      words "reverse sorted list files"
+    lexeme ru "список файлов в обратном порядке" "список файлов с обратной сортировкой"
+    lexeme hi "फ़ाइलों की सूची उल्टे क्रम में" "फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें"
+    lexeme zh 按相反顺序列出文件 倒序列出文件
+    lexeme es
+      words "lista los archivos en orden inverso" "lista los archivos en orden descendente"
+      words "lista los archivos ordenados al revés" "listar archivos en orden inverso"
   program_task_list_files_arg_reverse_sort
     defined-by program_task
     role program_task_alias
@@ -561,29 +332,16 @@ meanings
     unit "not applicable"
     example "list files from a path argument in reverse order"
     lexeme en
-      surface
-        text "list files from a path argument in reverse order"
-      surface
-        text "list files with a path argument in reverse order"
-      surface
-        text "list files with a path argument sorted descending"
-      surface
-        text "reverse sorted list files with a path argument"
+      words "list files from a path argument in reverse order" "list files with a path argument in reverse order"
+      words "list files with a path argument sorted descending" "reverse sorted list files with a path argument"
     lexeme ru
-      surface
-        text "список файлов по пути из аргумента в обратном порядке"
-      surface
-        text "список файлов из аргумента с обратной сортировкой"
-    lexeme hi
-      surface
-        text "पथ तर्क से फ़ाइलों की सूची उल्टे क्रम में"
-      surface
-        text "पथ तर्क वाली फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें"
-    lexeme zh
-      surface
-        text 按相反顺序列出路径参数中的文件
-      surface
-        text 倒序列出路径参数指定目录中的文件
+      words "список файлов по пути из аргумента в обратном порядке" "список файлов из аргумента с обратной сортировкой"
+    lexeme hi "पथ तर्क से फ़ाइलों की सूची उल्टे क्रम में" "पथ तर्क वाली फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें"
+    lexeme zh 按相反顺序列出路径参数中的文件 倒序列出路径参数指定目录中的文件
+    lexeme es
+      words "lista los archivos de un argumento de ruta en orden inverso"
+      words "lista los archivos con un argumento de ruta en orden inverso"
+      words "lista los archivos con un argumento de ruta en orden descendente"
   program_task_fizzbuzz
     defined-by program_task
     role program_task_alias
@@ -591,26 +349,23 @@ meanings
     effect "the program-task slot is bound to fizzbuzz"
     unit "not applicable"
     example "fizzbuzz"
-    lexeme en
-      surface
-        text fizzbuzz
-      surface
-        text "fizz buzz"
-    lexeme ru
-      surface
-        text физзбазз
-      surface
-        text "физз базз"
-      surface
-        text физбаз
-    lexeme hi
-      surface
-        text फ़िज़बज़
-      surface
-        text फिज़बज़
-    lexeme zh
-      surface
-        text 菲茨巴兹
+    lexeme en fizzbuzz "fizz buzz"
+    lexeme ru физзбазз "физз базз" физбаз
+    lexeme hi फ़िज़बज़ फिज़बज़
+    lexeme zh 菲茨巴兹
+    lexeme es fizzbuzz "fizz buzz"
+  function_call
+    defined-by program
+    role function_call_verb
+    precondition "a coding request says its program calls a named function"
+    effect "the call expression the request names is the function the program runs"
+    unit "not applicable"
+    example "a script that calls missing_helper()"
+    lexeme en "that calls" "which calls" "and calls" call "that invokes" invoke
+    lexeme ru вызывает вызовет вызови вызвать
+    lexeme hi "कॉल करता" "कॉल करे"
+    lexeme zh 调用
+    lexeme es llama invoca llamar
   program_task_factorial
     defined-by program_task
     role program_task_alias
@@ -618,32 +373,11 @@ meanings
     effect "the program-task slot is bound to factorial"
     unit "not applicable"
     example "factorial of 5"
-    lexeme en
-      surface
-        text "factorial of 5"
-      surface
-        text "factorial of five"
-      surface
-        text "5 factorial"
-      surface
-        text "five factorial"
-    lexeme ru
-      surface
-        text "факториал 5"
-      surface
-        text "факториал пяти"
-      surface
-        text "факториал числа 5"
-    lexeme hi
-      surface
-        text "5 का फैक्टोरियल"
-      surface
-        text "पाँच का फैक्टोरियल"
-    lexeme zh
-      surface
-        text 5的阶乘
-      surface
-        text 五的阶乘
+    lexeme en "factorial of 5" "factorial of five" "5 factorial" "five factorial"
+    lexeme ru "факториал 5" "факториал пяти" "факториал числа 5"
+    lexeme hi "5 का फैक्टोरियल" "पाँच का फैक्टोरियल"
+    lexeme zh 5的阶乘 五的阶乘
+    lexeme es "factorial de 5" "factorial de cinco" "el factorial de 5" "el factorial de cinco"
   program_task_reverse_string
     defined-by program_task
     role program_task_alias
@@ -652,35 +386,14 @@ meanings
     unit "not applicable"
     example "reverse a string"
     lexeme en
-      surface
-        text "reverse a string"
-      surface
-        text "reverse the string hello"
-      surface
-        text "reverse hello"
-      surface
-        text "reverse string hello"
-      surface
-        text "reverse the word hello"
-    lexeme ru
-      surface
-        text "перевернуть строку"
-      surface
-        text "перевернуть строку hello"
-      surface
-        text "развернуть строку"
-    lexeme hi
-      surface
-        text "स्ट्रिंग को उलटें"
-      surface
-        text "स्ट्रिंग पलटें"
-    lexeme zh
-      surface
-        text 反转字符串
-      surface
-        text 翻转字符串
-      surface
-        text 反转hello
+      words "reverse a string" "reverse the string hello" "reverse hello" "reverse string hello"
+      words "reverse the word hello"
+    lexeme ru "перевернуть строку" "перевернуть строку hello" "развернуть строку"
+    lexeme hi "स्ट्रिंग को उलटें" "स्ट्रिंग पलटें"
+    lexeme zh 反转字符串 翻转字符串 反转hello
+    lexeme es
+      words "invierte una cadena" "invertir una cadena" "invierte la cadena hello" "invierte hello"
+      words "invierte la palabra hello" "da la vuelta a una cadena"
   program_task_sum_to_ten
     defined-by program_task
     role program_task_alias
@@ -689,37 +402,14 @@ meanings
     unit "not applicable"
     example "sum of 1 to 10"
     lexeme en
-      surface
-        text "sum of 1 to 10"
-      surface
-        text "sum from 1 to 10"
-      surface
-        text "sum the numbers 1 to 10"
-      surface
-        text "sum of numbers from 1 to 10"
-      surface
-        text "sum 1 to 10"
-      surface
-        text "sum to ten"
-    lexeme ru
-      surface
-        text "сумма от 1 до 10"
-      surface
-        text "сумма чисел от 1 до 10"
-      surface
-        text "сумма чисел от одного до десяти"
-    lexeme hi
-      surface
-        text "1 से 10 तक का योग"
-      surface
-        text "1 से 10 तक योग"
-    lexeme zh
-      surface
-        text 1到10的和
-      surface
-        text 1到10求和
-      surface
-        text 求1到10的和
+      words "sum of 1 to 10" "sum from 1 to 10" "sum the numbers 1 to 10" "sum of numbers from 1 to 10" "sum 1 to 10"
+      words "sum to ten"
+    lexeme ru "сумма от 1 до 10" "сумма чисел от 1 до 10" "сумма чисел от одного до десяти"
+    lexeme hi "1 से 10 तक का योग" "1 से 10 तक योग"
+    lexeme zh 1到10的和 1到10求和 求1到10的和
+    lexeme es
+      words "suma de 1 a 10" "suma del 1 al 10" "suma los números del 1 al 10" "suma de los números del 1 al 10"
+      words "suma hasta diez" "suma de uno a diez"
   program_task_fibonacci
     defined-by program_task
     role program_task_alias
@@ -728,61 +418,18 @@ meanings
     unit "not applicable"
     example "fibonacci sequence recursively"
     lexeme en
-      surface
-        text "fibonacci sequence recursively"
-      surface
-        text "fibonacci sequence"
-      surface
-        text "recursive fibonacci"
-      surface
-        text "fibonacci recursively"
-      surface
-        text "fibonacci function"
-      surface
-        text "fibonacci numbers"
-      surface
-        text "fibonacci number"
-      surface
-        text "10th fibonacci number"
-      surface
-        text "the 10th fibonacci number"
-      surface
-        text "tenth fibonacci number"
-      surface
-        text "nth fibonacci number"
+      words "fibonacci sequence recursively" "fibonacci sequence" "recursive fibonacci" "fibonacci recursively"
+      words "fibonacci function" "fibonacci numbers" "fibonacci number" "10th fibonacci number"
+      words "the 10th fibonacci number" "tenth fibonacci number" "nth fibonacci number"
     lexeme ru
-      surface
-        text "последовательность фибоначчи"
-      surface
-        text "числа фибоначчи"
-      surface
-        text "число фибоначчи"
-      surface
-        text "рекурсивный фибоначчи"
-      surface
-        text "фибоначчи рекурсивно"
-      surface
-        text "10-е число фибоначчи"
-      surface
-        text "десятое число фибоначчи"
-    lexeme hi
-      surface
-        text "फ़िबोनाची अनुक्रम"
-      surface
-        text "फिबोनाची अनुक्रम"
-      surface
-        text "फ़िबोनाची संख्या"
-      surface
-        text "फिबोनाची संख्या"
-    lexeme zh
-      surface
-        text 斐波那契数列
-      surface
-        text 斐波那契序列
-      surface
-        text 斐波那契数
-      surface
-        text 递归斐波那契
+      words "последовательность фибоначчи" "числа фибоначчи" "число фибоначчи" "рекурсивный фибоначчи"
+      words "фибоначчи рекурсивно" "10-е число фибоначчи" "десятое число фибоначчи"
+    lexeme hi "फ़िबोनाची अनुक्रम" "फिबोनाची अनुक्रम" "फ़िबोनाची संख्या" "फिबोनाची संख्या"
+    lexeme zh 斐波那契数列 斐波那契序列 斐波那契数 递归斐波那契
+    lexeme es
+      words "sucesión de fibonacci" "secuencia de fibonacci" "fibonacci recursivo" "fibonacci de forma recursiva"
+      words "función de fibonacci" "números de fibonacci" "número de fibonacci" "el décimo número de fibonacci"
+      words "décimo número de fibonacci" "el n-ésimo número de fibonacci"
   program_task_copy_stdin_to_stdout
     defined-by program_task
     role program_task_alias
@@ -791,69 +438,43 @@ meanings
     unit "not applicable"
     example "copy stdin to stdout"
     lexeme en
-      surface
-        text "copy standard input to standard output"
-      surface
-        text "copy stdin to stdout"
-      surface
-        text "copies standard input to standard output"
-      surface
-        text "copies stdin to stdout"
-      surface
-        text "read stdin and write it to stdout"
-      surface
-        text "echo stdin to stdout"
-      surface
-        text "copy input to output"
-      surface
-        text "stdin to stdout"
+      words "copy standard input to standard output" "copy stdin to stdout" "copies standard input to standard output"
+      words "copies stdin to stdout" "read stdin and write it to stdout" "echo stdin to stdout" "copy input to output"
+      words "stdin to stdout"
     lexeme ru
-      surface
-        text "скопировать стандартный ввод в стандартный вывод"
-      surface
-        text "копировать стандартный ввод в стандартный вывод"
-      surface
-        text "скопируй stdin в stdout"
-      surface
-        text "скопировать stdin в stdout"
-      surface
-        text "стандартный ввод в стандартный вывод"
-      surface
-        text "из stdin в stdout"
-      surface
-        text "копирования stdin в stdout"
+      words "скопировать стандартный ввод в стандартный вывод" "копировать стандартный ввод в стандартный вывод"
+      words "скопируй stdin в stdout" "скопировать stdin в stdout" "стандартный ввод в стандартный вывод"
+      words "из stdin в stdout" "копирования stdin в stdout"
     lexeme hi
-      surface
-        text "मानक इनपुट को मानक आउटपुट में कॉपी करें"
-      surface
-        text "मानक इनपुट को मानक आउटपुट में कॉपी"
-      surface
-        text "stdin को stdout में कॉपी करें"
-      surface
-        text "stdin से stdout"
-      surface
-        text "stdin को stdout में कॉपी"
-    lexeme zh
-      surface
-        text 将标准输入复制到标准输出
-      surface
-        text 把标准输入复制到标准输出
-      surface
-        text 标准输入复制到标准输出
-      surface
-        text 标准输入到标准输出
-      surface
-        text "stdin 复制到 stdout"
+      words "मानक इनपुट को मानक आउटपुट में कॉपी करें" "मानक इनपुट को मानक आउटपुट में कॉपी"
+      words "stdin को stdout में कॉपी करें" "stdin से stdout" "stdin को stdout में कॉपी"
+    lexeme zh 将标准输入复制到标准输出 把标准输入复制到标准输出 标准输入复制到标准输出 标准输入到标准输出 "stdin 复制到 stdout"
     lexeme es
-      surface
-        text "copiar la entrada estándar a la salida estándar"
-      surface
-        text "copiar entrada estándar a salida estándar"
-      surface
-        text "copia la entrada estándar a la salida estándar"
-      surface
-        text "copia stdin a stdout"
-      surface
-        text "copiar stdin a stdout"
-      surface
-        text "de stdin a stdout"
+      words "copiar la entrada estándar a la salida estándar" "copiar entrada estándar a salida estándar"
+      words "copia la entrada estándar a la salida estándar" "copia stdin a stdout" "copiar stdin a stdout"
+      words "de stdin a stdout"
+  print_text
+    role program_task
+    defined-by print_stdout
+    defined-by program_task
+    precondition "a coding request asks its program to print a text it names"
+    effect "the program prints that text, the operand of the request, and nothing else"
+    unit "not applicable"
+    example "a program that prints hello"
+    lexeme en "print a text"
+    lexeme ru "напечатать текст"
+    lexeme hi "टेक्स्ट छापना"
+    lexeme zh 打印一段文本
+    lexeme es "imprimir un texto"
+  program_task_print_text
+    defined-by program_task
+    role program_task_alias
+    precondition "a coding request asks its program to print a text it names"
+    effect "the program-task slot is bound to printing that text, the operand of the request"
+    unit "not applicable"
+    example "print text"
+    lexeme en "print text" "prints text"
+    lexeme ru "печатает текст" "выводит текст"
+    lexeme hi "टेक्स्ट प्रिंट"
+    lexeme zh 打印文本
+    lexeme es "imprime texto" "imprimir texto"

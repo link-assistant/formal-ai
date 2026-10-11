@@ -3,717 +3,682 @@ meanings
     defined-by action
     role file_read_action_cue
     lexeme en
-      surface
-        text "read"
-      surface
-        text "read the file"
-      surface
-        text "show me the contents of"
-      surface
-        text "open"
-      surface
-        text "print"
-      surface
-        text "show"
-      surface
-        text "get the contents of"
-      surface
-        text "display"
-      surface
-        text "view the file"
-      surface
-        text "load"
-      surface
-        text "what is in"
-      surface
-        text "tell me what"
-      surface
-        text "cat"
-      surface
-        text "inspect"
-      surface
-        text "preview"
-      surface
-        text "contents"
-      surface
-        text "inside"
-      surface
-        text "what does"
-      surface
-        text "say"
-      surface
-        text "first line"
-      surface
-        text "value of"
-      surface
-        text "summarize"
+      words "read" "read the file" "show me the contents of" "open" "print" "show" "get the contents of" "display"
+      words "view the file" "load" "what is in" "tell me what" "cat" "inspect" "preview" "contents" "inside" "what does"
+      words "say" "first line" "value of" "summarize"
+      words "pull up" "dump" "list the contents of" "echo the contents of" "walk me through"
     lexeme ru
-      surface
-        text прочитай
-      surface
-        text "прочитай файл"
-      surface
-        text "покажи содержимое"
-      surface
-        text открой
-      surface
-        text выведи
-      surface
-        text покажи
-      surface
-        text "получи содержимое"
-      surface
-        text отобрази
-      surface
-        text "просмотри файл"
-      surface
-        text загрузи
-      surface
-        text "что в"
-      surface
-        text "расскажи содержимое"
-      surface
-        text посмотри
-      surface
-        text "проверь файл"
-      surface
-        text предпросмотр
+      words прочитай "прочитай файл" "покажи содержимое" открой выведи покажи "получи содержимое" отобрази
+      words "просмотри файл" загрузи "что в" "расскажи содержимое" посмотри "проверь файл" предпросмотр
+      words "подтяни" "выгрузи" "перечисли содержимое" "выведи содержимое" "проведи меня по"
     lexeme hi
-      surface
-        text पढ़ें
-      surface
-        text "फ़ाइल पढ़ें"
-      surface
-        text "सामग्री दिखाएँ"
-      surface
-        text खोलें
-      surface
-        text "प्रिंट करें"
-      surface
-        text दिखाएँ
-      surface
-        text "सामग्री प्राप्त करें"
-      surface
-        text "प्रदर्शित करें"
-      surface
-        text "फ़ाइल देखें"
-      surface
-        text "लोड करें"
-      surface
-        text "में क्या है"
-      surface
-        text "सामग्री बताएँ"
-      surface
-        text देखें
-      surface
-        text "फ़ाइल जाँचें"
-      surface
-        text "पूर्वावलोकन करें"
-    lexeme zh
-      surface
-        text 读取
-      surface
-        text 读取文件
-      surface
-        text 显示内容
-      surface
-        text 打开
-      surface
-        text 打印
-      surface
-        text 显示
-      surface
-        text 获取内容
-      surface
-        text 展示
-      surface
-        text 查看文件
-      surface
-        text 加载
-      surface
-        text 里面有什么
-      surface
-        text 告诉我内容
-      surface
-        text 查看
-      surface
-        text 检查文件
-      surface
-        text 预览
+      words पढ़ें "फ़ाइल पढ़ें" "सामग्री दिखाएँ" खोलें "प्रिंट करें" दिखाएँ "सामग्री प्राप्त करें" "प्रदर्शित करें"
+      words "फ़ाइल देखें" "लोड करें" "में क्या है" "सामग्री बताएँ" देखें "फ़ाइल जाँचें" "पूर्वावलोकन करें"
+      words "सामने लाएँ" "उतार दें" "सामग्री सूचीबद्ध करें" "सामग्री छापें" "मुझे समझाएँ"
+    lexeme zh 输出内容 读取 读取文件 显示内容 打开 打印 显示 获取内容 展示 查看文件 加载 里面有什么 告诉我内容 查看 检查文件 预览
+      words "调出" "导出" "列出内容" "带我过一遍"
     lexeme es
-      surface
-        text lee
-      surface
-        text leer
-      surface
-        text "lee el archivo"
-      surface
-        text "muestra el contenido de"
-      surface
-        text abre
-      surface
-        text imprime
-      surface
-        text muestra
-      surface
-        text visualiza
-      surface
-        text carga
-      surface
-        text inspecciona
-      surface
-        text "vista previa"
+      words "escribe el contenido de" lee leer "lee el archivo" "muestra el contenido de" abre imprime muestra visualiza carga inspecciona
+      words "vista previa"
+      words "muéstrame el contenido de" "obtén el contenido de" "despliega" "mira el archivo" "qué hay en" "cuéntame el contenido de" "revisa" "comprueba el archivo" "previsualiza" "saca" "vuelca" "enumera el contenido de" "guíame por"
   file_write_action
     defined-by action
     role file_write_action_cue
     lexeme en
-      surface
-        text "create"
-      surface
-        text "write"
-      surface
-        text "save"
-      surface
-        text "make"
-      surface
-        text "generate"
-      surface
-        text "append"
-      surface
-        text "add"
-      surface
-        text "put"
-      surface
-        text "set"
-      surface
-        text "record"
-      surface
-        text "leave"
-      surface
-        text "place"
-      surface
-        text "store"
-      surface
-        text "produce"
-      surface
-        text "emit"
+      words "create" "write" "save" "make" "generate" "append" "add" "put" "set" "record" "leave" "place" "store"
+      words "produce" "emit"
     lexeme ru
-      surface
-        text создай
-      surface
-        text создать
-      surface
-        text напиши
-      surface
-        text записать
-      surface
-        text запиши
-      surface
-        text сохрани
-      surface
-        text сделай
-      surface
-        text добавь
-      surface
-        text зафиксируй
-      surface
-        text оставь
-      surface
-        text помести
-      surface
-        text храни
-      surface
-        text подготовь
-      surface
-        text выведи
-      surface
-        text создайте
-      surface
-        text напишите
-      surface
-        text запишите
-      surface
-        text сохраните
-      surface
-        text сделайте
-      surface
-        text добавьте
-      surface
-        text зафиксируйте
-      surface
-        text оставьте
-      surface
-        text поместите
-      surface
-        text храните
-      surface
-        text подготовьте
-      surface
-        text выведите
-    lexeme hi
-      surface
-        text बनाओ
-      surface
-        text बनाएँ
-      surface
-        text लिखो
-      surface
-        text सहेजो
-      surface
-        text जोड़ो
-      surface
-        text दर्ज
-      surface
-        text छोड़ो
-      surface
-        text रखो
-      surface
-        text संग्रह
-      surface
-        text तैयार
-      surface
-        text निकालो
-    lexeme zh
-      surface
-        text 创建
-      surface
-        text 写
-      surface
-        text 保存
-      surface
-        text 生成
-      surface
-        text 添加
-      surface
-        text 记录
-      surface
-        text 留下
-      surface
-        text 放置
-      surface
-        text 存储
-      surface
-        text 产出
-      surface
-        text 输出
-      surface
-        text 写入
-    lexeme es
-      surface
-        text crea
-      surface
-        text crear
-      surface
-        text escribe
-      surface
-        text escribir
-      surface
-        text guarda
-      surface
-        text guardar
-      surface
-        text genera
-      surface
-        text generar
-      surface
-        text añade
-      surface
-        text agrega
-      surface
-        text registra
-      surface
-        text deja
-      surface
-        text coloca
-      surface
-        text almacena
+      words создай создать напиши записать запиши сохрани сделай добавь зафиксируй оставь помести храни подготовь выведи
+      words создайте напишите запишите сохраните сделайте добавьте зафиксируйте оставьте поместите храните подготовьте
+      words выведите
+    lexeme hi बनाओ बनाएँ लिखो सहेजो जोड़ो दर्ज छोड़ो रखो संग्रह तैयार निकालो
+    lexeme zh 创建 写 保存 生成 添加 追加 记录 留下 放置 存储 产出 输出 写入
+    lexeme es crea crear escribe escribir guarda guardar genera generar añade agrega registra deja coloca almacena pon
   file_write_content
     defined-by relation
     role file_write_content_lead
     lexeme en
-      surface
-        text "containing exactly …"
-      surface
-        text "containing …"
-      surface
-        text "with …"
-      surface
-        text "with content …"
-      surface
-        text "with text …"
-      surface
-        text "with the content …"
-      surface
-        text "with exactly this content …"
-      surface
-        text "contents …"
-      surface
-        text "with the text …"
-      surface
-        text "with the following …"
-      surface
-        text "whose content is …"
-      surface
-        text "whose contents are …"
-      surface
-        text "that says …"
-      surface
-        text "that contains …"
-      surface
-        text "which says …"
-      surface
-        text "saying …"
+      words "containing exactly …" "containing …" "with …" "with content …" "with text …" "with the content …"
+      words "with exactly this content …" "contents …" "with the text …" "with the following …" "whose content is …"
+      words "whose contents are …" "that says …" "that contains …" "which says …" "saying …"
     lexeme ru
-      surface
-        text "с точно таким содержанием …"
-      surface
-        text "с текстом …"
-      surface
-        text "с содержанием …"
-      surface
-        text "с содержимым …"
-      surface
-        text "содержащий …"
-      surface
-        text "содержащей …"
-    lexeme hi
-      surface
-        text "ठीक इसी सामग्री के साथ …"
-      surface
-        text "जिसमें लिखा हो …"
-      surface
-        text "जिसमें … हो"
-      surface
-        text "सामग्री के साथ …"
-    lexeme zh
-      surface
-        text "内容与以下完全相同 …"
-      surface
-        text "内容为 …"
-      surface
-        text "把 … 写入"
-      surface
-        text "包含 …"
-    lexeme es
-      surface
-        text "con el contenido …"
-      surface
-        text "con contenido …"
-      surface
-        text "con el texto …"
-      surface
-        text "que contenga …"
-      surface
-        text "conteniendo …"
-      surface
-        text "con …"
+      words "с точно таким содержанием …" "с текстом …" "с содержанием …" "с содержимым …" "содержащий …" "содержащей …"
+    lexeme hi "ठीक इसी सामग्री के साथ …" "जिसमें लिखा हो …" "जिसमें … हो" "सामग्री के साथ …"
+    lexeme zh "内容与以下完全相同 …" "内容为 …" "把 … 写入" "包含 …"
+    lexeme es "con el contenido …" "con contenido …" "con el texto …" "que contenga …" "conteniendo …" "con …"
   file_write_literal_qualifier
     defined-by relation
     role file_write_content_qualifier
-    lexeme en
-      surface
-        text exactly
-      surface
-        text precisely
-      surface
-        text verbatim
-      surface
-        text literally
-      surface
-        text "exactly this"
-      surface
-        text "precisely this"
-    lexeme ru
-      surface
-        text ровно
-      surface
-        text точно
-      surface
-        text именно
-      surface
-        text дословно
-    lexeme hi
-      surface
-        text ठीक
-      surface
-        text बिल्कुल
-      surface
-        text हूबहू
-    lexeme zh
-      surface
-        text 恰好
-      surface
-        text 正好
-      surface
-        text 完全
-    lexeme es
-      surface
-        text exactamente
-      surface
-        text precisamente
-      surface
-        text literalmente
-      surface
-        text textualmente
+    lexeme en exactly precisely verbatim literally "exactly this" "precisely this"
+    lexeme ru ровно точно именно дословно
+    lexeme hi ठीक बिल्कुल हूबहू
+    lexeme zh 恰好 正好 完全
+    lexeme es exactamente precisamente literalmente textualmente
   file_write_authoritative_content
     defined-by relation
     role file_write_authoritative_content_lead
-    lexeme en
-      surface
-        text "with exactly this content …"
-    lexeme ru
-      surface
-        text "с точно таким содержанием …"
-    lexeme hi
-      surface
-        text "ठीक इसी सामग्री के साथ …"
-    lexeme zh
-      surface
-        text "内容与以下完全相同 …"
-    lexeme es
-      surface
-        text "con exactamente este contenido …"
+    lexeme en "with exactly this content …"
+    lexeme ru "с точно таким содержанием …"
+    lexeme hi "ठीक इसी सामग्री के साथ …"
+    lexeme zh "内容与以下完全相同 …"
+    lexeme es "con exactamente este contenido …"
   file_write_command_output
     defined-by relation
     role file_write_command_output_reference
-    lexeme en
-      surface
-        text stdout
-      surface
-        text "standard output"
-      surface
-        text "command output"
-      surface
-        text "its output"
-      surface
-        text "the output"
-    lexeme ru
-      surface
-        text "стандартный вывод"
-      surface
-        text "вывод команды"
-      surface
-        text "его вывод"
-    lexeme hi
-      surface
-        text "मानक आउटपुट"
-      surface
-        text "कमांड आउटपुट"
-    lexeme zh
-      surface
-        text 标准输出
-      surface
-        text 命令输出
-    lexeme es
-      surface
-        text "salida estándar"
-      surface
-        text "salida del comando"
-      surface
-        text "su salida"
+    lexeme en stdout "standard output" "command output" "its output" "the output"
+    lexeme ru "стандартный вывод" "вывод команды" "его вывод"
+    lexeme hi "मानक आउटपुट" "कमांड आउटपुट"
+    lexeme zh 标准输出 命令输出
+    lexeme es "salida estándar" "salida del comando" "su salida"
   file_write_deferred_content
     defined-by relation
     role file_write_deferred_content_reference
     lexeme en
-      surface
-        text "… finding"
-      surface
-        text "… findings"
-      surface
-        text "… result"
-      surface
-        text "… results"
-      surface
-        text "… answer"
-      surface
-        text "… outcome"
-      surface
-        text "… conclusion"
-      surface
-        text "… conclusions"
-      surface
-        text "… evidence"
-      surface
-        text "… verdict"
-      surface
-        text "… proof"
-    lexeme ru
-      surface
-        text "… вывод"
-      surface
-        text "… выводы"
-      surface
-        text "… результат"
-      surface
-        text "… результаты"
-      surface
-        text "… ответ"
-      surface
-        text "… итог"
-      surface
-        text "… заключение"
-      surface
-        text "… доказательство"
-    lexeme hi
-      surface
-        text "… निष्कर्ष"
-      surface
-        text "… परिणाम"
-      surface
-        text "… उत्तर"
-      surface
-        text "… प्रमाण"
-    lexeme zh
-      surface
-        text "… 结论"
-      surface
-        text "… 结果"
-      surface
-        text "… 答案"
-      surface
-        text "… 证据"
+      words "… finding" "… findings" "… result" "… results" "… answer" "… outcome" "… conclusion" "… conclusions"
+      words "… evidence" "… verdict" "… proof"
+    lexeme ru "… вывод" "… выводы" "… результат" "… результаты" "… ответ" "… итог" "… заключение" "… доказательство"
+    lexeme hi "… निष्कर्ष" "… परिणाम" "… उत्तर" "… प्रमाण"
+    lexeme zh "… 结论" "… 结果" "… 答案" "… 证据"
     lexeme es
-      surface
-        text "… hallazgo"
-      surface
-        text "… hallazgos"
-      surface
-        text "… resultado"
-      surface
-        text "… resultados"
-      surface
-        text "… respuesta"
-      surface
-        text "… conclusión"
-      surface
-        text "… conclusiones"
-      surface
-        text "… evidencia"
-      surface
-        text "… prueba"
+      words "… hallazgo" "… hallazgos" "… resultado" "… resultados" "… respuesta" "… conclusión" "… conclusiones"
+      words "… evidencia" "… prueba"
   file_write_target
     defined-by relation
     role file_write_target_cue
-    lexeme en
-      surface
-        text "file"
-      surface
-        text "called"
-      surface
-        text "named"
-      surface
-        text "at"
-      surface
-        text "as"
-      surface
-        text "in"
-      surface
-        text "inside"
-      surface
-        text "of"
-    lexeme ru
-      surface
-        text файл
-      surface
-        text файле
-      surface
-        text названный
-    lexeme hi
-      surface
-        text फ़ाइल
-      surface
-        text नामक
-    lexeme zh
-      surface
-        text 文件
-    lexeme es
-      surface
-        text archivo
-      surface
-        text fichero
-      surface
-        text llamado
-      surface
-        text llamada
-      surface
-        text nombrado
+    lexeme en "file" "called" "named" "at" "as" "in" "inside" "of"
+    lexeme ru файл файле названный
+    lexeme hi फ़ाइल नामक
+    lexeme zh 文件
+    lexeme es archivo fichero llamado llamada nombrado de
   file_write_destination
     defined-by relation
     role file_write_destination_cue
-    lexeme en
-      surface
-        text "to"
-      surface
-        text "into"
-      surface
-        text "onto"
-    lexeme ru
-      surface
-        text в
-      surface
-        text во
-    lexeme hi
-      surface
-        text में
-    lexeme zh
-      surface
-        text 到
-      surface
-        text 在
-    lexeme es
-      surface
-        text en
-      surface
-        text hacia
+    lexeme en "to" "into" "onto"
+    lexeme ru в во
+    lexeme hi में
+    lexeme zh 到 在
+    lexeme es en hacia
   file_leading_line_constraint
     defined-by relation
     role file_leading_line_constraint_lead
     lexeme en
-      surface
-        text "the first line must be exactly …"
-      surface
-        text "the first line must be …"
-      surface
-        text "the first line of the file must be …"
-      surface
-        text "whose first line is exactly …"
-      surface
-        text "whose first line is …"
-      surface
-        text "the file must begin with the line …"
-      surface
-        text "the file must start with the line …"
-      surface
-        text "begin the file with the line …"
-      surface
-        text "start the file with the line …"
-    lexeme ru
-      surface
-        text "первая строка должна быть точно …"
-      surface
-        text "первая строка должна быть …"
-      surface
-        text "начни файл со строки …"
-    lexeme hi
-      surface
-        text "पहली पंक्ति ठीक यही होनी चाहिए …"
-      surface
-        text "पहली पंक्ति होनी चाहिए …"
-      surface
-        text "फ़ाइल की पहली पंक्ति होनी चाहिए …"
-    lexeme zh
-      surface
-        text "第一行必须正好是 …"
-      surface
-        text "第一行必须是 …"
-      surface
-        text "文件的第一行是 …"
+      words "the first line must be exactly …" "the first line must be …" "the first line of the file must be …"
+      words "whose first line is exactly …" "whose first line is …" "the file must begin with the line …"
+      words "the file must start with the line …" "begin the file with the line …" "start the file with the line …"
+    lexeme ru "первая строка должна быть точно …" "первая строка должна быть …" "начни файл со строки …"
+    lexeme hi "पहली पंक्ति ठीक यही होनी चाहिए …" "पहली पंक्ति होनी चाहिए …" "फ़ाइल की पहली पंक्ति होनी चाहिए …"
+    lexeme zh "第一行必须正好是 …" "第一行必须是 …" "文件的第一行是 …"
     lexeme es
-      surface
-        text "la primera línea debe ser exactamente …"
-      surface
-        text "la primera línea debe ser …"
-      surface
-        text "la primera línea del archivo debe ser …"
-      surface
-        text "empieza el archivo con la línea …"
+      words "la primera línea debe ser exactamente …" "la primera línea debe ser …"
+      words "la primera línea del archivo debe ser …" "empieza el archivo con la línea …"
+  file_whole_write_action
+    # PR #1188 T96 (the backstop behind G13, G17 and T29): the write verbs
+    # that name a file's whole new content. A literal-file write whose first
+    # write verb is one of these writes the file as asked; any other verb
+    # (add, set, record, ...) or none reads the target first, and an existing
+    # non-empty file is replaced only with `file_overwrite_consent`.
+    defined-by action
+    role file_whole_write_action
+    precondition "a literal-file change request names a target file"
+    effect "only these verbs may write the target before it is read; any other verb reads it first"
+    unit "not applicable"
+    example "create"
+    lexeme en create write save make generate produce store "emit" "new file"
+    lexeme ru
+      words создай создать создайте напиши напишите запиши записать запишите сохрани сохраните сделай сделайте
+      words "новый файл"
+    lexeme hi बनाओ बनाएँ लिखो सहेजो "नई फ़ाइल"
+    lexeme zh 创建 写 写入 保存 生成 新建
+    lexeme es crea crear escribe escribir guarda guardar genera generar "nuevo archivo"
+  file_declared_noun
+    # PR #1188 CIFIX2: the noun that, written right before a path with the
+    # content stated after it (`add file note.txt containing hello`, `new
+    # file: notes.txt, contents: hello`), declares the file the request
+    # writes. Such a request creates the file whatever its verb, so the
+    # literal-file backstop (`file_whole_write_action`) writes it unread; a
+    # destination or location cue ahead of the noun (`add 'x' to the file
+    # a.txt`) keeps the read-first guard.
+    defined-by relation
+    role file_declared_noun
+    precondition "a literal-file write request names its target right after this noun and states the content after the target"
+    effect "the request declares the file it writes, so the target is written without a guard read"
+    unit "not applicable"
+    example "add file note.txt containing hello"
+    lexeme en file
+    lexeme ru файл
+    lexeme hi फ़ाइल
+    lexeme zh 文件
+    lexeme es archivo fichero
+  file_overwrite_consent
+    # Wording that consents to replacing an existing file's whole content.
+    defined-by relation
+    role file_overwrite_consent
+    precondition "a write request targets a file that already has content"
+    effect "the existing file may be replaced as a whole instead of being kept"
+    unit "not applicable"
+    example "overwrite"
+    lexeme en
+      words "overwrite" "replace the whole file" "replace the file" "replace its contents" "replace the contents"
+      words "set the contents of" "set the content of"
+    lexeme ru перезапиши "замени весь файл" "замени содержимое" "установи содержимое"
+    lexeme hi "पूरी फ़ाइल बदलें" अधिलेखित
+    lexeme zh 覆盖 替换整个文件
+    lexeme es sobrescribe "reemplaza todo el archivo" "reemplaza el contenido" "pon el contenido de"
+
+  file-read-object-noun
+    example "Read the file src/input.txt."
+    defined-by concept
+    role file-read-object-noun
+    precondition "an unquoted file noun immediately follows a source-owned read operation, separated only by seeded function words"
+    effect "types the operation object as a file; a negative policy remains mandatory before tool effects and does not grant permission"
+    unit "source text spans, UTF-16 in JavaScript and UTF-8 in Rust"
+    grounding "js/agentic/file_read/ownership.mjs sha256 f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d; rust/src/agentic_coding/file_read/ownership.rs sha256 e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
+    lexeme en file files
+    lexeme ru файл файла файлы файлов файле
+    lexeme hi फ़ाइल फ़ाइलें फाइल फाइलें
+    lexeme zh 文件
+    lexeme es archivo archivos fichero ficheros
+  file-read-negative-operation
+    example "Do not read src/private.txt."
+    defined-by action
+    role file-read-negative-operation
+    precondition "complete unquoted negative read-operation surface owns an adjacent typed file noun or path; only seeded function words may intervene"
+    effect "records an immutable no-read scope; never grants a tool permission"
+    unit "source spans"
+    grounding "js/agentic/file_read/ownership.mjs sha256 f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d; rust/src/agentic_coding/file_read/ownership.rs sha256 e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
+    lexeme en "do not read" "never read" "do not open" "never open" "don't read" "don't open"
+    lexeme ru "не читай" "не прочитай" "никогда не прочитай" "никогда не читай" "не открывай"
+    lexeme hi "मत पढ़ो" "मत पढ़ें" "मत खोलो" "मत खोलें"
+    lexeme zh 不要读取 不要打开 从不读取 从不打开
+    lexeme es "no leas" "no abras" "nunca leas" "nunca abras"
+  file-read-independent-effect-operation
+    example "Read src/input.txt and deploy the application: deployment remains independently unbound."
+    defined-by action
+    role file-read-independent-effect-operation
+    precondition "an unquoted independent external effect operation is declared alongside a file-read plan and has no bound execution or receipt contract"
+    effect "refuses premature file-read effects; it does not execute or certify the independent operation"
+    unit "source spans"
+    grounding "js/agentic/file_read/ownership.mjs sha256 f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d; rust/src/agentic_coding/file_read/ownership.rs sha256 e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
+    lexeme en deploy publish
+    lexeme ru разверни опубликуй
+    lexeme hi तैनात प्रकाशित
+    lexeme zh 部署 发布
+    lexeme es despliega publica
+
+  file-read-mode-contract
+    example "Show the first line of src/input.txt."
+    defined-by action
+    role file-read-mode-contract
+    precondition "a complete seeded form consumes the existing full-content, selector or bounded audit operation and its typed source list; every source token is locally owned and unmatched prerequisites or independent goals are refused"
+    effect "binds source operands for the existing full-content, value, first-line or bounded audit producer; it does not certify transport completion or source contents"
+    unit "source spans and producer modes"
+    grounding "file_read ownership mode grammar and existing FileReadMode producers in JavaScript and Rust"
+    lexeme en "source-owned read mode"
+    lexeme ru "режим чтения с владельцем исходника"
+    lexeme hi "स्रोत स्वामित्व पठन मोड"
+    lexeme zh "源所有权读取模式"
+    lexeme es "modo de lectura con propiedad fuente"
+    form display-inside
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:me[ \\t]+)?what[ \\t]+is[ \\t]+inside[ \\t]+{source}(?:[ \\t]+at[ \\t]+(?:the[ \\t]+)?top)?[ \\t]*[?.]?$"
+    form full-en
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:me[ \\t]+)?(?:the[ \\t]+)?(?:(?:exact|precise|complete|full|verbatim|literal)[ \\t]+)?(?:(?:(?:text|contents?|bytes)[ \\t]+(?:stored[ \\t]+)?(?:in|of|from)|{file-read-object-noun})[ \\t]+)?{source}(?:[ \\t]+{file-read-mode-joiner}[ \\t]+{file-read-action-cue}[ \\t]+(?:its|the)[ \\t]+contents?)?[ \\t]*[?.]?$"
+    form full-ru
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:(?:мне|точный|полный|дословный)[ \\t]+)*(?:текст|содержимое|байты)[ \\t]+(?:из|в|файла)[ \\t]+{source}[ \\t]*[?.]?$"
+    form full-hi
+      pattern "^[ \\t]*{source}[ \\t]+(?:में|का)[ \\t]+(?:(?:ठीक|पूरा|सटीक)[ \\t]+)?(?:पाठ|सामग्री)[ \\t]+{file-read-action-cue}[ \\t]*[।.]?$"
+    form full-zh
+      pattern "^{file-read-action-cue}{source}(?:中|的)(?:完整|准确|原始)?(?:文本|内容|字节)[。]?$"
+    form full-es
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:el[ \\t]+)?(?:texto|contenido|bytes)[ \\t]+(?:(?:exacto|completo|literal)[ \\t]+)?(?:almacenado[ \\t]+)?(?:en|de)[ \\t]+{source}[ \\t]*[?.]?$"
+    form value
+      pattern "^[ \\t]*(?:what[ \\t]+is[ \\t]+the[ \\t]+)?value[ \\t]+of[ \\t]+(?<key>[A-Za-z_][A-Za-z0-9_.-]*)[ \\t]+in[ \\t]+{source}[ \\t]*[?.]?$"
+      capture-domain key
+        pattern "^[A-Za-z_][A-Za-z0-9_.-]*$"
+        precondition "technical captures retain their exact declared case-sensitive byte domain independently from natural-language cue folding"
+    form read-report
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+{sources}[ \\t]*[.][ \\t]+{file-write-action-cue}[ \\t]+(?:(?:a|an|the)[ \\t]+)?{evidence-report-artifact-kind}(?:[ \\t]+about[ \\t]+(?<topic>[\\p{L}\\p{N}_-]+|\\x22[^\\x22\\r\\n]+\\x22|\\x27[^\\x27\\r\\n]+\\x27|\\x60[^\\x60\\r\\n]+\\x60))?[ \\t]+{file-write-target-cue}[ \\t]+(?<target>[^ \\t\\r\\n]+)[ \\t]*[.]?$"
+    form first-line
+      pattern "^[ \\t]*(?:{file-read-action-cue})[ \\t]+(?:the[ \\t]+)?first[ \\t]+line[ \\t]+of[ \\t]+{source}[ \\t]*[?.]?$"
+    form line-slice-count
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:the[ \\t]+)?(?:{line-slice-head-cue}|{line-slice-tail-cue})[ \\t]+(?:[1-9][0-9]{0,8}|0[1-9][0-9]{0,7}|00[1-9][0-9]{0,6}|000[1-9][0-9]{0,5}|0000[1-9][0-9]{0,4}|00000[1-9][0-9]{0,3}|000000[1-9][0-9]{0,2}|0000000[1-9][0-9]{0,1}|00000000[1-9][0-9]{0,0})[ \\t]+{numbered-line-noun}[ \\t]+of[ \\t]+{source}[ \\t]*[?.]?$"
+    form line-slice-range
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:the[ \\t]+)?{numbered-line-noun}[ \\t]+(?:[1-9][0-9]{0,8}|0[1-9][0-9]{0,7}|00[1-9][0-9]{0,6}|000[1-9][0-9]{0,5}|0000[1-9][0-9]{0,4}|00000[1-9][0-9]{0,3}|000000[1-9][0-9]{0,2}|0000000[1-9][0-9]{0,1}|00000000[1-9][0-9]{0,0})[ \\t]*(?:-|{line-range-connector})[ \\t]*(?:[1-9][0-9]{0,8}|0[1-9][0-9]{0,7}|00[1-9][0-9]{0,6}|000[1-9][0-9]{0,5}|0000[1-9][0-9]{0,4}|00000[1-9][0-9]{0,3}|000000[1-9][0-9]{0,2}|0000000[1-9][0-9]{0,1}|00000000[1-9][0-9]{0,0})[ \\t]+of[ \\t]+{source}[ \\t]*[?.]?$"
+    form line-slice-ordinal
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:the[ \\t]+)?(?:{line-ordinal}|{line-ordinal-last})[ \\t]+{numbered-line-noun}[ \\t]+of[ \\t]+{source}[ \\t]*[?.]?$"
+    form audit-en
+      pattern "^[ \\t]*{workspace-inspection-action}[ \\t]+(?:{file-read-mode-joiner}[ \\t]+)?{file-read-action-cue}[ \\t]+{sources}(?:[ \\t]*(?:;|,)?[ \\t]*(?:report[ \\t]+concrete[ \\t]+remaining[ \\t]+gaps|for[ \\t]+remaining[ \\t]+work))?[ \\t]*[.]?$"
+    form audit-ru
+      pattern "^[ \\t]*{workspace-inspection-action}[ \\t]+{file-read-mode-joiner}[ \\t]+{file-read-action-cue}[ \\t]+{sources},[ \\t]*найди[ \\t]+оставшуюся[ \\t]+работу[.]?$"
+    form audit-hi
+      pattern "^[ \\t]*{workspace-inspection-action}[ \\t]+{file-read-mode-joiner}[ \\t]+{sources}[ \\t]+फ़ाइलें[ \\t]+{file-read-action-cue}।?$"
+    form audit-zh
+      pattern "^{workspace-inspection-action}并{file-read-action-cue}{sources}中的剩余工作。?$"
+    form audit-es
+      pattern "^[ \\t]*{workspace-inspection-action}[ \\t]+{file-read-mode-joiner}[ \\t]+{file-read-action-cue}[ \\t]+{sources}[ \\t]+para[ \\t]+encontrar[ \\t]+trabajo[ \\t]+pendiente[.]?$"
+
+  full-en
+    role full-en
+    example "Show me the exact text stored in src/input.txt."
+    defined-by relation
+    definition "The complete-content Read form written in English, under file-read-mode-contract."
+    precondition "The corresponding full-en form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
+    effect "Selects the existing full-content producer; actual complete transport and exact returned content require their own receipt. This identity grants no Write or independent operation."
+    unit "one source-bound Read form"
+    grounding "Authored full-en pattern in meanings-file-write.lino; modePathsForClause in js/agentic/file_read/ownership.mjs; mode_paths_for_clause in rust/src/agentic_coding/file_read/ownership.rs; existing FileReadMode full producer."
+    lexeme en "English complete file-content Read form"
+    lexeme ru "форма чтения полного содержимого файла для английского языка"
+    lexeme hi "अंग्रेज़ी में पूरी फ़ाइल सामग्री पढ़ने का रूप"
+    lexeme zh "英语完整文件内容读取形式"
+    lexeme es "forma de lectura del contenido completo de archivo en inglés"
+
+  full-ru
+    role full-ru
+    example "Покажи полный текст из src/input.txt."
+    defined-by relation
+    definition "The complete-content Read form written in Russian, under file-read-mode-contract."
+    precondition "The corresponding full-ru form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
+    effect "Selects the existing full-content producer; actual complete transport and exact returned content require their own receipt. This identity grants no Write or independent operation."
+    unit "one source-bound Read form"
+    grounding "Authored full-ru pattern in meanings-file-write.lino; modePathsForClause in js/agentic/file_read/ownership.mjs; mode_paths_for_clause in rust/src/agentic_coding/file_read/ownership.rs; existing FileReadMode full producer."
+    lexeme en "Russian complete file-content Read form"
+    lexeme ru "форма чтения полного содержимого файла для русского языка"
+    lexeme hi "रूसी में पूरी फ़ाइल सामग्री पढ़ने का रूप"
+    lexeme zh "俄语完整文件内容读取形式"
+    lexeme es "forma de lectura del contenido completo de archivo en ruso"
+
+  full-hi
+    role full-hi
+    example "src/input.txt का पूरा पाठ दिखाएँ."
+    defined-by relation
+    definition "The complete-content Read form written in Hindi, under file-read-mode-contract."
+    precondition "The corresponding full-hi form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
+    effect "Selects the existing full-content producer; actual complete transport and exact returned content require their own receipt. This identity grants no Write or independent operation."
+    unit "one source-bound Read form"
+    grounding "Authored full-hi pattern in meanings-file-write.lino; modePathsForClause in js/agentic/file_read/ownership.mjs; mode_paths_for_clause in rust/src/agentic_coding/file_read/ownership.rs; existing FileReadMode full producer."
+    lexeme en "Hindi complete file-content Read form"
+    lexeme ru "форма чтения полного содержимого файла для хинди языка"
+    lexeme hi "हिंदी में पूरी फ़ाइल सामग्री पढ़ने का रूप"
+    lexeme zh "印地语完整文件内容读取形式"
+    lexeme es "forma de lectura del contenido completo de archivo en hindi"
+
+  full-zh
+    role full-zh
+    example "读取src/input.txt的完整内容。"
+    defined-by relation
+    definition "The complete-content Read form written in Chinese, under file-read-mode-contract."
+    precondition "The corresponding full-zh form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
+    effect "Selects the existing full-content producer; actual complete transport and exact returned content require their own receipt. This identity grants no Write or independent operation."
+    unit "one source-bound Read form"
+    grounding "Authored full-zh pattern in meanings-file-write.lino; modePathsForClause in js/agentic/file_read/ownership.mjs; mode_paths_for_clause in rust/src/agentic_coding/file_read/ownership.rs; existing FileReadMode full producer."
+    lexeme en "Chinese complete file-content Read form"
+    lexeme ru "форма чтения полного содержимого файла для китайского языка"
+    lexeme hi "चीनी में पूरी फ़ाइल सामग्री पढ़ने का रूप"
+    lexeme zh "中文完整文件内容读取形式"
+    lexeme es "forma de lectura del contenido completo de archivo en chino"
+
+  full-es
+    role full-es
+    example "Muestra el texto completo de src/input.txt."
+    defined-by relation
+    definition "The complete-content Read form written in Spanish, under file-read-mode-contract."
+    precondition "The corresponding full-es form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
+    effect "Selects the existing full-content producer; actual complete transport and exact returned content require their own receipt. This identity grants no Write or independent operation."
+    unit "one source-bound Read form"
+    grounding "Authored full-es pattern in meanings-file-write.lino; modePathsForClause in js/agentic/file_read/ownership.mjs; mode_paths_for_clause in rust/src/agentic_coding/file_read/ownership.rs; existing FileReadMode full producer."
+    lexeme en "Spanish complete file-content Read form"
+    lexeme ru "форма чтения полного содержимого файла для испанского языка"
+    lexeme hi "स्पेनिश में पूरी फ़ाइल सामग्री पढ़ने का रूप"
+    lexeme zh "西班牙语完整文件内容读取形式"
+    lexeme es "forma de lectura del contenido completo de archivo en español"
+
+  line-slice-count
+    role line-slice-count
+    example "Show the last 2 lines of src/input.txt."
+    defined-by relation
+    definition "The complete Read form for a positive count of first or last logical lines."
+    precondition "The form consumes the complete source-owned instruction; count has one to nine decimal digits and is positive; leading zeros preserve the existing producer domain."
+    effect "Selects the first or last requested logical lines through the existing lineSlice producer; it does not grant complete-content fallback, prove transport, or authorize independent effects."
+    limitation "Earlier source returned complete content for some unavailable slices. The updated producer refuses with a no-selected-lines response; genuine native verification remains separate from source and JavaScript controls."
+    unit "logical lines from one source"
+    grounding "Authored line-slice-count pattern under file-read-mode-contract; existing lineSlice in js/agentic/workspace_line_operation.mjs and line_slice in rust/src/agentic_coding/workspace_line_operation.rs; FileReadMode line-slice producer."
+    lexeme en "positive count of first or last logical lines Read form"
+    lexeme ru "форма чтения первых или последних строк по количеству"
+    lexeme hi "गिनती से पहली या आखिरी पंक्तियाँ पढ़ने का रूप"
+    lexeme zh "按数量读取最前或最后若干行的形式"
+    lexeme es "forma de lectura de primeras o últimas líneas por cantidad"
+
+  line-slice-range
+    role line-slice-range
+    example "Read lines 2-3 of src/input.txt."
+    defined-by relation
+    definition "The complete Read form for a inclusive numeric logical-line interval."
+    precondition "The form consumes the complete source-owned instruction; both bounds preserve the existing positive one-to-nine-digit domain; ordering and content bounds require separate producer validation."
+    effect "Selects the requested inclusive logical-line interval through the existing lineSlice producer; it does not grant complete-content fallback, prove transport, or authorize independent effects."
+    limitation "Earlier source returned complete content for some unavailable slices. The updated producer refuses with a no-selected-lines response; genuine native verification remains separate from source and JavaScript controls."
+    unit "logical lines from one source"
+    grounding "Authored line-slice-range pattern under file-read-mode-contract; existing lineSlice in js/agentic/workspace_line_operation.mjs and line_slice in rust/src/agentic_coding/workspace_line_operation.rs; FileReadMode line-slice producer."
+    lexeme en "inclusive numeric logical-line interval Read form"
+    lexeme ru "форма чтения включительного диапазона строк"
+    lexeme hi "समावेशी पंक्ति अंतराल पढ़ने का रूप"
+    lexeme zh "读取包含两端的行区间的形式"
+    lexeme es "forma de lectura de intervalo inclusivo de líneas"
+
+  line-slice-ordinal
+    role line-slice-ordinal
+    example "Show the last line of src/input.txt."
+    defined-by relation
+    definition "The complete Read form for a named first through fifth or last logical line."
+    precondition "The form consumes the complete source-owned instruction; an existing seeded ordinal or last-line role binds the selected line."
+    effect "Selects the named logical line through the existing lineSlice producer; it does not grant complete-content fallback, prove transport, or authorize independent effects."
+    limitation "Earlier source returned complete content for some unavailable slices. The updated producer refuses with a no-selected-lines response; genuine native verification remains separate from source and JavaScript controls."
+    unit "logical lines from one source"
+    grounding "Authored line-slice-ordinal pattern under file-read-mode-contract; existing lineSlice in js/agentic/workspace_line_operation.mjs and line_slice in rust/src/agentic_coding/workspace_line_operation.rs; FileReadMode line-slice producer."
+    lexeme en "named first through fifth or last logical line Read form"
+    lexeme ru "форма чтения строки по порядковому имени"
+    lexeme hi "नामित क्रम से पंक्ति पढ़ने का रूप"
+    lexeme zh "按序数名称读取一行的形式"
+    lexeme es "forma de lectura de línea por ordinal indicado"
+
+  source-owned-read-form
+    defined-by relation
+    role file-read-mode-contract
+    example "Show me what is inside nested/Example.rs at the top."
+    precondition "a declared complete form binds one typed local source operand, and prerequisite ownership has already been checked"
+    effect "classifies that complete request for the existing Read producer; it does not execute a tool, authorize another clause, or certify positional extraction"
+    unit "one complete source request and its bound path"
+    source "js/agentic/file_read/ownership.mjs and rust/src/agentic_coding/file_read/ownership.rs; display-inside uses the existing Full mode"
+    lexeme en "source-owned read form"
+    lexeme ru "форма чтения с привязанным источником"
+    lexeme hi "स्रोत से बँधा पठन रूप"
+    lexeme zh "绑定源路径的读取形式"
+    lexeme es "forma de lectura vinculada a una fuente"
+  file-read-line-slice-unavailable
+    defined-by answer
+    role file-read-mode-contract
+    example "An unavailable range on a three-line file yields a no-selected-lines response and no file content."
+    precondition "the existing LineSlice producer has observed source bytes but its requested selection contains no available lines"
+    effect "renders the shared unavailable-slice response with the source path; it never returns the full source as a fallback"
+    unit "one unavailable selected interval response"
+    source "js/agentic/file_read/audit.mjs keyed message and rust/src/agentic_coding/file_read/audit.rs seed response; line-slice-unavailable.test.mjs retains eight original producer controls"
+    lexeme en "requested file line slice unavailable"
+    lexeme ru "запрошенный диапазон строк файла недоступен"
+    lexeme hi "अनुरोधित फ़ाइल पंक्ति चयन अनुपलब्ध"
+    lexeme zh "请求的文件行范围不可用"
+    lexeme es "intervalo de líneas solicitado no disponible"
+  file-read-mode-joiner
+    example "Inspect and read src/input.txt for remaining work."
+    defined-by relation
+    role file-read-mode-joiner
+    precondition "a completely consumed read-mode form joins only its inspection/read operators or its typed source operands"
+    effect "binds conjunction spans inside that read operation; never authorizes an unrelated subsequent operation"
+    unit "source spans"
+    grounding "file_read ownership mode source-list grammar in JavaScript and Rust"
+    lexeme en and
+    lexeme ru и
+    lexeme hi और तथा
+    lexeme zh 和 并
+    lexeme es y
+
+  file-read-order-contract
+    unit "not applicable"
+    example "Read src/input.txt before authoring."
+    defined-by relation
+    role file-read-order-contract
+    requires-goal observed-callable-authoring
+    precondition "the existing observed callable request classifier binds an actual declared source authoring operation and destination; a full seeded suffix requires these Reads before that authoring, not a condition before Read"
+    effect "permits only the prerequisite Read disposition; authoring remains deferred to its own source and Goal contract, with every no-read and independent-action refusal retained"
+    grounding "source-owned observedCallableRequest and observed_callable_request plus complete consumed order suffix"
+    lexeme en "Read before owned authoring"
+    lexeme ru "Чтение до заявленного создания кода"
+    lexeme hi "घोषित कोड लेखन से पहले पढ़ना"
+    lexeme zh "在已声明的代码编写之前读取"
+    lexeme es "Leer antes de escribir código declarado"
+    form en
+      pattern "^[ \\t]*before[ \\t]+authoring[ \\t]*[.]?$"
+    form ru
+      pattern "^[ \\t]*до[ \\t]+создания[ \\t]+кода[ \\t]*[.]?$"
+    form hi
+      pattern "^[ \\t]*कोड[ \\t]+लिखने[ \\t]+से[ \\t]+पहले[ \\t]*[।.]?$"
+    form zh
+      pattern "^[ \\t]*在编写代码之前[ \\t]*[。.]?$"
+    form es
+      pattern "^[ \\t]*antes[ \\t]+de[ \\t]+escribir[ \\t]+código[ \\t]*[.]?$"
+
+  first-line
+    role first-line
+    unit "not applicable"
+    example "Show the first line of src/input.txt."
+    defined-by relation
+    definition "The read result selector for the first logical line of one selected file."
+    precondition "The full seeded first-line form binds one owned local source; actual read transport and content must be observed separately."
+    effect "Selects the first Rust-compatible logical line or empty text for empty content; it grants no writing or independent operation."
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
+    source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
+    lexeme en
+      words "first line"
+    lexeme ru
+      words "первая строка"
+    lexeme hi
+      words "पहली पंक्ति"
+    lexeme zh
+      words "第一行"
+    lexeme es
+      words "primera línea"
+  observed-callable-authoring
+    role observed-callable-authoring
+    unit "not applicable"
+    example "Read the observed source before creating its declared function; source authoring remains deferred until its own complete contract binds."
+    defined-by relation
+    definition "A deferred source authoring goal recognized by the existing observed callable request classifier."
+    precondition "The actual classifier binds a declared callable request and destination; a complete order suffix requires Read before that authoring."
+    effect "Allows prerequisite Read disposition only; authoring, source identity, effects and verification remain separately owned and unresolved until proved."
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
+    source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
+    lexeme en
+      words "observed callable authoring"
+    lexeme ru
+      words "создание наблюдаемой вызываемой функции"
+    lexeme hi
+      words "अवलोकित कॉल योग्य स्रोत लेखन"
+    lexeme zh
+      words "已观察可调用对象编写"
+    lexeme es
+      words "autoría de invocable observado"
+  deploy
+    role deploy
+    unit "not applicable"
+    example "A request to deploy remains an independent operation after a Read; this meaning grants no deployment authority."
+    defined-by relation
+    definition "An independent operation that places a program or service into an execution environment."
+    precondition "An unquoted deployment operation alongside a file-read request has no bound deployment execution or receipt contract."
+    effect "The Read ownership policy refuses premature effects; this meaning neither runs deployment nor grants credentials."
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
+    source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
+    lexeme en
+      words "deploy"
+    lexeme ru
+      words "развернуть"
+    lexeme hi
+      words "तैनात करना"
+    lexeme zh
+      words "部署"
+    lexeme es
+      words "desplegar"
+  publish
+    role publish
+    unit "not applicable"
+    example "A request to publish remains an independent operation after a Read; this meaning grants no publication authority."
+    defined-by relation
+    definition "An independent operation that makes an artifact available through an external publication destination."
+    precondition "An unquoted publication operation alongside a file-read request has no bound publication execution or receipt contract."
+    effect "The Read ownership policy refuses premature effects; this meaning neither publishes artifacts nor certifies remote availability."
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
+    source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
+    lexeme en
+      words "publish"
+    lexeme ru
+      words "опубликовать"
+    lexeme hi
+      words "प्रकाशित करना"
+    lexeme zh
+      words "发布"
+    lexeme es
+      words "publicar"
+  audit-en
+    role audit-en
+    unit "not applicable"
+    example "Inspect and read src/input.txt for remaining work."
+    defined-by relation
+    definition "The en full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
+    precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
+    effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
+    source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
+    lexeme en
+      words "English bounded file audit"
+    lexeme ru
+      words "ограниченный аудит файлов на английском"
+    lexeme hi
+      words "अंग्रेज़ी सीमित फ़ाइल लेखा"
+    lexeme zh
+      words "英语有界文件审计"
+    lexeme es
+      words "auditoría limitada de archivos en inglés"
+  audit-ru
+    role audit-ru
+    unit "not applicable"
+    example "Проверь и прочитай src/input.txt, найди оставшуюся работу."
+    defined-by relation
+    definition "The ru full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
+    precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
+    effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
+    source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
+    lexeme en
+      words "Russian bounded file audit"
+    lexeme ru
+      words "ограниченный аудит файлов на русском"
+    lexeme hi
+      words "रूसी सीमित फ़ाइल लेखा"
+    lexeme zh
+      words "俄语有界文件审计"
+    lexeme es
+      words "auditoría limitada de archivos en ruso"
+  audit-hi
+    role audit-hi
+    unit "not applicable"
+    example "जाँचें और src/input.txt फ़ाइलें पढ़ें।"
+    defined-by relation
+    definition "The hi full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
+    precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
+    effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
+    source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
+    lexeme en
+      words "Hindi bounded file audit"
+    lexeme ru
+      words "ограниченный аудит файлов на хинди"
+    lexeme hi
+      words "हिन्दी सीमित फ़ाइल लेखा"
+    lexeme zh
+      words "印地语有界文件审计"
+    lexeme es
+      words "auditoría limitada de archivos en hindi"
+  audit-zh
+    role audit-zh
+    unit "not applicable"
+    example "检查并读取src/input.txt中的剩余工作。"
+    defined-by relation
+    definition "The zh full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
+    precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
+    effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
+    source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
+    lexeme en
+      words "Chinese bounded file audit"
+    lexeme ru
+      words "ограниченный аудит файлов на китайском"
+    lexeme hi
+      words "चीनी सीमित फ़ाइल लेखा"
+    lexeme zh
+      words "中文有界文件审计"
+    lexeme es
+      words "auditoría limitada de archivos en chino"
+  audit-es
+    role audit-es
+    unit "not applicable"
+    example "Inspecciona y lee src/input.txt para encontrar trabajo pendiente."
+    defined-by relation
+    definition "The es full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
+    precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
+    effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
+    source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
+    lexeme en
+      words "Spanish bounded file audit"
+    lexeme ru
+      words "ограниченный аудит файлов на испанском"
+    lexeme hi
+      words "स्पेनी सीमित फ़ाइल लेखा"
+    lexeme zh
+      words "西班牙语有界文件审计"
+    lexeme es
+      words "auditoría limitada de archivos en español"
+
+  display-inside
+    defined-by pattern
+    role source-owned-read-form
+    example "Show me what is inside nested/Example.rs at the top."
+    precondition "the complete display-inside form owns one typed local source operand; unbound prerequisites, additional goals and literal payload quotations remain outside this authority"
+    effect "binds the source operand for the existing Full Read producer; positional wording does not certify a first-line-only result or transport completion"
+    unit "one source operand and complete request frame"
+    grounding "existing modePathsForClause, mode_paths_for_clause and modeForPrompt Full producers; original dotted-file capability test"
+    lexeme en "show contents inside a source file"
+    lexeme ru "показать содержимое исходного файла"
+    lexeme hi "स्रोत फ़ाइल की सामग्री दिखाएं"
+    lexeme zh "显示源文件中的内容"
+    lexeme es "mostrar contenido dentro de un archivo fuente"
+  read-report
+    defined-by action
+    role file-read-mode-contract
+    precondition "a complete read-report form owns source operands, report artifact kind and output target; the read and write permissions remain separately required"
+    effect "binds the existing source-read followed by evidence-report write plan, without certifying source contents or execution"
+    unit "one source-bound report plan"
+    example "Read source.txt. Write a report to findings.md."
+    grounding "data/seed/meanings-file-write.lino; js/agentic/file_read/ownership.mjs"

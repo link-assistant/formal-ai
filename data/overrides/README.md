@@ -36,7 +36,7 @@ Q131560
     hi KISS
 ```
 
-Rules (enforced by `tests/unit/overrides.rs`, which walks this whole tree):
+Rules (enforced by `tests/unit/seed/overrides.rs`, which walks this whole tree):
 
 1. **Real id.** The file path must map to an id that has a checked-in cache
    record under `data/cache/...`. Overrides decorate cached records; they do not

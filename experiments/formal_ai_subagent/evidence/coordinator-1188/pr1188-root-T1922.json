@@ -1,0 +1,18 @@
+{
+  "task": "T1922",
+  "prompt": "Run node -e 'const fs=require('\\''node:fs'\\''),cp=require('\\''node:child_process'\\'');const p='\\''data/meta/abbreviation-rules.lino'\\'';let s=fs.readFileSync(p,'\\''utf8'\\'');const old='\\''    excluded experiments/formal_ai_subagent/archive\\n      reason \"the coordination archive keeps its names as written\"'\\'';if(!s.includes(old))throw Error('\\''missing policy anchor'\\'');s=s.replace(old,old+'\\''\\n    excluded experiments/formal_ai_subagent/evidence\\n      reason \"immutable captured requests and results retain the original tool and run file names\"'\\'');fs.writeFileSync(p,s);const t='\\''rust/tests/web/abbreviations.test.mjs'\\'';s=fs.readFileSync(t,'\\''utf8'\\'');const anchor=\"  assert.ok(rules.fileNames.excluded.includes('\\''docs/case-studies'\\''));\";if(!s.includes(anchor))throw Error('\\''missing assertion anchor'\\'');s=s.replace(anchor,anchor+\"\\n  assert.ok(rules.fileNames.excluded.includes('\\''experiments/formal_ai_subagent/evidence'\\''));\\n  assert.ok(!rules.fileNames.excluded.includes('\\''js'\\''));\\n  assert.ok(!rules.fileNames.excluded.includes('\\''rust/tests'\\''));\");fs.writeFileSync(t,s);process.stdout.write(cp.execFileSync('\\''node'\\'',['\\''--test'\\'',t],{encoding:'\\''utf8'\\''}));console.log('\\''PR1188_T1922_ABBREVIATION_PASS'\\'');'",
+  "started": "2026-10-09T00:02:12.555Z",
+  "result": {
+    "transcript": [
+      {
+        "tool": "read",
+        "arguments": "{\"filePath\":\"/Users/konard/Code/Archive/link-assistant/formal-ai\",\"file_path\":\"/Users/konard/Code/Archive/link-assistant/formal-ai\",\"path\":\"/Users/konard/Code/Archive/link-assistant/formal-ai\"}",
+        "result": "Error: path escapes the sandbox: /Users/konard/Code/Archive/link-assistant/formal-ai"
+      }
+    ],
+    "answer": "The command failed: Error: path escapes the sandbox: /Users/konard/Code/Archive/link-assistant/formal-ai\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.",
+    "stop": "final"
+  },
+  "ok": false,
+  "finished": "2026-10-09T00:02:13.750Z"
+}

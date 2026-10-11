@@ -1,0 +1,200 @@
+recurrence_source_cache
+  generated_by "cargo run --example generate_recurrence_source_cache -- --write"
+  recurrence "Z13835"
+    label "nth Fibonacci number"
+    identifier "fibonacci"
+    alias
+      language "en"
+      text "Fibonacci sequence"
+    alias
+      language "en"
+      text "Fibonacci series"
+    alias
+      language "en"
+      text "Un(1,−1)"
+    alias
+      language "hi"
+      text "फिबोनाची अनुक्रम"
+    alias
+      language "ru"
+      text "последовательность Фибоначчи"
+    alias
+      language "ru"
+      text "ряд Фибоначчи"
+    alias
+      language "zh"
+      text "Fibonacci数列"
+    alias
+      language "zh"
+      text "假黄金螺线"
+    alias
+      language "zh"
+      text "斐波纳契数列"
+    alias
+      language "zh"
+      text "斐波那契数列"
+    alias
+      language "zh"
+      text "斐波那契螺线"
+    alias
+      language "zh"
+      text "菲波纳契数列"
+    alias
+      language "zh"
+      text "費伯納西數列"
+    alias
+      language "zh"
+      text "費式數列"
+    alias
+      language "zh"
+      text "費氏數列"
+    alias
+      language "zh"
+      text "費波納西數列"
+    alias
+      language "zh"
+      text "費波那契數列"
+    alias
+      language "zh"
+      text "费氏数列"
+    alias
+      language "zh"
+      text "黃金分割數列"
+    parameter "n"
+    expression
+      conditional
+        less_equal
+          parameter "n"
+          literal "1"
+        parameter "n"
+        add
+          recur
+            subtract_one
+              parameter "n"
+          recur
+            subtract
+              parameter "n"
+              literal "2"
+    termination_measure "n"
+    predecessor_offset "1"
+    predecessor_offset "2"
+    source_test "Z13869"
+      argument "2"
+      expected "1"
+      source_url "https://www.wikifunctions.org/w/api.php?action=wikilambda_fetch&format=json&zids=Z13869%7CZ17391%7CZ17398%7CZ34276&language=en"
+      sha256 "fde7e13f9f6ac8ea260b0417cc279d3a38c88054483640b76630d7c9f3a3d9fa"
+    source_test "Z17391"
+      argument "5"
+      expected "5"
+      source_url "https://www.wikifunctions.org/w/api.php?action=wikilambda_fetch&format=json&zids=Z13869%7CZ17391%7CZ17398%7CZ34276&language=en"
+      sha256 "fde7e13f9f6ac8ea260b0417cc279d3a38c88054483640b76630d7c9f3a3d9fa"
+    source_test "Z17398"
+      argument "16"
+      expected "987"
+      source_url "https://www.wikifunctions.org/w/api.php?action=wikilambda_fetch&format=json&zids=Z13869%7CZ17391%7CZ17398%7CZ34276&language=en"
+      sha256 "fde7e13f9f6ac8ea260b0417cc279d3a38c88054483640b76630d7c9f3a3d9fa"
+    source_test "Z34276"
+      argument "0"
+      expected "0"
+      source_url "https://www.wikifunctions.org/w/api.php?action=wikilambda_fetch&format=json&zids=Z13869%7CZ17391%7CZ17398%7CZ34276&language=en"
+      sha256 "fde7e13f9f6ac8ea260b0417cc279d3a38c88054483640b76630d7c9f3a3d9fa"
+    abstract_implementation "Z13864"
+    source_url "https://www.wikifunctions.org/w/api.php?action=wikilambda_fetch&format=json&zids=Z13864&language=en"
+    sha256 "8d0c1dbd66a4865f3e630eaf6d208ffc548b5c9fc32a22fa0b60e0fda1d43ba3"
+    fetched_at "2026-09-15T02:31:08Z"
+    license "CC0-1.0"
+    concept "Q23835349"
+    concept_source_url "https://www.wikidata.org/wiki/Special:EntityData/Q23835349.json"
+    concept_sha256 "bc16a965c6cd3170b15e7ea9b943d5786dcfaf68971ba52d7a5a03e30ca328d1"
+    concept_license "CC0-1.0"
+  recurrence "Z13667"
+    label "factorial"
+    identifier "factorial"
+    alias
+      language "en"
+      text "!"
+    alias
+      language "en"
+      text "! (math)"
+    alias
+      language "en"
+      text "Factorial function"
+    alias
+      language "en"
+      text "Factorial number"
+    alias
+      language "en"
+      text "Factorials"
+    alias
+      language "en"
+      text "factorial"
+    alias
+      language "en"
+      text "factorial function"
+    alias
+      language "en"
+      text "n!"
+    alias
+      language "hi"
+      text "क्रमगुणित"
+    alias
+      language "hi"
+      text "फक्टोरियल"
+    alias
+      language "ru"
+      text "N!"
+    alias
+      language "ru"
+      text "факториал"
+    alias
+      language "zh"
+      text "N!"
+    alias
+      language "zh"
+      text "阶乘"
+    alias
+      language "zh"
+      text "階乘"
+    parameter "n"
+    expression
+      conditional
+        equal
+          parameter "n"
+          literal "0"
+        literal "1"
+        multiply
+          parameter "n"
+          recur
+            subtract_one
+              parameter "n"
+    termination_measure "n"
+    predecessor_offset "1"
+    source_test "Z13840"
+      argument "0"
+      expected "1"
+      source_url "https://www.wikifunctions.org/w/api.php?action=wikilambda_fetch&format=json&zids=Z13840%7CZ13865%7CZ13866%7CZ13867&language=en"
+      sha256 "a83d43dbb27cff5ba9856540c61cca9564eb404eecef782ec86023e23bbe4423"
+    source_test "Z13865"
+      argument "1"
+      expected "1"
+      source_url "https://www.wikifunctions.org/w/api.php?action=wikilambda_fetch&format=json&zids=Z13840%7CZ13865%7CZ13866%7CZ13867&language=en"
+      sha256 "a83d43dbb27cff5ba9856540c61cca9564eb404eecef782ec86023e23bbe4423"
+    source_test "Z13866"
+      argument "2"
+      expected "2"
+      source_url "https://www.wikifunctions.org/w/api.php?action=wikilambda_fetch&format=json&zids=Z13840%7CZ13865%7CZ13866%7CZ13867&language=en"
+      sha256 "a83d43dbb27cff5ba9856540c61cca9564eb404eecef782ec86023e23bbe4423"
+    source_test "Z13867"
+      argument "3"
+      expected "6"
+      source_url "https://www.wikifunctions.org/w/api.php?action=wikilambda_fetch&format=json&zids=Z13840%7CZ13865%7CZ13866%7CZ13867&language=en"
+      sha256 "a83d43dbb27cff5ba9856540c61cca9564eb404eecef782ec86023e23bbe4423"
+    abstract_implementation "Z13863"
+    source_url "https://www.wikifunctions.org/w/api.php?action=wikilambda_fetch&format=json&zids=Z13863&language=en"
+    sha256 "eaa7e1e31ce46e5bfbe7f6d5b0d09d075c6a7f5edbce04277d39bfd7e3cdb8a6"
+    fetched_at "2026-09-15T02:31:08Z"
+    license "CC0-1.0"
+    concept "Q120976"
+    concept_source_url "https://www.wikidata.org/wiki/Special:EntityData/Q120976.json"
+    concept_sha256 "6c908f39d499efa15bd7fdebf3f3be528caf0a250d1cb797336092d6568daa02"
+    concept_license "CC0-1.0"

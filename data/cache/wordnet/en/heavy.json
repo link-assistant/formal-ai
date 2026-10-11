@@ -1,0 +1,360 @@
+{
+  "lemma": "heavy",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01188475-a",
+      "partOfSpeech": "a",
+      "definition": "of comparatively great physical weight or density",
+      "examples": [
+        "a heavy load",
+        "lead is a heavy metal",
+        "heavy mahogany furniture"
+      ]
+    },
+    {
+      "id": "oewn-01194226-a",
+      "partOfSpeech": "a",
+      "definition": "unusually great in degree or quantity or number",
+      "examples": [
+        "heavy taxes",
+        "a heavy fine",
+        "heavy casualties",
+        "heavy losses",
+        "heavy rain",
+        "heavy traffic"
+      ]
+    },
+    {
+      "id": "oewn-01196916-a",
+      "partOfSpeech": "a",
+      "definition": "of the military or industry; using (or being) the heaviest and most powerful armaments or weapons or equipment",
+      "examples": [
+        "heavy artillery",
+        "heavy infantry",
+        "a heavy cruiser",
+        "heavy guns",
+        "heavy industry involves large-scale production of basic products (such as steel) used by other industries"
+      ]
+    },
+    {
+      "id": "oewn-01192305-a",
+      "partOfSpeech": "a",
+      "definition": "marked by great psychological weight; weighted down especially with sadness or troubles or weariness",
+      "examples": [
+        "a heavy heart",
+        "a heavy schedule",
+        "heavy news",
+        "a heavy silence",
+        "heavy eyelids"
+      ]
+    },
+    {
+      "id": "oewn-01195161-a",
+      "partOfSpeech": "a",
+      "definition": "of great intensity or power or force",
+      "examples": [
+        "a heavy blow",
+        "the fighting was heavy",
+        "heavy seas"
+      ]
+    },
+    {
+      "id": "oewn-01194770-a",
+      "partOfSpeech": "a",
+      "definition": "(physics, chemistry) being or containing an isotope with greater than average atomic mass or weight",
+      "examples": [
+        "heavy hydrogen",
+        "heavy water"
+      ]
+    },
+    {
+      "id": "oewn-10186954-n",
+      "partOfSpeech": "n",
+      "definition": "an actor who plays villainous roles"
+    },
+    {
+      "id": "oewn-05938368-n",
+      "partOfSpeech": "n",
+      "definition": "a serious (or tragic) role in a play"
+    },
+    {
+      "id": "oewn-00357411-r",
+      "partOfSpeech": "r",
+      "definition": "slowly as if burdened by much weight",
+      "examples": [
+        "time hung heavy on their hands"
+      ],
+      "synonyms": [
+        "heavily"
+      ]
+    },
+    {
+      "id": "oewn-00990957-s",
+      "partOfSpeech": "s",
+      "definition": "usually describes a large person who is fat but has a large frame to carry it",
+      "synonyms": [
+        "fleshy",
+        "overweight"
+      ]
+    },
+    {
+      "id": "oewn-00504399-s",
+      "partOfSpeech": "s",
+      "definition": "(used of soil) compact and fine-grained",
+      "examples": [
+        "the clayey soil was heavy and easily saturated"
+      ],
+      "synonyms": [
+        "clayey",
+        "cloggy"
+      ]
+    },
+    {
+      "id": "oewn-00464442-s",
+      "partOfSpeech": "s",
+      "definition": "darkened by clouds",
+      "examples": [
+        "a heavy sky"
+      ],
+      "synonyms": [
+        "lowering",
+        "sullen",
+        "threatening"
+      ]
+    },
+    {
+      "id": "oewn-02524297-s",
+      "partOfSpeech": "s",
+      "definition": "(of an actor or role) being or playing the villain",
+      "examples": [
+        "Iago is the heavy role in ‘Othello’"
+      ]
+    },
+    {
+      "id": "oewn-02425186-s",
+      "partOfSpeech": "s",
+      "definition": "permitting little if any light to pass through because of denseness of matter",
+      "examples": [
+        "dense smoke",
+        "heavy fog",
+        "impenetrable gloom"
+      ],
+      "synonyms": [
+        "dense",
+        "impenetrable"
+      ]
+    },
+    {
+      "id": "oewn-02420355-s",
+      "partOfSpeech": "s",
+      "definition": "of relatively large extent and density",
+      "examples": [
+        "a heavy line"
+      ]
+    },
+    {
+      "id": "oewn-02420243-s",
+      "partOfSpeech": "s",
+      "definition": "made of fabric having considerable thickness",
+      "examples": [
+        "a heavy coat"
+      ]
+    },
+    {
+      "id": "oewn-02411163-s",
+      "partOfSpeech": "s",
+      "definition": "prodigious",
+      "examples": [
+        "big spender",
+        "big eater",
+        "heavy investor"
+      ],
+      "synonyms": [
+        "big"
+      ]
+    },
+    {
+      "id": "oewn-01460500-s",
+      "partOfSpeech": "s",
+      "definition": "full and loud and deep",
+      "examples": [
+        "heavy sounds",
+        "a herald chosen for his sonorous voice"
+      ],
+      "synonyms": [
+        "sonorous"
+      ]
+    },
+    {
+      "id": "oewn-01302121-s",
+      "partOfSpeech": "s",
+      "definition": "given to excessive indulgence of bodily appetites especially for intoxicating liquors",
+      "examples": [
+        "a hard drinker"
+      ],
+      "synonyms": [
+        "intemperate",
+        "hard"
+      ]
+    },
+    {
+      "id": "oewn-01281533-s",
+      "partOfSpeech": "s",
+      "definition": "of great gravity or crucial import; requiring serious thought",
+      "examples": [
+        "grave responsibilities",
+        "faced a grave decision in a time of crisis",
+        "a grievous fault",
+        "heavy matters of state",
+        "the weighty matters to be discussed at the peace conference"
+      ],
+      "synonyms": [
+        "grave",
+        "grievous",
+        "weighty"
+      ]
+    },
+    {
+      "id": "oewn-01196329-s",
+      "partOfSpeech": "s",
+      "definition": "slow and laborious because of weight",
+      "examples": [
+        "the heavy tread of tired troops",
+        "moved with a lumbering sag-bellied trot",
+        "ponderous prehistoric beasts",
+        "a ponderous yawn"
+      ],
+      "synonyms": [
+        "lumbering",
+        "ponderous"
+      ]
+    },
+    {
+      "id": "oewn-01192034-s",
+      "partOfSpeech": "s",
+      "definition": "large and powerful; especially designed for heavy loads or rough work",
+      "examples": [
+        "a heavy truck",
+        "heavy machinery"
+      ]
+    },
+    {
+      "id": "oewn-01186658-s",
+      "partOfSpeech": "s",
+      "definition": "dense or inadequately leavened and hence likely to cause distress in the alimentary canal",
+      "examples": [
+        "a heavy pudding"
+      ]
+    },
+    {
+      "id": "oewn-01149124-s",
+      "partOfSpeech": "s",
+      "definition": "sharply inclined",
+      "examples": [
+        "a heavy grade"
+      ]
+    },
+    {
+      "id": "oewn-01088956-s",
+      "partOfSpeech": "s",
+      "definition": "full of; bearing great weight",
+      "examples": [
+        "trees heavy with fruit",
+        "vines weighed down with grapes"
+      ],
+      "synonyms": [
+        "weighed down"
+      ]
+    },
+    {
+      "id": "oewn-00840954-s",
+      "partOfSpeech": "s",
+      "definition": "requiring or showing effort",
+      "examples": [
+        "heavy breathing",
+        "the subject made for labored reading"
+      ],
+      "synonyms": [
+        "labored",
+        "laboured"
+      ]
+    },
+    {
+      "id": "oewn-00840083-s",
+      "partOfSpeech": "s",
+      "definition": "characterized by effort to the point of exhaustion; especially physical effort",
+      "examples": [
+        "worked their arduous way up the mining valley",
+        "a grueling campaign",
+        "hard labor",
+        "heavy work",
+        "heavy going",
+        "spent many laborious hours on the project",
+        "set a punishing pace"
+      ],
+      "synonyms": [
+        "arduous",
+        "backbreaking",
+        "grueling",
+        "gruelling",
+        "hard",
+        "laborious",
+        "operose",
+        "punishing",
+        "toilsome"
+      ]
+    },
+    {
+      "id": "oewn-00811237-s",
+      "partOfSpeech": "s",
+      "definition": "lacking lightness or liveliness",
+      "examples": [
+        "heavy humor",
+        "a leaden conversation"
+      ],
+      "synonyms": [
+        "leaden"
+      ]
+    },
+    {
+      "id": "oewn-00696469-s",
+      "partOfSpeech": "s",
+      "definition": "(of sleep) deep and complete",
+      "examples": [
+        "a heavy sleep",
+        "fell into a profound sleep",
+        "a sound sleeper",
+        "deep wakeless sleep"
+      ],
+      "synonyms": [
+        "profound",
+        "sound",
+        "wakeless"
+      ]
+    },
+    {
+      "id": "oewn-00174652-s",
+      "partOfSpeech": "s",
+      "definition": "in an advanced stage of pregnancy",
+      "examples": [
+        "was big with child",
+        "was great with child"
+      ],
+      "synonyms": [
+        "big",
+        "enceinte",
+        "expectant",
+        "gravid",
+        "great",
+        "large",
+        "with child"
+      ]
+    }
+  ]
+}

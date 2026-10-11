@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "鞋"
+        },
+        "es": {
+          "language": "es",
+          "value": "zapato"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "保護人腳的一種物品"
+        },
+        "es": {
+          "language": "es",
+          "value": "accesorio de calzado hecho con la intención de proveer protección y comforte al pie humano"
         }
       },
       "aliases": {
@@ -86,6 +94,20 @@
           {
             "language": "zh",
             "value": "履"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "zapatos"
+          },
+          {
+            "language": "es",
+            "value": "calcorro"
+          },
+          {
+            "language": "es",
+            "value": "calzado"
           }
         ]
       }

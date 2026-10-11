@@ -1,0 +1,7 @@
+number_constraint_entity	número	entero
+number_constraint_query	cuál es el número	qué número	encuentra el número	encuentra el entero
+number_constraint_hidden	adiviné	elegí	escogí	pensé en	estoy pensando en
+number_constraint_lower_strict	mayor que	más que	supera
+number_constraint_lower_inclusive	mayor o igual que	no menor que	al menos
+number_constraint_upper_strict	menor que	menos que	por debajo de
+number_constraint_upper_inclusive	menor o igual que	no mayor que	como máximo

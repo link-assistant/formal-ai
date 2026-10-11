@@ -1,0 +1,120 @@
+language en
+lemma pack
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a large indefinite quantity"
+    examples ("a battalion of ants" "a multitude of TV antennas" "a plurality of religions")
+    id oewn-13797293-n
+    partOfSpeech n
+    synonyms (battalion "large number" multitude plurality)
+  entry
+    definition "a complete collection of similar things"
+    id oewn-07973040-n
+    partOfSpeech n
+  entry
+    definition "a convenient package or parcel (as of cigarettes or film)"
+    id oewn-03876224-n
+    partOfSpeech n
+  entry
+    definition "an association of criminals"
+    examples ("police tried to break up the gang" "a pack of thieves")
+    id oewn-08260983-n
+    partOfSpeech n
+    synonyms (gang ring mob)
+  entry
+    definition "an exclusive circle of people with a common purpose"
+    id oewn-08257554-n
+    partOfSpeech n
+    synonyms (clique coterie ingroup "inner circle" camp)
+  entry
+    definition "a group of hunting animals"
+    id oewn-08011383-n
+    partOfSpeech n
+  entry
+    definition "a cream that cleanses and tones the skin"
+    id oewn-03876658-n
+    partOfSpeech n
+    synonyms ("face pack")
+  entry
+    definition "a sheet or blanket (either dry or wet) to wrap around the body for its therapeutic effect"
+    id oewn-03876500-n
+    partOfSpeech n
+  entry
+    definition "a bundle (especially one carried on the back)"
+    id oewn-03876350-n
+    partOfSpeech n
+  entry
+    definition "arrange in a container"
+    examples ("pack the books into the boxes")
+    id oewn-01485079-v
+    partOfSpeech v
+  entry
+    definition "fill to capacity"
+    examples ("This singer always packs the concert halls" "The murder trial packed the court house")
+    id oewn-02091230-v
+    partOfSpeech v
+  entry
+    definition "compress into a wad"
+    examples ("wad paper into the box")
+    id oewn-01486416-v
+    partOfSpeech v
+    synonyms (bundle wad compact)
+  entry
+    definition "carry, as on one's back"
+    examples ("Pack your tents to the top of the mountain")
+    id oewn-01453787-v
+    partOfSpeech v
+  entry
+    definition "set up a committee or legislative body with one's own supporters so as to influence the outcome"
+    examples ("pack a jury")
+    id oewn-02401678-v
+    partOfSpeech v
+  entry
+    definition "have with oneself; have on one's person"
+    examples ("She always takes an umbrella" "I always carry money" "She packs a gun when she goes into the mountains")
+    id oewn-02722977-v
+    partOfSpeech v
+    synonyms (carry take)
+  entry
+    definition "press tightly together or cram"
+    examples ("The crowd packed the auditorium")
+    id oewn-02068059-v
+    partOfSpeech v
+    synonyms (throng mob pile jam)
+  entry
+    definition "hike with a backpack"
+    examples ("Every summer they are backpacking in the Rockies")
+    id oewn-01929984-v
+    partOfSpeech v
+    synonyms (backpack)
+  entry
+    definition "press down tightly"
+    examples ("tamp the coffee grinds in the container to make espresso")
+    id oewn-01577402-v
+    partOfSpeech v
+    synonyms ("tamp down" tamp)
+  entry
+    definition "seal with packing"
+    examples ("pack the faucet")
+    id oewn-01487510-v
+    partOfSpeech v
+  entry
+    definition "have the property of being packable or of compacting easily"
+    examples ("This powder compacts easily" "Such odd-shaped items do not pack well")
+    id oewn-01486664-v
+    partOfSpeech v
+    synonyms (compact)
+  entry
+    definition "load with a pack"
+    id oewn-01485761-v
+    partOfSpeech v
+    synonyms ("load down")
+  entry
+    definition "treat the body or any part of it by wrapping it, as with blankets or sheets, and applying compresses to it, or stuffing it to provide cover, containment, or therapy, or to absorb blood"
+    examples ("The nurse packed gauze in the wound" "You had better pack your swollen ankle with ice")
+    id oewn-00108713-v
+    partOfSpeech v
+source "oewn:2024"

@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "石頭"
+        },
+        "es": {
+          "language": "es",
+          "value": "piedra"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "石材"
+        },
+        "es": {
+          "language": "es",
+          "value": "fragmento de roca, material de construcción"
         }
       },
       "aliases": {
@@ -50,6 +58,20 @@
           {
             "language": "zh",
             "value": "石头"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "roca"
+          },
+          {
+            "language": "es",
+            "value": "canto"
+          },
+          {
+            "language": "es",
+            "value": "clasto"
           }
         ]
       }

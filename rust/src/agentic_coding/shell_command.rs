@@ -1,43 +1,28 @@
-//! Resolve a user turn into the concrete shell command the agentic loop should run.
-//!
-//! Split out of [`super::planner`] (issue #676): the agentic planner used to know
-//! only the hardcoded `ls`, so `execute pwd` and every other seed shell token fell
-//! through to the *unknown* fallback. The two data-driven strategies here — a named
-//! command backed by `data/seed/terminal-commands.lino`, and a natural-language
-//! directory-listing request — make the whole seed vocabulary reachable.
-//!
-//! Sentence scoping and command-policy classification live next door in
-//! [`super::shell_command_policy`], which keeps both files under the repository
-//! line budget.
+//! Resolve user turns to shell commands using seeded tokens and directory-listing intents.
+//! Split from [`super::planner`] in issue #676 so commands such as `execute pwd`
+//! reach the full vocabulary in `data/seed/terminal-commands.lino`.
+//! [`super::shell_command_policy`] owns sentence scoping and command-policy classification.
 
-use super::shell_command_policy::{
-    governs_commands_rather_than_requesting_one, is_prose_word, named_shell_command_in_sentence,
-    normalize_command_word, sentence_spans, states_a_command_policy,
-};
 use super::directory_listing::asks_for_directory_listing;
 use super::file_path_shape::{is_dotted_number, trim_trailing_sentence_dot};
-use crate::seed::{self, ShellIntent, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
+use super::shell_command_policy::{
+    command_span, governs_commands_rather_than_requesting_one, is_prose_word,
+    named_shell_command_in_sentence, normalize_command_word, sentence_spans,
+    states_a_command_policy,
+};
+use crate::seed::{
+    self, ShellIntent, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary,
+};
+
+mod explicit;
 
 const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
 /// Resolve a user turn into the concrete shell command the agentic loop should run.
 ///
-/// Two data-driven strategies, in order of specificity:
-///
-/// 1. **Named command** ([`named_shell_command`]): when the prompt pairs a run/execute
-///    verb (or terminal/shell phrase) with a known shell token from
-///    `data/seed/terminal-commands.lino` — e.g. *"execute pwd"*, *"run git status"*,
-///    *«запусти ls»* — emit that command (with its flag/path/sub-command arguments).
-///    This is what makes `pwd` (issue #676) and every other seed token reachable, not
-///    just the hardcoded `ls` the fallback used to know.
-///
-/// 2. **Natural-language directory listing** ([`asks_for_directory_listing`]): when the
-///    prompt asks, in prose, to see the files in the current place — e.g. *"give me a
-///    list of files in current folder"*, *"what files are here?"* — resolve to `ls`.
-///
-/// The vocabulary lives in seed data, so a maintainer retunes coverage by editing a
-/// `.lino` file rather than this function, upholding the project rule against hardcoded
-/// natural language in the solver.
-pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
+/// Named commands preserve their flags, paths and subcommands. Directory
+/// listings use the seeded listing intent. Both vocabularies live in seed
+/// data, so new language forms do not require prompt-specific code.
+pub fn shell_command_for_task(prompt: &str) -> Option<String> {
     let prompt = strip_balanced_outer_quotes(prompt.trim());
     // Caller policy is filtered here, not inside one strategy, because
     // `prefixed_shell_command` below runs first and matches on the whole prompt:
@@ -121,22 +106,42 @@ fn prefixed_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Op
         .iter()
         .filter(|prefix| prefix_boundary(&lower, prefix))
         .max_by_key(|prefix| prefix.chars().count())?;
-    let remainder = prompt.get(prefix.len()..)?.trim_start();
-    let remainder = remainder
-        .strip_prefix(':')
-        .unwrap_or(remainder)
-        .trim_start();
-    let remainder = strip_balanced_outer_quotes(remainder);
+    let remainder = command_span(prompt.get(prefix.len()..)?.trim_start())?;
+    let remainder = trim_command_sentence_end(strip_balanced_outer_quotes(remainder));
     if let Some(named) = command_named_in_prose(remainder, vocab) {
         return Some(named);
     }
     (!remainder.is_empty() && !reads_as_prose(remainder, vocab)).then(|| remainder.to_owned())
 }
 
+/// The sentence's full stop and the quotes it wrapped around the command,
+/// peeled from the last token to a fixpoint.
+///
+/// `Run python3 greet.py.` ran `python3 greet.py.`, which names no file, and
+/// `` Run `ls -la`. `` ran the backticks too (PR #1188 dogfooding). The dot is
+/// peeled by [`trim_trailing_sentence_dot`], so `cd ..` and `ls .` keep the
+/// dots that are their whole argument.
+fn trim_command_sentence_end(remainder: &str) -> &str {
+    let mut current = remainder;
+    loop {
+        let unquoted = strip_balanced_outer_quotes(current.trim());
+        let split = unquoted
+            .char_indices()
+            .rfind(|(_, character)| character.is_whitespace())
+            .map_or(0, |(at, character)| at + character.len_utf8());
+        let next = &unquoted[..split + trim_trailing_sentence_dot(&unquoted[split..]).len()];
+        if next == current {
+            return current;
+        }
+        current = next;
+    }
+}
+
 /// Characters that turn the words around them into data rather than prose:
 /// quoting, redirection, substitution and command separators.
-const SHELL_QUOTING_AND_METACHARACTERS: &[char] =
-    &['"', '\'', '`', '|', '&', ';', '<', '>', '$', '(', ')', '{', '}'];
+const SHELL_QUOTING_AND_METACHARACTERS: &[char] = &[
+    '"', '\'', '`', '|', '&', ';', '<', '>', '$', '(', ')', '{', '}',
+];
 
 /// Recover the command from a remainder that *names* it instead of being it.
 ///
@@ -221,11 +226,7 @@ fn reads_as_prose(remainder: &str, vocab: &TerminalCommandVocabulary) -> bool {
 /// dictates the command verbatim, so the capability table must not re-read its
 /// operands as a request (issue #749).
 pub(super) fn explicit_passthrough_command(prompt: &str) -> Option<String> {
-    let prompt = strip_balanced_outer_quotes(prompt.trim());
-    if governs_commands_rather_than_requesting_one(prompt) {
-        return None;
-    }
-    prefixed_shell_command(prompt, &seed::terminal_command_vocabulary())
+    explicit::command(prompt)
 }
 
 fn bare_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
@@ -278,7 +279,6 @@ pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
         })
 }
 
-
 /// Resolve the source subject named by an inspection request.
 ///
 /// Explicit literal cues and visibly code-shaped tokens are unambiguous on
@@ -323,7 +323,6 @@ fn literal_code_search_query(normalized: &str) -> Option<String> {
         .find(|form| normalized.contains(&form.text.to_lowercase()))
         .and_then(|form| (!form.action.is_empty()).then(|| form.action.clone()))
 }
-
 
 /// The most identifier-shaped token in `prompt`, if it holds one.
 ///
@@ -431,9 +430,8 @@ pub(super) fn valid_search_identifier(token: &str) -> bool {
 /// argument-less command that would hang (`wc -l` on stdin).
 /// The prompt split into sentences, each paired with whether it is a question.
 ///
-/// Sentence boundaries are what separate the user's request from a sentence
-/// merely *placed next to* it, so intent cues are read one sentence at a time
-/// (issue #907).
+/// Sentence boundaries are what separate the user's request from a sentence merely
+/// *placed next to* it, so intent cues are read one sentence at a time (issue #907).
 fn sentences_with_mood(lower: &str) -> Vec<(&str, bool)> {
     let mut sentences = Vec::new();
     let mut start = 0;
@@ -604,9 +602,26 @@ fn is_fact_statement(
 
 fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
     let lower = prompt.to_lowercase();
-    let (intent, cue) = matched_intent_cue(&lower, vocab)?;
+    // Quoted words of a request about text inside a file are its payload,
+    // never the command it asks for (PR #1188 G32: `Add the line '- run tests'`).
+    let inside_a_file = super::workspace_computed_change::edits_inside_a_file(prompt);
+    let outside = inside_a_file
+        .then(|| crate::solver_handlers::text_outside_quoted_segments(prompt).to_lowercase());
+    let (intent, cue) = matched_intent_cue(outside.as_deref().unwrap_or(&lower), vocab)?;
+    // A destructive intent (`destructive true` in the seed) never reads a
+    // request about text inside a file as a request to delete the file.
+    // Nor does it read a move or copy of text inside a file (`Move lines 2-3
+    // of a.md to the end of b.md`) as a move or copy of the file (PR #1188 G85).
+    if (intent.destructive || intent.argument == ShellIntentArgument::TwoPaths) && inside_a_file {
+        return None;
+    }
     match intent.argument {
-        ShellIntentArgument::None => resolve_shell_command(&intent.command, vocab),
+        // A named test file runs with its own runtime (PR #1188 T91).
+        ShellIntentArgument::None => super::test_file_runner::test_file_command(
+            &intent.command,
+            path_argument(prompt).as_deref(),
+        )
+        .or_else(|| resolve_shell_command(&intent.command, vocab)),
         ShellIntentArgument::Path => {
             path_argument(prompt).map(|arg| format!("{} {arg}", intent.command))
         }
@@ -634,6 +649,11 @@ fn matched_intent_cue<'a>(
     lower: &str,
     vocab: &'a ShellIntentVocabulary,
 ) -> Option<(&'a ShellIntent, &'a String)> {
+    // Path operands and quoted payloads supply data, never operation cues.
+    let instruction = crate::solver_handlers::text_outside_quoted_segments(
+        &super::workspace_computed_change::without_path_words(lower),
+    );
+    let lower = instruction.as_str();
     let sentences = sentences_with_mood(lower);
     let caller_context = seed::caller_context_vocabulary();
     let cues: Vec<&str> = vocab
@@ -658,7 +678,7 @@ fn matched_intent_cue<'a>(
         .filter(|(intent, cue)| {
             requesting
                 .iter()
-                .any(|sentence| sentence.contains(cue.as_str()))
+                .any(|sentence| sentence_carries_cue(sentence, cue, &vocab.cue_fillers))
                 && (intent.argument != ShellIntentArgument::SearchQuery
                     || vocab
                         .local_search_scopes
@@ -666,6 +686,25 @@ fn matched_intent_cue<'a>(
                         .any(|scope| lower.contains(scope)))
         })
         .max_by_key(|(_, cue)| cue.chars().count())
+}
+
+/// Whether `sentence` carries `cue` as written, or once both drop the seeded
+/// filler words a speaker inserts inside a cue phrase: *"show me git status"*
+/// carries the cue `show git status` (PR #1188 dogfooding).
+fn sentence_carries_cue(sentence: &str, cue: &str, fillers: &[String]) -> bool {
+    // Whole words only (CJK aside): `move` is not inside `removed` (PR #1188 G66).
+    if crate::seed::FactRecord::contains_word_sequence(sentence, cue) {
+        return true;
+    }
+    let without_fillers = |text: &str| {
+        text.split_whitespace()
+            .filter(|word| !fillers.iter().any(|filler| filler.as_str() == *word))
+            .collect::<Vec<_>>()
+            .join(" ")
+    };
+    let bare = without_fillers(cue);
+    !bare.is_empty()
+        && crate::seed::FactRecord::contains_word_sequence(&without_fillers(sentence), &bare)
 }
 
 /// Whether a requesting sentence names the cue of an intent that declares an
@@ -682,6 +721,36 @@ pub fn names_mutating_shell_intent(prompt: &str) -> bool {
     let vocab = seed::shell_intent_vocabulary();
     matched_intent_cue(&prompt.to_lowercase(), &vocab)
         .is_some_and(|(intent, _)| intent.effect.is_declared())
+}
+
+/// The honest decline of a destructive intent that edits inside a file: the
+/// seeded `file_text_unit` response naming the file, never the command
+/// (PR #1188: `t.md से drop शब्द हटाओ।` ran `rm t.md`).
+pub(super) fn destructive_edit_decline(task: &str) -> Option<super::planner::AgenticPlan> {
+    let path = refused_destructive_edit(task)?;
+    super::code_task::render_seeded_change("file_text_unit", task, &path, &[])
+        .map(super::planner::AgenticPlan::Final)
+}
+
+/// The file a destructive in-file edit names (twin of `refusedDestructiveEdit`).
+fn refused_destructive_edit(task: &str) -> Option<String> {
+    let prompt = strip_balanced_outer_quotes(task.trim());
+    let vocab = seed::shell_intent_vocabulary();
+    let (intent, cue) = matched_intent_cue(&prompt.to_lowercase(), &vocab)?;
+    if !intent.destructive || !super::workspace_computed_change::edits_inside_a_file(prompt) {
+        return None;
+    }
+    let written = crate::solver_handlers::text_outside_quoted_segments(prompt)
+        .split_whitespace()
+        .map(|token| {
+            trim_trailing_sentence_dot(token.trim_matches(|character: char| {
+                "`\"'()[]{}<>,;:!?\u{0964}\u{3002}".contains(character)
+            }))
+            .to_owned()
+        })
+        .find(|token| looks_like_a_path(token))
+        .or_else(|| path_arguments(prompt, cue, &vocab, 1));
+    Some(written.unwrap_or_default())
 }
 
 fn path_arguments(
@@ -722,7 +791,7 @@ fn names_a_path_object(cue: &str, vocab: &ShellIntentVocabulary) -> bool {
 /// Whether a token is written the way a path is written: rooted at the home
 /// directory, carrying a separator, or ending in an extension. A plain word
 /// (`stdin`, `Rust`) is not.
-fn looks_like_a_path(token: &str) -> bool {
+pub(super) fn looks_like_a_path(token: &str) -> bool {
     if is_dotted_number(token) {
         return false;
     }
@@ -745,9 +814,14 @@ fn collect_path_arguments(
     let cue = cue.to_lowercase();
     let mut arguments = Vec::new();
     for word in text.split_whitespace() {
-        let candidate = trim_trailing_sentence_dot(
-            word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ';' | ':' | '!' | '?')),
-        );
+        // A quoted operand closes before the full stop (PR #1188 G37).
+        let quote = |c: char| {
+            matches!(
+                c,
+                '`' | '"' | '\'' | ',' | ';' | ':' | '!' | '?' | '«' | '»' | '‘' | '’' | '“' | '”'
+            )
+        };
+        let candidate = trim_trailing_sentence_dot(word.trim_matches(quote)).trim_matches(quote);
         let normalized = candidate.to_lowercase();
         if candidate.is_empty()
             || !is_safe_path(candidate)

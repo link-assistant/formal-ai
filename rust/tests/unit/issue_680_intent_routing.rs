@@ -11,9 +11,11 @@
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
+use crate::observed_plan_event;
+
 /// The single tool call a one-step plan emitted, or a panic with the prompt.
 fn single_call(prompt: &str, tools: &[&str]) -> (String, String) {
-    let messages = vec![ChatMessage::user(prompt)];
+    let (messages, _) = observed_plan_event::before_target(prompt, tools);
     match plan_chat_step(&messages, tools) {
         Some(AgenticPlan::ToolCalls(calls)) => {
             assert_eq!(calls.len(), 1, "expected one tool call for {prompt:?}");
@@ -94,9 +96,19 @@ fn write_intent_routes_to_write_tool_in_any_phrasing() {
         assert_eq!(tool, "write_file", "{prompt}");
         let value: serde_json::Value = serde_json::from_str(&arguments).unwrap();
         let content = value["content"].as_str().unwrap_or_default();
+        let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(prompt)
+            .expect("literal request plan");
         assert!(
-            content.contains("general_change_plan") && content.contains(expected_target),
-            "plan for {prompt:?} missing target {expected_target:?}: {content}"
+            plan.links_notation().contains("general_change_plan")
+                && plan.links_notation().contains(expected_target)
+        );
+        assert_eq!(
+            value["path"], expected_target,
+            "actual target for {prompt:?}"
+        );
+        assert_eq!(
+            content, plan.content,
+            "actual requested bytes for {prompt:?}"
         );
     }
 }
@@ -202,14 +214,31 @@ fn edit_intent_without_edit_tool_does_not_emit_edit_call() {
 
 #[test]
 fn write_intent_is_not_stolen_by_the_edit_router() {
-    // A file-creation request ("add hello to config.txt") names no edit action and
-    // no edit target cue, so even with an edit tool advertised it must route to the
-    // write tool, not be mis-parsed as a replacement.
+    // A file-creation request ("write hello to config.txt") names no edit action
+    // and no edit target cue, so even with an edit tool advertised it must route
+    // to the write tool, not be mis-parsed as a replacement.
     let (tool, _) = single_call(
-        "add hello to config.txt",
+        "write hello to config.txt",
         &["edit", "write_file", "read_file"],
     );
     assert_eq!(tool, "write_file", "write intent mis-routed to an edit");
+
+    // "add hello to config.txt" asks for an addition, which is never the file's
+    // whole new content (PR #1188: `Add <content> to <file>` once replaced
+    // `m.test.mjs` with the sentence it was asked to add). It must not become an
+    // edit either. An unquoted addition earns a seeded question (G69), so no
+    // step is planned for it.
+    let messages = vec![ChatMessage::user("add hello to config.txt")];
+    if let Some(AgenticPlan::ToolCalls(calls)) =
+        plan_chat_step(&messages, &["edit", "write_file", "read_file"])
+    {
+        assert!(
+            calls
+                .iter()
+                .all(|call| call.tool != "edit" && call.tool != "write_file"),
+            "an addition is neither an edit nor a whole-file write: {calls:?}"
+        );
+    }
 }
 
 #[test]
@@ -305,7 +334,14 @@ fn shell_intent_routes_to_run_tool_in_any_phrasing() {
             "Count the number of lines in Cargo.toml",
             "wc -l Cargo.toml",
         ),
-        ("English", "Create a directory called build", "mkdir build"),
+        // `mkdir` declares a verified effect in the seed (PR #1188 dogfooding),
+        // so its first planned step is the effect's precondition; `mkdir build`
+        // follows once the name is observed free.
+        (
+            "English",
+            "Create a directory called build",
+            "test ! -e build",
+        ),
         ("English", "What is my username?", "whoami"),
         // Russian: "show what is in this folder" -> ls
         ("Russian", "покажи что в этой папке", "ls"),

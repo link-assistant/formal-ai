@@ -1,0 +1,481 @@
+{
+  "range": "T2742–T2781",
+  "tasks": 40,
+  "physicalToolCalls": 87,
+  "explicitPhysicalWriteOrEditCalls": 25,
+  "sealingTask": "T2782 separately counted after execution",
+  "checks": {
+    "combined": "T2775 six of six",
+    "nativeFormatting": "T2776 seven files",
+    "specialization": "T2778 zero",
+    "workerBudget": "T2777 fails separately owned bootstrap only"
+  },
+  "nativeExecution": "CI only; not executed locally",
+  "broadImplementation": "T2742/T2743 and unchanged T2779/T2780 remain Open",
+  "tasksAudit": [
+    {
+      "taskId": "T2742",
+      "calls": [
+        "bash"
+      ],
+      "byteCheck": null,
+      "outcome": "Open: only reads canonical seed; unchanged T2779 still reads"
+    },
+    {
+      "taskId": "T2743",
+      "calls": [],
+      "byteCheck": null,
+      "outcome": "Open: unparseable; unchanged T2780 still unparseable"
+    },
+    {
+      "taskId": "T2744",
+      "calls": [
+        "bash"
+      ],
+      "byteCheck": null,
+      "outcome": "Pass: actual original intent/worker diagnostic retained"
+    },
+    {
+      "taskId": "T2745",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2745",
+        "target": "rust/tests/source/seed/embedded.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2746",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2746",
+        "target": "rust/tests/source/source_tests/calculation/tests.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2747",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2747",
+        "target": "rust/tests/web/arithmetic-source-registry.test.mjs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2748",
+      "calls": [
+        "bash"
+      ],
+      "byteCheck": null,
+      "outcome": "Fail: new fixture did not decode Rust unicode escapes; T2752 repair, unchanged T2753 passes 2/2"
+    },
+    {
+      "taskId": "T2749",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2749",
+        "target": "rust/src/solver_helpers/mod.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2750",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2750",
+        "target": "rust/tests/source/solver_helpers.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2751",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2751",
+        "target": "rust/tests/source/source_tests/solver_helpers/tests.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2752",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2752",
+        "target": "rust/tests/web/arithmetic-source-registry.test.mjs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2753",
+      "calls": [
+        "bash"
+      ],
+      "byteCheck": null,
+      "outcome": "Pass: 2/2 unchanged arithmetic checks"
+    },
+    {
+      "taskId": "T2754",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2754",
+        "target": "rust/tests/source/solver_helpers.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2755",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2755",
+        "target": "rust/tests/source/source_tests/solver_helpers/tests.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2756",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2756",
+        "target": "rust/tests/web/proof-courtesy-coordination.test.mjs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2757",
+      "calls": [
+        "bash"
+      ],
+      "byteCheck": null,
+      "outcome": "Fail: genuine held-out greeting directive returned unknown; general T2758–T2763 repair, unchanged T2765 passes 3/3"
+    },
+    {
+      "taskId": "T2758",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2758",
+        "target": "rust/src/solver_helpers/mod.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2759",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2759",
+        "target": "rust/tests/source/solver_helpers.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2760",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2760",
+        "target": "rust/src/solver_handlers/user_intent.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2761",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2761",
+        "target": "rust/tests/source/solver_handlers/user_intent.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2762",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2762",
+        "target": "js/worker/formal_ai_worker_calendar_and_proofs.js",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2763",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2763",
+        "target": "js/worker/formal_ai_worker_search_queries_and_how_to.js",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2764",
+      "calls": [],
+      "byteCheck": null,
+      "outcome": "Fail: zero tools, unrelated general_planner syntax boot error; strict T2344 restores exact HEAD, unchanged T2765 passes"
+    },
+    {
+      "taskId": "T2765",
+      "calls": [
+        "bash"
+      ],
+      "byteCheck": null,
+      "outcome": "Pass: 3/3 unchanged proof checks"
+    },
+    {
+      "taskId": "T2766",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2766",
+        "target": "rust/src/solver_helpers/mod.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2767",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2767",
+        "target": "rust/tests/source/solver_helpers.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2768",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2768",
+        "target": "rust/tests/source/seed/embedded.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2769",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2769",
+        "target": "rust/tests/source/source_tests/calculation/tests.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2770",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2770",
+        "target": "rust/tests/source/source_tests/solver_helpers/tests.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2771",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2771",
+        "target": "rust/tests/source/source_tests/solver_helpers/tests.rs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2772",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2772",
+        "target": "rust/tests/web/proof-courtesy-coordination.test.mjs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2773",
+      "calls": [
+        "bash"
+      ],
+      "byteCheck": null,
+      "outcome": "Fail: formatting-sensitive new registry tuple assertion; T2774 structural assertion, unchanged T2775 passes 6/6"
+    },
+    {
+      "taskId": "T2774",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2774",
+        "target": "rust/tests/web/arithmetic-source-registry.test.mjs",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    },
+    {
+      "taskId": "T2775",
+      "calls": [
+        "bash"
+      ],
+      "byteCheck": null,
+      "outcome": "Pass: 6/6 unchanged combined checks"
+    },
+    {
+      "taskId": "T2776",
+      "calls": [
+        "bash"
+      ],
+      "byteCheck": null,
+      "outcome": "Pass: seven native/source files formatting"
+    },
+    {
+      "taskId": "T2777",
+      "calls": [
+        "bash"
+      ],
+      "byteCheck": null,
+      "outcome": "Fail: separately owned formal_ai_worker.js 91 > 88; owned worker modules retain ceilings"
+    },
+    {
+      "taskId": "T2778",
+      "calls": [
+        "bash"
+      ],
+      "byteCheck": null,
+      "outcome": "Pass: zero held prompts"
+    },
+    {
+      "taskId": "T2779",
+      "calls": [
+        "bash"
+      ],
+      "byteCheck": null,
+      "outcome": "Open: unchanged broad ask still reads canonical seed only"
+    },
+    {
+      "taskId": "T2780",
+      "calls": [],
+      "byteCheck": null,
+      "outcome": "Open: unchanged broad ask still unparseable"
+    },
+    {
+      "taskId": "T2781",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ],
+      "byteCheck": {
+        "taskId": "T2781",
+        "target": "changelog.d/20261010_041000_arithmetic_registry_and_courtesy_directives.md",
+        "byteEqual": true
+      },
+      "outcome": "Pass: exact authored bytes verified"
+    }
+  ]
+}

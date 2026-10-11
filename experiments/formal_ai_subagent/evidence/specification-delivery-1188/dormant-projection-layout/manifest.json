@@ -1,0 +1,16 @@
+{
+  "beforeSha256": "d46d441d11aff94e032cca5cfa8f16ff404a91fa5b893c83fd1f3aef31ba89a8",
+  "afterSha256": "e0af47e74cc71ba2dc11a27a4390fffbc1c700f6424e21d0da29a22650c4b237",
+  "beforeLines": 1841,
+  "afterLines": 185,
+  "fullJSONDeepEquality": true,
+  "canonicalSha256": "3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8",
+  "operations": 52,
+  "bindings": 104,
+  "generatorOutput": "{\"workflowSha256\":\"3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8\",\"callers\":[{\"id\":\"auto-release\",\"steps\":28,\"crossStageOutputTransfers\":52},{\"id\":\"manual-release\",\"steps\":24,\"crossStageOutputTransfers\":52}],\"positiveMappings\":1,\"refusals\":5,\"physicalWrites\":1,\"implemented\":false,\"githubExecuted\":false,\"nativeExecuted\":false,\"publication\":false}\nT4158_STAGE_COVERAGE_PASS\n",
+  "layoutOnly": true,
+  "sourceExemption": false,
+  "nativeCompilation": false,
+  "autonomousCredit": 0,
+  "U9": "Open"
+}

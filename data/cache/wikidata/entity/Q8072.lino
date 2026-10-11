@@ -1,12 +1,16 @@
 Q8072
+  aliases
+    es (volcanes vulcano "edificio volcánico")
   descriptions
     en "natural, surface vent or fissure usually in a mountainous form"
+    es "estructura geológica"
     hi "पृथ्वी की सतह में दरार या मुख, जिससे गर्म लावा, गैस, भस्म आदि बाहर आते हैं"
     ru "геологическое образование"
     zh "天然，表面通風或裂縫，通常呈山地形式"
   id Q8072
   labels
     en volcano
+    es "volcán"
     hi "ज्वालामुखी"
     ru "вулкан"
     zh "火山"

@@ -3,54 +3,102 @@ include!("modules.rs");
 pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
 pub use benchmark_prompts::{
-    fact_store_resolves, try_brainstorming_request, try_conversation_topic_request,
-    try_coreference_request, try_fact_lookup, try_roleplay_request, try_summarization_request,
+    fact_store_resolves, names_coreference_antecedent, resolves_coreference_request,
+    try_brainstorming_request, try_coreference_request, try_fact_lookup, try_roleplay_request,
+    try_summarization_request,
 };
 pub use calendar::try_calendar_reasoning;
 pub use calendar_create::{
     calendar_claims, try_calendar_create_event, try_routed_calendar_create_event,
 };
+pub use code_debugging::handle_code_debugging;
+pub use code_explanation::handle_code_explanation;
+pub use code_refactoring::handle_code_refactoring;
+pub use code_review::handle_code_review;
 pub use compound_interest::try_compound_interest;
 pub use conversation_memory::is_exact_memory_query;
 pub use conversation_memory::{
     MemoryQueryExecution, answer_memory_recall, conversation_summary_answer, execute_memory_query,
-    execute_memory_query_with_options, try_conversation_memory,
+    execute_memory_query_with_options, names_recall_query, try_conversation_memory,
 };
-pub use document_originality::try_document_originality_check;
-pub use document_request::try_document_request;
+pub use creative_composition::{
+    handle_advice_request, handle_brainstorm_request, names_advice_topic, topic_words,
+};
+pub use creative_writing::{
+    handle_creative_writing_request, handle_planning_request, names_cached_destination,
+};
+pub use document_originality::{names_document_operand, try_document_originality_check};
+pub use document_request::{names_document_format, try_document_request};
 pub use fact_checking::try_fact_checking;
+#[cfg(feature = "meta-language")]
+pub use fact_live_answer::try_explanation_research;
+pub use fact_live_answer::{
+    LiveFactQuestion, explanation_concept, live_fact_question, try_fact_live_answer,
+    try_fact_lookup_with_client, try_fact_lookup_with_offline,
+};
+pub use factual_qa::{
+    ResolvedSubject, SubjectGate, fact_subject_gate, gated_fact_record, resolve_fact_subject,
+    try_fact_comparison,
+};
 pub use feature_capability::{CapabilityRuntime, try_feature_capability};
-pub use installation_conversion::try_installation_conversion;
+pub use formalization_task::{
+    AppliedPredicate, ClauseExporter, ProverRecord, ProverRun, QuantifiedClause, RmlExport,
+    formalization_statement, handle_formalization_request, prover_check_slots, prover_command_in,
+    prover_file_stem, prover_records, prover_runs_with, prover_unit, rml_source, run_prover_with,
+    run_rml_export_with, verb_final_language,
+};
+pub use format_conversion::{carries_structured_document, handle_format_conversion};
+pub use installation_conversion::{carries_install_steps, try_installation_conversion};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
 pub use pattern_inference::{try_pattern_inference, try_pattern_inference_with_response_language};
 pub use playwright_script::try_playwright_script;
+pub use product_search::{handle_product_search, names_marketplace};
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::{
     looks_like_python_function_request, try_program_synthesis, try_program_synthesis_with_online,
 };
-pub use research_table::{try_research_comparison_table, try_research_result_followup};
+pub use prompt_text_question::try_prompt_text_question;
+pub use regex_synthesis::{handle_regex_synthesis, names_pattern_constraints};
+pub use research_table::{
+    follows_research_request, try_research_comparison_table, try_research_result_followup,
+};
 pub use response_language_followup::try_response_language_followup;
 pub use self_awareness::SelfAwarenessRuntime;
+pub use shell_command_compose::{handle_shell_command_compose, names_filesystem_object};
 pub use shell_command_transform::{
-    try_shell_command_transform, try_shell_command_transform_with_history,
+    names_shell_command, try_shell_command_transform, try_shell_command_transform_with_history,
 };
-pub use software_project::{software_project_claims, try_software_project_request};
-pub use software_project_followup::try_software_project_followup;
+pub use software_project::{
+    software_project_approval_claims, software_project_claims, try_software_project_request,
+};
+pub use software_project_followup::{continues_software_project, try_software_project_followup};
+pub use sql_synthesis::{handle_sql_synthesis, names_query_table};
+pub use statistics::{handle_statistics, handle_word_problem};
+pub use summarization_request::handle_summarization_request;
 pub use task_decomposition::{looks_like_task_decomposition, try_task_decomposition_with_depth};
+pub use test_generation::{handle_test_generation, names_function_under_test};
 pub use text_manipulation::{
-    names_a_quoted_replacement, names_text_operation, text_outside_quoted_segments,
+    names_a_quoted_replacement, names_text_operation, parses_text_operation,
+    text_outside_quoted_segments,
 };
 pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};
-pub use user_intent::{try_proof_request, try_proof_request_with_config};
+pub use text_rewrite::handle_text_rewrite;
+pub use unit_conversion::handle_unit_conversion;
+pub use user_intent::{names_stated_claim, try_proof_request, try_proof_request_with_config};
 pub use verifiable_task::try_verifiable_task;
 pub use verifiable_task::{AnswerAgreement, VerifiedAnswer, classify_agreement};
 pub use web_requests::{
-    detect_web_search_query, try_explicit_repository_lookup, try_http_fetch,
-    try_http_fetch_with_offline, try_project_lookup, try_project_lookup_with_response_language,
-    try_routed_http_fetch_with_offline, try_url_navigate, try_web_search,
-    try_web_search_with_client, try_web_search_with_offline, url_navigation_claims,
+    detect_web_search_query, http_fetch_claims, repository_slug_candidates,
+    try_explicit_repository_lookup, try_http_fetch, try_http_fetch_with_offline,
+    try_page_formalization_with_client, try_project_lookup,
+    try_project_lookup_with_response_language, try_routed_http_fetch_with_offline,
+    try_url_navigate, try_web_search, try_web_search_with_client, try_web_search_with_offline,
+    url_navigation_claims,
+};
+pub use word_definition::{
+    definition_term, try_word_definition_with_client, try_word_definition_with_offline,
 };
 pub use world_state::try_world_state;
 pub use {
@@ -63,14 +111,14 @@ use crate::calculation::{
     interpretation_statements,
 };
 use crate::engine::{
-    ExecutionStatus, SymbolicAnswer, answer_links_notation, hello_world_program_by_alias, stable_id,
+    SymbolicAnswer, answer_links_notation, hello_world_program_by_alias, stable_id,
 };
 use crate::event_log::{EventLog, build_evidence_links};
 use crate::solver_helpers::{
-    build_sorting_algorithm_answer, detect_algorithm_language, detect_program_languages,
-    extract_backticked, extract_javascript_program, extract_quoted_phrase,
-    format_write_script_execution, infer_program_languages_from_code, infer_source_from_prompt,
-    is_write_script_request, normalize_code_meaning, normalize_meaning, translate_program,
+    detect_program_languages, extract_backticked, extract_javascript_program,
+    extract_quoted_phrase, format_write_script_execution, infer_program_languages_from_code,
+    infer_source_from_prompt, is_write_script_request, normalize_code_meaning, normalize_meaning,
+    translate_program,
 };
 use crate::translation::{
     detect_source_language, detect_target_language, extract_unquoted_translation_surface,
@@ -156,7 +204,11 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
             Err(error) => {
                 let error = error.to_string();
                 log.append("calculation:error", error.clone());
-                if candidate.explicit && first_explicit_error.is_none() {
+                // Pasted code is no calculator expression (the worker's gate).
+                if candidate.explicit
+                    && first_explicit_error.is_none()
+                    && crate::calculation::reads_as_calculator_expression(&expression)
+                {
                     first_explicit_error = Some((expression, error, interpretations));
                 }
             }
@@ -202,8 +254,7 @@ fn render_calculation_reasoning_step(index: usize, step: &str) -> String {
     }
 }
 
-// Plan 09 leaf 18: the concept-lookup orchestration and its renderers live in
-// `src/concepts.rs`, beside the extraction and ranking machinery they drive.
+// Concept lookup, rendering, extraction and ranking live in `src/concepts.rs`.
 pub use crate::concepts::{
     render_source_link, try_concept_lookup, try_concept_lookup_with_response_language,
 };
@@ -233,12 +284,10 @@ pub fn try_javascript_execution(prompt: &str, log: &mut EventLog) -> Option<Symb
     ))
 }
 
-// Plan 09 leaf 18: the network snapshot, source refresh, learn-from-source
-// and source-conflict procedures live in `src/retrieval_procedures.rs`, beside
-// the M2 retrieval interpreter they extend.
-pub use crate::retrieval_procedures::{
-    try_learn_from_source, try_network_query, try_source_conflict, try_source_refresh,
-};
+// Plan 09 leaf 18: learn-from-source lives beside the M2 retrieval interpreter;
+// network query, source refresh and source conflict are seed rules (#918).
+pub use crate::retrieval_procedures::try_learn_from_source;
+pub use shell_command_compose::cue_phrases as code_task_cue_phrases;
 
 pub fn try_translation(
     prompt: &str,
@@ -305,16 +354,21 @@ pub fn try_translation(
     if !is_translation_request {
         return None;
     }
+    // A quantity between two units with no target language named is a unit
+    // conversion ("переведи 10 миль в километры", issue #1175 p324), as the
+    // browser twin `tryTranslation` declines it.
+    if target.is_none()
+        && handle_unit_conversion(prompt, normalized, &mut EventLog::new()).is_some()
+    {
+        return None;
+    }
 
-    // Plan 16 L2g: a request that names a source-tree file (`js/app.js … to
-    // typescript`) is the meta pivot's job, not the Wiktionary pipeline's.
-    // The meaning gate above already fired; the path token and the target
-    // spelling are structural vocabulary (`SourceRoot`'s own names), so no
-    // phrase table is added. The file is read relative to the working
-    // directory, the same contract `formal-ai translate --input` practices;
-    // a missing file answers the honest gap instead of translating prose.
-    // Nothing is written here — the answer carries the rendered target, and
-    // the write belongs to `--write` or the agent tool.
+    // Plan 16 L2g routes source-tree requests through the meta pivot after
+    // the meaning gate. Paths and target spellings are structural vocabulary.
+    // Paths resolve against the working directory, as translate --input.
+    // Missing and invalid sources return distinct seeded responses.
+    // The answer carries rendered text; writes belong to --write or the
+    // agent tool and require their separate ownership contract.
     if backticked.is_none()
         && let Some(request) = crate::meta_translate::source_tree_request(prompt)
     {
@@ -324,49 +378,52 @@ pub fn try_translation(
         let seed_body = |intent: &str, values: &[(&str, &str)]| -> String {
             crate::seed::render_response(intent, "en", values).unwrap_or_else(|| intent.to_string())
         };
-        if let Ok(source) = std::fs::read_to_string(&request.path) {
-            let outcome =
-                crate::meta_translate::translate(request.from, request.to, &request.path, &source);
-            let (body, confidence) = match outcome {
-                crate::meta_translate::TranslationOutcome::Rendered { target, .. } => (target, 1.0),
-                crate::meta_translate::TranslationOutcome::Refused { refusals } => {
-                    let items = refusals
-                        .iter()
-                        .map(|refusal| refusal.construct.as_str())
-                        .collect::<Vec<_>>()
-                        .join(", ");
-                    (
-                        seed_body("translate_write_refused", &[("items", &items)]),
-                        0.4,
-                    )
-                }
-                crate::meta_translate::TranslationOutcome::Invalid { reason } => (
+        let source = std::fs::read_to_string(&request.path);
+        let failed_read = source.is_err();
+        let outcome = source.map(|source| {
+            crate::meta_translate::translate(request.from, request.to, &request.path, &source)
+        });
+        let (body, confidence) = match outcome {
+            Ok(crate::meta_translate::TranslationOutcome::Rendered { target, .. }) => (target, 1.0),
+            Ok(crate::meta_translate::TranslationOutcome::Refused { refusals }) => {
+                let items = refusals
+                    .iter()
+                    .map(|refusal| refusal.construct.as_str())
+                    .collect::<Vec<_>>()
+                    .join(", ");
+                (
+                    seed_body("translate_write_refused", &[("items", &items)]),
+                    0.4,
+                )
+            }
+            Ok(crate::meta_translate::TranslationOutcome::Invalid { reason }) => (
+                seed_body(
+                    "translate_source_invalid",
+                    &[("path", &request.path), ("reason", &reason)],
+                ),
+                0.4,
+            ),
+            Ok(crate::meta_translate::TranslationOutcome::Pending { .. }) => (String::new(), 0.0),
+            Err(error) => {
+                let body = if error.kind() == std::io::ErrorKind::NotFound {
+                    seed_body("translate_source_missing", &[("path", &request.path)])
+                } else {
                     seed_body(
                         "translate_source_invalid",
-                        &[("path", &request.path), ("reason", &reason)],
-                    ),
-                    0.4,
-                ),
-                crate::meta_translate::TranslationOutcome::Pending { .. } => (String::new(), 0.0),
-            };
-            if !body.is_empty() {
-                return Some(finalize_simple(
-                    prompt,
-                    log,
-                    "translate_source_tree",
-                    "response:translate_code",
-                    &body,
-                    confidence,
-                ));
+                        &[("path", &request.path), ("reason", &error.to_string())],
+                    )
+                };
+                (body, 0.4)
             }
-        } else {
+        };
+        if failed_read || !body.is_empty() {
             return Some(finalize_simple(
                 prompt,
                 log,
                 "translate_source_tree",
                 "response:translate_code",
-                &seed_body("translate_source_missing", &[("path", &request.path)]),
-                0.4,
+                &body,
+                confidence,
             ));
         }
     }
@@ -415,9 +472,13 @@ pub fn try_translation(
         && let Some((source_lang, target_lang)) = detected_program
     {
         let translated = translate_program(code, source_lang, target_lang);
-        let body = format!(
-            "Translated `{code}` from {source_lang} to {target_lang}:\n\n```{target_lang}\n{translated}\n```"
-        );
+        let slots = [
+            ("code", code.as_str()),
+            ("source", source_lang),
+            ("target", target_lang),
+        ];
+        let heading = translation_text("translation_program_heading", &slots);
+        let body = format!("{heading}\n\n```{target_lang}\n{translated}\n```");
         log.append("language_from", source_lang.to_owned());
         log.append("language_to", target_lang.to_owned());
         let meaning_id = stable_id("meaning", &normalize_code_meaning(code));
@@ -444,8 +505,30 @@ pub fn try_translation(
     let source_slug = source.unwrap_or("en");
     let target_slug = target.unwrap_or("en");
 
+    // A well-formed sentence with no quoted or backticked surface still names
+    // the text to translate (`Translate to Russian: The weather is nice
+    // today, let's go for a walk.`): take the free text after the command
+    // head and translate it word by word (issue #1174).
+    let no_backticked_text = backticked.is_none();
+    if surface.is_empty()
+        && no_backticked_text
+        && source_slug != target_slug
+        && let Some(free_sentence) = text_rewrite::free_text_payload(prompt)
+    {
+        return Some(translate_free_sentence(
+            prompt,
+            log,
+            source_slug,
+            target_slug,
+            &free_sentence,
+        ));
+    }
+
     log.append("language_from", source_slug.to_owned());
     log.append("language_to", target_slug.to_owned());
+    if surface.is_empty() && no_backticked_text {
+        log.append("translation:refusal", "no source phrase".to_owned());
+    }
 
     // Run the real Wiktionary + Wikidata translation pipeline. The pipeline
     // returns a `MeaningId` that we publish into the trace verbatim, so two
@@ -455,7 +538,7 @@ pub fn try_translation(
         crate::solver_helpers::translate_surface_detailed(&surface, source_slug, target_slug);
 
     let (target_surface, meaning_id, translation_gap) = if let Ok(translation) = pipeline_result {
-        let target_surface = translation.primary_surface().map(str::to_owned);
+        let target_surface = translation.round_trip_surface().map(str::to_owned);
         let gap = target_surface.is_none();
         // A seed meaning stands in only where Wikidata has nothing to say and
         // the caller asked for links; otherwise the pipeline's own id is the id.
@@ -507,17 +590,107 @@ pub fn try_translation(
     ))
 }
 
-fn render_translation_gap(surface: &str, source_slug: &str, target_slug: &str) -> String {
+/// A seeded English `translation_*` response with each slot filled once.
+fn translation_text(intent: &str, values: &[(&str, &str)]) -> String {
+    crate::seed::fill_template_once(
+        &crate::seed::localized_response(intent, "en").unwrap_or_default(),
+        values,
+    )
+}
+
+/// The seeded gap answer: no phrase named, or a phrase with no translation.
+fn render_translation_gap(surface: &str, source: &str, target: &str) -> String {
     let surface = surface.trim();
-    if surface.is_empty() {
-        return format!(
-            "I could not identify a source phrase to translate from {source_slug} to \
-             {target_slug}."
-        );
+    let intent = if surface.is_empty() {
+        "translation_gap_no_source"
+    } else {
+        "translation_gap_surface"
+    };
+    let slots = [("surface", surface), ("source", source), ("target", target)];
+    translation_text(intent, &slots)
+}
+
+/// Word-by-word translation of the free sentence a translation request names
+/// after its command head (issue #1174). Each source segment goes through
+/// [`crate::translation::pipeline::TranslationPipeline::translate_sentence`];
+/// dropped function words, resolved words, and unknown words are logged so
+/// the trace explains every token, and the unknown words are reported through
+/// the seeded template instead of being hidden.
+fn translate_free_sentence(
+    prompt: &str,
+    log: &mut EventLog,
+    source_slug: &str,
+    target_slug: &str,
+    sentence: &str,
+) -> SymbolicAnswer {
+    let client = crate::translation::CachedHttpClient::new(
+        crate::translation::cache::DEFAULT_CACHE_DIR,
+        crate::translation::CurlClient::default(),
+    );
+    let pipeline = crate::translation::pipeline::TranslationPipeline::new(&client);
+    log.append("language_from", source_slug.to_owned());
+    log.append("language_to", target_slug.to_owned());
+    let mut unknown_words: Vec<String> = Vec::new();
+    let mut rendered: Vec<String> = Vec::new();
+    for segment in crate::formalization::segment::sentences(sentence) {
+        let translation = pipeline.translate_sentence(&segment.text, source_slug, target_slug);
+        log.append("translation_word_order", translation.target_order.clone());
+        for word in &translation.words {
+            if word.dropped_function_word {
+                log.append("translation_function_word", word.source.clone());
+            } else if let Some(target) = &word.target {
+                log.append("translation_word", format!("{} -> {}", word.source, target));
+                if let Some(meaning) = &word.meaning {
+                    log.append("meaning", meaning.clone());
+                }
+            } else {
+                log.append("translation_unknown_word", word.source.clone());
+                unknown_words.push(word.source.clone());
+            }
+        }
+        rendered.push(translation.surface());
     }
-    format!(
-        "I could not translate \"{surface}\" from {source_slug} to {target_slug} with the \
-         available formalization data. I recorded this as a translation gap for follow-up."
+    let mut body = rendered.join(" ");
+    if rendered.iter().all(String::is_empty) {
+        log.append("translation_gap", sentence.to_owned());
+        let gap_body = render_translation_gap(sentence, source_slug, target_slug);
+        let intent = format!("translate_{source_slug}_to_{target_slug}");
+        return finalize_simple(prompt, log, &intent, "response:translate", &gap_body, 1.0);
+    }
+    // Keep the source's terminal punctuation when the rendering dropped it.
+    if let Some(last) = sentence.trim_end().chars().next_back()
+        && matches!(last, '.' | '!' | '?')
+        && !body.ends_with(last)
+    {
+        body.push(last);
+    }
+    if !unknown_words.is_empty() {
+        let unknown = unknown_words.join(", ");
+        let note = crate::seed::render_response(
+            "text_transform_translation_unknown",
+            target_slug,
+            &[("unknown", &unknown)],
+        )
+        .or_else(|| {
+            crate::seed::render_response(
+                "text_transform_translation_unknown",
+                "en",
+                &[("unknown", &unknown)],
+            )
+        })
+        .unwrap_or_default();
+        if !note.is_empty() {
+            body = format!("{body}\n\n{note}");
+        }
+    }
+    let intent = format!("translate_{source_slug}_to_{target_slug}");
+    finalize_simple(
+        prompt,
+        log,
+        &intent,
+        "response:translate_sentence",
+        &body,
+        1.0,
     )
 }
 
@@ -553,63 +726,6 @@ pub fn try_write_script(
         ),
         &body,
         1.0,
-    ))
-}
-
-pub fn try_algorithm(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    if !normalized.contains("algorithm") && !normalized.contains("sort") {
-        return None;
-    }
-    let with_tests = normalized.contains("test");
-    let lang_slug = detect_algorithm_language(normalized);
-    let body = build_sorting_algorithm_answer(lang_slug, with_tests);
-    let intent = format!("algorithm_sort_{lang_slug}");
-    log.append(
-        "execution_status",
-        ExecutionStatus::Unavailable.label().to_owned(),
-    );
-    log.append(
-        "execution_environment",
-        "no compile/run sandbox configured for this generated snippet".to_owned(),
-    );
-    Some(finalize_simple(
-        prompt,
-        log,
-        &intent,
-        "response:algorithm",
-        &body,
-        1.0,
-    ))
-}
-
-pub fn try_execution_failure(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    if !normalized.contains("undefined_function") {
-        return None;
-    }
-    log.append("trace:execution_failure", "undefined_function".to_owned());
-    let body = String::from(
-        "Execution status: failed in isolated sandbox.\n\
-         ```python\nundefined_function()\n```\n\
-         Traceback (most recent call last):\n  File 'main.py', line 1, in <module>\n\
-         NameError: name 'undefined_function' is not defined.\n\
-         The failure trace is appended to the action log; see the trace link.",
-    );
-    let agent_request = normalized.contains("[agent]");
-    if agent_request {
-        log.append("agent_mode:opted_in", prompt.to_owned());
-        log.append("action_log", prompt.to_owned());
-    }
-    Some(finalize_simple(
-        prompt,
-        log,
-        "execution_failure",
-        "response:execution_failure",
-        &body,
-        0.4,
     ))
 }
 

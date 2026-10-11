@@ -1,0 +1,136 @@
+# Captured run, 2026-10-07: the branch's browser engine (js/worker, driven by node)
+# formalized each committed capture under rust/tests/fixtures/coding-discovery/captured/,
+# decomposed the first block in the page's language (or untagged) that has an output
+# call (decomposeCodeExample), generalized the five nodes (generalizeCodeExamples) and
+# printed both with decomposedCodeExampleNotation / generalizedCodeExampleNotation.
+# Output below is verbatim; nothing was edited by hand. Re-run on 2026-10-07 after the
+# issue #1165 R1165-1 formalizer fix: the program bodies keep their pages' indentation.
+# issue-1164/kotlin-tour-hello-world.html sha256=916f03525029483ef10ca64b75b7c110c538aadce2c7021dbb6a56e8ef8bd92a
+decomposed_code_node
+  language_slug kotlin
+  part
+    kind entry_point
+    source_text "main"
+    cst_node_kind function_declaration
+    source_url "https://kotlinlang.org/docs/kotlin-tour-hello-world.html"
+  part
+    kind output_operation
+    source_text "println"
+    cst_node_kind call_expression
+    source_url "https://kotlinlang.org/docs/kotlin-tour-hello-world.html"
+  part
+    kind string_literal
+    source_text "Hello, world!"
+    cst_node_kind string_literal
+    source_url "https://kotlinlang.org/docs/kotlin-tour-hello-world.html"
+
+# issue-1164/ch01-02-hello-world.html sha256=98d3e31d5c41a6572a3536ee16c51a1058b3974e6f22e15ba5fb2a5e964ceb4e
+decomposed_code_node
+  language_slug rust
+  part
+    kind entry_point
+    source_text "main"
+    cst_node_kind function_declaration
+    source_url "https://doc.rust-lang.org/book/ch01-02-hello-world.html"
+  part
+    kind output_operation
+    source_text "println!"
+    cst_node_kind call_expression
+    source_url "https://doc.rust-lang.org/book/ch01-02-hello-world.html"
+  part
+    kind string_literal
+    source_text "Hello, world!"
+    cst_node_kind string_literal
+    source_url "https://doc.rust-lang.org/book/ch01-02-hello-world.html"
+
+# issue-1164/getting-started.html sha256=a7048d2cce6a94ae835c9503d6af5e96f88954a459d831fe03f9a7d82b60ef2c
+decomposed_code_node
+  language_slug go
+  part
+    kind entry_point
+    source_text "main"
+    cst_node_kind function_declaration
+    source_url "https://go.dev/doc/tutorial/getting-started"
+  part
+    kind output_operation
+    source_text "fmt.Println"
+    cst_node_kind call_expression
+    source_url "https://go.dev/doc/tutorial/getting-started"
+  part
+    kind string_literal
+    source_text "Hello, World!"
+    cst_node_kind string_literal
+    source_url "https://go.dev/doc/tutorial/getting-started"
+
+# issue-1163/taste-hello-world.html sha256=913485460cbb046dab070e46eca56fc97cc3f1bc43fb57ae931a2f711145ef2b
+decomposed_code_node
+  language_slug scala
+  part
+    kind entry_point
+    source_text "main"
+    cst_node_kind function_declaration
+    source_url "https://docs.scala-lang.org/scala3/book/taste-hello-world.html"
+  part
+    kind output_operation
+    source_text "println"
+    cst_node_kind call_expression
+    source_url "https://docs.scala-lang.org/scala3/book/taste-hello-world.html"
+  part
+    kind string_literal
+    source_text "Hello, World!"
+    cst_node_kind string_literal
+    source_url "https://docs.scala-lang.org/scala3/book/taste-hello-world.html"
+
+# issue-1164/GuidedTour.md sha256=0becd1b48ee0baab2fd3432c70448f0c5edfa5fd1d36fa242aa08c4191391261
+decomposed_code_node
+  language_slug swift
+  part
+    kind output_operation
+    source_text "print"
+    cst_node_kind call_expression
+    source_url "https://github.com/swiftlang/swift-book/blob/main/TSPL.docc/GuidedTour/GuidedTour.md"
+  part
+    kind string_literal
+    source_text "Hello, world!"
+    cst_node_kind string_literal
+    source_url "https://github.com/swiftlang/swift-book/blob/main/TSPL.docc/GuidedTour/GuidedTour.md"
+
+# generalized
+generalized_procedure
+  id "generalized:go+kotlin+rust+scala+swift"
+  shared_structure output_operation
+  shared_structure string_literal
+  parameter
+    name output_literal
+    go "Hello, World!"
+    kotlin "Hello, world!"
+    rust "Hello, world!"
+    scala "Hello, World!"
+    swift "Hello, world!"
+  parameter
+    name output_call
+    go "fmt.Println"
+    kotlin "println"
+    rust "println!"
+    scala "println"
+    swift "print"
+  source_url "https://kotlinlang.org/docs/kotlin-tour-hello-world.html"
+  source_url "https://doc.rust-lang.org/book/ch01-02-hello-world.html"
+  source_url "https://go.dev/doc/tutorial/getting-started"
+  source_url "https://docs.scala-lang.org/scala3/book/taste-hello-world.html"
+  source_url "https://github.com/swiftlang/swift-book/blob/main/TSPL.docc/GuidedTour/GuidedTour.md"
+  program_body
+    language go
+    source "package main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println(\"{literal}\")\n}"
+  program_body
+    language kotlin
+    source "fun main() {\n    println(\"{literal}\")\n    // Hello, world!\n}"
+  program_body
+    language rust
+    source "fn main() {\n    println!(\"{literal}\");\n}"
+  program_body
+    language scala
+    source "object hello {\n  def main(args: Array[String]) = {\n    println(\"{literal}\")\n  }\n}"
+  program_body
+    language swift
+    source "print(\"{literal}\")\n// Prints \"Hello, world!\""

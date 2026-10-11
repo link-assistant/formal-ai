@@ -177,7 +177,7 @@ pub fn quoted_segment_spans(text: &str) -> Vec<QuotedSegment> {
             break;
         };
         let content_start = open_at + open.len();
-        let Some(content_end) = closing_delimiter(text, content_start, close) else {
+        let Some(content_end) = closing_delimiter(text, content_start, open, close) else {
             break;
         };
         let segment_end = content_end + close.len();
@@ -189,6 +189,99 @@ pub fn quoted_segment_spans(text: &str) -> Vec<QuotedSegment> {
         cursor = segment_end;
     }
     result
+}
+
+/// Where a request's quotes stop pairing (PR #1188 G71).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct QuoteFault {
+    /// `escaped` for a backslash before a quote, `unpaired` for an opening
+    /// quote that no literal holds.
+    pub kind: &'static str,
+    /// Byte offset of the backslash or of the lone opening quote.
+    pub at: usize,
+    /// Up to 32 characters of the request from `at`, trailing space trimmed.
+    pub fragment: String,
+}
+
+const ASCII_QUOTES: [char; 3] = ['\'', '"', '`'];
+const OPEN_ONLY: [char; 6] = ['«', '“', '‘', '「', '『', '《'];
+const CLOSE_FOLLOWERS: &str = ".,;:!?)]}";
+const FAULT_FRAGMENT_CHARS: usize = 32;
+
+/// The first place a request's quotes stop pairing, or `None` when they pair.
+///
+/// `escaped` is a backslash before a quote that opens a literal, or before
+/// one that closes it with a word straight after; `unpaired` is an opening
+/// quote no literal holds. An apostrophe (a quote after a letter or digit)
+/// never opens a literal.
+#[must_use]
+pub fn quote_fault(text: &str) -> Option<QuoteFault> {
+    let mut faults = Vec::new();
+    let mut gap_start = 0;
+    for segment in quoted_segment_spans(text) {
+        gap_faults(text, gap_start, segment.start, &mut faults);
+        gap_start = segment.end;
+        let opening = &text[segment.start..];
+        if opening.starts_with(PAIRS[0].0)
+            || !opening
+                .chars()
+                .next()
+                .is_some_and(|open| ASCII_QUOTES.contains(&open))
+        {
+            continue;
+        }
+        if text[..segment.start].ends_with('\\') {
+            faults.push(("escaped", segment.start - 1));
+        }
+        let close_at = segment.end - 1;
+        if segment.end - segment.start > 2
+            && text[..close_at].ends_with('\\')
+            && text[segment.end..]
+                .chars()
+                .next()
+                .is_some_and(|after| !after.is_whitespace() && !CLOSE_FOLLOWERS.contains(after))
+        {
+            faults.push(("escaped", close_at - 1));
+        }
+    }
+    gap_faults(text, gap_start, text.len(), &mut faults);
+    let (kind, at) = faults.into_iter().min_by_key(|&(_, at)| at)?;
+    let fragment = text[at..]
+        .chars()
+        .take(FAULT_FRAGMENT_CHARS)
+        .collect::<String>()
+        .trim_end()
+        .to_owned();
+    Some(QuoteFault { kind, at, fragment })
+}
+
+/// The quote faults between two literals: an escaped quote, or an opening
+/// quote that is not an apostrophe.
+fn gap_faults(text: &str, from: usize, to: usize, faults: &mut Vec<(&'static str, usize)>) {
+    for (offset, character) in text[from..to].char_indices() {
+        let index = from + offset;
+        let ascii = ASCII_QUOTES.contains(&character);
+        if ascii && text[..index].ends_with('\\') {
+            faults.push(("escaped", index - 1));
+        } else if (ascii && !word_internal_mark(character, text[..index].chars().next_back()))
+            || OPEN_ONLY.contains(&character)
+        {
+            faults.push(("unpaired", index));
+        }
+    }
+}
+
+/// Whether an unpaired ASCII quote belongs to the word before it.
+///
+/// An apostrophe after a letter or digit (`it's`), an inch mark after a digit
+/// (`5"`); any other lone quote opens a quote that never closes (`say "hi" in`
+/// with an odd count of `"`, U17). Mirrors `wordInternalMark`.
+fn word_internal_mark(character: char, before: Option<char>) -> bool {
+    before.is_some_and(|before| match character {
+        '\'' => before.is_ascii_alphanumeric(),
+        '"' => before.is_ascii_digit(),
+        _ => false,
+    })
 }
 
 /// Remove one pair of client-added framing quotes without consuming literal
@@ -208,23 +301,56 @@ pub fn unwrap_transport_quotes(text: &str) -> &str {
     trimmed
 }
 
-fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &'static str, &'static str)> {
-    const PAIRS: [(&str, &str); 10] = [
-        ("```", "```"),
-        ("'", "'"),
-        ("\"", "\""),
-        ("`", "`"),
-        ("«", "»"),
-        ("“", "”"),
-        ("‘", "’"),
-        ("「", "」"),
-        ("『", "』"),
-        ("《", "》"),
-    ];
-    PAIRS
+/// The quote pairs a literal slot is delimited by, the fenced block first.
+const PAIRS: [(&str, &str); 10] = [
+    ("```", "```"),
+    ("'", "'"),
+    ("\"", "\""),
+    ("`", "`"),
+    ("«", "»"),
+    ("“", "”"),
+    ("‘", "’"),
+    ("「", "」"),
+    ("『", "』"),
+    ("《", "》"),
+];
+
+/// Whether `text`, trimmed, opens with a quote and closes with its pair.
+///
+/// Such text is one literal however the quotes inside it pair (PR #1188 G63).
+#[must_use]
+pub fn wrapped_in_quote_pair(text: &str) -> bool {
+    let trimmed = text.trim();
+    PAIRS.iter().any(|(open, close)| {
+        trimmed.len() >= open.len() + close.len()
+            && trimmed.starts_with(open)
+            && trimmed.ends_with(close)
+    })
+}
+
+/// Whether `text` holds `literal` inside one quote pair.
+///
+/// The quotes inside `literal` may pair among themselves (PR #1188 G63).
+#[must_use]
+pub fn quotes_whole(text: &str, literal: &str) -> bool {
+    !literal.is_empty()
+        && PAIRS
+            .iter()
+            .any(|(open, close)| text.contains(&format!("{open}{literal}{close}")))
+}
+
+fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &str, &str)> {
+    let (at, open, close) = PAIRS
         .iter()
         .filter_map(|&(open, close)| next_complete_pair(text, cursor, open, close))
-        .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))
+        .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))?;
+    if open == "```" {
+        let length = text[at..].bytes().take_while(|byte| *byte == b'`').count();
+        let fence = &text[at..at + length];
+        closing_delimiter(text, at + length, fence, fence)?;
+        return Some((at, fence, fence));
+    }
+    Some((at, open, close))
 }
 
 fn next_complete_pair(
@@ -242,7 +368,8 @@ fn next_complete_pair(
                 .next_back()
                 .is_some_and(|character| character.is_ascii_alphanumeric());
         let content_start = open_at + open.len();
-        if !previous_is_ascii_word && closing_delimiter(text, content_start, close).is_some() {
+        if !previous_is_ascii_word && closing_delimiter(text, content_start, open, close).is_some()
+        {
             return Some((open_at, open, close));
         }
         from = content_start;
@@ -250,7 +377,74 @@ fn next_complete_pair(
     None
 }
 
-fn closing_delimiter(text: &str, cursor: usize, close: &str) -> Option<usize> {
+/// The first close that is not an apostrophe inside a word, or, for a single
+/// quote, the one that closes a payload quoting a single-quoted literal of its
+/// own (PR #1188 G61): a quote with a space before it and a word character
+/// after it opens a nested literal, and the payload closes after that literal
+/// does. When such nesting never closes, the first close stands.
+fn closing_delimiter(text: &str, cursor: usize, open: &str, close: &str) -> Option<usize> {
+    if close == "'"
+        && let Some(close_at) = nested_closing_delimiter(text, cursor)
+    {
+        return Some(close_at);
+    }
+    if open != close {
+        return stacked_closing_delimiter(text, cursor, open, close);
+    }
+    plain_closing_delimiter(text, cursor, close)
+}
+
+/// The close of a pair whose marks differ (`«…»`, `“…”`, `「…」`), counted as
+/// a stack: an inner `«…»` is part of the payload (PR #1188 G86). `None` when
+/// the stack never empties, so the opening mark pairs with nothing.
+fn stacked_closing_delimiter(text: &str, cursor: usize, open: &str, close: &str) -> Option<usize> {
+    let mut depth = 0_usize;
+    let mut from = cursor;
+    loop {
+        let rest = &text[from..];
+        let close_at = from + rest.find(close)?;
+        match rest.find(open).map(|relative| from + relative) {
+            Some(open_at) if open_at < close_at => {
+                depth += 1;
+                from = open_at + open.len();
+            }
+            _ if depth == 0 => return Some(close_at),
+            _ => {
+                depth -= 1;
+                from = close_at + close.len();
+            }
+        }
+    }
+}
+
+/// The close of a single-quoted payload that holds nested single-quoted
+/// literals, or `None` when the nesting never closes.
+fn nested_closing_delimiter(text: &str, cursor: usize) -> Option<usize> {
+    let mut depth = 0_usize;
+    let mut from = cursor;
+    while let Some(relative) = text[from..].find('\'') {
+        let close_at = from + relative;
+        from = close_at + 1;
+        let before = text[..close_at].chars().next_back();
+        let after_is_word = text[from..]
+            .chars()
+            .next()
+            .is_some_and(|character| character.is_ascii_alphanumeric());
+        if before.is_some_and(|character| character.is_ascii_alphanumeric()) && after_is_word {
+            continue;
+        }
+        if before.is_some_and(char::is_whitespace) && after_is_word {
+            depth += 1;
+        } else if depth == 0 {
+            return Some(close_at);
+        } else {
+            depth -= 1;
+        }
+    }
+    None
+}
+
+fn plain_closing_delimiter(text: &str, cursor: usize, close: &str) -> Option<usize> {
     let mut from = cursor;
     while let Some(relative) = text[from..].find(close) {
         let close_at = from + relative;

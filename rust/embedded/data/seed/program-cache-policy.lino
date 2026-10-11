@@ -1,0 +1,96 @@
+# The cache policy for stored coding procedures (issue #1165, E130).
+#
+# A stored procedure is a cache entry, never knowledge — every row must name
+# where a rediscovery would start from, and a test may delete the whole cache
+# file and reproduce every row through research_coding_skill_gap.
+program_cache_policy
+  version "1"
+  purpose "A stored coding procedure is a cache entry, not knowledge. Every row names the query and the documented source a rediscovery starts from, so deleting the cache and re-running research reproduces each row with the same content_id."
+  cache_file "data/cache/coding-procedure-cache.lino"
+  cache_file_header "The rediscoverable coding-procedure cache (issue #1165, E130).\n\nRuntime cache, not knowledge. The policy that governs every row lives in\ndata/seed/program-cache-policy.lino. A row appears here only after\nresearch_coding_skill_gap verified a procedure against its expected\noutput, and the committed rows may be deleted by a test that then\nreproduces them through the same research path."
+  content_hash "fnv1a64 of the entry program bytes"
+  grammar_seed "data/seed/program-cst-grammars.lino"
+  entry_requires
+    rediscovery_query "required"
+    rediscovery_source "required"
+    entry "required"
+    verified_output "required"
+    content_id "recomputed on store"
+  knows_language_rule "a grammar exists in the grammar seed and discovery found a procedure, either as a cache row or as the bootstrap record of a discovery that already ran"
+  bootstrap
+    active "true"
+    owner "rust/src/knowledge.rs ORACLE_SNAPSHOTS"
+    purpose "The embedded snapshots are the record of discovery that ran before the cache file existed, so offline lookups keep answering while the first live refresh materializes rows."
+    retirement "Delete the bootstrap record in this seed to stop serving the snapshots with no Rust change, then delete ORACLE_SNAPSHOTS once every language row it covered is reproduced by a rediscovery run."
+    retired "Issue #1165: the Swift, Lua, Kotlin and PHP Hello World snapshots left ORACLE_SNAPSHOTS because the documentation route reproduces each pair from a captured page (the Swift book, lua.org's Programming in Lua, kotlinlang and php.net); knows_language reads the captures for them."
+    remaining "The record stays active for the snapshots no documentation route reproduces yet: Bash and Haskell Hello World (meta-language ships no Bash or Haskell grammar, so no page can be decomposed) and the Rosetta Code Kotlin factorial (no capture covers the factorial task)."
+  miss_route
+    purpose "What a write_program cache miss needs before research_coding_skill_gap can run on it. Research verifies a candidate against an expected output under a reviewer's approval; a solve call carries the task's expected output from the program seed but no reviewer approval, so the solver records the miss with every input it lacks instead of answering as if research had run."
+    research_requires "expected_output"
+    research_requires "reviewer_approval"
+    solve_carries "expected_output"
+  documentation_route
+    active "true"
+    captures "data/seed/coding-documentation-captures.lino"
+    purpose "A write_program cache miss whose language and task have documentation captures rediscovers its program from them at answer time. In each captured page the first block, in the requested language or untagged, that decomposes into an output call printing a literal is recomposed with the task's expected output bound into that literal, and the shortest such program is kept. It is answered only when decomposing it again finds the same output call printing the expected output, and when it declares every name the language's run contract invokes (the save_as stem a run or check command names bare). The row it yields cites the page as its rediscovery_source and its rediscovery_query, and is stored when the solve has a writable runtime cache (FORMAL_AI_PROCEDURE_CACHE), so the next request reuses it as a hit. The committed cache file is never written by a solve."
+    verification "decomposition"
+    verification "run_contract"
+  recorded_verification
+    purpose "The programs a recorded run compiled and executed, named by content_id. An answer whose program the documentation route rediscovered cites a run only when its content_id is recorded here for the language and task; any other rediscovered program is reported as rediscovered from its page with its output contract checked by decomposition, never as run. The ids are the Hello World templates the issue-8 harness ran (data/seed/toolchains.lino marks those languages verified); the documented Rust, Go and JavaScript programs equal them byte for byte."
+    environment "issue-8 local verification harness (isolated sandbox)"
+    program
+      language rust
+      task hello_world
+      content_id "0x544f96663d886356"
+    program
+      language python
+      task hello_world
+      content_id "0xb7f3f27951d54434"
+    program
+      language javascript
+      task hello_world
+      content_id "0xa17588be46bebdff"
+    program
+      language go
+      task hello_world
+      content_id "0x21e141d21c912a34"
+    program
+      language c
+      task hello_world
+      content_id "0x4e28e3a5a2cb8c10"
+    program
+      language php
+      task hello_world
+      content_id "0xd9a33911cb81ab30"
+  command_procedure
+    purpose "A catalog language row states no check or run command that a captured documentation page states for it: the row takes the command from the page when the catalog is first read (issue #1165 R1165-6). Each command row names the language, the command's role (check or run), the captured page and the command_verb its command line starts with. The command is the first line of that page's code blocks, its shell prompt removed, whose first word is that command_verb. The name the page gives its source file (the stem of the first word, across the language's command rows, that ends with the extension of the file the catalog saves the program as) is bound to the catalog file's stem in every word that is that name or that name followed by a dot. A row is added only when the page states the command the catalog runs, so the command derived from the page is the one the catalog verified; every other command stays the catalog's own until a captured page states it."
+    command
+      language rust
+      role run
+      page "https://doc.rust-lang.org/book/ch01-02-hello-world.html"
+      command_verb "./main"
+    command
+      language typescript
+      role check
+      page "https://raw.githubusercontent.com/microsoft/TypeScript-Website/v2/packages/documentation/copy/en/handbook-v2/Basics.md"
+      command_verb tsc
+    command
+      language java
+      role check
+      page "https://docs.oracle.com/javase/tutorial/getStarted/cupojava/unix.html"
+      command_verb javac
+    command
+      language java
+      role run
+      page "https://docs.oracle.com/javase/tutorial/getStarted/cupojava/unix.html"
+      command_verb java
+    command
+      language kotlin
+      role check
+      page "https://kotlinlang.org/docs/command-line.html"
+      command_verb kotlinc
+    command
+      language kotlin
+      role run
+      page "https://kotlinlang.org/docs/command-line.html"
+      command_verb java

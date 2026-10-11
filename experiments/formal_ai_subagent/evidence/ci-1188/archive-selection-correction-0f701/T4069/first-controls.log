@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: both actual GHCR workflow settings preserve the original cache contract
+ok 1 - both actual GHCR workflow settings preserve the original cache contract
+  ---
+  duration_ms: 1.124917
+  ...
+# Subtest: actual Node cacheenv 0 retains every full-image Docker CLI operand
+ok 2 - actual Node cacheenv 0 retains every full-image Docker CLI operand
+  ---
+  duration_ms: 2531.824708
+  ...
+# Subtest: actual Node cacheenv 1 retains every full-image Docker CLI operand
+ok 3 - actual Node cacheenv 1 retains every full-image Docker CLI operand
+  ---
+  duration_ms: 2357.636708
+  ...
+# Subtest: actual invalid empty cacheenv refuses before any Dockerprocess
+ok 4 - actual invalid empty cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 1543.468083
+  ...
+# Subtest: actual invalid missing export cacheenv refuses before any Dockerprocess
+ok 5 - actual invalid missing export cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 1652.360209
+  ...
+# Subtest: actual invalid duplicate key cacheenv refuses before any Dockerprocess
+ok 6 - actual invalid duplicate key cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 1744.864667
+  ...
+# Subtest: actual invalid unknown key cacheenv refuses before any Dockerprocess
+ok 7 - actual invalid unknown key cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2115.995459
+  ...
+# Subtest: actual invalid different writer scope cacheenv refuses before any Dockerprocess
+ok 8 - actual invalid different writer scope cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2222.854542
+  ...
+# Subtest: actual invalid different export mode cacheenv refuses before any Dockerprocess
+ok 9 - actual invalid different export mode cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2327.061041
+  ...
+# Subtest: actual invalid registry substitution cacheenv refuses before any Dockerprocess
+ok 10 - actual invalid registry substitution cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 1765.755833
+  ...
+# Subtest: actual invalid extra flag cacheenv refuses before any Dockerprocess
+ok 11 - actual invalid extra flag cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 1688.631875
+  ...
+# Subtest: actual invalid third writer cacheenv refuses before any Dockerprocess
+ok 12 - actual invalid third writer cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 1553.828666
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 21560.535

@@ -1,0 +1,24 @@
+{
+  "source": {
+    "path": "rust/tests/unit/ci-cd/source_test_placement.rs",
+    "sha256": "f7fd80955f7cc88fd31af856dabc2a93f38f90c0505f35295cff58f972723ac0"
+  },
+  "fixtures": [
+    {
+      "path": "rust/tests/fixtures/test-target-ownership.rs",
+      "sha256": "9561a5158f1b10f9886e75952a46b824d532f60b28dff6c8d1880efba1a85e3e"
+    },
+    {
+      "path": "rust/tests/fixtures/algorithm-operation-receipts.rs",
+      "sha256": "4fa60abd50027752649a48f27202867017d3ea09f5904b20478bbe0ccc8ad716"
+    }
+  ],
+  "originalDigestInputs": 3,
+  "inverseExact": true,
+  "hexVectors": 5,
+  "structuralControls": 31,
+  "nativeCompiled": false,
+  "productionSourceEffects": [],
+  "globalTestWorkspaceChanged": true,
+  "historicalWholeWorkspaceReuseRefused": true
+}

@@ -1,0 +1,13 @@
+language en
+lemma unpack
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "remove from its packing"
+    examples ("unpack the presents")
+    id oewn-01488139-v
+    partOfSpeech v
+    synonyms ("take out")
+source "oewn:2024"

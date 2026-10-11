@@ -1,0 +1,5 @@
+{
+  "originalFilename": "placement-mod-preimage.rs",
+  "sha256": "5dbfc3305c2858f0c174d3422f7be33b71cbe2ca35f79472bb4f1375051fc9af",
+  "rawUtf8": "//! Deep formalization: segmentation, need emission, concept grounding,\n//! procedure extraction and the concept graph (issue #1138, plan 04).\n//!\n//! The formalizer takes plan 01's `SourceLookup` rather than a transport, so it\n//! owns no cache policy, no settings reading and no source list of its own. A\n//! document with an unresolved need can never be reported as covered.\n\npub mod concept_links;\npub mod concepts;\npub mod needs;\npub mod page;\npub mod procedures;\npub mod segment;\npub(crate) mod source_qualified_definition;\npub mod statement_rendering;\npub mod text_statements;\n"
+}

@@ -1,0 +1,83 @@
+{
+  "schema": "release-runtime-fixture-scratch-controls/v1",
+  "checks": [
+    {
+      "command": "node",
+      "args": [
+        "--check",
+        "release-runtime-fixture.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "command": "node",
+      "args": [
+        "--test",
+        "runtime-fixture.scratch.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "TAP version 13\n# Subtest: runtime fixture uses read-only same-run IDs, actual outputs, inactive skipping and private caller-only leases\nok 1 - runtime fixture uses read-only same-run IDs, actual outputs, inactive skipping and private caller-only leases\n  ---\n  duration_ms: 8.028584\n  ...\n# Subtest: wrong run/group, missing ancestor or unqueued contender never become actual lease proof\nok 2 - wrong run/group, missing ancestor or unqueued contender never become actual lease proof\n  ---\n  duration_ms: 0.952042\n  ...\n# Subtest: real active/inactive output contract rejects skipped success, wrong source and early marker\nok 3 - real active/inactive output contract rejects skipped success, wrong source and early marker\n  ---\n  duration_ms: 0.650041\n  ...\n# Subtest: credential routing, production group, nested lease and spoofed or ungated artifact graphs are refused\nok 4 - credential routing, production group, nested lease and spoofed or ungated artifact graphs are refused\n  ---\n  duration_ms: 4.361208\n  ...\n1..4\n# tests 4\n# suites 0\n# pass 4\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 58.605459\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "command": "/opt/homebrew/bin/actionlint",
+      "args": [
+        "-shellcheck=",
+        "-pyflakes=",
+        "-ignore",
+        "unexpected key \"queue\" for \"concurrency\" section",
+        "release-runtime-fixture.yml",
+        "release-runtime-fixture-callee.yml"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "",
+      "error": null
+    }
+  ],
+  "files": [
+    {
+      "file": "release-runtime-fixture.yml",
+      "bytes": 6934,
+      "sha256": "e6394ca8319e6cc3357ac109ef6b60320a6630e54a6a83a202f08e36b3bf35c2"
+    },
+    {
+      "file": "release-runtime-fixture-callee.yml",
+      "bytes": 5298,
+      "sha256": "d004a1a5d03ca56c2c9766739317f40712f495121dc3991093dc720e2ddee8b0"
+    },
+    {
+      "file": "release-runtime-fixture.mjs",
+      "bytes": 14605,
+      "sha256": "38dfe388fef3a811dfa921b75a770230dc3a82e7e05220032df02b061b3fec2c"
+    },
+    {
+      "file": "release-runtime-fixture.test.mjs",
+      "bytes": 9422,
+      "sha256": "0a9dc6f8f761b97b384f8372e61e820186d1eb44b8cec0c871d19e3eab769f98"
+    }
+  ],
+  "tests": 4,
+  "queueRefusals": 8,
+  "outputRefusals": 6,
+  "graphRefusals": 11,
+  "githubExecuted": false,
+  "actualArtifactService": false,
+  "actualLease": false,
+  "nativeExecutable": false,
+  "compilerInvoked": false,
+  "productionAuthority": false,
+  "publication": false,
+  "autonomousCredit": 0,
+  "amplificationCredit": 0,
+  "actionlintQueueException": "Only exact unsupported queue:max syntax diagnostic ignored; preserves private queue behavior, installed1.7.12 limitation",
+  "actionlintShellcheck": false,
+  "actionlintPyflakes": false
+}

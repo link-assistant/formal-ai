@@ -1,0 +1,13 @@
+{
+  "id": "T3549",
+  "tools": [
+    "read",
+    "read",
+    "read"
+  ],
+  "stop": "final",
+  "answerBytes": 66867,
+  "result": "unknown",
+  "productionWrites": 0,
+  "implementation": "Open; source reading is not a reusable repair plan or semantic implementation"
+}

@@ -22,8 +22,8 @@ use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::method_registry::MethodRegistry;
 use formal_ai::protocol::ChatMessage;
 use formal_ai::self_ast_census::{
-    CENSUS_DIR, CensusDrift, CensusFidelity, FULL_FIDELITY_PREFIX, WorkspaceCensus,
-    document_path_for, drift_report, workspace,
+    CENSUS_DIR, CensusDrift, CensusFidelity, FULL_FIDELITY_PREFIX, ModuleCensus, WorkspaceCensus,
+    document_path_for, drift_report, module_from_document, workspace,
 };
 
 /// The repository root, so the tests read the *committed* census rather than a
@@ -347,6 +347,29 @@ fn the_planner_resolves_an_edit_target_outside_planner_rs_via_the_census() {
             "edit target for {prompt:?} was not resolved through the census index"
         );
     }
+}
+
+#[test]
+fn a_committed_census_document_reads_back_its_module_and_symbols() {
+    // R1188-U16: the JavaScript root builds its workspace census from the
+    // committed documents (`moduleFromDocument`), so the Rust twin reads a
+    // document back to the module path, the tier and the symbol table the
+    // census rendered, at both tiers (the full tier's `ast` rows are not symbols).
+    let source = "pub fn alpha() {}\n\nstruct Beta {\n    value: u8,\n}\n";
+    for path in ["src/example.rs", "src/agentic_coding/example.rs"] {
+        let census = ModuleCensus::of(path, source);
+        let document = module_from_document(&census.links_notation())
+            .unwrap_or_else(|| panic!("the census document of {path} does not read back"));
+        assert_eq!(document.path, path);
+        assert_eq!(document.fidelity, census.fidelity);
+        assert_eq!(document.symbols, census.symbols);
+        assert_eq!(document.symbols.len(), 2, "{path}: {:?}", document.symbols);
+    }
+    assert_eq!(
+        module_from_document("self_ast_census\n  language rust\n"),
+        None,
+        "a document that names no module reads back as nothing"
+    );
 }
 
 #[test]

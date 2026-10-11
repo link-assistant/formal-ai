@@ -1,0 +1,13 @@
+es	西班牙语语言代码
+full	完整语言协议状态
+partial	部分语言协议状态
+explicit_gap	显式语言缺口策略
+explicit_language_context	显式语言上下文检测
+language_gap	语言覆盖缺口
+response_greeting_es	西班牙语问候回答
+response_identity_es	西班牙语身份回答
+response_language_gap_en	英语语言缺口回答
+response_language_gap_ru	俄语语言缺口回答
+response_language_gap_hi	印地语语言缺口回答
+response_language_gap_zh	中文语言缺口回答
+response_language_gap_es	西班牙语语言缺口回答

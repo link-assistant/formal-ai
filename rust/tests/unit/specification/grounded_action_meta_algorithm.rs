@@ -141,7 +141,7 @@ fn grounded_action_recipe_benchmarks_are_executable_tests() {
             read(benchmark.field("source_file")).contains(&format!("fn {test}")),
             "{test} must remain an executable test"
         );
-        assert!(!benchmark.field("coverage").is_empty());
+        assert_ne!(benchmark.field("coverage"), "");
     }
 }
 

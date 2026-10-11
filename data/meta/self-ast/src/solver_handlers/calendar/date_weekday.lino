@@ -1,0 +1,18 @@
+self_ast_census
+  target src/solver_handlers/calendar/date_weekday.rs
+  language rust
+  fidelity signature
+  byte_len 7122
+  line_count 196
+  content_id source_module_7fe67c52e087f013
+  symbol_count 9
+  symbols
+    struct DigitRun 32 36
+    function width 39 41
+    function try_date_weekday 45 97
+    function mentions_direction 102 114
+    function digit_runs 117 140
+    function stated_date 144 155
+    function iso_date 158 171
+    function named_month_date 175 186
+    function days_in_month 189 196

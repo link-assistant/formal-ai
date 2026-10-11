@@ -55,6 +55,33 @@ pub(super) fn maybe_start_server(
     Ok(Some(ServerGuard { child, output_log }))
 }
 
+/// The context window and output cap the server at `base_url` serves on
+/// `/v1/models`, or `None` when nothing answers there or the answer has no
+/// such model fields (PR #1188: the Agent CLI compacted every session at its
+/// built-in 60000-token guess for `formal-ai` because no client config carried
+/// the served window).
+pub(super) fn served_model_limits(base_url: &str) -> Option<(u64, u64)> {
+    let (host, port) = parse_host_port(base_url, None).ok()?;
+    let mut stream = TcpStream::connect(format!("{host}:{port}")).ok()?;
+    let timeout = Some(Duration::from_secs(2));
+    stream.set_read_timeout(timeout).ok()?;
+    stream.set_write_timeout(timeout).ok()?;
+    stream
+        .write_all(
+            b"GET /v1/models HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\nAccept: application/json\r\n\r\n",
+        )
+        .ok()?;
+    let mut response = String::new();
+    stream.read_to_string(&mut response).ok()?;
+    let (_, body) = response.split_once("\r\n\r\n")?;
+    let listing: Value = serde_json::from_str(body).ok()?;
+    let model = listing.get("models")?.get(0)?;
+    Some((
+        model.get("context_window_tokens")?.as_u64()?,
+        model.get("max_output_tokens")?.as_u64()?,
+    ))
+}
+
 fn verify_server_version(mut stream: TcpStream, address: &str) -> Result<(), Box<dyn Error>> {
     let timeout = Some(Duration::from_secs(2));
     stream.set_read_timeout(timeout)?;

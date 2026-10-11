@@ -1,0 +1,133 @@
+{
+  "entities": {
+    "Q125": {
+      "type": "item",
+      "id": "Q125",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "November"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ноябрь"
+        },
+        "es": {
+          "language": "es",
+          "value": "noviembre"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नवम्बर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "11月"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "eleventh month in the Julian and Gregorian calendars"
+        },
+        "es": {
+          "language": "es",
+          "value": "undécimo y penúltimo mes del año"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "одиннадцатый месяц года в юлианском и григорианском календарях"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "公曆及儒略曆中第十一個月份"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जूलियन और ग्रेगोरियन कैलेंडर में ग्यारहवां महीना"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Nov"
+          },
+          {
+            "language": "en",
+            "value": "11th month"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ноября"
+          },
+          {
+            "language": "ru",
+            "value": "ноя."
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Nov"
+          },
+          {
+            "language": "es",
+            "value": "Nov."
+          },
+          {
+            "language": "es",
+            "value": "nov"
+          },
+          {
+            "language": "es",
+            "value": "nov."
+          },
+          {
+            "language": "es",
+            "value": "undécimo mes"
+          },
+          {
+            "language": "es",
+            "value": "mes undécimo"
+          },
+          {
+            "language": "es",
+            "value": "11.° mes"
+          },
+          {
+            "language": "es",
+            "value": "mes 11.°"
+          },
+          {
+            "language": "es",
+            "value": "mes 11"
+          },
+          {
+            "language": "es",
+            "value": "11"
+          },
+          {
+            "language": "es",
+            "value": "penúltimo mes"
+          },
+          {
+            "language": "es",
+            "value": "mes decimoprimero"
+          },
+          {
+            "language": "es",
+            "value": "decimoprimer mes"
+          },
+          {
+            "language": "es",
+            "value": "N"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

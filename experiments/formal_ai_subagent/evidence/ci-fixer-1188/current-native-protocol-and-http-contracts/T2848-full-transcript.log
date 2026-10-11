@@ -1,0 +1,228 @@
+>> read {"filePath":"rust/tests/unit/docs_requirements/natural_formal_translation.rs","file_path":"rust/tests/unit/docs_requirements/natural_formal_translation.rs","path":"rust/tests/unit/docs_requirements/natural_formal_translation.rs"}
+   <file>
+   00001| //! Issue #917: The natural-to-formal translation case study and release metadata are traceable.
+   00002| 
+   00003| use std::fs;
+   00004| use std::path::{Path, PathBuf};
+   00005| 
+   00006| const INVARIANT: &str = "Formal language projections must map one language-neutral semantic statement into seed-defined concrete syntaxes and preserve the same meaning on the return path.";
+   00007| 
+   00008| #[test]
+   00009| fn issue_917_case_study_and_release_metadata_are_traceable() {
+   00010|     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+   00011|         .parent()
+   00012|         .expect("the repository root sits one level above the crate");
+   00013| 
+   00014|     assert_contains_all(
+   00015|         "REQUIREMENTS.md",
+   00016|         &crate::assembled_docs::requirements_at(&root),
+   00017|         &[
+   00018|             "Issue #917 General Natural-Formal Translation",
+   00019|             "| R917-1 ",
+   00020|             "| R917-2 ",
+   00021|             "| R917-3 ",
+   00022|             "| R917-4 ",
+   00023|             "| R917-5 ",
+   00024|             "| R917-6 ",
+   00025|             "| R917-7 ",
+   00026|             "data/seed/formal-language-projections.lino",
+   00027|             "Spanish",
+   00028|             "every_seed_language_round_trips_through_a_seeded_formal_target",
+   00029|         ],
+   00030|     );
+   00031|     assert_contains_all(
+   00032|         "ARCHITECTURE.md",
+   00033|         &crate::architecture_docs::read_all(),
+   00034|         &[
+   00035|             "Issue #917 makes formal languages first-class projections",
+   00036|             "src/translation/formal_statement.rs",
+   00037|             "data/seed/formal-language-projections.lino",
+   00038|             "js/wasm-worker/src/formal_statement_worker.rs",
+   00039|             "natural -> FOL -> natural",
+   00040|         ],
+   00041|     );
+   00042|     assert_contains_all(
+   00043|         "ROADMAP.md",
+   00044|         &read(root.join("ROADMAP.md")),
+   00045|         &[
+   00046|             "Issue #917 General Natural-Formal Translation (PR #984)",
+   00047|             "project to seed-defined",
+   00048|             "docs/case-studies/issue-917/",
+   00049|             "delivered by #917 for the seeded FOL statement slice",
+   00050|         ],
+   00051|     );
+   00052| 
+   00053|     assert_contains_all(
+   00054|         "issue 917 case study",
+   00055|         &read(root.join("docs/case-studies/issue-917/README.md")),
+   00056|         &[
+   00057|             "## 1. Collected Data",
+   00058|             "## 2. Requirements",
+   00059|             "## 3. Reproduction And Root Cause",
+   00060|             "## 4. Implemented Design",
+   00061|             "## 5. Verification",
+   00062|             "SemanticStatement",
+   00063|             "tests/e2e/tests/issue-917.spec.js",
+   00064|         ],
+   00065|     );
+   00066|     assert_contains_all(
+   00067|         "issue 917 requirements",
+   00068|         &read(root.join("docs/case-studies/issue-917/requirements.md")),
+   00069|         &[
+   00070|             "R917-1",
+   00071|             "R917-7",
+   00072|             "one of five",
+   00073|             "whole_task_translation_uses_the_formal_projection_in_both_directions",
+   00074|         ],
+   00075|     );
+   00076|     assert_contains_all(
+   00077|         "issue 917 solution plan",
+   00078|         &read(root.join("docs/case-studies/issue-917/solution-plan.md")),
+   00079|         &[
+   00080|             "Statement Meaning And Round Trips",
+   00081|             "Seed-Defined Concrete Syntax",
+   00082|             "Whole-Engine And Browser Parity",
+   00083|             "Traceability And Self-Hosting",
+   00084|         ],
+   00085|     );
+   00086|     assert_contains_all(
+   00087|         "issue 917 online research",
+   00088|         &read(root.join("docs/case-studies/issue-917/raw-data/online-research.md")),
+   00089|         &[
+   00090|             "https://www.grammaticalframework.org/",
+   00091|             "https://github.com/Attempto/APE",
+   00092|             "https://universaldependencies.org/",
+   00093|             "Repository Prior Art",
+   00094|         ],
+   00095|     );
+   00096| 
+   00097|     for relative in [
+   00098|         "docs/case-studies/issue-917/raw-data/github/issue.json",
+   00099|         "docs/case-studies/issue-917/raw-data/github/issue-comments.json",
+   00100|         "docs/case-studies/issue-917/raw-data/github/pull-request.json",
+   00101|         "docs/case-studies/issue-917/raw-data/github/pull-conversation-comments.json",
+   00102|         "docs/case-studies/issue-917/raw-data/github/pull-review-comments.json",
+   00103|         "docs/case-studies/issue-917/raw-data/github/pull-reviews.json",
+   00104|         "docs/case-studies/issue-917/raw-data/github/related-issue-526.json",
+   00105|         "docs/case-studies/issue-917/raw-data/github/related-issue-890.json",
+   00106|         "docs/case-studies/issue-917/raw-data/github/related-issue-914.json",
+   00107|     ] {
+   00108|         assert!(
+   00109|             root.join(relative).is_file(),
+   00110|             "{relative} should exist for issue #917 traceability"
+   00111|         );
+   00112|     }
+   00113| 
+   00114|     let fragment = root.join("changelog.d/20260808_120000_issue_917_natural_formal_translation.md");
+   00115|     let release_notes = if fragment.is_file() {
+   00116|         read(fragment)
+   00117|     } else {
+   00118|         crate::assembled_docs::changelog_at(&root)
+   00119|     };
+   00120|     assert_contains_all(
+   00121|         "issue 917 release metadata",
+   00122|         &release_notes,
+   00123|         &["first-order logic", "Wikidata-grounded", "#917"],
+   00124|     );
+   00125| }
+   00126| 
+   00127| #[test]
+   00128| fn issue_917_agent_cli_authorship_leaf_is_byte_exact_and_reproducible() {
+   00129|     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+   00130|         .parent()
+   00131|         .expect("the repository root sits one level above the crate");
+   00132|     let evidence = root.join("docs/case-studies/issue-917/agent-cli-evidence");
+   00133|     assert_eq!(
+   00134|         read(evidence.join("formal-language-projection-invariant.md")),
+   00135|         INVARIANT
+   00136|     );
+   00137|     let session_id = read(evidence.join("session-id.txt"));
+   00138|     let session_id = session_id.trim();
+   00139|     assert!(
+   00140|         session_id.starts_with("ses_") && session_id.len() > 4,
+   00141|         "Agent CLI evidence must preserve a real session id"
+   00142|     );
+   00143|     assert_eq!(
+   00144|         read(evidence.join("task.txt")).trim(),
+   00145|         format!("Create file formal-language-projection-invariant.md containing {INVARIANT}")
+   00146|     );
+   00147| 
+   00148|     let stream = read(evidence.join("agent-stream.raw.log"));
+   00149|     assert!(
+   00150|         stream.contains(session_id),
+   00151|         "Agent CLI raw stream must preserve its recorded session"
+   00152|     );
+   00153|     assert_contains_all("Agent CLI raw stream", &stream, &["formal-ai"]);
+   00154|     for file in [
+   00155|         "agent-stderr.log",
+   00156|         "agent-stream.jsonl",
+   00157|         "formal-ai-server.log",
+   00158|         "worktree-status.txt",
+   00159|     ] {
+   00160|         assert!(
+   00161|             evidence.join(file).is_file(),
+   00162|             "missing Agent evidence: {file}"
+   00163|         );
+   00164|     }
+   00165| 
+   00166|     let script = read(root.join("experiments/issue_917_agent_cli.sh"));
+   00167|     assert_contains_all(
+   00168|         "issue 917 Agent CLI replay",
+   00169|         &script,
+   00170|         &[
+   00171|             "serve --host 127.0.0.1",
+   00172|             "--output-format stream-json",
+   00173|             "FORMAL_AI_MEMORY_PATH=\"$work/.git/formal-ai-memory/memory.lino\"",
+   00174|             "formal-language-projection-invariant.md",
+   00175|             INVARIANT,
+   00176|             "cmp -s",
+   00177|         ],
+   00178|     );
+   00179|     assert!(
+   00180|         script
+   00181|             .lines()
+   00182|             .all(|line| !line.trim_start().starts_with("rg ")),
+   00183|         "issue 917 Agent CLI replay must only require tools installed by its CI job"
+   00184|     );
+   00185|     // Issue #1081 moved the agent-CLI E2E steps into their own reusable
+   00186|     // workflow. The question is whether CI runs this harness, not which file
+   00187|     // spells the step, so read the spliced pipeline surface.
+   00188|     let workflow = crate::ci_gates::pipeline_workflows();
+   00189|     assert_contains_all(
+   00190|         "issue 917 Agent CLI CI gate",
+   00191|         &workflow,
+   00192|         &[
+   00193|             "formal projection invariant (issue #917)",
+   00194|             "experiments/issue_917_agent_cli.sh",
+   00195|             "/tmp/formal-ai-issue-917-evidence",
+   00196|             "/tmp/formal-ai-issue-*-evidence",
+   00197|         ],
+   00198|     );
+   00199| }
+   00200| 
+   00201| fn read(path: impl Into<PathBuf>) -> String {
+   00202|     let path = path.into();
+   00203|     fs::read_to_string(&path)
+   00204|         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.display()))
+   00205| }
+   00206| 
+   00207| fn assert_contains_all(label: &str, content: &str, expected: &[&str]) {
+   00208|     for needle in expected {
+   00209|         assert!(
+   00210|             content.contains(needle),
+   00211|             "{label} should contain expected text: {needle}"
+   00212|         );
+   00213|     }
+   00214| }
+   00215| // Kept as a nested documentation-requirements suite by issue #1138 plan 11.
+   00216| 
+   
+   (End of file - total 216 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/docs_requirements/natural_formal_translation.rs","file_path":"rust/tests/unit/docs_requirements/natural_formal_translation.rs","new":"tests/e2e/tests/formal-language-projections.spec.js","newString":"tests/e2e/tests/formal-language-projections.spec.js","new_str":"tests/e2e/tests/formal-language-projections.spec.js","new_string":"tests/e2e/tests/formal-language-projections.spec.js","old":"tests/e2e/tests/issue-917.spec.js","oldString":"tests/e2e/tests/issue-917.spec.js","old_str":"tests/e2e/tests/issue-917.spec.js","old_string":"tests/e2e/tests/issue-917.spec.js","path":"rust/tests/unit/docs_requirements/natural_formal_translation.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/docs_requirements/natural_formal_translation.rs"}
+   Output: 792b5d6f0efed1e85f8b750e004922a9dc5693cb6a3c9c3422fda7ff1b3afac8  rust/tests/unit/docs_requirements/natural_formal_translation.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `tests/e2e/tests/issue-917.spec.js` with `tests/e2e/tests/formal-language-projections.spec.js` in `rust/tests/unit/docs_requirements/natural_formal_translation.rs` and observed the result.

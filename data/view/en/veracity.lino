@@ -1,0 +1,9 @@
+view
+  id M-01e08d909563
+  lemma veracity
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "unwillingness to tell lies"
+    provenance (wordnet)

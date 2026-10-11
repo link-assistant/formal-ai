@@ -1,14 +1,17 @@
 Q80228
   aliases
     en (flask)
+    es (botellas)
     zh ("瓶子")
   descriptions
     en "closable cylindrical container for transport and storage of liquids and gases"
+    es "recipiente que sirve para contener líquidos, generalmente de vidrio, cilíndrico y de cuello angosto"
     hi "तरल पदार्थ के कंटेनर"
     ru "контейнер для жидкостей"
   id Q80228
   labels
     en bottle
+    es botella
     hi "बोतल"
     ru "бутылка"
     zh "瓶"

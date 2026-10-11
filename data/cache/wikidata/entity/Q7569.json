@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "儿童"
+        },
+        "es": {
+          "language": "es",
+          "value": "niño"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "从出生到青春期的人"
+        },
+        "es": {
+          "language": "es",
+          "value": "ser humano prepubescente"
         }
       },
       "aliases": {
@@ -70,6 +78,12 @@
           {
             "language": "zh",
             "value": "童年"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "niña"
           }
         ]
       }

@@ -24,9 +24,8 @@
 
 use std::fmt::Write as _;
 
-use crate::change_request::AcceptedChange;
+use crate::change_request::{AcceptedChange, owned_content_id};
 use crate::engine::stable_id;
-use crate::self_source_links::owned_manifest;
 
 /// A UI artifact the rebuild reattaches, grounded by content-addressing its real bytes.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -185,10 +184,8 @@ fn grounded_artifacts() -> Vec<ReattachArtifact> {
 
     // The server/CLI entry that serves the reattached UI, grounded against the owned
     // manifest exactly like a change request's target — a fabricated entry cannot appear.
-    let manifest = owned_manifest();
-    let server_entry = manifest
-        .iter()
-        .find(|digest| digest.path == "src/main.rs")
+    let server_entry = "src/main.rs";
+    let server_content_id = owned_content_id(server_entry)
         .expect("the server entry src/main.rs must be in the owned manifest");
 
     vec![
@@ -198,9 +195,9 @@ fn grounded_artifacts() -> Vec<ReattachArtifact> {
             content_id: stable_id("reattach_artifact", cargo_toml),
         },
         ReattachArtifact {
-            path: server_entry.path.clone(),
+            path: server_entry.to_owned(),
             role: "server/CLI entry that serves the reattached UI".to_owned(),
-            content_id: server_entry.content_id.clone(),
+            content_id: server_content_id,
         },
         ReattachArtifact {
             path: "js/worker/formal_ai_worker.js".to_owned(),

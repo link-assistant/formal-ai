@@ -1,0 +1,125 @@
+meanings
+  source-context-declaration-contract
+    role source-context-declaration-contract
+    example "For context, src/previous.rs contains the old implementation."
+    defined-by relation
+    precondition "The actually loaded source-context grammar declares this role with nonempty literal forms; every substituted form is regex escaped. A supported ASCII-whitespace clause has exactly one owned unquoted file path and both complete prefix and suffix match one declared pattern. Missing forms, malformed patterns, unsupported languages, extra operations and unconsumed clauses provide no context proof."
+    source "data/seed/source-context-grammar.lino::language en::patterns 1 and 2"
+    source-sha256 "f1ecd911cc6f5f38c76d9cca9bc663e665d632c98420e75f47d3616c58afd3ec"
+    source "js/agentic/planner/owned_goals.mjs::source context grammar matcher"
+    source-sha256 "1a6dbb652676de39674bd99fecb526508c0ce65a2fe5e1eb5cb4d23653301ec2"
+    source "rust/src/agentic_coding/general_planner/owned_goals.rs::source context grammar matcher"
+    source-sha256 "1bab689b76b690c11e93812b65cefc7ba35c3b1e87bc266a7b60bf84902f2c90"
+    effect "Only a fully consumed descriptive atom may be classified as context by sourceContextDeclaration/source_context_declaration. Other declared Goals and immutable Needs remain independently required; no physical read, write, deployment, imported-module initialization, runtime effect or universal safety certificate follows."
+    unit "not applicable"
+  source-context-prologue
+    role source-context-prologue
+    precondition "This declared literal occupies its documented slot in a completely consumed source-context-declaration-contract pattern with exactly one owned unquoted path. It grants no Read, Write, file-existence or source-content authority."
+    defined-by source-context-declaration-contract
+    effect "An optional prefix introduces a descriptive source-context atom before its unquoted path in pattern 1. Its literal forms do not request an operation."
+    unit "not applicable"
+    example "for context,"
+    example "background:"
+    example "For context, src/previous.rs contains the old implementation."
+    example "The current code is in src/current.rs."
+  source-context-containment
+    role source-context-containment
+    precondition "This declared literal occupies its documented slot in a completely consumed source-context-declaration-contract pattern with exactly one owned unquoted path. It grants no Read, Write, file-existence or source-content authority."
+    defined-by source-context-declaration-contract
+    effect "A relation after the owned unquoted path connects that path to its source subject in pattern 1; it describes source context rather than requesting a write."
+    unit "not applicable"
+    example "contains"
+    example "holds"
+    example "For context, src/previous.rs contains the old implementation."
+    example "The current code is in src/current.rs."
+  source-context-article
+    role source-context-article
+    precondition "This declared literal occupies its documented slot in a completely consumed source-context-declaration-contract pattern with exactly one owned unquoted path. It grants no Read, Write, file-existence or source-content authority."
+    defined-by source-context-declaration-contract
+    effect "A determiner precedes the source subject: optional in pattern 1 and required before the optional qualifier in pattern 2. It does not identify another destination."
+    unit "not applicable"
+    example "the"
+    example "For context, src/previous.rs contains the old implementation."
+    example "The current code is in src/current.rs."
+  source-context-qualifier
+    role source-context-qualifier
+    precondition "This declared literal occupies its documented slot in a completely consumed source-context-declaration-contract pattern with exactly one owned unquoted path. It grants no Read, Write, file-existence or source-content authority."
+    defined-by source-context-declaration-contract
+    effect "An optional modifier describes the source subject in either pattern. A temporal or existence modifier does not prove file freshness, contents or existence."
+    unit "not applicable"
+    example "old"
+    example "previous"
+    example "prior"
+    example "current"
+    example "existing"
+    example "For context, src/previous.rs contains the old implementation."
+    example "The current code is in src/current.rs."
+  source-context-subject
+    role source-context-subject
+    precondition "This declared literal occupies its documented slot in a completely consumed source-context-declaration-contract pattern with exactly one owned unquoted path. It grants no Read, Write, file-existence or source-content authority."
+    defined-by source-context-declaration-contract
+    effect "The source object noun is required by both patterns and describes implementation, source or code associated with the owned unquoted path. It grants no source execution authority."
+    unit "not applicable"
+    example "implementation"
+    example "source"
+    example "code"
+    example "For context, src/previous.rs contains the old implementation."
+    example "The current code is in src/current.rs."
+  source-context-location-verb
+    role source-context-location-verb
+    precondition "This declared literal occupies its documented slot in a completely consumed source-context-declaration-contract pattern with exactly one owned unquoted path. It grants no Read, Write, file-existence or source-content authority."
+    defined-by source-context-declaration-contract
+    effect "The relation verb is required after the source subject and before the location preposition in pattern 2. It describes location and is not an imperative."
+    unit "not applicable"
+    example "is"
+    example "For context, src/previous.rs contains the old implementation."
+    example "The current code is in src/current.rs."
+  source-context-location-preposition
+    role source-context-location-preposition
+    precondition "This declared literal occupies its documented slot in a completely consumed source-context-declaration-contract pattern with exactly one owned unquoted path. It grants no Read, Write, file-existence or source-content authority."
+    defined-by source-context-declaration-contract
+    effect "The location relation joins the descriptive source subject to the owned unquoted path in pattern 2; it supplies no read or write authorization."
+    unit "not applicable"
+    example "in"
+    example "For context, src/previous.rs contains the old implementation."
+    example "The current code is in src/current.rs."
+  issue-reference
+    role issue-reference
+    defined-by relation
+    precondition "The loaded grammar action-prologue declares a source-context-issue-prologue form. Its complete ASCII-whitespace prefix is followed by either a hyphen and decimal issue digits or whitespace and a hash plus decimal issue digits, then a comma. The remaining request independently satisfies an existing owned literal action contract; missing forms, arbitrary attribution, extra operations and unsupported separators are refused."
+    effect "Only the completely consumed descriptive issue identifier prologue may precede the independently owned action. It does not classify an entire request as passive context, prove an issue exists, authorize a read or write, erase a prerequisite, or confer source, runtime, compiler or publication authority."
+    unit "not applicable"
+    example "For existing issue-730, create file issue-730-finding.md containing provenance paths are portable"
+    source "data/seed/source-context-grammar.lino"
+    source-sha256 "da78a8366d856315375030d764eb14a413600deab12db7d342bbfe9c083a7036"
+    source "js/agentic/planner/owned_goals.mjs"
+    source-sha256 "1a6dbb652676de39674bd99fecb526508c0ce65a2fe5e1eb5cb4d23653301ec2"
+    source "rust/src/agentic_coding/general_planner/owned_goals.rs"
+    source-sha256 "1bab689b76b690c11e93812b65cefc7ba35c3b1e87bc266a7b60bf84902f2c90"
+  source-context-issue-prologue
+    role source-context-issue-prologue
+    defined-by issue-reference
+    precondition "The literal form is loaded from the source-context grammar role and regex escaped before interpolation into the issue-reference action-prologue. A complete numeric issue identifier and comma are mandatory; the atom alone and any unconsumed preceding operation establish no action ownership."
+    effect "The literal for existing issue introduces the bounded descriptive issue identifier within the verified action prefix. The existing action, target, literal payload, immutable read needs and independent readback obligations retain their original ownership and refusal rules."
+    unit "not applicable"
+    example "for existing issue"
+    example "FOR EXISTING ISSUE #42, create file finding.md containing rename X to Y suffix"
+    source "data/seed/source-context-grammar.lino"
+    source-sha256 "da78a8366d856315375030d764eb14a413600deab12db7d342bbfe9c083a7036"
+    source "js/agentic/planner/owned_goals.mjs"
+    source-sha256 "1a6dbb652676de39674bd99fecb526508c0ce65a2fe5e1eb5cb4d23653301ec2"
+    source "rust/src/agentic_coding/general_planner/owned_goals.rs"
+    source-sha256 "1bab689b76b690c11e93812b65cefc7ba35c3b1e87bc266a7b60bf84902f2c90"
+
+  source-context-opaque-label-contract
+    role source-context-opaque-label-contract
+    precondition "The loaded source-context grammar owns the introducer and completely consumes one Unicode letter, mark, number or other-symbol label plus terminal sentence punctuation. The label contains no path, quoted operand, whitespace-separated prose, operation cue, attribution, conjunction or first-line constraint; missing forms or unsupported whitespace refuse."
+    effect "Only the opaque informational label is context. It supplies no operation, source, safety or publication authority. Every following action and immutable Need retains its independent obligation and original coordinate spans."
+    source "data/seed/source-context-grammar.lino::annotation opaque-label"
+    source "js/agentic/planner/owned_goals.mjs::sourceContextLabel"
+    source "rust/src/agentic_coding/general_planner/owned_goals.rs::source_context_label"
+  source-context-label-introducer
+    role source-context-label-introducer
+    defined-by source-context-opaque-label-contract
+    word "Note"
+    precondition "Only the complete grammar-owned opaque-label annotation may classify context; this word alone or free-form prose never erases a Goal or Need."

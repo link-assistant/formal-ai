@@ -1,0 +1,63 @@
+{
+  "archive": "T3990-T3998.json.gz",
+  "compressedSHA": "b3f10ac66aee2a8549fb7b04f3033289d4624583f39a2de93789bcaad1d73384",
+  "decodedSHA": "10e9ce5325c4aa1222d83bb54ece58d7b1b30d8e75869e35e3b933426dfbacdf",
+  "entries": 41,
+  "head": "b4e44e771b6869ec288ceb4292372773625d4a6c",
+  "source": [
+    {
+      "path": "scripts/lib/native-response-capture.mjs",
+      "bytes": 4479,
+      "sha256": "8640eaeb8e943601f00e335bc989c42740dca6dc50c2aa430b03e8b4c79e6fd7"
+    },
+    {
+      "path": "scripts/capture-native-responses.mjs",
+      "bytes": 6298,
+      "sha256": "cc97e1d48534d40da59d0beac9c4a7ee9e4f5cf5552f4d54fbf2b78ce298e1f3"
+    },
+    {
+      "path": "rust/tests/web/native-response-stream-retention.test.mjs",
+      "bytes": 4525,
+      "sha256": "9a7d1645085adb6d874a618b31b6badab5eca2415a11efd53339d77b3cbc73b0"
+    },
+    {
+      "path": "changelog.d/20261010_020500_native_capture_raw_streams.md",
+      "bytes": 694,
+      "sha256": "2c0c0315db7d521edaa35ffce267a02651263da0fab9b2cc3a8eb2838e5a7719"
+    }
+  ],
+  "counts": {
+    "tasks": 9,
+    "physicalCalls": 17,
+    "writeCalls": 5,
+    "bashCalls": 12,
+    "readCalls": 0
+  },
+  "claims": {
+    "sourceAppliedViaFormalAi": true,
+    "autonomousSynthesis": false,
+    "nativeCompilation": false,
+    "nativeOriginalProgramsExecuted": false,
+    "nativeWholeAnswersCaptured": false,
+    "specificationCountIncrease": false,
+    "publishedRelease": false,
+    "freshNativeTimingMeasured": false,
+    "powerLossDurability": false
+  },
+  "verification": {
+    "task": "T3996",
+    "passing": 36,
+    "failures": 0,
+    "skipped": 0,
+    "todo": 0,
+    "unchangedControls": 34,
+    "newControls": 2,
+    "durationMs": 2420.563084,
+    "scopedDiff": true,
+    "syntax": true,
+    "sizeViolations": 0,
+    "actualControllerInterruption": true,
+    "binaryByteEquality": true,
+    "completionInferredFromPartialBytes": false
+  }
+}

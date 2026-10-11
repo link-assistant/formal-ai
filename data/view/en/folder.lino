@@ -1,0 +1,13 @@
+view
+  id M-4b77cffd74f6
+  lemma folder
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a small book usually having a paper cover"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "covering that is folded over to protect the contents"
+    provenance (wordnet)

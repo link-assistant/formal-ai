@@ -1,0 +1,418 @@
+TAP version 13
+# Subtest: artifact delivery header: original-effect
+ok 1 - artifact delivery header: original-effect
+  ---
+  duration_ms: 86.41425
+  ...
+# Subtest: artifact delivery header: report-result-source-value
+ok 2 - artifact delivery header: report-result-source-value
+  ---
+  duration_ms: 0.728208
+  ...
+# Subtest: artifact delivery header: report-result-symbol
+ok 3 - artifact delivery header: report-result-symbol
+  ---
+  duration_ms: 0.402208
+  ...
+# Subtest: artifact delivery header: genuine-source-before
+ok 4 - artifact delivery header: genuine-source-before
+  ---
+  duration_ms: 0.685959
+  ...
+# Subtest: artifact delivery header: genuine-source-after
+ok 5 - artifact delivery header: genuine-source-after
+  ---
+  duration_ms: 4.375917
+  ...
+# Subtest: artifact delivery header: explicit-report-source-body
+ok 6 - artifact delivery header: explicit-report-source-body
+  ---
+  duration_ms: 1.0535
+  ...
+# Subtest: artifact delivery header: source-like-filename
+ok 7 - artifact delivery header: source-like-filename
+  ---
+  duration_ms: 1.382417
+  ...
+# Subtest: artifact delivery header: spanish-postposed-source
+ok 8 - artifact delivery header: spanish-postposed-source
+  ---
+  duration_ms: 1.404542
+  ...
+# Subtest: artifact delivery header: russian-postposed-source
+ok 9 - artifact delivery header: russian-postposed-source
+  ---
+  duration_ms: 1.997542
+  ...
+# Subtest: artifact delivery header: chinese-postposed-source
+ok 10 - artifact delivery header: chinese-postposed-source
+  ---
+  duration_ms: 0.772625
+  ...
+# Subtest: artifact delivery header: hindi-source
+ok 11 - artifact delivery header: hindi-source
+  ---
+  duration_ms: 0.474625
+  ...
+# Subtest: artifact delivery header: hindi-report
+ok 12 - artifact delivery header: hindi-report
+  ---
+  duration_ms: 1.368542
+  ...
+# Subtest: artifact delivery header: spanish-payload
+ok 13 - artifact delivery header: spanish-payload
+  ---
+  duration_ms: 0.720583
+  ...
+# Subtest: artifact delivery header: russian-payload
+ok 14 - artifact delivery header: russian-payload
+  ---
+  duration_ms: 0.831916
+  ...
+# Subtest: artifact delivery header: chinese-payload
+ok 15 - artifact delivery header: chinese-payload
+  ---
+  duration_ms: 1.072083
+  ...
+# Subtest: artifact delivery header: unicode-expanded-report
+ok 16 - artifact delivery header: unicode-expanded-report
+  ---
+  duration_ms: 0.600208
+  ...
+# Subtest: artifact delivery header: unicode-shrunk-report
+ok 17 - artifact delivery header: unicode-shrunk-report
+  ---
+  duration_ms: 1.265917
+  ...
+# Subtest: artifact delivery header: unicode-source
+ok 18 - artifact delivery header: unicode-source
+  ---
+  duration_ms: 0.765667
+  ...
+# Subtest: artifact delivery header: unicode-filename
+ok 19 - artifact delivery header: unicode-filename
+  ---
+  duration_ms: 0.717333
+  ...
+# Subtest: artifact delivery header: quoted-type
+ok 20 - artifact delivery header: quoted-type
+  ---
+  duration_ms: 0.469584
+  ...
+# Subtest: artifact delivery header: quoted-call
+ok 21 - artifact delivery header: quoted-call
+  ---
+  duration_ms: 0.893958
+  ...
+# Subtest: artifact delivery header: explicit-callable
+ok 22 - artifact delivery header: explicit-callable
+  ---
+  duration_ms: 1.418666
+  ...
+# Subtest: artifact delivery header: non-delivery
+ok 23 - artifact delivery header: non-delivery
+  ---
+  duration_ms: 0.70375
+  ...
+# Subtest: unchanged L21 persists both mandatory records in 8 turns
+ok 24 - unchanged L21 persists both mandatory records in 8 turns
+  ---
+  duration_ms: 1493.013667
+  ...
+# Subtest: unchanged L21 persists both mandatory records in 16 turns
+ok 25 - unchanged L21 persists both mandatory records in 16 turns
+  ---
+  duration_ms: 335.311416
+  ...
+# Subtest: a successful shell envelope advances the exact file obligation and preserves raw records
+ok 26 - a successful shell envelope advances the exact file obligation and preserves raw records
+  ---
+  duration_ms: 1342.828583
+  ...
+# Subtest: bare successful readback remains supported
+ok 27 - bare successful readback remains supported
+  ---
+  duration_ms: 17.033084
+  ...
+# Subtest: write acknowledgements and auxiliary commands do not certify file contents
+ok 28 - write acknowledgements and auxiliary commands do not certify file contents
+  ---
+  duration_ms: 74.981875
+  ...
+# Subtest: mismatch, nonzero status and a later failed receipt cannot reuse an older success
+ok 29 - mismatch, nonzero status and a later failed receipt cannot reuse an older success
+  ---
+  duration_ms: 39.330666
+  ...
+# Subtest: a different path sharing a filename suffix cannot fulfill the declared file
+ok 30 - a different path sharing a filename suffix cannot fulfill the declared file
+  ---
+  duration_ms: 24.242334
+  ...
+# Subtest: the unchanged issue1099 request persists both artifacts through real shell receipts
+ok 31 - the unchanged issue1099 request persists both artifacts through real shell receipts
+  ---
+  duration_ms: 1005.248917
+  ...
+# Subtest: exact compact JSON and UTF8 payload bytes, including terminal newline, discharge only their file
+ok 32 - exact compact JSON and UTF8 payload bytes, including terminal newline, discharge only their file
+  ---
+  duration_ms: 14.19325
+  ...
+# Subtest: R848-2/R848-7: source creation renders executable bytes and observes them
+    # Subtest: function, constant and test requests write exact source
+    ok 1 - function, constant and test requests write exact source
+      ---
+      duration_ms: 1320.916625
+      ...
+    # Subtest: the same request in russian, chinese and hindi generates the same shape of source
+    ok 2 - the same request in russian, chinese and hindi generates the same shape of source
+      ---
+      duration_ms: 100.611708
+      ...
+    1..2
+ok 33 - R848-2/R848-7: source creation renders executable bytes and observes them
+  ---
+  duration_ms: 1742.271916
+  type: 'suite'
+  ...
+# Subtest: R848-5: repository search uses the named code subject
+    # Subtest: seven subject shapes each become one focused grep
+    ok 1 - seven subject shapes each become one focused grep
+      ---
+      duration_ms: 1314.781583
+      ...
+    1..1
+ok 34 - R848-5: repository search uses the named code subject
+  ---
+  duration_ms: 1314.866083
+  type: 'suite'
+  ...
+# Subtest: R848-6: a structured collection edit transforms the workspace bytes
+    # Subtest: read, transform, write and observe the excluded_folders array
+    ok 1 - read, transform, write and observe the excluded_folders array
+      ---
+      duration_ms: 23.325667
+      ...
+    1..1
+ok 35 - R848-6: a structured collection edit transforms the workspace bytes
+  ---
+  duration_ms: 23.4795
+  type: 'suite'
+  ...
+# Subtest: R848-10: symbol refactors and composite module requests terminate verified
+    # Subtest: an identifier rename is a grounded rewrite, not a file move
+    ok 1 - an identifier rename is a grounded rewrite, not a file move
+      ---
+      duration_ms: 30.144
+      ...
+    # Subtest: an Agent CLI absolute read path gets one bounded whole-word rewrite and a digest check
+    ok 2 - an Agent CLI absolute read path gets one bounded whole-word rewrite and a digest check
+      ---
+      duration_ms: 26.7015
+      ...
+    # Subtest: a composite request writes the module, then registers it, observing both
+    ok 3 - a composite request writes the module, then registers it, observing both
+      ---
+      duration_ms: 25.132041
+      ...
+    # Subtest: an Agent CLI composite registers the module with a compact edit and a digest check
+    ok 4 - an Agent CLI composite registers the module with a compact edit and a digest check
+      ---
+      duration_ms: 26.048666
+      ...
+    1..4
+ok 36 - R848-10: symbol refactors and composite module requests terminate verified
+  ---
+  duration_ms: 108.343083
+  type: 'suite'
+  ...
+# Subtest: unchanged T2379 writes and independently verifies both artifacts
+ok 37 - unchanged T2379 writes and independently verifies both artifacts
+  ---
+  duration_ms: 1534.931583
+  ...
+# Subtest: quoted operation and teaching keywords remain literal in every obligation
+ok 38 - quoted operation and teaching keywords remain literal in every obligation
+  ---
+  duration_ms: 262.49375
+  ...
+# Subtest: a first-file receipt cannot certify a second file or its failed readback
+ok 39 - a first-file receipt cannot certify a second file or its failed readback
+  ---
+  duration_ms: 39.536791
+  ...
+# Subtest: write-only delivery retains first target and reports verification unavailable
+ok 40 - write-only delivery retains first target and reports verification unavailable
+  ---
+  duration_ms: 92.55775
+  ...
+# Subtest: read-only clients cannot mutate either literal target
+ok 41 - read-only clients cannot mutate either literal target
+  ---
+  duration_ms: 487.602875
+  ...
+# Subtest: a successful artifact never hides an underivable mandatory clause
+ok 42 - a successful artifact never hides an underivable mandatory clause
+  ---
+  duration_ms: 105.593542
+  ...
+# Subtest: all seeded enumeration surfaces inside literal operands remain payload
+ok 43 - all seeded enumeration surfaces inside literal operands remain payload
+  ---
+  duration_ms: 9.358209
+  ...
+# Subtest: every seeded outer cue preserves two complete literals and exact UTF8 spans
+ok 44 - every seeded outer cue preserves two complete literals and exact UTF8 spans
+  ---
+  duration_ms: 9.658417
+  ...
+# Subtest: closed twelve-character fence with internal instructions has one exact readback
+ok 45 - closed twelve-character fence with internal instructions has one exact readback
+  ---
+  duration_ms: 50.527417
+  ...
+# Subtest: independent outer artifacts retain nested enumeration bytes and receipts
+ok 46 - independent outer artifacts retain nested enumeration bytes and receipts
+  ---
+  duration_ms: 208.94325
+  ...
+# Subtest: a Write acknowledgement, including echoed content, remains pending observation
+ok 47 - a Write acknowledgement, including echoed content, remains pending observation
+  ---
+  duration_ms: 398.303167
+  ...
+# Subtest: a prior successful receipt cannot certify a later Write
+ok 48 - a prior successful receipt cannot certify a later Write
+  ---
+  duration_ms: 3.318375
+  ...
+# Subtest: explicit successful shell receipts certify exact Unicode and newline bytes
+ok 49 - explicit successful shell receipts certify exact Unicode and newline bytes
+  ---
+  duration_ms: 7.450375
+  ...
+# Subtest: bare Read and framed Agent Read preserve exact content compatibility
+ok 50 - bare Read and framed Agent Read preserve exact content compatibility
+  ---
+  duration_ms: 3.4775
+  ...
+# Subtest: different paths and auxiliary commands never certify this record
+ok 51 - different paths and auxiliary commands never certify this record
+  ---
+  duration_ms: 2.309542
+  ...
+# Subtest: wrong bytes, bare shell stdout, nonzero and structured stdout remain failures
+ok 52 - wrong bytes, bare shell stdout, nonzero and structured stdout remain failures
+  ---
+  duration_ms: 136.623834
+  ...
+# Subtest: a later failed receipt or failed Write cannot reuse earlier certification
+ok 53 - a later failed receipt or failed Write cannot reuse earlier certification
+  ---
+  duration_ms: 5.903958
+  ...
+# Subtest: missing observation capability retains the written record and a typed Gap
+ok 54 - missing observation capability retains the written record and a typed Gap
+  ---
+  duration_ms: 0.512834
+  ...
+# Subtest: Read-only observation support uses the exact bound target
+ok 55 - Read-only observation support uses the exact bound target
+  ---
+  duration_ms: 0.451958
+  ...
+# Subtest: unknown written bytes remain a Gap without repeating an observation forever
+ok 56 - unknown written bytes remain a Gap without repeating an observation forever
+  ---
+  duration_ms: 0.37325
+  ...
+# Subtest: unsafe filename bytes are quoted as one real shell operand
+ok 57 - unsafe filename bytes are quoted as one real shell operand
+  ---
+  duration_ms: 76.374333
+  ...
+# Subtest: explicit successful receipts preserve exact JSON, Unicode, whitespace and authored error narratives
+ok 58 - explicit successful receipts preserve exact JSON, Unicode, whitespace and authored error narratives
+  ---
+  duration_ms: 658.234042
+  ...
+# Subtest: matching bytes cannot erase missing status, failure status or typed harness errors
+ok 59 - matching bytes cannot erase missing status, failure status or typed harness errors
+  ---
+  duration_ms: 0.333542
+  ...
+# Subtest: lookup binds exact command, nearest call identity and latest matching result
+ok 60 - lookup binds exact command, nearest call identity and latest matching result
+  ---
+  duration_ms: 1.066125
+  ...
+# Subtest: whole rewrite without Edit accepts actual exact shell and typed JSON observations
+ok 61 - whole rewrite without Edit accepts actual exact shell and typed JSON observations
+  ---
+  duration_ms: 660.508875
+  ...
+# Subtest: whole rewrite without Edit rejects failed matching observation even after correct physical write
+ok 62 - whole rewrite without Edit rejects failed matching observation even after correct physical write
+  ---
+  duration_ms: 77.337834
+  ...
+# Subtest: whole rewrite without Edit ignores unrelated cat and obeys newest failed target receipt
+ok 63 - whole rewrite without Edit ignores unrelated cat and obeys newest failed target receipt
+  ---
+  duration_ms: 27.653959
+  ...
+# Subtest: structured list insertion accepts actual exact shell and typed JSON observations
+ok 64 - structured list insertion accepts actual exact shell and typed JSON observations
+  ---
+  duration_ms: 20.559375
+  ...
+# Subtest: structured list insertion rejects failed matching observation even after correct physical write
+ok 65 - structured list insertion rejects failed matching observation even after correct physical write
+  ---
+  duration_ms: 27.298584
+  ...
+# Subtest: structured list insertion ignores unrelated cat and obeys newest failed target receipt
+ok 66 - structured list insertion ignores unrelated cat and obeys newest failed target receipt
+  ---
+  duration_ms: 9.375042
+  ...
+# Subtest: generated source accepts actual exact shell and typed JSON observations
+ok 67 - generated source accepts actual exact shell and typed JSON observations
+  ---
+  duration_ms: 24.008583
+  ...
+# Subtest: generated source rejects failed matching observation even after correct physical write
+ok 68 - generated source rejects failed matching observation even after correct physical write
+  ---
+  duration_ms: 41.955375
+  ...
+# Subtest: generated source ignores unrelated cat and obeys newest failed target receipt
+ok 69 - generated source ignores unrelated cat and obeys newest failed target receipt
+  ---
+  duration_ms: 12.394542
+  ...
+# Subtest: presentation or ambiguous transport cannot certify unobserved byte strings
+ok 70 - presentation or ambiguous transport cannot certify unobserved byte strings
+  ---
+  duration_ms: 0.51975
+  ...
+# Subtest: composite source and whole registration require independent exact actual receipts
+ok 71 - composite source and whole registration require independent exact actual receipts
+  ---
+  duration_ms: 36.656084
+  ...
+# Subtest: either failed composite receipt blocks completion while preserving actual file assertions
+ok 72 - either failed composite receipt blocks completion while preserving actual file assertions
+  ---
+  duration_ms: 28.064167
+  ...
+1..72
+# tests 76
+# suites 4
+# pass 76
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3855.780167

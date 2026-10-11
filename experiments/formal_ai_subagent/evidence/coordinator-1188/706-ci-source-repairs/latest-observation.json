@@ -1,0 +1,13 @@
+{
+  "head": "7065828299defa1eb7d8ff32e95c2cd803dd1325",
+  "observation": "2026-10-10 14:25:42 UTC",
+  "checks": 200,
+  "success": 131,
+  "failure": 27,
+  "running": 17,
+  "skipped": 24,
+  "cancelled": 1,
+  "laterThanImmutableT4406": true,
+  "qualifiedFreshAnswerCapture": false,
+  "semanticRuntimeFailureFromMissingArtifacts": false
+}

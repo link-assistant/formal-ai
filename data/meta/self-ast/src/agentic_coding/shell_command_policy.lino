@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/shell_command_policy.rs
   language rust
   fidelity full_ast
-  byte_len 12732
-  line_count 326
-  content_id source_module_5b14aac485ea33e7
-  symbol_count 13
+  byte_len 15096
+  line_count 393
+  content_id source_module_f6f3e60920392c0e
+  symbol_count 15
   symbols
     struct Sentence 21 26
     function sentences 37 44
@@ -14,71 +14,75 @@ self_ast_census
     function sentence_spans 100 105
     function states_a_command_policy 113 138
     function orders_a_named_command 143 157
-    function governs_commands_rather_than_requesting_one 174 177
-    function named_shell_command_in_sentence 179 221
-    function collect_command 225 238
-    function normalize_command_word 243 249
-    function is_prose_word 254 326
-    const PROSE_WORDS 255 321
+    function governs_commands_rather_than_requesting_one 174 180
+    function command_span 189 204
+    function named_shell_command_in_sentence 206 264
+    function collect_command 268 281
+    function normalize_command_word 286 292
+    function is_prose_word 297 369
+    const PROSE_WORDS 298 364
+    function shell_quotes_paired 372 393
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7017
-    named_node_count 1416
-    distinct_node_kinds 71
+    total_link_count 8723
+    named_node_count 1755
+    distinct_node_kinds 73
     node_kinds
       abstract_type 1
-      arguments 96
-      array_expression 1
+      arguments 128
+      array_expression 2
       array_type 2
-      assignment_expression 2
-      binary_expression 27
-      block 29
+      assignment_expression 7
+      binary_expression 37
+      block 43
+      boolean_literal 3
       break_expression 2
-      call_expression 96
-      char_literal 26
-      closure_expression 22
-      closure_parameters 22
+      call_expression 128
+      char_literal 35
+      closure_expression 24
+      closure_parameters 24
       const_item 1
       continue_expression 3
       crate 1
-      doc_comment 76
-      expression_statement 24
+      doc_comment 84
+      else_clause 4
+      expression_statement 36
       field_declaration 2
       field_declaration_list 1
-      field_expression 80
-      field_identifier 85
+      field_expression 106
+      field_identifier 111
       field_initializer 3
       field_initializer_list 2
-      for_expression 3
-      function_item 11
+      for_expression 4
+      function_item 13
       function_type 1
       generic_function 1
-      generic_type 11
-      identifier 230
-      if_expression 9
-      index_expression 6
+      generic_type 12
+      identifier 300
+      if_expression 18
+      index_expression 10
       inner_doc_comment_marker 12
-      integer_literal 7
-      let_chain 1
-      let_condition 1
-      let_declaration 25
+      integer_literal 8
+      let_chain 2
+      let_condition 2
+      let_declaration 31
       lifetime 5
       lifetime_parameter 1
-      line_comment 101
+      line_comment 112
       macro_invocation 3
-      mutable_specifier 4
-      outer_doc_comment_marker 64
-      parameter 18
-      parameters 12
-      parenthesized_expression 1
-      primitive_type 28
-      range_expression 7
-      reference_expression 9
-      reference_type 21
-      return_expression 2
+      mutable_specifier 6
+      outer_doc_comment_marker 72
+      parameter 22
+      parameters 14
+      parenthesized_expression 2
+      primitive_type 34
+      range_expression 10
+      reference_expression 12
+      reference_type 25
+      return_expression 3
       scoped_identifier 6
       scoped_type_identifier 1
       scoped_use_list 1
@@ -91,12 +95,12 @@ self_ast_census
       struct_item 1
       super 11
       token_tree 5
-      tuple_pattern 4
-      tuple_struct_pattern 1
-      type_arguments 12
-      type_identifier 20
+      tuple_pattern 6
+      tuple_struct_pattern 2
+      type_arguments 13
+      type_identifier 21
       type_parameters 1
-      unary_expression 11
+      unary_expression 16
       use_declaration 1
       use_list 1
-      visibility_modifier 11
+      visibility_modifier 13

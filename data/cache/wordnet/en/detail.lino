@@ -1,0 +1,44 @@
+language en
+lemma detail
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an isolated fact that is considered separately from the whole"
+    examples ("several of the details are similar" "a point of information")
+    id oewn-05825971-n
+    partOfSpeech n
+    synonyms (item point)
+  entry
+    definition "a small part that can be considered separately from the whole"
+    examples ("it was perfect in all details")
+    id oewn-13832132-n
+    partOfSpeech n
+    synonyms (particular item)
+  entry
+    definition "extended treatment of particulars"
+    examples ("the essay contained too much detail")
+    id oewn-07152515-n
+    partOfSpeech n
+  entry
+    definition "a crew of workers selected for a particular task"
+    examples ("a detail was sent to remove the fallen trees")
+    id oewn-08260002-n
+    partOfSpeech n
+  entry
+    definition "a temporary military unit"
+    examples ("the peacekeeping force includes one British contingent")
+    id oewn-08421506-n
+    partOfSpeech n
+    synonyms (contingent)
+  entry
+    definition "provide details for"
+    id oewn-00958282-v
+    partOfSpeech v
+  entry
+    definition "assign to a specific task"
+    examples ("The ambulances were detailed to the fire station")
+    id oewn-00680024-v
+    partOfSpeech v
+source "oewn:2024"

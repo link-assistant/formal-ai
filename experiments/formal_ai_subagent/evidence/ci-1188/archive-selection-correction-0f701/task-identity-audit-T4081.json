@@ -1,0 +1,1208 @@
+{
+  "packets": 11,
+  "taskOutcomes": 45,
+  "allOriginalRequestsOutcomesLogsVerified": true,
+  "sourceEffects": [],
+  "oldBytesPreserved": true,
+  "reports": [
+    {
+      "packet": "docker-429-0f701",
+      "originalSelectedTasks": [
+        4041,
+        4042,
+        4043,
+        4044
+      ],
+      "effectiveRequiredTasks": [
+        4041,
+        4042,
+        4043,
+        4044
+      ],
+      "oldIncompleteSelection": false,
+      "correctedSelection": null,
+      "outcomes": [
+        {
+          "task": 4041,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4041/drive-request.json",
+            "sha256": "50cb510475352911a769ac6c44ed1a637e193d8bbee333fb8840318a81636799",
+            "task": 4041,
+            "marker": "PR1188_DOCKER_429_FIXED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4041/drive.json",
+            "sha256": "245d06a7821502eaca93b9f40762f969c774fec9692fbb486ffda7ea3bcc6c23",
+            "task": 4041,
+            "ok": false,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4041/T4041.log",
+            "sha256": "755535857e97b5df2ac1925e0fca273a555efbea4bfedd5c0554176764e705c0"
+          }
+        },
+        {
+          "task": 4042,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4042/drive-request.json",
+            "sha256": "40ce818a86e516d330870a013f10f1609b8dd5d92359b6e744b2804be7eb127e",
+            "task": 4042,
+            "marker": "PR1188_DOCKER_429_FIXED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4042/drive.json",
+            "sha256": "2544b37b4b6da85013812b75ad53f2a899ae4418c44ac14d23f22e70c2a85802",
+            "task": 4042,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4042/T4042.log",
+            "sha256": "777a35569f9d5fe09132d5b9463d1d11e715fc87ee3ae6cc28023db0b52c85b8"
+          }
+        },
+        {
+          "task": 4043,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4043/drive-request.json",
+            "sha256": "ac38a49054256781428fe1972ba5b8ecdb3cd339b143b4f53eb20f8609ae23bf",
+            "task": 4043,
+            "marker": "PR1188_DOCKER_429_CONTROLS"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4043/drive.json",
+            "sha256": "8f59b6c468f2dd1ebc9d2fac1e015a3c8a56c2acd13bf35301cdfe19b1cc40cb",
+            "task": 4043,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4043/T4043.log",
+            "sha256": "eb5f61ea8b5444afa101adab71c9a43f1cdab3c955e6785d5d032f99f6b2f827"
+          }
+        },
+        {
+          "task": 4044,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4044/drive-request.json",
+            "sha256": "c1e94e52faa5f467d4fd86c5cc02dd99e2b670c225c8bf3b01afe2bb6ce43935",
+            "task": 4044,
+            "marker": "PR1188_DOCKER_429_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4044/drive.json",
+            "sha256": "3d7e085747d2b0c55d6b4a15ebb41836e5a55e24aa5581a55e58f7de6b5564d6",
+            "task": 4044,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4044/T4044.log",
+            "sha256": "33b4e5a2008872612e0d9106a9d8cf68b1363a2eb925874905178b3a8b310cc4"
+          }
+        }
+      ]
+    },
+    {
+      "packet": "offline-wording-0f701",
+      "originalSelectedTasks": [
+        4046,
+        4047,
+        4048,
+        4049,
+        4050
+      ],
+      "effectiveRequiredTasks": [
+        4046,
+        4047,
+        4048,
+        4049,
+        4050
+      ],
+      "oldIncompleteSelection": false,
+      "correctedSelection": null,
+      "outcomes": [
+        {
+          "task": 4046,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4046/drive-request.json",
+            "sha256": "fd5f074202b1fa20520a589dea8e6e722d1657514c30e6bdfc38b7b62d5a3085",
+            "task": 4046,
+            "marker": "PR1188_OFFLINE_MISS_WORDING_SEEDED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4046/drive.json",
+            "sha256": "07e807f98468559c005f9d5577315beb2e62d623d8ed208c74bbfa046033ce0b",
+            "task": 4046,
+            "ok": false,
+            "tools": [
+              "bash",
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4046/T4046.log",
+            "sha256": "ae844b1a16e77faba264d3a05d018b1281498afb7600aec7b2eddb3545cd21c1"
+          }
+        },
+        {
+          "task": 4047,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4047/drive-request.json",
+            "sha256": "5c050b96e52aeb01f108e0efbd6f4edf54a350e9baab67d50feb7ff2b8462637",
+            "task": 4047,
+            "marker": "PR1188_OFFLINE_MISS_WORDING_SEEDED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4047/drive.json",
+            "sha256": "430f0378a51a3d15503072971874e66161de0b6c1488c8a593b12e434bd04cb1",
+            "task": 4047,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4047/T4047.log",
+            "sha256": "3216e80e4ade734652178b0378ba8b9935564a03f85f33e2a156f78e6072c2c8"
+          }
+        },
+        {
+          "task": 4048,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4048/drive-request.json",
+            "sha256": "63348098240ae299defbbacd8b3943a556bab2a5126bb60b08164fb975fc8832",
+            "task": 4048,
+            "marker": "PR1188_OFFLINE_DIAGNOSTIC_CONTROLS"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4048/drive.json",
+            "sha256": "f3d0b4c0614f6a201bbcce471166cecd0337b08206f81cde54d088eed9c87a99",
+            "task": 4048,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4048/T4048.log",
+            "sha256": "9b62f65e23a04619da4e660b2aab2364517547a447ba2e138fa622a9cdf21d4b"
+          }
+        },
+        {
+          "task": 4049,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4049/drive-request.json",
+            "sha256": "f8eb2811b66b9c14ac99fd38b52959fea2226ba84f8bd8b664da51dc93922082",
+            "task": 4049,
+            "marker": "PR1188_OFFLINE_DIAGNOSTIC_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4049/drive.json",
+            "sha256": "8597c4472899f1158f3437452209f6cadf13a674bc4f9bed5a71f92fb48d2887",
+            "task": 4049,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4049/T4049.log",
+            "sha256": "97e662d5683f6f2c4109b986990c5b43924a49ac828f10ca5772a9f14a29cb52"
+          }
+        },
+        {
+          "task": 4050,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4050/drive-request.json",
+            "sha256": "ab0cf3ec6a0935ac820a8df26d01b29652ed1ef4edda3e9cb2815410ea30c4d2",
+            "task": 4050,
+            "marker": "PR1188_OFFLINE_LITERAL_SLOT_REFINED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4050/drive.json",
+            "sha256": "6c21bace1c92eacc870c248bba1927239a2455c0ebf0e108de44a5f1ec7fa21a",
+            "task": 4050,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/T4050/T4050.log",
+            "sha256": "5212a1b4b8c81ebfe703ec16b408447d0947c6ff67a84601c2bc4bad532e114d"
+          }
+        }
+      ]
+    },
+    {
+      "packet": "typed-delivery-0f701",
+      "originalSelectedTasks": [
+        4052,
+        4053,
+        4054,
+        4055,
+        4056,
+        4057,
+        4059,
+        4060
+      ],
+      "effectiveRequiredTasks": [
+        4052,
+        4053,
+        4054,
+        4055,
+        4056,
+        4057,
+        4059,
+        4060
+      ],
+      "oldIncompleteSelection": false,
+      "correctedSelection": null,
+      "outcomes": [
+        {
+          "task": 4052,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4052/drive-request.json",
+            "sha256": "931cc3ee186ee9b3dd983c18147b6e7a5a488516e93524b0d0dd18a07078c593",
+            "task": 4052,
+            "marker": "PR1188_TYPED_DELIVERY_ROUTING_FIXED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4052/drive.json",
+            "sha256": "dcc25fb9ec0e2c854b3e1bc5c287408f6195b8b71c71e164296640180d58e7b9",
+            "task": 4052,
+            "ok": false,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4052/T4052.log",
+            "sha256": "c47898cb60e83c5f901f6eed4b6df214e45c701d399f3e8f7c5c1ede22764672"
+          }
+        },
+        {
+          "task": 4053,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4053/drive-request.json",
+            "sha256": "d53f183911b9efd6edb1f9b008b7ce77523397a2aab7071679992b9bc54fc537",
+            "task": 4053,
+            "marker": "PR1188_TYPED_DELIVERY_ROUTING_FIXED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4053/drive.json",
+            "sha256": "c3301302f7107d08c5fde5724cc662c875fbb9dd757a7d919360efca0a13639e",
+            "task": 4053,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4053/T4053.log",
+            "sha256": "ee5b6f6d2d484ea2e1ebf7dd3f272faa7bb5bdaef6059d97c5369c21d702d9fb"
+          }
+        },
+        {
+          "task": 4054,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4054/drive-request.json",
+            "sha256": "a2e38582be09cfc05c9835de73d07f81a34943959a2da40c6b57d10ff740c9d0",
+            "task": 4054,
+            "marker": "PR1188_TYPED_DELIVERY_CONTROLS"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4054/drive.json",
+            "sha256": "0b852ab8580c45ef92fab450e049893082bf9a323d3b233bdebffd8d47a23d25",
+            "task": 4054,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4054/T4054.log",
+            "sha256": "a514a4f8d6e01d754e8ddbdba9a4f9a3191217bfa55dce0bb1db1093877ce91a"
+          }
+        },
+        {
+          "task": 4055,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4055/drive-request.json",
+            "sha256": "6d924858043e2b7c994dd55cf8fef105f4653aa57eca1e2c64faf7b886ca2165",
+            "task": 4055,
+            "marker": "PR1188_TYPED_DELIVERY_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4055/drive.json",
+            "sha256": "07cd3e7499dd47977a4c6eace5ff97457e14f78c4a3624041bf3a3f048522a37",
+            "task": 4055,
+            "ok": false,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4055/T4055.log",
+            "sha256": "49deea8ad4e9f88f38f93d85734b36f4bda783e20b26a68e3b8b8345d0f40681"
+          }
+        },
+        {
+          "task": 4056,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4056/drive-request.json",
+            "sha256": "594e9a036aa4af627b81f7c916de056f401ac2bcf1d77720a68ec713471bafc5",
+            "task": 4056,
+            "marker": "PR1188_TYPED_DELIVERY_LINE_LIMIT_FIXED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4056/drive.json",
+            "sha256": "97ffe221f68e37f2e6c196409ec502b56c2cf12be2fbc3e14da090775bc70757",
+            "task": 4056,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4056/T4056.log",
+            "sha256": "d74b41c7562b0b3d19b0629ec3ad92d4b5fc1aa8c37ba8e56d624e691f5447a6"
+          }
+        },
+        {
+          "task": 4057,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4057/drive-request.json",
+            "sha256": "7aa7c4d6dc38f6a4877908e2c179ffb37fc86ed10d4cb427cab6b6050a41c591",
+            "task": 4057,
+            "marker": "PR1188_TYPED_DELIVERY_FINAL_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4057/drive.json",
+            "sha256": "194b867cf7c5333e610fc0071e6df5450153e8a74fbe4e9768792c62b7dd4f1f",
+            "task": 4057,
+            "ok": false,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4057/T4057.log",
+            "sha256": "af965003458a9d3bafc8824c1f7de7310370a3ef1bc8c868265662c37b31a3ae"
+          }
+        },
+        {
+          "task": 4059,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4059/drive-request.json",
+            "sha256": "7c622f47bc1329603900cc1d5985d0fde38588ab3f7d599e36ed640743835399",
+            "task": 4059,
+            "marker": "PR1188_TYPED_DELIVERY_FINAL_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4059/drive.json",
+            "sha256": "b805d2e16f6a7ac32f2c198deef67856e832021011d441d148810581d0e07c49",
+            "task": 4059,
+            "ok": false,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4059/T4059.log",
+            "sha256": "b80832921116d590ef0e0c6d3ab9c58009151649374a11be86833c049d99a594"
+          }
+        },
+        {
+          "task": 4060,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4060/drive-request.json",
+            "sha256": "ccb0dbfea7bfaaf7c69136991c594269a3f6ae09776b27f1700fd8e90dbebfdb",
+            "task": 4060,
+            "marker": "PR1188_TYPED_DELIVERY_FINAL_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4060/drive.json",
+            "sha256": "ceba128bb3b8a79fdbacbba44ba76fa5536a43d60da62ed7858e9e1182f57a20",
+            "task": 4060,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/T4060/T4060.log",
+            "sha256": "a2b8e9d9407a92549caaeb9e1c7e4ccdb51cca6207b39df809f6e35551de10da"
+          }
+        }
+      ]
+    },
+    {
+      "packet": "native-literal-clippy-0f701",
+      "originalSelectedTasks": [
+        4062,
+        4063,
+        4064,
+        4065
+      ],
+      "effectiveRequiredTasks": [
+        4062,
+        4063,
+        4064,
+        4065
+      ],
+      "oldIncompleteSelection": false,
+      "correctedSelection": null,
+      "outcomes": [
+        {
+          "task": 4062,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/native-literal-clippy-0f701/T4062/drive-request.json",
+            "sha256": "946174c127d280909fb21b12b4827189c9d77e1a31335b7f35f6ed8592e2c510",
+            "task": 4062,
+            "marker": "PR1188_NATIVE_LITERAL_CLIPPY_REPAIRED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/native-literal-clippy-0f701/T4062/drive.json",
+            "sha256": "88ff517fa9c36fe23a952b92c6e6aeefa2f319985072dda01e98989521770d72",
+            "task": 4062,
+            "ok": false,
+            "tools": [
+              "read"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/native-literal-clippy-0f701/T4062/T4062.log",
+            "sha256": "5e3f840cfae5a526aa8c86c6cd32e390a6a191cf588f8a2b9e733029cdccd80b"
+          }
+        },
+        {
+          "task": 4063,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/native-literal-clippy-0f701/T4063/drive-request.json",
+            "sha256": "b74368f1265bec56c40692b3193267493c47c7048ee4a948cacd370b3b03bb98",
+            "task": 4063,
+            "marker": "PR1188_NATIVE_LITERAL_CLIPPY_REPAIRED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/native-literal-clippy-0f701/T4063/drive.json",
+            "sha256": "32f038b4b1c1c50db8cda196860f790ce80bfac756c026682250650ad0694ce5",
+            "task": 4063,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/native-literal-clippy-0f701/T4063/T4063.log",
+            "sha256": "b3c69e588c7a59eed9af00f7c24dbadbf47be00358588902de45f691b3a5c00a"
+          }
+        },
+        {
+          "task": 4064,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/native-literal-clippy-0f701/T4064/drive-request.json",
+            "sha256": "05867408d008f2d746aa3863db94388748000fe2990596f80aa984b818eac86b",
+            "task": 4064,
+            "marker": "PR1188_NATIVE_LITERAL_CLIPPY_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/native-literal-clippy-0f701/T4064/drive.json",
+            "sha256": "0521ea43455fab44b655debf7b677ed22bd0620d5e85753dc33d16208891efca",
+            "task": 4064,
+            "ok": false,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/native-literal-clippy-0f701/T4064/T4064.log",
+            "sha256": "4e3af9e8480f131260eaee1b0be1fa13da37ecdedb8e52f0240cfd2949f3e053"
+          }
+        },
+        {
+          "task": 4065,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/native-literal-clippy-0f701/T4065/drive-request.json",
+            "sha256": "f40e521e0b2130ecb7111063b8151148a4bef9fb04c224409e25645dffe371bc",
+            "task": 4065,
+            "marker": "PR1188_NATIVE_LITERAL_CLIPPY_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/native-literal-clippy-0f701/T4065/drive.json",
+            "sha256": "8fc42e0da8f020d1944519ceef19dd83cc594e59aa9cff661cb43ecbe9b4ab40",
+            "task": 4065,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/native-literal-clippy-0f701/T4065/T4065.log",
+            "sha256": "fb857cc52e5cdca780bc52e74f988cea3a59758492fa70b98cdae6e5f6d999a0"
+          }
+        }
+      ]
+    },
+    {
+      "packet": "clippy-nine-89d1",
+      "originalSelectedTasks": [
+        4023,
+        4024,
+        4025,
+        4026
+      ],
+      "effectiveRequiredTasks": [
+        4023,
+        4024,
+        4025,
+        4026
+      ],
+      "oldIncompleteSelection": false,
+      "correctedSelection": null,
+      "outcomes": [
+        {
+          "task": 4023,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4023/request.json",
+            "sha256": "b46a3fdb854f5aed1de3af7c32d5e4db1d1407d8ae0627b977ccd846b396578e",
+            "task": 4023,
+            "marker": "PR1188_CLIPPY_NINE_FIXED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4023/request.json.json",
+            "sha256": "570604cf303dc62aa24b4ef68edcbc169ab40c30adcdd8d68685ed227ad19dfb",
+            "task": 4023,
+            "ok": false,
+            "tools": []
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4023/T4023.log",
+            "sha256": "9491e4d747e57b37baab9e2e4d7b87581422a1a908bc363ebbfd1bc6f3b1f9dc"
+          }
+        },
+        {
+          "task": 4024,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4024/drive-request.json",
+            "sha256": "f3afe12a0dc8bf984f3021e8d42b4419cee2390eddf6143ac4a24067794f0c2d",
+            "task": 4024,
+            "marker": "PR1188_CLIPPY_NINE_APPLIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4024/drive.json",
+            "sha256": "8745d1918b920dfe8c163993b37730655d6134620b0689b92f0ba871d6b56378",
+            "task": 4024,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4024/T4024.log",
+            "sha256": "340fcde04e232c95b10f338f75e3b2a04943f30d6df2ea63295b7b9dbe285113"
+          }
+        },
+        {
+          "task": 4025,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4025/drive-request.json",
+            "sha256": "3792999e52e2d2685b9623e6878780d776b7457ea386c338e3f06952cfe5f44a",
+            "task": 4025,
+            "marker": "PR1188_CLIPPY_NINE_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4025/drive.json",
+            "sha256": "77fbded64bba0129cbc930c1b7028c393e3286f3d3b3cdfd168df7a047bc9e3b",
+            "task": 4025,
+            "ok": false,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4025/T4025.log",
+            "sha256": "400f0984b4cb792e62c185f5e0be4b4af3680a1edb44030e70c321b1f23b75a5"
+          }
+        },
+        {
+          "task": 4026,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4026/drive-request.json",
+            "sha256": "5eeea909c4e18439cfd994ebe996257b4675ccc29bcb9a922b3708355a6a8eec",
+            "task": 4026,
+            "marker": "PR1188_CLIPPY_NINE_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4026/drive.json",
+            "sha256": "4521d9e6f87e84da376865766ad4d31834eff8660477e84cd288b06812681bf2",
+            "task": 4026,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4026/T4026.log",
+            "sha256": "f812cb083704d993dbb9015a8a992ecbfbfc3bafebc3e1a06966a1d7b222b5ed"
+          }
+        }
+      ]
+    },
+    {
+      "packet": "fetch-notice-89d1",
+      "originalSelectedTasks": [
+        4031,
+        4032,
+        4033,
+        4034,
+        4035,
+        4036,
+        4037
+      ],
+      "effectiveRequiredTasks": [
+        4031,
+        4032,
+        4033,
+        4034,
+        4035,
+        4036,
+        4037
+      ],
+      "oldIncompleteSelection": false,
+      "correctedSelection": null,
+      "outcomes": [
+        {
+          "task": 4031,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4031/drive-request.json",
+            "sha256": "735eee4046a12ef064c812e1f116759089c9f2a05b24b877483cdbf514320c98",
+            "task": 4031,
+            "marker": "PR1188_FETCH_FAILURE_FIXED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4031/drive.json",
+            "sha256": "132b525242d3fcad2662dca58bc3ec7ebd21f8d648242039845b99f2185b5feb",
+            "task": 4031,
+            "ok": false,
+            "tools": []
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4031/T4031.log",
+            "sha256": "a5f42cca28bc7deddb9cc39a203341b30cf10814398a049cb8d27ec4c47b513f"
+          }
+        },
+        {
+          "task": 4032,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4032/drive-request.json",
+            "sha256": "6f554257197b73c27f2507801bdd1170cb102e93081d657dafad0149ff996d24",
+            "task": 4032,
+            "marker": "PR1188_FETCH_FAILURE_FIXED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4032/drive.json",
+            "sha256": "a6981e7fa4a081840d523eef70618b57b9aa42334be96bd42aab3e2df68f2e65",
+            "task": 4032,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4032/T4032.log",
+            "sha256": "9eab9738f2819415635c97f61baa3e0ab43673e2f7e57796b5a11415693d2617"
+          }
+        },
+        {
+          "task": 4033,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4033/drive-request.json",
+            "sha256": "f8426bd04d53c05c79ea9381e406bcce2e8324b9a0ad1f5a19943e5df2be53b7",
+            "task": 4033,
+            "marker": "PR1188_FETCH_CONTROLS_ADDED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4033/drive.json",
+            "sha256": "4c93a24844ddd4d8d3c25a19c499967a827653629770a1e55f6e06ab831d0b01",
+            "task": 4033,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4033/T4033.log",
+            "sha256": "1ed706e70f22abe69733cf8c03b6e33ef7d8759832b7e00bd1b6519d6e71f6df"
+          }
+        },
+        {
+          "task": 4034,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4034/drive-request.json",
+            "sha256": "2f35198d524150179fcd87743e82644dbe51eb1f240fbfe8e3b0b0228315a978",
+            "task": 4034,
+            "marker": "PR1188_FETCH_FAILURE_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4034/drive.json",
+            "sha256": "5f96766448822d38575a3574ab33c45721dcb89b5e1b00c9d915d38e694a634a",
+            "task": 4034,
+            "ok": false,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4034/T4034.log",
+            "sha256": "9384d5f91c8361acb79e65096d74772709b86330b0c14dbc77eb2b7c920096e2"
+          }
+        },
+        {
+          "task": 4035,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4035/drive-request.json",
+            "sha256": "245952e3775af64dc69605379a2c972722e58437c56a4ebb1cfffbc59f638c94",
+            "task": 4035,
+            "marker": "PR1188_FETCH_PARSE_RESULT_CORRECTED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4035/drive.json",
+            "sha256": "efa3411c16de497fd5fb5bb01ba75a0445bcf06dfeef12710a99380ba2aa92f1",
+            "task": 4035,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4035/T4035.log",
+            "sha256": "750d7f5f79cae75e15cbe2e5239e0ef9681412395bab2140a27ef6faa2db739a"
+          }
+        },
+        {
+          "task": 4036,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4036/drive-request.json",
+            "sha256": "2d8631bb52a1d1c3cde3703de23f1cb39153e370bf6b823847536019100e780c",
+            "task": 4036,
+            "marker": "PR1188_FETCH_NOTICE_REFINED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4036/drive.json",
+            "sha256": "88aff1ddabfc8f368b93692ce9d2354b69175f60e9f7ec6c376d2b0fcd2de6e8",
+            "task": 4036,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4036/T4036.log",
+            "sha256": "1932763792619461274343e9f2160597406fb6819648265ad1bc6474d4f389fb"
+          }
+        },
+        {
+          "task": 4037,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4037/drive-request.json",
+            "sha256": "5e2be37f0e25ff333c6b6d02f4626685fe7e4206255398d81f641b4c24f700b9",
+            "task": 4037,
+            "marker": "PR1188_FETCH_FAILURE_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4037/drive.json",
+            "sha256": "8980ce05a127d0c7bef3b284dae1f318847a0862fe130b6ee9762ec61851b36b",
+            "task": 4037,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/T4037/T4037.log",
+            "sha256": "b7e5c9db5037b2dc7c7e6c4d80415fd219c57d0481a9fcb1e506a086f35a1681"
+          }
+        }
+      ]
+    },
+    {
+      "packet": "fetch-pattern-89d1",
+      "originalSelectedTasks": [
+        4039
+      ],
+      "effectiveRequiredTasks": [
+        4039
+      ],
+      "oldIncompleteSelection": false,
+      "correctedSelection": null,
+      "outcomes": [
+        {
+          "task": 4039,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-pattern-89d1/T4039/drive-request.json",
+            "sha256": "64dbb0103ad9afc7cb29a12ff1481153ca52925cf9f056b0cfb25c679638bab3",
+            "task": 4039,
+            "marker": "PR1188_FETCH_PATTERN_STR_REFINED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-pattern-89d1/T4039/drive.json",
+            "sha256": "ed78839ced7a4659391903d53e5a63dc1de440608bb82e162c8ff059c6733342",
+            "task": 4039,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-pattern-89d1/T4039/T4039.log",
+            "sha256": "1b28e9adfedefde119dbfa6f5a718f0aebd4b9a7ab5350c9c7480c3889964d31"
+          }
+        }
+      ]
+    },
+    {
+      "packet": "container-condition-89d1",
+      "originalSelectedTasks": [
+        4028,
+        4029
+      ],
+      "effectiveRequiredTasks": [
+        4028,
+        4029
+      ],
+      "oldIncompleteSelection": false,
+      "correctedSelection": null,
+      "outcomes": [
+        {
+          "task": 4028,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/container-condition-89d1/T4028/drive-request.json",
+            "sha256": "d7e188b8372ac027ef60b9dcf0475d826c7125351533f55361041c831607633e",
+            "task": 4028,
+            "marker": "PR1188_CONDITION_JOINED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/container-condition-89d1/T4028/drive.json",
+            "sha256": "63c6de21a7c43ab6e2acfee65faae7a20a084e93c46a3b08f9a2b23e4b17e8b2",
+            "task": 4028,
+            "ok": false,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/container-condition-89d1/T4028/T4028.log",
+            "sha256": "05527e6ce9e1206e4f390c65ada1dba28d09ca6331c0c2d9b0b14af6d02006e3"
+          }
+        },
+        {
+          "task": 4029,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/container-condition-89d1/T4029/drive-request.json",
+            "sha256": "ad6307158ced252184fb90a0747e691dfa09089522305beb2b58f9894a42c0ed",
+            "task": 4029,
+            "marker": "PR1188_CONDITION_JOINED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/container-condition-89d1/T4029/drive.json",
+            "sha256": "37fe1ec0caab967ba9ed5cc539940e57ee356f0fcef2eb804fb8f665a6b4ef62",
+            "task": 4029,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/container-condition-89d1/T4029/T4029.log",
+            "sha256": "7ea3f9eed75d5b305273940e45e23d3d8d45bc7a741bd8ed6ca72dbe722437bf"
+          }
+        }
+      ]
+    },
+    {
+      "packet": "native-workflow-bindings-0f701",
+      "originalSelectedTasks": [
+        4062,
+        4063,
+        4064,
+        4065
+      ],
+      "effectiveRequiredTasks": [
+        4067,
+        4068,
+        4069,
+        4070
+      ],
+      "oldIncompleteSelection": true,
+      "correctedSelection": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/evidence-selection.json",
+      "outcomes": [
+        {
+          "task": 4067,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4067/drive-request.json",
+            "sha256": "b4429fd00eaafa197590682d5d7ea2f4b2cf413a7323d86cf1a87a885e0b4c87",
+            "task": 4067,
+            "marker": "PR1188_NATIVE_WORKFLOW_BINDINGS_REPAIRED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4067/drive.json",
+            "sha256": "29152fd282feccc1f618628ee1f0768ed4ec6b30588d21a1f005f40dab34421c",
+            "task": 4067,
+            "ok": false,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4067/T4067.log",
+            "sha256": "50f907bbf16b8786342613eff5016c6b2bd29d1b77009c1d2de979e7ccf25689"
+          }
+        },
+        {
+          "task": 4068,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/drive-request.json",
+            "sha256": "2e753fdd6a2c22c80b7b5aaba91ba2677e5c7cfbe65e17931dca0dfeb02d4f91",
+            "task": 4068,
+            "marker": "PR1188_NATIVE_WORKFLOW_BINDINGS_REPAIRED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/drive.json",
+            "sha256": "ed376a707d3fa68993a43b1d0ca1ebf1ffd2fe91a2ed313f891a2b9eab4d5967",
+            "task": 4068,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/T4068.log",
+            "sha256": "c63a2249aa04907d711d87574d683718e16593e3e11f3eb5ff30272c89f3794c"
+          }
+        },
+        {
+          "task": 4069,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4069/drive-request.json",
+            "sha256": "038100bd45edd4e7cbeb7e99a9d7557fe1429ff54b4efb03fd4a62481159cd12",
+            "task": 4069,
+            "marker": "PR1188_NATIVE_WORKFLOW_CONTROLS_ADDED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4069/drive.json",
+            "sha256": "dd2d77208d962360da59f1998d8b069f63b1a8052bf43e40f4c58baf7f1c7678",
+            "task": 4069,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4069/T4069.log",
+            "sha256": "0ae62469c0910743af59dbd39d3d358560f0c5cd943aa09bea448155a8cc00ea"
+          }
+        },
+        {
+          "task": 4070,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4070/drive-request.json",
+            "sha256": "b65dc109bfa6c1b2df884ed1140baee1461a7429a269fd643e8aa63ebfbe7dbb",
+            "task": 4070,
+            "marker": "PR1188_NATIVE_WORKFLOW_BINDINGS_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4070/drive.json",
+            "sha256": "5816081c3fc27348cacd28feda87dbe356f8ac0df9b4123ec1318a22a9ca40c3",
+            "task": 4070,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4070/T4070.log",
+            "sha256": "513adef61e3ee7f3877d5515d23ee4f573deb2d984fe13f20e8afd793e34195a"
+          }
+        }
+      ]
+    },
+    {
+      "packet": "debug-provenance-fixture-0f701",
+      "originalSelectedTasks": [
+        4062,
+        4063,
+        4064,
+        4065
+      ],
+      "effectiveRequiredTasks": [
+        4072,
+        4073,
+        4074
+      ],
+      "oldIncompleteSelection": true,
+      "correctedSelection": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/evidence-selection.json",
+      "outcomes": [
+        {
+          "task": 4072,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4072/drive-request.json",
+            "sha256": "8f54eb5326d1b2c26256c8d924097f2590cfa3f65af8234296aa3055755db042",
+            "task": 4072,
+            "marker": "PR1188_DEBUG_PROVENANCE_FIXTURE_REPAIRED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4072/drive.json",
+            "sha256": "92f89f982305f9f7b5b722325f96dd1c3ab10996a8ee2328e8c5256ee70c1f22",
+            "task": 4072,
+            "ok": false,
+            "tools": [
+              "read"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4072/T4072.log",
+            "sha256": "ba7d7cf55c44a3bfe036f02caef83f28e840d3e6fcdd070d3064b230ceb02a81"
+          }
+        },
+        {
+          "task": 4073,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4073/drive-request.json",
+            "sha256": "f4f97b1d81ced0bece5989ec8c1252ab160d09b812d5ffece9313eb19462f6af",
+            "task": 4073,
+            "marker": "PR1188_DEBUG_PROVENANCE_FIXTURE_REPAIRED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4073/drive.json",
+            "sha256": "dc2cfa7446a0601366e35ba8c82beeecd3a9eaff72c5416844ef641f402009bb",
+            "task": 4073,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4073/T4073.log",
+            "sha256": "798b5dc576be3b51ce3677e5a688ea8590f2d19a0a0703c02b6770799a4dba58"
+          }
+        },
+        {
+          "task": 4074,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4074/drive-request.json",
+            "sha256": "fff376054d2dd890dff6fbfe04b4e315694b58c156cc33e0118a9636ebff6eae",
+            "task": 4074,
+            "marker": "PR1188_DEBUG_PROVENANCE_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4074/drive.json",
+            "sha256": "ccb163c6868713c65dd7b7bee1d99fc9af6964c7cb5129acb0176ee2a8b0b648",
+            "task": 4074,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4074/T4074.log",
+            "sha256": "9e1e52ba1d0370cb1c94eb42f3ee16a0022488b2b54b085508471daee3a376a3"
+          }
+        }
+      ]
+    },
+    {
+      "packet": "external-test-registration-0f701",
+      "originalSelectedTasks": [
+        4076,
+        4077,
+        4079
+      ],
+      "effectiveRequiredTasks": [
+        4076,
+        4077,
+        4079
+      ],
+      "oldIncompleteSelection": false,
+      "correctedSelection": null,
+      "outcomes": [
+        {
+          "task": 4076,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4076/drive-request.json",
+            "sha256": "3bf4af4a5dd13e22f88f53073b1dd72d88ba557db0805096300c39101a326faa",
+            "task": 4076,
+            "marker": "PR1188_EXTERNAL_TEST_STRUCTURAL_SCAN_REPAIRED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4076/drive.json",
+            "sha256": "f7e2551677d869a00993c9116f1730fd021901de613b54623c71122e32698a3a",
+            "task": 4076,
+            "ok": false,
+            "tools": [
+              "read"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4076/T4076.log",
+            "sha256": "65bcc5d577d02c219e3b724a1d695beb74b0deef178eb579cf618b8989e81d9a"
+          }
+        },
+        {
+          "task": 4077,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4077/drive-request.json",
+            "sha256": "f921e0bf4caa7f86471bf3ad0eb0abd3889a8f49223eaf9cf78c5542314a90b5",
+            "task": 4077,
+            "marker": "PR1188_EXTERNAL_TEST_STRUCTURAL_SCAN_REPAIRED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4077/drive.json",
+            "sha256": "536fcca634d5ecf0c1522694588a72c60f08d524c68b0bd3017480b963493b9b",
+            "task": 4077,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4077/T4077.log",
+            "sha256": "8332beda37c96dcbc5a07105a50cad53602f8b83596eb969e47080bb14615a93"
+          }
+        },
+        {
+          "task": 4079,
+          "request": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4079/drive-request.json",
+            "sha256": "b066587b0d01520727996af063e079e97a89d680dcfaa4bf547e944c2dcdccf4",
+            "task": 4079,
+            "marker": "PR1188_EXTERNAL_TEST_STRUCTURAL_SCAN_VERIFIED"
+          },
+          "outcome": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4079/drive.json",
+            "sha256": "1443ead9a09ebafa9b613f553c5643382d4a19c904e79f4933c6bce87b3dd02a",
+            "task": 4079,
+            "ok": true,
+            "tools": [
+              "bash"
+            ]
+          },
+          "log": {
+            "path": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4079/T4079.log",
+            "sha256": "e8436d2c89ff305fadf75db55f9e2d872bdcd7693f92d985458d12cb103fc16f"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "lemma": "regression",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14526956-n",
+      "partOfSpeech": "n",
+      "definition": "an abnormal state in which development has stopped prematurely",
+      "synonyms": [
+        "arrested development",
+        "fixation",
+        "infantile fixation"
+      ]
+    },
+    {
+      "id": "oewn-13570134-n",
+      "partOfSpeech": "n",
+      "definition": "(psychiatry) a defense mechanism in which you flee from reality by assuming a more infantile state"
+    },
+    {
+      "id": "oewn-06036794-n",
+      "partOfSpeech": "n",
+      "definition": "the relation between selected values of x and observed values of y (from which the most probable value of y can be predicted for any value of x)",
+      "synonyms": [
+        "simple regression",
+        "regression toward the mean",
+        "statistical regression"
+      ]
+    },
+    {
+      "id": "oewn-00236075-n",
+      "partOfSpeech": "n",
+      "definition": "returning to a former state",
+      "synonyms": [
+        "regress",
+        "reversion",
+        "retrogression",
+        "retroversion"
+      ]
+    }
+  ]
+}

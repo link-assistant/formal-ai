@@ -15,6 +15,11 @@ meanings
     lexeme zh
       surface
         text 语言
+    lexeme es
+      surface
+        text idioma
+      surface
+        text lengua
   language_english
     grounded-in Q1860
     defined-by human_language
@@ -35,6 +40,9 @@ meanings
         text 英语
       surface
         text 英文
+    lexeme es
+      surface
+        text inglés
   language_russian
     grounded-in Q7737
     defined-by human_language
@@ -51,6 +59,9 @@ meanings
     lexeme zh
       surface
         text 俄语
+    lexeme es
+      surface
+        text ruso
   language_hindi
     grounded-in Q1568
     defined-by human_language
@@ -69,6 +80,11 @@ meanings
     lexeme zh
       surface
         text 印地语
+    lexeme es
+      surface
+        text hindi
+      surface
+        text hindí
   language_chinese
     grounded-in Q7850
     defined-by human_language
@@ -89,6 +105,9 @@ meanings
         text 汉语
       surface
         text 漢語
+    lexeme es
+      surface
+        text chino
   language_spanish
     grounded-in Q1321
     defined-by human_language
@@ -130,6 +149,13 @@ meanings
         text 翻译
       surface
         text 翻譯
+    lexeme es
+      surface
+        text traducir
+      surface
+        text traduce
+      surface
+        text traduzca
   translation_direction_source
     defined-by relation
     role translation_source_direction
@@ -342,6 +368,13 @@ meanings
         text 听不懂
       surface
         text 聽不懂
+    lexeme es
+      surface
+        text "no entiendo"
+      surface
+        text "no comprendo"
+      surface
+        text "no lo entiendo"
   translate_from_english
     defined-by language_english
     defined-by translation_direction_source
@@ -362,6 +395,9 @@ meanings
         text 从英语
       surface
         text 从英文
+    lexeme es
+      surface
+        text "del inglés"
   translate_from_russian
     defined-by language_russian
     defined-by translation_direction_source
@@ -378,6 +414,9 @@ meanings
     lexeme zh
       surface
         text 从俄语
+    lexeme es
+      surface
+        text "del ruso"
   translate_from_hindi
     defined-by language_hindi
     defined-by translation_direction_source
@@ -398,6 +437,11 @@ meanings
         text 从印地语
       surface
         text 从印地文
+    lexeme es
+      surface
+        text "del hindi"
+      surface
+        text "del hindí"
   translate_from_chinese
     defined-by language_chinese
     defined-by translation_direction_source
@@ -418,6 +462,9 @@ meanings
         text 从汉语
       surface
         text 从漢語
+    lexeme es
+      surface
+        text "del chino"
   translate_from_spanish
     defined-by language_spanish
     defined-by translation_direction_source
@@ -471,6 +518,11 @@ meanings
         text 到英文
       surface
         text 到英语
+    lexeme es
+      surface
+        text "al inglés"
+      surface
+        text "en inglés"
   translate_into_russian
     defined-by language_russian
     defined-by translation_direction_target
@@ -501,6 +553,11 @@ meanings
         text 到俄语
       surface
         text 到俄語
+    lexeme es
+      surface
+        text "al ruso"
+      surface
+        text "en ruso"
   translate_into_hindi
     defined-by language_hindi
     defined-by translation_direction_target
@@ -533,6 +590,13 @@ meanings
         text 到印地语
       surface
         text 到印地文
+    lexeme es
+      surface
+        text "al hindi"
+      surface
+        text "al hindí"
+      surface
+        text "en hindi"
   translate_into_chinese
     defined-by language_chinese
     defined-by translation_direction_target
@@ -571,6 +635,11 @@ meanings
         text 到汉语
       surface
         text 到漢語
+    lexeme es
+      surface
+        text "al chino"
+      surface
+        text "en chino"
   translate_into_spanish
     defined-by language_spanish
     defined-by translation_direction_target
@@ -616,6 +685,13 @@ meanings
         text …翻译成
       surface
         text …翻譯成
+    lexeme es
+      surface
+        text "traduce … al "
+      surface
+        text "traducir … al "
+      surface
+        text "… traduce al "
   translation_into_marker
     defined-by translate
     defined-by translation_direction_target
@@ -644,6 +720,9 @@ meanings
         text 翻譯為
       surface
         text 翻譯到
+    lexeme es
+      surface
+        text "traducir al"
   translation_object_marker
     defined-by relation
     role translation_object_marker
@@ -682,6 +761,13 @@ meanings
     lexeme zh
       surface
         text 定义
+    lexeme es
+      surface
+        text define
+      surface
+        text definir
+      surface
+        text "da una definición de"
   links_notation_format
     defined-by concept
     role links_notation_format
@@ -697,6 +783,11 @@ meanings
     lexeme zh
       surface
         text 链接表示法
+    lexeme es
+      surface
+        text "notación links"
+      surface
+        text "en links"
   apple
     grounded-in Q89
     defined-by entity
@@ -821,6 +912,9 @@ meanings
     lexeme zh
       surface
         text 不
+    lexeme es
+      surface
+        text no
   tomato
     grounded-in Q23501
     defined-by entity
@@ -909,6 +1003,9 @@ meanings
     lexeme zh
       surface
         text 黄瓜
+    lexeme es
+      surface
+        text pepino
   potato
     grounded-in Q10998
     defined-by entity
@@ -967,6 +1064,9 @@ meanings
     lexeme zh
       surface
         text 胡萝卜
+    lexeme es
+      surface
+        text zanahoria
   bread
     grounded-in Q7802
     defined-by entity
@@ -1064,6 +1164,15 @@ meanings
     lexeme zh
       surface
         text 好
+    lexeme es
+      surface
+        text bueno
+      surface
+        text buena
+      surface
+        text buenos
+      surface
+        text buenas
   find
     defined-by action
     role compositional_lemma
@@ -1083,6 +1192,13 @@ meanings
     lexeme zh
       surface
         text 查找
+    lexeme es
+      surface
+        text encuentra
+      surface
+        text halla
+      surface
+        text encontrar
   synonym
     grounded-in Q42106
     defined-by concept
@@ -1104,6 +1220,11 @@ meanings
     lexeme zh
       surface
         text 同义词
+    lexeme es
+      surface
+        text sinónimo
+      surface
+        text sinónimos
   example
     grounded-in Q14944328
     defined-by concept
@@ -1125,6 +1246,11 @@ meanings
     lexeme zh
       surface
         text 例子
+    lexeme es
+      surface
+        text ejemplo
+      surface
+        text ejemplos
   agreement
     defined-by concept
     role compositional_lemma
@@ -1149,6 +1275,9 @@ meanings
     lexeme zh
       surface
         text 一致
+    lexeme es
+      surface
+        text concordancia
   conjunction_or
     grounded-in Q1651704
     defined-by relation
@@ -1165,6 +1294,9 @@ meanings
     lexeme zh
       surface
         text 或
+    lexeme es
+      surface
+        text o
   who_are_you
     defined-by concept
     role compositional_phrase
@@ -1190,6 +1322,13 @@ meanings
     lexeme zh
       surface
         text 你是谁
+    lexeme es
+      surface
+        text "quién eres"
+      surface
+        text "quién es usted"
+      surface
+        text "quién eres tú"
   what_is_this
     defined-by concept
     role compositional_phrase
@@ -1207,6 +1346,11 @@ meanings
     lexeme zh
       surface
         text 这是什么
+    lexeme es
+      surface
+        text "qué es esto"
+      surface
+        text "qué es eso"
   how_are_you
     defined-by concept
     role compositional_phrase
@@ -1222,6 +1366,11 @@ meanings
     lexeme zh
       surface
         text 你好吗
+    lexeme es
+      surface
+        text "cómo estás"
+      surface
+        text "qué tal"
   formal_system_incomplete_or_inconsistent
     defined-by concept
     role compositional_phrase
@@ -1237,68 +1386,6 @@ meanings
     lexeme zh
       surface
         text "任何形式系统要么是不完备的，要么是不一致的"
-  es
-    defined-by human_language
-    lexeme en
+    lexeme es
       surface
-        text "Spanish language code"
-  full
-    defined-by concept
-    lexeme en
-      surface
-        text "full language protocol status"
-  partial
-    defined-by concept
-    lexeme en
-      surface
-        text "partial language protocol status"
-  explicit_gap
-    defined-by concept
-    lexeme en
-      surface
-        text "explicit language gap policy"
-  explicit_language_context
-    defined-by concept
-    lexeme en
-      surface
-        text "explicit language context detection"
-  language_gap
-    defined-by concept
-    lexeme en
-      surface
-        text "language coverage gap"
-  response_greeting_es
-    defined-by concept
-    lexeme en
-      surface
-        text "Spanish greeting response"
-  response_identity_es
-    defined-by concept
-    lexeme en
-      surface
-        text "Spanish identity response"
-  response_language_gap_en
-    defined-by concept
-    lexeme en
-      surface
-        text "English language gap response"
-  response_language_gap_ru
-    defined-by concept
-    lexeme en
-      surface
-        text "Russian language gap response"
-  response_language_gap_hi
-    defined-by concept
-    lexeme en
-      surface
-        text "Hindi language gap response"
-  response_language_gap_zh
-    defined-by concept
-    lexeme en
-      surface
-        text "Chinese language gap response"
-  response_language_gap_es
-    defined-by concept
-    lexeme en
-      surface
-        text "Spanish language gap response"
+        text "todo sistema formal es incompleto o inconsistente"

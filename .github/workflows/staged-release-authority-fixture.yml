@@ -1,0 +1,71 @@
+name: Guarded staged release authority refusal
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches-ignore: [e2e/**]
+    paths:
+      - .github/workflows/staged-release-authority-fixture.yml
+      - .github/workflows/release-staged.yml
+      - .github/workflows/release.yml
+      - scripts/staged-release-authority-fixture.mjs
+      - scripts/maintained-staged-authority.mjs
+      - scripts/staged-caller-authority.mjs
+      - scripts/governed-github-command-provider.mjs
+      - scripts/generate-staged-release.mjs
+      - scripts/release-source-freshness.mjs
+      - scripts/lib/ci-speed-workflows.mjs
+      - experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/**
+      - rust/tests/web/staged-release-authority-fixture.test.mjs
+      - package.json
+      - bun.lock
+      - .bun-version
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Run the harmless read-only fixture checks
+        type: choice
+        options: [checks]
+        default: checks
+      pull-request:
+        description: Pull request whose harmless checks were dispatched
+        type: string
+        default: ""
+permissions:
+  contents: read
+  actions: read
+jobs:
+  staged-authority-refusal:
+    name: Exercise guarded staged subprocess refusal
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    concurrency:
+      group: formal-ai-staged-authority-fixture-${{ github.run_id }}-${{ github.run_attempt }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          path: _protocol
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: _protocol/.bun-version
+      - name: Install immutable protocol dependencies
+        timeout-minutes: 3
+        working-directory: _protocol
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Exercise actual current-process guard refusal
+        timeout-minutes: 1
+        run: node scripts/staged-release-authority-fixture.mjs
+      - name: Upload exact guarded subprocess receipt
+        uses: actions/upload-artifact@v7
+        with:
+          name: staged-authority-refusal-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-fixture/staged-authority-refusal.json
+          if-no-files-found: error
+          retention-days: 3

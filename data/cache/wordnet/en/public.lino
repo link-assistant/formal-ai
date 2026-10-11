@@ -1,0 +1,28 @@
+language en
+lemma public
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "not private; open to or concerning the people as a whole"
+    examples ("the public good" "public libraries" "public funds" "public parks" "a public scandal" "public gardens" "performers and members of royal families are public figures")
+    id oewn-01867145-a
+    partOfSpeech a
+  entry
+    definition "people in general considered as a whole"
+    examples ("he is a hero in the eyes of the public")
+    id oewn-08196607-n
+    partOfSpeech n
+    synonyms (populace world)
+  entry
+    definition "a body of people sharing some common interest"
+    examples ("the reading public")
+    id oewn-07982431-n
+    partOfSpeech n
+  entry
+    definition "affecting the people or community as a whole"
+    examples ("the public welfare" "Public interests" "Public leaders")
+    id oewn-00495342-s
+    partOfSpeech s
+source "oewn:2024"

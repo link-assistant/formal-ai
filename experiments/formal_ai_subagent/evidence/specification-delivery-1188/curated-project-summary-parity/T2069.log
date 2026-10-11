@@ -1,0 +1,56 @@
+>> bash {"command":"mkdir -p -- .formal-ai && (lock='.formal-ai/general-change-plan.lino.lock'; tries=0; until mkdir -- \"$lock\" 2>/dev/null; do tries=$((tries + 1)); [ \"$tries\" -lt 40 ] || exit 75; sleep 0.025; done; cleanup(){ rmdir -- \"$lock\"; }; trap cleanup EXIT; if [ -f '.formal-ai/general-change-plan.lino' ]; then grep -Fqx -- '  id \"general_change_plan_3b917574c3442c81\"' '.formal-ai/general-change-plan.lino'; status=$?; [ \"$status\" -le 1 ] || exit \"$status\"; else status=1; fi; if [ \"$status\" -eq 1 ]; then printf \"\n%s\" 'general_change_plan\n  id \"general_change_plan_3b917574c3442c81\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Set the contents of data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino to exactly this content:\\n````````````text\\nworker_module_budget\\n  module \\\"formal_ai_worker_project_summaries.js\\\"\\n  ceiling 48\\n  rationale \\\"Curated project descriptions reuse the shared summarization mode and stable weighted statement pipeline. GitHub HTTP projections match local registry records before any network attempt and retain explicit curated-source provenance. Shared seeded project responses substitute metadata once, preserving literal values. Extracted from the project-search worker without increasing either existing module ceiling (R1188-U29, 2026-10-10).\\\"\\n````````````\"\n  target \"data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_ac6509b0a44d1580\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino\"\n    expected_evidence \"workspace file data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"worker_module_budget\\n  module \\\"formal_ai_worker_project_summaries.js\\\"\\n  ceiling 48\\n  rationale \\\"Curated project descriptions reuse the shared summarization mode and stable weighted statement pipeline. GitHub HTTP projections match local registry records before any network attempt and retain explicit curated-source provenance. Shared seeded project responses substitute metadata once, preserving literal values. Extracted from the project-search worker without increasing either existing module ceiling (R1188-U29, 2026-10-10).\\\"\\n\"\n    command \"cat data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino\"\n  verification_command \"cat data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino\"\n' >> '.formal-ai/general-change-plan.lino' || exit $?; fi; awk -v identity='  id \"general_change_plan_3b917574c3442c81\"' \"\\$0==\\\"general_change_plan\\\" {if(record)exit; header=\\$0; next} \\$0==identity {record=1; print header} record && NF {print}\" '.formal-ai/general-change-plan.lino')"}
+   general_change_plan
+     id "general_change_plan_3b917574c3442c81"
+     execution_mode "literal_file"
+     terminal_state "executed"
+     goal "Set the contents of data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino to exactly this content:\n````````````text\nworker_module_budget\n  module \"formal_ai_worker_project_summaries.js\"\n  ceiling 48\n  rationale \"Curated project descriptions reuse the shared summarization mode and stable weighted statement pipeline. GitHub HTTP projections match local registry records before any network attempt and retain explicit curated-source provenance. Shared seeded project responses substitute metadata once, preserving literal values. Extracted from the project-search worker without increasing either existing module ceiling (R1188-U29, 2026-10-10).\"\n````````````"
+     target "data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino"
+     step 1
+       capability "Write"
+       action "append the composed plan to .formal-ai/general-change-plan.lino"
+       expected_evidence "written plan event impulse_ac6509b0a44d1580"
+     step 2
+       capability "Write"
+       action "write the requested content to data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino"
+       expected_evidence "workspace file data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino"
+     step 3
+       capability "Run"
+       action "run the request-derived verification command"
+       expected_evidence "worker_module_budget\n  module \"formal_ai_worker_project_summaries.js\"\n  ceiling 48\n  rationale \"Curated project descriptions reuse the shared summarization mode and stable weighted statement pipeline. GitHub HTTP projections match local registry records before any network attempt and retain explicit curated-source provenance. Shared seeded project responses substitute metadata once, preserving literal values. Extracted from the project-search worker without increasing either existing module ceiling (R1188-U29, 2026-10-10).\"\n"
+       command "cat data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino"
+     verification_command "cat data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino"
+   
+>> write {"content":"worker_module_budget\n  module \"formal_ai_worker_project_summaries.js\"\n  ceiling 48\n  rationale \"Curated project descriptions reuse the shared summarization mode and stable weighted statement pipeline. GitHub HTTP projections match local registry records before any network attempt and retain explicit curated-source provenance. Shared seeded project responses substitute metadata once, preserving literal values. Extracted from the project-search worker without increasing either existing module ceiling (R1188-U29, 2026-10-10).\"\n","filePath":"data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino","file_path":"data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino","path":"data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino"}
+>> bash {"command":"cat data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino"}
+   worker_module_budget
+     module "formal_ai_worker_project_summaries.js"
+     ceiling 48
+     rationale "Curated project descriptions reuse the shared summarization mode and stable weighted statement pipeline. GitHub HTTP projections match local registry records before any network attempt and retain explicit curated-source provenance. Shared seeded project responses substitute metadata once, preserving literal values. Extracted from the project-search worker without increasing either existing module ceiling (R1188-U29, 2026-10-10)."
+   
+== answer ==
+Completed the general change request for data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino and verified it with `cat data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino`.
+
+Plan event (.formal-ai/general-change-plan.lino):
+
+`````````````lino
+general_change_plan
+  id "general_change_plan_3b917574c3442c81"
+  execution_mode "literal_file"
+  terminal_state "executed"
+  goal "Set the contents of data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino to exactly this content:\n````````````text\nworker_module_budget\n  module \"formal_ai_worker_project_summaries.js\"\n  ceiling 48\n  rationale \"Curated project descriptions reuse the shared summarization mode and stable weighted statement pipeline. GitHub HTTP projections match local registry records before any network attempt and retain explicit curated-source provenance. Shared seeded project responses substitute metadata once, preserving literal values. Extracted from the project-search worker without increasing either existing module ceiling (R1188-U29, 2026-10-10).\"\n````````````"
+  target "data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_ac6509b0a44d1580"
+  step 2
+    capability "Write"
+    action "write the requested content to data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino"
+    expected_evidence "workspace file data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "worker_module_budget\n  module \"formal_ai_worker_project_summaries.js\"\n  ceiling 48\n  rationale \"Curated project descriptions reuse the shared summarization mode and stable weighted statement pipeline. GitHub HTTP projections match local registry records before any network attempt and retain explicit curated-source provenance. Shared seeded project responses substitute metadata once, preserving literal values. Extracted from the project-search worker without increasing either existing module ceiling (R1188-U29, 2026-10-10).\"\n"
+    command "cat data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino"
+  verification_command "cat data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino"
+`````````````

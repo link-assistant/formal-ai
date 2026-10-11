@@ -521,6 +521,12 @@ fn agentic_planner_writes_verifies_and_returns_the_same_compiled_artifact() {
     let tools = ["write_file", "run_command"];
     let mut messages = vec![ChatMessage::user(ENGLISH_PROCEDURE)];
     let procedure = compile(ENGLISH_PROCEDURE);
+    let run = run_agentic_task(ENGLISH_PROCEDURE).expect("actual in-repo Agent CLI replay");
+    assert_eq!(
+        run.steps.len(),
+        3,
+        "write, complete readback, actual conformance"
+    );
 
     let Some(AgenticPlan::ToolCalls(write)) = plan_chat_step(&messages, &tools) else {
         panic!("the Formal AI agent path should claim an arbitrary procedure");
@@ -531,11 +537,13 @@ fn agentic_planner_writes_verifies_and_returns_the_same_compiled_artifact() {
         serde_json::from_str(&write[0].arguments).expect("write arguments");
     assert_eq!(arguments["path"], "compiled-procedure.lino");
     assert_eq!(arguments["content"], procedure.artifact_links_notation());
+    assert_eq!(write[0].tool, run.steps[0].tool);
+    assert_eq!(write[0].arguments, run.steps[0].arguments);
     answer_tool_call(
         &mut messages,
         &write[0].tool,
         &write[0].arguments,
-        "wrote compiled-procedure.lino",
+        &run.steps[0].result,
     );
 
     let Some(AgenticPlan::ToolCalls(verify)) = plan_chat_step(&messages, &tools) else {
@@ -544,11 +552,13 @@ fn agentic_planner_writes_verifies_and_returns_the_same_compiled_artifact() {
     assert_eq!(verify.len(), 1);
     assert_eq!(verify[0].tool, "run_command");
     assert!(verify[0].arguments.contains("compiled-procedure.lino"));
+    assert_eq!(verify[0].tool, run.steps[1].tool);
+    assert_eq!(verify[0].arguments, run.steps[1].arguments);
     answer_tool_call(
         &mut messages,
         &verify[0].tool,
         &verify[0].arguments,
-        &procedure.artifact_links_notation(),
+        &run.steps[1].result,
     );
 
     let Some(AgenticPlan::ToolCalls(execute)) = plan_chat_step(&messages, &tools) else {
@@ -568,11 +578,13 @@ fn agentic_planner_writes_verifies_and_returns_the_same_compiled_artifact() {
         "the conformance trigger should be explicit and replayable"
     );
     let execution = procedure.conformance_links_notation(PROCEDURE_CONFORMANCE_TRIGGER);
+    assert_eq!(execute[0].tool, run.steps[2].tool);
+    assert_eq!(execute[0].arguments, run.steps[2].arguments);
     answer_tool_call(
         &mut messages,
         &execute[0].tool,
         &execute[0].arguments,
-        &execution,
+        &run.steps[2].result,
     );
 
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
@@ -582,7 +594,6 @@ fn agentic_planner_writes_verifies_and_returns_the_same_compiled_artifact() {
     assert!(answer.contains(&procedure.restate_steps()));
     assert!(answer.contains(&execution));
 
-    let run = run_agentic_task(ENGLISH_PROCEDURE).expect("in-repo Agent CLI replay");
     assert_eq!(
         run.steps
             .iter()
@@ -636,7 +647,8 @@ fn agentic_planner_rejects_a_corrupted_artifact_readback() {
 fn agentic_planner_reports_a_failed_conformance_execution_honestly() {
     let tools = ["write_file", "run_command"];
     let mut messages = vec![ChatMessage::user(ENGLISH_PROCEDURE)];
-    let procedure = compile(ENGLISH_PROCEDURE);
+    let run = run_agentic_task(ENGLISH_PROCEDURE).expect("actual complete source observation");
+    assert_eq!(run.steps.len(), 3);
 
     let Some(AgenticPlan::ToolCalls(write)) = plan_chat_step(&messages, &tools) else {
         panic!("the Formal AI agent path should author the procedure artifact");
@@ -645,7 +657,7 @@ fn agentic_planner_reports_a_failed_conformance_execution_honestly() {
         &mut messages,
         &write[0].tool,
         &write[0].arguments,
-        "wrote compiled-procedure.lino",
+        &run.steps[0].result,
     );
     let Some(AgenticPlan::ToolCalls(readback)) = plan_chat_step(&messages, &tools) else {
         panic!("the Formal AI agent path should read the artifact back");
@@ -654,7 +666,7 @@ fn agentic_planner_reports_a_failed_conformance_execution_honestly() {
         &mut messages,
         &readback[0].tool,
         &readback[0].arguments,
-        &procedure.artifact_links_notation(),
+        &run.steps[1].result,
     );
     let Some(AgenticPlan::ToolCalls(execute)) = plan_chat_step(&messages, &tools) else {
         panic!("the verified artifact should enter conformance execution");
@@ -752,4 +764,46 @@ fn whole_task_uses_one_artifact_across_solver_interpreter_explanation_and_agent(
     let why = solver.solve_with_history("Why did you do that?", &history);
     assert!(why.answer.contains(&artifact.steps[0].source_text));
     assert!(why.answer.contains(&artifact.steps[3].source_text));
+}
+
+#[test]
+fn procedure_artifact_receipts_require_complete_current_command_observations() {
+    let run = run_agentic_task(ENGLISH_PROCEDURE).expect("actual procedure replay");
+    assert_eq!(run.steps.len(), 3);
+    let original: serde_json::Value =
+        serde_json::from_str(&run.steps[1].result).expect("actual readback");
+    for (field, value) in [
+        ("exit_code", serde_json::json!(7)),
+        ("complete", serde_json::json!(false)),
+        ("truncated", serde_json::json!(true)),
+        ("timed_out", serde_json::json!(true)),
+        ("command", serde_json::json!("cat foreign.lino")),
+        (
+            "stdout",
+            serde_json::json!("compiled_procedure_artifact corrupted"),
+        ),
+    ] {
+        let mut messages = vec![ChatMessage::user(ENGLISH_PROCEDURE)];
+        answer_tool_call(
+            &mut messages,
+            &run.steps[0].tool,
+            &run.steps[0].arguments,
+            &run.steps[0].result,
+        );
+        let mut altered = original.clone();
+        altered[field] = value;
+        answer_tool_call(
+            &mut messages,
+            &run.steps[1].tool,
+            &run.steps[1].arguments,
+            &altered.to_string(),
+        );
+        let Some(AgenticPlan::Final(answer)) =
+            plan_chat_step(&messages, &["write_file", "run_command"])
+        else {
+            panic!("uncertified artifact must not authorize conformance: {field}");
+        };
+        assert!(answer.contains("verification failed"), "{field}: {answer}");
+        assert!(!answer.contains("executed end to end"), "{field}: {answer}");
+    }
 }

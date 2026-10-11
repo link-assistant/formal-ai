@@ -1,0 +1,18 @@
+language en
+lemma subtract
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "make a subtraction"
+    examples ("subtract this amount from my paycheck")
+    id oewn-00642914-v
+    partOfSpeech v
+    synonyms (deduct "take off")
+  entry
+    definition "take off or away"
+    examples ("this prefix was subtracted when the word was borrowed from French")
+    id oewn-00588144-v
+    partOfSpeech v
+source "oewn:2024"

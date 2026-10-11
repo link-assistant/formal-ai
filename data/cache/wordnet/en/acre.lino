@@ -1,0 +1,20 @@
+language en
+lemma acre
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a state in western Brazil bordering on Bolivia and Peru"
+    id oewn-08873717-n
+    partOfSpeech n
+  entry
+    definition "a unit of area (4840 square yards) used in English-speaking countries"
+    id oewn-13635023-n
+    partOfSpeech n
+  entry
+    definition "a town and port in northwestern Israel in the eastern Mediterranean"
+    id oewn-08811162-n
+    partOfSpeech n
+    synonyms (Akko Akka Accho)
+source "oewn:2024"

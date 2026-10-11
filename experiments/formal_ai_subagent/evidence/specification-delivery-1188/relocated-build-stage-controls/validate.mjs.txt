@@ -1,0 +1,8 @@
+import {execFileSync} from 'node:child_process';
+import {writeFileSync,readFileSync} from 'node:fs';
+const root='/Users/konard/Code/Archive/link-assistant/formal-ai';
+const files=['rust/tests/web/relocated-build-stage-controls.test.mjs','rust/tests/web/coverage-producer-budget.test.mjs','rust/tests/web/coverage-execution.test.mjs','rust/tests/web/native-release-workflow.test.mjs','rust/tests/web/native-release-artifact.test.mjs'];
+const output=execFileSync(process.execPath,['--test',...files],{cwd:root,encoding:'utf8',timeout:45000,maxBuffer:8*1024*1024});
+writeFileSync('/private/tmp/spec-recurrence-1188/relocated-budget-controls/actual-controls.log',output);console.log(output);
+for(const path of ['rust/tests/unit/ci-cd/workflow_coverage.rs','rust/tests/unit/issue_896_component_boundaries.rs','rust/tests/unit/ci-cd/attestation_and_coverage_audit.rs'])execFileSync('rustfmt',['--edition','2024','--check',path],{cwd:root,encoding:'utf8'});
+console.log('T4230_RELOCATED_CONTROLS_PASS');

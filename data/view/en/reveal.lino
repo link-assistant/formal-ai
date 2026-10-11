@@ -1,0 +1,17 @@
+view
+  id M-ddaa47727ef5
+  lemma reveal
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make manifest"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make known to the public information that was previously known only to a few people or that was meant to be kept a secret"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "disclose directly or through prophets"
+    provenance (wordnet)

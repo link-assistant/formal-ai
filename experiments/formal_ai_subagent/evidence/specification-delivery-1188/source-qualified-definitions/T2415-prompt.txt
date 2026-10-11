@@ -1,0 +1,1 @@
+Run `rustfmt --edition 2024 rust/src/source_fetch.rs rust/src/source_fetch/seed_captures.rs rust/src/solver_handlers/source_qualified_definition.rs rust/src/solver_handlers/word_definition.rs rust/src/solver_handlers/modules.rs`

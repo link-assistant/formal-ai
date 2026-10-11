@@ -2,22 +2,22 @@ self_ast_census
   target src/proof_engine/arithmetic.rs
   language rust
   fidelity signature
-  byte_len 9410
-  line_count 261
-  content_id source_module_638c56613be59745
+  byte_len 9065
+  line_count 256
+  content_id source_module_d13a07b177b251d9
   symbol_count 14
   symbols
-    enum Comparison 15 22
-    function label_en 25 34
-    function attempt_arithmetic_claim 41 128
-    function arithmetic_failure_reason 130 152
-    function describe_arithmetic_error 154 159
-    function arithmetic_error_display 161 170
-    function split_on_comparison 172 195
-    function comparison_symbol 197 206
-    function observed_comparison 208 216
-    function contains_digit 218 220
-    function normalize_arithmetic_text 222 239
-    function values_equal 241 249
-    function numeric_less_than 251 256
-    function parse_numeric 258 261
+    enum Comparison 16 23
+    function relation_id 28 37
+    function attempt_arithmetic_claim 44 133
+    function arithmetic_failure_reason 135 147
+    function describe_arithmetic_error 149 154
+    function arithmetic_error_display 156 165
+    function split_on_comparison 167 190
+    function comparison_symbol 192 201
+    function observed_comparison 203 211
+    function contains_digit 213 215
+    function normalize_arithmetic_text 217 234
+    function values_equal 236 244
+    function numeric_less_than 246 251
+    function parse_numeric 253 256

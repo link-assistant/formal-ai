@@ -1,0 +1,6 @@
+>> glob {"path":".","pattern":"[]"}
+   Error: the dogfood driver does not execute glob
+== answer ==
+The command failed: Error: the dogfood driver does not execute glob
+
+I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.

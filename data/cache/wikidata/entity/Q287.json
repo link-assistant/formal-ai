@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "木材"
+        },
+        "es": {
+          "language": "es",
+          "value": "madera"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "внутренняя часть дерева"
+        },
+        "es": {
+          "language": "es",
+          "value": "material duro y fibroso obtenido de los árboles u otras plantas, que se emplea para fines como mobiliario, utensilios, instrumentos, objetos, etc."
         }
       },
       "aliases": {

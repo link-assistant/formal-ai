@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "硬幣"
+        },
+        "es": {
+          "language": "es",
+          "value": "moneda"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "用於貿易、大量生產的硬質金屬"
+        },
+        "es": {
+          "language": "es",
+          "value": "pedazo de material pequeño, plano y generalmente redondo que se utiliza como dinero"
         }
       },
       "aliases": {
@@ -68,6 +76,12 @@
           {
             "language": "zh",
             "value": "銅板"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "monedas"
           }
         ]
       }

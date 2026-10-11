@@ -1,0 +1,6 @@
+{
+  "raw": "{\"stdout\":{\"a\":1},\"exit_code\":0}",
+  "presentation": "{\n  \"a\": 1\n}",
+  "preRepairIncorrectlyAccepted": true,
+  "kind": "no-byte-string-provenance"
+}

@@ -1,0 +1,420 @@
+TAP version 13
+# Subtest: actual ripgrep accepts inline flags and preserves numbered matching evidence
+ok 1 - actual ripgrep accepts inline flags and preserves numbered matching evidence
+  ---
+  duration_ms: 12.59925
+  ...
+# Subtest: actual zero-match result is distinct from unavailable source and invalid search
+ok 2 - actual zero-match result is distinct from unavailable source and invalid search
+  ---
+  duration_ms: 21.95025
+  ...
+# Subtest: search respects file inclusion and keeps colon-bearing path and text
+ok 3 - search respects file inclusion and keeps colon-bearing path and text
+  ---
+  duration_ms: 10.115791
+  ...
+# Subtest: sandbox sibling whose name shares the root prefix is still outside
+ok 4 - sandbox sibling whose name shares the root prefix is still outside
+  ---
+  duration_ms: 1.354459
+  ...
+# Subtest: failed adapter results are typed while literal error text stays successful file content
+ok 5 - failed adapter results are typed while literal error text stays successful file content
+  ---
+  duration_ms: 16.1635
+  ...
+# Subtest: actual successful Bash keeps JSON error fields as output with explicit zero status
+ok 6 - actual successful Bash keeps JSON error fields as output with explicit zero status
+  ---
+  duration_ms: 688.780875
+  ...
+# Subtest: large matching line retains complete raw bytes and count without a pipe overflow
+ok 7 - large matching line retains complete raw bytes and count without a pipe overflow
+  ---
+  duration_ms: 239.1745
+  ...
+# Subtest: many matching Unicode lines keep their real count in a bounded preview
+ok 8 - many matching Unicode lines keep their real count in a bounded preview
+  ---
+  duration_ms: 23.332542
+  ...
+# Subtest: abrupt failing child preserves every diagnostic byte through the actual driver
+ok 9 - abrupt failing child preserves every diagnostic byte through the actual driver
+  ---
+  duration_ms: 53.200917
+  ...
+# Subtest: successful Unicode, CRLF and trailing whitespace remain exact stdout evidence
+ok 10 - successful Unicode, CRLF and trailing whitespace remain exact stdout evidence
+  ---
+  duration_ms: 87.451667
+  ...
+# Subtest: oversized stdout is retained without pipe-buffer limits or fabricated byte proof
+ok 11 - oversized stdout is retained without pipe-buffer limits or fabricated byte proof
+  ---
+  duration_ms: 51.020083
+  ...
+# Subtest: oversized nonzero diagnostics retain failure and digest independently of preview
+ok 12 - oversized nonzero diagnostics retain failure and digest independently of preview
+  ---
+  duration_ms: 35.65175
+  ...
+# Subtest: timeout preserves owned-child diagnostics and never supplies a success exit code
+ok 13 - timeout preserves owned-child diagnostics and never supplies a success exit code
+  ---
+  duration_ms: 362.893875
+  ...
+# Subtest: a terminated shell records its signal independently of timeout and exit code
+ok 14 - a terminated shell records its signal independently of timeout and exit code
+  ---
+  duration_ms: 17.543333
+  ...
+# Subtest: invalid UTF-8 stays in raw capture and cannot become replacement-character evidence
+ok 15 - invalid UTF-8 stays in raw capture and cannot become replacement-character evidence
+  ---
+  duration_ms: 89.962958
+  ...
+# Subtest: stderr on a successful command is observed and cannot be hidden in stdout proof
+ok 16 - stderr on a successful command is observed and cannot be hidden in stdout proof
+  ---
+  duration_ms: 62.041583
+  ...
+# Subtest: invalid transport limits refuse before launching side effects
+ok 17 - invalid transport limits refuse before launching side effects
+  ---
+  duration_ms: 0.477291
+  ...
+# Subtest: selected actual adapter list is recorded and executes its requested effect
+ok 18 - selected actual adapter list is recorded and executes its requested effect
+  ---
+  duration_ms: 6.175334
+  ...
+# Subtest: unavailable or duplicated adapter declarations stop before planner or effects
+ok 19 - unavailable or duplicated adapter declarations stop before planner or effects
+  ---
+  duration_ms: 0.648834
+  ...
+# Subtest: an undeclared call vetoes the complete batch before its first side effect
+ok 20 - an undeclared call vetoes the complete batch before its first side effect
+  ---
+  duration_ms: 0.847375
+  ...
+# Subtest: caller and planner mutations cannot fabricate advertised availability
+ok 21 - caller and planner mutations cannot fabricate advertised availability
+  ---
+  duration_ms: 1.276917
+  ...
+# Subtest: a final answer with no tool availability records an empty actual schema
+ok 22 - a final answer with no tool availability records an empty actual schema
+  ---
+  duration_ms: 0.130917
+  ...
+# Subtest: read clients preserve earlier bytes, verify the stream and deduplicate a replay
+ok 23 - read clients preserve earlier bytes, verify the stream and deduplicate a replay
+  ---
+  duration_ms: 1142.490208
+  ...
+# Subtest: an absent log is created, while a permission failure never overwrites it
+ok 24 - an absent log is created, while a permission failure never overwrites it
+  ---
+  duration_ms: 23.655333
+  ...
+# Subtest: read-back that loses earlier events cannot authorize the requested write
+ok 25 - read-back that loses earlier events cannot authorize the requested write
+  ---
+  duration_ms: 5.96325
+  ...
+# Subtest: run-only clients execute a quoted append and preserve history on retries
+ok 26 - run-only clients execute a quoted append and preserve history on retries
+  ---
+  duration_ms: 156.445458
+  ...
+# Subtest: write-only clients deliver the target without overwriting an unobserved event stream
+ok 27 - write-only clients deliver the target without overwriting an unobserved event stream
+  ---
+  duration_ms: 8.435584
+  ...
+# Subtest: simultaneous retries take the bounded lock and retain exactly one event
+ok 28 - simultaneous retries take the bounded lock and retain exactly one event
+  ---
+  duration_ms: 1534.705625
+  ...
+# Subtest: repository-root shell events use the same sandbox as file tools
+ok 29 - repository-root shell events use the same sandbox as file tools
+  ---
+  duration_ms: 68.395042
+  ...
+# Subtest: cached event readback excludes the separator before a later canonical record
+ok 30 - cached event readback excludes the separator before a later canonical record
+  ---
+  duration_ms: 19.574625
+  ...
+# Subtest: original literal matrices preserve target bytes after observed auxiliary I/O
+ok 31 - original literal matrices preserve target bytes after observed auxiliary I/O
+  ---
+  duration_ms: 3316.854042
+  ...
+# Subtest: original verification outcome: explicit error
+ok 32 - original verification outcome: explicit error
+  ---
+  duration_ms: 42.363416
+  ...
+# Subtest: original verification outcome: nonzero status
+ok 33 - original verification outcome: nonzero status
+  ---
+  duration_ms: 38.451667
+  ...
+# Subtest: original verification outcome: wrong bytes
+ok 34 - original verification outcome: wrong bytes
+  ---
+  duration_ms: 35.812458
+  ...
+# Subtest: original verification outcome: matching bytes
+ok 35 - original verification outcome: matching bytes
+  ---
+  duration_ms: 37.324375
+  ...
+# Subtest: target write is retried once after an actual missing-target read, then stops
+ok 36 - target write is retried once after an actual missing-target read, then stops
+  ---
+  duration_ms: 55.379958
+  ...
+# Subtest: write-only target succeeds with an explicit missing auxiliary receipt
+ok 37 - write-only target succeeds with an explicit missing auxiliary receipt
+  ---
+  duration_ms: 11.329541
+  ...
+# Subtest: write-only actual target error is terminal and never becomes completion
+ok 38 - write-only actual target error is terminal and never becomes completion
+  ---
+  duration_ms: 11.588125
+  ...
+# Subtest: shell-only event persistence uses actual command stdout before target verification
+ok 39 - shell-only event persistence uses actual command stdout before target verification
+  ---
+  duration_ms: 88.365917
+  ...
+# Subtest: actual complete read retains raw source: ""
+ok 40 - actual complete read retains raw source: ""
+  ---
+  duration_ms: 726.464
+  ...
+# Subtest: actual complete read retains raw source: "  failed\\nλ🙂\\n"
+ok 41 - actual complete read retains raw source: "  failed\\nλ🙂\\n"
+  ---
+  duration_ms: 1.716792
+  ...
+# Subtest: actual complete read retains raw source: "{\\"is_error\\":true,\\"success\\":false,\\"compl
+ok 42 - actual complete read retains raw source: "{\\"is_error\\":true,\\"success\\":false,\\"compl
+  ---
+  duration_ms: 1.477459
+  ...
+# Subtest: actual complete read retains raw source: "{\\"schema\\":\\"source-read-receipt/v1\\",\\"pat
+ok 43 - actual complete read retains raw source: "{\\"schema\\":\\"source-read-receipt/v1\\",\\"pat
+  ---
+  duration_ms: 1.201583
+  ...
+# Subtest: actual absent/directory/escaping reads own outer failure
+ok 44 - actual absent/directory/escaping reads own outer failure
+  ---
+  duration_ms: 1.723625
+  ...
+# Subtest: actual permission denial is provider-owned
+ok 45 - actual permission denial is provider-owned
+  ---
+  duration_ms: 1.384208
+  ...
+# Subtest: partial/path/refusal metadata cannot certify an actual source
+ok 46 - partial/path/refusal metadata cannot certify an actual source
+  ---
+  duration_ms: 3.689458
+  ...
+# Subtest: driver keeps real failure and successful authored JSON roles separate
+ok 47 - driver keeps real failure and successful authored JSON roles separate
+  ---
+  duration_ms: 1.630333
+  ...
+# Subtest: raw authored source does not provide its own metadata: goal "Create a file status.txt cont
+ok 48 - raw authored source does not provide its own metadata: goal "Create a file status.txt cont
+  ---
+  duration_ms: 795.773291
+  ...
+# Subtest: outer provider success retains exact source bytes: goal "Create a file status.txt cont
+ok 49 - outer provider success retains exact source bytes: goal "Create a file status.txt cont
+  ---
+  duration_ms: 6.583958
+  ...
+# Subtest: raw authored source does not provide its own metadata: {"schema":"source-read-receipt/v1",
+ok 50 - raw authored source does not provide its own metadata: {"schema":"source-read-receipt/v1",
+  ---
+  duration_ms: 0.372083
+  ...
+# Subtest: outer provider success retains exact source bytes: {"schema":"source-read-receipt/v1",
+ok 51 - outer provider success retains exact source bytes: {"schema":"source-read-receipt/v1",
+  ---
+  duration_ms: 0.345166
+  ...
+# Subtest: raw authored source does not provide its own metadata: {"success":false,"complete":false,"
+ok 52 - raw authored source does not provide its own metadata: {"success":false,"complete":false,"
+  ---
+  duration_ms: 0.439167
+  ...
+# Subtest: outer provider success retains exact source bytes: {"success":false,"complete":false,"
+ok 53 - outer provider success retains exact source bytes: {"success":false,"complete":false,"
+  ---
+  duration_ms: 0.362875
+  ...
+# Subtest: raw authored source does not provide its own metadata: {"success":true,"complete":true,"co
+ok 54 - raw authored source does not provide its own metadata: {"success":true,"complete":true,"co
+  ---
+  duration_ms: 0.425292
+  ...
+# Subtest: outer provider success retains exact source bytes: {"success":true,"complete":true,"co
+ok 55 - outer provider success retains exact source bytes: {"success":true,"complete":true,"co
+  ---
+  duration_ms: 0.282792
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"complete":false}
+ok 56 - provider refusal or partial observation cannot certify source {"complete":false}
+  ---
+  duration_ms: 0.327042
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"stream_complete":false}
+ok 57 - provider refusal or partial observation cannot certify source {"stream_complete":false}
+  ---
+  duration_ms: 0.261584
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"truncated":true}
+ok 58 - provider refusal or partial observation cannot certify source {"truncated":true}
+  ---
+  duration_ms: 0.09275
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"timed_out":true}
+ok 59 - provider refusal or partial observation cannot certify source {"timed_out":true}
+  ---
+  duration_ms: 0.10375
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"aborted":true}
+ok 60 - provider refusal or partial observation cannot certify source {"aborted":true}
+  ---
+  duration_ms: 0.106708
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"signal":"SIGTERM"}
+ok 61 - provider refusal or partial observation cannot certify source {"signal":"SIGTERM"}
+  ---
+  duration_ms: 0.097333
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"success":false}
+ok 62 - provider refusal or partial observation cannot certify source {"success":false}
+  ---
+  duration_ms: 0.171583
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"is_error":true}
+ok 63 - provider refusal or partial observation cannot certify source {"is_error":true}
+  ---
+  duration_ms: 0.080291
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"exit_code":1}
+ok 64 - provider refusal or partial observation cannot certify source {"exit_code":1}
+  ---
+  duration_ms: 0.090208
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"success":"true"}
+ok 65 - provider refusal or partial observation cannot certify source {"success":"true"}
+  ---
+  duration_ms: 0.09975
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"complete":"true"}
+ok 66 - provider refusal or partial observation cannot certify source {"complete":"true"}
+  ---
+  duration_ms: 0.09875
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"format":"numbered"}
+ok 67 - provider refusal or partial observation cannot certify source {"format":"numbered"}
+  ---
+  duration_ms: 0.1145
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"path":"elsewhere/.formal-ai/general-change-plan.lino"}
+ok 68 - provider refusal or partial observation cannot certify source {"path":"elsewhere/.formal-ai/general-change-plan.lino"}
+  ---
+  duration_ms: 0.026041
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"path":null}
+ok 69 - provider refusal or partial observation cannot certify source {"path":null}
+  ---
+  duration_ms: 0.023916
+  ...
+# Subtest: outer tool error remains failure even when metadata declares success
+ok 70 - outer tool error remains failure even when metadata declares success
+  ---
+  duration_ms: 0.314167
+  ...
+# Subtest: known complete numbered format is separate from process status
+ok 71 - known complete numbered format is separate from process status
+  ---
+  duration_ms: 0.136
+  ...
+# Subtest: current call identity and exact nonconflicting path are required
+ok 72 - current call identity and exact nonconflicting path are required
+  ---
+  duration_ms: 210.212916
+  ...
+# Subtest: explicit successful process receipt retains authored failure vocabulary
+ok 73 - explicit successful process receipt retains authored failure vocabulary
+  ---
+  duration_ms: 0.200917
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"complete":false}
+ok 74 - partial shell receipts veto exact bytes and digest {"complete":false}
+  ---
+  duration_ms: 0.136667
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"stream_complete":false}
+ok 75 - partial shell receipts veto exact bytes and digest {"stream_complete":false}
+  ---
+  duration_ms: 0.050958
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"truncated":true}
+ok 76 - partial shell receipts veto exact bytes and digest {"truncated":true}
+  ---
+  duration_ms: 0.048791
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"timed_out":true}
+ok 77 - partial shell receipts veto exact bytes and digest {"timed_out":true}
+  ---
+  duration_ms: 0.246083
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"aborted":true}
+ok 78 - partial shell receipts veto exact bytes and digest {"aborted":true}
+  ---
+  duration_ms: 0.076208
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"signal":"SIGTERM"}
+ok 79 - partial shell receipts veto exact bytes and digest {"signal":"SIGTERM"}
+  ---
+  duration_ms: 0.127625
+  ...
+# Subtest: full successful shell bytes still require exact output and real status
+ok 80 - full successful shell bytes still require exact output and real status
+  ---
+  duration_ms: 0.763083
+  ...
+# Subtest: original authored failure goal proceeds beyond actual bare source read
+ok 81 - original authored failure goal proceeds beyond actual bare source read
+  ---
+  duration_ms: 275.054834
+  ...
+# Subtest: a later declined Read observation cannot retain an older source certificate
+ok 82 - a later declined Read observation cannot retain an older source certificate
+  ---
+  duration_ms: 0.719209
+  ...
+1..82
+# tests 82
+# suites 0
+# pass 82
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3921.09175

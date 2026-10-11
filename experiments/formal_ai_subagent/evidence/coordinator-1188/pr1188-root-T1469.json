@@ -1,0 +1,10 @@
+{
+  "identifier": "T1469",
+  "prompt": "Run node -e 'const fs=require(\"node:fs\");const d=\"experiments/formal_ai_subagent/evidence/coordinator-1188\";fs.mkdirSync(d,{recursive:true});fs.copyFileSync(\"/private/tmp/pr1188-root-physical-audit.json\",d+\"/physical-mutations-through-T1461.json\");for(const f of fs.readdirSync(\"/private/tmp\").filter(x=>/^pr1188-root-T[0-9]+[.]json$/.test(x)))fs.copyFileSync(\"/private/tmp/\"+f,d+\"/\"+f);'",
+  "error": "SyntaxError: Identifier 'sourceFromReadResult' has already been declared in js/agentic/general_execution.mjs",
+  "result": {
+    "transcript": [],
+    "stop": "boot_failure"
+  },
+  "provenance": "Tool-observed startup exception; planner module import failed before drive. No execution or file mutation."
+}

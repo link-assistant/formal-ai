@@ -1,0 +1,1 @@
+In data/meta/agentic-messages.lino, replace «text "write the composed plan to {plan_path}"» with «text "append the composed plan to {plan_path}"».

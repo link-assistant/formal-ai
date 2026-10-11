@@ -1,0 +1,5 @@
+{
+  "taskId": "T2029",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Set the contents of data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino to exactly this content:\n````````````text\nworker-module-budget\n  module \"formal_ai_worker_source_callable_contracts.js\"\n  ceiling 130\n  rationale \"Source-owned callable body AST read contracts, explicit/provisional/observed binding, and bound recurrence projection; split from the recurrence cache reader without increasing its existing ceiling.\"\n````````````"
+}

@@ -1,0 +1,22 @@
+language en
+lemma impersonation
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a representation of a person that is exaggerated for comic effect"
+    id oewn-06792908-n
+    partOfSpeech n
+    synonyms (caricature imitation)
+  entry
+    definition "pretending to be another person"
+    id oewn-00757684-n
+    partOfSpeech n
+    synonyms (imposture)
+  entry
+    definition "imitating the mannerisms of another person"
+    id oewn-00550321-n
+    partOfSpeech n
+    synonyms (personation)
+source "oewn:2024"

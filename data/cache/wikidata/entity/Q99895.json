@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "枕頭"
+        },
+        "es": {
+          "language": "es",
+          "value": "almohada"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "постельная принадлежность"
+        },
+        "es": {
+          "language": "es",
+          "value": "pieza mullida en la que se apoya la cabeza durante el sueño"
         }
       },
       "aliases": {
@@ -36,6 +44,12 @@
           {
             "language": "ru",
             "value": "Подушка"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "cabecera"
           }
         ]
       }

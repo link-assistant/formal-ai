@@ -2,132 +2,140 @@ self_ast_census
   target src/agentic_coding/shell_command.rs
   language rust
   fidelity full_ast
-  byte_len 40991
-  line_count 914
-  content_id source_module_4412fd5678259fa5
-  symbol_count 42
+  byte_len 44415
+  line_count 988
+  content_id source_module_32c7f299d6ea6637
+  symbol_count 47
   symbols
-    const REPORT_ISSUE_ACTION 21 21
-    function shell_command_for_task 40 83
-    function semantic_shell_command_for_task 91 93
-    function strip_balanced_outer_quotes 95 102
-    function prefixed_shell_command 116 134
-    const SHELL_QUOTING_AND_METACHARACTERS 138 139
-    function command_named_in_prose 154 176
-    function names_a_command 181 186
-    function reads_as_prose 198 215
-    function explicit_passthrough_command 223 229
-    function bare_shell_command 231 247
-    function prefix_boundary 249 255
-    function code_search_query_for_task 267 279
+    module explicit 17 17
+    const REPORT_ISSUE_ACTION 19 19
+    function shell_command_for_task 25 68
+    function semantic_shell_command_for_task 76 78
+    function strip_balanced_outer_quotes 80 87
+    function prefixed_shell_command 101 115
+    function trim_command_sentence_end 124 138
+    const SHELL_QUOTING_AND_METACHARACTERS 142 144
+    function command_named_in_prose 159 181
+    function names_a_command 186 191
+    function reads_as_prose 203 220
+    function explicit_passthrough_command 228 230
+    function bare_shell_command 232 248
+    function prefix_boundary 250 256
+    function code_search_query_for_task 268 280
     function code_shaped_query 287 292
     function longest_search_cue 301 317
     function literal_code_search_query 319 325
-    function shaped_code_search_token 342 358
-    function adjacent_code_search_token 360 384
-    function search_tokens 386 392
-    function search_tokens_with_offsets 394 405
-    function valid_search_identifier 407 417
-    function sentences_with_mood 437 468
-    function requesting_sentences 478 492
-    function carries_authoring_task 506 513
-    function strip_subject_lead 517 528
-    function labels_a_value 554 570
-    function is_fact_statement 572 603
-    function intent_shell_command 605 626
-    function matched_intent_cue 633 669
-    function names_mutating_shell_intent 681 685
-    function path_arguments 687 704
-    function names_a_path_object 715 720
-    function looks_like_a_path 725 736
-    function collect_path_arguments 738 769
-    function local_search_query 771 797
-    function resolve_shell_command 799 805
-    function workspace_command 807 818
-    function remainder_argument 821 829
-    function path_argument 834 844
-    function name_lead_argument 849 864
-    function is_safe_path 876 885
-    function named_shell_command 909 914
+    function shaped_code_search_token 341 357
+    function adjacent_code_search_token 359 383
+    function search_tokens 385 391
+    function search_tokens_with_offsets 393 404
+    function valid_search_identifier 406 416
+    function sentences_with_mood 435 466
+    function requesting_sentences 476 490
+    function carries_authoring_task 504 511
+    function strip_subject_lead 515 526
+    function labels_a_value 552 568
+    function is_fact_statement 570 601
+    function intent_shell_command 603 641
+    function matched_intent_cue 648 689
+    function sentence_carries_cue 694 708
+    function names_mutating_shell_intent 720 724
+    function destructive_edit_decline 729 733
+    function refused_destructive_edit 736 754
+    function path_arguments 756 773
+    function names_a_path_object 784 789
+    function looks_like_a_path 794 805
+    function collect_path_arguments 807 843
+    function local_search_query 845 871
+    function resolve_shell_command 873 879
+    function workspace_command 881 892
+    function remainder_argument 895 903
+    function path_argument 908 918
+    function name_lead_argument 923 938
+    function is_safe_path 950 959
+    function named_shell_command 983 988
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 25233
-    named_node_count 5377
-    distinct_node_kinds 73
+    total_link_count 27747
+    named_node_count 5878
+    distinct_node_kinds 76
     node_kinds
       abstract_type 2
-      arguments 488
-      array_expression 6
-      array_type 4
-      assignment_expression 2
-      binary_expression 108
-      block 101
-      boolean_literal 12
+      arguments 539
+      array_expression 7
+      array_type 5
+      assignment_expression 3
+      binary_expression 117
+      block 113
+      boolean_literal 13
       break_expression 2
-      call_expression 488
-      char_literal 104
-      closure_expression 112
-      closure_parameters 112
+      call_expression 539
+      char_literal 109
+      closure_expression 123
+      closure_parameters 123
       compound_assignment_expr 1
       const_item 2
       continue_expression 3
-      crate 4
-      doc_comment 247
+      crate 9
+      doc_comment 240
       else_clause 1
-      expression_statement 66
-      field_expression 429
-      field_identifier 429
+      escape_sequence 3
+      expression_statement 74
+      field_expression 462
+      field_identifier 462
       for_expression 4
-      function_item 40
-      generic_function 5
-      generic_type 37
-      identifier 1042
-      if_expression 27
-      index_expression 7
-      inner_doc_comment_marker 11
-      integer_literal 19
+      function_item 44
+      generic_function 6
+      generic_type 40
+      identifier 1172
+      if_expression 30
+      index_expression 9
+      inner_doc_comment_marker 4
+      integer_literal 21
       let_condition 4
-      let_declaration 89
+      let_declaration 103
       lifetime 13
       lifetime_parameter 4
-      line_comment 269
+      line_comment 272
+      loop_expression 1
       macro_invocation 18
       match_arm 11
       match_block 2
       match_expression 2
       match_pattern 11
-      mutable_specifier 8
+      mod_item 1
+      mutable_specifier 9
       outer_doc_comment_marker 236
-      parameter 85
-      parameters 40
-      parenthesized_expression 11
-      primitive_type 93
-      range_expression 11
-      reference_expression 39
-      reference_type 85
-      return_expression 23
-      scoped_identifier 54
-      scoped_type_identifier 3
+      parameter 93
+      parameters 44
+      parenthesized_expression 12
+      primitive_type 102
+      range_expression 13
+      reference_expression 50
+      reference_type 93
+      return_expression 26
+      scoped_identifier 82
+      scoped_type_identifier 4
       scoped_use_list 4
       self 1
       source_file 1
-      string_content 23
-      string_literal 24
-      super 11
+      string_content 27
+      string_literal 27
+      super 19
       token_tree 19
-      try_expression 12
+      try_expression 15
       tuple_expression 10
-      tuple_pattern 17
+      tuple_pattern 20
       tuple_struct_pattern 11
       tuple_type 4
-      type_arguments 42
+      type_arguments 46
       type_binding 2
-      type_identifier 88
+      type_identifier 95
       type_parameters 4
-      unary_expression 60
+      unary_expression 65
       use_declaration 5
       use_list 4
-      visibility_modifier 9
+      visibility_modifier 11

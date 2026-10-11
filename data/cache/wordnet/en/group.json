@@ -1,0 +1,52 @@
+{
+  "lemma": "group",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00031563-n",
+      "partOfSpeech": "n",
+      "definition": "any number of entities (members) considered as a unit",
+      "synonyms": [
+        "grouping"
+      ]
+    },
+    {
+      "id": "oewn-14645624-n",
+      "partOfSpeech": "n",
+      "definition": "(chemistry) two or more atoms bound together as a single unit and forming part of a molecule",
+      "synonyms": [
+        "radical",
+        "chemical group"
+      ]
+    },
+    {
+      "id": "oewn-06026202-n",
+      "partOfSpeech": "n",
+      "definition": "a set that is closed, associative, has an identity element and every element has an inverse",
+      "synonyms": [
+        "mathematical group"
+      ]
+    },
+    {
+      "id": "oewn-00658247-v",
+      "partOfSpeech": "v",
+      "definition": "arrange into a group or groups",
+      "examples": [
+        "Can you group these shapes together?"
+      ]
+    },
+    {
+      "id": "oewn-01092289-v",
+      "partOfSpeech": "v",
+      "definition": "form a group or group together",
+      "synonyms": [
+        "aggroup"
+      ]
+    }
+  ]
+}

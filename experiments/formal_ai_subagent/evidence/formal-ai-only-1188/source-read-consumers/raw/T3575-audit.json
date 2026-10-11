@@ -1,0 +1,8 @@
+{
+  "originalUnchanged": true,
+  "preimageMatches": true,
+  "calls": 1,
+  "exactSourceIncluded": true,
+  "disposition": "finding",
+  "stop": "final"
+}

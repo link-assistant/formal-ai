@@ -1,0 +1,53 @@
+language en
+lemma prepare
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "make ready or suitable or equip in advance for a particular purpose or for some use, event, etc"
+    examples ("Get the children ready for school!" "prepare for war" "I was fixing to leave town after I paid the hotel bill")
+    id oewn-00407168-v
+    partOfSpeech v
+    synonyms (fix "set up" ready "gear up" set)
+  entry
+    definition "prepare for eating by applying heat"
+    examples ("Cook me dinner, please" "can you make me an omelette?" "fix breakfast for the guests, please")
+    id oewn-01668067-v
+    partOfSpeech v
+    synonyms (cook fix ready make)
+  entry
+    definition "to prepare verbally, either for written or spoken delivery"
+    examples ("prepare a report" "prepare a speech")
+    id oewn-01758079-v
+    partOfSpeech v
+  entry
+    definition "arrange by systematic planning and united effort"
+    examples ("machinate a plot" "organize a strike" "devise a plan to take over the director's office")
+    id oewn-01654986-v
+    partOfSpeech v
+    synonyms (organize organise devise "get up" machinate)
+  entry
+    definition "educate for a future role or function"
+    examples ("He is grooming his son to become his successor" "The prince was prepared to become King one day" "They trained him to be a warrior")
+    id oewn-02392176-v
+    partOfSpeech v
+    synonyms (groom train)
+  entry
+    definition "create by training and teaching"
+    examples ("The old master is training world-class violinists" "we develop the leaders for the future")
+    id oewn-00604693-v
+    partOfSpeech v
+    synonyms (train develop educate)
+  entry
+    definition "lead up to and soften by sounding the dissonant note in it as a consonant note in the preceding chord"
+    examples ("prepare the discord in bar 139")
+    id oewn-02184359-v
+    partOfSpeech v
+  entry
+    definition "undergo training or instruction in preparation for a particular role, function, or profession"
+    examples ("She is training to be a teacher" "He trained as a legal aid")
+    id oewn-00604200-v
+    partOfSpeech v
+    synonyms (train)
+source "oewn:2024"

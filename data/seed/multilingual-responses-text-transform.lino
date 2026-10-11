@@ -1,0 +1,267 @@
+# Response templates for the text-transform handlers (issue #1174).
+#
+# The register-rewriting, grammar-correction, genre-writing, and sentence-
+# translation handlers render their prose through these records so no response
+# text lives in Rust. Placeholders in braces are filled by the handler.
+
+multilingual_responses
+  response response_text_transform_grammar_result_en
+    intent text_transform_grammar_result
+    language en
+    text "Corrected text: {corrected}\n\nCorrections:\n{corrections}"
+  response response_text_transform_grammar_result_ru
+    intent text_transform_grammar_result
+    language ru
+    text "Исправленный текст: {corrected}\n\nИсправления:\n{corrections}"
+  response response_text_transform_grammar_result_hi
+    intent text_transform_grammar_result
+    language hi
+    text "सुधारा हुआ पाठ: {corrected}\n\nसुधार:\n{corrections}"
+  response response_text_transform_grammar_result_zh
+    intent text_transform_grammar_result
+    language zh
+    text "更正后的文本：{corrected}\n\n更正：\n{corrections}"
+  response response_text_transform_grammar_result_es
+    intent text_transform_grammar_result
+    language es
+    text "Texto corregido: {corrected}\n\nCorrecciones:\n{corrections}"
+  response response_text_transform_grammar_line_en
+    intent text_transform_grammar_line
+    language en
+    text "{wrong} → {right} (rule: {rule})"
+  response response_text_transform_grammar_line_ru
+    intent text_transform_grammar_line
+    language ru
+    text "{wrong} → {right} (правило: {rule})"
+  response response_text_transform_grammar_line_hi
+    intent text_transform_grammar_line
+    language hi
+    text "{wrong} → {right} (नियम: {rule})"
+  response response_text_transform_grammar_line_zh
+    intent text_transform_grammar_line
+    language zh
+    text "{wrong} → {right}（规则：{rule}）"
+  response response_text_transform_grammar_line_es
+    intent text_transform_grammar_line
+    language es
+    text "{wrong} → {right} (regla: {rule})"
+  response response_text_transform_grammar_clean_en
+    intent text_transform_grammar_clean
+    language en
+    text "No agreement errors found; the text is already grammatical."
+  response response_text_transform_grammar_clean_ru
+    intent text_transform_grammar_clean
+    language ru
+    text "Ошибок согласования не найдено; текст уже грамматически верен."
+  response response_text_transform_grammar_clean_hi
+    intent text_transform_grammar_clean
+    language hi
+    text "कोई सहमति की त्रुटि नहीं मिली; पाठ पहले से ही व्याकरण के अनुसार सही है।"
+  response response_text_transform_grammar_clean_zh
+    intent text_transform_grammar_clean
+    language zh
+    text "未发现一致性错误；文本语法已经正确。"
+  response response_text_transform_grammar_clean_es
+    intent text_transform_grammar_clean
+    language es
+    text "No se encontraron errores de concordancia; el texto ya es gramaticalmente correcto."
+  response response_text_transform_rewrite_unchanged_en
+    intent text_transform_rewrite_unchanged
+    language en
+    text "The text already uses a formal register."
+  response response_text_transform_rewrite_unchanged_ru
+    intent text_transform_rewrite_unchanged
+    language ru
+    text "Текст уже написан в официальном стиле."
+  response response_text_transform_rewrite_unchanged_hi
+    intent text_transform_rewrite_unchanged
+    language hi
+    text "पाठ पहले से ही औपचारिक शैली में है।"
+  response response_text_transform_rewrite_unchanged_zh
+    intent text_transform_rewrite_unchanged
+    language zh
+    text "文本已经使用正式语体。"
+  response response_text_transform_rewrite_unchanged_es
+    intent text_transform_rewrite_unchanged
+    language es
+    text "El texto ya usa un registro formal."
+  response response_text_transform_translation_unknown_en
+    intent text_transform_translation_unknown
+    language en
+    text "Words without a seeded translation, kept as written: {unknown}"
+  response response_text_transform_translation_unknown_ru
+    intent text_transform_translation_unknown
+    language ru
+    text "Слова без засеянного перевода оставлены как есть: {unknown}"
+  response response_text_transform_translation_unknown_hi
+    intent text_transform_translation_unknown
+    language hi
+    text "बिना अनुवाद वाले शब्द जैसे हैं वैसे ही रखे गए: {unknown}"
+  response response_text_transform_translation_unknown_zh
+    intent text_transform_translation_unknown
+    language zh
+    text "未收录翻译的词按原文保留：{unknown}"
+  response response_text_transform_translation_unknown_es
+    intent text_transform_translation_unknown
+    language es
+    text "Palabras sin traducción sembrada, conservadas tal como están escritas: {unknown}"
+  response response_text_transform_genre_incomplete_en
+    intent text_transform_genre_incomplete
+    language en
+    text "Not enough information to write a {genre} yet; missing: {missing}."
+  response response_text_transform_genre_incomplete_ru
+    intent text_transform_genre_incomplete
+    language ru
+    text "Недостаточно информации, чтобы написать {genre}; не хватает: {missing}."
+  response response_text_transform_genre_incomplete_hi
+    intent text_transform_genre_incomplete
+    language hi
+    text "{genre} लिखने के लिए अभी पर्याप्त जानकारी नहीं है; अनुपस्थित: {missing}।"
+  response response_text_transform_genre_incomplete_zh
+    intent text_transform_genre_incomplete
+    language zh
+    text "信息不足，暂无法写出{genre}；缺少：{missing}。"
+  response response_text_transform_genre_incomplete_es
+    intent text_transform_genre_incomplete
+    language es
+    text "Aún no hay información suficiente para escribir un {genre}; falta: {missing}."
+  response response_translation_gap_no_source_en
+    intent translation_gap_no_source
+    language en
+    text "I could not identify a source phrase to translate from {source} to {target}."
+  response response_translation_gap_no_source_ru
+    intent translation_gap_no_source
+    language ru
+    text "Не удалось определить исходную фразу для перевода с {source} на {target}."
+  response response_translation_gap_no_source_hi
+    intent translation_gap_no_source
+    language hi
+    text "मैं {source} से {target} में अनुवाद के लिए कोई स्रोत वाक्यांश पहचान नहीं सका।"
+  response response_translation_gap_no_source_zh
+    intent translation_gap_no_source
+    language zh
+    text "我无法确定要从 {source} 翻译到 {target} 的源短语。"
+  response response_translation_gap_no_source_es
+    intent translation_gap_no_source
+    language es
+    text "No pude identificar una frase de origen para traducir de {source} a {target}."
+  response response_translation_gap_surface_en
+    intent translation_gap_surface
+    language en
+    text "I could not translate \"{surface}\" from {source} to {target} with the available formalization data. I recorded this as a translation gap for follow-up."
+  response response_translation_gap_surface_ru
+    intent translation_gap_surface
+    language ru
+    text "Не удалось перевести «{surface}» с {source} на {target} с имеющимися данными формализации. Я записал это как пробел перевода для дальнейшей работы."
+  response response_translation_gap_surface_hi
+    intent translation_gap_surface
+    language hi
+    text "उपलब्ध formalization data से मैं «{surface}» का {source} से {target} में अनुवाद नहीं कर सका। मैंने इसे आगे के काम के लिए अनुवाद अंतराल के रूप में दर्ज किया है।"
+  response response_translation_gap_surface_zh
+    intent translation_gap_surface
+    language zh
+    text "我无法用现有的形式化数据将“{surface}”从 {source} 翻译到 {target}。我已将其记录为翻译缺口，以便后续处理。"
+  response response_translation_gap_surface_es
+    intent translation_gap_surface
+    language es
+    text "No pude traducir «{surface}» de {source} a {target} con los datos de formalización disponibles. Lo registré como una laguna de traducción para darle seguimiento."
+  response response_translation_program_heading_en
+    intent translation_program_heading
+    language en
+    text "Translated `{code}` from {source} to {target}:"
+  response response_translation_program_heading_ru
+    intent translation_program_heading
+    language ru
+    text "Перевод `{code}` с {source} на {target}:"
+  response response_translation_program_heading_hi
+    intent translation_program_heading
+    language hi
+    text "`{code}` का {source} से {target} में अनुवाद:"
+  response response_translation_program_heading_zh
+    intent translation_program_heading
+    language zh
+    text "已将 `{code}` 从 {source} 翻译为 {target}："
+  response response_translation_program_heading_es
+    intent translation_program_heading
+    language es
+    text "Traducción de `{code}` de {source} a {target}:"
+  response response_translation_code_gap_comment_en
+    intent translation_code_gap_comment
+    language en
+    text "translation gap for `{subject}` from {source} to {target}"
+  response response_translation_code_gap_comment_ru
+    intent translation_code_gap_comment
+    language ru
+    text "пробел перевода для `{subject}` с {source} на {target}"
+  response response_translation_code_gap_comment_hi
+    intent translation_code_gap_comment
+    language hi
+    text "{source} से {target} में `{subject}` के लिए अनुवाद अंतराल"
+  response response_translation_code_gap_comment_zh
+    intent translation_code_gap_comment
+    language zh
+    text "`{subject}` 从 {source} 到 {target} 的翻译缺口"
+  response response_translation_code_gap_comment_es
+    intent translation_code_gap_comment
+    language es
+    text "laguna de traducción para `{subject}` de {source} a {target}"
+  response response_translation_clarify_interpretation_en
+    intent translation_clarify_interpretation
+    language en
+    text "Which interpretation did you mean: {top} or {other}?"
+  response response_translation_clarify_interpretation_ru
+    intent translation_clarify_interpretation
+    language ru
+    text "Какое толкование вы имели в виду: {top} или {other}?"
+  response response_translation_clarify_interpretation_hi
+    intent translation_clarify_interpretation
+    language hi
+    text "आपका मतलब कौन-सी व्याख्या थी: {top} या {other}?"
+  response response_translation_clarify_interpretation_zh
+    intent translation_clarify_interpretation
+    language zh
+    text "你指的是哪种解释：{top} 还是 {other}？"
+  response response_translation_clarify_interpretation_es
+    intent translation_clarify_interpretation
+    language es
+    text "¿Qué interpretación querías decir: {top} o {other}?"
+  response response_translation_clarify_reading_en
+    intent translation_clarify_reading
+    language en
+    text "Should I read \"{text}\" as \"{top}\" or \"{other}\"?"
+  response response_translation_clarify_reading_ru
+    intent translation_clarify_reading
+    language ru
+    text "Как читать «{text}»: как «{top}» или как «{other}»?"
+  response response_translation_clarify_reading_hi
+    intent translation_clarify_reading
+    language hi
+    text "क्या मैं «{text}» को «{top}» पढ़ूँ या «{other}»?"
+  response response_translation_clarify_reading_zh
+    intent translation_clarify_reading
+    language zh
+    text "我应该把“{text}”理解为“{top}”还是“{other}”？"
+  response response_translation_clarify_reading_es
+    intent translation_clarify_reading
+    language es
+    text "¿Debo leer «{text}» como «{top}» o como «{other}»?"
+  response response_requirement_listing_en
+    intent requirement_listing
+    language en
+    text "Requirements stated in the text:\n{requirements}"
+  response response_requirement_listing_ru
+    intent requirement_listing
+    language ru
+    text "Требования, изложенные в тексте:\n{requirements}"
+  response response_requirement_listing_hi
+    intent requirement_listing
+    language hi
+    text "पाठ में बताई गई आवश्यकताएँ:\n{requirements}"
+  response response_requirement_listing_zh
+    intent requirement_listing
+    language zh
+    text "文本中提出的需求：\n{requirements}"
+  response response_requirement_listing_es
+    intent requirement_listing
+    language es
+    text "Requisitos que plantea el texto:\n{requirements}"

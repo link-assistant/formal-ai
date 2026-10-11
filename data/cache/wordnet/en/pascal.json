@@ -1,0 +1,32 @@
+{
+  "lemma": "pascal",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-11244409-n",
+      "partOfSpeech": "n",
+      "definition": "French mathematician and philosopher and Jansenist; invented an adding machine; contributed (with Fermat) to the theory of probability (1623-1662)",
+      "synonyms": [
+        "Blaise Pascal"
+      ]
+    },
+    {
+      "id": "oewn-13733408-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of pressure equal to one newton per square meter",
+      "synonyms": [
+        "Pa"
+      ]
+    },
+    {
+      "id": "oewn-06915891-n",
+      "partOfSpeech": "n",
+      "definition": "a programing language designed to teach programming through a top-down modular approach"
+    }
+  ]
+}

@@ -250,7 +250,8 @@ fn the_committed_process_artifacts_are_generator_output() {
     let input = input();
     let session = session(&input);
     let root = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
-    let changelog = fs::read_to_string(format!("{root}/CHANGELOG.md")).expect("CHANGELOG.md");
+    // CHANGELOG.md and the archive its older releases roll into.
+    let changelog = crate::assembled_docs::changelog_at(root);
     for rendered in session["contributions"].as_array().expect("contributions") {
         let path = format!("{root}/{}", text(rendered, "changelog_fragment_path"));
         let composed = text(rendered, "changelog_fragment");

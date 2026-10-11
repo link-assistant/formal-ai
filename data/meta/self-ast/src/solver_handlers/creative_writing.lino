@@ -1,0 +1,28 @@
+self_ast_census
+  target src/solver_handlers/creative_writing.rs
+  language rust
+  fidelity signature
+  byte_len 22843
+  line_count 637
+  content_id source_module_fdacc12a25ffec96
+  symbol_count 19
+  symbols
+    const ROLE_CREATIVE_WRITING 35 35
+    const ROLE_PLANNING 36 36
+    function template 39 45
+    struct WritingForm 53 59
+    function writing_forms 61 86
+    struct RhymeClass 89 94
+    function rhyme_classes 96 111
+    function rhyme_coverage 115 123
+    struct Skeleton 126 129
+    function skeletons 131 140
+    struct FormConstraints 143 149
+    function detect_form 153 176
+    function form_constraints 180 227
+    function end_word 230 236
+    function check_scheme 242 305
+    function fill_skeleton 308 312
+    function compose_poem 315 432
+    function check_poem 436 465
+    function handle_creative_writing_request 473 635

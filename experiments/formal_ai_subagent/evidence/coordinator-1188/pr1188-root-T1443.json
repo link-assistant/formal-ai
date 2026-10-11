@@ -1,0 +1,25 @@
+{
+  "identifier": "T1443",
+  "prompt": "In .github/workflows/docker-slim.yml replace «    timeout-minutes: 20» with «    timeout-minutes: 25»",
+  "result": {
+    "transcript": [
+      {
+        "tool": "read",
+        "arguments": "{\"filePath\":\".github/workflows/docker-slim.yml\",\"file_path\":\".github/workflows/docker-slim.yml\",\"path\":\".github/workflows/docker-slim.yml\"}",
+        "result": "<file>\n00001| name: Check slim Docker runtime\n00002| on:\n00003|   workflow_call:\n00004| permissions:\n00005|   contents: read\n00006| jobs:\n00007|   runtime:\n00008|     name: Slim Docker runtime\n00009|     runs-on: ubuntu-latest\n00010|     timeout-minutes: 20\n00011|     steps:\n00012|       - uses: actions/checkout@v7\n00013|         with:\n00014|           persist-credentials: false\n00015|       - uses: ./.github/actions/download-formal-ai-binary\n00016|       - name: Free runner disk\n00017|         run: bash scripts/free-runner-disk.sh\n00018|       - uses: ./.github/actions/setup-buildx-resilient\n00019|       - name: Build the release sidecar\n00020|         timeout-minutes: 15\n00021|         uses: docker/build-push-action@v7\n00022|         with:\n00023|           context: .\n00024|           file: Dockerfile.slim\n00025|           build-args: BINARY_SOURCE=prebuilt\n00026|           push: false\n00027|           load: true\n00028|           tags: formal-ai:slim-check\n00029|           cache-to: type=inline\n00030|       - name: Test the slim server and agent surface and size budget\n00031|         run: |\n00032|           set -euo pipefail\n00033|           docker run --rm --entrypoint verify-formal-ai-slim formal-ai:slim-check\n00034|           bytes=$(docker image inspect formal-ai:slim-check --format '{{.Size}}')\n00035|           test \"$bytes\" -le 2147483648\n00036|       - if: ${{ !cancelled() }}\n00037|         run: scripts/prune-docker.sh\n00038| \n\n(End of file - total 38 lines)\n</file>"
+      },
+      {
+        "tool": "edit",
+        "arguments": "{\"filePath\":\".github/workflows/docker-slim.yml\",\"file_path\":\".github/workflows/docker-slim.yml\",\"new\":\"    timeout-minutes: 25\",\"newString\":\"    timeout-minutes: 25\",\"new_str\":\"    timeout-minutes: 25\",\"new_string\":\"    timeout-minutes: 25\",\"old\":\"    timeout-minutes: 20\",\"oldString\":\"    timeout-minutes: 20\",\"old_str\":\"    timeout-minutes: 20\",\"old_string\":\"    timeout-minutes: 20\",\"path\":\".github/workflows/docker-slim.yml\"}",
+        "result": ""
+      },
+      {
+        "tool": "bash",
+        "arguments": "{\"command\":\"sha256sum -- .github/workflows/docker-slim.yml\"}",
+        "result": "d6069aa0e362c83fcd4bf9a4a69f42376957b6339c5e2b32b5a9be03d4f3b599  .github/workflows/docker-slim.yml\n"
+      }
+    ],
+    "answer": "Replaced `    timeout-minutes: 20` with `    timeout-minutes: 25` in `.github/workflows/docker-slim.yml` and observed the result.",
+    "stop": "final"
+  }
+}

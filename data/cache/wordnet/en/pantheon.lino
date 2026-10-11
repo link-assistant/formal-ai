@@ -1,0 +1,19 @@
+language en
+lemma pantheon
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "all the gods of a religion"
+    id oewn-08170236-n
+    partOfSpeech n
+  entry
+    definition "a monument commemorating a nation's dead heroes"
+    id oewn-03890623-n
+    partOfSpeech n
+  entry
+    definition "(antiquity) a temple to all the gods"
+    id oewn-03890475-n
+    partOfSpeech n
+source "oewn:2024"

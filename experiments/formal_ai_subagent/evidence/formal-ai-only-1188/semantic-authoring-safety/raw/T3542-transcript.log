@@ -1,0 +1,19 @@
+{
+  "transcript": [
+    {
+      "tool": "bash",
+      "arguments": "{\"command\":\"node -e 'const fs=require('\\\\''fs'\\\\'');const r=JSON.parse(fs.readFileSync('\\\\''/private/tmp/formal-ai-only-1188/T3542-request.json'\\\\'','\\\\''utf8'\\\\''));for(const c of r.changes)if(fs.readFileSync('\\\\''/Users/konard/Code/Archive/link-assistant/formal-ai/'\\\\''+c.path,'\\\\''utf8'\\\\'')!==c.before)throw Error('\\\\''source preimage'\\\\'');for(const c of r.changes)fs.writeFileSync('\\\\''/Users/konard/Code/Archive/link-assistant/formal-ai/'\\\\''+c.path,c.expected);console.log('\\\\''shared worker parser caller switch'\\\\'');'\"}",
+      "result": "Output: shared worker parser caller switch\n\nExit Code: 0"
+    }
+  ],
+  "answer": "The `node -e 'const fs=require('\\''fs'\\'');const r=JSON.parse(fs.readFileSync('\\''/private/tmp/formal-ai-only-1188/T3542-request.json'\\'','\\''utf8'\\''));for(const c of r.changes)if(fs.readFileSync('\\''/Users/konard/Code/Archive/link-assistant/formal-ai/'\\''+c.path,'\\''utf8'\\'')!==c.before)throw Error('\\''source preimage'\\'');for(const c of r.changes)fs.writeFileSync('\\''/Users/konard/Code/Archive/link-assistant/formal-ai/'\\''+c.path,c.expected);console.log('\\''shared worker parser caller switch'\\'');'` command completed. Output:\n\n```text\nshared worker parser caller switch\n```",
+  "stop": "final",
+  "toolsAdvertised": [
+    "bash",
+    "edit",
+    "grep",
+    "list",
+    "read",
+    "write"
+  ]
+}

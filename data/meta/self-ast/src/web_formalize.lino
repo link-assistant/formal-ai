@@ -1,0 +1,53 @@
+self_ast_census
+  target src/web_formalize.rs
+  language rust
+  fidelity signature
+  byte_len 35867
+  line_count 936
+  content_id source_module_55d3935d74949a13
+  symbol_count 44
+  symbols
+    const RULES_TEXT 38 38
+    const TRUST_TEXT 40 40
+    enum PageMime 45 58
+    function from_hint 65 68
+    function from_hint_or_sniff 74 89
+    enum PageBlock 94 100
+    struct FormalizationRules 104 115
+    struct MimeHint 119 122
+    struct SniffRule 126 131
+    function seed_records 136 141
+    function load 144 226
+    function non_empty 230 232
+    function kind 235 237
+    function kind_of 241 250
+    function sniff 253 273
+    function page_query_templates 279 281
+    function url_domain 285 291
+    function page_prose 301 312
+    function formalize_page 321 323
+    function formalize_page_with_context 329 350
+    function blocks_to_network 355 401
+    const OPAQUE_HTML_TAGS 405 405
+    const NESTED_BLOCK_OPENERS 409 409
+    const HTML_COMMENT_OPEN 412 412
+    const HTML_COMMENT_CLOSE 413 413
+    function find_close_tag 417 429
+    function html_blocks 436 550
+    function has_class_prefix 553 558
+    function language_class 564 564
+    function markdown_blocks 573 653
+    function json_blocks 657 683
+    function plain_blocks 687 705
+    function paragraph_block 709 720
+    function flush_paragraph 723 728
+    function resolve_language 734 782
+    function shebang_language 785 792
+    function extension_language 795 801
+    function tag_attr 804 821
+    function remove_tags 824 836
+    function strip_tags 839 844
+    function strip_tags_keep_lines 853 881
+    function cell_texts 884 908
+    function decode_entities 911 918
+    struct TrustFeatures 922 933

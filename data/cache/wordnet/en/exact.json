@@ -1,0 +1,69 @@
+{
+  "lemma": "exact",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00917535-a",
+      "partOfSpeech": "a",
+      "definition": "marked by strict and particular and complete accordance with fact",
+      "examples": [
+        "an exact mind",
+        "an exact copy",
+        "hit the exact center of the target"
+      ]
+    },
+    {
+      "id": "oewn-00634639-s",
+      "partOfSpeech": "s",
+      "definition": "(of ideas, images, representations, expressions) characterized by perfect conformity to fact or truth; strictly correct",
+      "examples": [
+        "a precise image",
+        "a precise measurement"
+      ],
+      "synonyms": [
+        "accurate",
+        "precise"
+      ]
+    },
+    {
+      "id": "oewn-00005472-s",
+      "partOfSpeech": "s",
+      "definition": "lacking compromising or mitigating elements",
+      "examples": [
+        "the direct opposite"
+      ],
+      "synonyms": [
+        "direct"
+      ]
+    },
+    {
+      "id": "oewn-01019835-v",
+      "partOfSpeech": "v",
+      "definition": "claim as due or just",
+      "examples": [
+        "The bank demanded payment of the loan"
+      ],
+      "synonyms": [
+        "demand"
+      ]
+    },
+    {
+      "id": "oewn-00758121-v",
+      "partOfSpeech": "v",
+      "definition": "take as an undesirable consequence of some event or state of affairs",
+      "examples": [
+        "the accident claimed three lives",
+        "The hard work took its toll on her"
+      ],
+      "synonyms": [
+        "claim",
+        "take"
+      ]
+    }
+  ]
+}

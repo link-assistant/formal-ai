@@ -1,0 +1,25 @@
+view
+  id M-8822f47e4cbe
+  lemma normal
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "conforming with or constituting a norm or standard or level or type or social norm; not abnormal"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "in accordance with scientific laws"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "being approximately average or within certain limits in e.g. intelligence and development"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "something regarded as a normative example"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "forming a right angle"
+    provenance (wordnet)

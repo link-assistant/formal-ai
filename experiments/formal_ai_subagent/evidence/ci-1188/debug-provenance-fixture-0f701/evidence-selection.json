@@ -1,0 +1,170 @@
+{
+  "cutoff": "T4075",
+  "officialSource": "0f701bd8d4bc7a525fccc8d5c9a8fd0d4b340c84",
+  "native": "pending current native CI and source census",
+  "autonomousCredit": 0,
+  "files": [
+    {
+      "source": "/private/tmp/pr1188-ci-T4062/T4062.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4062/T4062.log",
+      "bytes": 93,
+      "sha256": "5e3f840cfae5a526aa8c86c6cd32e390a6a191cf588f8a2b9e733029cdccd80b"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4062/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4062/drive-request.json",
+      "bytes": 670,
+      "sha256": "946174c127d280909fb21b12b4827189c9d77e1a31335b7f35f6ed8592e2c510"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4062/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4062/drive.json",
+      "bytes": 23932,
+      "sha256": "88ff517fa9c36fe23a952b92c6e6aeefa2f319985072dda01e98989521770d72"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4063/T4063.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4063/T4063.log",
+      "bytes": 92,
+      "sha256": "b3c69e588c7a59eed9af00f7c24dbadbf47be00358588902de45f691b3a5c00a"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4063/before.rs.txt",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4063/before.rs.txt",
+      "bytes": 21802,
+      "sha256": "38033809cf6720e8ba2729c43178e79f9169528f5339eadeb27d53ffe37e97cd"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4063/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4063/drive-request.json",
+      "bytes": 140,
+      "sha256": "b74368f1265bec56c40692b3193267493c47c7048ee4a948cacd370b3b03bb98"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4063/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4063/drive.json",
+      "bytes": 863,
+      "sha256": "32f038b4b1c1c50db8cda196860f790ce80bfac756c026682250650ad0694ce5"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4063/repair.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4063/repair.mjs",
+      "bytes": 849,
+      "sha256": "bff77e6b0b59cd4beed6fec2c8e34d941f4b735c3679bae03af3a31254d2a490"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4063/request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4063/request.json",
+      "bytes": 22876,
+      "sha256": "e86ec8f5371c8d1dd7a81798d2b070babf052a55b2c2a9be15cd8407b81a8392"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4064/T4064.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4064/T4064.log",
+      "bytes": 93,
+      "sha256": "4e3af9e8480f131260eaee1b0be1fa13da37ecdedb8e52f0240cfd2949f3e053"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4064/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4064/drive-request.json",
+      "bytes": 140,
+      "sha256": "05867408d008f2d746aa3863db94388748000fe2990596f80aa984b818eac86b"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4064/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4064/drive.json",
+      "bytes": 83067,
+      "sha256": "0521ea43455fab44b655debf7b677ed22bd0620d5e85753dc33d16208891efca"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4064/verify.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4064/verify.mjs",
+      "bytes": 2657,
+      "sha256": "f568ac1bd6381dc01431308a1b5d6f932a4832b53be0c9414b42a4f179940297"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4065/T4065.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4065/T4065.log",
+      "bytes": 92,
+      "sha256": "fb857cc52e5cdca780bc52e74f988cea3a59758492fa70b98cdae6e5f6d999a0"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4065/closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4065/closest.log",
+      "bytes": 43744,
+      "sha256": "2778a6ff4cdfdac43824ec05ee0d6eefb85185d21959e2f02bf11e1739c50a83"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4065/debt.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4065/debt.log",
+      "bytes": 660,
+      "sha256": "cbf0bd58a03272ed0f36f9dc6751866c983c4839e2348eba2f5766414c3c769d"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4065/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4065/drive-request.json",
+      "bytes": 140,
+      "sha256": "f40e521e0b2130ecb7111063b8151148a4bef9fb04c224409e25645dffe371bc"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4065/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4065/drive.json",
+      "bytes": 721,
+      "sha256": "8fc42e0da8f020d1944519ceef19dd83cc594e59aa9cff661cb43ecbe9b4ab40"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4065/format.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4065/format.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4065/literal.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4065/literal.log",
+      "bytes": 1970,
+      "sha256": "96a1716838a30a09914a5511756277670c822e4a5892220bed589d189e879034"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4065/source-hashes.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4065/source-hashes.json",
+      "bytes": 219,
+      "sha256": "a41397610ab149e8f5bec5236f28de3366ba599e8b316db8ab9f437f7e77dab3"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4065/verify.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4065/verify.mjs",
+      "bytes": 2773,
+      "sha256": "c9292641e6e333be6e5e67b8299440eb349ab4d5363523398e9a27c7a2cf6afb"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4065/whitespace.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/T4065/whitespace.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/private/tmp/pr1188-0f701-official/native-spec3-fail.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/native-spec3-fail.log",
+      "bytes": 249306,
+      "sha256": "f1a2d0cee2440da5030795eff99d74e46b0e150aaa69d86d0b76f5ea362e67d7"
+    },
+    {
+      "source": "/private/tmp/pr1188-0f701-official/new-failure-114030300740.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/new-failure-114030300740.log",
+      "bytes": 194769,
+      "sha256": "6a0623a3b97952a5efa59da20ddd741062dfc17a82313bc785b9b59b1d1323bd"
+    },
+    {
+      "source": "/private/tmp/pr1188-debug-before.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/pr1188-debug-before.log",
+      "bytes": 4235,
+      "sha256": "f9ad563734c8d56c1a8b5b018f2dc51e33698f2d5f4b9f1ca7a93473e6a9ce52"
+    },
+    {
+      "source": "/private/tmp/pr1188-debug-before-unrestricted.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/pr1188-debug-before-unrestricted.log",
+      "bytes": 8912,
+      "sha256": "1ab189be5ec0e022ea9910c99c2a11968d4303e0304492e091636d5c55e76763"
+    }
+  ]
+}

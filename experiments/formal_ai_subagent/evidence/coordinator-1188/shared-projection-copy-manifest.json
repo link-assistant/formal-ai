@@ -1,0 +1,389 @@
+{
+  "cutoff": "T1931",
+  "copies": [
+    {
+      "from": "/private/tmp/pr1188-T1766.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1766.log",
+      "bytes": 664,
+      "sha256": "8aa783ff12fde7caafb59199a1041d12cb112c6dde577a891a4bac74028d82ba"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1767.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1767.log",
+      "bytes": 18500,
+      "sha256": "3ca4299513f352ce07c64824f9b027f1560f23ee7b114254090609b1feb494f4"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1768.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1768.log",
+      "bytes": 60720,
+      "sha256": "e9c53d338291f190ba4d26bd656634e085fe32cf1da940612b157fef03248e9c"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1769.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1769.log",
+      "bytes": 12876,
+      "sha256": "fcb48e773b3f14db34c507dab12e69bcb55474a52f3ffe5a0058cf933715aede"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1770.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1770.log",
+      "bytes": 202,
+      "sha256": "747a86dac0e03b0f6f76e2976cfaaad88671a8bc521a78bc2b2ba28ba8874535"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1771.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1771.log",
+      "bytes": 6165,
+      "sha256": "97d043b79a778e36dca8e5d2da846d0a37fbacdee8f27737202281a0aa884e6d"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1772.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1772.log",
+      "bytes": 39214,
+      "sha256": "a9e2e5bf0c5543954bce0c4dd48de96a72b38fdd370e700ff2bf5ddb2521bbc8"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1773.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1773.log",
+      "bytes": 27054,
+      "sha256": "d95021f41f8f068a5d2e22a88fed81057159ffb5d7a4f0b111a67173ed0635cc"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1774.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1774.log",
+      "bytes": 49480,
+      "sha256": "848558eb797fcf35b2a38cb34cd5093099f786057db6345d2354e78a164c4cf0"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1775.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1775.log",
+      "bytes": 46474,
+      "sha256": "90cdd527a2f8aec01bcd259aa1e2a5f94776a45f9fedf34cb96c1b879aed8498"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1776.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1776.log",
+      "bytes": 204,
+      "sha256": "2edea9db2f19d067b79f8ed980729240491fe5d86212073ae3776f1af29b31ea"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1777.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1777.log",
+      "bytes": 36701,
+      "sha256": "d8a2ba4dad9ea32311e39bd300fd721ff0601be3f5fe49de4d7d2c9a52baaab1"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1778.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1778.log",
+      "bytes": 58858,
+      "sha256": "3d4d166bbad605c0ee621dc7153185f44a90106c586be4c57e909b0432e39500"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1779.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1779.log",
+      "bytes": 17481,
+      "sha256": "a33a356d852588b927db95dc68f22f2b6d66d92f02c47e6a369afe85290f8bc7"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1780.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1780.log",
+      "bytes": 18204,
+      "sha256": "1198995104b7c3ec07efb850633a9e48bd4836107a9193e0b03a09bca493a52a"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1781.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1781.log",
+      "bytes": 19446,
+      "sha256": "6d2e10ad1f996fd0398949457768e2a30a8ec359bd5b90959d34cb8d12b6f855"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1782.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1782.log",
+      "bytes": 150,
+      "sha256": "a40b56b653bc6b4d36f46f2a7ec87d989a0f2ffdf5183391404f69bce06f8c49"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1783.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1783.log",
+      "bytes": 23389,
+      "sha256": "44d0a180ae40f6698d44919c9e38f86040a5874027cd44c87038f16900317a6a"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1784.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1784.log",
+      "bytes": 26715,
+      "sha256": "18414e4bd99d97af4218a00dfcbc83a647187c9fa95f719b8f345a5d0bfb8593"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1785.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1785.log",
+      "bytes": 29732,
+      "sha256": "7b9fa75fcf3c9fc319c1b9357e0972c8c8926041c3e2c61c48f3a8d20b09565a"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1786.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1786.log",
+      "bytes": 25862,
+      "sha256": "3f34cf27d92f674668a4d953d1377dcf9f9edfde4ab9450368558301d44e1df5"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1787.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1787.log",
+      "bytes": 23209,
+      "sha256": "bf38690ba64c3d652de4f67253c3993f32b84d70da3fbaa9549458eaab8de61c"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1788.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1788.log",
+      "bytes": 23580,
+      "sha256": "1144259d8066a23565c2e865a8f0e3455d5fc0e1c0f874c58946833ff2c9a8b7"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1789.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1789.log",
+      "bytes": 23507,
+      "sha256": "8b57ee8d8be86e5d2a55f10754b9dda65a2af0d0d14a45ffac972c975b06b2b5"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1790.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1790.log",
+      "bytes": 12682,
+      "sha256": "f04d4bda1fa01dbdf18b2c0c4b0e765f0a3bfc71be09b8adecc5f01df8f6ef7b"
+    },
+    {
+      "from": "/private/tmp/pr1188-T1791.log",
+      "to": "experiments/formal_ai_subagent/evidence/ci-fixer-1188/pr1188-T1791.log",
+      "bytes": 352,
+      "sha256": "fb37c43d4466e57e613473bbfd16b6fbf82cb393563c3393f4b678729e4ef0a7"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1909.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1909.json",
+      "bytes": 411362,
+      "sha256": "0f40333115233023108b8f7778aebbb3a0b7e670ad449811d983c2fddd752c66"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1910.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1910.json",
+      "bytes": 411720,
+      "sha256": "2bd8b2bf0c518016c127ee9ef91f53b36705d6d05be04acea49f1c8feb4d632e"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1911-request.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1911-request.json",
+      "bytes": 593,
+      "sha256": "55bc7dc4bedbb0202556cdf697fac449a2799a88118011339bfffae378a49c1b"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1911.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1911.json",
+      "bytes": 72077,
+      "sha256": "aa0f191580327c5f2f4c8758ffeca328a55cb2fe6c1b53be1251df987d12ae35"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1912.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1912.json",
+      "bytes": 9145,
+      "sha256": "0b46aec2bfb630ee9f83328653b4c0fb933ec7d7096fda546f9adfd85f422fef"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1913.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1913.json",
+      "bytes": 10683,
+      "sha256": "ea1ceed728a4c5dded53da197f815eb5d40e34b4fc82fe7b0470ed57d44dd9e3"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1914.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1914.json",
+      "bytes": 51186,
+      "sha256": "3f90bc77e0ec0842ff84ff2eb2e1fb2cfa5f2de57ec718971cfeea432526e8ed"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1915.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1915.json",
+      "bytes": 4307,
+      "sha256": "68e48ec3a2daf5e04d7886fe72d4006c1e9c7924e258810c92127986994d7eae"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1916.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1916.json",
+      "bytes": 12291,
+      "sha256": "512fc8ccf2f1bd5b4558ce369650bf98a4a657da769de7ebcaf749e147b4a1c2"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1917.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1917.json",
+      "bytes": 43444,
+      "sha256": "6d41fa0cefaf7a6499e98a460ea68a9200398efd6f572e232b8353baf32ed74d"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1918.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1918.json",
+      "bytes": 17000,
+      "sha256": "167036b8ff81ec2063df8c56da396155262612853e5d042ba2a4e5a0e5da783f"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1919.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1919.json",
+      "bytes": 39616,
+      "sha256": "59b2a466eb60f01b0a23c8204291f5bfe2e3f84fa0a8ad7cb17320396590ae5a"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1920.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1920.json",
+      "bytes": 11899,
+      "sha256": "3f966a199897b764e8eaffaffab29a43536337d0914fcedd040c963c9db67602"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1921.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1921.json",
+      "bytes": 857,
+      "sha256": "82a2730e6af2065c1b13da0c1711c42790c48412763197b2d3de05511f2b7234"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1922-request.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1922-request.json",
+      "bytes": 1407,
+      "sha256": "90bb99db03e4061828fb6028a5fb81e760d46650563c74b620771c83223d36e4"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1922.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1922.json",
+      "bytes": 2158,
+      "sha256": "2fcc4139222c4cc8c91154a51defd9a5d777bbc5165020fe9fb26ccb851f7366"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1923-request.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1923-request.json",
+      "bytes": 1406,
+      "sha256": "0311416f2aff9fe49c141fa21c955cc4000d151c4bf9b18cd5a356a476b61d05"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1923.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1923.json",
+      "bytes": 6838,
+      "sha256": "dcfcf378f3b66da11904990d31d6f85e130992bd8d53eb986d25371cf9bfde6e"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1924-request.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1924-request.json",
+      "bytes": 6907,
+      "sha256": "394242a2776fa788fe06b5cdb10d0376a4ce76b8e1f668748da6e105ea3c3137"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1924.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1924.json",
+      "bytes": 31390,
+      "sha256": "8623807df1fc9eaf4b03882f61154dc052a4eea624df68df5138ef6dfcc15af7"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1925-request.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1925-request.json",
+      "bytes": 3863,
+      "sha256": "99d8d7d790c844516c33511c61a374a83707f27c3d539ba409b179c736ce723e"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1925.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1925.json",
+      "bytes": 11915,
+      "sha256": "56ba6f6152dd39076aaa0cec445438839f7f5c48fb6def683a135fbf86bd321d"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1926-request.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1926-request.json",
+      "bytes": 499,
+      "sha256": "5692b470b3f87a7fbe9eeae73dff506daefe2e65c43efed255ebb9c5d5f10ea2"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1926.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1926.json",
+      "bytes": 1655,
+      "sha256": "c1577541a100e6bca51c5140027da4b51bd657794043e3a401b5a1308489bc15"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1927-request.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1927-request.json",
+      "bytes": 2036,
+      "sha256": "74506524d8ddac3606c5f9d071331521a91d9d4a4be5bcd4eaeba33b3a8a0f5c"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1927.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1927.json",
+      "bytes": 14896,
+      "sha256": "ee848f8a10925764b824c277f20ca160a2269a445883acd6f41333485c66526a"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1928-request.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1928-request.json",
+      "bytes": 2780,
+      "sha256": "d4cb6cdbf869fe0530837452c9e216b00d4b178ef1286f64880f8bc0ba7b6283"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1928.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1928.json",
+      "bytes": 6254,
+      "sha256": "6beae76b170fdfc21844b894981e68d7b519151615b69ad607fc1110221ffb97"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1929-request.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1929-request.json",
+      "bytes": 2691,
+      "sha256": "23d733eac9fa16c1a092920f496b40aa690e67a8f71262efd2ea2bed02808fa8"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1929.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1929.json",
+      "bytes": 8757,
+      "sha256": "f6e11cfad737ea5e4ac5e6a862f30240d9c43f35e7fb1b26601b45c98411029b"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1930-request.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1930-request.json",
+      "bytes": 3551,
+      "sha256": "5196359b8f2ec78d74397661cf9803816d7b87e274bc8c65fa8ee02d4b733ec5"
+    },
+    {
+      "from": "/private/tmp/pr1188-root-T1930.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1930.json",
+      "bytes": 17082,
+      "sha256": "174241ce83ba64d20d5855c067a46a893d1a3d7eea9e42b1f1d1e9827e0682b4"
+    },
+    {
+      "from": "/private/tmp/pr1188-closure-current.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-closure-current.json",
+      "bytes": 31664,
+      "sha256": "77da05048a65066cce0c1251bea4647897db0a28590000b27d4d5a8b9da4b3fd"
+    },
+    {
+      "from": "/private/tmp/pr1188-closure-difference.json",
+      "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-closure-difference.json",
+      "bytes": 164,
+      "sha256": "d4179874ba85e77d996370630c1e805615be6da2191f3fd48b3dd984475b8fd8"
+    },
+    {
+      "from": "/private/tmp/spec-recurrence-1188/T2039-observation.json",
+      "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-callable-body-reads/T2039-observation.json",
+      "bytes": 53,
+      "sha256": "9378c6f50c86feea55d9da64493501d00fc00b0de33bb5bfdb1f66724eff864d"
+    },
+    {
+      "from": "/private/tmp/spec-recurrence-1188/T2039-prompt.txt",
+      "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-callable-body-reads/T2039-prompt.txt",
+      "bytes": 72,
+      "sha256": "fe6e74b8af9c0e529b2d64e246fbbeb99d86c950f0508511ba2c5d4878c81565"
+    },
+    {
+      "from": "/private/tmp/spec-recurrence-1188/T2039-request.json",
+      "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-callable-body-reads/T2039-request.json",
+      "bytes": 181,
+      "sha256": "9534b56d9a086a1f024abdcb5d3f91ee046a76b44d613f70bfaf293d17858794"
+    },
+    {
+      "from": "/private/tmp/spec-recurrence-1188/T2039.log",
+      "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-callable-body-reads/T2039.log",
+      "bytes": 430,
+      "sha256": "d9c79d4968e4083dad1048b41d611bad4ccc6225f3f1f65483353cb5d1f9b1d7"
+    }
+  ]
+}

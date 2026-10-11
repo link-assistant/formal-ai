@@ -2,9 +2,9 @@ self_ast_census
   target src/selection_heuristics/splitting.rs
   language rust
   fidelity signature
-  byte_len 13198
+  byte_len 13180
   line_count 338
-  content_id source_module_d78da3cb0dd14085
+  content_id source_module_de2013d7560ccf36
   symbol_count 18
   symbols
     struct Span 30 33

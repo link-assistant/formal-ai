@@ -1,0 +1,12 @@
+language en
+lemma concise
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "expressing much in few words"
+    examples ("a concise explanation")
+    id oewn-00548866-a
+    partOfSpeech a
+source "oewn:2024"

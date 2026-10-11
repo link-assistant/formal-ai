@@ -1,0 +1,66 @@
+{
+  "ok": true,
+  "part": 4,
+  "totalParts": 4,
+  "originalUnionIndexSHA256": "ce379f5364df8278ab586aef78716bd7574165b5baccc48f0f8c8a16926a6b97",
+  "originalLogicalMembersAcrossThisFiniteSelection": 801,
+  "logicalMembersThisPart": 801,
+  "currentControllerMembers": 2,
+  "selectedInputsThisPart": 517,
+  "sourceAndControllerInputBytes": 6128048,
+  "inputLimitBytes": 33554432,
+  "uniqueEncodedBlobs": 485,
+  "newEncodedBlobs": 447,
+  "reusedPreviousEncodedBlobs": 38,
+  "newCompressedBytes": 908662,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 700
+    },
+    {
+      "path": "members-002.jsonl",
+      "count": 103
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 485
+    }
+  ],
+  "selectionSHA256": "befb983f71142c61df7878247a59ac1fe78d44590a2997d5ec9fb629d058e70b",
+  "allCurrentSourceGuardsExact": true,
+  "originalInputBytesPreserved": true,
+  "knownLosses": [
+    {
+      "original": "T6175 failed EISDIR observer",
+      "missing": "full rawdrive not written after genuine physical effects; complete surviving original request/program/error/physical outputs retained; no reconstruction"
+    },
+    {
+      "original": "provider5499 scope",
+      "missing": "Original149 143PASS6FAIL contradictory unspecified-add fixture controls retained; explicit mutable normalization profile projection only; strict18365 Pending, native not compiled; namespace stability Unknown."
+    },
+    {
+      "original": "usage5750/oracle5741 scope",
+      "missing": "Source-integrity and bounded structural review only; actual provider/model authenticity, full coordinating request/input/model usage, semantic usefulness, cost and amplification Unknown. No fabricated token estimates, representative cohort, collector wiring or repair-autonomy credit."
+    },
+    {
+      "original": "selector lineage",
+      "missing": "Closed T7004/T7005 replace earlier Pending status; pending T7007 included only after actual qualification.ok true. Original failures remain selected, not silently waived."
+    },
+    {
+      "original": "root usage7006/7011",
+      "missing": "T7006 false qualification (wrong test filename and readability); T7011 current qualifier retained verbatim. Latest usage source effect lineage Pending until root supplies completed owned proof; no blind guard rebind."
+    }
+  ],
+  "pending": [
+    "Own archive running result excluded; native compilation, whole requirements, source-policy repair and production publication pending"
+  ],
+  "ownRunningReceiptExcluded": true,
+  "autonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "actualCost": "Unknown",
+  "productionAcceptance": "Pending"
+}

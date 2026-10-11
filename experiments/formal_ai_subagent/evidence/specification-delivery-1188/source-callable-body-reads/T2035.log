@@ -1,0 +1,147 @@
+>> bash {"command":"node --test rust/tests/web/source-callable-read-contracts.test.mjs rust/tests/web/issue-1173-route3-probes.test.mjs"}
+   TAP version 13
+   # Subtest: R1173-3: a program that prints a greeting is the print_text task, composed from the documented procedure
+   ok 1 - R1173-3: a program that prints a greeting is the print_text task, composed from the documented procedure
+     ---
+     duration_ms: 288.226958
+     ...
+   # Subtest: R1173-3: the operand is a quoted literal, an unquoted utterance or a greeting, in every script
+   ok 2 - R1173-3: the operand is a quoted literal, an unquoted utterance or a greeting, in every script
+     ---
+     duration_ms: 2.115542
+     ...
+   # Subtest: R1173-3: a described value, two literals or no print verb name no operand
+   ok 3 - R1173-3: a described value, two literals or no print verb name no operand
+     ---
+     duration_ms: 43.4665
+     ...
+   # Subtest: R1173-3: a script request stays the minimal-script lane, and no program is stored for print_text
+   ok 4 - R1173-3: a script request stays the minimal-script lane, and no program is stored for print_text
+     ---
+     duration_ms: 11.171
+     ...
+   # Subtest: issue \#1175 p133: every before-promotion row is asked in solve()'s early phase, before the promoted walk
+   ok 5 - issue \#1175 p133: every before-promotion row is asked in solve()'s early phase, before the promoted walk
+     ---
+     duration_ms: 9.874291
+     ...
+   # Subtest: actual committed body reads its source formal slot despite anonymous task spelling
+   ok 6 - actual committed body reads its source formal slot despite anonymous task spelling
+     ---
+     duration_ms: 1.013125
+     ...
+   # Subtest: literal contents and declaration-only names do not read an input
+   ok 7 - literal contents and declaration-only names do not read an input
+     ---
+     duration_ms: 0.1235
+     ...
+   # Subtest: repeated body reads are distinct positional inputs, never declaration counts
+   ok 8 - repeated body reads are distinct positional inputs, never declaration counts
+     ---
+     duration_ms: 0.0925
+     ...
+   # Subtest: explicit signature binds AST parameters and recursive callable before actual execution
+   ok 9 - explicit signature binds AST parameters and recursive callable before actual execution
+     ---
+     duration_ms: 98.407834
+     ...
+   # Subtest: explicit incompatible arity, duplicates and unresolved parameters reject honestly
+   ok 10 - explicit incompatible arity, duplicates and unresolved parameters reject honestly
+     ---
+     duration_ms: 0.301667
+     ...
+   # Subtest: actual source requests retain declared identity and reject unsupported signatures
+   ok 11 - actual source requests retain declared identity and reject unsupported signatures
+     ---
+     duration_ms: 53.744666
+     ...
+   # Subtest: an assertion names the callable without turning its literal argument into a formal name
+   ok 12 - an assertion names the callable without turning its literal argument into a formal name
+     ---
+     duration_ms: 0.2955
+     ...
+   1..12
+   # tests 12
+   # suites 0
+   # pass 12
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 831.61475
+   
+== answer ==
+The `node --test rust/tests/web/source-callable-read-contracts.test.mjs rust/tests/web/issue-1173-route3-probes.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: R1173-3: a program that prints a greeting is the print_text task, composed from the documented procedure
+ok 1 - R1173-3: a program that prints a greeting is the print_text task, composed from the documented procedure
+  ---
+  duration_ms: 288.226958
+  ...
+# Subtest: R1173-3: the operand is a quoted literal, an unquoted utterance or a greeting, in every script
+ok 2 - R1173-3: the operand is a quoted literal, an unquoted utterance or a greeting, in every script
+  ---
+  duration_ms: 2.115542
+  ...
+# Subtest: R1173-3: a described value, two literals or no print verb name no operand
+ok 3 - R1173-3: a described value, two literals or no print verb name no operand
+  ---
+  duration_ms: 43.4665
+  ...
+# Subtest: R1173-3: a script request stays the minimal-script lane, and no program is stored for print_text
+ok 4 - R1173-3: a script request stays the minimal-script lane, and no program is stored for print_text
+  ---
+  duration_ms: 11.171
+  ...
+# Subtest: issue \#1175 p133: every before-promotion row is asked in solve()'s early phase, before the promoted walk
+ok 5 - issue \#1175 p133: every before-promotion row is asked in solve()'s early phase, before the promoted walk
+  ---
+  duration_ms: 9.874291
+  ...
+# Subtest: actual committed body reads its source formal slot despite anonymous task spelling
+ok 6 - actual committed body reads its source formal slot despite anonymous task spelling
+  ---
+  duration_ms: 1.013125
+  ...
+# Subtest: literal contents and declaration-only names do not read an input
+ok 7 - literal contents and declaration-only names do not read an input
+  ---
+  duration_ms: 0.1235
+  ...
+# Subtest: repeated body reads are distinct positional inputs, never declaration counts
+ok 8 - repeated body reads are distinct positional inputs, never declaration counts
+  ---
+  duration_ms: 0.0925
+  ...
+# Subtest: explicit signature binds AST parameters and recursive callable before actual execution
+ok 9 - explicit signature binds AST parameters and recursive callable before actual execution
+  ---
+  duration_ms: 98.407834
+  ...
+# Subtest: explicit incompatible arity, duplicates and unresolved parameters reject honestly
+ok 10 - explicit incompatible arity, duplicates and unresolved parameters reject honestly
+  ---
+  duration_ms: 0.301667
+  ...
+# Subtest: actual source requests retain declared identity and reject unsupported signatures
+ok 11 - actual source requests retain declared identity and reject unsupported signatures
+  ---
+  duration_ms: 53.744666
+  ...
+# Subtest: an assertion names the callable without turning its literal argument into a formal name
+ok 12 - an assertion names the callable without turning its literal argument into a formal name
+  ---
+  duration_ms: 0.2955
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 831.61475
+```

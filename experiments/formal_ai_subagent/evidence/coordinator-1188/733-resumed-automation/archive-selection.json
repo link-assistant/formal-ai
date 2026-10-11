@@ -1,0 +1,72 @@
+{
+  "records": 3660,
+  "sourceBranch": "qa-reasoning-coding-bulk-fixes",
+  "historicalProducerHead": "733f9d0be8500f99fd5fd3061a5147c103f939f5",
+  "scope": "Finite fullbyte original source and failures; current coordinator metadata/outer receipt added separately after installation",
+  "recoveredReusedSourcePaths": [
+    {
+      "originalSelectedPath": "/private/tmp/pr1188-specification-parity/v6-enum-predicates/candidate/rust/tests/web/rust-specification-enum-predicates.test.mjs",
+      "reusedPathActualSha256": "ac2865eae37438499c577684dbb67ed6e5dfb240b3d1b07d5d69205446eb2891",
+      "immutableRecovery": "/private/tmp/pr1188-specification-parity/v6-enum-predicates/ready214/postimages/rust/tests/web/rust-specification-enum-predicates.test.mjs",
+      "expected": "f828d0ef122fe993321dab32763c28ac077f26dd0f68cc7b64d1a14ecae0e165",
+      "bytes": 8393
+    },
+    {
+      "originalSelectedPath": "/private/tmp/pr1188-specification-parity/v6-enum-predicates/candidate/scripts/lib/native-scalar-registry.mjs",
+      "reusedPathActualSha256": "f9686b9e8abfd64ce40fb34ab123f4830730ac1175f92a7b15c5ee7f2b7d7088",
+      "immutableRecovery": "/private/tmp/pr1188-specification-parity/v6-enum-predicates/ready214/postimages/scripts/lib/native-scalar-registry.mjs",
+      "expected": "e1f7e2e05e52ba544df9b1abc7cc32e6c173e653bd152c6ba39f864b2e35dc36",
+      "bytes": 16754
+    }
+  ],
+  "knownLosses": [
+    {
+      "task": "T4904",
+      "artifact": "Intermediate full acceptance overwritten by T4906 before immutable freeze; actual transcript and original freeze metadata retained, original full artifact not recoverable"
+    },
+    {
+      "task": "T4940-first",
+      "artifact": "/private/tmp/pr1188-specification-parity/T4940-first-evidence-loss.json"
+    }
+  ],
+  "wholeGitBundleExclusions": [
+    {
+      "path": "automation-draft/outputs/lib/native-response-capture.mjs",
+      "reason": "symlink excluded; canonical regular source retained elsewhere"
+    },
+    {
+      "path": "automation-draft/outputs/scripts/lib",
+      "reason": "symlink excluded; canonical regular source retained elsewhere"
+    },
+    {
+      "path": "automation-draft/outputs/scripts/qualified-data-artifact-profiles.mjs",
+      "reason": "symlink excluded; canonical regular source retained elsewhere"
+    },
+    {
+      "path": "release-producers/data-artifact-11672238623/source.bundle",
+      "bytes": 1175,
+      "sha256": "fda4047b5283e72c293830455c447a1e0247351a3ed3ae652664adc2cd76aceb",
+      "reason": "whole Git bundle or executable payload excluded; metadata only"
+    },
+    {
+      "path": "release-producers/data-pass2-artifact-11672238623/source.bundle",
+      "bytes": 1175,
+      "sha256": "fda4047b5283e72c293830455c447a1e0247351a3ed3ae652664adc2cd76aceb",
+      "reason": "whole Git bundle or executable payload excluded; metadata only"
+    },
+    {
+      "path": "release-producers/data-pass2-artifact-11673820123/source.bundle",
+      "bytes": 1175,
+      "sha256": "fda4047b5283e72c293830455c447a1e0247351a3ed3ae652664adc2cd76aceb",
+      "reason": "whole Git bundle or executable payload excluded; metadata only"
+    }
+  ],
+  "autonomousCredit": 0,
+  "uniqueOriginals": 2507,
+  "selectedOriginalBytes": 248282352,
+  "manifestFiles": 5,
+  "sourceHead": "395c4339748b1671c015474f06e27401243016d8",
+  "finalSourceQualification": "Actual T3410 completion:135 source paths; T3409 all repository gates and35 final portable passes, T3406 earlier168passes+1inheritedTODO, canonical214/1182 original cases; native execution reserved for CI",
+  "controllerOuter": "Root3385–3410 and finite child selections include original fullbytes. T3411 installation outer postdates this cut and is appended once by T3412. Historical task ID collisions retain agent-qualified source provenance; no recursive completeness credit",
+  "autonomousCodingCredit": 0
+}

@@ -1,0 +1,34 @@
+self_ast_census
+  target src/si_units.rs
+  language rust
+  fidelity signature
+  byte_len 15455
+  line_count 443
+  content_id source_module_e12ba3b7768eac8f
+  symbol_count 25
+  symbols
+    const SEED_PATH 36 36
+    const ENGINE_NAME 40 40
+    const BASE_SYMBOLS 43 43
+    struct Dimension 50 52
+    function dimensionless 57 59
+    function parse 66 96
+    function is_dimensionless 100 102
+    function exponent 106 111
+    function as_string 115 131
+    function multiply 136 142
+    function inverse 147 153
+    struct SiUnitEntry 159 166
+    struct BaseDimension 170 174
+    function seed_text 177 182
+    function parse_factor 188 221
+    function gcd 224 231
+    function reduce 234 240
+    function base_dimensions 244 271
+    function si_units 275 317
+    function unit_named_by 322 329
+    enum SiConversion 333 343
+    function as_f64 348 362
+    function describe 367 382
+    function convert_through_si 396 437
+    function note_unknown_unit 441 443

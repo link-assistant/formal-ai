@@ -11,6 +11,9 @@ use super::workflow_fixtures::*;
 #[path = "release_recovery.rs"]
 mod release_recovery;
 
+#[path = "selected_wasm_build_contract.rs"]
+mod selected_wasm_build_contract;
+
 fn read_worker_source(manifest_dir: &str) -> String {
     let mut source =
         fs::read_to_string(format!("{manifest_dir}/js/worker/formal_ai_worker.js")).unwrap();
@@ -34,6 +37,29 @@ fn read_worker_source(manifest_dir: &str) -> String {
     source
 }
 
+/// The bundled front-end imports JSX and JavaScript modules under `js/app/`;
+/// source assertions include the constants module that owns version metadata.
+fn read_web_app_source(manifest_dir: &str) -> String {
+    let mut modules: Vec<PathBuf> = fs::read_dir(format!("{manifest_dir}/js/app"))
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .filter(|path| {
+            matches!(
+                path.extension().and_then(|ext| ext.to_str()),
+                Some("jsx" | "js" | "mjs")
+            )
+        })
+        .collect();
+    modules.sort();
+
+    let mut source = String::new();
+    for module in modules {
+        source.push_str(&fs::read_to_string(module).unwrap());
+        source.push('\n');
+    }
+    source
+}
+
 #[test]
 fn github_pages_artifact_advertises_crate_version_from_cargo_toml() {
     // Issue #72: the deployed Pages site advertised `0.16.0` long after the
@@ -44,12 +70,12 @@ fn github_pages_artifact_advertises_crate_version_from_cargo_toml() {
     let manifest_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
     let index_html = fs::read_to_string(format!("{manifest_dir}/js/index.html")).unwrap();
     // Issue #550: app source moved to JSX (bundled by bun into the served
-    // app.js); these checks assert source-level code, so read the JSX source.
-    let app_js = fs::read_to_string(format!("{manifest_dir}/js/app/main.jsx")).unwrap();
+    // app.js); these checks assert source-level code, so read the JSX modules.
+    let app_js = read_web_app_source(manifest_dir);
     let stamp_script =
         fs::read_to_string(format!("{manifest_dir}/scripts/stamp-pages-artifact.sh")).unwrap();
-    let workflow = release_workflow();
-    let deploy_demo = job_block(&workflow, "deploy-pages");
+    let workflow = pages_artifact_workflow();
+    let deploy_demo = job_block(&workflow, "build");
 
     assert!(
         index_html.contains("__FORMAL_AI_VERSION__"),
@@ -201,8 +227,8 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
     let app_index_html = fs::read_to_string(format!("{manifest_dir}/js/app/index.html")).unwrap();
     let tests_index = fs::read_to_string(format!("{manifest_dir}/js/tests/index.html")).unwrap();
     // Issue #550: app source moved to JSX (bundled by bun into the served
-    // app.js); these checks assert source-level code, so read the JSX source.
-    let app_js = fs::read_to_string(format!("{manifest_dir}/js/app/main.jsx")).unwrap();
+    // app.js); these checks assert source-level code, so read the JSX modules.
+    let app_js = read_web_app_source(manifest_dir);
     let seed_loader_js = fs::read_to_string(format!("{manifest_dir}/js/seed_loader.js")).unwrap();
     let worker_js = read_worker_source(manifest_dir);
     let stamp_script =
@@ -213,7 +239,15 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
     .unwrap();
 
     for asset in [
-        "styles.css?v=__FORMAL_AI_ASSET_VERSION__",
+        // The app stylesheet is split by concern into js/styles/ (linked in
+        // cascade order); every part is cache-busted like any other asset.
+        "styles/01-tokens.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "styles/02-shell.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "styles/03-panels.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "styles/04-message-content.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "styles/05-composer-responsive.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "styles/06-dark-theme.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "styles/07-interactions.css?v=__FORMAL_AI_ASSET_VERSION__",
         // The generated seed inventory ships and cache-busts like any other
         // asset; without it seed_loader.js would fetch nothing (issue #991).
         "seed-files.js?v=__FORMAL_AI_ASSET_VERSION__",
@@ -326,7 +360,7 @@ fn readme_keeps_traditional_ci_and_artifact_badges() {
         "actions/workflows/desktop-release.yml/badge.svg?branch=main",
         "img.shields.io/crates/v/formal-ai?label=crates.io&style=flat",
         "img.shields.io/docsrs/formal-ai?label=docs.rs&style=flat",
-        "img.shields.io/badge/rust-1.98%2B-blue.svg",
+        "img.shields.io/badge/rust-1.99%2B-blue.svg",
         "codecov.io/gh/link-assistant/formal-ai/branch/main/graph/badge.svg",
         "img.shields.io/badge/license-Unlicense-blue.svg",
     ] {
@@ -377,6 +411,7 @@ fn build_job_verifies_the_publishable_archive_before_checking_its_size() {
 
 #[test]
 fn lint_job_guards_the_wasm_worker_migration() {
+    selected_wasm_build_contract::require_compiler_contract();
     // Issue #658 (E39 / R380): the JavaScript worker logic is being absorbed
     // into the Rust→WASM worker. Three guards keep that migration honest and
     // must run in the lint job: the worker JS line-budget ratchet, a rebuild of
@@ -397,7 +432,7 @@ fn lint_job_guards_the_wasm_worker_migration() {
         .find("rust-script scripts/check-worker-line-budget.rs")
         .expect("lint job should ratchet the worker JS line budget");
     let build_wasm = lint
-        .find("sh js/wasm-worker/build.sh")
+        .find("node scripts/build-selected-wasm.mjs build")
         .expect("lint job should rebuild the Rust→WASM worker from source");
     let wasm_size = lint
         .find("rust-script scripts/check-wasm-worker-size.rs")
@@ -419,7 +454,7 @@ fn lint_job_guards_the_wasm_worker_migration() {
 #[test]
 fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_optional_docker_hub_mirror()
  {
-    let workflow = release_workflow();
+    let workflow = crate::ci_gates::staged_release_operations::release_operation_workflow();
 
     assert!(
         workflow.contains("GHCR_IMAGE: ghcr.io/${{ github.repository }}"),
@@ -444,17 +479,27 @@ fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_opt
         5,
         "release publishing and upgrade checks should authenticate to their registries"
     );
+    // Validated source/version labels are rendered by the compile-free factory;
+    // each of the two guarded release jobs retains a GHCR route and optional Hub mirror.
+    for mode in ["publish", "mirror"] {
+        let invocation = format!(
+            "run: node scripts/release-image-factory.mjs {mode} prepared-release \"$RELEASE_VERSION\""
+        );
+        assert_eq!(
+            workflow.matches(invocation.as_str()).count(),
+            2,
+            "both release jobs must retain the {mode} route"
+        );
+    }
     assert_eq!(
         workflow.matches("docker/metadata-action@v6").count(),
-        4,
-        "auto and manual release jobs should derive Docker tags for GHCR and optionally Docker Hub"
+        0,
+        "factory tags are selected version/latest, without unused action outputs"
     );
     assert_eq!(
         workflow.matches("docker/build-push-action@v7").count(),
-        // Four publishing builds, plus the issue #808 pull-request `docker-build`
-        // job, which builds the same image with `push: false`.
-        5,
-        "auto and manual release jobs should publish GHCR images and optionally Docker Hub mirrors"
+        1,
+        "the independent pull-request Docker build remains action-backed"
     );
     assert!(
         workflow.matches("packages: write").count() >= 2,

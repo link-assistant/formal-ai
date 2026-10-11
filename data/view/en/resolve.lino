@@ -1,0 +1,41 @@
+view
+  id M-17bf935d56f9
+  lemma resolve
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the trait of being resolute"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a formal expression by a meeting; agreed to by a vote"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "bring to an end; settle conclusively"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "reach a conclusion after a discussion or deliberation"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "reach a decision"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "understand the meaning of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make clearly visible"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "find the solution"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to go into a solution"
+    provenance (wordnet)

@@ -1,0 +1,76 @@
+language en
+lemma just
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "used especially of what is legally or ethically right or proper or fitting"
+    examples ("a just and lasting peace" "a kind and just man" "a just reward" "his just inheritance")
+    id oewn-01372590-a
+    partOfSpeech a
+  entry
+    definition "fair to all parties as dictated by reason and conscience"
+    examples ("equitable treatment of all citizens" "an equitable distribution of gifts among the children")
+    id oewn-00961341-a
+    partOfSpeech a
+    synonyms (equitable)
+  entry
+    definition "free from favoritism or self-interest or bias or deception; conforming with established standards or rules"
+    examples ("a fair referee" "fair deal" "on a fair footing" "a fair fight" "by fair means or foul")
+    id oewn-00959321-a
+    partOfSpeech a
+    synonyms (fair)
+  entry
+    definition "and nothing more"
+    examples ("I was merely asking" "it is simply a matter of time" "just a scratch" "he was only a child" "hopes that last but a moment")
+    id oewn-00005103-r
+    partOfSpeech r
+    synonyms (merely simply only but)
+  entry
+    definition "indicating exactness or preciseness"
+    examples ("he was doing precisely (or exactly) what she had told him to do" "it was just as he said — the jewel was gone" "it has just enough salt" "Properly speaking, all true work is religion.")
+    id oewn-00159432-r
+    partOfSpeech r
+    synonyms (precisely exactly properly)
+  entry
+    definition "only a moment ago"
+    examples ("he has just arrived" "the sun just now came out")
+    id oewn-00033695-r
+    partOfSpeech r
+    synonyms ("just now")
+  entry
+    definition "(used for emphasis) absolutely"
+    examples ("I just can't take it anymore" "he was just grand as Romeo" "it's simply beautiful!")
+    id oewn-00247755-r
+    partOfSpeech r
+    synonyms (simply)
+  entry
+    definition "only a very short time before"
+    examples ("we hardly knew them" "had scarcely rung the bell when the door flew open" "would have scarce arrived before she would have found some excuse to leave")
+    id oewn-00002669-r
+    partOfSpeech r
+    synonyms (barely hardly scarcely scarce)
+  entry
+    definition "possibly (indicating a slight chance of something being true)"
+    examples ("it might just happen")
+    id oewn-00301750-r
+    partOfSpeech r
+  entry
+    definition "exactly at this moment or the moment described"
+    examples ("we've just finished painting the walls, so don't touch them")
+    id oewn-00003175-r
+    partOfSpeech r
+  entry
+    definition "by a little"
+    examples ("I only just caught the bus" "he finished the marathon in just under 3 hours" "it was barely 5 a.m." "the network has barely 5 percent of viewers" "the batter just missed being hit")
+    id oewn-00002935-r
+    partOfSpeech r
+    synonyms (barely)
+  entry
+    definition "of moral excellence"
+    examples ("a genuinely good person" "a just cause" "an upright and respectable man")
+    id oewn-02044341-s
+    partOfSpeech s
+    synonyms (good upright)
+source "oewn:2024"

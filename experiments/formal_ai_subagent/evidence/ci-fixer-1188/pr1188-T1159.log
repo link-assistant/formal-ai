@@ -1,0 +1,456 @@
+>> read {"filePath":"js/agentic/workspace_line_operation.mjs","file_path":"js/agentic/workspace_line_operation.mjs","path":"js/agentic/workspace_line_operation.mjs"}
+   <file>
+   00001| // Whole-line operations a request states by position, adjacency or exchange
+   00002| // (rust/src/agentic_coding/workspace_line_operation.rs).
+   00003| //
+   00004| // PR #1188 dogfooding: `Delete lines 266-267 from f.lino.` only read the file
+   00005| // (T30), `Insert the line '…' after line 12 in f.lino.` planned nothing (T33),
+   00006| // `delete the line 'A' and the 'B' line directly above it` was routed to a
+   00007| // whole-file write of a fragment (T29), `Move the line 'x' to the top of f`
+   00008| // duplicated the line and `Swap the lines 'a' and 'b' in f` planned nothing.
+   00009| // Each is now a computed change over the file's lines: read, compute, the
+   00010| // smallest unique edit, the digest check, and the seeded sentence that states
+   00011| // it. Every word that carries the operation is seeded (numbered_line_noun,
+   00012| // numbered_line_lead, line_range_connector, line_adjacent_above,
+   00013| // line_adjacent_below, line_move_action, line_swap_action) in every registered
+   00014| // language.
+   00015| 
+   00016| import { quotedSegmentSpans } from './crate/normal_markov.mjs';
+   00017| import { textOutsideQuotedSegments } from './crate/coding_program_contract.mjs';
+   00018| import { unescapeProseNewlines } from './positional_edit.mjs';
+   00019| import { sentenceWords } from './workspace_change.mjs';
+   00020| import { cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
+   00021| import { meaningEvidencedIn, mentionsRole, wordsForRole } from './write_lexicon.mjs';
+   00022| import { meaning as seedMeaning, meaningsWithRole } from './crate/seed_meanings.mjs';
+   00023| import { normalizePrompt } from './crate/engine.mjs';
+   00024| import { trim } from './write_str.mjs';
+   00025| 
+   00026| /** A digit run longer than this is not a line number. */
+   00027| const MAX_NUMBER_DIGITS = 9;
+   00028| const DASHES = '-–—';
+   00029| const PUNCTUATION = '!"#$%&\'()*+,./:;<=>?@[\\]^_`{|}~«»।॥‘’“”、。！，：；？';
+   00030| 
+   00031| const isAsciiDigit = (character) => character >= '0' && character <= '9';
+   00032| const isAsciiPrintable = (text) => /^[\x21-\x7e]+$/u.test(text);
+   00033| 
+   00034| /** Mirrors `fn is_han`: one Han ideograph, a word of its own. */
+   00035| function isHan(character) {
+   00036|   const point = character.codePointAt(0);
+   00037|   return (point >= 0x3400 && point <= 0x4dbf) || (point >= 0x4e00 && point <= 0x9fff) || (point >= 0xf900 && point <= 0xfaff);
+   00038| }
+   00039| 
+   00040| /**
+   00041|  * Mirrors `fn named_target_and_payloads`: the one workspace path the request
+   00042|  * names and its quoted payloads. A path the request leaves unquoted is the
+   00043|  * file; only when it names none does a quoted literal that is exactly one path
+   00044|  * name it, so `Delete the lines containing 'src/x.rs' from list.txt` edits
+   00045|  * `list.txt` (PR #1188 T35).
+   00046|  */
+   00047| export function namedTargetAndPayloads(task) {
+   00048|   const segments = quotedSegmentSpans(task);
+   00049|   const isPath = (path) => looksLikeFilePath(path) && safeRelativePath(path);
+   00050|   const quotedOver = (token) => segments.some((segment) => token.start < segment.end && token.end > segment.start);
+   00051|   const unquoted = [...new Set(tokens(task).filter((token) => !quotedOver(token))
+   00052|     .map((token) => cleanPathToken(token.text)).filter(isPath))];
+   00053|   const quoted = [...new Set(segments.map((segment) => segment.text).filter(isPath))];
+   00054|   let target = null;
+   00055|   if (unquoted.length === 1) [target] = unquoted;
+   00056|   else if (unquoted.length === 0 && quoted.length === 1) [target] = quoted;
+   00057|   if (target === null) return null;
+   00058|   return { target, payloads: segments.map((segment) => segment.text).filter((text) => text !== target && trim(text) !== '') };
+   00059| }
+   00060| 
+   00061| /**
+   00062|  * Mirrors `fn line_pieces`: the request outside its quotes as words, numbers
+   00063|  * and dashes. A path is one opaque piece; a Han ideograph is a word of its own.
+   00064|  */
+   00065| function linePieces(task) {
+   00066|   const pieces = [];
+   00067|   for (const token of tokens(textOutsideQuotedSegments(task))) {
+   00068|     const path = cleanPathToken(token.text);
+   00069|     if (isAsciiPrintable(path) && looksLikeFilePath(path)) {
+   00070|       pieces.push({ kind: 'path', text: path });
+   00071|       continue;
+   00072|     }
+   00073|     let run = '';
+   00074|     let kind = null;
+   00075|     const flush = () => {
+   00076|       if (run !== '') {
+   00077|         const number = kind === 'number' && run.length <= MAX_NUMBER_DIGITS;
+   00078|         pieces.push(number ? { kind, value: Number(run) } : { kind: kind === 'dash' ? kind : 'word', text: run.toLowerCase() });
+   00079|       }
+   00080|       run = '';
+   00081|       kind = null;
+   00082|     };
+   00083|     for (const character of token.text) {
+   00084|       let next = 'word';
+   00085|       if (isAsciiDigit(character)) next = 'number';
+   00086|       else if (DASHES.includes(character)) next = 'dash';
+   00087|       else if (isHan(character)) next = 'han';
+   00088|       else if (PUNCTUATION.includes(character)) next = null;
+   00089|       if (next !== kind || next === 'dash' || next === 'han') flush();
+   00090|       if (next === null) continue;
+   00091|       kind = next;
+   00092|       run += character;
+   00093|     }
+   00094|     flush();
+   00095|   }
+   00096|   return pieces;
+   00097| }
+   00098| 
+   00099| const roleWords = (role) => wordsForRole(role).map((word) => word.toLowerCase());
+   00100| 
+   00101| /**
+   00102|  * Mirrors `fn numbered_lines`: every line number or range the request names —
+   00103|  * a seeded `numbered_line_noun` before the number (`line 12`, `lines 3-5`,
+   00104|  * `lines from 3 to 5`, `строки с 3 по 5`), or, after a seeded lead, after it
+   00105|  * (`第3到5行`) — as `{first, last}`, one-based and inclusive.
+   00106|  */
+   00107| export function numberedLines(task) {
+   00108|   const pieces = linePieces(task);
+   00109|   const nouns = roleWords('numbered_line_noun');
+   00110|   const leads = roleWords('numbered_line_lead');
+   00111|   const connectors = roleWords('line_range_connector');
+   00112|   const is = (index, words) => index >= 0 && index < pieces.length && pieces[index].kind === 'word' && words.includes(pieces[index].text);
+   00113|   const isNumber = (index) => index >= 0 && index < pieces.length && pieces[index].kind === 'number';
+   00114|   const found = [];
+   00115|   for (let index = 0; index < pieces.length; index += 1) {
+   00116|     if (!isNumber(index)) continue;
+   00117|     let end = index;
+   00118|     const joint = index + 1;
+   00119|     if ((joint < pieces.length && pieces[joint].kind === 'dash') || is(joint, connectors)) {
+   00120|       const second = is(joint + 1, leads) ? joint + 2 : joint + 1;
+   00121|       if (isNumber(second)) end = second;
+   00122|     }
+   00123|     let before = index - 1;
+   00124|     while (before >= index - 2 && is(before, leads)) before -= 1;
+   00125|     const led = before < index - 1;
+   00126|     if (is(before, nouns) || (led && is(end + 1, nouns))) {
+   00127|       found.push({ first: pieces[index].value, last: pieces[end].value });
+   00128|       index = end;
+   00129|     }
+   00130|   }
+   00131|   return found;
+   00132| }
+   00133| 
+   00134| /** Mirrors `fn joins_word`: a letter, mark or digit outside the Han block, which a word boundary may not split. */
+   00135| const joinsWord = (character) => character !== undefined && /[\p{Alphabetic}\p{N}]/u.test(character) && !isHan(character);
+   00136| 
+   00137| /**
+   00138|  * Mirrors `fn ordinal_value`: the one-based number a seeded line ordinal
+   00139|  * counts to -- the digits its cardinal meaning (`defined-by one`) spells.
+   00140|  */
+   00141| function ordinalValue(meaning) {
+   00142|   for (const slug of meaning.defined_by) {
+   00143|     const cardinal = seedMeaning(slug);
+   00144|     if (!cardinal || !cardinal.roles.includes('cardinal_number_word')) continue;
+   00145|     const digits = cardinal.lexemes.flatMap((lexeme) => lexeme.words.map((word) => word.text))
+   00146|       .find((text) => /^[0-9]{1,9}$/u.test(text));
+   00147|     if (digits !== undefined) return Number(digits);
+   00148|   }
+   00149|   return null;
+   00150| }
+   00151| 
+   00152| /**
+   00153|  * Mirrors `fn ordinal_lines`: every line the request names by a seeded
+   00154|  * ordinal right before a seeded line noun (`the first line`, `последнюю
+   00155|  * строку`, `第一行`, `la última línea`), as `{first, last, fromEnd}`; a
+   00156|  * `line_ordinal_last` ordinal counts from the end (PR #1188 G19).
+   00157|  */
+   00158| function ordinalLines(task) {
+   00159|   const outside = textOutsideQuotedSegments(task).toLowerCase();
+   00160|   const nouns = roleWords('numbered_line_noun').filter((noun) => noun !== '');
+   00161|   const found = [];
+   00162|   for (const [role, fromEnd] of [['line_ordinal', false], ['line_ordinal_last', true]]) {
+   00163|     for (const meaning of meaningsWithRole(role)) {
+   00164|       const value = ordinalValue(meaning);
+   00165|       if (value === null) continue;
+   00166|       const surfaces = meaning.lexemes.flatMap((lexeme) => lexeme.words.map((word) => word.text.toLowerCase()));
+   00167|       for (const surface of surfaces.filter((text) => text !== '')) {
+   00168|         for (let at = outside.indexOf(surface); at >= 0; at = outside.indexOf(surface, at + surface.length)) {
+   00169|           if (joinsWord(Array.from(outside.slice(0, at)).pop())) continue;
+   00170|           const rest = outside.slice(at + surface.length);
+   00171|           const gap = rest.length - rest.trimStart().length;
+   00172|           if (gap === 0 && joinsWord(Array.from(rest)[0])) continue;
+   00173|           const noun = nouns.find((candidate) => rest.slice(gap).startsWith(candidate)
+   00174|             && !joinsWord(Array.from(rest.slice(gap + candidate.length))[0]));
+   00175|           if (noun !== undefined) {
+   00176|             found.push({ first: value, last: value, fromEnd, start: at, end: at + surface.length + gap + noun.length });
+   00177|           }
+   00178|         }
+   00179|       }
+   00180|     }
+   00181|   }
+   00182|   return found;
+   00183| }
+   00184| 
+   00185| /**
+   00186|  * Mirrors `fn line_slice`: the one run of lines a read request names --
+   00187|  * `{from, to, fromEnd}`, one-based and inclusive, counted from the end when
+   00188|  * `fromEnd` -- or null (PR #1188 G33). A numbered line or range (`lines 2-3`),
+   00189|  * a seeded ordinal line (`the last line`), or a count between a seeded head or
+   00190|  * tail cue and a line noun (`the first 2 lines`, `последние 2 строки`).
+   00191|  */
+   00192| export function lineSlice(task) {
+   00193|   const numbered = numberedLines(task);
+   00194|   if (numbered.length > 1) return null;
+   00195|   if (numbered.length === 1) return { from: numbered[0].first, to: numbered[0].last, fromEnd: false };
+   00196|   const ordinals = ordinalLines(task);
+   00197|   if (ordinals.length === 1) return { from: ordinals[0].first, to: ordinals[0].first, fromEnd: ordinals[0].fromEnd };
+   00198|   const pieces = linePieces(task);
+   00199|   const nouns = roleWords('numbered_line_noun');
+   00200|   const is = (index, words) => index >= 0 && index < pieces.length && pieces[index].kind === 'word' && words.includes(pieces[index].text);
+   00201|   const slices = [];
+   00202|   for (let index = 1; index + 1 < pieces.length; index += 1) {
+   00203|     const count = pieces[index];
+   00204|     if (count.kind !== 'number' || count.value === 0 || !is(index + 1, nouns)) continue;
+   00205|     if (is(index - 1, roleWords('line_slice_head_cue'))) slices.push({ from: 1, to: count.value, fromEnd: false });
+   00206|     else if (is(index - 1, roleWords('line_slice_tail_cue'))) slices.push({ from: count.value, to: 1, fromEnd: true });
+   00207|   }
+   00208|   return slices.length === 1 ? slices[0] : null;
+   00209| }
+   00210| 
+   00211| /**
+   00212|  * Mirrors `fn sliced_lines`: the lines of `source` a [`lineSlice`] names, as
+   00213|  * `{first, last, text}` with the file's own one-based numbers, or null when
+   00214|  * the file has none of them.
+   00215|  */
+   00216| export function slicedLines(source, slice) {
+   00217|   const { lines: all } = fileLines(source);
+   00218|   const count = all.length;
+   00219|   const first = slice.fromEnd ? Math.max(1, count + 1 - slice.from) : slice.from;
+   00220|   const last = Math.min(count, slice.fromEnd ? count + 1 - slice.to : slice.to);
+   00221|   if (first < 1 || first > last) return null;
+   00222|   return { first, last, text: all.slice(first - 1, last).join('\n') };
+   00223| }
+   00224| 
+   00225| /** Mirrors `fn file_lines`: the file's lines without their `\n`, and whether it ended in one. */
+   00226| function fileLines(source) {
+   00227|   const trailing = source.endsWith('\n');
+   00228|   const body = trailing ? source.slice(0, -1) : source;
+   00229|   return { lines: source === '' ? [] : body.split('\n'), trailing };
+   00230| }
+   00231| 
+   00232| function joinedLines(lines, trailing) {
+   00233|   return lines.length === 0 ? '' : `${lines.join('\n')}${trailing ? '\n' : ''}`;
+   00234| }
+   00235| 
+   00236| const bare = (line) => (line.endsWith('\r') ? line.slice(0, -1) : line);
+   00237| 
+   00238| /**
+   00239|  * Mirrors `fn unique_line`: the one line that is exactly `text`, else the one
+   00240|  * line containing it; null when there are none or several.
+   00241|  */
+   00242| function uniqueLine(lines, text) {
+   00243|   const exact = lines.flatMap((line, index) => (bare(line) === text ? [index] : []));
+   00244|   if (exact.length > 0) return exact.length === 1 ? exact[0] : null;
+   00245|   const containing = lines.flatMap((line, index) => (bare(line).includes(text) ? [index] : []));
+   00246|   return containing.length === 1 ? containing[0] : null;
+   00247| }
+   00248| 
+   00249| /** Mirrors `fn removed_range`: lines `first..=last` (one-based) gone. */
+   00250| export function removedRange(source, first, last) {
+   00251|   const { lines, trailing } = fileLines(source);
+   00252|   if (first < 1 || last < first || last > lines.length) return null;
+   00253|   return joinedLines([...lines.slice(0, first - 1), ...lines.slice(last)], trailing);
+   00254| }
+   00255| 
+   00256| /** Mirrors `fn inserted_at_line`: `text` as a line after (or before) line `line`. */
+   00257| function insertedAtLine(source, line, text, after) {
+   00258|   const { lines, trailing } = fileLines(source);
+   00259|   if (line < 1 || line > lines.length) return null;
+   00260|   const at = after ? line : line - 1;
+   00261|   return joinedLines([...lines.slice(0, at), ...text.split('\n'), ...lines.slice(at)], trailing);
+   00262| }
+   00263| 
+   00264| /**
+   00265|  * Mirrors `fn adjacent_pair`: the indices of the line `anchor` names and the
+   00266|  * line directly above (or below) it, when exactly one such pair exists and the
+   00267|  * neighbour, if the request names it, is that line.
+   00268|  */
+   00269| function adjacentPair(lines, anchor, neighbour, above) {
+   00270|   const fits = (index) => neighbour === null || bare(lines[index]) === neighbour
+   00271|     || trim(bare(lines[index])) === trim(neighbour) || bare(lines[index]).includes(neighbour);
+   00272|   const pairs = (matches) => lines.flatMap((line, index) => {
+   00273|     const other = above ? index - 1 : index + 1;
+   00274|     return matches(bare(line)) && other >= 0 && other < lines.length && fits(other) ? [[index, other]] : [];
+   00275|   });
+   00276|   let found = pairs((line) => line === anchor);
+   00277|   if (found.length === 0) found = pairs((line) => line.includes(anchor));
+   00278|   return found.length === 1 ? found[0] : null;
+   00279| }
+   00280| 
+   00281| function removedAdjacent(source, anchor, neighbour, above) {
+   00282|   const { lines, trailing } = fileLines(source);
+   00283|   const pair = adjacentPair(lines, anchor, neighbour, above);
+   00284|   return pair === null ? null : joinedLines(lines.filter((_, index) => !pair.includes(index)), trailing);
+   00285| }
+   00286| 
+   00287| /**
+   00288|  * Mirrors `fn moved_line`: the line `text` names taken out and put back at the
+   00289|  * start, the end, or beside the line `anchor` names among the rest.
+   00290|  */
+   00291| function movedLine(source, text, destination, anchor) {
+   00292|   const { lines, trailing } = fileLines(source);
+   00293|   const from = uniqueLine(lines, text);
+   00294|   if (from === null) return null;
+   00295|   const rest = lines.filter((_, index) => index !== from);
+   00296|   let at = destination === 'start' ? 0 : rest.length;
+   00297|   if (destination === 'after' || destination === 'before') {
+   00298|     const target = uniqueLine(rest, anchor);
+   00299|     if (target === null) return null;
+   00300|     at = destination === 'after' ? target + 1 : target;
+   00301|   }
+   00302|   return joinedLines([...rest.slice(0, at), lines[from], ...rest.slice(at)], trailing);
+   00303| }
+   00304| 
+   00305| /** Mirrors `fn swapped_lines`: the two named lines exchanged. */
+   00306| function swappedLines(source, first, second) {
+   00307|   const { lines, trailing } = fileLines(source);
+   00308|   const one = uniqueLine(lines, first);
+   00309|   const two = uniqueLine(lines, second);
+   00310|   if (one === null || two === null || one === two) return null;
+   00311|   const out = [...lines];
+   00312|   [out[one], out[two]] = [lines[two], lines[one]];
+   00313|   return joinedLines(out, trailing);
+   00314| }
+   00315| 
+   00316| /** Exactly one of the two seeded meanings, outside the request's quotes: true for the first. */
+   00317| function eitherOf(outside, first, second) {
+   00318|   const one = mentionsRole(first, outside);
+   00319|   return one === mentionsRole(second, outside) ? null : one;
+   00320| }
+   00321| 
+   00322| /**
+   00323|  * Mirrors `fn grounded_line_operation`: the whole-line operation `task` asks
+   00324|  * for, as a computed change (`{target, compute, intent, slots, reported,
+   00325|  * bounded}`), or null. `bounded` marks an operation whose request states its
+   00326|  * whole extent (a numbered range), which may remove most of a file.
+   00327|  */
+   00328| export function groundedLineOperation(task) {
+   00329|   const named = namedTargetAndPayloads(task);
+   00330|   if (!named) return null;
+   00331|   const { target, payloads } = named;
+   00332|   const outside = sentenceWords(textOutsideQuotedSegments(task));
+   00333|   const change = (compute, intent, slots, extra = {}) => ({
+   00334|     target, compute: (source, missing) => (missing ? null : compute(source)), intent, slots, reported: null, bounded: false, ...extra,
+   00335|   });
+   00336|   if (mentionsRole('line_swap_action', outside)) {
+   00337|     if (payloads.length !== 2) return null;
+   00338|     const [first, second] = payloads;
+   00339|     return change((source) => swappedLines(source, first, second), 'lines_swapped', [['{old}', first], ['{new}', second]]);
+   00340|   }
+   00341|   if (mentionsRole('line_move_action', outside)) {
+   00342|     const [text, anchor] = payloads;
+   00343|     const atStart = eitherOf(outside, 'file_edit_position_start', 'file_edit_position_end');
+   00344|     // `so that it follows the line …` states the place by the line it ends
+   00345|     // up beside (PR #1188 G81).
+   00346|     const after = eitherOf(outside, 'file_edit_position_after', 'file_edit_position_before')
+   00347|       ?? eitherOf(outside, 'line_move_after_cue', 'line_move_before_cue');
+   00348|     if (payloads.length === 1 && atStart !== null) {
+   00349|       const destination = atStart ? 'start' : 'end';
+   00350|       return change((source) => movedLine(source, text, destination, null), `line_moved_${destination}`, [['{old}', text]]);
+   00351|     }
+   00352|     if (payloads.length === 2 && after !== null) {
+   00353|       const destination = after ? 'after' : 'before';
+   00354|       return change((source) => movedLine(source, text, destination, anchor), `line_moved_${destination}`,
+   00355|         [['{old}', text], ['{anchor}', anchor]]);
+   00356|     }
+   00357|     return null;
+   00358|   }
+   00359|   const removing = mentionsRole('coding_text_remove_action', outside) && !mentionsRole('coding_member_add_action', outside);
+   00360|   // An ordinal's words are not an adjacency (`最后一行` holds `后一行`).
+   00361|   const ordinals = ordinalLines(task);
+   00362|   const unordinal = ordinals.reduceRight((text, { start, end }) => `${text.slice(0, start)} ${text.slice(end)}`,
+   00363|     textOutsideQuotedSegments(task).toLowerCase());
+   00364|   const above = eitherOf(sentenceWords(unordinal), 'line_adjacent_above', 'line_adjacent_below');
+   00365|   const numbered = [...numberedLines(task), ...ordinals];
+   00366|   if (numbered.length > 1) return null;
+   00367|   if (numbered.length === 1) {
+   00368|     // An ordinal counted from the end names its line once the file is read.
+   00369|     const { first, last, fromEnd = false } = numbered[0];
+   00370|     const span = (source) => {
+   00371|       const count = fileLines(source).lines.length;
+   00372|       return fromEnd ? [count - last + 1, count - first + 1] : [first, last];
+   00373|     };
+   00374|     if (removing && payloads.length === 0) {
+   00375|       const range = (source) => {
+   00376|         const [low, high] = span(source);
+   00377|         return [above === true ? low - 1 : low, above === false ? high + 1 : high];
+   00378|       };
+   00379|       const label = (source) => {
+   00380|         const [from, to] = range(source);
+   00381|         return from === to ? String(from) : `${from}-${to}`;
+   00382|       };
+   00383|       return change((source) => removedRange(source, ...range(source)), 'numbered_lines_removed', [], {
+   00384|         bounded: true, reported: (source) => ({ intent: 'numbered_lines_removed', slots: [['{lines}', label(source)]] }),
+   00385|       });
+   00386|     }
+   00387|     const after = eitherOf(outside, 'file_edit_position_after', 'file_edit_position_before');
+   00388|     if (!removing && first === last && payloads.length === 1 && after !== null) {
+   00389|       const text = unescapeProseNewlines(payloads[0]);
+   00390|       const intent = after ? 'numbered_line_insert_after' : 'numbered_line_insert_before';
+   00391|       return change((source) => insertedAtLine(source, span(source)[0], text, after), intent, [], {
+   00392|         reported: (source) => ({ intent, slots: [['{new}', text], ['{line}', String(span(source)[0])]] }),
+   00393|       });
+   00394|     }
+   00395|     return null;
+   00396|   }
+   00397|   const namesLine = meaningEvidencedIn('line', normalizePrompt(textOutsideQuotedSegments(withoutPathWords(task))).toLowerCase());
+   00398|   if (removing && namesLine && above !== null && (payloads.length === 1 || payloads.length === 2)) {
+   00399|     const [anchor, neighbour = null] = payloads;
+   00400|     return change((source) => removedAdjacent(source, anchor, neighbour, above), 'coding_text_remove', [['{old}', anchor]], {
+   00401|       reported: (source) => {
+   00402|         const { lines } = fileLines(source);
+   00403|         const pair = adjacentPair(lines, anchor, neighbour, above);
+   00404|         if (pair === null) return null;
+   00405|         const removed = [...pair].sort((left, right) => left - right).map((index) => bare(lines[index]));
+   00406|         return { intent: 'coding_text_remove', slots: [['{old}', removed.join('`, `')]] };
+   00407|       },
+   00408|     });
+   00409|   }
+   00410|   return null;
+   00411| }
+   00412| 
+   00413| /** A file below this many lines is too short for "most of it" to mean anything. */
+   00414| const MIN_GUARDED_LINES = 8;
+   00415| 
+   00416| /**
+   00417|  * Mirrors `fn without_path_words`: `task` with every unquoted path token
+   00418|  * blanked, so a path's own words (`x-line.lino`, `line-budget.lino`) never
+   00419|  * read as the words of the request (PR #1188 G83).
+   00420|  * @param {string} task
+   00421|  */
+   00422| export function withoutPathWords(task) {
+   00423|   const segments = quotedSegmentSpans(task);
+   00424|   let out = task;
+   00425|   for (const token of tokens(task).reverse()) {
+   00426|     if (segments.some((segment) => token.start < segment.end && token.end > segment.start)) continue;
+   00427|     const path = cleanPathToken(token.text);
+   00428|     if (looksLikeFilePath(path) && safeRelativePath(path)) {
+   00429|       out = `${out.slice(0, token.start)}${' '.repeat(token.end - token.start)}${out.slice(token.end)}`;
+   00430|     }
+   00431|   }
+   00432|   return out;
+   00433| }
+   00434| 
+   00435| /**
+   00436|  * Mirrors `fn drops_most_of_file`: whether `updated` keeps fewer than half of
+   00437|  * the lines of a file that had at least `MIN_GUARDED_LINES`. A computed change
+   00438|  * that does so without the request stating that extent is refused (PR #1188
+   00439|  * T29: a 380-line file was once replaced by one line).
+   00440|  */
+   00441| export function dropsMostOfFile(source, updated) {
+   00442|   const before = fileLines(source).lines.length;
+   00443|   return before >= MIN_GUARDED_LINES && fileLines(updated).lines.length * 2 < before;
+   00444| }
+   00445| 
+   
+   (End of file - total 445 lines)
+   </file>
+>> edit {"filePath":"js/agentic/workspace_line_operation.mjs","file_path":"js/agentic/workspace_line_operation.mjs","new":"return { intent: 'coding_text_remove', slots: [['{old}', removed]] };","newString":"return { intent: 'coding_text_remove', slots: [['{old}', removed]] };","new_str":"return { intent: 'coding_text_remove', slots: [['{old}', removed]] };","new_string":"return { intent: 'coding_text_remove', slots: [['{old}', removed]] };","old":"return { intent: 'coding_text_remove', slots: [['{old}', removed.join('`, `')]] };","oldString":"return { intent: 'coding_text_remove', slots: [['{old}', removed.join('`, `')]] };","old_str":"return { intent: 'coding_text_remove', slots: [['{old}', removed.join('`, `')]] };","old_string":"return { intent: 'coding_text_remove', slots: [['{old}', removed.join('`, `')]] };","path":"js/agentic/workspace_line_operation.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/workspace_line_operation.mjs"}
+   158d2dd85671dfe63c9c7a3933eb02352c80225cbeeb67ad51cf4d9d611a59ac  js/agentic/workspace_line_operation.mjs
+   
+== answer ==
+Replaced ``return { intent: 'coding_text_remove', slots: [['return { intent: 'coding_text_remove', slots: [['{old}', removed.join('`, `')]] };', removed.join('`, `')]] };`` with `return { intent: 'coding_text_remove', slots: [['{old}', removed]] };` in `js/agentic/workspace_line_operation.mjs` and observed the result.

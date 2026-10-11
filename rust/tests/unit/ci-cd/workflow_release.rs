@@ -1,60 +1,21 @@
-//! Release-workflow structure + issue #479 Pages deploy / landing-page
-//! assertions. The desktop-gating half lives in `workflow_release_desktop`,
-//! split out when this file crossed the 1000-line cap. Shared helpers live in
-//! `workflow_fixtures`.
+//! Release structure and issue #479 Pages/landing assertions; desktop gating
+//! lives in `workflow_release_desktop` (1000-line split), shared helpers in `workflow_fixtures`.
 
 use std::fs;
 
 use super::workflow_fixtures::*;
 
+#[path = "workflow_release_operations.rs"]
+mod release_operations;
+
 #[test]
 fn pages_deploy_waits_for_release_ref_before_pages_upload() {
-    let workflow = release_workflow();
-    let auto_release = job_block(&workflow, "auto-release");
-    let manual_release = job_block(&workflow, "manual-release");
-    let deploy_demo = job_block(&workflow, "deploy-pages");
-
-    assert!(auto_release.contains("outputs:\n      pages_sha:"));
-    assert!(auto_release.contains("Resolve Pages deploy ref"));
-    assert!(manual_release.contains("outputs:\n      pages_sha:"));
-    assert!(manual_release.contains("Resolve Pages deploy ref"));
-    assert!(deploy_demo.contains("needs: [build, auto-release, manual-release]"));
-    assert!(deploy_demo.contains("needs.build.result == 'success'"));
-    assert!(deploy_demo.contains("github.ref == 'refs/heads/main'"));
-    assert!(deploy_demo.contains("needs.auto-release.result == 'success'"));
-    assert!(deploy_demo.contains("needs.manual-release.result == 'success'"));
-    assert!(deploy_demo.contains("Select Pages deployment ref"));
-    assert!(deploy_demo.contains(
-        "PAGES_DEPLOY_SHA: ${{ needs.auto-release.outputs.pages_sha || needs.manual-release.outputs.pages_sha || github.sha }}"
-    ));
-    assert!(deploy_demo.contains("ref: ${{ steps.pages_ref.outputs.sha }}"));
+    release_operations::pages_deploy_waits_for_release_reference_before_pages_upload();
 }
 
 #[test]
 fn rust_script_install_steps_use_retry_wrapper() {
-    let workflow = release_workflow();
-    let manifest_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
-    let install_script =
-        fs::read_to_string(format!("{manifest_dir}/scripts/install-rust-script.sh")).unwrap();
-
-    assert!(
-        !workflow.contains("run: cargo install rust-script"),
-        "workflow should not call cargo install directly because crates.io HTTP failures are transient"
-    );
-    assert_eq!(
-        workflow
-            .matches("run: bash scripts/install-rust-script.sh")
-            .count(),
-        // The evidence-check job (issue #808) moved to its own workflow when
-        // extracting it brought `release.yml` back under the 1500-line warning
-        // band (issues #999, #1012); its install step is counted by
-        // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
-        9,
-        "each rust-script install step should use the retry wrapper"
-    );
-    assert!(install_script.contains("RUST_SCRIPT_INSTALL_ATTEMPTS"));
-    assert!(install_script.contains("cargo install rust-script --locked"));
-    assert!(install_script.contains("sleep \"$delay\""));
+    release_operations::rust_script_install_steps_use_retry_wrapper();
 }
 
 #[test]
@@ -67,8 +28,10 @@ fn pages_deploy_uses_github_pages_workflow_artifact() {
     assert!(deploy_demo.contains("environment:\n      name: github-pages"));
     assert!(deploy_demo.contains("url: ${{ steps.deployment.outputs.page_url }}"));
     assert!(deploy_demo.contains("actions/configure-pages@v6"));
-    assert!(deploy_demo.contains("actions/upload-pages-artifact@v5"));
-    assert!(deploy_demo.contains("path: js"));
+    let pages_artifact = pages_artifact_workflow();
+    let pages_build = job_block(&pages_artifact, "build");
+    assert!(pages_build.contains("actions/upload-pages-artifact@v5"));
+    assert!(pages_build.contains("path: js"));
     assert!(deploy_demo.contains("id: deployment"));
     assert!(deploy_demo.contains("actions/deploy-pages@v5"));
     assert!(!deploy_demo.contains("peaceiris/actions-gh-pages"));
@@ -136,12 +99,19 @@ fn pages_e2e_uses_deployment_output_url() {
 #[test]
 fn pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment() {
     let workflow = release_workflow();
-    let deploy_demo = job_block(&workflow, "deploy-pages");
+    let pages_artifact = pages_artifact_workflow();
+    let deploy_demo = job_block(&pages_artifact, "build");
     let pages_e2e = job_block(&workflow, "test-e2e-pages");
 
     assert!(
-        deploy_demo.contains("ref: ${{ steps.pages_ref.outputs.sha }}"),
-        "Pages deployment should use the selected Pages SHA, which is the release child commit when auto-release creates one"
+        job_block(&workflow, "deploy-pages")
+            .contains("pages_sha: ${{ needs.build-pages.outputs.pages_sha }}"),
+        "deploy-pages should report the SHA the Pages build stamped"
+    );
+    assert!(
+        deploy_demo.contains("ref: ${{ github.ref }}")
+            && deploy_demo.contains("git rev-parse HEAD"),
+        "Pages build verifies that the trusted release branch matches the selected commit"
     );
     assert!(
         deploy_demo.contains("Stamp GitHub Pages artifact"),
@@ -218,10 +188,19 @@ fn pages_e2e_navigation_preserves_repository_subpath() {
     .unwrap();
     let demo_spec =
         fs::read_to_string(format!("{manifest_dir}/rust/tests/e2e/tests/demo.spec.js")).unwrap();
-    let multilingual_spec = fs::read_to_string(format!(
-        "{manifest_dir}/rust/tests/e2e/tests/multilingual.spec.js"
-    ))
-    .unwrap();
+    // The multilingual suite is split across `multilingual-*.spec.js`
+    // (repository line budget); every part must keep the relative navigation.
+    let multilingual_specs = [
+        "multilingual-chat.spec.js",
+        "multilingual-wikipedia.spec.js",
+        "multilingual-memory-settings.spec.js",
+        "multilingual-issue-27.spec.js",
+    ]
+    .map(|name| {
+        let spec =
+            fs::read_to_string(format!("{manifest_dir}/rust/tests/e2e/tests/{name}")).unwrap();
+        (format!("tests/e2e/tests/{name}"), spec)
+    });
     let connectivity_spec = fs::read_to_string(format!(
         "{manifest_dir}/rust/tests/e2e/tests/connectivity.spec.js"
     ))
@@ -241,15 +220,10 @@ fn pages_e2e_navigation_preserves_repository_subpath() {
     // reaches its sibling harness with a relative '../tests/' (→ /tests/). Both
     // are relative, so the /formal-ai/ repository subpath is always preserved;
     // an absolute '/…' would drop it.
-    for (path, spec, expected_nav) in [
+    let mut navigation_cases = vec![
         (
             "tests/e2e/tests/demo.spec.js",
             demo_spec.as_str(),
-            "page.goto('./')",
-        ),
-        (
-            "tests/e2e/tests/multilingual.spec.js",
-            multilingual_spec.as_str(),
             "page.goto('./')",
         ),
         (
@@ -257,7 +231,11 @@ fn pages_e2e_navigation_preserves_repository_subpath() {
             connectivity_spec.as_str(),
             "page.goto('../tests/')",
         ),
-    ] {
+    ];
+    for (path, spec) in &multilingual_specs {
+        navigation_cases.push((path.as_str(), spec.as_str(), "page.goto('./')"));
+    }
+    for (path, spec, expected_nav) in navigation_cases {
         assert!(
             !spec.contains("page.goto('/');"),
             "{path} should not navigate to / because URL resolution drops the /formal-ai/ subpath"
@@ -423,7 +401,7 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
     // budget unable to grow when the work under it grows, which is how the
     // macOS specification shard reached 100.1% of its budget twice with no
     // warning; the arithmetic that decides what the numbers should be now
-    // lives in `tests/unit/ci-cd/issue_1081.rs`, which recomputes the whole
+    // lives in `tests/unit/ci-cd/job_budget_fit.rs`, which recomputes the whole
     // job from the workflow instead of memorising one figure from it. What
     // this test still defends is the shape: a plain-number cap, a budget on
     // the suite, and the wrapper that makes the overrun red rather than grey.
@@ -432,9 +410,13 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
         .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
         .and_then(|value| value.trim().parse().ok())
         .expect("the test job declares a plain-number timeout-minutes");
+    // PR #1188 (R1188-U9) runs the suite as five shards of prebuilt
+    // executables, a fifth of it about 450s (run 37802763478), so the floors
+    // are per shard: 15 minutes of shard work behind a 25-minute backstop.
     assert!(
-        cap_minutes >= 35,
-        "the test job's cap is {cap_minutes}m; the measured 25min suite plus          its setup needs at least 35m of backstop behind it"
+        cap_minutes >= 25,
+        "the test job's cap is {cap_minutes}m; a shard of the suite plus its \
+         setup needs at least 25m of backstop behind it"
     );
     let suite_budget: u64 = workflow_step_block(test_job, "Run tests")
         .lines()
@@ -442,8 +424,9 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
         .and_then(|value| value.trim().parse().ok())
         .expect("the full-suite step declares a plain-number execution budget");
     assert!(
-        suite_budget >= 1_200,
-        "the full suite's execution budget is {suite_budget}s, below the 1200s          that issue #1017 measured it needs"
+        suite_budget >= 900,
+        "the full suite's execution budget is {suite_budget}s, below the 900s \
+         that twice a measured shard needs"
     );
     assert!(
         suite_budget <= cap_minutes * 60,
@@ -762,7 +745,8 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Issue #808's evidence-check job now lives in
         // `.github/workflows/evidence-check.yml`; its timeout is asserted by
         // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
-        ("docker-build", 60),
+        ("docker-build", 30),
+        ("docker-slim", 0),
         ("secrets-scan", 10),
         ("version-check", 5),
         // Issue #1081 (D15): probes every publishing credential with a write
@@ -788,7 +772,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // hidden behind a cancelled job, every gate that did run passing. The
         // measured demand of at least 25.2 min sits under 56% of 45, back
         // below the 70% warn line of check-job-headroom.rs.
-        ("lint", 45),
+        // PR #1188: instead of a fourth raise, the gates run as four parallel
+        // lanes (`lane` in data/meta/ci-gates/); 30 holds the slowest (~15).
+        ("lint", 30),
         // Issue #812: raised from 15 after run 29767811026 was killed 1.1 s
         // after the suite passed. See
         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
@@ -803,7 +789,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // the compile that was 86% of `Run specification tests` was split into
         // a step of its own. One cap covers both legs, so it has to hold the
         // larger sum at or under the 70% share
-        // `issue_1081::the_budgets_a_job_can_spend_together_fit_inside_its_cap`
+        // `job_budget_fit::the_budgets_a_job_can_spend_together_fit_inside_its_cap`
         // enforces: 2640/3900 is 67.7%.
         // The same fix raised the cap from 65 to 90: the spec lane's worst
         // budgeted group is 3600s, and 3600/5400 leaves it at 66% of the cap
@@ -812,9 +798,13 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Issue #1138 raised the full leg's `Run tests` budget from 1440 to
         // 2400 (measured demand ~1520s: unit 1251-1315s + integration ~200s),
         // which lifts that leg's sum to 3600s -- the same 66% of this cap.
-        ("test", 90),
+        // PR #1188 (R1188-U9) lowered it to 30: both suites run prebuilt
+        // executables in shards (full five, specification four), and each
+        // budgeted group is 1080s, 60% of the cap.
+        ("test", 30),
         // Issue #1014 compiles one nextest archive and fans it out to five
         // macOS runners. The reusable workflow owns both internal timeouts.
+        ("doc-tests", 30),
         ("macos-core-tests", 0),
         // Issue #896: raised from 10; the published web-search/web-capture
         // graphs moved the job from ~4-5 to 7.2 minutes, and a cold release
@@ -822,14 +812,17 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Issue #1076 (D5): raised from 15. The run that missed its cargo
         // cache took 11.6 min, 77.0% of the cap; 20 puts it at 57.8%.
         ("build", 20),
+        // R1015: the JavaScript server answers the parity corpus as the
+        // release binary does; it reuses build-artifacts' binary, so no compile.
+        ("server-parity", 15),
         // Issue #1076 (D5): raised from 60. Worst case 50.6 min over 400
         // `main` runs, 84.4% of that cap -- and the 45-minute GHCR budget that
         // owns the real deadline could never have fired inside it, since the
         // rest of the job costs ~18 min. A budget the cap pre-empts is not a
         // budget: the run still ends `cancelled`.
-        ("auto-release", 90),
+        ("auto-release", 0),
         // Same image, same steps, same budgets, same backstop (issue #1076).
-        ("manual-release", 90),
+        ("manual-release", 0),
         ("changelog-pr", 10),
         // Issue #1138 moved the steps, and the 40-minute cap with them, into
         // `.github/workflows/e2e-local.yml`; what is left here is the call.
@@ -850,24 +843,25 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Issue #1012: the shared release binary is built once before the seven
         // Box image legs, avoiding seven identical cache restores and builds.
         ("build-artifacts", 20),
+        ("native-response-observations", 0),
         // Issue #932: per-language matrix leg that pulls one link-foundation/box
         // image, generates the project from solver answers and runs the
         // language's traditional init commands inside it. The budget covers a
         // cold release build plus the image pull.
         ("box-language-projects", 30),
-        // deploy-pages also runs `cargo doc` for the /docs/api reference (issue
-        // #479), which compiles the dependency tree on a cold cargo cache.
-        // Raised from 20 (PR #965 review): the budget also has to cover the
-        // GitHub Pages deployment queue, which is not part of the build and can
-        // stall for many minutes — see
+        // The Pages build runs `cargo doc` for the /docs/api reference (issue
+        // #479) in pages-artifact.yml under its own 30-minute cap (R1188-U9).
+        ("build-pages", 0),
+        // deploy-pages only waits in the GitHub Pages deployment queue, which
+        // can stall for many minutes (PR #965 review) — see
         // `pages_deploy_uses_the_actions_maximum_supported_wait`.
-        ("deploy-pages", 35),
+        ("deploy-pages", 15),
         ("test-e2e-pages", 15),
         // Issue #977: the terminal gate that turns a silently-`cancelled` run
         // (the shape a `timeout-minutes` kill takes) into a red failure.
+        ("native-container-images", 0),
         ("pipeline-status", 5),
     ];
-
     let actual_jobs = workflow_job_names(&workflow);
     let expected_jobs = expected_timeouts
         .iter()
@@ -915,9 +909,13 @@ fn release_workflow_jobs_have_explicit_timeouts() {
 /// out of the placeholder scan).
 #[test]
 fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
-    let workflow = release_workflow();
-    let deploy = job_block(&workflow, "deploy-pages");
+    let workflow = pages_artifact_workflow();
+    let deploy = job_block(&workflow, "build");
 
+    assert!(
+        deploy.contains("bash scripts/install-rust-script.sh"),
+        "the Pages build should install rust-script with the retry wrapper"
+    );
     assert!(
         deploy.contains("bash scripts/build-rust-api-docs.sh"),
         "deploy-pages should invoke the API-docs builder"

@@ -1,0 +1,1 @@
+import{execFileSync}from'node:child_process';export async function load(url,context,nextLoad){if(url.endsWith('/js/agentic/general_planner.mjs'))return{format:'module',source:execFileSync('git',['show','HEAD:js/agentic/general_planner.mjs'],{cwd:"/Users/konard/Code/Archive/link-assistant/formal-ai",encoding:'utf8'}),shortCircuit:true};return nextLoad(url,context);}

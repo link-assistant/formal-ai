@@ -1,0 +1,21 @@
+meanings
+  actor
+    grounded-in Q33999 # entity
+    lexeme en actor # source
+      part_of_speech noun
+      grammatical_number singular
+    lexeme ru "актёр" 'it''s' "a \"b\""
+    lexeme es
+      words "uno" "dos"
+      surface
+        text tres
+        action x
+      words cuatro
+
+    role x
+  other
+    lexeme old
+      work tale
+    lexeme zh
+      surface
+        text "一"

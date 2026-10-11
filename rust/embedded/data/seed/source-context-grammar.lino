@@ -1,0 +1,40 @@
+source-context-grammar
+  language en
+    role source-context-label-introducer
+      form "Note"
+    annotation opaque-label
+      prefix "^[ \\t]*{source-context-label-introducer}[ \\t]+[\\p{L}\\p{M}\\p{N}\\p{So}]+[.!?。！？।][ \\t\\r\\n]*$"
+      suffix "^$"
+    role source-context-prologue
+      form "for context,"
+      form "background:"
+    role source-context-issue-prologue
+      form "for existing issue"
+    action-prologue issue-reference
+      prefix "^[ \\t]*{source-context-issue-prologue}(?:-[0-9]+|[ \\t]+#[0-9]+),[ \\t]*$"
+      suffix "^$"
+    role source-context-containment
+      form "contains"
+      form "holds"
+    role source-context-article
+      form "the"
+    role source-context-qualifier
+      form "old"
+      form "previous"
+      form "prior"
+      form "current"
+      form "existing"
+    role source-context-subject
+      form "implementation"
+      form "source"
+      form "code"
+    role source-context-location-verb
+      form "is"
+    role source-context-location-preposition
+      form "in"
+    pattern 1
+      prefix "^\\s*(?:{source-context-prologue}\\s*)?$"
+      suffix "^\\s+{source-context-containment}\\s+(?:{source-context-article}\\s+)?(?:{source-context-qualifier}\\s+)?{source-context-subject}[\\s.!?]*$"
+    pattern 2
+      prefix "^\\s*{source-context-article}\\s+(?:{source-context-qualifier}\\s+)?{source-context-subject}\\s+{source-context-location-verb}\\s+{source-context-location-preposition}\\s*$"
+      suffix "^[\\s.!?]*$"

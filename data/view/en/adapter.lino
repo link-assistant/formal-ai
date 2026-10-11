@@ -1,0 +1,13 @@
+view
+  id M-3f6f025c2828
+  lemma adapter
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a musician who adapts a composition for particular voices or instruments or for another style of performance"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "device that enables something to be used in a way different from that for which it was intended or makes different pieces of apparatus compatible"
+    provenance (wordnet)

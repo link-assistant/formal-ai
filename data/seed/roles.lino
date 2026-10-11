@@ -11,6 +11,12 @@
 roles
   action
     kind meaning
+  addition-test
+    kind meaning
+  advice_request
+    kind meaning
+  agent-mode-opt-in-marker
+    kind predicate
   agent_action_formalize_verb
     kind predicate
   agent_action_report_subject
@@ -37,9 +43,25 @@ roles
     kind meaning
   attribute_relation
     kind predicate
+  audit-en
+    kind meaning
+  audit-es
+    kind meaning
+  audit-hi
+    kind meaning
+  audit-ru
+    kind meaning
+  audit-zh
+    kind meaning
   behavior_rule_edit_directive
     kind predicate
   binary_relation_property
+    kind predicate
+  brainstorming_request
+    kind meaning
+  cache-clearing-action
+    kind predicate
+  cache-reference
     kind predicate
   calculation_basis_reference
     kind predicate
@@ -61,6 +83,10 @@ roles
     kind meaning
   calendar_hour_reference
     kind predicate
+  calendar_month_name
+    kind predicate
+  calendar_month_reference
+    kind predicate
   calendar_question
     kind predicate
   calendar_relative_date
@@ -73,6 +99,8 @@ roles
     kind meaning
   calendar_weekday
     kind predicate
+  calendar_weekday_query
+    kind meaning
   capability_act_compose
     kind predicate
   capability_act_demonstrate
@@ -127,6 +155,8 @@ roles
     kind predicate
   causal_interrogative
     kind meaning
+  ci_badge_obligation
+    kind meaning
   ci_workflow_request
     kind meaning
   circular_joke_phrase
@@ -137,18 +167,40 @@ roles
     kind predicate
   clause_continuation_marker
     kind meaning
+  clause_joiner
+    kind meaning
+  code_example_decomposition_answer
+    kind predicate
+  code_example_decomposition_cue
+    kind predicate
   code_method_noun
     kind predicate
+  code_style_obligation
+    kind meaning
+  coding-source-artifact-kind
+    kind meaning
+  coding-source-authoring-contract-missing
+    kind meaning
   coding_artifact_kind
+    kind predicate
+  coding_assertion_equality_cue
+    kind predicate
+  coding_assertion_kind
     kind predicate
   coding_bound_cue
     kind predicate
+  coding_bug_fix_request
+    kind meaning
   coding_condition_subject_kind
+    kind predicate
+  coding_declaration_noun
     kind predicate
   coding_division_action
     kind predicate
   coding_documentation_fact_query
     kind predicate
+  coding_expectation_cue
+    kind meaning
   coding_experiment_artifact_kind
     kind predicate
   coding_fragment
@@ -187,11 +239,15 @@ roles
     kind predicate
   coding_test_artifact_kind
     kind predicate
+  coding_text_remove_action
+    kind predicate
   coding_value_slot
     kind predicate
   coding_visibility
     kind predicate
   common_typo
+    kind meaning
+  compact
     kind meaning
   comparison_difference_cue
     kind predicate
@@ -225,6 +281,8 @@ roles
     kind predicate
   computer_use_resource_cue
     kind predicate
+  config_value_lead
+    kind predicate
   containment_relation
     kind predicate
   conversation_preference_avoid
@@ -257,6 +315,8 @@ roles
     kind predicate
   conversion_action_cue
     kind predicate
+  creative_writing_request
+    kind meaning
   currency_eur_reference
     kind predicate
   currency_rub_reference
@@ -281,6 +341,10 @@ roles
     kind meaning
   dependency_relation
     kind predicate
+  deploy
+    kind meaning
+  destructive-action-marker
+    kind predicate
   detail_modifier
     kind meaning
   document_composition_action
@@ -291,11 +355,17 @@ roles
     kind meaning
   document_originality_subject
     kind meaning
+  english-source-preserving-optional-text
+    kind meaning
   enumeration_constraint
     kind meaning
   enumeration_cue
     kind meaning
   enumeration_request_opener
+    kind meaning
+  equality-test
+    kind meaning
+  evidence-report-artifact-kind
     kind meaning
   example_request
     kind predicate
@@ -307,6 +377,10 @@ roles
     kind predicate
   fact_check_current_dialogue_query
     kind meaning
+  fact_comparison_cue
+    kind predicate
+  fact_comparison_joiner
+    kind meaning
   fact_relation
     kind predicate
   feature_action_arithmetic
@@ -317,22 +391,66 @@ roles
     kind predicate
   feature_capability_question
     kind meaning
+  file-edit-sequence-cue
+    kind predicate
+  file-read-independent-effect-operation
+    kind meaning
+  file-read-mode-contract
+    kind meaning
+  file-read-mode-joiner
+    kind meaning
+  file-read-negative-operation
+    kind meaning
+  file-read-object-noun
+    kind meaning
+  file-read-order-contract
+    kind meaning
   file_analysis_gap_marker
+    kind meaning
+  file_contents_source_cue
+    kind predicate
+  file_declared_noun
     kind meaning
   file_edit_action_cue
     kind predicate
+  file_edit_all_occurrences_cue
+    kind predicate
+  file_edit_anchor_context_cue
+    kind predicate
+  file_edit_blank_line
+    kind meaning
+  file_edit_joiner_cue
+    kind predicate
+  file_edit_line_lead
+    kind predicate
   file_edit_new_lead_cue
+    kind predicate
+  file_edit_old_lead_cue
     kind predicate
   file_edit_position_after
     kind meaning
   file_edit_position_before
     kind meaning
+  file_edit_position_end
+    kind meaning
+  file_edit_position_start
+    kind meaning
   file_edit_target_cue
     kind predicate
   file_leading_line_constraint_lead
     kind predicate
+  file_naming_obligation
+    kind meaning
+  file_overwrite_consent
+    kind meaning
   file_read_action_cue
     kind predicate
+  file_section_noun
+    kind predicate
+  file_text_unit
+    kind meaning
+  file_whole_write_action
+    kind meaning
   file_write_action_cue
     kind predicate
   file_write_authoritative_content_lead
@@ -349,10 +467,34 @@ roles
     kind predicate
   file_write_target_cue
     kind predicate
+  filesystem-absent-result
+    kind meaning
   final_amount_reference
     kind predicate
+  first-line
+    kind meaning
+  float-division
+    kind meaning
   followup_instruction_verb
     kind meaning
+  forget-request-marker
+    kind predicate
+  frame_filler_word
+    kind meaning
+  full-en
+    kind meaning
+  full-es
+    kind meaning
+  full-hi
+    kind meaning
+  full-ru
+    kind meaning
+  full-zh
+    kind meaning
+  function_call_verb
+    kind predicate
+  function_declaration_keyword
+    kind predicate
   game_tracker_domain
     kind meaning
   game_tracker_mechanic
@@ -361,6 +503,8 @@ roles
     kind predicate
   git_branch_cue
     kind meaning
+  git_commit_message_lead
+    kind predicate
   git_commit_request
     kind meaning
   github_repository_platform
@@ -381,6 +525,8 @@ roles
     kind meaning
   incompatibility_relation
     kind predicate
+  information_source_noun
+    kind meaning
   interest_cue
     kind predicate
   interrogative_opener
@@ -391,6 +537,10 @@ roles
     kind predicate
   investment_cue
     kind predicate
+  issue-reference
+    kind meaning
+  javascript-imported-optional-text
+    kind meaning
   knowledge_inventory_interrogative
     kind predicate
   knowledge_inventory_noun
@@ -407,6 +557,36 @@ roles
     kind meaning
   lexical_meta
     kind predicate
+  line-slice-count
+    kind meaning
+  line-slice-ordinal
+    kind meaning
+  line-slice-range
+    kind meaning
+  line_adjacent_above
+    kind meaning
+  line_adjacent_below
+    kind meaning
+  line_containment_cue
+    kind predicate
+  line_move_action
+    kind meaning
+  line_move_after_cue
+    kind predicate
+  line_move_before_cue
+    kind predicate
+  line_ordinal
+    kind predicate
+  line_ordinal_last
+    kind meaning
+  line_range_connector
+    kind meaning
+  line_slice_head_cue
+    kind predicate
+  line_slice_tail_cue
+    kind predicate
+  line_swap_action
+    kind meaning
   links_notation_format
     kind meaning
   links_root
@@ -439,6 +619,8 @@ roles
     kind predicate
   localized_response_template
     kind meaning
+  math_function_argument_marker
+    kind predicate
   math_function_name
     kind predicate
   measurement_concept
@@ -475,6 +657,10 @@ roles
     kind meaning
   memory_substitution_directive
     kind meaning
+  module_export_marker
+    kind meaning
+  module_export_question
+    kind meaning
   monetary_concept
     kind predicate
   network_capability_cue
@@ -483,6 +669,8 @@ roles
     kind meaning
   nondeterministic_marker
     kind predicate
+  null
+    kind meaning
   number_constraint_entity
     kind meaning
   number_constraint_hidden
@@ -501,9 +689,17 @@ roles
     kind meaning
   number_constraint_upper_strict
     kind meaning
+  number_property
+    kind predicate
+  numbered_line_lead
+    kind meaning
+  numbered_line_noun
+    kind meaning
   numeric_concept
     kind predicate
   observable_task_action
+    kind meaning
+  observed-callable-authoring
     kind meaning
   ontology_category
     kind predicate
@@ -513,10 +709,18 @@ roles
     kind predicate
   operating_principle
     kind meaning
+  optional-record
+    kind meaning
+  optional-source-text
+    kind meaning
   ordering_relation
     kind predicate
   output_display_request
     kind meaning
+  output_obligation_verb
+    kind meaning
+  page_formalization_action
+    kind predicate
   part_whole_relation
     kind predicate
   personal_facts_listing_request
@@ -525,6 +729,8 @@ roles
     kind predicate
   physical_dimension
     kind predicate
+  planning_request
+    kind meaning
   playwright_script_cue
     kind predicate
   playwright_tool_name
@@ -579,6 +785,8 @@ roles
     kind predicate
   projection_route
     kind predicate
+  prompt_text_question_cue
+    kind meaning
   proof_claim_scaffold
     kind predicate
   proof_concept_determinism
@@ -591,12 +799,18 @@ roles
     kind predicate
   proof_marker
     kind predicate
+  proof_method
+    kind predicate
   proof_request_lead
+    kind predicate
+  proof_step_kind
     kind predicate
   property_relation
     kind predicate
   provenance_relation
     kind predicate
+  publish
+    kind meaning
   quantity_conversion_cue
     kind predicate
   reachability_operand_framing
@@ -613,6 +827,14 @@ roles
     kind meaning
   request_objective_lead
     kind predicate
+  requirement_directive_verb
+    kind predicate
+  requirement_listing_action
+    kind meaning
+  requirement_obligation_cue
+    kind predicate
+  requirement_section_heading
+    kind predicate
   research_criterion
     kind predicate
   research_evaluation_domain
@@ -625,6 +847,8 @@ roles
     kind meaning
   research_superlative_modifier
     kind meaning
+  response_audience
+    kind predicate
   response_language_marker
     kind predicate
   rule_brief_request
@@ -633,6 +857,8 @@ roles
     kind meaning
   rule_count_scope
     kind meaning
+  rule_detail_request
+    kind predicate
   rule_listing_phrase
     kind predicate
   rule_listing_request
@@ -647,6 +873,8 @@ roles
     kind predicate
   script_or_code_artifact
     kind predicate
+  second_person_possessive
+    kind meaning
   selection_criterion_brevity_cue
     kind predicate
   selection_criterion_completeness_cue
@@ -723,13 +951,113 @@ roles
     kind predicate
   software_language
     kind meaning
+  software_object_boundary_character
+    kind meaning
+  software_object_boundary_word
+    kind meaning
+  software_object_lead_bigram
+    kind meaning
+  software_object_lead_word
+    kind meaning
+  software_object_word_internal_character
+    kind meaning
   software_requirement_category
     kind predicate
+  software_sentence_end_character
+    kind meaning
   software_step_granularity
+    kind meaning
+  source-authoring-grammar
+    kind meaning
+  source-callable-composition
+    kind meaning
+  source-capture-offline-cache-miss
+    kind meaning
+  source-context-article
+    kind meaning
+  source-context-containment
+    kind meaning
+  source-context-declaration-contract
+    kind meaning
+  source-context-issue-prologue
+    kind meaning
+  source-context-label-introducer
+    kind meaning
+  source-context-location-preposition
+    kind meaning
+  source-context-location-verb
+    kind meaning
+  source-context-opaque-label-contract
+    kind meaning
+  source-context-prologue
+    kind meaning
+  source-context-qualifier
+    kind meaning
+  source-context-subject
+    kind meaning
+  source-contract-diagnostic
+    kind meaning
+  source-links-report-cue
+    kind meaning
+  source-owned-read-form
+    kind meaning
+  source-projection-format
+    kind predicate
+  source-projection-origin
+    kind meaning
+  source-projection-return
+    kind meaning
+  source-projection-scope
+    kind meaning
+  source-recompilation-action
+    kind meaning
+  source-registration-composition
+    kind meaning
+  source-request-declaration
+    kind meaning
+  source-request-gap-before-write
+    kind meaning
+  source-request-goal
+    kind meaning
+  source-request-preflight
+    kind meaning
+  source-request-protect-inputs
+    kind meaning
+  source-request-read-prerequisites
+    kind meaning
+  source-request-repair-plan
+    kind meaning
+  source-request-reuse-imports
+    kind meaning
+  source-request-source-discovery
+    kind meaning
+  source-request-verification
+    kind meaning
+  source-tree-translation-contract
+    kind meaning
+  source_attribution_marker
+    kind meaning
+  source_conflict_cue
+    kind meaning
+  statement_clock_suffix
     kind meaning
   statement_function_word
     kind meaning
   statement_negation_cue
+    kind meaning
+  statement_place_preposition
+    kind meaning
+  statement_place_question
+    kind meaning
+  statement_subject_question
+    kind meaning
+  statement_time_preposition
+    kind meaning
+  statement_time_question
+    kind meaning
+  statistics_operation
+    kind meaning
+  string-constant
     kind meaning
   substitution_compiler_concept
     kind predicate
@@ -758,6 +1086,8 @@ roles
   task_first_step_cue
     kind meaning
   term_information_request_opener
+    kind meaning
+  text_summarization_action
     kind meaning
   time_duration_cue
     kind predicate
@@ -795,13 +1125,23 @@ roles
     kind predicate
   translation_source_marker
     kind predicate
+  translation_stop_word
+    kind meaning
   translation_target_direction
     kind predicate
   translation_target_marker
     kind predicate
   translation_unquoted_frame
     kind meaning
+  typo_fix_lead
+    kind predicate
   unauthorized_mutation_correction
+    kind meaning
+  unbounded-autonomy-marker
+    kind predicate
+  unbounded-loop-marker
+    kind predicate
+  unit_conversion_question
     kind meaning
   unobservable_task_action
     kind meaning
@@ -873,6 +1213,16 @@ roles
     kind predicate
   wikidata_entity_anchor
     kind predicate
+  word_problem_marker
+    kind predicate
+  word_problem_question
+    kind meaning
+  word_problem_relation
+    kind predicate
+  workspace_content_search_form
+    kind meaning
+  workspace_content_search_noise
+    kind meaning
   workspace_inspection_action
     kind predicate
   writing_system

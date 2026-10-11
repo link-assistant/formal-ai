@@ -1,0 +1,17 @@
+language en
+lemma verification
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "additional proof that something that was believed (some fact or hypothesis or theory) is correct"
+    examples ("fossils provided further confirmation of the evolutionary theory")
+    id oewn-05833569-n
+    partOfSpeech n
+    synonyms (confirmation check substantiation)
+  entry
+    definition "(law) an affidavit attached to a statement confirming the truth of that statement"
+    id oewn-06749518-n
+    partOfSpeech n
+source "oewn:2024"

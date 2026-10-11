@@ -1,0 +1,619 @@
+# Issue #1175 R1175-4 — held-out routing probes, knowledge lanes.
+#
+# One probe per block — the precedence lane it exercises (a handler row of
+# data/seed/handler-precedence.lino, a slug of data/seed/intent-routing.lino,
+# or an extra lane declared in budget.lino), the prompt language, the intent
+# the system SHOULD answer, and the prompt. A quoted value doubles an inner
+# quote and writes a newline as \n.
+#
+# `js_misroute <intent>` / `rust_misroute <intent>` record a probe the browser
+# worker / the native solver answers wrongly today, naming the intent it
+# answers instead; both are measured, never `unverified` (issue 1173 R3). Both
+# are ratchets with ceilings in budget.lino — a listed probe that starts
+# answering correctly fails the test until its line is removed and the ceiling
+# lowered, one that moves to another intent fails until its line is updated,
+# and a new misroute fails outright. `rust_intent` names a designed runtime difference (the
+# native chat surface refuses tool execution outside Agent mode).
+# `adversarial true` marks prose that surface-matches another lane.
+routing_probes
+  probe p014
+    lane arithmetic
+    language en
+    intent calculation
+    prompt "Find 15% of 200"
+  probe p015
+    lane arithmetic
+    language en
+    intent calculation
+    prompt "What is 17 * 23?"
+  probe p016
+    lane arithmetic
+    language hi
+    intent calculation
+    prompt "12 गुणा 7 कितना है?"
+  probe p017
+    lane arithmetic
+    language ru
+    intent calculation
+    prompt "Сколько будет 12 умножить на 7?"
+  probe p018
+    lane arithmetic
+    language zh
+    intent calculation
+    prompt "12乘以7等于多少？"
+  probe p030
+    lane calendar_create_event
+    language en
+    intent calendar_create_event
+    prompt "Add an event to my calendar: team lunch on Friday at noon"
+  probe p031
+    lane calendar_create_event
+    language en
+    intent calendar_create_event
+    prompt "Create a calendar event for a dentist appointment tomorrow at 3pm"
+  probe p032
+    lane calendar_create_event
+    language en
+    intent calendar_create_event
+    prompt "Create an event on Friday at 9:00 for the dentist"
+  probe p033
+    lane calendar_create_event
+    language en
+    intent calendar_create_event
+    prompt "Create an event: team meeting tomorrow at 10:00"
+  probe p034
+    lane calendar_create_event
+    language en
+    intent calendar_create_event
+    prompt "Schedule a meeting with Anna on Friday at 10am"
+  probe p035
+    lane calendar_create_event
+    language ru
+    intent calendar_create_event
+    prompt "Создай событие в календаре: встреча завтра в 15:00"
+  probe p036
+    lane calendar_reasoning
+    language en
+    intent calendar_weekday_relation
+    prompt "What day is 100 days after Monday?"
+  probe p037
+    lane calendar_reasoning
+    language ru
+    intent calendar_weekday_relation
+    prompt "какой день будет через 100 дней после понедельника?"
+  probe p038
+    lane calendar_reasoning
+    language zh
+    intent calendar_weekday_relation
+    prompt "星期一之后100天是星期几？"
+  probe p068
+    lane compound_interest
+    language en
+    intent calculation
+    prompt "invest $1000 at 8% annual interest compounded monthly for 5 years"
+  probe p069
+    lane compound_interest
+    language en
+    intent calculation
+    prompt "invest $2500 at 6% annual interest compounded yearly for 10 years"
+  probe p070
+    lane compound_interest
+    language en
+    intent calculation
+    prompt "invest $500 at 4% annual interest compounded monthly for 2 years"
+  probe p071
+    lane concept_lookup
+    language en
+    intent concept_lookup
+    prompt "What is Rust?"
+  probe p072
+    lane concept_lookup
+    language en
+    intent concept_lookup
+    prompt "What is Rust? Explain briefly."
+  probe p073
+    lane concept_lookup
+    language ru
+    intent concept_lookup
+    prompt "Что такое Rust?"
+  probe p092
+    lane definition_merge
+    language en
+    intent definition_merge
+    prompt "Combine translated definitions for IIR"
+  probe p093
+    lane definition_merge
+    language ru
+    intent definition_merge
+    prompt "Объедини переведённые определения для IIR"
+  probe p094
+    lane docs_method_explanation
+    language en
+    intent docs_method_explanation
+    prompt "how does pandas DataFrame.join work?"
+  probe p095
+    lane docs_method_explanation
+    language hi
+    intent docs_method_explanation
+    prompt "pandas DataFrame.join कैसे काम करता है?"
+  probe p096
+    lane docs_method_explanation
+    language zh
+    intent docs_method_explanation
+    prompt "pandas DataFrame.join 如何工作？"
+  probe p102
+    lane document_originality_check
+    language en
+    intent document_originality_check
+    prompt "Check this text for plagiarism: All happy families are alike."
+  probe p103
+    lane document_originality_check
+    language en
+    intent document_originality_check
+    prompt "Check this text for plagiarism: The quick brown fox jumps over the lazy dog."
+  probe p104
+    lane document_originality_check
+    language ru
+    intent document_originality_check
+    prompt "Проверь текст на плагиат: Быть или не быть, вот в чём вопрос."
+  probe p109
+    lane fact_lookup
+    language en
+    intent fact_lookup
+    prompt "Make sense of this: what is the capital of France?"
+    adversarial true
+  probe p110
+    lane fact_lookup
+    language en
+    intent fact_lookup
+    prompt "What is the capital of the USA?"
+  probe p111
+    lane fact_lookup
+    language ru
+    intent fact_lookup
+    prompt "столица россии"
+  probe p112
+    lane fact_lookup
+    language zh
+    intent fact_lookup
+    prompt "谁创建了 Rust?"
+  probe p116
+    lane formalization_request
+    language en
+    intent formalization
+    prompt "Formalize this statement: every prime greater than two is odd."
+  probe p117
+    lane formalization_request
+    language en
+    intent formalization
+    prompt "Formalize: all humans are mortal"
+  probe p118
+    lane formalization_request
+    language ru
+    intent formalization
+    prompt "Формализуй: все люди смертны"
+  probe p133
+    lane github_repository_traffic
+    language en
+    intent github_repository_traffic
+    prompt "Can I see who visited my GitHub repository?"
+  probe p134
+    lane github_repository_traffic
+    language en
+    intent github_repository_traffic
+    prompt "Who visited my GitHub repo?"
+  probe p135
+    lane github_repository_traffic
+    language hi
+    intent github_repository_traffic
+    prompt "क्या मैं देख सकता हूँ कि मेरी GitHub रिपॉजिटरी किसने देखी?"
+  probe p136
+    lane github_repository_traffic
+    language ru
+    intent github_repository_traffic
+    prompt "можно ли узнать, кто смотрел мой репозиторий на github?"
+  probe p137
+    lane github_repository_traffic
+    language zh
+    intent github_repository_traffic
+    prompt "我能看到谁访问了我的 GitHub 仓库吗？"
+  probe p141
+    lane how_it_works
+    language en
+    intent how_it_works
+    prompt "How does a refrigerator work?"
+  probe p142
+    lane how_it_works
+    language en
+    intent how_it_works
+    prompt "how does AUR work?"
+  probe p143
+    lane how_it_works
+    language en
+    intent how_it_works
+    prompt "how does Docker work?"
+  probe p144
+    lane how_it_works
+    language en
+    intent how_it_works
+    prompt "how does git work?"
+  probe p145
+    lane how_it_works
+    language en
+    intent how_it_works
+    prompt "how does npm work?"
+  probe p146
+    lane how_it_works
+    language hi
+    intent how_it_works
+    prompt "git कैसे काम करता है?"
+  probe p147
+    lane how_it_works
+    language ru
+    intent how_it_works
+    prompt "как работает git?"
+  probe p148
+    lane how_it_works
+    language ru
+    intent how_it_works
+    prompt "как работает npm?"
+  probe p149
+    lane how_it_works
+    language ru
+    intent how_it_works
+    prompt "Как работает холодильник?"
+  probe p150
+    lane how_it_works
+    language zh
+    intent how_it_works
+    prompt "Docker 如何工作?"
+  probe p151
+    lane http_fetch
+    language en
+    intent http_fetch
+    prompt "Fetch https://example.com/feed.xml"
+  probe p152
+    lane http_fetch
+    language en
+    intent http_fetch
+    prompt "Fetch https://example.net/robots.txt"
+  probe p153
+    lane http_fetch
+    language en
+    intent http_fetch
+    prompt "Fetch https://example.org/data.json"
+  probe p154
+    lane http_fetch
+    language en
+    intent http_fetch
+    prompt "GET https://example.com/api/status"
+  probe p160
+    lane incompatible_units
+    language en
+    intent unit_incompatibility
+    prompt "Convert 5 kilograms to meters"
+    adversarial true
+  probe p161
+    lane incompatible_units
+    language en
+    intent unit_incompatibility
+    prompt "How many kilograms are in 4 seconds?"
+  probe p162
+    lane incompatible_units
+    language en
+    intent unit_incompatibility
+    prompt "How many liters are in 2 kilograms?"
+  probe p163
+    lane incompatible_units
+    language en
+    intent unit_incompatibility
+    prompt "How many meters are in 5 seconds?"
+  probe p164
+    lane incompatible_units
+    language en
+    intent unit_incompatibility
+    prompt "How many seconds are in 3 liters?"
+  probe p165
+    lane incompatible_units
+    language ru
+    intent unit_incompatibility
+    prompt "Сколько секунд в 3 литрах?"
+  probe p178
+    lane learn_from_source
+    language ru
+    intent learn_from_source
+    prompt "Отсюда ты узнаешь актуальные темы https://trends.google.com/trending?hl=ru&geo=DE"
+  probe p179
+    lane learn_from_source
+    language ru
+    intent learn_from_source
+    prompt "Отсюда ты узнаешь популярные запросы https://trends.google.com/trending?hl=ru&geo=RU"
+  probe p195
+    lane network_query
+    language en
+    intent network_snapshot
+    prompt "export the network"
+  probe p196
+    lane network_query
+    language en
+    intent network_snapshot
+    prompt "show me the current network"
+  probe p197
+    lane network_query
+    language en
+    intent network_snapshot
+    prompt "show me the network"
+  probe p198
+    lane number_constraint_reasoning
+    language en
+    intent number_constraint_reasoning
+    prompt "I am thinking of a number greater than 1 but less than 3. What is it?"
+  probe p199
+    lane number_constraint_reasoning
+    language en
+    intent number_constraint_reasoning
+    prompt "I am thinking of a number greater than 10 but less than 12. What is it?"
+  probe p200
+    lane number_constraint_reasoning
+    language ru
+    intent number_constraint_reasoning
+    prompt "Я загадал число больше 4 но меньше 6. Что это за число?"
+  probe p201
+    lane numeric_list
+    language en
+    intent write_program
+    prompt "Sort these numbers in Python: 5, 3, 9, 1"
+  probe p202
+    lane numeric_list
+    language en
+    intent write_program
+    prompt "Sum these numbers in JavaScript: 4, 5, 6"
+  probe p203
+    lane numeric_list
+    language ru
+    intent write_program
+    prompt "Отсортируй эти числа на Python: 5, 3, 9, 1"
+  probe p216
+    lane procedural_how_to
+    language en
+    intent procedural_how_to
+    prompt "How do I boil an egg?"
+  probe p217
+    lane procedural_how_to
+    language en
+    intent procedural_how_to
+    prompt "How do I replace a bicycle chain?"
+  probe p218
+    lane procedural_how_to
+    language en
+    intent procedural_how_to
+    prompt "How to change a flat tire?"
+  probe p219
+    lane product_search
+    language en
+    intent product_search
+    prompt "Find me a laptop under 1000 dollars"
+  probe p220
+    lane product_search
+    language en
+    intent product_search
+    prompt "Find me a phone case for a Samsung Galaxy S21 on amazon.in"
+    adversarial true
+  probe p221
+    lane product_search
+    language en
+    intent product_search
+    prompt "Find me a USB-C cable on amazon.in"
+    adversarial true
+  probe p222
+    lane product_search
+    language ru
+    intent product_search
+    prompt "Найди мне наушники на amazon.in"
+  probe p226
+    lane proof_request
+    language en
+    intent proof_request
+    prompt "Prove that the square root of 2 is irrational"
+  probe p227
+    lane proof_request
+    language ru
+    intent proof_request
+    prompt "Докажи, что корень из 2 иррационален"
+  probe p228
+    lane proof_request
+    language zh
+    intent proof_request
+    prompt "证明根号2是无理数"
+  probe p262
+    lane source_conflict
+    language en
+    intent source_conflict
+    prompt "Was W born in 1850 or 1851?"
+  probe p263
+    lane source_conflict
+    language en
+    intent source_conflict
+    prompt "Was X born in 1880 or 1881?"
+  probe p264
+    lane source_conflict
+    language en
+    intent source_conflict
+    prompt "Was Z born in 1900 or 1901?"
+  probe p265
+    lane source_refresh
+    language en
+    intent source_refresh
+    prompt "please refresh the page cache now"
+  probe p266
+    lane source_refresh
+    language en
+    intent source_refresh
+    prompt "refresh the cache for this page"
+  probe p267
+    lane source_refresh
+    language en
+    intent source_refresh
+    prompt "refresh the page cache"
+  probe p271
+    lane statistics
+    language en
+    intent statistics
+    prompt "For the values 2, 3, 3, 5, what are the mode and the range?"
+  probe p272
+    lane statistics
+    language ru
+    intent statistics
+    prompt "Каково среднее значение чисел 4, 8, 15, 16, 23, 42?"
+  probe p273
+    lane statistics
+    language zh
+    intent statistics
+    prompt "1、2、3、4、5的第90百分位数是多少？"
+  probe p318
+    lane triz_resolution
+    language en
+    intent triz_resolution
+    prompt "Resolve this contradiction: the phone must be thin but have a big battery"
+  probe p319
+    lane triz_resolution
+    language en
+    intent triz_resolution
+    prompt "Use TRIZ: a car should be light but strong"
+  probe p320
+    lane triz_resolution
+    language ru
+    intent triz_resolution
+    prompt "Разреши противоречие: телефон должен быть тонким, но с большой батареей"
+  probe p321
+    lane unit_conversion
+    language en
+    intent unit_conversion
+    prompt "How many kilometers are 26.2 miles?"
+  probe p322
+    lane unit_conversion
+    language hi
+    intent unit_conversion
+    prompt "10 मील कितने किलोमीटर हैं?"
+  probe p323
+    lane unit_conversion
+    language hi
+    intent unit_conversion
+    prompt "5 फीट कितने मीटर हैं?"
+  probe p324
+    lane unit_conversion
+    language ru
+    intent unit_conversion
+    prompt "Переведи 10 миль в километры"
+  probe p325
+    lane unit_conversion
+    language ru
+    intent unit_conversion
+    prompt "Сколько километров в 10 милях?"
+  probe p326
+    lane unit_conversion
+    language ru
+    intent unit_conversion
+    prompt "Сколько метров в 3 милях?"
+  probe p327
+    lane unit_conversion
+    language zh
+    intent unit_conversion
+    prompt "10英里是多少公里？"
+  probe p331
+    lane url_navigate
+    language en
+    intent url_navigate
+    prompt "Go to https://wikipedia.org"
+  probe p332
+    lane url_navigate
+    language en
+    intent url_navigate
+    prompt "Open https://example.org in the browser"
+  probe p333
+    lane url_navigate
+    language ru
+    intent url_navigate
+    prompt "Открой https://example.org"
+  probe p334
+    lane verifiable_task
+    language en
+    intent verifiable_task
+    prompt "I have a piano, a fork, a guitar, and a drum. How many musical instruments do I have?"
+  probe p335
+    lane verifiable_task
+    language en
+    intent verifiable_task
+    prompt "I have an apple, a chair, a banana, and a pear. How many fruits do I have?"
+  probe p336
+    lane verifiable_task
+    language ru
+    intent verifiable_task
+    prompt "У меня есть яблоко, стул, банан и груша. Сколько у меня фруктов?"
+  probe p337
+    lane web_search
+    language en
+    intent web_search
+    prompt "Search the web for the history of the zorblax festival"
+  probe p338
+    lane web_search
+    language ru
+    intent web_search
+    prompt "Найди в интернете новости о фестивале зорблакс"
+  probe p339
+    lane web_search
+    language zh
+    intent web_search
+    prompt "在网上搜索最新的 Rust 版本"
+  probe p343
+    lane who_is
+    language en
+    intent who_is_question
+    prompt "Who is Ada Lovelace?"
+  probe p344
+    lane who_is
+    language en
+    intent who_is_question
+    prompt "Who is Alan Turing?"
+  probe p345
+    lane who_is
+    language ru
+    intent who_is_question
+    prompt "Кто такая Ада Лавлейс?"
+  probe p346
+    lane word_problem
+    language en
+    intent word_problem_total
+    prompt "I buy 3 notebooks at 4 dollars each. What is the total?"
+  probe p347
+    lane word_problem
+    language en
+    intent word_problem_total
+    prompt "I buy 4 pens at 3 dollars each. What is the total?"
+  probe p348
+    lane word_problem
+    language en
+    intent word_problem_total
+    prompt "I buy 5 apples at 2 dollars each. What is the total?"
+  # p349 is a loss relation (had 10, spent 3), read by the seeded relation
+  # words of issue 1176 R2 rather than the pay-minus-cost change shape.
+  probe p349
+    lane word_problem
+    language en
+    intent word_problem_relation
+    prompt "I had 10 dollars and spent 3. How much change do I have?"
+  probe p350
+    lane word_problem
+    language en
+    intent word_problem_change
+    prompt "I pay 20 dollars for a 13 dollar book. How much change do I get?"
+  probe p360
+    lane page_query_text
+    language en
+    intent page_query
+    prompt "The command in the paragraph that mentions compiler:\n\nThe compiler turns hello.kt into a runnable jar with this line.\n\nkotlinc hello.kt -include-runtime -d hello.jar\n\nThe launcher starts that jar with this line.\n\njava -jar hello.jar"
+  probe p361
+    lane page_query_text
+    language en
+    intent page_query
+    prompt "The command in the paragraph that mentions launcher:\n\nThe launcher starts the jar with this line.\n\njava -jar hello.jar\n\nThe compiler builds it with this line.\n\nkotlinc hello.kt -d hello.jar"

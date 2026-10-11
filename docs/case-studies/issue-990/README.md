@@ -15,8 +15,8 @@ Issue [#990](https://github.com/link-assistant/formal-ai/issues/990) completes t
 | Cross-platform VS Code host | Temporary existing `child_process` boundary because the only public entry point eagerly imports native PTY/rendering dependencies that cannot be bundled into one portable VSIX; upstream [command-stream#192](https://github.com/link-foundation/command-stream/issues/192) |
 | Rust orchestration on POSIX | `command-stream@0.15.0` `StreamingRunner`, with the crate's own quoting helper, streamed stdout/stderr, and process-group timeout cancellation |
 | Synchronous CommonJS availability/version probes | Temporary `spawnSync` workaround; upstream [command-stream#189](https://github.com/link-foundation/command-stream/issues/189) |
-| Rust orchestration on Windows | Temporary exact-argv `std::process::Command` workaround; upstream [command-stream#190](https://github.com/link-foundation/command-stream/issues/190) |
-| Windows-only `code.cmd` installation | Temporary Node `spawn(..., { shell: true })` workaround; upstream [command-stream#191](https://github.com/link-foundation/command-stream/issues/191) |
+| Rust orchestration on Windows | Resolved: `command-stream` 1.5 keeps exact argv on Windows ([command-stream#190](https://github.com/link-foundation/command-stream/issues/190)) and stops the process tree on cancel (1.5.1), so `rust/src/orchestration/runner.rs` uses `StreamingRunner::from_argv` on every platform |
+| Windows-only `code.cmd` installation | Resolved: the shared adapter passes `{ mode: "shell", file, args }` ([command-stream#191](https://github.com/link-foundation/command-stream/issues/191)), so `runVsCodeCli` no longer spawns `child_process` itself |
 
 The Docker-in-Docker service lifecycle remains owned by the already adopted
 `start-command` component; this change does not replace that boundary.

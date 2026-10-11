@@ -1,0 +1,13 @@
+view
+  id M-2794ad7844d5
+  lemma charger
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "formerly a strong swift horse ridden into battle"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a device that can hold a rechargeable battery by means of an electrical cable"
+    provenance (wordnet)

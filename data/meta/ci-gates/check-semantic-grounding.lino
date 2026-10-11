@@ -1,9 +1,13 @@
+# PR #1188 runs this gate in lane 2 of the parallel `lint` matrix, where it
+# reuses the default-feature unit build that lane already compiles.
 # One CI gate, one file. Issue #991 moved the gate list out of
 # `.github/workflows/release.yml`, the repository's third most conflicted path,
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_semantic_grounding
+ci_gate check-semantic-grounding
   stage rust
+  lane 2
   description "Every answer the solver produces is grounded in the seed lexicon rather than hardcoded."
   run "cargo test --manifest-path rust/Cargo.toml --test unit semantic_grounding -- --nocapture"
+  justification "Grammatical forms not grounded in external Wikidata sources would make the semantic layer depend on hardcoded assumptions rather than verifiable data; the grounding check was introduced in #538 (R374) to keep all grammatical entries linked to real lexeme records."

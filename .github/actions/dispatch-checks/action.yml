@@ -1,0 +1,91 @@
+# Issue #1187 (E151), R2: start a bot pull request's checks without approval.
+#
+# GitHub's rule: a `pull_request` workflow run whose PR was opened/pushed by
+# the default `GITHUB_TOKEN` waits for a maintainer's approval. That is what
+# happened to every check on bot PR #1124 -- they ran only after a person
+# acted. When the credential resolver (actions/automation-token) reports
+# layer `default`, the workflow that opened the push calls THIS action for
+# every `pull_request` workflow, so the checks start at once on the head
+# commit through `workflow_dispatch` -- dispatch runs need no approval.
+#
+# Local mirror of link-foundation/.github `actions/dispatch-checks`
+# (https://github.com/link-foundation/.github/issues/1) under the same
+# contract: same inputs, same outputs, so switching to the shared action
+# changes no caller.
+#
+# The dispatch targets declare `workflow_dispatch` with the `mode` and
+# `pull-request` inputs this action passes. release.yml is one of them: its
+# dispatch defaults to `release_mode: checks`, and its writing jobs need an
+# explicit release mode on main (issue #1187 R3).
+name: dispatch-checks
+description: Dispatch every pull_request workflow on a bot pull request's head commit
+inputs:
+  pull-request:
+    description: Pull request number whose checks are dispatched
+    required: true
+  workflows:
+    description: Workflow filenames to dispatch (newline- or space-separated); default is every pull_request workflow
+    required: false
+    default: ""
+  token:
+    description: Token for the dispatch API calls
+    required: false
+    default: ${{ github.token }}
+outputs:
+  dispatched:
+    description: Newline-separated workflow refs that were dispatched
+    value: ${{ steps.dispatch.outputs.dispatched }}
+runs:
+  using: composite
+  steps:
+    - id: dispatch
+      shell: bash
+      env:
+        PR_NUMBER: ${{ inputs.pull-request }}
+        WORKFLOWS: ${{ inputs.workflows }}
+        GH_TOKEN: ${{ inputs.token }}
+        REPOSITORY: ${{ github.repository }}
+      run: |
+        set -euo pipefail
+
+        # The dispatch API takes a branch or tag, never a sha, so the runs
+        # are dispatched on the pull request's head branch; the sha is logged
+        # so a reader can match each run to the commit that was pushed.
+        head_ref="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json headRefName --jq .headRefName)"
+        head_sha="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json headRefOid --jq .headRefOid)"
+        echo "dispatching checks for $REPOSITORY#$PR_NUMBER on $head_ref at $head_sha"
+
+        # Every pull_request-triggered workflow unless the caller named a
+        # subset. `gh workflow list` gives filenames with trigger metadata;
+        # the pull_request ones are those whose name matches the workflows
+        # directory scan below (kept independent of gh's formatting).
+        if [ -n "$WORKFLOWS" ]; then
+          targets="$(echo "$WORKFLOWS" | tr ' ' '\n')"
+        else
+          targets="$(grep -l '^on:.*pull_request\|pull_request:' .github/workflows/*.yml 2>/dev/null | xargs -n1 basename || true)"
+        fi
+
+        dispatched=""
+        for workflow in $targets; do
+          # Only a workflow that declares the checks mode (the `mode` input
+          # with `options: [checks]`, issue #1187 R2) is dispatched. Any other
+          # dispatch trigger has its own meaning -- release.yml's cuts a
+          # release, self-authored-pull-request.yml's authors a change -- so
+          # it is reported, never called.
+          if ! grep -q 'options: \[checks\]' ".github/workflows/$workflow"; then
+            echo "::warning::${workflow} declares no checks-mode workflow_dispatch; not dispatched"
+            continue
+          fi
+          if gh workflow run "$workflow" --repo "$REPOSITORY" --ref "$head_ref" -f mode=checks -f pull-request="$PR_NUMBER"; then
+            dispatched="${dispatched}${workflow}"$'\n'
+            echo "dispatched ${workflow}"
+          else
+            echo "::warning::failed to dispatch ${workflow}"
+          fi
+        done
+
+        {
+          echo "dispatched<<EOF"
+          printf '%s' "$dispatched"
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"

@@ -10,29 +10,42 @@ pub fn record_formalization(log: &mut EventLog, candidate: &FormalizationCandida
     }
     log.append("formalization", candidate.compact_summary());
     for slot in &candidate.slots {
-        let kind = match (slot.role, slot.anchor.kind) {
-            (FormalizationRole::Subject, FormalizationAnchorKind::WikidataItem) => {
-                "formalization:subject_q"
-            }
-            (FormalizationRole::Predicate, FormalizationAnchorKind::WikidataProperty) => {
-                "formalization:predicate_p"
-            }
-            (FormalizationRole::Object, FormalizationAnchorKind::WikidataItem) => {
-                "formalization:object_q"
-            }
-            (_, FormalizationAnchorKind::WikidataItem) => "formalization:item_q",
-            (_, FormalizationAnchorKind::WikidataProperty) => "formalization:property_p",
-            (
-                _,
-                FormalizationAnchorKind::WikipediaArticle
-                | FormalizationAnchorKind::WiktionaryEntry,
-            ) => "formalization:fallback",
-            (_, FormalizationAnchorKind::RawText) => "formalization:raw",
-        };
-        log.append(kind, slot.anchor.id.clone());
+        log.append(
+            formalization_slot_kind(slot.role, slot.anchor.kind),
+            slot.anchor.id.clone(),
+        );
     }
     for term in &candidate.unresolved_terms {
         log.append("formalization_unresolved", term.clone());
+    }
+}
+
+/// The event kind [`record_formalization`] records a slot under, by the slot's
+/// role and its anchor kind.
+///
+/// Mirrored by `formalizationSlotKind` in
+/// `js/agentic/crate/solver_formalization.mjs`.
+const fn formalization_slot_kind(
+    role: FormalizationRole,
+    anchor_kind: FormalizationAnchorKind,
+) -> &'static str {
+    match (role, anchor_kind) {
+        (FormalizationRole::Subject, FormalizationAnchorKind::WikidataItem) => {
+            "formalization:subject_q"
+        }
+        (FormalizationRole::Predicate, FormalizationAnchorKind::WikidataProperty) => {
+            "formalization:predicate_p"
+        }
+        (FormalizationRole::Object, FormalizationAnchorKind::WikidataItem) => {
+            "formalization:object_q"
+        }
+        (_, FormalizationAnchorKind::WikidataItem) => "formalization:item_q",
+        (_, FormalizationAnchorKind::WikidataProperty) => "formalization:property_p",
+        (
+            _,
+            FormalizationAnchorKind::WikipediaArticle | FormalizationAnchorKind::WiktionaryEntry,
+        ) => "formalization:fallback",
+        (_, FormalizationAnchorKind::RawText) => "formalization:raw",
     }
 }
 

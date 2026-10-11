@@ -1,0 +1,41 @@
+language en
+lemma comment
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a statement that expresses a personal opinion or belief or adds information"
+    examples ("from time to time she contributed a personal comment on his account" "we would appreciate input from our users on how we can improve our software")
+    id oewn-06777755-n
+    partOfSpeech n
+    synonyms (remark input)
+  entry
+    definition "a written explanation or criticism or illustration that is added to a book or other textual material"
+    examples ("he wrote an extended comment on the proposal")
+    id oewn-06775422-n
+    partOfSpeech n
+    synonyms (commentary)
+  entry
+    definition "a report (often malicious) about the behavior of other people"
+    examples ("the divorce caused much gossip")
+    id oewn-07237830-n
+    partOfSpeech n
+    synonyms (gossip scuttlebutt)
+  entry
+    definition "make or write a comment on"
+    examples ("he commented the paper of his colleague")
+    id oewn-01060446-v
+    partOfSpeech v
+    synonyms (notice remark "point out")
+  entry
+    definition "explain or interpret something"
+    id oewn-01035061-v
+    partOfSpeech v
+  entry
+    definition "provide interlinear explanations for words or phrases"
+    examples ("He annotated on what his teacher had written")
+    id oewn-00963361-v
+    partOfSpeech v
+    synonyms (gloss annotate)
+source "oewn:2024"

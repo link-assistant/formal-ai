@@ -1,0 +1,115 @@
+{
+  "entities": {
+    "Q118": {
+      "type": "item",
+      "id": "Q118",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "April"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "апрель"
+        },
+        "es": {
+          "language": "es",
+          "value": "abril"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अप्रैल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "4月"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "четвёртый месяц года в юлианском и григорианском календарях"
+        },
+        "en": {
+          "language": "en",
+          "value": "fourth month of the year in the Julian and Gregorian calendars"
+        },
+        "es": {
+          "language": "es",
+          "value": "cuarto mes del año en los calendarios juliano y gregoriano"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "公历及儒略历中第四个月份"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जूलियन और ग्रेगोरियन कैलेंडर में चौथा महीना"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "四月"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Apr"
+          },
+          {
+            "language": "en",
+            "value": "4. month"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "апреля"
+          },
+          {
+            "language": "ru",
+            "value": "апр."
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Abr"
+          },
+          {
+            "language": "es",
+            "value": "Abr."
+          },
+          {
+            "language": "es",
+            "value": "4"
+          },
+          {
+            "language": "es",
+            "value": "4.º mes"
+          },
+          {
+            "language": "es",
+            "value": "cuarto mes"
+          },
+          {
+            "language": "es",
+            "value": "mes 4"
+          },
+          {
+            "language": "es",
+            "value": "mes 4.º"
+          },
+          {
+            "language": "es",
+            "value": "mes cuarto"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

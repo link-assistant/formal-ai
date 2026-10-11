@@ -1,0 +1,86 @@
+self_ast_census
+  target src/agentic_coding/line_removal.rs
+  language rust
+  fidelity full_ast
+  byte_len 7749
+  line_count 218
+  content_id source_module_772272cd23c43e1e
+  symbol_count 7
+  symbols
+    function bare_line 10 13
+    function removed_line_indices 18 39
+    function removed_lines 42 51
+    function removed_literal 53 67
+    function removed_declarations 74 127
+    function declares_function 132 168
+    function declaration_span 175 218
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 7035
+    named_node_count 1422
+    distinct_node_kinds 61
+    node_kinds
+      arguments 133
+      array_expression 3
+      array_type 3
+      assignment_expression 3
+      binary_expression 34
+      block 45
+      boolean_literal 2
+      break_expression 3
+      call_expression 133
+      char_literal 14
+      closure_expression 23
+      closure_parameters 23
+      compound_assignment_expr 4
+      continue_expression 5
+      crate 1
+      doc_comment 23
+      else_clause 6
+      expression_statement 54
+      field_expression 109
+      field_identifier 109
+      for_expression 4
+      function_item 7
+      generic_type 13
+      identifier 298
+      if_expression 22
+      index_expression 11
+      inner_doc_comment_marker 5
+      integer_literal 24
+      let_condition 2
+      let_declaration 33
+      line_comment 24
+      macro_invocation 1
+      mutable_specifier 9
+      outer_doc_comment_marker 18
+      parameter 21
+      parameters 7
+      parenthesized_expression 6
+      primitive_type 31
+      range_expression 6
+      reference_expression 8
+      reference_pattern 2
+      reference_type 20
+      return_expression 6
+      scoped_identifier 8
+      slice_pattern 1
+      source_file 1
+      string_content 9
+      string_literal 10
+      super 5
+      token_tree 5
+      try_expression 1
+      tuple_expression 2
+      tuple_pattern 10
+      tuple_struct_pattern 3
+      tuple_type 2
+      type_arguments 13
+      type_identifier 22
+      unary_expression 12
+      use_declaration 1
+      visibility_modifier 5
+      while_expression 4

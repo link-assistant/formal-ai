@@ -1,0 +1,5 @@
+{
+  "id": "T3027",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Run node --test rust/tests/web/explicit-module-target-binding.test.mjs && node --test --test-name-pattern='canonical surface|ambiguous seed|real census|unchanged L07' rust/tests/web/requirement-seed-target-binding.test.mjs && rustfmt --edition 2024 --check rust/src/agentic_coding/requirement_resolution.rs rust/src/self_ast_census.rs rust/tests/unit/agentic-coding/issue_1085_requirement_resolution.rs && node scripts/check-planner-twins.mjs && node scripts/check-hardcoded-language.mjs"
+}

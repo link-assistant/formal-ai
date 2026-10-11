@@ -1,0 +1,60 @@
+# R1188-U19 round-trip translation ratchet, all 20 ordered pairs of en, ru, hi,
+# zh and es. Written by `node scripts/measure-round-trip-translation.mjs --write`;
+# the CI gate data/meta/ci-gates/check-round-trip-translation.lino fails when a
+# value falls. Shares are rounded down to three decimals; counts are exact.
+# Re-recorded once for PR #1188 (the LEXEMES batch): term survival is now
+# counted over all content terms of the source sentences, known or not, so a
+# word the lexicon newly knows can only add survivors. Over known terms only,
+# the Spanish lexemes lowered the share while survivors rose (es->ru 167 to
+# 210). The same batch ranks a surface shared by several meanings by the
+# meanings' total surfaces across all languages, which still separates them
+# once every meaning is written in all five languages. Its Spanish file-edit
+# lead (por, con, a), which Spanish edit requests need, gives the lead all five
+# languages, so it now holds zh 为 over content_assignment and zh->hi keeps 346
+# of 353 survivors: hi से reads back as line_range_connector.
+round-trip-translation-ratchet
+  source "scripts/measure-round-trip-translation.mjs"
+  corpus "data/benchmarks/round-trip-translation/sentences.lino"
+  sentences 320
+  sentence-survival 0.105
+  term-survival 0.436
+  en-ru-sentence-survival 0.093
+  en-ru-term-survival 0.505
+  en-hi-sentence-survival 0.093
+  en-hi-term-survival 0.448
+  en-zh-sentence-survival 0.093
+  en-zh-term-survival 0.459
+  en-es-sentence-survival 0.109
+  en-es-term-survival 0.505
+  ru-en-sentence-survival 0.125
+  ru-en-term-survival 0.363
+  ru-hi-sentence-survival 0.109
+  ru-hi-term-survival 0.336
+  ru-zh-sentence-survival 0.125
+  ru-zh-term-survival 0.352
+  ru-es-sentence-survival 0.125
+  ru-es-term-survival 0.361
+  hi-en-sentence-survival 0.093
+  hi-en-term-survival 0.384
+  hi-ru-sentence-survival 0.093
+  hi-ru-term-survival 0.401
+  hi-zh-sentence-survival 0.093
+  hi-zh-term-survival 0.392
+  hi-es-sentence-survival 0.093
+  hi-es-term-survival 0.396
+  zh-en-sentence-survival 0.109
+  zh-en-term-survival 0.5
+  zh-ru-sentence-survival 0.109
+  zh-ru-term-survival 0.515
+  zh-hi-sentence-survival 0.109
+  zh-hi-term-survival 0.505
+  zh-es-sentence-survival 0.109
+  zh-es-term-survival 0.512
+  es-en-sentence-survival 0.109
+  es-en-term-survival 0.42
+  es-ru-sentence-survival 0.109
+  es-ru-term-survival 0.442
+  es-hi-sentence-survival 0.093
+  es-hi-term-survival 0.418
+  es-zh-sentence-survival 0.109
+  es-zh-term-survival 0.42

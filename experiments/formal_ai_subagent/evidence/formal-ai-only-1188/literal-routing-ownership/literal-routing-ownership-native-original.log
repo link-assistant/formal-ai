@@ -1,0 +1,9 @@
+2026-10-09T11:35:44.0423037Z ---- agentic_coding::issue_1099_multiple_obligations::literal_obligation_transaction::completed_statement_cue_cannot_authorize_another_target_token stdout ----
+2026-10-09T11:35:44.0423642Z 
+2026-10-09T11:35:44.0424477Z thread 'agentic_coding::issue_1099_multiple_obligations::literal_obligation_transaction::completed_statement_cue_cannot_authorize_another_target_token' (4280) panicked at tests/unit/agentic-coding/../../fixtures/literal-obligation-transaction.rs:542:9:
+2026-10-09T11:35:44.0425513Z assertion `left == right` failed: Write file.
+2026-10-09T11:35:44.0426090Z x.txt containing «hello».
+2026-10-09T11:35:44.0426333Z   left: 1
+2026-10-09T11:35:44.0426524Z  right: 0
+2026-10-09T11:35:44.0427146Z note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+2026-10-09T11:35:44.0427678Z 

@@ -1,0 +1,30 @@
+TAP version 13
+# Subtest: immutable release transfers preserve bytes/mode and refuse missing, spoofed, drifted and extra input
+ok 1 - immutable release transfers preserve bytes/mode and refuse missing, spoofed, drifted and extra input
+  ---
+  duration_ms: 305.850833
+  ...
+# Subtest: independent source and producer identities refuse unknown, failed, interrupted, spoofed and drifted transfers
+ok 2 - independent source and producer identities refuse unknown, failed, interrupted, spoofed and drifted transfers
+  ---
+  duration_ms: 1.654
+  ...
+# Subtest: dormant workflow is a checked exact canonical operation/order/output/authority projection
+ok 3 - dormant workflow is a checked exact canonical operation/order/output/authority projection
+  ---
+  duration_ms: 39.525792
+  ...
+# Subtest: canonical drift and omitted, reordered, spoofed, ungated or prematurely released projections fail
+ok 4 - canonical drift and omitted, reordered, spoofed, ungated or prematurely released projections fail
+  ---
+  duration_ms: 92.955333
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 488.987583

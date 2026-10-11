@@ -1,0 +1,6 @@
+{
+  "taskId": "T2004",
+  "purpose": "Execute real scratch regression through FA",
+  "scratch": "/private/tmp/spec-recurrence-1188",
+  "prompt": "Run node --test callable-body-reads.test.mjs"
+}

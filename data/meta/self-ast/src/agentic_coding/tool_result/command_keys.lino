@@ -1,0 +1,72 @@
+self_ast_census
+  target src/agentic_coding/tool_result/command_keys.rs
+  language rust
+  fidelity full_ast
+  byte_len 3799
+  line_count 94
+  content_id source_module_63e24f2bebba33e2
+  symbol_count 3
+  symbols
+    function command_argument_key 20 44
+    const FALLBACK_COMMAND_KEYS 47 47
+    function project_declared_command_keys 57 94
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2272
+    named_node_count 475
+    distinct_node_kinds 51
+    node_kinds
+      arguments 38
+      array_expression 2
+      array_type 3
+      assignment_expression 1
+      attribute 2
+      attribute_item 2
+      binary_expression 2
+      block 13
+      call_expression 38
+      closure_expression 7
+      closure_parameters 7
+      const_item 1
+      continue_expression 4
+      crate 2
+      doc_comment 21
+      expression_statement 10
+      field_expression 39
+      field_identifier 39
+      for_expression 1
+      function_item 2
+      generic_function 1
+      generic_type 2
+      identifier 85
+      if_expression 2
+      inner_doc_comment_marker 4
+      integer_literal 1
+      let_declaration 9
+      line_comment 23
+      macro_invocation 1
+      mut_pattern 1
+      mutable_specifier 3
+      outer_doc_comment_marker 17
+      parameter 4
+      parameters 2
+      primitive_type 2
+      reference_expression 5
+      reference_type 5
+      return_expression 1
+      scoped_identifier 10
+      source_file 1
+      string_content 15
+      string_literal 15
+      token_tree 4
+      try_expression 4
+      tuple_pattern 2
+      tuple_struct_pattern 4
+      type_arguments 3
+      type_identifier 8
+      unary_expression 3
+      use_declaration 2
+      visibility_modifier 2

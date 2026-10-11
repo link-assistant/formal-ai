@@ -1,0 +1,90 @@
+>> read {"filePath":"rust/tests/unit/pull_request_1188_quoted_payload_command.rs","file_path":"rust/tests/unit/pull_request_1188_quoted_payload_command.rs","path":"rust/tests/unit/pull_request_1188_quoted_payload_command.rs"}
+   <file>
+   00001| //! PR #1188 G32: the words of a quoted payload never choose a shell command.
+   00002| //! `Add the line '- run tests' at the end of the section '## Usage' in
+   00003| //! README.md.` ran the workspace test suite, because the shell intent table
+   00004| //! matched its cue `run tests` inside the quotes. A request about text inside
+   00005| //! a file now reads the intent cues outside its quotes only, while a quoted
+   00006| //! command (`Run 'npm test'.`) still runs. Twin of
+   00007| //! `rust/tests/web/pull-request-1188-quoted-payload-command.test.mjs`.
+   00008| 
+   00009| use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+   00010| use formal_ai::protocol::ChatMessage;
+   00011| 
+   00012| const TOOLS: [&str; 4] = ["read", "edit", "bash", "write"];
+   00013| 
+   00014| /// The tool and its command or file argument for each planned call.
+   00015| fn planned(prompt: &str) -> Vec<(String, String)> {
+   00016|     let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&[ChatMessage::user(prompt)], &TOOLS)
+   00017|     else {
+   00018|         return Vec::new();
+   00019|     };
+   00020|     calls
+   00021|         .iter()
+   00022|         .map(|call| {
+   00023|             let arguments: serde_json::Value =
+   00024|                 serde_json::from_str(&call.arguments).expect("tool arguments are JSON");
+   00025|             let argument = arguments["command"]
+   00026|                 .as_str()
+   00027|                 .or_else(|| arguments["filePath"].as_str())
+   00028|                 .unwrap_or_default();
+   00029|             (call.tool.clone(), argument.to_owned())
+   00030|         })
+   00031|         .collect()
+   00032| }
+   00033| 
+   00034| fn commands(prompt: &str) -> Vec<String> {
+   00035|     planned(prompt)
+   00036|         .into_iter()
+   00037|         .filter(|(tool, _)| tool == "bash")
+   00038|         .map(|(_, command)| command)
+   00039|         .collect()
+   00040| }
+   00041| 
+   00042| #[test]
+   00043| fn a_line_to_add_that_names_a_test_run_runs_nothing() {
+   00044|     assert!(
+   00045|         commands("Add the line '- run tests' at the end of the section '## Usage' in README.md.")
+   00046|             .is_empty()
+   00047|     );
+   00048| }
+   00049| 
+   00050| #[test]
+   00051| fn an_insert_whose_line_names_a_test_run_reads_the_file_to_edit_it() {
+   00052|     assert_eq!(
+   00053|         planned("Insert the line 'run the tests' after the line 'x' in notes.txt."),
+   00054|         [("read".to_owned(), "notes.txt".to_owned())]
+   00055|     );
+   00056| }
+   00057| 
+   00058| /// G66: intent cues match whole words, so the `move` cue inside `removed` no
+   00059| /// longer plans `mv`.
+   00060| #[test]
+   00061| fn a_cue_matches_whole_words_only() {
+   00062|     let planned = commands("Append the line 'a' then removed from f.md to g2.md.");
+   00063|     assert!(
+   00064|         !planned.iter().any(|command| command.starts_with("mv ")),
+   00065|         "{planned:?}"
+   00066|     );
+   00067| }
+   00068| 
+   00069| #[test]
+   00070| fn a_quoted_command_still_runs() {
+   00071|     assert_eq!(commands("Run 'npm test'."), ["npm test"]);
+   00072| }
+   00073| 
+   
+   (End of file - total 73 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/pull_request_1188_quoted_payload_command.rs","file_path":"rust/tests/unit/pull_request_1188_quoted_payload_command.rs","new":"assert_eq!(\n        commands(\"Add the line '- run tests' at the end of the section '## Usage' in README.md.\"),\n        Vec::<String>::new()\n    );","newString":"assert_eq!(\n        commands(\"Add the line '- run tests' at the end of the section '## Usage' in README.md.\"),\n        Vec::<String>::new()\n    );","new_str":"assert_eq!(\n        commands(\"Add the line '- run tests' at the end of the section '## Usage' in README.md.\"),\n        Vec::<String>::new()\n    );","new_string":"assert_eq!(\n        commands(\"Add the line '- run tests' at the end of the section '## Usage' in README.md.\"),\n        Vec::<String>::new()\n    );","old":"assert!(\n        commands(\"Add the line '- run tests' at the end of the section '## Usage' in README.md.\")\n            .is_empty()\n    );","oldString":"assert!(\n        commands(\"Add the line '- run tests' at the end of the section '## Usage' in README.md.\")\n            .is_empty()\n    );","old_str":"assert!(\n        commands(\"Add the line '- run tests' at the end of the section '## Usage' in README.md.\")\n            .is_empty()\n    );","old_string":"assert!(\n        commands(\"Add the line '- run tests' at the end of the section '## Usage' in README.md.\")\n            .is_empty()\n    );","path":"rust/tests/unit/pull_request_1188_quoted_payload_command.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/pull_request_1188_quoted_payload_command.rs"}
+   6c28f9dcac7a08e13985b5a2a87110140c010e9a42819e4806d40cce19e42172  rust/tests/unit/pull_request_1188_quoted_payload_command.rs
+   
+== answer ==
+Replaced `assert!(
+        commands("Add the line '- run tests' at the end of the section '## Usage' in README.md.")
+            .is_empty()
+    );` with `assert_eq!(
+        commands("Add the line '- run tests' at the end of the section '## Usage' in README.md."),
+        Vec::<String>::new()
+    );` in `rust/tests/unit/pull_request_1188_quoted_payload_command.rs` and observed the result.

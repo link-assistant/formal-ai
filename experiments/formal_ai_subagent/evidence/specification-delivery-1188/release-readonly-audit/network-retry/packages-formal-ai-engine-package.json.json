@@ -1,0 +1,7 @@
+{
+  "path": "packages/formal-ai-engine/package.json",
+  "sourceCommit": "c8b5e63e136f064216a74dfd2dcc77c826b67392",
+  "sourceTree": "431c0ef8a58c33ba5f520149a6fe2882f35ce868",
+  "sha256": "aa7308932f75278ec5ca75e89b6c4632957c8c492bd631f7e07376af40cb4240",
+  "rawUtf8": "{\n  \"name\": \"@link-assistant/formal-ai-engine\",\n  \"version\": \"0.352.1\",\n  \"description\": \"Browser WASM worker and memory bindings for the Formal AI symbolic engine\",\n  \"type\": \"module\",\n  \"license\": \"Unlicense\",\n  \"repository\": \"github:link-assistant/formal-ai\",\n  \"exports\": {\n    \".\": {\n      \"types\": \"./src/index.d.ts\",\n      \"import\": \"./src/index.js\"\n    }\n  },\n  \"files\": [\n    \"src\",\n    \"assets\",\n    \"README.md\",\n    \"LICENSE\"\n  ],\n  \"publishConfig\": {\n    \"access\": \"public\",\n    \"provenance\": true\n  }\n}\n"
+}

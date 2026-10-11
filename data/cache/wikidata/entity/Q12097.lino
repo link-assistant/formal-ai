@@ -4,11 +4,13 @@ Q12097
     zh ("君主")
   descriptions
     en "title given to the name of a male monarch"
+    es "título otorgado a un monarca masculino"
     ru "титул монарха"
     zh "國王"
   id Q12097
   labels
     en king
+    es rey
     hi "राजा"
     ru "король"
     zh "王"

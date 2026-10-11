@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check-requirement-coverage
+  stage web
+  description "docs/case-studies/pull-request-1188/requirement-coverage.md is exactly what experiments/formal_ai_subagent/requirement-coverage.mjs renders from the mapping, the requirement shards and the status ledger."
+  run "node experiments/formal_ai_subagent/requirement-coverage.mjs --check"
+  justification "PR #1188 (R1188-U8, U15): the map of the owner's requirements to their rows is generated, and its statuses are computed, so it is checked in CI rather than edited by hand."

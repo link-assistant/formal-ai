@@ -1,0 +1,463 @@
+//! Issue #1184 (E148): white-box derivation for every answer.
+//!
+//! The derivation record is a projection of the same append-only
+//! [`EventLog`] the `--thinking` trace narrates, so the two surfaces cannot
+//! disagree (R6). These tests pin:
+//! - the projection recovers search queries, fetched URLs, and SHA-256
+//!   hashes from both `source:http` payload spellings the tree emits,
+//! - the answer id is content-addressed and stable (R1),
+//! - a stage a route never populated reports "not recorded", never a
+//!   fabricated entry (R5),
+//! - the durable store round-trips a record by answer id (R3) and refuses
+//!   path-traversing ids,
+//! - the `explain` surface and the in-chat self-explanation recipe stay on
+//!   disjoint triggers (R7).
+//!
+//! The live variant — running an online fetch scenario and explaining the
+//! resulting answer — lands with the E128 (#1163) stage events that fill
+//! `formalized_fragments`; it is recorded as that issue's follow-up, not
+//! fabricated here.
+
+use formal_ai::agentic_coding::explain::{EXPLAIN_TASK, is_explain_task};
+use formal_ai::derivation::{
+    AppliedRule, Derivation, FetchRecord, VerificationRecord, answer_derivation_id, explain_answer,
+    store_path,
+};
+use formal_ai::event_log::EventLog;
+use std::path::{Path, PathBuf};
+use std::time::{SystemTime, UNIX_EPOCH};
+
+fn isolated_directory(test_name: &str) -> PathBuf {
+    let nonce = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("system clock after Unix epoch")
+        .as_nanos();
+    std::env::temp_dir().join(format!(
+        "formal-ai-derivation-{}-{test_name}-{nonce}",
+        std::process::id()
+    ))
+}
+
+/// The log of an online answer: two issued queries and two fetches, one in
+/// each `source:http` spelling the tree emits.
+fn online_answer_log() -> EventLog {
+    let mut log = EventLog::new();
+    log.append("web_search:request", "how to compile a Kotlin program");
+    log.append(
+        "source:http",
+        "https://kotlinlang.org/docs/command-line.html fetched_at=2026-09-29T00:00:00Z \
+         sha256=9f86d081884c7d65a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08 cached=false",
+    );
+    log.append(
+        "source:http",
+        "url=https://example.com/kotlin;fetched_at=2026-09-29T00:01:00Z;\
+         sha256=2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae;\
+         catalog_match=none",
+    );
+    log.append("web_search:request", "kotlinc command line options");
+    log
+}
+
+#[test]
+fn derivation_carries_search_queries_fetches_and_hashes_for_an_online_answer() {
+    let log = online_answer_log();
+    let derivation = Derivation::record_for(&log, "answer_0123456789abcdef");
+
+    assert_eq!(
+        derivation.search_queries,
+        vec![
+            String::from("how to compile a Kotlin program"),
+            String::from("kotlinc command line options"),
+        ],
+        "queries are recovered in append order"
+    );
+    assert_eq!(derivation.fetches.len(), 2, "both payload spellings parse");
+    assert_eq!(
+        derivation.fetches[0],
+        FetchRecord {
+            url: String::from("https://kotlinlang.org/docs/command-line.html"),
+            sha256: String::from("9f86d081884c7d65a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"),
+            fetched_at: String::from("2026-09-29T00:00:00Z"),
+        },
+        "the SourceCapture trace_payload form is read"
+    );
+    assert_eq!(
+        derivation.fetches[1].url, "https://example.com/kotlin",
+        "the semicolon-separated synthesis-runtime form is read"
+    );
+    assert_eq!(derivation.fetches[1].sha256.len(), 64);
+}
+
+#[test]
+fn every_symbolic_answer_carries_a_stable_derivation_id() {
+    let once = answer_derivation_id("Kotlin programs are compiled with kotlinc.");
+    let twice = answer_derivation_id("Kotlin programs are compiled with kotlinc.");
+    assert_eq!(once, twice, "the same answer text yields the same id");
+    assert_ne!(
+        once,
+        answer_derivation_id("Scala programs are compiled with scalac."),
+        "a different answer text yields a different id"
+    );
+    let hex = once.strip_prefix("answer_").expect("answer_ prefix");
+    assert_eq!(hex.len(), 16, "sixteen hex digits, like every stable_id");
+    assert!(
+        hex.chars().all(|c| c.is_ascii_hexdigit()),
+        "the id body is hex"
+    );
+}
+
+#[test]
+fn explain_reports_not_recorded_for_stages_a_route_did_not_populate() {
+    // A pure-arithmetic answer: no search, no fetch, no decomposition.
+    let mut log = EventLog::new();
+    log.append("calculation", "2+2=4");
+    let derivation = Derivation::record_for(&log, "answer_fedcba9876543210");
+
+    assert!(derivation.fetches.is_empty(), "nothing is fabricated");
+    assert_eq!(derivation.search_queries, [] as [std::string::String; 0]);
+    let explanation = derivation.explain_text();
+    for stage in [
+        "stage search_queries",
+        "stage fetches",
+        "stage formalized_fragments",
+        "stage decomposed_parts",
+        "stage verification",
+    ] {
+        let block = explanation
+            .split(stage)
+            .nth(1)
+            .unwrap_or_else(|| panic!("explanation names `{stage}`"));
+        assert!(
+            block.starts_with("\n    not recorded"),
+            "`{stage}` reports not recorded, got:{block}"
+        );
+    }
+    assert!(explanation.contains("stage recomposition: not recorded"));
+    assert!(explanation.contains("stage rendering: not recorded"));
+}
+
+#[test]
+fn explain_and_thinking_trace_agree_on_the_same_event_log() {
+    let log = online_answer_log();
+
+    // Both projections read this one log; neither replays the request.
+    let steps = log.thinking_steps_for_answer("Use kotlinc from the command line.");
+    let derivation = Derivation::record_for(&log, "answer_0123456789abcdef");
+
+    let narrated_queries: Vec<&str> = steps
+        .iter()
+        .filter(|step| step.step == "http_chat")
+        .map(|step| step.detail.as_str())
+        .collect();
+    for query in &derivation.search_queries {
+        assert!(
+            narrated_queries.contains(&query.as_str()),
+            "the thinking trace narrates the same query the derivation records: {query}"
+        );
+    }
+}
+
+#[test]
+fn durable_record_round_trips_by_answer_id() {
+    let root = isolated_directory("round-trip");
+    let log = online_answer_log();
+    let mut derivation = Derivation::record_for(&log, "answer_0123456789abcdef");
+    derivation.recomposition = Some(String::from("bound literal=Hello, Formal AI!"));
+    derivation.rendering = Some(String::from("kotlin"));
+    derivation.verification.push(VerificationRecord {
+        evidence_id: String::from("evidence_0000000000000000"),
+        command: String::from("python3 solution.py"),
+        exit_code: Some(0),
+    });
+
+    let path = derivation
+        .persist(&root)
+        .expect("the record persists under data/cache/derivations");
+    assert!(
+        path.starts_with(root.join("data/cache/derivations")),
+        "the store follows the sources-registry cache_path convention"
+    );
+
+    let loaded = Derivation::load(&root, "answer_0123456789abcdef")
+        .expect("the record loads back without replaying the request");
+    assert_eq!(loaded, derivation, "the lino round-trip is lossless");
+
+    let explained =
+        explain_answer(&root, "answer_0123456789abcdef").expect("explain reads the durable record");
+    assert!(explained.contains("sha256 9f86d0"));
+    assert!(explained.contains("python3 solution.py exit=0"));
+    assert!(
+        Derivation::load(&root, "answer_ffffffffffffffff").is_none(),
+        "an unknown id is an honest miss"
+    );
+}
+
+#[test]
+fn verification_payload_round_trips_through_its_event_spelling() {
+    let record = VerificationRecord {
+        evidence_id: String::from("evidence_1234567890abcdef"),
+        command: String::from("python3 solution.py"),
+        exit_code: Some(0),
+    };
+    let parsed = VerificationRecord::parse_payload(&record.payload())
+        .expect("the payload spelling parses back");
+    assert_eq!(parsed, record);
+
+    let mut log = EventLog::new();
+    log.append("verify:evidence", record.payload());
+    let derivation = Derivation::record_for(&log, "answer_0123456789abcdef");
+    assert_eq!(derivation.verification, vec![record]);
+}
+
+#[test]
+fn explain_command_does_not_collide_with_the_self_explanation_recipe() {
+    // The in-chat recipe keeps its keyword triggers untouched…
+    assert!(is_explain_task(EXPLAIN_TASK));
+    assert!(is_explain_task("explain how formal ai works"));
+    // …and a derivation answer id is not one of them, so `formal-ai explain
+    // <answer-id>` and the self-explanation recipe route disjointly (R7).
+    assert!(!is_explain_task("answer_0123456789abcdef"));
+
+    // The durable store refuses ids that could traverse the tree.
+    assert!(store_path(Path::new("/repo"), "answer_ok").is_some());
+    assert!(store_path(Path::new("/repo"), "../secrets").is_none());
+    assert!(store_path(Path::new("/repo"), "").is_none());
+    assert!(store_path(Path::new("/repo"), "a/b").is_none());
+}
+
+#[test]
+fn lino_values_survive_quoting_and_line_breaks() {
+    let mut derivation = Derivation::record_for(&EventLog::new(), "answer_0123456789abcdef");
+    derivation
+        .search_queries
+        .push(String::from("what is \"1 + 1\"?\nsecond line"));
+    let text = derivation.to_lino();
+    let parsed = Derivation::from_lino(&text).expect("the record parses back");
+    assert_eq!(parsed, derivation, "quoted and escaped values round-trip");
+}
+
+#[test]
+fn solver_early_returns_expose_serialized_id_and_live_record() {
+    for prompt in ["hello", "", "1 + 1", "unrecognized qwerty xyz"] {
+        let answer = formal_ai::solve(prompt);
+        let id = answer.derivation_id();
+        let wire = serde_json::to_value(&answer).expect("serialize answer");
+        assert_eq!(wire["derivation_id"].as_str(), Some(id.as_str()));
+        assert!(answer.evidence_links.contains(&format!("derivation:{id}")));
+        let root = std::env::current_dir().expect("working directory");
+        let record = Derivation::load(&root, &id).expect("solver persisted derivation");
+        assert!(record.rendering.is_some());
+        assert!(answer.links_notation.contains(&record.to_lino()));
+    }
+}
+
+#[test]
+fn verification_payload_preserves_shell_separators_and_legacy_spelling() {
+    let record = VerificationRecord {
+        evidence_id: "evidence_123".into(),
+        command: "printf first; printf second exit=inside".into(),
+        exit_code: Some(0),
+    };
+    assert_eq!(
+        VerificationRecord::parse_payload(&record.payload()),
+        Some(record)
+    );
+    let legacy = VerificationRecord::parse_payload(
+        "evidence_id=evidence_old command=python3 solution.py exit=0",
+    )
+    .expect("historical payload remains readable");
+    assert_eq!(legacy.command, "python3 solution.py");
+    assert_eq!(legacy.exit_code, Some(0));
+}
+
+// Issue #1174 R9: the rules a text-transform handler applied are a stage of
+// the record. The schema's `stage ... collects rule` rows name the event
+// kinds, so the register, grammar, genre, summarization and translation
+// events reach `formal-ai explain` without a per-handler edit.
+#[test]
+fn applied_rules_are_projected_round_tripped_and_explained() {
+    let mut log = EventLog::new();
+    log.append("register_rewrite", "u -> you");
+    log.append(
+        "grammar_correction",
+        "don't -> doesn't (third_person_agreement)",
+    );
+    log.append("thinking:note", "not a rule event");
+    let derivation = Derivation::record_for(&log, "answer_00000000000000aa");
+    assert_eq!(
+        derivation.applied_rules,
+        vec![
+            AppliedRule {
+                kind: String::from("register_rewrite"),
+                detail: String::from("u -> you"),
+            },
+            AppliedRule {
+                kind: String::from("grammar_correction"),
+                detail: String::from("don't -> doesn't (third_person_agreement)"),
+            },
+        ],
+        "only the kinds the schema declares are collected, in append order"
+    );
+    let parsed = Derivation::from_lino(&derivation.to_lino()).expect("the record parses back");
+    assert_eq!(
+        parsed, derivation,
+        "applied rules round-trip through Links Notation"
+    );
+    let explanation = derivation.explain_text();
+    assert!(
+        explanation.contains("stage applied_rules")
+            && explanation.contains("grammar_correction don't -> doesn't"),
+        "explain names each applied rule: {explanation}"
+    );
+    let empty = Derivation::record_for(&EventLog::new(), "answer_00000000000000ab");
+    assert!(
+        empty
+            .explain_text()
+            .contains("stage applied_rules\n    not recorded"),
+        "a route that applied no rule reports the stage as not recorded"
+    );
+}
+
+#[test]
+fn a_grammar_correction_answer_carries_its_rules_in_the_derivation() {
+    let response = formal_ai::FormalAiEngine
+        .answer("Correct the grammar: She don't like apples and he have two cat.");
+    assert!(
+        response
+            .links_notation
+            .contains("kind \"grammar_correction\""),
+        "the answer's derivation record names the grammar rules it applied: {}",
+        response.links_notation
+    );
+}
+
+// R1184-1: the id is the FNV-1a `stable_id` of the answer text, so every
+// root computes the same value. The browser worker (`finalize` in
+// js/worker/formal_ai_worker_solve.js) and the JavaScript server pin the same
+// constant in rust/tests/web/issue-1184-derivation-identifier-surfaces.test.mjs.
+#[test]
+fn the_derivation_id_is_the_same_constant_in_every_root() {
+    assert_eq!(
+        answer_derivation_id("Kotlin programs are compiled with kotlinc."),
+        "answer_91f06b150735a87e"
+    );
+}
+
+// R1184-8: the Serve API's `/v1/responses` object carries `derivation_id`
+// alongside `evidence_links`, and it is the id of the answer the response
+// renders, so `formal-ai explain <derivation_id>` finds its record.
+#[test]
+fn the_responses_api_carries_the_derivation_id_beside_evidence_links() {
+    let request = formal_ai::ResponsesRequest {
+        input: serde_json::Value::String(String::from("1 + 1")),
+        ..formal_ai::ResponsesRequest::default()
+    };
+    let response = formal_ai::create_response(&request);
+    let text = response.output_messages()[0].content[0].text.clone();
+    let expected = answer_derivation_id(&text);
+    assert_eq!(response.derivation_id.as_deref(), Some(expected.as_str()));
+    assert!(
+        response
+            .evidence_links
+            .contains(&format!("derivation:{expected}")),
+        "the evidence links name the same derivation"
+    );
+    let wire = serde_json::to_value(&response).expect("serialize response");
+    assert_eq!(wire["derivation_id"].as_str(), Some(expected.as_str()));
+    assert!(wire["evidence_links"].is_array());
+}
+
+/// R1184-2: every stage kind the record names projects into its own field,
+/// in append order — the record captures queries, fetches, formalized
+/// fragments, decomposed parts, the recomposition, the rendering and the
+/// verification evidence whenever a route appends them.
+#[test]
+fn every_stage_event_kind_lands_in_its_record_field() {
+    let mut log = online_answer_log();
+    log.append(
+        formal_ai::derivation::FORMALIZE_FRAGMENT_KIND,
+        "fragment=kotlinc hello.kt",
+    );
+    log.append(
+        formal_ai::derivation::DECOMPOSE_PART_KIND,
+        "entry_point main",
+    );
+    log.append(
+        formal_ai::derivation::DECOMPOSE_PART_KIND,
+        "output_operation println",
+    );
+    log.append(
+        formal_ai::derivation::RECOMPOSE_BIND_KIND,
+        "bound literal=Hi",
+    );
+    log.append(formal_ai::derivation::RENDER_EMIT_KIND, "kotlin");
+    let check = VerificationRecord {
+        evidence_id: String::from("evidence_00000000000000aa"),
+        command: String::from("kotlinc hello.kt"),
+        exit_code: Some(0),
+    };
+    log.append(formal_ai::derivation::VERIFICATION_KIND, check.payload());
+    let derivation = Derivation::record_for(&log, "answer_0123456789abcdef");
+    assert_eq!(derivation.search_queries.len(), 2);
+    assert_eq!(derivation.fetches.len(), 2);
+    assert_eq!(
+        derivation.formalized_fragments,
+        ["fragment=kotlinc hello.kt"]
+    );
+    assert_eq!(
+        derivation.decomposed_parts,
+        ["entry_point main", "output_operation println"]
+    );
+    assert_eq!(
+        derivation.recomposition.as_deref(),
+        Some("bound literal=Hi")
+    );
+    assert_eq!(derivation.rendering.as_deref(), Some("kotlin"));
+    assert_eq!(derivation.verification, vec![check]);
+    let explanation = derivation.explain_text();
+    // Only the applied-rules stage, which no event here fills, is unrecorded.
+    assert_eq!(
+        explanation.matches("not recorded").count(),
+        1,
+        "a populated record reports every populated stage: {explanation}"
+    );
+}
+
+/// R1184-4: the `formal-ai explain <answer-id>` subcommand itself prints the
+/// durable record from the working directory's store, in both formats, and a
+/// miss is an error naming the id — the binary, not only the library call.
+#[test]
+fn the_explain_subcommand_prints_the_durable_record() {
+    let root = isolated_directory("explain-cli");
+    let mut derivation = Derivation::record_for(&online_answer_log(), "answer_00000000000000ab");
+    derivation.rendering = Some(String::from("kotlin"));
+    derivation
+        .persist(&root)
+        .expect("the record persists under data/cache/derivations");
+    let run = |args: &[&str]| {
+        std::process::Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+            .args(args)
+            .current_dir(&root)
+            .output()
+            .expect("the formal-ai binary runs")
+    };
+
+    let text = run(&["explain", "answer_00000000000000ab"]);
+    assert!(text.status.success(), "{text:?}");
+    assert_eq!(
+        String::from_utf8_lossy(&text.stdout),
+        derivation.explain_text()
+    );
+
+    let links = run(&["explain", "answer_00000000000000ab", "--format", "links"]);
+    assert!(links.status.success(), "{links:?}");
+    assert_eq!(String::from_utf8_lossy(&links.stdout), derivation.to_lino());
+
+    let miss = run(&["explain", "answer_ffffffffffffffff"]);
+    assert!(!miss.status.success(), "a missing record is an error");
+    assert!(
+        String::from_utf8_lossy(&miss.stderr).contains("answer_ffffffffffffffff"),
+        "the miss names the id: {miss:?}"
+    );
+    let _ = std::fs::remove_dir_all(&root);
+}

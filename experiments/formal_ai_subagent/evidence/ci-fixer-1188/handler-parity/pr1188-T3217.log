@@ -1,0 +1,15 @@
+/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_claim_evidence.js:154
+    return nearestCoreferenceAntecedent(history) !== null;
+    ^
+
+ReferenceError: nearestCoreferenceAntecedent is not defined
+    at Object.coreference_antecedent (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_claim_evidence.js:154:5)
+    at /Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_dispatch.js:140:74
+    at Array.some (<anonymous>)
+    at claimRouteAdmission (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_dispatch.js:140:28)
+    at claimRouteRun (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_dispatch.js:151:21)
+    at solveImpl (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_solve.js:527:27)
+    at async solve (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_solve.js:28:20)
+    at async file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:282:20
+
+Node.js v20.19.4

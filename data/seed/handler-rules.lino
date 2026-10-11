@@ -1,6 +1,6 @@
-handler_rules
+handler-rules
   issue 1085
-  purpose "Specialized handlers expressed as links: conditions over seed roles and prompt shape, logged steps, and a seeded multilingual response. src/rule_interpreter.rs walks each rule; specialized_handlers() resolves a precedence name to a handler block here when no native function claims it."
+  purpose "Specialized handlers expressed as links: conditions over seed roles and prompt shape, logged steps, and a seeded multilingual response. src/rule_interpreter.rs walks each rule; specialized_handlers() resolves a precedence name to a handler block here when no native function claims it. A policy block holds a value a native handler reads instead of a constant of its own (issue #918); a table block holds the ordered rows a rule value reads by containment or by key (issue #918, the algorithm rule set)."
   handler conversation_control
     rule conversation_preference
       when
@@ -14,8 +14,18 @@ handler_rules
     rule action_correction
       when
         role unauthorized_mutation_correction forms of cleaned
+        prior_turn assistant
       log "action_correction:unauthorized_mutation" $prompt
       respond action_correction
+      link "response:action_correction"
+      confidence 1.0
+    rule action-correction-without-action
+      when
+        role unauthorized_mutation_correction forms of cleaned
+      log "action_correction:unauthorized_mutation" $prompt
+      log "conversation_control:refusal" "no earlier action"
+      respond action_correction
+      intent action_correction
       link "response:action_correction"
       confidence 1.0
   handler github_repository_traffic
@@ -25,55 +35,79 @@ handler_rules
         role repository_reference languages
         role github_repository_traffic_signal languages
         role github_repository_traffic_question languages
-      value repository agent_info repository default link-assistant/formal-ai
-      value traffic_ui_docs literal "https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository"
-      value traffic_api_docs literal "https://docs.github.com/en/rest/metrics/traffic"
+        evidence named_repository
+      value repository operand named_repository
+      value traffic-ui-docs literal "https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository"
+      value traffic-api-docs literal "https://docs.github.com/en/rest/metrics/traffic"
       log "github_repository_traffic:platform" github
       log "github_repository_traffic:repository" $repository
-      log "github_repository_traffic:access" push_or_write_access_required
-      log "github_repository_traffic:window" last_14_days
-      log "github_repository_traffic:aggregate" views_uniques_clones_referrers_paths
-      log "github_repository_traffic:privacy" no_individual_identity
-      log source $traffic_ui_docs
-      log source $traffic_api_docs
+      log "github_repository_traffic:access" push-or-write-access-required
+      log "github_repository_traffic:window" last-14-days
+      log "github_repository_traffic:aggregate" views-uniques-clones-referrers-paths
+      log "github_repository_traffic:privacy" no-individual-identity
+      log source $traffic-ui-docs
+      log source $traffic-api-docs
       respond github_repository_traffic
       link "response:github_repository_traffic"
       confidence 0.92
+    rule github_repository_traffic_unnamed
+      when
+        role github_repository_platform languages
+        role repository_reference languages
+        role github_repository_traffic_signal languages
+        role github_repository_traffic_question languages
+      value traffic-ui-docs literal "https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository"
+      value traffic-api-docs literal "https://docs.github.com/en/rest/metrics/traffic"
+      log "github_repository_traffic:platform" github
+      log "github_repository_traffic:access" push-or-write-access-required
+      log "github_repository_traffic:window" last-14-days
+      log "github_repository_traffic:aggregate" views-uniques-clones-referrers-paths
+      log "github_repository_traffic:privacy" no-individual-identity
+      log source $traffic-ui-docs
+      log source $traffic-api-docs
+      log "github_repository_traffic:refusal" "no repository named"
+      respond github_repository_traffic_unnamed
+      intent github_repository_traffic
+      link "response:github_repository_traffic"
+      confidence 0.92
+  handler requirement_listing
+    rule requirement_listing
+      when
+        role requirement_listing_action of command_head
+      value requirements transform requirement_list
+      log "text_transform" requirement_list
+      respond requirement_listing
+      intent requirement_listing
+      link "response:requirement_listing"
+      confidence 0.9
   handler docs_method_explanation
     rule docs_method_explanation
       when
         none
           all
-            role_prefix web_search_imperative_lead of trimmed
-            role_padded web_medium of trimmed
-        word pandas of trimmed
-        role_lead explanation_request_lead of trimmed
-        any
-          substring dataframe.join of lowercase
-          substring df.join of lowercase
-          all
-            word join of trimmed
-            word dataframe of trimmed
-          all
-            word join of trimmed
-            role code_method_noun of trimmed
-      value docs_url literal "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html"
+            role-prefix web_search_imperative_lead of trimmed
+            role-padded web_medium of trimmed
+        role-lead explanation_request_lead of trimmed
+        evidence documented_method
+      value method operand documented_method
+      value project operand documented_method 1
+      value docs_url operand documented_method 2
       log "docs_method:request" $prompt
-      log "docs_method:project" pandas
-      log "docs_method:method" pandas.DataFrame.join
+      log "docs_method:project" $project
+      log "docs_method:method" $method
       log "docs_method:source_kind" official-docs
       log "docs_method:source" $docs_url
       respond docs_method_explanation
       link "response:docs_method_explanation"
       confidence 0.92
   handler capabilities
-    rule capabilities_more_after_search
+    rule capabilities-more-after-search
       when
         role capability_query_more of cleaned
         none
-          route_exact assistant_free_time
-        history_role web_search_history_signal
-      log "capabilities:history" prior_web_search
+          route-exact assistant_free_time
+        history-role web_search_history_signal
+      log "capabilities:history" prior-web-search
       respond capabilities_more
       intent capabilities
       link "response:capabilities"
@@ -82,7 +116,7 @@ handler_rules
       when
         role capability_query_more of cleaned
         none
-          route_exact assistant_free_time
+          route-exact assistant_free_time
       respond capabilities_more
       intent capabilities
       link "response:capabilities"
@@ -91,7 +125,7 @@ handler_rules
       when
         role capability_query of cleaned
         none
-          route_exact assistant_free_time
+          route-exact assistant_free_time
       respond capabilities
       intent capabilities
       link "response:capabilities"
@@ -100,12 +134,24 @@ handler_rules
     rule clarification
       when
         role clarification_request of cleaned
+        prior_turn assistant
       respond clarification
       link "response:clarification"
       confidence 0.9
-    rule clarification_inflected_stem
+    rule clarification-inflected-stem
       when
         role clarification_request raw
+        prior_turn assistant
+      respond clarification
+      intent clarification
+      link "response:clarification"
+      confidence 0.9
+    rule clarification-without-reply
+      when
+        any
+          role clarification_request of cleaned
+          role clarification_request raw
+      log "clarification:refusal" "no earlier reply"
       respond clarification
       intent clarification
       link "response:clarification"
@@ -113,8 +159,8 @@ handler_rules
   handler punctuation_only_prompt
     rule punctuation_only_prompt
       when
-        only_characters ".?!…。？！"
-      value prompt trimmed_prompt
+        only-characters ".?!…。？！"
+      value prompt trimmed-prompt
       log "clarification:punctuation_only" $trimmed
       respond punctuation_only
       intent clarification
@@ -124,9 +170,9 @@ handler_rules
     rule ill_formed
       when
         substring "teach this fact"
-        unbalanced_parentheses
+        unbalanced-parentheses
       log error "unbalanced links notation"
-      respond_unknown
+      respond-unknown
       intent unknown
       link "response:unknown"
       confidence 0.0
@@ -141,7 +187,9 @@ handler_rules
   handler kupi_slona
     rule kupi_slona
       when
-        role circular_joke_phrase raw
+        evidence idiom_utterance
+      value phrase operand idiom_utterance
+      log "kupi_slona:idiom" $phrase
       respond kupi_slona
         fallback ru
       link "response:kupi_slona"
@@ -183,6 +231,12 @@ handler_rules
           prefix "share your opinion"
           prefix "share your thoughts"
           prefix "what are your thoughts"
+          prefix "как ты думаешь"
+          prefix "что ты думаешь"
+          prefix "каково твоё мнение"
+          prefix "каково твое мнение"
+          prefix "你认为"
+          prefix "你觉得"
       log "policy:no_opinion" $prompt
       respond opinion_question
       link "response:opinion_question"
@@ -191,7 +245,754 @@ handler_rules
     rule continuation_cue
       when
         role agentic_continuation_cue whole of cleaned
+        prior_turn assistant
       log "agentic_continuation:cue" $prompt
       respond agentic_continuation
       link "response:agentic_continuation"
       confidence 1.0
+    rule continuation-cue-without-task
+      when
+        role agentic_continuation_cue whole of cleaned
+      log "agentic_continuation:cue" $prompt
+      log "agentic_continuation:refusal" "nothing to resume"
+      respond agentic_continuation
+      intent continuation_cue
+      link "response:agentic_continuation"
+      confidence 1.0
+  handler conversation_topic
+    rule conversation_topic
+      when
+      value topic role_slot conversation_topic_opener
+      log conversation_topic $topic
+      respond conversation_topic
+      link "response:conversation_topic"
+      confidence 0.75
+  handler source_refresh
+    rule source_refresh
+      when
+        substring refresh
+        any
+          substring cache
+          substring page
+        evidence source_reference
+      value target stable_id source
+      log source_refresh $target
+      respond source_refresh
+      link "response:source_refresh"
+      confidence 1.0
+    rule source-refresh-unnamed
+      when
+        substring refresh
+        any
+          substring cache
+          substring page
+      value target stable_id source
+      log source_refresh $target
+      log "source_refresh:refusal" "no source named"
+      respond source_refresh
+      intent source_refresh
+      link "response:source_refresh"
+      confidence 1.0
+  handler source_conflict
+    rule source_conflict
+      when
+        role source_conflict_cue raw of lowercase
+        evidence attributed_alternatives
+      value first operand attributed_alternatives
+      value second operand attributed_alternatives 1
+      log "conflict:source_disagreement" "sources disagree on the answer"
+      log "conflict:alternative" $first
+      log "conflict:alternative" $second
+      respond source_conflict
+      link "response:source_conflict"
+      confidence 0.6
+    rule source_conflict_unattributed
+      when
+        any
+          all
+            role information_source_noun raw of lowercase
+            role source_conflict_cue raw of lowercase
+          all
+            substring "born in"
+            substring " or "
+      log "source_conflict:refusal" "no attributed alternatives"
+      respond source_conflict_unattributed
+      intent source_conflict
+      link "response:source_conflict"
+      confidence 0.3
+  handler execution_failure
+    rule execution-failure-agent
+      when
+        evidence undefined_call
+        substring "[agent]"
+      value function operand undefined_call
+      log "trace:execution_failure" $function
+      log "agent_mode:opted_in" $prompt
+      log "action_log" $prompt
+      respond execution_failure
+      intent execution_failure
+      link "response:execution_failure"
+      confidence 0.4
+    rule execution_failure
+      when
+        evidence undefined_call
+      value function operand undefined_call
+      log "trace:execution_failure" $function
+      respond execution_failure
+      link "response:execution_failure"
+      confidence 0.4
+  handler network_query
+    rule network_snapshot
+      when
+        any
+          substring "show me the current network"
+          substring "show me the network"
+          substring "export the network"
+          substring "export network"
+      value snapshot network_snapshot
+      respond network_snapshot
+      link "response:network_snapshot"
+      confidence 1.0
+    rule concept_introspection
+      when
+        any
+          substring "what do you know about" of lowercase
+          substring "introspect" of lowercase
+      value concept quoted
+      respond concept_introspection
+      intent "concept_introspection_{concept}"
+      link "response:concept_introspection"
+      confidence 1.0
+    rule filter_user
+      when
+        any
+          prefix "list facts"
+          role personal_facts_listing_request of cleaned
+      log "filter:user" "self"
+      respond filter_user
+      link "response:filter_user"
+      confidence 1.0
+  handler algorithm
+    rule algorithm_sort_with_tests
+      when
+        operation sort of cleaned
+        substring test
+      value language table algorithm_language of normalized
+      value snippet table algorithm_snippet key language
+      value code response "algorithm_sort_code_{snippet}"
+      value tests response "algorithm_sort_tests_{snippet}"
+      log "execution_status" "unavailable"
+      log "execution_environment" "no compile/run sandbox configured for this generated snippet"
+      respond algorithm_sort_with_tests
+      intent "algorithm_sort_{language}"
+      link "response:algorithm"
+      confidence 1.0
+    rule algorithm_sort
+      when
+        operation sort of cleaned
+      value language table algorithm_language of normalized
+      value snippet table algorithm_snippet key language
+      value code response "algorithm_sort_code_{snippet}"
+      log "execution_status" "unavailable"
+      log "execution_environment" "no compile/run sandbox configured for this generated snippet"
+      respond algorithm_sort
+      intent "algorithm_sort_{language}"
+      link "response:algorithm"
+      confidence 1.0
+    rule algorithm-unnamed-with-tests
+      when
+        substring algorithm
+        substring test
+      value language table algorithm_language of normalized
+      value snippet table algorithm_snippet key language
+      value code response "algorithm_sort_code_{snippet}"
+      value tests response "algorithm_sort_tests_{snippet}"
+      log "algorithm:refusal" "no operation named"
+      log "execution_status" "unavailable"
+      log "execution_environment" "no compile/run sandbox configured for this generated snippet"
+      respond algorithm_sort_with_tests
+      intent "algorithm_sort_{language}"
+      link "response:algorithm"
+      confidence 1.0
+    rule algorithm-unnamed
+      when
+        substring algorithm
+      value language table algorithm_language of normalized
+      value snippet table algorithm_snippet key language
+      value code response "algorithm_sort_code_{snippet}"
+      log "algorithm:refusal" "no operation named"
+      log "execution_status" "unavailable"
+      log "execution_environment" "no compile/run sandbox configured for this generated snippet"
+      respond algorithm_sort
+      intent "algorithm_sort_{language}"
+      link "response:algorithm"
+      confidence 1.0
+  policy response_language_followup
+    terse-word-limit 4
+  policy compound_interest
+    periods_compounding_monthly "12"
+    periods_compounding_quarterly "4"
+    periods_compounding_weekly "52"
+    periods_compounding_daily "365"
+    periods_compounding_annual "1"
+    label-1 "annually"
+    label-4 "quarterly"
+    label-12 "monthly"
+    label-52 "weekly"
+    label-365 "daily"
+    label-other "times per year"
+    rate_USD_EUR "0.92"
+    rate_USD_RUB "89.5"
+    rate_EUR_USD "1.087"
+    rate-expression "1 {source} in {target}"
+    final-amount-marker "final amount:"
+  policy docs_method_explanation
+    page "pandas.DataFrame.join"
+    class-alias df
+    docs_url "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html"
+  policy playwright_script
+    docs_url "https://playwright.dev/docs/writing-tests"
+  policy procedural_how_to
+    fallback-query "how to {task}"
+    install-query "{target} install official documentation"
+  policy how_it_works
+    concept-query "what is {term}"
+    mechanism_query "how {subject} works"
+  policy meta_explanation
+    rationale-lead-languages "en ru"
+    compositional-why-languages "hi zh"
+    operating-principle-languages "ru"
+  table algorithm_language
+    row python python
+    row " py " python
+    row rust rust
+    row " rs " rust
+    row javascript javascript
+    row typescript typescript
+    row "go " go
+    row golang go
+    row java java
+    row ruby ruby
+    default python
+  table algorithm_snippet
+    row rust rust
+    row javascript javascript
+    row typescript typescript
+    default python
+  table document_software_artifact
+    row "app" "software"
+    row "application" "software"
+    row "extension" "software"
+    row "plugin" "software"
+    row "addon" "software"
+    row "add-on" "software"
+    row "bot" "software"
+    row "program" "software"
+    row "script" "software"
+    row "website" "software"
+    row "web site" "software"
+    row "web app" "software"
+    row "webapp" "software"
+    row "game" "software"
+    row "api" "software"
+    row "library" "software"
+    row "framework" "software"
+    row "tool" "software"
+    row "cli" "software"
+    row "daemon" "software"
+    row "server" "software"
+    row "приложени" "software"
+    row "программ" "software"
+    row "скрипт" "software"
+    row "расширени" "software"
+    row "плагин" "software"
+    row "бот" "software"
+    row "сайт" "software"
+    row "веб-сайт" "software"
+    row "игр" "software"
+    row "утилит" "software"
+    row "сервер" "software"
+    row "библиотек" "software"
+  table document_authoring_action
+    row "make me" "authoring"
+    row "make a" "authoring"
+    row "make an" "authoring"
+    row "create" "authoring"
+    row "generate" "authoring"
+    row "produce" "authoring"
+    row "compile" "authoring"
+    row "prepare" "authoring"
+    row "assemble" "authoring"
+    row "draft" "authoring"
+    row "build me" "authoring"
+    row "export" "authoring"
+    row "give me" "authoring"
+    row "i need" "authoring"
+    row "i want" "authoring"
+    row "put together" "authoring"
+    row "сдела" "authoring"
+    row "созда" "authoring"
+    row "сгенерир" "authoring"
+    row "подготов" "authoring"
+    row "сформир" "authoring"
+    row "состав" "authoring"
+    row "собери" "authoring"
+    row "собрать" "authoring"
+    row "оформ" "authoring"
+    row "выгрузи" "authoring"
+    row "экспортир" "authoring"
+    row "сверста" "authoring"
+    row "बना" "authoring"
+    row "तैयार" "authoring"
+    row "उत्पन्न" "authoring"
+    row "चाहिए" "authoring"
+    row "做" "authoring"
+    row "制作" "authoring"
+    row "生成" "authoring"
+    row "创建" "authoring"
+    row "编写" "authoring"
+    row "整理" "authoring"
+    row "给我" "authoring"
+    row "帮我" "authoring"
+  table document_format
+    row "pdf" "PDF"
+    row "пдф" "PDF"
+    row "docx" "DOCX"
+    row ".doc" "DOCX"
+    row "word document" "DOCX"
+    row "ворд" "DOCX"
+    row "документ word" "DOCX"
+    row "xlsx" "CSV/XLSX"
+    row "csv" "CSV/XLSX"
+    row "spreadsheet" "CSV/XLSX"
+    row "excel" "CSV/XLSX"
+    row "эксель" "CSV/XLSX"
+    row "табличк" "CSV/XLSX"
+    row "电子表格" "CSV/XLSX"
+    row "表格" "CSV/XLSX"
+    row "स्प्रेडशीट" "CSV/XLSX"
+    row "pptx" "PPTX"
+    row "powerpoint" "PPTX"
+    row "slide deck" "PPTX"
+    row "презентаци" "PPTX"
+    row "слайд" "PPTX"
+    row "演示" "PPTX"
+    row "幻灯片" "PPTX"
+    row "प्रस्तुति" "PPTX"
+  table document_ebook_marker
+    row "epub" "EPUB"
+    row "e-book" "EPUB"
+    row "ebook" "EPUB"
+    row "электронн" "EPUB"
+  table document_book_noun
+    row "book" "book"
+    row "книг" "book"
+  table document_noun
+    row "document" "document"
+    row "документ" "document"
+    row "report" "document"
+    row "отчет" "document"
+    row "отчёт" "document"
+    row "dossier" "document"
+    row "досье" "document"
+    row "brochure" "document"
+    row "брошюр" "document"
+    row "booklet" "document"
+    row "буклет" "document"
+    row "memo" "document"
+    row "записку" "document"
+    row "записка" "document"
+    row "दस्तावेज़" "document"
+    row "दस्तावेज" "document"
+    row "रिपोर्ट" "document"
+    row "文档" "document"
+    row "文件" "document"
+    row "报告" "document"
+  table document_conversion_action
+    row "convert" "conversion"
+    row "translate" "conversion"
+    row "transform" "conversion"
+    row "render" "conversion"
+    row "export" "conversion"
+    row "turn into" "conversion"
+    row "turn this into" "conversion"
+    row "change into" "conversion"
+    row "конверт" "conversion"
+    row "преобраз" "conversion"
+    row "переведи" "conversion"
+    row "перевести" "conversion"
+    row "экспорт" "conversion"
+    row "बदल" "conversion"
+    row "रूपांतर" "conversion"
+    row "转换" "conversion"
+    row "转成" "conversion"
+    row "变成" "conversion"
+    row "导出" "conversion"
+  table document_format_alias
+    row "plain text" "txt"
+    row "plaintext" "txt"
+    row "txt" "txt"
+    row "markdown" "Markdown"
+    row "md" "Markdown"
+    row "html" "HTML"
+    row "htm" "HTML"
+    row "pdf" "PDF"
+    row "docx" "DOCX"
+    row "word document" "DOCX"
+    row "wordprocessingml" "DOCX"
+  table document_source_marker
+    row "from " "source"
+    row "source " "source"
+    row "из " "source"
+    row "с " "source"
+    row "от " "source"
+    row "से " "source"
+    row "从" "source"
+  table document_target_marker
+    row "to " "target"
+    row "into " "target"
+    row "as " "target"
+    row "target " "target"
+    row "в " "target"
+    row "на " "target"
+    row "में " "target"
+    row "को " "target"
+    row "为" "target"
+    row "成" "target"
+    row "到" "target"
+  table document_output_fence
+    row "HTML" "html"
+    row "Markdown" "markdown"
+    row "PDF" "pdf"
+    row "DOCX" "xml"
+    row "txt" "text"
+    default ""
+  table calendar_weekday_label
+    row "monday.en" "Monday"
+    row "monday.ru" "понедельник"
+    row "monday.ru.next" "понедельника"
+    row "monday.ru.previous" "понедельником"
+    row "monday.hi" "सोमवार"
+    row "monday.zh" "星期一"
+    row "monday.es" "lunes"
+    row "tuesday.en" "Tuesday"
+    row "tuesday.ru" "вторник"
+    row "tuesday.ru.next" "вторника"
+    row "tuesday.ru.previous" "вторником"
+    row "tuesday.hi" "मंगलवार"
+    row "tuesday.zh" "星期二"
+    row "tuesday.es" "martes"
+    row "wednesday.en" "Wednesday"
+    row "wednesday.ru" "среда"
+    row "wednesday.ru.next" "среды"
+    row "wednesday.ru.previous" "средой"
+    row "wednesday.hi" "बुधवार"
+    row "wednesday.zh" "星期三"
+    row "wednesday.es" "miércoles"
+    row "thursday.en" "Thursday"
+    row "thursday.ru" "четверг"
+    row "thursday.ru.next" "четверга"
+    row "thursday.ru.previous" "четвергом"
+    row "thursday.hi" "गुरुवार"
+    row "thursday.zh" "星期四"
+    row "thursday.es" "jueves"
+    row "friday.en" "Friday"
+    row "friday.ru" "пятница"
+    row "friday.ru.next" "пятницы"
+    row "friday.ru.previous" "пятницей"
+    row "friday.hi" "शुक्रवार"
+    row "friday.zh" "星期五"
+    row "friday.es" "viernes"
+    row "saturday.en" "Saturday"
+    row "saturday.ru" "суббота"
+    row "saturday.ru.next" "субботы"
+    row "saturday.ru.previous" "субботой"
+    row "saturday.hi" "शनिवार"
+    row "saturday.zh" "星期六"
+    row "saturday.es" "sábado"
+    row "sunday.en" "Sunday"
+    row "sunday.ru" "воскресенье"
+    row "sunday.ru.next" "воскресенья"
+    row "sunday.ru.previous" "воскресеньем"
+    row "sunday.hi" "रविवार"
+    row "sunday.zh" "星期日"
+    row "sunday.es" "domingo"
+  table calendar_default_title
+    row "ru" "Событие"
+    row "hi" "घटना"
+    row "zh" "事件"
+    default "Event"
+  table calendar_schedule_verb
+    row "забей" "schedule"
+    row "поставь" "schedule"
+    row "создай" "schedule"
+    row "добавь" "schedule"
+    row "schedule" "schedule"
+    row "book" "schedule"
+    row "add to" "schedule"
+  table calendar_day_number_marker
+    row "число" "day_number"
+    row "number" "day_number"
+  table calendar_clock_hour_lead
+    row "в " "hour"
+  table calendar_spoken_hour_marker
+    row "часов" "hour"
+    row "часа" "hour"
+    row "час" "hour"
+    row "часу" "hour"
+  table calendar_spoken_hour_lead
+    row "в" "hour"
+    row "на" "hour"
+    row "к" "hour"
+  table calendar_title_marker
+    row "на " "title"
+    row "for " "title"
+    row "встречу " "title"
+    row "meeting with " "title"
+    row "call with " "title"
+    row "के साथ " "title"
+    row "和" "title"
+  table calendar_participant_marker
+    row "с " "participant"
+  table calendar_title_verb
+    row "забей" "title"
+    row "поставь" "title"
+    row "создай" "title"
+    row "добавь" "title"
+  table calendar_title_boundary
+    row " on the " "boundary"
+    row " on " "boundary"
+    row " at " "boundary"
+    row " в " "boundary"
+    row " по " "boundary"
+    row " на " "boundary"
+    row " 在 " "boundary"
+    row "下午" "boundary"
+    row "上午" "boundary"
+    row " को " "boundary"
+    row " शाम" "boundary"
+  table calendar_title_stopword
+    row "на" "stopword"
+    row "в" "stopword"
+    row "во" "stopword"
+    row "по" "stopword"
+    row "к" "stopword"
+    row "for" "stopword"
+    row "on" "stopword"
+    row "at" "stopword"
+  table calendar_title_action_fragment
+    row "शेड्यूल करें" "action"
+    row "कैलेंडर में जोड़ें" "action"
+    row "बनाएँ" "action"
+    row "बनाओ" "action"
+    row "安排" "action"
+    row "添加到日历" "action"
+    row "创建" "action"
+  table text_replacement_cue
+    row "replace" "operands_in_order"
+    row "замен" "operands_in_order"
+    row "बदल" "operands_in_order"
+    row "替换" "operands_in_order"
+    row "instead" "target_follows_cue"
+    row "вместо" "target_follows_cue"
+  table text_input_context_cue
+    row "text" "contains"
+    row "текст" "contains"
+    row "पाठ" "contains"
+    row "टेक्स्ट" "contains"
+    row "在" "contains"
+    row "文本" "contains"
+    row "内容" "contains"
+    row "in" "ends_with"
+  table text_input_continuation_cue
+    row "in" "contains"
+    row "text" "contains"
+    row "текст" "contains"
+    row "में" "contains"
+    row "中" "contains"
+  table document_originality_marker
+    row "Attached files:" "section"
+    row "OCR text:" "sample"
+    row "Text excerpt:" "sample"
+    row "Text sample:" "sample"
+    row "Text omitted:" "omitted"
+    row "Text unavailable:" "unavailable"
+    row "OCR unavailable:" "unavailable"
+  policy document_originality_check
+    sample-query '"{sample}" plagiarism originality'
+    attachment-query "{name} plagiarism originality uniqueness"
+    default-query "document plagiarism originality uniqueness"
+    sample-query-words 14
+    default_target "provided text"
+  table software_project_followup_action
+    row software_followup_verification test
+    row software_followup_execution run
+    row software_followup_demonstration show
+  policy software_project_followup
+    gates "generated_code test_execution network_access"
+    output-word-limit 12
+  table diagnostic_marker
+    row "[diagnostic]" "section"
+  table installation_conversion_action
+    row "convert" "action"
+    row "conversion" "action"
+    row "transform" "action"
+    row "turn" "action"
+    row "translate" "action"
+    row "back to" "action"
+    row "конверт" "action"
+    row "преобраз" "action"
+    row "перевед" "action"
+    row "बदल" "action"
+    row "परिवर्त" "action"
+    row "रूपांतर" "action"
+    row "कन्वर्ट" "action"
+    row "转换" "action"
+    row "轉換" "action"
+    row "转成" "action"
+    row "轉成" "action"
+    row "转为" "action"
+    row "轉為" "action"
+    row "翻译" "action"
+    row "翻譯" "action"
+  table installation_conversion_surface
+    row "readme" "surface"
+    row "markdown" "surface"
+    row "installation guide" "surface"
+    row "install guide" "surface"
+    row "deployment guide" "surface"
+    row "deploy guide" "surface"
+    row "installation script" "surface"
+    row "install script" "surface"
+    row "deployment script" "surface"
+    row "deploy script" "surface"
+    row "руководство по установ" "surface"
+    row "инструкц" "surface"
+    row "установ" "surface"
+    row "स्थापना" "surface"
+    row "इंस्टॉल" "surface"
+    row "इंस्टॉलेशन" "surface"
+    row "安装" "surface"
+    row "安裝" "surface"
+    row "部署" "surface"
+  table installation_conversion_script
+    row " sh " "script"
+    row " bash" "script"
+    row "shell" "script"
+    row "powershell" "script"
+    row "pwsh" "script"
+    row "ps1" "script"
+    row "script" "script"
+    row "скрипт" "script"
+    row "скрипта" "script"
+    row "脚本" "script"
+    row "腳本" "script"
+  table installation_source_marker
+    row "this powershell" "powershell_script"
+    row "powershell installation script" "powershell_script"
+    row "powershell script back" "powershell_script"
+    row "ps1 script" "powershell_script"
+    row "this shell" "shell_script"
+    row "this bash" "shell_script"
+    row "shell installation script" "shell_script"
+    row "shell script back" "shell_script"
+    row "bash script back" "shell_script"
+    row "this readme" "markdown"
+    row "readme.md installation guide" "markdown"
+    row "readme installation guide" "markdown"
+    row "this markdown" "markdown"
+    row "markdown installation guide" "markdown"
+  table installation_target_marker
+    row "back to a readme" "markdown"
+    row "back to readme" "markdown"
+    row "to a readme" "markdown"
+    row "to readme" "markdown"
+    row "to markdown" "markdown"
+    row "markdown guide" "markdown"
+    row "both sh and powershell" "shell_and_powershell"
+    row "both bash and powershell" "shell_and_powershell"
+    row "sh and powershell" "shell_and_powershell"
+    row "bash and powershell" "shell_and_powershell"
+    row "into a sh script" "shell_script"
+    row "to a sh script" "shell_script"
+    row "into sh" "shell_script"
+    row "to sh" "shell_script"
+    row "into a shell script" "shell_script"
+    row "to a shell script" "shell_script"
+    row "into a bash script" "shell_script"
+    row "to a bash script" "shell_script"
+    row "into a powershell script" "powershell_script"
+    row "to a powershell script" "powershell_script"
+    row "into powershell" "powershell_script"
+    row "to powershell" "powershell_script"
+    row "to ps1" "powershell_script"
+    row "into ps1" "powershell_script"
+  table installation_prose_word
+    row "the" "function_word"
+    row "a" "function_word"
+    row "an" "function_word"
+    row "and" "function_word"
+    row "or" "function_word"
+    row "to" "function_word"
+    row "with" "function_word"
+    row "into" "function_word"
+    row "from" "function_word"
+    row "your" "function_word"
+    row "you" "function_word"
+    row "our" "function_word"
+    row "this" "function_word"
+    row "that" "function_word"
+    row "these" "function_word"
+    row "those" "function_word"
+    row "then" "function_word"
+    row "will" "function_word"
+    row "should" "function_word"
+    row "must" "function_word"
+    row "please" "function_word"
+    row "manually" "function_word"
+  table installation_verb_action
+    row "clone" "clone"
+    row "cd" "enter_directory"
+    row "chdir" "enter_directory"
+    row "pushd" "enter_directory"
+    row "install" "install"
+    row "add" "install"
+    row "ci" "install"
+    row "restore" "install"
+    row "sync" "install"
+    row "bootstrap" "install"
+    row "vendor" "install"
+    row "i" "install"
+    row "test" "verify"
+    row "check" "verify"
+    row "lint" "verify"
+    row "doctor" "verify"
+    row "verify" "verify"
+    row "validate" "verify"
+    row "version" "verify"
+    row "pytest" "verify"
+    row "jest" "verify"
+    row "mocha" "verify"
+    row "vitest" "verify"
+    row "tox" "verify"
+    row "build" "build"
+    row "compile" "build"
+    row "configure" "build"
+    row "make" "build"
+    row "package" "build"
+    row "dist" "build"
+    row "bundle" "build"
+    row "cmake" "build"
+    row "gradle" "build"
+    row "ninja" "build"
+    row "msbuild" "build"
+    row "run" "run"
+    row "serve" "run"
+    row "start" "run"
+    row "up" "run"
+    row "exec" "run"
+    row "dev" "run"
+    row "launch" "run"
+    row "watch" "run"
+  policy installation_conversion
+    project-marker " for "

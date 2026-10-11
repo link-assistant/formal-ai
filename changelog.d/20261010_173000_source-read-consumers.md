@@ -1,0 +1,1 @@
+Source readers and callable discovery now use request-local provider observations instead of treating JSON file keys as transport failures. Full reads preserve exact source bytes; unknown or partial observations remain uncertified, and genuine provider errors retain Failure. Existing record matching is factored into focused helpers.

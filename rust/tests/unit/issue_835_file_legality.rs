@@ -43,7 +43,7 @@ fn default_check_is_category_complete_but_never_returns_a_blanket_verdict() {
             .expect("one assessment per category");
         assert_eq!(assessment.status, AssessmentStatus::Unknown);
         assert_eq!(assessment.action, RequiredAction::ObtainEvidence);
-        assert!(assessment.evidence_ids.is_empty());
+        assert_eq!(assessment.evidence_ids, [] as [std::string::String; 0]);
     }
 
     remove_fixture(&path);
@@ -102,7 +102,7 @@ fn observations_are_assessed_independently_per_category_and_jurisdiction() {
         .assessment("GB", LegalCategory::NationalSecurity)
         .unwrap();
     assert_eq!(gb_security.status, AssessmentStatus::Unknown);
-    assert!(gb_security.evidence_ids.is_empty());
+    assert_eq!(gb_security.evidence_ids, [] as [std::string::String; 0]);
 
     for jurisdiction in ["DE", "GB"] {
         let forbidden = report
@@ -203,7 +203,7 @@ fn exif_metadata_is_extracted_with_field_level_provenance() {
         let entry = report.metadata.get(field).expect("expected Exif field");
         assert_eq!(entry.value, value);
         assert_eq!(entry.provenance.source, "embedded_exif");
-        assert!(!entry.provenance.locator.is_empty());
+        assert_ne!(entry.provenance.locator, "");
     }
 
     remove_fixture(&path);

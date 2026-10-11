@@ -1,0 +1,56 @@
+{
+  "ok": true,
+  "part": 12,
+  "totalParts": 12,
+  "originalUnionIndexSHA256": null,
+  "originalLogicalMembersAcrossThisFiniteSelection": 1485,
+  "logicalMembersThisPart": 1485,
+  "currentControllerMembers": 2,
+  "selectedInputsThisPart": 1354,
+  "sourceAndControllerInputBytes": 21129916,
+  "inputLimitBytes": 33554432,
+  "uniqueEncodedBlobs": 1297,
+  "newEncodedBlobs": 1174,
+  "reusedPreviousEncodedBlobs": 123,
+  "newCompressedBytes": 3753866,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 700
+    },
+    {
+      "path": "members-002.jsonl",
+      "count": 700
+    },
+    {
+      "path": "members-003.jsonl",
+      "count": 87
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 700
+    },
+    {
+      "path": "blobs-002.jsonl",
+      "count": 597
+    }
+  ],
+  "selectionSHA256": "787dad43796ed25954f0922e8094da4e98109e88621c1e6a32710ed87192e846",
+  "allCurrentSourceGuardsExact": true,
+  "originalInputBytesPreserved": true,
+  "knownLosses": [],
+  "pending": [
+    "Own running archive receipt excluded nonrecursively; final hosted/runtime/native/release acceptance pending",
+    "Fresh465 stock four-shard qualification is closed green under its old source guard: current7049 binding repair has30 portable passes but two real global-gate failures; neither mixed result is promoted",
+    "Official8537 oldhead census and sessions data producers passed under merge44ff/tree6702. Their full API/ZIP/member/current-input proofs are retained without importing stale data after changed native source. Answers remains queued",
+    "At least two dedicated FormalAI-only lanes remain assigned; guarded supplied effects zero autonomy/amplification/cost credit. All source caps/assertions/policies remain unchanged"
+  ],
+  "ownRunningReceiptExcluded": true,
+  "autonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "actualCost": "Unknown",
+  "productionAcceptance": "Pending"
+}

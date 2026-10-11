@@ -1,0 +1,256 @@
+>> bash {"command":"node --test rust/tests/web/issue-0133-search-fusion.test.mjs"}
+   Output: TAP version 13
+   # Subtest: R181/R190: DuckDuckGo leads, providers return ten results and run five at a time
+       # Subtest: the default provider order opens with DuckDuckGo
+       ok 1 - the default provider order opens with DuckDuckGo
+         ---
+         duration_ms: 381.129292
+         ...
+       # Subtest: the planner constants are k = 60, five concurrent providers and ten results each
+       ok 2 - the planner constants are k = 60, five concurrent providers and ten results each
+         ---
+         duration_ms: 351.058667
+         ...
+       # Subtest: no more than five provider tasks are ever in flight
+       ok 3 - no more than five provider tasks are ever in flight
+         ---
+         duration_ms: 361.51725
+         ...
+       1..3
+   ok 1 - R181/R190: DuckDuckGo leads, providers return ten results and run five at a time
+     ---
+     duration_ms: 1094.299333
+     type: 'suite'
+     ...
+   # Subtest: R182/R183/R188/R189: one fused list from live requests, every step recorded
+       # Subtest: reciprocal rank fusion sums 1/(k + rank) across providers
+       ok 1 - reciprocal rank fusion sums 1/(k + rank) across providers
+         ---
+         duration_ms: 338.738584
+         ...
+       # Subtest: a search requests the providers, ranks each answer and fuses them
+       ok 2 - a search requests the providers, ranks each answer and fuses them
+         ---
+         duration_ms: 343.809458
+         ...
+       1..2
+   ok 2 - R182/R183/R188/R189: one fused list from live requests, every step recorded
+     ---
+     duration_ms: 682.648375
+     type: 'suite'
+     ...
+   # Subtest: R191: a failing provider is disabled for the rest of the session
+       # Subtest: a refused provider is recorded as disabled and never requested again
+       ok 1 - a refused provider is recorded as disabled and never requested again
+         ---
+         duration_ms: 350.869875
+         ...
+       1..1
+   ok 3 - R191: a failing provider is disabled for the rest of the session
+     ---
+     duration_ms: 350.987375
+     type: 'suite'
+     ...
+   # Subtest: R184-R187: the diagnostics page probes the extra provider families
+       # Subtest: the search category probes Yandex Search, Ecosia, Mojeek, Startpage
+       ok 1 - the search category probes Yandex Search, Ecosia, Mojeek, Startpage
+         ---
+         duration_ms: 0.139625
+         ...
+       # Subtest: the code category probes GitHub, GitLab, Codeberg, Gitee, Bitbucket Cloud
+       ok 2 - the code category probes GitHub, GitLab, Codeberg, Gitee, Bitbucket Cloud
+         ---
+         duration_ms: 0.037584
+         ...
+       # Subtest: the papers category probes arXiv, Europe PMC, DOAJ
+       ok 3 - the papers category probes arXiv, Europe PMC, DOAJ
+         ---
+         duration_ms: 0.069333
+         ...
+       # Subtest: the knowledge category probes Wiktionary, DBpedia Lookup
+       ok 4 - the knowledge category probes Wiktionary, DBpedia Lookup
+         ---
+         duration_ms: 0.083791
+         ...
+       1..4
+   ok 4 - R184-R187: the diagnostics page probes the extra provider families
+     ---
+     duration_ms: 0.428125
+     type: 'suite'
+     ...
+   # Subtest: the evidence names the web-search release the bundle is built from
+       # Subtest: the component entry (bundled at build time) labels the version package.json pins
+       ok 1 - the component entry (bundled at build time) labels the version package.json pins
+         ---
+         duration_ms: 0.221875
+         ...
+       1..1
+   ok 5 - the evidence names the web-search release the bundle is built from
+     ---
+     duration_ms: 0.251666
+     type: 'suite'
+     ...
+   # Subtest: R193: the change was released as a minor version with its changelog entry
+       # Subtest: the 0.71.0 section records the issue \#133 addition
+       ok 1 - the 0.71.0 section records the issue \#133 addition
+         ---
+         duration_ms: 0.266583
+         ...
+       1..1
+   ok 6 - R193: the change was released as a minor version with its changelog entry
+     ---
+     duration_ms: 0.299625
+     type: 'suite'
+     ...
+   # Subtest: R192: the issue \#133 research is kept in the repository
+       # Subtest: the case study has a README and raw data
+       ok 1 - the case study has a README and raw data
+         ---
+         duration_ms: 0.132291
+         ...
+       1..1
+   ok 7 - R192: the issue \#133 research is kept in the repository
+     ---
+     duration_ms: 0.160042
+     type: 'suite'
+     ...
+   1..7
+   # tests 13
+   # suites 7
+   # pass 13
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 2208.443459
+   
+   Exit Code: 0
+== answer ==
+The `node --test rust/tests/web/issue-0133-search-fusion.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: R181/R190: DuckDuckGo leads, providers return ten results and run five at a time
+    # Subtest: the default provider order opens with DuckDuckGo
+    ok 1 - the default provider order opens with DuckDuckGo
+      ---
+      duration_ms: 381.129292
+      ...
+    # Subtest: the planner constants are k = 60, five concurrent providers and ten results each
+    ok 2 - the planner constants are k = 60, five concurrent providers and ten results each
+      ---
+      duration_ms: 351.058667
+      ...
+    # Subtest: no more than five provider tasks are ever in flight
+    ok 3 - no more than five provider tasks are ever in flight
+      ---
+      duration_ms: 361.51725
+      ...
+    1..3
+ok 1 - R181/R190: DuckDuckGo leads, providers return ten results and run five at a time
+  ---
+  duration_ms: 1094.299333
+  type: 'suite'
+  ...
+# Subtest: R182/R183/R188/R189: one fused list from live requests, every step recorded
+    # Subtest: reciprocal rank fusion sums 1/(k + rank) across providers
+    ok 1 - reciprocal rank fusion sums 1/(k + rank) across providers
+      ---
+      duration_ms: 338.738584
+      ...
+    # Subtest: a search requests the providers, ranks each answer and fuses them
+    ok 2 - a search requests the providers, ranks each answer and fuses them
+      ---
+      duration_ms: 343.809458
+      ...
+    1..2
+ok 2 - R182/R183/R188/R189: one fused list from live requests, every step recorded
+  ---
+  duration_ms: 682.648375
+  type: 'suite'
+  ...
+# Subtest: R191: a failing provider is disabled for the rest of the session
+    # Subtest: a refused provider is recorded as disabled and never requested again
+    ok 1 - a refused provider is recorded as disabled and never requested again
+      ---
+      duration_ms: 350.869875
+      ...
+    1..1
+ok 3 - R191: a failing provider is disabled for the rest of the session
+  ---
+  duration_ms: 350.987375
+  type: 'suite'
+  ...
+# Subtest: R184-R187: the diagnostics page probes the extra provider families
+    # Subtest: the search category probes Yandex Search, Ecosia, Mojeek, Startpage
+    ok 1 - the search category probes Yandex Search, Ecosia, Mojeek, Startpage
+      ---
+      duration_ms: 0.139625
+      ...
+    # Subtest: the code category probes GitHub, GitLab, Codeberg, Gitee, Bitbucket Cloud
+    ok 2 - the code category probes GitHub, GitLab, Codeberg, Gitee, Bitbucket Cloud
+      ---
+      duration_ms: 0.037584
+      ...
+    # Subtest: the papers category probes arXiv, Europe PMC, DOAJ
+    ok 3 - the papers category probes arXiv, Europe PMC, DOAJ
+      ---
+      duration_ms: 0.069333
+      ...
+    # Subtest: the knowledge category probes Wiktionary, DBpedia Lookup
+    ok 4 - the knowledge category probes Wiktionary, DBpedia Lookup
+      ---
+      duration_ms: 0.083791
+      ...
+    1..4
+ok 4 - R184-R187: the diagnostics page probes the extra provider families
+  ---
+  duration_ms: 0.428125
+  type: 'suite'
+  ...
+# Subtest: the evidence names the web-search release the bundle is built from
+    # Subtest: the component entry (bundled at build time) labels the version package.json pins
+    ok 1 - the component entry (bundled at build time) labels the version package.json pins
+      ---
+      duration_ms: 0.221875
+      ...
+    1..1
+ok 5 - the evidence names the web-search release the bundle is built from
+  ---
+  duration_ms: 0.251666
+  type: 'suite'
+  ...
+# Subtest: R193: the change was released as a minor version with its changelog entry
+    # Subtest: the 0.71.0 section records the issue \#133 addition
+    ok 1 - the 0.71.0 section records the issue \#133 addition
+      ---
+      duration_ms: 0.266583
+      ...
+    1..1
+ok 6 - R193: the change was released as a minor version with its changelog entry
+  ---
+  duration_ms: 0.299625
+  type: 'suite'
+  ...
+# Subtest: R192: the issue \#133 research is kept in the repository
+    # Subtest: the case study has a README and raw data
+    ok 1 - the case study has a README and raw data
+      ---
+      duration_ms: 0.132291
+      ...
+    1..1
+ok 7 - R192: the issue \#133 research is kept in the repository
+  ---
+  duration_ms: 0.160042
+  type: 'suite'
+  ...
+1..7
+# tests 13
+# suites 7
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2208.443459
+```

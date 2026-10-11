@@ -1,0 +1,65 @@
+view
+  id M-781b9806e787
+  lemma first
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "preceding all others in time or space or degree"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "highest in pitch or chief among parts or voices or instruments or orchestra sections"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the first or highest in an ordering or series"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the first element in a countable series"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the time at which something is supposed to begin"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the fielding position of the player on a baseball team who is stationed at first of the bases in the infield (counting counterclockwise from home plate)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an honours degree of the highest class"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the lowest forward gear ratio in the gear box of a motor vehicle; used to start a car moving"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "before anything else"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "the initial time"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "before another in time, space, or importance"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "prominently forward"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "serving to begin"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "ranking above all others"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "serving to set in motion"
+    provenance (wordnet)

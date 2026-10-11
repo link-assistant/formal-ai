@@ -1,0 +1,98 @@
+{
+  "entities": {
+    "Q987": {
+      "type": "item",
+      "id": "Q987",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "New Delhi"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Нью-Дели"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नई दिल्ली"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "新德里"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "新德里"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Nayi Dilli"
+          },
+          {
+            "language": "en",
+            "value": "New Delhi Municipal Council Area"
+          },
+          {
+            "language": "en",
+            "value": "NDMC area"
+          },
+          {
+            "language": "en",
+            "value": "Nai Dilli"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Новый Дели"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "नयी दिल्ली"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "New Delhi"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Нью-Дели"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "नई दिल्ली"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "新德里"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [],
+    "claim_ranks": "truthy"
+  }
+}

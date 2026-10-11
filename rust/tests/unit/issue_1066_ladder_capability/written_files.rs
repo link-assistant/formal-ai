@@ -118,6 +118,7 @@ fn nested_delivery_carries_the_observation_into_the_outer_effect() {
         first line must be exactly `proof_for=decomposition`.";
     let mut messages = vec![formal_ai::ChatMessage::user(prompt)];
     let mut effect = None;
+    let mut workspace = super::tool_workspace::ToolWorkspace::new(prompt);
 
     for turn in 0..super::LADDER_TURN_CAP {
         let Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(calls)) =
@@ -141,11 +142,15 @@ fn nested_delivery_carries_the_observation_into_the_outer_effect() {
                 formal_ai::protocol::ToolCall::function(&id, &call.tool, call.arguments.clone()),
             ]));
             let result = if call.tool == "grep" {
-                "src/task_decomposition.rs:79: pub children: Vec<Self>"
+                formal_ai::ChatMessage::tool_result(
+                    id,
+                    &call.tool,
+                    "src/task_decomposition.rs:79: pub children: Vec<Self>",
+                )
             } else {
-                "ok"
+                workspace.execute(&id, call)
             };
-            messages.push(formal_ai::ChatMessage::tool_result(id, &call.tool, result));
+            messages.push(result);
         }
     }
 
@@ -191,6 +196,7 @@ fn every_named_input_is_read_before_a_structured_result_is_written() {
         )
     };
     let mut messages = vec![formal_ai::ChatMessage::user(prompt)];
+    let mut workspace = super::tool_workspace::ToolWorkspace::new(prompt);
     let mut observed_paths = Vec::new();
     let mut writes = Vec::new();
 
@@ -258,7 +264,10 @@ fn every_named_input_is_read_before_a_structured_result_is_written() {
                 (Some(path), _) if call.tool == "read" && path.ends_with("inputs/west.lino") => {
                     decorated("west", &west)
                 }
-                _ => "ok".to_owned(),
+                _ => {
+                    messages.push(workspace.execute(&id, call));
+                    continue;
+                }
             };
             messages.push(formal_ai::ChatMessage::tool_result(id, &call.tool, result));
         }
@@ -333,6 +342,7 @@ fn a_local_observation_satisfies_nested_artifacts_before_optional_web_research()
         formal_ai::ChatMessage::tool_result("search-readiness", "grep", observed),
     ];
     let mut writes = Vec::new();
+    let mut workspace = super::tool_workspace::ToolWorkspace::new(prompt);
 
     for turn in 0..super::LADDER_TURN_CAP {
         let Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(calls)) =
@@ -360,7 +370,7 @@ fn a_local_observation_satisfies_nested_artifacts_before_optional_web_research()
             messages.push(formal_ai::ChatMessage::assistant_tool_calls(vec![
                 formal_ai::protocol::ToolCall::function(&id, &call.tool, call.arguments.clone()),
             ]));
-            messages.push(formal_ai::ChatMessage::tool_result(id, &call.tool, "ok"));
+            messages.push(workspace.execute(&id, call));
         }
     }
 
@@ -419,6 +429,7 @@ fn a_terse_source_fact_still_produces_a_non_hollow_result() {
         ),
     ];
     let mut writes = Vec::new();
+    let mut workspace = super::tool_workspace::ToolWorkspace::new(prompt);
 
     for turn in 0..super::LADDER_TURN_CAP {
         let Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(calls)) =
@@ -442,7 +453,7 @@ fn a_terse_source_fact_still_produces_a_non_hollow_result() {
             messages.push(formal_ai::ChatMessage::assistant_tool_calls(vec![
                 formal_ai::protocol::ToolCall::function(&id, &call.tool, call.arguments.clone()),
             ]));
-            messages.push(formal_ai::ChatMessage::tool_result(id, &call.tool, "ok"));
+            messages.push(workspace.execute(&id, call));
         }
     }
 
@@ -503,6 +514,7 @@ fn a_source_condition_ending_in_a_colon_is_not_an_unmade_list() {
         ),
     ];
     let mut writes = Vec::new();
+    let mut workspace = super::tool_workspace::ToolWorkspace::new(prompt);
 
     for turn in 0..super::LADDER_TURN_CAP {
         let Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(calls)) =
@@ -526,7 +538,7 @@ fn a_source_condition_ending_in_a_colon_is_not_an_unmade_list() {
             messages.push(formal_ai::ChatMessage::assistant_tool_calls(vec![
                 formal_ai::protocol::ToolCall::function(&id, &call.tool, call.arguments.clone()),
             ]));
-            messages.push(formal_ai::ChatMessage::tool_result(id, &call.tool, "ok"));
+            messages.push(workspace.execute(&id, call));
         }
     }
 

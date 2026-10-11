@@ -1,0 +1,138 @@
+self_ast_census
+  target src/agentic_coding/module_function.rs
+  language rust
+  fidelity full_ast
+  byte_len 30220
+  line_count 817
+  content_id source_module_3df57cc96861731f
+  symbol_count 38
+  symbols
+    module callable_catalog 27 27
+    module conditional_ir 28 28
+    module conditional_schema 29 29
+    module discovery 30 30
+    module source_contract 31 31
+    const CONTRACTS 46 46
+    const EXTENSIONS 47 47
+    const COMMAND_ENDS 51 51
+    const SCRIPT_CLAUSE_MARKS 56 56
+    struct ModuleFunctionRequest 64 73
+    struct Signature 76 80
+    const NAMES_SLOT 83 83
+    function fill 86 92
+    function bare 95 98
+    function contract 101 109
+    function extension_language 113 125
+    function outside_quotes 128 141
+    function clauses 145 171
+    function is_identifier 174 182
+    function signature 186 235
+    function stated_command 240 297
+    function paths_in 300 312
+    function returns_in 315 319
+    function module_function_request 328 389
+    struct RelationOperation 393 397
+    function is_binary_idiom 400 405
+    function relation_operations 411 443
+    function relation_expression 448 471
+    function evaluated 474 478
+    function specified_value 485 503
+    function stated_value 511 537
+    function synthesized_source 544 600
+    function with_import 604 630
+    function specifier_from 634 654
+    function with_final_newline 657 663
+    function module_function_recipe 667 759
+    function read_source 763 773
+    function plan_module_function_step 778 817
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 23634
+    named_node_count 4905
+    distinct_node_kinds 82
+    node_kinds
+      arguments 457
+      array_expression 10
+      array_type 14
+      assignment_expression 4
+      attribute 2
+      attribute_item 2
+      binary_expression 85
+      block 98
+      boolean_literal 2
+      break_expression 3
+      call_expression 457
+      char_literal 52
+      closure_expression 70
+      closure_parameters 70
+      compound_assignment_expr 2
+      const_item 5
+      continue_expression 5
+      crate 14
+      doc_comment 94
+      else_clause 11
+      escape_sequence 4
+      expression_statement 76
+      field_declaration 14
+      field_declaration_list 3
+      field_expression 414
+      field_identifier 460
+      field_initializer 32
+      field_initializer_list 9
+      float_literal 1
+      for_expression 8
+      function_item 25
+      generic_function 3
+      generic_type 47
+      identifier 997
+      if_expression 31
+      index_expression 36
+      inner_doc_comment_marker 25
+      integer_literal 36
+      let_condition 5
+      let_declaration 106
+      line_comment 106
+      macro_invocation 13
+      match_arm 5
+      match_block 2
+      match_expression 2
+      match_pattern 5
+      mod_item 5
+      mutable_specifier 16
+      outer_doc_comment_marker 69
+      parameter 46
+      parameters 25
+      parenthesized_expression 7
+      primitive_type 53
+      range_expression 26
+      reference_expression 74
+      reference_type 61
+      return_expression 15
+      scoped_identifier 106
+      scoped_type_identifier 2
+      scoped_use_list 5
+      self 1
+      shorthand_field_initializer 8
+      slice_pattern 3
+      source_file 1
+      string_content 52
+      string_literal 59
+      struct_expression 9
+      struct_item 3
+      super 27
+      token_tree 19
+      try_expression 20
+      tuple_expression 12
+      tuple_pattern 12
+      tuple_struct_pattern 12
+      tuple_type 2
+      type_arguments 50
+      type_identifier 123
+      unary_expression 23
+      use_declaration 8
+      use_list 5
+      visibility_modifier 23
+      while_expression 1

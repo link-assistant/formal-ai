@@ -1,0 +1,13 @@
+view
+  id M-34a37538947c
+  lemma accuracy
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the quality of being near to the true value"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(mathematics) the number of significant figures given in a number"
+    provenance (wordnet)

@@ -1,0 +1,71 @@
+{
+  "archive": "T3700-T3733.json.gz",
+  "compressedBytes": 338167,
+  "compressedSha256": "1e52c1ea204eadeae413aa95317a0e72625e6e6bb55eef29c3bcc0f0325aacfd",
+  "decodedBytes": 1900427,
+  "decodedSha256": "23749a6501f672c8abbf7b8a3322244c61b7de5ba8a1854e05ca007e58a0eb1a",
+  "entries": 160,
+  "source": [
+    {
+      "path": ".github/workflows/publish-engine.yml",
+      "bytes": 7091,
+      "sha256": "2212944a0e58c940e203818ebd0a700e623b5e76966748ae53c71830bee95603"
+    },
+    {
+      "path": ".github/workflows/publish-source-networks.yml",
+      "bytes": 10108,
+      "sha256": "dd572bf9b91d223bcdad8e62b72f62ec3c9fb695f20fbc7e3092f6a2debca9df"
+    },
+    {
+      "path": "scripts/release-protocol.mjs",
+      "bytes": 8464,
+      "sha256": "ece3a5516bb22ddc58b3c5c2cbbdc7e305771083c464fff9950415fc0701dd7e"
+    },
+    {
+      "path": "scripts/check-source-networks.mjs",
+      "bytes": 4229,
+      "sha256": "b5408ed176c101fc32fd1f83ae04f87073430026ff29fa676065ae6ea6bc1d9d"
+    },
+    {
+      "path": "scripts/verify-source-network-distribution.mjs",
+      "bytes": 1827,
+      "sha256": "6172f888378c87b02c5243b0daf069e8380eff0490b54d8e2e96ceb32151cdeb"
+    },
+    {
+      "path": "rust/tests/web/legacy-release-protocol.test.mjs",
+      "bytes": 13064,
+      "sha256": "6203fb95fd9033306a3e1026598a6396814d1fbcee1f86cbba323a8e566461be"
+    },
+    {
+      "path": "changelog.d/20261009_191500_legacy-release-protocol-capture.md",
+      "bytes": 345,
+      "sha256": "11c8dada10d21d98fda6de1a39acf2de3c9e5e0cd336fb3333fdbc90d9bf10ce"
+    }
+  ],
+  "counts": {
+    "tasks": 34,
+    "physicalToolCalls": 61,
+    "writeToolCalls": 14,
+    "bashToolCalls": 47,
+    "promptUtf8Bytes": 112577
+  },
+  "upstream": {
+    "commit": "eb0574d5528babd3b4aadece81590d8e2230b99b",
+    "markerBytes": 41,
+    "markerSha256": "45229fe92c05060312d8e697ecd666fe9a1a04da0865e51ee668084ea1fde4d6"
+  },
+  "assertions": {
+    "finalProductionTests": 34,
+    "passing": 34,
+    "skipped": 0,
+    "originalUnchangedAssertions": 21,
+    "newReleaseProtocolTests": 13,
+    "realSerializerShards": 8
+  },
+  "claims": {
+    "nativeCompilation": false,
+    "releasePublication": false,
+    "autonomousSynthesis": false,
+    "specificationCountRaised": false
+  }
+}

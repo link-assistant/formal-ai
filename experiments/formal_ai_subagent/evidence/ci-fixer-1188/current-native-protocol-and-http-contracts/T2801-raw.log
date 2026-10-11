@@ -1,0 +1,20 @@
+>> bash {"command":"test -e /private/tmp/pr1188-current-native-self-coding-4a560.json"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"test ! -e docs/case-studies/issue-651/self-coding-run/session-native-protocol-4a560.json"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"mkdir -p -- docs/case-studies/issue-651/self-coding-run"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"cp /private/tmp/pr1188-current-native-self-coding-4a560.json docs/case-studies/issue-651/self-coding-run/session-native-protocol-4a560.json"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"test -e docs/case-studies/issue-651/self-coding-run/session-native-protocol-4a560.json"}
+   Output: 
+   Exit Code: 0
+>> bash {"command":"test -e /private/tmp/pr1188-current-native-self-coding-4a560.json"}
+   Output: 
+   Exit Code: 0
+== answer ==
+Completed the action `cp /private/tmp/pr1188-current-native-self-coding-4a560.json docs/case-studies/issue-651/self-coding-run/session-native-protocol-4a560.json` and verified it with `test -e docs/case-studies/issue-651/self-coding-run/session-native-protocol-4a560.json`, `test -e /private/tmp/pr1188-current-native-self-coding-4a560.json`.

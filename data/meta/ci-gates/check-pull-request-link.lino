@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_pull_request_link
+ci_gate check-pull-request-link
   stage rust
   description "The pull request body links the issue it closes."
   run "rust-script --test scripts/check-pull-request-link.rs && rust-script scripts/check-pull-request-link.rs"
+  justification "A pull request containing only 'addresses #N' rather than a closing keyword left the referenced issue permanently open after merge; the check was introduced in #960 (R234-4) to enforce the closing-keyword syntax."

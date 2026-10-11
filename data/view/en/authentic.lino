@@ -1,0 +1,13 @@
+view
+  id M-cf54f7a746f6
+  lemma authentic
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "conforming to fact and therefore worthy of belief"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not counterfeit or copied"
+    provenance (wordnet)

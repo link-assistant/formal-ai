@@ -13,6 +13,12 @@ pub struct ResponseObject {
     pub usage: ResponseUsage,
     #[serde(default)]
     pub evidence_links: Vec<String>,
+    /// The content-addressed id of the solver answer this response carries
+    /// (issue #1184 R8): the key `formal-ai explain` reads its durable
+    /// derivation record by. Absent on a planned tool-call response, which
+    /// carries no solver answer.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub derivation_id: Option<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub thinking_steps: Vec<ThinkingStep>,
 }

@@ -45,6 +45,7 @@ source provenance for download-on-test integration. Only permissive licenses
 | Equation-type corpus | #891 (from #406) | [`equation-type-corpus.lino`](../data/benchmarks/equation-type-corpus.lino) | `issue_891_equation_corpus_solves_every_type` | 72 (and ≥50 distinct verified types) |
 | Question necessity | #920 | [`question-necessity-suite.lino`](../data/benchmarks/question-necessity-suite.lino) | `issue_920_question_necessity_benchmark_ratchets_down` | ≤60 questions per 100 tasks |
 | Conversational wording variations | #933 (from #123) | [`conversational-variations-suite.lino`](../data/benchmarks/conversational-variations-suite.lino) | `conversational_variation_benchmark_routes_every_case` | 228 (and ≥5 wordings per case per language) |
+| Formalization probe set (en/ru/hi/zh) | #1186 R10 | [`formalization/`](../data/benchmarks/formalization/) | `every_probe_formalizes_to_its_expected_clause` | 44 (≥10 per language; universal, existential, negation, relation) |
 
 The `minimum_pass_count` column is the **curated** floor: it counts cases the
 repository's own suite must pass before a run counts, and it never measures the
@@ -360,21 +361,22 @@ HumanEval and MBPP rows, and
 `docs_benchmarks::curated_pass_ratios_publish_an_upstream_comparison_beside_them`
 refuses a curated ratio published without an upstream one beside it.
 
-The latest committed rows are dated `2026-09-18`: HumanEval's coding row is the
-`2026-09-17` full-slice run and MBPP's is the `2026-09-18` full-slice run
-(HumanEval 164 with `--online`; MBPP 500 cold-offline, recorded with its
-`mode offline` field so the runner command in the ledger reproduces it exactly),
-all on solver version `0.350.0` with the deterministic solver at
-`temperature = 0.0`. The same-day MBPP `--online` full-slice run scored 60/500
-and the 164-case cross-check scored 25/164 in both modes; the headline stays
-the reproducible cold-offline run. The `2026-09-15` first-20 rows remain as
-regression controls. Other suite rows remain at their latest `2026-09-07`
-measurements:
+The latest committed rows are dated `2026-10-07`: both coding rows are full-slice
+`--online` runs on solver version `0.352.1`, sharded into concurrently graded
+windows (HumanEval in fourteen 12-case windows, run 37613780755; MBPP in
+twenty-five 20-case windows, run 37622330993) whose total job fails unless every
+case was graded. HumanEval rose from 14/164 (`2026-09-17`) to 21/164 and MBPP
+from 60/500 `--online` (49/500 cold-offline, `2026-09-18`) to 68/500. The earlier
+rows stay below as history, the 164-case MBPP cross-check scored 25/164, and the
+`2026-09-15` first-20 rows remain as regression controls. Other suite rows remain
+at their latest `2026-09-07` measurements:
 
 | Suite | License | Slice | Grading | Passed | Total |
 | --- | --- | ---: | --- | ---: | ---: |
+| HumanEval | MIT | 164 | upstream unit test executed (`--online`, sharded) | 21 | 164 |
 | HumanEval | MIT | 164 | upstream unit test executed | 14 | 164 |
 | HumanEval | MIT | 20 | upstream unit test executed | 20 | 20 |
+| MBPP | Apache-2.0 | 500 | upstream `test_list` asserts executed with live source discovery (`--online`, sharded) | 68 | 500 |
 | MBPP | Apache-2.0 | 500 | upstream `test_list` asserts executed with live source discovery | 49 | 500 |
 | MBPP | Apache-2.0 | 500 | upstream `test_list` asserts executed with live source discovery (`--online`) | 60 | 500 |
 | MBPP | Apache-2.0 | 164 | upstream `test_list` asserts executed with live source discovery | 25 | 164 |
@@ -561,9 +563,9 @@ Generated from `data/benchmarks/external-results.lino`.
 | `coedit` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
 | `egg_math` | 2026-09-07 | 20 | 20 | 20 | 0.347.0 |
 | `gsm8k` | 2026-09-07 | 20 | 2 | 20 | 0.347.0 |
-| `humaneval` | 2026-09-17 | 164 | 14 | 164 | 0.350.0 |
+| `humaneval` | 2026-10-07 | 164 | 21 | 164 | 0.352.1 |
 | `math` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
-| `mbpp` | 2026-09-18 | 500 | 49 | 500 | 0.350.0 |
+| `mbpp` | 2026-10-07 | 500 | 68 | 500 | 0.352.1 |
 | `object_counting` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
 | `swebench_lite` | 2026-09-07 | 1 | 0 | 1 | 0.347.0 |
 <!-- status:end benchmarks -->

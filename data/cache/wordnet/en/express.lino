@@ -1,0 +1,78 @@
+language en
+lemma express
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "mail that is distributed by a rapid and efficient system"
+    id oewn-06276128-n
+    partOfSpeech n
+    synonyms ("express mail")
+  entry
+    definition "public transport consisting of a fast train or bus that makes only a few scheduled stops"
+    examples ("he caught the express to New York")
+    id oewn-03311330-n
+    partOfSpeech n
+    synonyms (limited)
+  entry
+    definition "rapid transport of goods"
+    id oewn-01108365-n
+    partOfSpeech n
+    synonyms (expressage)
+  entry
+    definition "by express"
+    examples ("please send the letter express")
+    id oewn-00336514-r
+    partOfSpeech r
+  entry
+    definition "not tacit or implied"
+    examples ("her express wish")
+    id oewn-00944417-s
+    partOfSpeech s
+  entry
+    definition "without unnecessary stops"
+    examples ("an express train" "an express shipment")
+    id oewn-00980890-s
+    partOfSpeech s
+  entry
+    definition "give expression to"
+    examples ("She showed her disappointment")
+    id oewn-00945869-v
+    partOfSpeech v
+    synonyms (show evince)
+  entry
+    definition "articulate; either verbally or with a cry, shout, or noise"
+    examples ("She expressed her anger" "He uttered a curse")
+    id oewn-00942415-v
+    partOfSpeech v
+    synonyms (verbalize verbalise utter "give tongue to")
+  entry
+    definition "serve as a means for expressing something"
+    examples ("The painting of Mary carries motherly love" "His voice carried a lot of anger")
+    id oewn-01062889-v
+    partOfSpeech v
+    synonyms (carry convey)
+  entry
+    definition "indicate through a symbol, formula, etc."
+    examples ("Can you express this distance in kilometers?")
+    id oewn-01063503-v
+    partOfSpeech v
+    synonyms (state)
+  entry
+    definition "manifest the effects of (a gene or genetic trait)"
+    examples ("Many of the laboratory animals express the trait")
+    id oewn-02148923-v
+    partOfSpeech v
+  entry
+    definition "obtain from a substance, as by mechanical action"
+    examples ("Italians express coffee rather than filter it")
+    id oewn-01354457-v
+    partOfSpeech v
+    synonyms ("press out" extract)
+  entry
+    definition "send by rapid transport or special messenger service"
+    examples ("She expressed the letter to Florida")
+    id oewn-01033789-v
+    partOfSpeech v
+source "oewn:2024"

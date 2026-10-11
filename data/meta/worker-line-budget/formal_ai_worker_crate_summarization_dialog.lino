@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_summarization_dialog.js"
+  ceiling 167
+  rationale "Checked generated factory of the canonical conversation summary dependency closure; its source remains the single implementation."

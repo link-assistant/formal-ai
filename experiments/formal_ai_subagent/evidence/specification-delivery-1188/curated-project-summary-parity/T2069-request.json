@@ -1,0 +1,5 @@
+{
+  "taskId": "T2069",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Set the contents of data/meta/worker-line-budget/formal_ai_worker_project_summaries.lino to exactly this content:\n````````````text\nworker_module_budget\n  module \"formal_ai_worker_project_summaries.js\"\n  ceiling 48\n  rationale \"Curated project descriptions reuse the shared summarization mode and stable weighted statement pipeline. GitHub HTTP projections match local registry records before any network attempt and retain explicit curated-source provenance. Shared seeded project responses substitute metadata once, preserving literal values. Extracted from the project-search worker without increasing either existing module ceiling (R1188-U29, 2026-10-10).\"\n````````````"
+}

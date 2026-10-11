@@ -1,0 +1,27 @@
+{
+  "lemma": "charger",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02381277-n",
+      "partOfSpeech": "n",
+      "definition": "formerly a strong swift horse ridden into battle",
+      "synonyms": [
+        "courser"
+      ]
+    },
+    {
+      "id": "oewn-03012598-n",
+      "partOfSpeech": "n",
+      "definition": "a device that can hold a rechargeable battery by means of an electrical cable",
+      "synonyms": [
+        "battery charger"
+      ]
+    }
+  ]
+}

@@ -2,14 +2,15 @@ self_ast_census
   target src/seed/coreference.rs
   language rust
   fidelity signature
-  byte_len 5042
-  line_count 141
-  content_id source_module_9e9d32e0a904d4ef
-  symbol_count 6
+  byte_len 5419
+  line_count 148
+  content_id source_module_394706ca747d7280
+  symbol_count 7
   symbols
     struct Pronoun 29 33
     struct Antecedent 37 43
     struct CoreferenceSeeds 47 50
-    function matches_pronoun 56 67
-    function pick_antecedent 71 78
-    function coreference_seeds 82 141
+    function matching_pronoun 55 66
+    function matches_pronoun 70 72
+    function pick_antecedent 76 85
+    function coreference_seeds 89 148

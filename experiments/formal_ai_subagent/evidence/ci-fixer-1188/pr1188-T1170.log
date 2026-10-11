@@ -1,0 +1,1008 @@
+>> read {"filePath":"rust/src/agentic_coding/workspace_computed_change.rs","file_path":"rust/src/agentic_coding/workspace_computed_change.rs","path":"rust/src/agentic_coding/workspace_computed_change.rs"}
+   <file>
+   00001| //! Workspace changes whose new bytes are computed from the file they change
+   00002| //! (PR #1188 dogfooding): text added at one end of a file, quoted text
+   00003| //! removed from it, a configuration setting assigned a new value, a named
+   00004| //! function removed whole.
+   00005| //!
+   00006| //! Each is read → compute → smallest unique edit (or the whole file) → digest
+   00007| //! check → the seeded sentence that states the change, the same state machine
+   00008| //! [`super::workspace_change`] runs for grounded rewrites. Before these, an
+   00009| //! append (`Append the line 'third line' to notes.txt.`) reached the
+   00010| //! general-change fallback and was written as the *whole* file.
+   00011| 
+   00012| use super::code_artifact::source_from_read_result;
+   00013| use super::code_task::render_seeded_outcome;
+   00014| use super::general_planner::compose_edit_request;
+   00015| use super::intent_router::edit_arguments;
+   00016| use super::line_removal::{
+   00017|     bare_line, removed_declarations, removed_line_indices, removed_lines, removed_literal,
+   00018| };
+   00019| use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
+   00020| use super::workspace_change::{
+   00021|     VerifiedChange, changed_lines_edit, identifier_tokens, plan_digest_verification,
+   00022|     read_arguments, result_for_edit, result_for_path,
+   00023| };
+   00024| use super::workspace_line_operation::{
+   00025|     LineOperation, drops_most_of_file, grounded_line_operation, named_target_and_payloads,
+   00026| };
+   00027| use super::write_request::{
+   00028|     bare_surfaces, clean_cue_token, clean_path_token, looks_like_file_path, safe_relative_path,
+   00029|     tokens,
+   00030| };
+   00031| use crate::normal_markov::{quoted_segment_spans, quoted_segments};
+   00032| use crate::protocol::ChatMessage;
+   00033| use crate::seed;
+   00034| use crate::workspace_change_learning::{
+   00035|     RewriteScope, execute_scoped_workspace_rewrite, is_identifier_word,
+   00036| };
+   00037| 
+   00038| const MAX_ANCHOR_BYTES: usize = 4096;
+   00039| 
+   00040| /// How a computed change derives the file's new bytes.
+   00041| #[derive(Debug, Clone, PartialEq, Eq)]
+   00042| pub(super) enum Computation {
+   00043|     /// Quoted text placed as the last (`at_end`) or the first line; lines
+   00044|     /// given under the request keep their shared `indentation` when the file
+   00045|     /// has lines indented exactly so (PR #1188 G16).
+   00046|     EndInsertion {
+   00047|         text: String,
+   00048|         at_end: bool,
+   00049|         indentation: Option<String>,
+   00050|     },
+   00051|     /// Every line that is exactly `text`, else its one in-line occurrence.
+   00052|     Removal { text: String },
+   00053|     /// Whole lines (the request names a line): see `removed_line_indices`.
+   00054|     LineRemoval { text: String, containing: bool },
+   00055|     /// The one line assigning `key` (holding `held`, when stated) gets
+   00056|     /// `value`, in the file's own quoting.
+   00057|     Setting {
+   00058|         key: String,
+   00059|         value: String,
+   00060|         held: Option<String>,
+   00061|     },
+   00062|     /// Every line that is `old` becomes `new` (the request names a line), or
+   00063|     /// only the first one after `context`.
+   00064|     LineReplacement {
+   00065|         old: String,
+   00066|         new: String,
+   00067|         context: Option<String>,
+   00068|         rebase: bool,
+   00069|     },
+   00070|     /// Every whole-word `word` becomes its discovered `correction`.
+   00071|     TypoFix { word: String, correction: String },
+   00072|     /// The functions the file declares under these names go whole, with the
+   00073|     /// comment and attribute lines directly above them.
+   00074|     DeclarationRemoval { names: Vec<String> },
+   00075|     /// A whole-line operation: numbered, adjacent, moved or swapped lines.
+   00076|     Line(LineOperation),
+   00077|     /// `text` placed at one end of the Markdown section under `heading`
+   00078|     /// (PR #1188 G35).
+   00079|     Section {
+   00080|         heading: String,
+   00081|         text: String,
+   00082|         at_end: bool,
+   00083|     },
+   00084|     /// Each `(old, new)` pair replaced everywhere, in order (PR #1188 G82).
+   00085|     ReplaceList { pairs: Vec<(String, String)> },
+   00086| }
+   00087| 
+   00088| /// A computed change: the file, how its bytes are computed, and the seed
+   00089| /// sentence (intent and slots) that states it.
+   00090| #[derive(Debug, Clone, PartialEq, Eq)]
+   00091| pub(super) struct ComputedChange {
+   00092|     pub(super) target: String,
+   00093|     pub(super) computation: Computation,
+   00094|     pub(super) intent: &'static str,
+   00095|     pub(super) slots: Vec<(&'static str, String)>,
+   00096| }
+   00097| 
+   00098| /// The first computed change `task` asks for, if any.
+   00099| pub(super) fn grounded_computed_change(task: &str) -> Option<ComputedChange> {
+   00100|     grounded_end_insertion(task)
+   00101|         .or_else(|| grounded_removal(task))
+   00102|         .or_else(|| grounded_declaration_removal(task))
+   00103|         .or_else(|| grounded_line_replacement(task))
+   00104|         .or_else(|| grounded_setting(task))
+   00105|         .or_else(|| grounded_typo_fix(task))
+   00106| }
+   00107| 
+   00108| /// `Fix the typo 'smal' in README.md`: the seeded `typo_fix_lead` with one
+   00109| /// quoted word and one path, and no stated correction. The correction is
+   00110| /// discovered ([`super::spelling::corrected_spelling`]), and the change is the
+   00111| /// word-scoped replacement a stated correction would have made.
+   00112| fn grounded_typo_fix(task: &str) -> Option<ComputedChange> {
+   00113|     if !mentions("typo_fix_lead", task) {
+   00114|         return None;
+   00115|     }
+   00116|     let (target, word) = quoted_payload_and_path(task)?;
+   00117|     if !is_identifier_word(&word) {
+   00118|         return None;
+   00119|     }
+   00120|     let correction = super::spelling::corrected_spelling(&word)?;
+   00121|     Some(ComputedChange {
+   00122|         target,
+   00123|         intent: "coding_text_replaced",
+   00124|         slots: vec![("{old}", word.clone()), ("{new}", correction.clone())],
+   00125|         computation: Computation::TypoFix { word, correction },
+   00126|     })
+   00127| }
+   00128| 
+   00129| fn mentions(role: &str, task: &str) -> bool {
+   00130|     seed::lexicon().mentions_role(role, &sentence_words(task))
+   00131| }
+   00132| 
+   00133| /// The marks that end a sentence or a clause.
+   00134| const SENTENCE_MARKS: [char; 11] = [
+   00135|     '.', '!', '?', ';', ':', ',', '\u{0964}', '\u{0965}', '\u{3002}', '\u{ff01}', '\u{ff1f}',
+   00136| ];
+   00137| 
+   00138| /// The lowered request with the marks that end a sentence or clause set off
+   00139| /// as spaces, so a verb that closes its sentence (`… पंक्ति हटाओ।`, `…
+   00140| /// удали.`) is still a whole word. A dot inside a token (`t.md`) is not
+   00141| /// followed by a space and stays.
+   00142| pub(super) fn sentence_words(task: &str) -> String {
+   00143|     let lowered = task.to_lowercase();
+   00144|     let characters: Vec<char> = lowered.chars().collect();
+   00145|     let mut out = String::with_capacity(lowered.len());
+   00146|     let mut index = 0;
+   00147|     while index < characters.len() {
+   00148|         let mut end = index;
+   00149|         while end < characters.len() && SENTENCE_MARKS.contains(&characters[end]) {
+   00150|             end += 1;
+   00151|         }
+   00152|         if end > index && characters.get(end).is_none_or(|next| next.is_whitespace()) {
+   00153|             out.push(' ');
+   00154|             index = end;
+   00155|         } else {
+   00156|             out.push(characters[index]);
+   00157|             index += 1;
+   00158|         }
+   00159|     }
+   00160|     out
+   00161| }
+   00162| 
+   00163| /// Whether the request is about text inside a file: it quotes a payload that
+   00164| /// is not a path, or names a line (the seeded `line` meaning) or another unit
+   00165| /// of text (`file_text_unit`: word, phrase, occurrence, text, in every
+   00166| /// registered language) outside its quotes. A destructive shell intent never
+   00167| /// reads such a request as deleting the file (PR #1188).
+   00168| pub(super) fn edits_inside_a_file(prompt: &str) -> bool {
+   00169|     if quoted_segment_spans(prompt)
+   00170|         .iter()
+   00171|         .map(|segment| segment.text.trim())
+   00172|         .any(|text| !text.is_empty() && !super::shell_command::looks_like_a_path(text))
+   00173|     {
+   00174|         return true;
+   00175|     }
+   00176|     let outside = crate::engine::normalize_prompt(
+   00177|         &crate::solver_handlers::text_outside_quoted_segments(&without_path_words(prompt)),
+   00178|     )
+   00179|     .to_lowercase();
+   00180|     seed::lexicon()
+   00181|         .meaning("line")
+   00182|         .is_some_and(|meaning| meaning.evidenced_in(&outside))
+   00183|         || seed::lexicon().mentions_role("file_text_unit", &outside)
+   00184| }
+   00185| 
+   00186| /// Whether the request names a line outside its quotes: the seeded `line`
+   00187| /// meaning (`the line containing '…'`, `lines`, `строку`, `पंक्ति`, `的行`).
+   00188| pub(super) fn names_line(task: &str) -> bool {
+   00189|     // A path's own words are no line: `x-line.lino` names a file (PR #1188 G83).
+   00190|     seed::lexicon()
+   00191|         .meaning("line")
+   00192|         .is_some_and(|meaning| meaning.evidenced_in(&outside_quotes(&without_path_words(task))))
+   00193| }
+   00194| 
+   00195| /// `task` with every unquoted path token blanked.
+   00196| ///
+   00197| /// A path's own words (`x-line.lino`, `line-budget.lino`) never read as the
+   00198| /// words of the request (PR #1188 G83; mirrors `withoutPathWords`).
+   00199| pub(super) fn without_path_words(task: &str) -> String {
+   00200|     let segments = quoted_segment_spans(task);
+   00201|     let mut out = task.to_owned();
+   00202|     for token in super::write_request::tokens(task).iter().rev() {
+   00203|         if segments
+   00204|             .iter()
+   00205|             .any(|segment| token.start < segment.end && token.end > segment.start)
+   00206|         {
+   00207|             continue;
+   00208|         }
+   00209|         let path = super::write_request::clean_path_token(token.text);
+   00210|         if super::write_request::looks_like_file_path(path)
+   00211|             && super::write_request::safe_relative_path(path)
+   00212|         {
+   00213|             out.replace_range(token.start..token.end, &" ".repeat(token.end - token.start));
+   00214|         }
+   00215|     }
+   00216|     out
+   00217| }
+   00218| 
+   00219| /// The lowered request outside its quotes.
+   00220| fn outside_quotes(task: &str) -> String {
+   00221|     let outside = crate::solver_handlers::text_outside_quoted_segments(task);
+   00222|     crate::engine::normalize_prompt(&outside).to_lowercase()
+   00223| }
+   00224| 
+   00225| /// The one workspace path a request names and its one quoted segment that is
+   00226| /// not that path. An unquoted path outranks a quoted one, which is then the
+   00227| /// payload (PR #1188 T35).
+   00228| fn quoted_payload_and_path(task: &str) -> Option<(String, String)> {
+   00229|     let (target, payloads) = named_target_and_payloads(task)?;
+   00230|     let [payload] = payloads.as_slice() else {
+   00231|         return None;
+   00232|     };
+   00233|     Some((target, payload.clone()))
+   00234| }
+   00235| 
+   00236| /// A whole-line operation (numbered, adjacent, moved or swapped lines) as a
+   00237| /// computed change. It is read before a rewrite: `move 'x' after 'y'` is not
+   00238| /// an insertion (PR #1188).
+   00239| /// Several quoted replacements in one file, asked in one sentence, as one
+   00240| /// computed change (PR #1188 G82; mirrors `groundedReplaceList`).
+   00241| pub(super) fn grounded_replace_list(task: &str) -> Option<ComputedChange> {
+   00242|     let (target, pairs) = super::replace_list::replace_list(task)?;
+   00243|     let listed: Vec<String> = pairs
+   00244|         .iter()
+   00245|         .map(|(old, new)| format!("`{old}` → `{new}`"))
+   00246|         .collect();
+   00247|     Some(ComputedChange {
+   00248|         target,
+   00249|         intent: "coding_texts_replaced",
+   00250|         slots: vec![
+   00251|             (concat!("{", "pairs", "}"), listed.join(", ")),
+   00252|             (concat!("{", "count", "}"), pairs.len().to_string()),
+   00253|         ],
+   00254|         computation: Computation::ReplaceList { pairs },
+   00255|     })
+   00256| }
+   00257| 
+   00258| pub(super) fn grounded_line_change(task: &str) -> Option<ComputedChange> {
+   00259|     let change = grounded_line_operation(task)?;
+   00260|     Some(ComputedChange {
+   00261|         target: change.target,
+   00262|         computation: Computation::Line(change.operation),
+   00263|         intent: change.intent,
+   00264|         slots: change.slots,
+   00265|     })
+   00266| }
+   00267| 
+   00268| /// `Append 'x' to notes.txt`, `Prepend "x" to a.md`: positioned by the seeded
+   00269| /// `file_edit_position_end` / `file_edit_position_start` meanings.
+   00270| pub(super) fn grounded_end_insertion(task: &str) -> Option<ComputedChange> {
+   00271|     // `Append these lines to f:` followed by lines: the first line is the
+   00272|     // request and the lines under it are the text added, verbatim (PR #1188).
+   00273|     let block = super::positional_edit::introduced_block(task);
+   00274|     // Position cues are read outside the quoted payload: a line saying "at the
+   00275|     // start of x" is text being appended (PR #1188 G64).
+   00276|     let cues = block
+   00277|         .as_ref()
+   00278|         .map_or_else(|| outside_quotes(task), |block| sentence_words(block.head));
+   00279|     let lexicon = seed::lexicon();
+   00280|     let at_end = lexicon.mentions_role("file_edit_position_end", &cues);
+   00281|     if at_end == lexicon.mentions_role("file_edit_position_start", &cues) {
+   00282|         return None;
+   00283|     }
+   00284|     // `… at the end of the section '## Usage' in README.md` (PR #1188 G35).
+   00285|     if block.is_none()
+   00286|         && let Some(section) = super::markdown_section::section_scope(task, &outside_quotes(task))
+   00287|     {
+   00288|         let text = super::positional_edit::unescape_prose_newlines(&section.text);
+   00289|         return Some(ComputedChange {
+   00290|             target: section.target,
+   00291|             intent: "file_edit_position_after",
+   00292|             slots: vec![
+   00293|                 ("{new}", text.clone()),
+   00294|                 ("{anchor}", section.heading.clone()),
+   00295|             ],
+   00296|             computation: Computation::Section {
+   00297|                 heading: section.heading,
+   00298|                 text,
+   00299|                 at_end,
+   00300|             },
+   00301|         });
+   00302|     }
+   00303|     let (target, text, indentation) = if let Some(block) = block {
+   00304|         let indentation = (!block.verbatim).then(|| block.indentation.to_owned());
+   00305|         (block_target(block.head)?, block.text, indentation)
+   00306|     } else if let Some((target, text)) = quoted_lines_and_path(task) {
+   00307|         (target, text, None)
+   00308|     } else {
+   00309|         let (target, text) = quoted_payload_and_path(task)
+   00310|             .or_else(|| blank_line_and_path(task))
+   00311|             .or_else(|| line_payload_and_path(task))?;
+   00312|         (
+   00313|             target,
+   00314|             super::positional_edit::unescape_prose_newlines(&text),
+   00315|             None,
+   00316|         )
+   00317|     };
+   00318|     Some(ComputedChange {
+   00319|         target,
+   00320|         // An empty line has no text to quote back; it is stated in its own words.
+   00321|         intent: if text.is_empty() {
+   00322|             "file_edit_blank_line"
+   00323|         } else if at_end {
+   00324|             "file_edit_position_end"
+   00325|         } else {
+   00326|             "file_edit_position_start"
+   00327|         },
+   00328|         slots: vec![("{new}", text.clone())],
+   00329|         computation: Computation::EndInsertion {
+   00330|             text,
+   00331|             at_end,
+   00332|             indentation,
+   00333|         },
+   00334|     })
+   00335| }
+   00336| 
+   00337| /// Several quoted literals, joined only by seeded joiners and commas, are the
+   00338| /// lines added, each its own line, as written (PR #1188 G53, G54).
+   00339| fn quoted_lines_and_path(task: &str) -> Option<(String, String)> {
+   00340|     let (target, payloads) = named_target_and_payloads(task)?;
+   00341|     if payloads.len() < 2 {
+   00342|         return None;
+   00343|     }
+   00344|     let text = super::positional_edit::joined_literal_lines(task, &target)?;
+   00345|     Some((target, text))
+   00346| }
+   00347| 
+   00348| /// `Delete the line 'x' from notes.txt`: the seeded `coding_text_remove_action`
+   00349| /// with one quoted payload and one path, and no add action alongside it.
+   00350| fn grounded_removal(task: &str) -> Option<ComputedChange> {
+   00351|     if !mentions("coding_text_remove_action", task) || mentions("coding_member_add_action", task) {
+   00352|         return None;
+   00353|     }
+   00354|     let (target, text) = quoted_payload_and_path(task)?;
+   00355|     // A request that names a line removes whole lines, never only the
+   00356|     // payload inside one (PR #1188 G60).
+   00357|     let computation = if names_line(task) {
+   00358|         let containing =
+   00359|             seed::lexicon().mentions_role("line_containment_cue", &outside_quotes(task));
+   00360|         Computation::LineRemoval {
+   00361|             text: text.clone(),
+   00362|             containing,
+   00363|         }
+   00364|     } else {
+   00365|         Computation::Removal { text: text.clone() }
+   00366|     };
+   00367|     Some(ComputedChange {
+   00368|         target,
+   00369|         intent: "coding_text_remove",
+   00370|         slots: vec![("{old}", text)],
+   00371|         computation,
+   00372|     })
+   00373| }
+   00374| 
+   00375| /// `Delete the functions a and b from util.rs`: the seeded
+   00376| /// `coding_text_remove_action` and `coding_declaration_noun` with no add
+   00377| /// action, no quoted text and one named path. The names are the request's
+   00378| /// identifiers; `removed_declarations` keeps those the file itself declares
+   00379| /// as functions (mirrors `groundedDeclarationRemoval`, PR #1188 dogfooding).
+   00380| fn grounded_declaration_removal(task: &str) -> Option<ComputedChange> {
+   00381|     if !mentions("coding_text_remove_action", task)
+   00382|         || mentions("coding_member_add_action", task)
+   00383|         || !mentions("coding_declaration_noun", task)
+   00384|         || !quoted_segment_spans(task).is_empty()
+   00385|     {
+   00386|         return None;
+   00387|     }
+   00388|     let mut paths: Vec<String> = super::positional_edit::unquoted_path_tokens(task)
+   00389|         .iter()
+   00390|         .map(|token| clean_path_token(token.text).to_owned())
+   00391|         .filter(|path| looks_like_file_path(path) && safe_relative_path(path))
+   00392|         .collect();
+   00393|     paths.sort();
+   00394|     paths.dedup();
+   00395|     let [target] = paths.as_slice() else {
+   00396|         return None;
+   00397|     };
+   00398|     let mut names: Vec<String> = Vec::new();
+   00399|     for token in tokens(task) {
+   00400|         if clean_path_token(token.text) == target {
+   00401|             continue;
+   00402|         }
+   00403|         for name in identifier_tokens(token.text) {
+   00404|             if !names.iter().any(|known| known == name) {
+   00405|                 names.push(name.to_owned());
+   00406|             }
+   00407|         }
+   00408|     }
+   00409|     if names.is_empty() {
+   00410|         return None;
+   00411|     }
+   00412|     Some(ComputedChange {
+   00413|         target: target.clone(),
+   00414|         intent: "coding_text_remove",
+   00415|         slots: vec![("{old}", names.join("`, `"))],
+   00416|         computation: Computation::DeclarationRemoval { names },
+   00417|     })
+   00418| }
+   00419| 
+   00420| /// `Change the value of "debug" to true in config.json`: the seeded
+   00421| /// `config_value_lead` names a setting; the edit request's old clause names its
+   00422| /// key (quoted, or its last identifier) and the new clause its value.
+   00423| ///
+   00424| /// `Change MAXIMUM_RATIO from 8 to 16 in p.rs` states the value the key holds
+   00425| /// now (the seeded `file_edit_old_lead_cue`): the line assigning the key that
+   00426| /// value is the one changed, and a key assigned nowhere leaves the stated
+   00427| /// value itself, when it occurs once as a word (PR #1188 G2).
+   00428| fn grounded_setting(task: &str) -> Option<ComputedChange> {
+   00429|     let (target, old_clause, value) = compose_edit_request(task)?;
+   00430|     let stated = super::workspace_setting::stated_old_value(&old_clause);
+   00431|     if stated.is_none() && !mentions("config_value_lead", task) {
+   00432|         return None;
+   00433|     }
+   00434|     // `set the contents of note.txt to hello` writes the file; its contents are
+   00435|     // not a key (PR #1188 G68, issue #745).
+   00436|     if stated.is_none() && mentions("file_contents_source_cue", task) {
+   00437|         return None;
+   00438|     }
+   00439|     let key_clause = stated
+   00440|         .as_ref()
+   00441|         .map_or(old_clause.as_str(), |(key, _)| key.as_str());
+   00442|     let quoted = quoted_segments(key_clause);
+   00443|     let key = match quoted.as_slice() {
+   00444|         [key] => key.clone(),
+   00445|         _ => identifier_tokens(key_clause).next_back()?.to_owned(),
+   00446|     };
+   00447|     let value = value.trim().to_owned();
+   00448|     if value.is_empty() {
+   00449|         return None;
+   00450|     }
+   00451|     Some(ComputedChange {
+   00452|         target,
+   00453|         intent: "setting",
+   00454|         slots: vec![("{old}", key.clone()), ("{new}", value.clone())],
+   00455|         computation: Computation::Setting {
+   00456|             key,
+   00457|             value,
+   00458|             held: stated.map(|(_, held)| held),
+   00459|         },
+   00460|     })
+   00461| }
+   00462| 
+   00463| /// `Replace the line 'x' with 'y' in f`: the seeded `line` meaning outside
+   00464| /// the quotes, both clauses quoted. A line replacement never touches text
+   00465| /// inside a longer line (T32: `text pays` became `text "pay"s`). With a seeded
+   00466| /// anchor context (`the line 'x' that follows the line 'z'`), the first such
+   00467| /// line after `z` is the one replaced (T62).
+   00468| fn grounded_line_replacement(task: &str) -> Option<ComputedChange> {
+   00469|     if !names_line(task)
+   00470|         || seed::lexicon().mentions_role(
+   00471|             seed::ROLE_CODING_IDENTIFIER_RENAME_ACTION,
+   00472|             &task.to_lowercase(),
+   00473|         )
+   00474|     {
+   00475|         return None;
+   00476|     }
+   00477|     let context = super::positional_edit::anchor_context(task);
+   00478|     let request = context.as_ref().map_or_else(
+   00479|         || task.to_owned(),
+   00480|         |(start, end, _)| [&task[..*start], " ", &task[*end..]].concat(),
+   00481|     );
+   00482|     let (target, original, replacement) = compose_edit_request(&request)?;
+   00483|     if super::positional_edit::compose_positional_insert(task).is_some() {
+   00484|         return None;
+   00485|     }
+   00486|     let quoted: Vec<String> = quoted_segments(&request)
+   00487|         .iter()
+   00488|         .map(String::as_str)
+   00489|         .map(super::positional_edit::unescape_prose_newlines)
+   00490|         .collect();
+   00491|     // Lines under the request (G22) replace the line as its siblings, unless
+   00492|     // they were fenced or quoted.
+   00493|     let block =
+   00494|         super::positional_edit::introduced_block(task).filter(|block| block.text == replacement);
+   00495|     // Listed lines (`the three lines 'a', 'b' and 'c'`) are quoted one by one (G80).
+   00496|     let listed = !quoted.contains(&original);
+   00497|     if (listed
+   00498|         && !original
+   00499|             .split('\n')
+   00500|             .all(|line| quoted.iter().any(|text| text == line)))
+   00501|         || (block.is_none() && !quoted.contains(&replacement))
+   00502|         || original.is_empty()
+   00503|         || original == replacement
+   00504|     {
+   00505|         return None;
+   00506|     }
+   00507|     Some(ComputedChange {
+   00508|         target,
+   00509|         intent: "coding_text_replaced",
+   00510|         // Listed lines are named one by one, not as one span holding line breaks.
+   00511|         slots: vec![
+   00512|             (
+   00513|                 "{old}",
+   00514|                 if listed {
+   00515|                     original.replace('\n', "`, `")
+   00516|                 } else {
+   00517|                     original.clone()
+   00518|                 },
+   00519|             ),
+   00520|             ("{new}", replacement.clone()),
+   00521|         ],
+   00522|         computation: Computation::LineReplacement {
+   00523|             old: original,
+   00524|             new: replacement,
+   00525|             context: context.map(|(_, _, text)| text),
+   00526|             rebase: block.is_some_and(|block| !block.verbatim),
+   00527|         },
+   00528|     })
+   00529| }
+   00530| 
+   00531| /// The smallest unique changed run of lines, or the lines from the context's
+   00532| /// line through the change.
+   00533| ///
+   00534| /// When the changed run repeats, the run is widened up to the context's line:
+   00535| /// the context occurs once, so the widened run does not (mirrors
+   00536| /// `contextLinesEdit`).
+   00537| fn context_lines_edit(
+   00538|     source: &str,
+   00539|     updated: &str,
+   00540|     context: Option<&str>,
+   00541| ) -> Option<(String, String)> {
+   00542|     let compact = changed_lines_edit(source, updated);
+   00543|     let Some(context) = context.filter(|_| compact.is_none()) else {
+   00544|         return compact;
+   00545|     };
+   00546|     let mut found = source.match_indices(context).map(|(at, _)| at);
+   00547|     let (Some(at), None) = (found.next(), found.next()) else {
+   00548|         return None;
+   00549|     };
+   00550|     let start = source[..at].rfind('\n').map_or(0, |newline| newline + 1);
+   00551|     let suffix = source[start..]
+   00552|         .bytes()
+   00553|         .rev()
+   00554|         .zip(updated[start..].bytes().rev())
+   00555|         .take_while(|(left, right)| left == right)
+   00556|         .count();
+   00557|     let end = source[source.len() - suffix..]
+   00558|         .find('\n')
+   00559|         .map_or(source.len(), |newline| source.len() - suffix + newline);
+   00560|     Some((
+   00561|         source[start..end].to_owned(),
+   00562|         updated[start..updated.len() - (source.len() - end)].to_owned(),
+   00563|     ))
+   00564| }
+   00565| 
+   00566| impl ComputedChange {
+   00567|     /// The seeded answer when the text a replace or removal names is gone.
+   00568|     fn absent_text_answer(&self, task: &str, source: &str) -> Option<String> {
+   00569|         if !matches!(self.intent, "coding_text_replaced" | "coding_text_remove") {
+   00570|             return None;
+   00571|         }
+   00572|         let slot = |name: &str| {
+   00573|             self.slots
+   00574|                 .iter()
+   00575|                 .find(|(key, _)| *key == name)
+   00576|                 .map(|(_, value)| value.as_str())
+   00577|         };
+   00578|         super::replace_list::absent_text_answer(
+   00579|             task,
+   00580|             &self.target,
+   00581|             source,
+   00582|             slot("{old}")?,
+   00583|             slot("{new}"),
+   00584|         )
+   00585|     }
+   00586| 
+   00587|     /// The file after the change, or `None` when it cannot apply.
+   00588|     fn compute(&self, source: &str, missing: bool) -> Option<String> {
+   00589|         match &self.computation {
+   00590|             Computation::EndInsertion {
+   00591|                 text,
+   00592|                 at_end,
+   00593|                 indentation,
+   00594|             } => Some(inserted_at_end(
+   00595|                 source,
+   00596|                 &appended_block(source, text, indentation.as_deref()),
+   00597|                 *at_end,
+   00598|             )),
+   00599|             Computation::Removal { text } => {
+   00600|                 (!missing).then(|| removed_literal(source, text)).flatten()
+   00601|             }
+   00602|             Computation::LineRemoval { text, containing } => (!missing)
+   00603|                 .then(|| removed_lines(source, text, *containing))
+   00604|                 .flatten(),
+   00605|             Computation::Setting { key, value, held } => (!missing)
+   00606|                 .then(|| {
+   00607|                     super::workspace_setting::assigned_setting(
+   00608|                         source,
+   00609|                         key,
+   00610|                         value,
+   00611|                         &self.target,
+   00612|                         held.as_deref(),
+   00613|                     )
+   00614|                 })
+   00615|                 .flatten(),
+   00616|             Computation::LineReplacement {
+   00617|                 old,
+   00618|                 new,
+   00619|                 context,
+   00620|                 rebase,
+   00621|             } => (!missing)
+   00622|                 .then(|| {
+   00623|                     let new = if *rebase {
+   00624|                         super::positional_edit::rebased_block(new, line_indentation(source, old))
+   00625|                     } else {
+   00626|                         new.clone()
+   00627|                     };
+   00628|                     super::workspace_setting::replaced_lines(source, old, &new, context.as_deref())
+   00629|                 })
+   00630|                 .flatten(),
+   00631|             Computation::TypoFix { word, correction } => (!missing)
+   00632|                 .then(|| {
+   00633|                     execute_scoped_workspace_rewrite(source, word, correction, RewriteScope::Word)
+   00634|                         .ok()
+   00635|                         .map(|execution| execution.output)
+   00636|                 })
+   00637|                 .flatten(),
+   00638|             Computation::DeclarationRemoval { names } => (!missing)
+   00639|                 .then(|| removed_declarations(source, names).map(|(updated, _)| updated))
+   00640|                 .flatten(),
+   00641|             Computation::Line(operation) => (!missing).then(|| operation.compute(source)).flatten(),
+   00642|             Computation::Section {
+   00643|                 heading,
+   00644|                 text,
+   00645|                 at_end,
+   00646|             } => (!missing)
+   00647|                 .then(|| {
+   00648|                     super::markdown_section::inserted_in_section(source, heading, text, *at_end)
+   00649|                 })
+   00650|                 .flatten()
+   00651|                 .map(|(updated, _)| updated),
+   00652|             Computation::ReplaceList { pairs } => (!missing)
+   00653|                 .then(|| super::replace_list::replaced_in_order(source, pairs))
+   00654|                 .flatten(),
+   00655|         }
+   00656|     }
+   00657| 
+   00658|     /// Whether the request states the change's whole extent (named
+   00659|     /// declarations, a numbered range), so it may remove most of a file.
+   00660|     const fn bounded(&self) -> bool {
+   00661|         match &self.computation {
+   00662|             Computation::DeclarationRemoval { .. } => true,
+   00663|             Computation::Line(operation) => operation.bounded(),
+   00664|             _ => false,
+   00665|         }
+   00666|     }
+   00667| 
+   00668|     /// The smallest unique edit carrying the change, when there is one.
+   00669|     fn edit(&self, source: &str, updated: &str) -> Option<(String, String)> {
+   00670|         match &self.computation {
+   00671|             Computation::EndInsertion { .. } if source.is_empty() => None,
+   00672|             Computation::EndInsertion { at_end, .. } => compact_end_edit(source, updated, *at_end),
+   00673|             Computation::LineReplacement { context, .. } => {
+   00674|                 context_lines_edit(source, updated, context.as_deref())
+   00675|             }
+   00676|             Computation::Removal { .. }
+   00677|             | Computation::LineRemoval { .. }
+   00678|             | Computation::Setting { .. }
+   00679|             | Computation::TypoFix { .. }
+   00680|             | Computation::DeclarationRemoval { .. }
+   00681|             | Computation::Line(_)
+   00682|             | Computation::Section { .. }
+   00683|             | Computation::ReplaceList { .. } => changed_lines_edit(source, updated),
+   00684|         }
+   00685|     }
+   00686| }
+   00687| 
+   00688| /// The file after the insertion; a file without a final newline keeps none.
+   00689| /// Lines under an append request, at the indentation they were given.
+   00690| ///
+   00691| /// Only when the file already has lines indented exactly so (a `.lino` table
+   00692| /// appended among its siblings); else at the file's top level, since the
+   00693| /// indentation of lines written under a request is otherwise only its layout
+   00694| /// (PR #1188 G16).
+   00695| fn appended_block(source: &str, text: &str, indentation: Option<&str>) -> String {
+   00696|     match indentation {
+   00697|         Some(indentation) if super::positional_edit::indents_lines_at(source, indentation) => {
+   00698|             super::positional_edit::rebased_block(text, indentation)
+   00699|         }
+   00700|         _ => text.to_owned(),
+   00701|     }
+   00702| }
+   00703| 
+   00704| /// The indentation of the first line that is `text` but for its indentation.
+   00705| fn line_indentation<'a>(source: &'a str, text: &str) -> &'a str {
+   00706|     source
+   00707|         .split('\n')
+   00708|         .find(|line| line.trim() == text.trim())
+   00709|         .map_or("", super::positional_edit::leading_indentation)
+   00710| }
+   00711| 
+   00712| fn inserted_at_end(source: &str, text: &str, at_end: bool) -> String {
+   00713|     if source.is_empty() {
+   00714|         [text, "\n"].concat()
+   00715|     } else if at_end && source.ends_with('\n') {
+   00716|         [source, text, "\n"].concat()
+   00717|     } else if at_end {
+   00718|         [source, "\n", text].concat()
+   00719|     } else {
+   00720|         [text, "\n", source].concat()
+   00721|     }
+   00722| }
+   00723| 
+   00724| /// The smallest unique run of whole lines at the insertion end, and what it
+   00725| /// becomes, so the edit tool carries the change rather than the whole file.
+   00726| fn compact_end_edit(source: &str, updated: &str, at_end: bool) -> Option<(String, String)> {
+   00727|     let starts = source
+   00728|         .match_indices('\n')
+   00729|         .map(|(index, _)| index + 1)
+   00730|         .filter(|start| *start < source.len());
+   00731|     let cuts: Vec<usize> = if at_end {
+   00732|         std::iter::once(0).chain(starts).rev().collect()
+   00733|     } else {
+   00734|         starts.chain(std::iter::once(source.len())).collect()
+   00735|     };
+   00736|     for cut in cuts {
+   00737|         let anchor = if at_end {
+   00738|             &source[cut..]
+   00739|         } else {
+   00740|             &source[..cut]
+   00741|         };
+   00742|         if anchor.trim().is_empty() {
+   00743|             continue;
+   00744|         }
+   00745|         if anchor.len() > MAX_ANCHOR_BYTES {
+   00746|             break;
+   00747|         }
+   00748|         if source.matches(anchor).count() != 1 {
+   00749|             continue;
+   00750|         }
+   00751|         let replacement = if at_end {
+   00752|             &updated[cut..]
+   00753|         } else {
+   00754|             &updated[..updated.len() - (source.len() - cut)]
+   00755|         };
+   00756|         return Some((anchor.to_owned(), replacement.to_owned()));
+   00757|     }
+   00758|     None
+   00759| }
+   00760| 
+   00761| impl ComputedChange {
+   00762|     /// The seed sentence that states the change made to `source`: lines that
+   00763|     /// only contained the payload are reported as lines, with their count;
+   00764|     /// every other change keeps its own intent and slots.
+   00765|     fn reported(&self, source: &str) -> (&'static str, Vec<(&'static str, String)>) {
+   00766|         if let Computation::LineRemoval { text, containing } = &self.computation {
+   00767|             let lines: Vec<&str> = source.split_inclusive('\n').map(bare_line).collect();
+   00768|             let removed: Vec<&str> = removed_line_indices(source, text, *containing)
+   00769|                 .into_iter()
+   00770|                 .map(|index| lines[index])
+   00771|                 .collect();
+   00772|             if removed.iter().any(|line| line != text) {
+   00773|                 return (
+   00774|                     "line",
+   00775|                     vec![
+   00776|                         ("{old}", text.clone()),
+   00777|                         ("{count}", removed.len().to_string()),
+   00778|                     ],
+   00779|                 );
+   00780|             }
+   00781|         }
+   00782|         if let Computation::Section {
+   00783|             heading,
+   00784|             text,
+   00785|             at_end,
+   00786|         } = &self.computation
+   00787|             && let Some((_, follows)) =
+   00788|                 super::markdown_section::inserted_in_section(source, heading, text, *at_end)
+   00789|         {
+   00790|             return (
+   00791|                 self.intent,
+   00792|                 vec![("{new}", text.clone()), ("{anchor}", follows)],
+   00793|             );
+   00794|         }
+   00795|         if let Computation::DeclarationRemoval { names } = &self.computation
+   00796|             && let Some((_, declared)) = removed_declarations(source, names)
+   00797|         {
+   00798|             return (self.intent, vec![("{old}", declared.join("`, `"))]);
+   00799|         }
+   00800|         if let Computation::Line(operation) = &self.computation
+   00801|             && let Some(reported) = operation.reported(source)
+   00802|         {
+   00803|             return reported;
+   00804|         }
+   00805|         (self.intent, self.slots.clone())
+   00806|     }
+   00807| 
+   00808|     /// Preserve removed names and lines as explicit list values for the summary.
+   00809|     fn reported_values(&self, source: &str) -> Option<Vec<String>> {
+   00810|         match &self.computation {
+   00811|             Computation::DeclarationRemoval { names } => removed_declarations(source, names).map(|(_, values)| values),
+   00812|             Computation::Line(operation) => operation.reported_values(source),
+   00813|             _ => None,
+   00814|         }
+   00815|     }
+   00816| }
+   00817| 
+   00818| /// Read, compute, edit (or write), check the digest, state the change.
+   00819| pub(super) fn plan_computed_change_step(
+   00820|     task: &str,
+   00821|     current_turn: &[ChatMessage],
+   00822|     tool_names: &[&str],
+   00823|     change: &ComputedChange,
+   00824| ) -> Option<AgenticPlan> {
+   00825|     let target = change.target.as_str();
+   00826|     let Some(read) = result_for_path(current_turn, Capability::Read, target, None) else {
+   00827|         let tool = tool_for(tool_names, Capability::Read)?;
+   00828|         return Some(plan_one(tool, read_arguments(target)));
+   00829|     };
+   00830|     // A read that came back as the client's file block is the file, whatever
+   00831|     // its text says: a ledger that quotes error lines is not a missing file.
+   00832|     let missing = super::code_artifact::source_from_agent_read_result(&read).is_none()
+   00833|         && super::tool_result::failure_message(&read, false, true).is_some();
+   00834|     let source = if missing {
+   00835|         String::new()
+   00836|     } else {
+   00837|         source_from_read_result(&read)
+   00838|     };
+   00839|     if let Some(answer) = super::edit_scope::scoped_decline(task, target, &source) {
+   00840|         return Some(AgenticPlan::Final(answer));
+   00841|     }
+   00842|     let Some(updated) = change
+   00843|         .compute(&source, missing)
+   00844|         .filter(|updated| *updated != source)
+   00845|     else {
+   00846|         // Text the change names that the file no longer holds is the answer (G87).
+   00847|         let absent = if missing {
+   00848|             None
+   00849|         } else {
+   00850|             change.absent_text_answer(task, &source)
+   00851|         };
+   00852|         return Some(AgenticPlan::Final(match absent {
+   00853|             Some(answer) => answer,
+   00854|             None => render_seeded_outcome("coding_workspace_verification_failed", task, target)?,
+   00855|         }));
+   00856|     };
+   00857|     // A change that would drop most of the file is refused unless its request
+   00858|     // states that extent (PR #1188 T29).
+   00859|     if !change.bounded() && drops_most_of_file(&source, &updated) {
+   00860|         return Some(AgenticPlan::Final(render_seeded_outcome(
+   00861|             "coding_workspace_fragment_refused",
+   00862|             task,
+   00863|             target,
+   00864|         )?));
+   00865|     }
+   00866|     let (intent, reported) = change.reported(&source);
+   00867|     let slots: Vec<(&str, &str)> = reported
+   00868|         .iter()
+   00869|         .map(|(slot, value)| (*slot, value.as_str()))
+   00870|         .collect();
+   00871|     let verified = VerifiedChange {
+   00872|         target,
+   00873|         expected: &updated,
+   00874|         intent,
+   00875|         slots: &slots,
+   00876|     };
+   00877|     if let Some((old, new)) = change.edit(&source, &updated)
+   00878|         && let Some(tool) = tool_for(tool_names, Capability::Edit)
+   00879|     {
+   00880|         if result_for_edit(current_turn, target, &old, &new).is_none() {
+   00881|             return Some(plan_one(tool, edit_arguments(target, &old, &new)));
+   00882|         }
+   00883|         return plan_digest_verification(task, current_turn, tool_names, &verified);
+   00884|     }
+   00885|     if result_for_path(current_turn, Capability::Write, target, Some(&updated)).is_none() {
+   00886|         let tool = tool_for(tool_names, Capability::Write)?;
+   00887|         return Some(plan_one(tool, write_arguments(target, &updated)));
+   00888|     }
+   00889|     plan_digest_verification(task, current_turn, tool_names, &verified)
+   00890| }
+   00891| 
+   00892| /// `Append the line third to notes.txt`: no quoted text, one path, and the
+   00893| /// seeded `file_edit_line_lead`; the line is the words after the lead up to
+   00894| /// the last destination cue before the path (`go to bed to notes.txt` keeps
+   00895| /// `go to bed`). A request without a lead is declined, never guessed.
+   00896| fn line_payload_and_path(task: &str) -> Option<(String, String)> {
+   00897|     if !quoted_segment_spans(task).is_empty() {
+   00898|         return None;
+   00899|     }
+   00900|     let tokens = tokens(task);
+   00901|     let paths: Vec<(usize, &str)> = tokens
+   00902|         .iter()
+   00903|         .enumerate()
+   00904|         .map(|(index, token)| (index, clean_path_token(token.text)))
+   00905|         .filter(|(_, path)| looks_like_file_path(path) && safe_relative_path(path))
+   00906|         .collect();
+   00907|     let (path_index, target) = *paths.first()?;
+   00908|     if paths.iter().any(|(_, path)| *path != target) {
+   00909|         return None;
+   00910|     }
+   00911|     let mut leads: Vec<Vec<String>> = seed::lexicon()
+   00912|         .words_for_role("file_edit_line_lead")
+   00913|         .iter()
+   00914|         .map(|lead| {
+   00915|             lead.to_lowercase()
+   00916|                 .split_whitespace()
+   00917|                 .map(str::to_owned)
+   00918|                 .collect::<Vec<_>>()
+   00919|         })
+   00920|         .filter(|words| !words.is_empty())
+   00921|         .collect();
+   00922|     leads.sort_by_key(|words| std::cmp::Reverse(words.len()));
+   00923|     let lead_end = (0..path_index).find_map(|index| {
+   00924|         leads
+   00925|             .iter()
+   00926|             .find(|words| {
+   00927|                 words.iter().enumerate().all(|(offset, word)| {
+   00928|                     index + offset < path_index
+   00929|                         && clean_cue_token(tokens[index + offset].text) == *word
+   00930|                 })
+   00931|             })
+   00932|             .map(|words| index + words.len())
+   00933|     })?;
+   00934|     let destinations = bare_surfaces("file_write_destination_cue");
+   00935|     let end = (lead_end..path_index)
+   00936|         .rev()
+   00937|         .find(|index| destinations.contains(&clean_cue_token(tokens[*index].text)))?;
+   00938|     if end <= lead_end {
+   00939|         return None;
+   00940|     }
+   00941|     Some((
+   00942|         target.to_owned(),
+   00943|         task[tokens[lead_end].start..tokens[end - 1].end].to_owned(),
+   00944|     ))
+   00945| }
+   00946| 
+   00947| /// The one path a colon-ended request line names, with nothing else quoted
+   00948| /// (mirrors `blockPayloadAndPath`).
+   00949| fn block_target(head: &str) -> Option<String> {
+   00950|     let mut paths: Vec<&str> = super::positional_edit::unquoted_path_tokens(head)
+   00951|         .iter()
+   00952|         .map(|token| clean_path_token(token.text))
+   00953|         .filter(|path| looks_like_file_path(path) && safe_relative_path(path))
+   00954|         .collect();
+   00955|     paths.sort_unstable();
+   00956|     paths.dedup();
+   00957|     let [path] = paths.as_slice() else {
+   00958|         return None;
+   00959|     };
+   00960|     quoted_segment_spans(head)
+   00961|         .iter()
+   00962|         .all(|segment| segment.text == *path)
+   00963|         .then(|| (*path).to_owned())
+   00964| }
+   00965| 
+   00966| /// The seeded `file_edit_blank_line` with one named path and no quoted text:
+   00967| /// the payload is the empty string (mirrors `blankLineAndPath`).
+   00968| fn blank_line_and_path(task: &str) -> Option<(String, String)> {
+   00969|     if !quoted_segment_spans(task).is_empty() || !mentions("file_edit_blank_line", task) {
+   00970|         return None;
+   00971|     }
+   00972|     let mut paths: Vec<String> = super::positional_edit::unquoted_path_tokens(task)
+   00973|         .iter()
+   00974|         .map(|token| clean_path_token(token.text).to_owned())
+   00975|         .filter(|path| looks_like_file_path(path) && safe_relative_path(path))
+   00976|         .collect();
+   00977|     paths.sort();
+   00978|     paths.dedup();
+   00979|     match paths.as_slice() {
+   00980|         [path] => Some((path.clone(), String::new())),
+   00981|         _ => None,
+   00982|     }
+   00983| }
+   00984| 
+   
+   (End of file - total 984 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/workspace_computed_change.rs","file_path":"rust/src/agentic_coding/workspace_computed_change.rs","new":"    let values = change.reported_values(&source);\n    let list_slots: Vec<(&str, &[String])> = values.as_deref().map(|values| vec![(\"{old}\", values)]).unwrap_or_default();\n    let verified = VerifiedChange {\n        target,\n        expected: &updated,\n        intent,\n        slots: &slots,\n        list_slots: &list_slots,\n    };","newString":"    let values = change.reported_values(&source);\n    let list_slots: Vec<(&str, &[String])> = values.as_deref().map(|values| vec![(\"{old}\", values)]).unwrap_or_default();\n    let verified = VerifiedChange {\n        target,\n        expected: &updated,\n        intent,\n        slots: &slots,\n        list_slots: &list_slots,\n    };","new_str":"    let values = change.reported_values(&source);\n    let list_slots: Vec<(&str, &[String])> = values.as_deref().map(|values| vec![(\"{old}\", values)]).unwrap_or_default();\n    let verified = VerifiedChange {\n        target,\n        expected: &updated,\n        intent,\n        slots: &slots,\n        list_slots: &list_slots,\n    };","new_string":"    let values = change.reported_values(&source);\n    let list_slots: Vec<(&str, &[String])> = values.as_deref().map(|values| vec![(\"{old}\", values)]).unwrap_or_default();\n    let verified = VerifiedChange {\n        target,\n        expected: &updated,\n        intent,\n        slots: &slots,\n        list_slots: &list_slots,\n    };","old":"    let verified = VerifiedChange {\n        target,\n        expected: &updated,\n        intent,\n        slots: &slots,\n    };","oldString":"    let verified = VerifiedChange {\n        target,\n        expected: &updated,\n        intent,\n        slots: &slots,\n    };","old_str":"    let verified = VerifiedChange {\n        target,\n        expected: &updated,\n        intent,\n        slots: &slots,\n    };","old_string":"    let verified = VerifiedChange {\n        target,\n        expected: &updated,\n        intent,\n        slots: &slots,\n    };","path":"rust/src/agentic_coding/workspace_computed_change.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/workspace_computed_change.rs"}
+   8ce241d94b00c6a3fe76cb23eb4edb5d2cf7c5fcb156e58ae7ebc0864b66bb20  rust/src/agentic_coding/workspace_computed_change.rs
+   
+== answer ==
+Replaced `    let verified = VerifiedChange {
+        target,
+        expected: &updated,
+        intent,
+        slots: &slots,
+    };` with `    let values = change.reported_values(&source);
+    let list_slots: Vec<(&str, &[String])> = values.as_deref().map(|values| vec![("{old}", values)]).unwrap_or_default();
+    let verified = VerifiedChange {
+        target,
+        expected: &updated,
+        intent,
+        slots: &slots,
+        list_slots: &list_slots,
+    };` in `rust/src/agentic_coding/workspace_computed_change.rs` and observed the result.

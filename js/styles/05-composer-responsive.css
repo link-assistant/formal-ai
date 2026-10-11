@@ -1,0 +1,631 @@
+/* The composer, the tool registry, and the responsive (max-width) layouts.
+ *
+ * Part of the app stylesheet split from the former js/styles.css. The
+ * files in js/styles/ are linked in numeric order by js/app/index.html and
+ * together form one cascade: keep that order when editing.
+ */
+
+/* Issue #1963 (P3): the pending assistant bubble must NOT be pinned to a narrow
+   fixed width. While only the thinking trace is shown (no answer body yet) the
+   bubble used to be clamped to 116px — a relic of the old typing-dots indicator
+   — so the message visibly jumped from ~116px to the full column width the
+   moment the answer started streaming. The pending body now inherits the normal
+   `.message-body` sizing (it fills the grid column up to the shared message
+   max-width), so the width is stable from the first thinking step through the
+   final answer and there is no sudden jump. The former `.typing::after` dots
+   indicator is dead (the pending bubble always renders the thinking preview),
+   so it is removed with the fixed width it used to size. */
+
+.composer {
+  max-height: min(280px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5));
+  overflow: auto;
+  border-top: 1px solid #d6dde1;
+  padding: 12px clamp(14px, 4vw, 48px) max(12px, env(safe-area-inset-bottom));
+  background: #f7f8fa;
+}
+
+.composer-style-glass-soft .composer,
+.composer-style-glass-clear .composer {
+  background: rgba(247, 248, 250, 0.86);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+  backdrop-filter: blur(18px) saturate(1.25);
+}
+
+.composer-style-glass-clear .composer {
+  background: rgba(247, 248, 250, 0.68);
+}
+
+.composer-style-bubble .composer {
+  background: #ffffff;
+}
+
+.composer-demo-hint {
+  margin: 0 0 10px;
+  width: min(860px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #fff8df;
+  border: 1px solid #dac78b;
+  color: #6c5512;
+  font-size: 13px;
+  text-align: center;
+}
+
+.composer-demo-hint-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin: 0 3px;
+  vertical-align: -2px;
+}
+
+.composer-grid {
+  width: min(860px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+textarea {
+  min-width: 0;
+  min-height: 48px;
+  height: auto;
+  max-height: min(180px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5 - 96px));
+  resize: none;
+  overflow-y: hidden;
+  border: 1px solid #b9c6ca;
+  border-radius: 8px;
+  padding: 13px;
+  background: #ffffff;
+  color: #1e252b;
+  line-height: 1.35;
+}
+
+textarea:focus {
+  outline: 2px solid #2d6cdf;
+  outline-offset: 1px;
+}
+
+textarea:disabled {
+  color: #667684;
+  background: #edf1f3;
+}
+
+.send-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 88px;
+  min-height: 44px;
+  padding: 0 14px;
+}
+
+.composer-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #b9c6ca;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1e252b;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.composer-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.composer-action-button:hover,
+.composer-menu-item:hover {
+  border-color: #175f4f;
+  background: #f1f6f4;
+}
+
+.composer-menu {
+  width: min(860px, 100%);
+  margin: 0 auto 8px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.composer-menu-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  border: 1px solid #b9c6ca;
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #ffffff;
+  color: #1e252b;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+
+.composer-attachment-status {
+  width: min(860px, 100%);
+  margin: 8px auto 0;
+  color: #40515f;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.composer-style-glass-soft textarea,
+.composer-style-glass-soft .composer-action-button,
+.composer-style-glass-soft .composer-menu-item,
+.composer-style-glass-clear textarea,
+.composer-style-glass-clear .composer-action-button,
+.composer-style-glass-clear .composer-menu-item {
+  background: rgba(255, 255, 255, 0.74);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  backdrop-filter: blur(12px) saturate(1.2);
+}
+
+.composer-style-glass-clear textarea,
+.composer-style-glass-clear .composer-action-button,
+.composer-style-glass-clear .composer-menu-item {
+  background: rgba(255, 255, 255, 0.52);
+}
+
+.composer-style-bubble .composer-grid {
+  border: 1px solid #d6dde1;
+  border-radius: 999px;
+  padding: 6px;
+  background: #f7f8fa;
+}
+
+.composer-style-bubble textarea {
+  min-height: 42px;
+  border-color: transparent;
+  border-radius: 999px;
+  resize: none;
+}
+
+.send-button:disabled {
+  border-color: #b9c6ca;
+  background: #a9b6bb;
+  cursor: not-allowed;
+}
+
+.send-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: send-spinner-rotate 0.85s linear infinite;
+}
+
+@keyframes send-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Issue #388: let the topbar's own measured width decide when labels leave the
+ * action row. This catches wide but crowded desktop shells such as browser
+ * chrome, embedded webviews, and sidebars before any action can be clipped. */
+@container formal-ai-topbar (max-width: 1900px) {
+  .topbar-actions {
+    gap: 8px;
+  }
+
+  .topbar-actions .btn-label {
+    display: none;
+  }
+
+  .topbar-actions .mode-toggle,
+  .topbar-actions .diagnostics-toggle,
+  .topbar-actions .mode-option,
+  .topbar-actions .report-button,
+  .topbar-actions .source-code-button,
+  .topbar-actions .download-button,
+  .topbar-actions .memory-button {
+    min-width: 0;
+    padding: 0 10px;
+  }
+}
+
+/* Issue #153: desktop overflow first keeps the canonical controls visible and
+ * switches action labels to icon-only before any button can be clipped. The
+ * mobile drawer carries the full action list once the topbar gets tight enough
+ * that lower-priority actions have to leave the row. */
+@media (max-width: 1500px) {
+  .topbar-actions {
+    gap: 8px;
+  }
+
+  .topbar-actions .btn-label {
+    display: none;
+  }
+
+  .topbar-actions .mode-toggle,
+  .topbar-actions .diagnostics-toggle,
+  .topbar-actions .mode-option,
+  .topbar-actions .report-button,
+  .topbar-actions .source-code-button,
+  .topbar-actions .download-button,
+  .topbar-actions .memory-button {
+    min-width: 0;
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .topbar {
+    gap: 10px;
+  }
+
+  /* Issue #513: the mode status label is a text status badge like the demo and
+   * memory badges, so it leaves the icon-only action row at the same width they
+   * do. This also keeps the row single-line for the Issue #94 wrap check. */
+  .demo-status,
+  .desktop-status,
+  .memory-status,
+  .mode-status {
+    display: none;
+  }
+}
+
+@media (max-width: 820px) {
+  .topbar {
+    min-height: 58px;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .status {
+    display: none;
+  }
+
+  .brand {
+    display: none;
+  }
+
+  .brand strong {
+    white-space: nowrap;
+  }
+
+  .topbar-actions {
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: 6px;
+    overflow: hidden;
+  }
+
+  .demo-status,
+  .desktop-status,
+  .topbar-actions [data-menu-priority="4"],
+  .topbar-actions [data-menu-priority="5"],
+  .topbar-actions [data-menu-priority="6"],
+  .topbar-actions [data-menu-priority="7"] {
+    display: none;
+  }
+
+  .memory-status {
+    display: none;
+  }
+
+  /* Issue #27: icon-only topbar on mobile so the chat surface gets the bulk
+   * of the vertical space. Buttons keep an aria-label / title pair so screen
+   * readers and hover tooltips still expose the full action name. */
+  .topbar-actions .btn-label {
+    display: none;
+  }
+
+  .topbar-actions .mode-toggle,
+  .topbar-actions .diagnostics-toggle,
+  .topbar-actions .mode-option,
+  .topbar-actions .report-button,
+  .topbar-actions .source-code-button,
+  .topbar-actions .download-button,
+  .topbar-actions .memory-button {
+    min-width: 0;
+    padding: 0 10px;
+  }
+
+  /* Issue #153: on mobile the desktop sidebar toggle disappears — the
+   * hamburger drawer drives all sidebar visibility there. */
+  .sidebar-toggle {
+    display: none;
+  }
+
+  .mobile-menu-toggle {
+    display: inline-flex;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .context-resizer {
+    display: none;
+  }
+
+  /* Issue #27: the sidebar slides in over the chat as a drawer rather than
+   * eating into the message viewport. */
+  .context-panel,
+  .context-panel.is-desktop-collapsed {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    width: 100vw;
+    width: var(--formal-ai-viewport-width, 100vw);
+    max-height: none;
+    border-right: 1px solid #d6dde1;
+    border-bottom: 0;
+    background: #f7f8fa;
+    transform: translateX(-100%);
+    transition: transform 200ms ease;
+    box-shadow: 4px 0 18px rgba(15, 30, 40, 0.18);
+    display: flex;
+  }
+
+  .context-panel.is-mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Issue #153: on mobile the desktop collapse flag is irrelevant — the
+   * drawer's visibility is owned by `.is-mobile-open` alone. */
+  .workspace.sidebar-collapsed {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .drawer-brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 58px;
+    padding: 10px 18px;
+    border-bottom: 1px solid #d6dde1;
+    background: #fbfcfd;
+  }
+
+  .drawer-brand-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .drawer-brand-copy {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .drawer-brand-copy strong {
+    color: #1e252b;
+    font-size: 17px;
+  }
+
+  .drawer-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+  }
+
+  .drawer-menu-section {
+    display: grid;
+    gap: 8px;
+    padding: 10px 18px 12px;
+    border-bottom: 1px solid #d6dde1;
+    background: #f7f8fa;
+  }
+
+  /* Issue #180: keep the left-menu lists single-column on mobile too. The
+   * old two-column grid wrapped the labels and made the conversation list
+   * scrollable in a tiny strip below the drawer actions. */
+  .drawer-action-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .drawer-action {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 0 10px;
+    text-decoration: none;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .prompt-list {
+    grid-template-columns: 1fr;
+  }
+
+  .messages {
+    padding: 18px 12px;
+  }
+
+  .message {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .message.user {
+    grid-template-columns: minmax(0, 1fr) 32px;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .composer {
+    max-height: calc(var(--formal-ai-viewport-height, 100dvh) * 0.5);
+    padding: 8px 10px max(8px, env(safe-area-inset-bottom));
+  }
+
+  .composer-grid {
+    grid-template-columns: 42px minmax(0, 1fr) 42px;
+    gap: 6px;
+  }
+
+  textarea {
+    min-height: 42px;
+    height: auto;
+    max-height: min(132px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5 - 64px));
+    padding: 11px;
+    resize: none;
+  }
+
+  .send-button {
+    width: 42px;
+    min-width: 42px;
+    min-height: 42px;
+    padding: 0;
+    border-radius: 8px;
+  }
+
+  .composer-action-button {
+    width: 42px;
+    height: 42px;
+    font-size: 21px;
+  }
+
+  .send-label {
+    display: none;
+  }
+
+  .send-icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .composer-menu {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .composer-menu-item {
+    min-height: 36px;
+    padding: 7px 8px;
+  }
+}
+
+.tool-registry {
+  margin-top: 0;
+  min-width: 0;
+}
+
+.tool-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.tool {
+  min-width: 0;
+  border: 1px solid rgba(127, 127, 127, 0.2);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tool-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.tool-head strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.tool-mode {
+  flex: 0 1 auto;
+  max-width: 100%;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--fa-tool-mode-bg);
+  color: var(--fa-tool-mode-text);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.tool-mode-agent .tool-mode {
+  background: var(--fa-tool-mode-agent-bg);
+  color: var(--fa-tool-mode-agent-text);
+}
+
+.tool-desc {
+  margin: 4px 0 0;
+  font-size: 12px;
+  opacity: 0.75;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 520px) {
+  .prompt-list {
+    grid-template-columns: 1fr;
+  }
+
+  /* Issue #27: drop the brand wordmark on the narrowest viewports so the
+   * topbar holds the FA logo + icon actions + hamburger on a single row. */
+  .brand {
+    display: none;
+  }
+
+  /* Issue #27: collapse the icon-only buttons even tighter so a row of six
+   * fits on a 360px-wide handset alongside the hamburger toggle. */
+  .topbar-actions .mode-toggle,
+  .topbar-actions .diagnostics-toggle,
+  .topbar-actions .mode-option,
+  .topbar-actions .report-button,
+  .topbar-actions .memory-button {
+    padding: 0 8px;
+    min-height: 36px;
+  }
+
+  .mobile-menu-toggle {
+    padding: 0 8px;
+    min-height: 36px;
+  }
+}

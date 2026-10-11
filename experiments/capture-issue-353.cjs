@@ -1,6 +1,6 @@
 // Capture issue-353 PR screenshots: the same committed web chat running inside a
 // VS Code Webview through the `window.FormalAiDesktop` bridge. We reuse the exact
-// injection the e2e spec (tests/e2e/tests/issue-353.spec.js) verifies — a fake
+// injection the e2e spec (tests/e2e/tests/vscode-extension-bridge.spec.js) verifies — a fake
 // bridge whose getStatus() returns a host status — so the screenshots show the
 // real surface labelling, not a mock-up.
 //

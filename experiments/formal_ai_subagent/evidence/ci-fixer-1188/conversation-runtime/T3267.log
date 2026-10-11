@@ -1,0 +1,203 @@
+>> bash {"command":"node --test rust/tests/web/worker-conversation-history.test.mjs rust/tests/web/worker-native-handler-parity.test.mjs"}
+   Output: TAP version 13
+   # Subtest: whole original native history assertions: solve_with_history_searches_english_dialog_history_by_term
+   ok 1 - whole original native history assertions: solve_with_history_searches_english_dialog_history_by_term
+     ---
+     duration_ms: 721.989625
+     ...
+   # Subtest: whole original native history assertions: solve_with_history_reports_no_dialog_history_matches
+   ok 2 - whole original native history assertions: solve_with_history_reports_no_dialog_history_matches
+     ---
+     duration_ms: 608.414125
+     ...
+   # Subtest: whole original native history assertions: solve_with_history_searches_dialog_history_in_russian
+   ok 3 - whole original native history assertions: solve_with_history_searches_dialog_history_in_russian
+     ---
+     duration_ms: 673.792333
+     ...
+   # Subtest: whole original native history assertions: solve_with_history_searches_dialog_history_in_hindi
+   ok 4 - whole original native history assertions: solve_with_history_searches_dialog_history_in_hindi
+     ---
+     duration_ms: 684.087083
+     ...
+   # Subtest: whole original native history assertions: solve_with_history_searches_dialog_history_in_chinese
+   ok 5 - whole original native history assertions: solve_with_history_searches_dialog_history_in_chinese
+     ---
+     duration_ms: 749.867875
+     ...
+   # Subtest: whole original native history assertions: solve_with_history_accepts_other_conversation_query_forms
+   ok 6 - whole original native history assertions: solve_with_history_accepts_other_conversation_query_forms
+     ---
+     duration_ms: 680.467166
+     ...
+   # Subtest: search result has exact native English bytes and only actual turn matches
+   ok 7 - search result has exact native English bytes and only actual turn matches
+     ---
+     duration_ms: 616.2985
+     ...
+   # Subtest: empty query and unrelated syntax do not invent history or persisted memory
+   ok 8 - empty query and unrelated syntax do not invent history or persisted memory
+     ---
+     duration_ms: 885.737208
+     ...
+   # Subtest: seeded Spanish slots and inserted template-like message bytes remain genuine history
+   not ok 9 - seeded Spanish slots and inserted template-like message bytes remain genuine history
+     ---
+     duration_ms: 631.044542
+     location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/worker-conversation-history.test.mjs:68:1'
+     failureType: 'testCodeFailure'
+     error: |-
+       The expression evaluated to a falsy value:
+       
+         assert.ok(spanish.content.startsWith('Se encontraron 1 menciones'))
+       
+     code: 'ERR_ASSERTION'
+     name: 'AssertionError'
+     expected: true
+     actual: false
+     operator: '=='
+     stack: |-
+       TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/worker-conversation-history.test.mjs:76:10)
+       async Test.run (node:internal/test_runner/test:797:9)
+       async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+     ...
+   # Subtest: whole original native assertion program: english_follow_up_modification_emits_substitution_plan_trace
+   ok 10 - whole original native assertion program: english_follow_up_modification_emits_substitution_plan_trace
+     ---
+     duration_ms: 1513.266291
+     ...
+   # Subtest: whole original native assertion program: natural_language_code_execution_gate_is_stable_across_supported_language_contexts
+   ok 11 - whole original native assertion program: natural_language_code_execution_gate_is_stable_across_supported_language_contexts
+     ---
+     duration_ms: 1423.115708
+     ...
+   # Subtest: whole original native assertion program: pronoun_followup_resolves_prior_rust_topic_for_creator_question
+   ok 12 - whole original native assertion program: pronoun_followup_resolves_prior_rust_topic_for_creator_question
+     ---
+     duration_ms: 1574.119375
+     ...
+   # Subtest: loaded seeded pronoun contexts survive terminal punctuation and Unicode boundaries
+   ok 13 - loaded seeded pronoun contexts survive terminal punctuation and Unicode boundaries
+     ---
+     duration_ms: 405.419916
+     ...
+   # Subtest: actual matching seed is required before any coreference event is recorded
+   ok 14 - actual matching seed is required before any coreference event is recorded
+     ---
+     duration_ms: 764.8815
+     ...
+   1..14
+   # tests 14
+   # suites 0
+   # pass 13
+   # fail 1
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 6371.107625
+   
+   Error: 
+   Exit Code: 1
+== answer ==
+The command failed: `node --test rust/tests/web/worker-conversation-history.test.mjs rust/tests/web/worker-native-handler-parity.test.mjs` exited with code 1.
+
+```text
+TAP version 13
+# Subtest: whole original native history assertions: solve_with_history_searches_english_dialog_history_by_term
+ok 1 - whole original native history assertions: solve_with_history_searches_english_dialog_history_by_term
+  ---
+  duration_ms: 721.989625
+  ...
+# Subtest: whole original native history assertions: solve_with_history_reports_no_dialog_history_matches
+ok 2 - whole original native history assertions: solve_with_history_reports_no_dialog_history_matches
+  ---
+  duration_ms: 608.414125
+  ...
+# Subtest: whole original native history assertions: solve_with_history_searches_dialog_history_in_russian
+ok 3 - whole original native history assertions: solve_with_history_searches_dialog_history_in_russian
+  ---
+  duration_ms: 673.792333
+  ...
+# Subtest: whole original native history assertions: solve_with_history_searches_dialog_history_in_hindi
+ok 4 - whole original native history assertions: solve_with_history_searches_dialog_history_in_hindi
+  ---
+  duration_ms: 684.087083
+  ...
+# Subtest: whole original native history assertions: solve_with_history_searches_dialog_history_in_chinese
+ok 5 - whole original native history assertions: solve_with_history_searches_dialog_history_in_chinese
+  ---
+  duration_ms: 749.867875
+  ...
+# Subtest: whole original native history assertions: solve_with_history_accepts_other_conversation_query_forms
+ok 6 - whole original native history assertions: solve_with_history_accepts_other_conversation_query_forms
+  ---
+  duration_ms: 680.467166
+  ...
+# Subtest: search result has exact native English bytes and only actual turn matches
+ok 7 - search result has exact native English bytes and only actual turn matches
+  ---
+  duration_ms: 616.2985
+  ...
+# Subtest: empty query and unrelated syntax do not invent history or persisted memory
+ok 8 - empty query and unrelated syntax do not invent history or persisted memory
+  ---
+  duration_ms: 885.737208
+  ...
+# Subtest: seeded Spanish slots and inserted template-like message bytes remain genuine history
+not ok 9 - seeded Spanish slots and inserted template-like message bytes remain genuine history
+  ---
+  duration_ms: 631.044542
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/worker-conversation-history.test.mjs:68:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(spanish.content.startsWith('Se encontraron 1 menciones'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/worker-conversation-history.test.mjs:76:10)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: whole original native assertion program: english_follow_up_modification_emits_substitution_plan_trace
+ok 10 - whole original native assertion program: english_follow_up_modification_emits_substitution_plan_trace
+  ---
+  duration_ms: 1513.266291
+  ...
+# Subtest: whole original native assertion program: natural_language_code_execution_gate_is_stable_across_supported_language_contexts
+ok 11 - whole original native assertion program: natural_language_code_execution_gate_is_stable_across_supported_language_contexts
+  ---
+  duration_ms: 1423.115708
+  ...
+# Subtest: whole original native assertion program: pronoun_followup_resolves_prior_rust_topic_for_creator_question
+ok 12 - whole original native assertion program: pronoun_followup_resolves_prior_rust_topic_for_creator_question
+  ---
+  duration_ms: 1574.119375
+  ...
+# Subtest: loaded seeded pronoun contexts survive terminal punctuation and Unicode boundaries
+ok 13 - loaded seeded pronoun contexts survive terminal punctuation and Unicode boundaries
+  ---
+  duration_ms: 405.419916
+  ...
+# Subtest: actual matching seed is required before any coreference event is recorded
+ok 14 - actual matching seed is required before any coreference event is recorded
+  ---
+  duration_ms: 764.8815
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 13
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6371.107625
+```
+
+I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.

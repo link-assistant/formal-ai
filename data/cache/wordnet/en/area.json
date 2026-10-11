@@ -1,0 +1,81 @@
+{
+  "lemma": "area",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-08514304-n",
+      "partOfSpeech": "n",
+      "definition": "a particular geographical region of indefinite boundary (usually serving some special purpose or distinguished by its people or culture or geography)",
+      "examples": [
+        "it was a mountainous area",
+        "Bible country"
+      ],
+      "synonyms": [
+        "country"
+      ]
+    },
+    {
+      "id": "oewn-05823643-n",
+      "partOfSpeech": "n",
+      "definition": "a subject of study",
+      "examples": [
+        "it was his area of specialization",
+        "areas of interest include …"
+      ]
+    },
+    {
+      "id": "oewn-05229188-n",
+      "partOfSpeech": "n",
+      "definition": "a part of an animal that has a special function or is supplied by a given artery or nerve",
+      "examples": [
+        "in the abdominal region"
+      ],
+      "synonyms": [
+        "region"
+      ]
+    },
+    {
+      "id": "oewn-14537641-n",
+      "partOfSpeech": "n",
+      "definition": "a particular environment or walk of life",
+      "examples": [
+        "his social sphere is limited",
+        "it was a closed area of employment",
+        "he's out of my orbit"
+      ],
+      "synonyms": [
+        "sphere",
+        "domain",
+        "orbit",
+        "field",
+        "arena"
+      ]
+    },
+    {
+      "id": "oewn-02738693-n",
+      "partOfSpeech": "n",
+      "definition": "a part of a structure having some specific characteristic or function",
+      "examples": [
+        "the spacious cooking area provided plenty of room for servants"
+      ]
+    },
+    {
+      "id": "oewn-05135784-n",
+      "partOfSpeech": "n",
+      "definition": "the extent of a 2-dimensional surface enclosed within a boundary",
+      "examples": [
+        "the area of a rectangle",
+        "it was about 500 square feet in area"
+      ],
+      "synonyms": [
+        "expanse",
+        "surface area"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+view
+  id M-2d79127a8634
+  lemma character
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an imaginary person represented in a work of fiction (play or film or story)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a characteristic property that defines the apparent individual nature of something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the inherent complex of attributes that determines a persons moral and ethical actions and reactions"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an actor's portrayal of someone in a play"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a person of a specified kind (usually with many eccentricities)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "good repute"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a formal recommendation by a former employer to a potential future employer describing the person's qualifications and dependability"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a written symbol that is used to represent speech"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(genetics) an attribute (structural or functional) that is determined by a gene or group of genes"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "engrave or inscribe characters on"
+    provenance (wordnet)

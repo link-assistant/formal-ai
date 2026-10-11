@@ -1,0 +1,5 @@
+| Task | Before | After | Evidence |
+| --- | --- | --- | --- |
+| T3808: diagnose unchanged fetched-issue auxiliary fixture | Open | Open: one Read, full source echo; no useful causal diagnosis or implementation, G112 Open | [request](raw/T3808-request.json.gz), [transcript](raw/T3808-transcript.json.gz) |
+| T3809: reviewed real auxiliary replay, original safety assertions | Fail: fake acknowledgement cannot certify plan bytes | Pass: fetched-issue-auxiliary-safety.test.mjs 4/4; unchanged original task/prose reaches Planned-not-executed after actual append; native execution pending CI | [request](raw/T3809-request.json.gz), [transcript](raw/T3809-transcript.json.gz) |
+| T3810: reviewed structured list fresh-digest receipt migration | Fail: historical cat receipt expected despite fresh digest route | Pass: algorithm-learning-command-receipts.test.mjs and 3 closest suites 46/46; exact source/path/hash retained; native execution pending CI | [request](raw/T3810-request.json.gz), [transcript](raw/T3810-transcript.json.gz) |

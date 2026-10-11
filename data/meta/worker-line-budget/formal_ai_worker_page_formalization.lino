@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_page_formalization.js"
+  ceiling 121
+  rationale "Browser twin of try_page_formalization_with_client and answer_page_formalization in rust/src/solver_handlers/web_requests.rs (R1188-U18, 2026-10-09): formalize <url> fetches the page through the URL-fetch path tryFetch uses, reads its prose (twin of web_formalize::page_prose) with the JavaScript root's own page formalizer (crate/page_formalization.mjs through formal_ai_worker_crate_modules.js) and answers its pageAnswer in the request's language; offline or on a refused fetch it says so. The vocabulary is the page_formalization meaning of data/seed/meanings-web-navigation.lino and the page_formalization_* responses of multilingual-responses-web.lino."

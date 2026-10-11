@@ -1,0 +1,72 @@
+[
+  {
+    "path": "js/agentic/crate/es_tokenizer.mjs",
+    "sha256": "5e1119d443dd83e1ae64114d39c44c4be531cc1fc571edaea266c47e2b381881",
+    "bytes": 12017
+  },
+  {
+    "path": "js/agentic/module_function/discovery.mjs",
+    "sha256": "1657794357048c77b154bff906788fb12eb384eab9caedf379353ec18b7ae849",
+    "bytes": 4542
+  },
+  {
+    "path": "js/agentic/module_function/callable_catalog.mjs",
+    "sha256": "e7cb642b0a6b1d9863372a342b4da68001324e5a4202114c4ebf7530eb9324f1",
+    "bytes": 10041
+  },
+  {
+    "path": "js/agentic/module_function/source_contract.mjs",
+    "sha256": "6dc4f69cf96e4de059344db8dd14a316a576efe2ecc99c9e456b1c45b1a7df00",
+    "bytes": 5361
+  },
+  {
+    "path": "rust/src/agentic_coding/module_function.rs",
+    "sha256": "3eb1b27276f4af51392efe3b2f10c7077c2d199e7c9db5fda11622fbb96692b7",
+    "bytes": 30176
+  },
+  {
+    "path": "rust/src/agentic_coding/module_function/discovery.rs",
+    "sha256": "35edeaec305021ecd3a4d2bf54dca76b0bac58f4b6894ba2397372767a6cb0a9",
+    "bytes": 10284
+  },
+  {
+    "path": "rust/src/agentic_coding/module_function/callable_catalog.rs",
+    "sha256": "2a0a6d417bad800d02822fc59f30bb95b70cae9ce08311fabed4c5e83ceb7bac",
+    "bytes": 17527
+  },
+  {
+    "path": "rust/src/agentic_coding/module_function/source_contract.rs",
+    "sha256": "61897c14ac7cec6b24867b7b7f313c4b9fe04b193ff537aee2754a830af6f2bb",
+    "bytes": 8122
+  },
+  {
+    "path": "rust/tests/fixtures/observed-callable-discovery.rs",
+    "sha256": "07ec55ca855828b76c02dc8960849eb0d20999a0983df6d2cd2fd3451851173f",
+    "bytes": 4102
+  },
+  {
+    "path": "rust/tests/fixtures/observed-callable-contracts.rs",
+    "sha256": "f29f6079902d4b92220c98b5dcede639058f3c6e84121a3379ca7319b6c96909",
+    "bytes": 4220
+  },
+  {
+    "path": "rust/tests/unit/agentic-coding/pull_request_1188_module_function.rs",
+    "sha256": "d0a31384b4b8968feb22d1af57c0a6c6b90644ac6785bf550ce72f4154be36bb",
+    "bytes": 9754
+  },
+  {
+    "path": "rust/tests/web/observed-callable-discovery.test.mjs",
+    "sha256": "8a6819dc20be919ce1ca3679324452a137b317ffc46395525aafc8ebb6e06490",
+    "bytes": 10475
+  },
+  {
+    "path": "rust/tests/web/observed-callable-contracts.test.mjs",
+    "sha256": "38b040e94e4cdf314a36ee4d37b9e266b4fa64b8056ab3a75b77abab85a34351",
+    "bytes": 9447
+  },
+  {
+    "path": "rust/tests/web/observed-token-spans.test.mjs",
+    "sha256": "197def91a35c4eb9b96ab6a4911e02ae63901116ecf5d7db62e7b4fac58becdb",
+    "bytes": 2354
+  }
+]

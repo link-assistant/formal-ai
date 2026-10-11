@@ -4,7 +4,7 @@ use super::*;
 
 #[test]
 fn prepares_one_version_verifies_its_archive_and_can_resume_it() {
-    let workflow = release_workflow();
+    let workflow = crate::ci_gates::staged_release_operations::release_operation_workflow();
     let auto_release = job_block(&workflow, "auto-release");
 
     let auto_version = workflow_step_block(auto_release, "Collect changelog and bump version");
@@ -44,7 +44,34 @@ fn prepares_one_version_verifies_its_archive_and_can_resume_it() {
         "Configure Docker Hub publishing",
         "Create GitHub Release",
     ] {
-        let step = workflow_step_block(auto_release, step_name);
+        // The prepared image factory now owns the metadata operation; keep the
+        // original logical operand and its publication-state assertions.
+        let current_step_name = if step_name == "Extract GHCR Docker metadata" {
+            "Publish Docker image to GHCR"
+        } else {
+            step_name
+        };
+        let step = workflow_step_block(auto_release, current_step_name);
+        if step_name == "Extract GHCR Docker metadata" {
+            assert!(
+                step.contains("node scripts/release-image-factory.mjs publish prepared-release"),
+                "metadata must bind to the actual prepared publication operation"
+            );
+            let factory = fs::read_to_string(format!(
+                "{}/../scripts/release-image-factory.mjs",
+                env!("CARGO_MANIFEST_DIR")
+            ))
+            .unwrap();
+            assert!(factory.contains("for(const suffix of [version,'latest'])"));
+            let tag = factory
+                .find("invoke(['tag',local,image+':'+suffix])")
+                .unwrap();
+            let push = factory.find("invoke(['push',image+':'+suffix])").unwrap();
+            assert!(
+                tag < push,
+                "both metadata suffixes must be tagged before pushing"
+            );
+        }
         assert!(
             step.contains("steps.prepared.outputs.crate_published == 'true'"),
             "auto-release {step_name} should use the prepared version's publication state"
@@ -83,7 +110,17 @@ fn prepares_one_version_verifies_its_archive_and_can_resume_it() {
         "Configure Docker Hub publishing",
         "Create GitHub Release",
     ] {
-        let step = workflow_step_block(manual_release, step_name);
+        let current_step_name = if step_name == "Extract GHCR Docker metadata" {
+            "Publish Docker image to GHCR"
+        } else {
+            step_name
+        };
+        let step = workflow_step_block(manual_release, current_step_name);
+        if step_name == "Extract GHCR Docker metadata" {
+            assert!(
+                step.contains("node scripts/release-image-factory.mjs publish prepared-release")
+            );
+        }
         assert!(
             step.contains("steps.publish-crate.outputs.publish_result == 'success'"),
             "manual-release {step_name} should wait for a successful crates.io publish before creating downstream artifacts"

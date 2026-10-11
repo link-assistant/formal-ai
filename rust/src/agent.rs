@@ -222,6 +222,11 @@ impl AgentWorkspace {
         self.command_results.last()
     }
 
+    /// Read observed bytes using the same workspace path restrictions as writes.
+    pub fn read_file(&self, path: &str) -> Result<String, AgentError> {
+        Ok(fs::read_to_string(self.workspace_path(path)?)?)
+    }
+
     pub fn create_file(&mut self, path: &str, content: &str) {
         let result = self.write_file(path, content);
         self.record_fs_action(AgentActionKind::CreateFile, path, result);
@@ -367,6 +372,18 @@ impl AgentWorkspace {
         }
         let mut child = command.spawn()?;
         let started = Instant::now();
+        let stdout_reader = read_command_output(
+            child
+                .stdout
+                .take()
+                .ok_or_else(|| io::Error::from(io::ErrorKind::BrokenPipe))?,
+        );
+        let stderr_reader = read_command_output(
+            child
+                .stderr
+                .take()
+                .ok_or_else(|| io::Error::from(io::ErrorKind::BrokenPipe))?,
+        );
         let deadline_reached = loop {
             if child.try_wait()?.is_some() {
                 break false;
@@ -377,19 +394,21 @@ impl AgentWorkspace {
             }
             thread::sleep(Duration::from_millis(10));
         };
-        let output = child.wait_with_output()?;
+        let status = child.wait()?;
+        let stdout = finish_command_output(stdout_reader)?;
+        let stderr = finish_command_output(stderr_reader)?;
         // The child can exit after `try_wait` observes it running but before
         // `kill` reaches the kernel. On macOS, killing that unreaped process
         // can still return success even though its eventual status is exit 0.
         // The reaped status is authoritative: a successful child was not
         // terminated by our deadline.
-        let timed_out = command_timed_out(deadline_reached, output.status.success());
+        let timed_out = command_timed_out(deadline_reached, status.success());
         trace_command(&program_path, command_budget, started.elapsed(), timed_out);
         Ok(AgentCommandResult {
             command: command_line.to_owned(),
-            status_code: output.status.code(),
-            stdout: String::from_utf8_lossy(&output.stdout).to_string(),
-            stderr: String::from_utf8_lossy(&output.stderr).to_string(),
+            status_code: status.code(),
+            stdout: String::from_utf8_lossy(&stdout).to_string(),
+            stderr: String::from_utf8_lossy(&stderr).to_string(),
             timed_out,
         })
     }
@@ -733,7 +752,8 @@ fn command_environment() -> [(&'static str, PathBuf); 1] {
     [("TMPDIR", std::env::temp_dir())]
 }
 
-/// Report what a command actually cost — only when `FORMAL_AI_TRACE_COMMANDS=1`.
+/// Report what a command actually cost — only when `FORMAL_AI_TRACE_COMMANDS`
+/// is set to a true spelling (`1`, `true`, `yes`, `on`; issue #1181).
 ///
 /// Off by default, in the same opt-in style as `FORMAL_AI_TRACE_REQUESTS` and
 /// `FORMAL_AI_TRACE_SLOW_INIT`. A timeout tells you a deadline was reached but
@@ -742,7 +762,7 @@ fn command_environment() -> [(&'static str, PathBuf); 1] {
 /// how long it ran, so the next occurrence on a runner nobody can attach a
 /// debugger to still identifies itself.
 fn trace_command(program_path: &Path, budget: Duration, elapsed: Duration, timed_out: bool) {
-    if std::env::var("FORMAL_AI_TRACE_COMMANDS").as_deref() == Ok("1") {
+    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_COMMANDS") {
         eprintln!(
             "[agent-command] {} ran {} ms of a {} ms budget (timed_out={timed_out})",
             program_path.display(),
@@ -750,6 +770,24 @@ fn trace_command(program_path: &Path, budget: Duration, elapsed: Duration, timed
             budget.as_millis()
         );
     }
+}
+
+// Drain both pipes while the child runs: waiting first can block a writer
+// against a full pipe and turn a working command into a deadline failure.
+fn read_command_output(
+    mut stream: impl io::Read + Send + 'static,
+) -> thread::JoinHandle<io::Result<Vec<u8>>> {
+    thread::spawn(move || {
+        let mut bytes = Vec::new();
+        stream.read_to_end(&mut bytes)?;
+        Ok(bytes)
+    })
+}
+
+fn finish_command_output(reader: thread::JoinHandle<io::Result<Vec<u8>>>) -> io::Result<Vec<u8>> {
+    reader
+        .join()
+        .map_err(|_| io::Error::from(io::ErrorKind::Other))?
 }
 
 const fn command_timed_out(deadline_reached: bool, status_success: bool) -> bool {

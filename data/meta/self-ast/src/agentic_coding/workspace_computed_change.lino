@@ -1,0 +1,151 @@
+self_ast_census
+  target src/agentic_coding/workspace_computed_change.rs
+  language rust
+  fidelity full_ast
+  byte_len 38600
+  line_count 989
+  content_id source_module_031dcac0c7aec953
+  symbol_count 36
+  symbols
+    const MAX_ANCHOR_BYTES 39 39
+    enum Computation 43 88
+    struct ComputedChange 93 98
+    function grounded_computed_change 101 108
+    function grounded_typo_fix 114 129
+    function mentions 131 133
+    const SENTENCE_MARKS 136 136
+    function sentence_words 144 163
+    function edits_inside_a_file 170 188
+    function names_line 192 197
+    function without_path_words 203 219
+    function outside_quotes 222 225
+    function quoted_payload_and_path 230 236
+    function grounded_replace_list 243 258
+    function grounded_line_change 260 268
+    function grounded_end_insertion 272 337
+    function quoted_lines_and_path 341 348
+    function grounded_removal 352 375
+    function grounded_declaration_removal 382 420
+    function grounded_setting 430 463
+    function grounded_line_replacement 470 522
+    function context_lines_edit 530 557
+    function absent_text_answer 561 578
+    function compute 581 650
+    function bounded 654 660
+    function edit 663 679
+    function appended_block 689 696
+    function line_indentation 699 704
+    function inserted_at_end 706 716
+    function compact_end_edit 720 753
+    function reported 759 800
+    function reported_values 803 814
+    function plan_computed_change_step 818 896
+    function line_payload_and_path 902 951
+    function block_target 955 970
+    function blank_line_and_path 974 989
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 27914
+    named_node_count 5699
+    distinct_node_kinds 97
+    node_kinds
+      arguments 468
+      array_expression 6
+      array_type 4
+      assignment_expression 1
+      attribute 2
+      attribute_item 2
+      binary_expression 68
+      block 121
+      boolean_literal 6
+      break_expression 1
+      call_expression 468
+      char_literal 20
+      closure_expression 75
+      closure_parameters 75
+      compound_assignment_expr 2
+      const_item 2
+      continue_expression 4
+      crate 8
+      declaration_list 2
+      doc_comment 117
+      else_clause 15
+      enum_item 1
+      enum_variant 10
+      enum_variant_list 1
+      escape_sequence 4
+      expression_statement 107
+      field_declaration 25
+      field_declaration_list 10
+      field_expression 341
+      field_identifier 407
+      field_initializer 40
+      field_initializer_list 19
+      field_pattern 31
+      for_expression 4
+      function_item 32
+      function_modifiers 1
+      generic_function 1
+      generic_type 48
+      identifier 1269
+      if_expression 52
+      impl_item 2
+      index_expression 20
+      inner_doc_comment_marker 10
+      integer_literal 13
+      let_chain 5
+      let_condition 13
+      let_declaration 83
+      lifetime 7
+      lifetime_parameter 1
+      line_comment 137
+      macro_invocation 14
+      match_arm 29
+      match_block 8
+      match_expression 8
+      match_pattern 29
+      mutable_specifier 11
+      or_pattern 7
+      ordered_field_declaration_list 1
+      outer_doc_comment_marker 107
+      parameter 49
+      parameters 32
+      parenthesized_expression 17
+      primitive_type 72
+      range_expression 16
+      reference_expression 69
+      reference_type 60
+      remaining_field_pattern 13
+      return_expression 37
+      scoped_identifier 131
+      scoped_type_identifier 34
+      scoped_use_list 7
+      self 22
+      self_parameter 6
+      shorthand_field_identifier 30
+      shorthand_field_initializer 22
+      slice_pattern 5
+      source_file 1
+      string_content 67
+      string_literal 72
+      struct_expression 19
+      struct_item 1
+      struct_pattern 25
+      super 57
+      token_tree 56
+      try_expression 21
+      tuple_expression 16
+      tuple_pattern 34
+      tuple_struct_pattern 20
+      tuple_type 14
+      type_arguments 49
+      type_identifier 162
+      type_parameters 1
+      unary_expression 49
+      use_declaration 14
+      use_list 7
+      visibility_modifier 15
+      while_expression 2

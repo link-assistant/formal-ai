@@ -1,0 +1,3 @@
+formalization_rml_absent	"rml не найден в PATH, а FORMAL_AI_RML не указывает на исполняемый файл, поэтому утверждение не экспортировано через relative-meta-logic."
+formalization_rml_outside_subset	"Прочтение {quantifier} выходит за пределы подмножества экспорта relative-meta-logic, где для него нет связывателя, поэтому rml не запускался."
+formalization_rml_ran	"rml export lean выполнен для {source} и завершился со статусом {exit}; путь к его выводу Lean: {output}."

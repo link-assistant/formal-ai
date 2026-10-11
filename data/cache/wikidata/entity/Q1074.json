@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "皮膚"
+        },
+        "es": {
+          "language": "es",
+          "value": "piel"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "包住脊椎動物的軟層"
+        },
+        "es": {
+          "language": "es",
+          "value": "órgano que cubre el cuerpo de los vertebrados"
         }
       },
       "aliases": {

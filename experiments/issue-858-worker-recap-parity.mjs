@@ -53,6 +53,11 @@ for (const entry of readdirSync(new URL("data/seed/", root), { withFileTypes: tr
   }
 }
 context.hydrateLinoSeedText(rawSeed);
+// The crate response reader uses the same actual loaded seed texts as the
+// browser's loadSeed path; vocabulary hydration alone does not install them.
+context.fixtureSeedTexts = rawSeed;
+vm.runInContext("SEED_RAW = fixtureSeedTexts;", context);
+
 
 const prompt =
   "The user stepped away and is coming back. Recap in under 40 words, 1-2 plain sentences, no markdown. Lead with the overall goal and current task, then the one next action. Skip root-cause narrative, fix internals, secondary to-dos, and em-dash tangents.";
@@ -98,7 +103,7 @@ check("contains no markdown", !/[#`*]|^\s*[-+>]\s/mu.test(content), content);
 const ordinary = context.tryHistorical("Summarize", history);
 check(
   "ordinary summary keeps detailed report",
-  ordinary?.content.startsWith("## Conversation summary"),
+  ordinary?.content.startsWith("Conversation summary: "),
   ordinary?.content,
 );
 

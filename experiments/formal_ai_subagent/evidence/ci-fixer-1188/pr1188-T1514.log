@@ -1,0 +1,199 @@
+>> read {"filePath":"rust/tests/unit/page_formalization_route.rs","file_path":"rust/tests/unit/page_formalization_route.rs","path":"rust/tests/unit/page_formalization_route.rs"}
+   <file>
+   00001| //! R1188-U18: "formalize <url>" and "formalize this page: <url>" are answered
+   00002| //! in chat, in every seeded language, with the statements of the fetched page.
+   00003| //!
+   00004| //! The page is fetched through the URL-fetch path's cached source client, here
+   00005| //! over a fixture transport that serves the Moon page of
+   00006| //! `data/benchmarks/web-formalization/en.lino`, so no test touches the
+   00007| //! network. rust/tests/web/page-formalization-route.test.mjs pins the same
+   00008| //! answers in the browser worker.
+   00009| 
+   00010| use std::path::PathBuf;
+   00011| use std::sync::atomic::{AtomicUsize, Ordering};
+   00012| 
+   00013| use formal_ai::{
+   00014|     CachedSourceClient, EventLog, FetchError, SourceTransport, try_page_formalization_with_client,
+   00015| };
+   00016| 
+   00017| const URL_UNDER_TEST: &str = "https://en.wikipedia.org/wiki/Moon";
+   00018| 
+   00019| /// The bare request for the page under test.
+   00020| const URL_PROMPT: &str = "formalize https://en.wikipedia.org/wiki/Moon";
+   00021| 
+   00022| static TEMP_IDS: AtomicUsize = AtomicUsize::new(0);
+   00023| 
+   00024| /// The paragraphs of the fixture page titled `title`, as the corpus stores them.
+   00025| fn fixture_paragraphs(title: &str) -> Vec<String> {
+   00026|     let corpus = include_str!("../../../data/benchmarks/web-formalization/en.lino");
+   00027|     let heading = format!("  title \"{title}\"");
+   00028|     corpus
+   00029|         .lines()
+   00030|         .skip_while(|line| *line != heading)
+   00031|         .skip(1)
+   00032|         .take_while(|line| line.starts_with("  "))
+   00033|         .filter_map(|line| line.strip_prefix("  paragraph \"")?.strip_suffix('"'))
+   00034|         .map(str::to_owned)
+   00035|         .collect()
+   00036| }
+   00037| 
+   00038| /// Serves the fixture page for its URL and refuses every other one.
+   00039| struct FixtureTransport;
+   00040| 
+   00041| impl SourceTransport for FixtureTransport {
+   00042|     fn get(&self, url: &str) -> Result<Vec<u8>, FetchError> {
+   00043|         if url != URL_UNDER_TEST {
+   00044|             return Err(FetchError::HttpStatus {
+   00045|                 url: url.to_owned(),
+   00046|                 status: 404,
+   00047|             });
+   00048|         }
+   00049|         let paragraphs: String = fixture_paragraphs("Moon")
+   00050|             .iter()
+   00051|             .map(|text| format!("<p>{text}</p>"))
+   00052|             .collect();
+   00053|         Ok(format!("<html><body><h1>Moon</h1>{paragraphs}</body></html>").into_bytes())
+   00054|     }
+   00055| }
+   00056| 
+   00057| /// An empty cache directory of its own.
+   00058| fn temp_cache() -> PathBuf {
+   00059|     let path = std::env::temp_dir().join(format!(
+   00060|         "formal-ai-page-formalization-{}-{}",
+   00061|         std::process::id(),
+   00062|         TEMP_IDS.fetch_add(1, Ordering::SeqCst)
+   00063|     ));
+   00064|     let _ = std::fs::remove_dir_all(&path);
+   00065|     path
+   00066| }
+   00067| 
+   00068| /// The answer to `prompt`, fetched online through the fixture transport.
+   00069| fn answer(prompt: &str, online: bool) -> formal_ai::SymbolicAnswer {
+   00070|     let client = CachedSourceClient::new(temp_cache(), FixtureTransport).with_online(online);
+   00071|     let mut log = EventLog::new();
+   00072|     try_page_formalization_with_client(prompt, &mut log, &client)
+   00073|         .unwrap_or_else(|| panic!("the route should answer: {prompt}"))
+   00074| }
+   00075| 
+   00076| /// The first statement line both runtimes give the Moon page.
+   00077| const FIRST_STATEMENT: &str = "- The Moon is the only natural satellite of Earth. → (moon \
+   00078|      wikidata_property_instance_of unknown:only unknown:natural unknown:satellite name:earth)";
+   00079| 
+   00080| /// Prompts in every seeded language, the first line of the answer and its last.
+   00081| const SUMMARIES: &[(&str, &str, &str)] = &[
+   00082|     (
+   00083|         "formalize this page: https://en.wikipedia.org/wiki/Moon",
+   00084|         "Formalized `https://en.wikipedia.org/wiki/Moon`: 25 sentences became 67 statements. 3 \
+   00085|          sentences are fully formal; 196 of 423 terms have no meaning yet; 61 of 62 facts survive \
+   00086|          the round trip back to text.",
+   00087|         "… and 27 more statements.",
+   00088|     ),
+   00089|     (
+   00090|         "формализуй эту страницу: https://en.wikipedia.org/wiki/Moon",
+   00091|         "Страница `https://en.wikipedia.org/wiki/Moon` формализована: из 25 предложений получено \
+   00092|          67 утверждений. Полностью формальны предложений: 3; терминов без значения: 196 из 423; \
+   00093|          фактов, переживших обратный перевод в текст: 61 из 62.",
+   00094|         "… и ещё утверждений: 27.",
+   00095|     ),
+   00096|     (
+   00097|         "इस पेज को औपचारिक बनाओ: https://en.wikipedia.org/wiki/Moon",
+   00098|         "`https://en.wikipedia.org/wiki/Moon` को औपचारिक बनाया गया: 25 वाक्यों से 67 कथन बने। 3 \
+   00099|          वाक्य पूरी तरह औपचारिक हैं; 423 में से 196 पदों का अभी कोई अर्थ नहीं है; 62 में से 61 \
+   00100|          तथ्य पाठ में वापस बदलने पर बचे रहते हैं।",
+   00101|         "… और 27 कथन।",
+   00102|     ),
+   00103|     (
+   00104|         "形式化这个网页 https://en.wikipedia.org/wiki/Moon",
+   00105|         "已形式化 `https://en.wikipedia.org/wiki/Moon`：25 个句子变为 67 条陈述。3 \
+   00106|          个句子完全形式化；423 个术语中有 196 个尚无含义；62 个事实中有 61 个在转回文本后保留。",
+   00107|         "……另有 27 条陈述。",
+   00108|     ),
+   00109|     (
+   00110|         "formaliza esta página: https://en.wikipedia.org/wiki/Moon",
+   00111|         "Página `https://en.wikipedia.org/wiki/Moon` formalizada: 25 oraciones se convirtieron en \
+   00112|          67 enunciados. Oraciones totalmente formales: 3; términos aún sin significado: 196 de \
+   00113|          423; hechos que sobreviven a la vuelta al texto: 61 de 62.",
+   00114|         "… y 27 enunciados más.",
+   00115|     ),
+   00116| ];
+   00117| 
+   00118| #[test]
+   00119| fn formalize_url_answers_the_statements_of_the_fetched_page_in_every_language() {
+   00120|     for (prompt, summary, more) in SUMMARIES {
+   00121|         let answer = answer(prompt, true);
+   00122|         assert_eq!(answer.intent, "page_formalization", "{prompt}");
+   00123|         let lines: Vec<&str> = answer.answer.split('\n').collect();
+   00124|         assert_eq!(lines[0], *summary, "{prompt}");
+   00125|         assert_eq!(lines[1], "", "{prompt}");
+   00126|         assert_eq!(lines[2], FIRST_STATEMENT, "{prompt}");
+   00127|         assert_eq!(lines.len(), 43, "{prompt}");
+   00128|         assert_eq!(lines.last().copied(), Some(*more), "{prompt}");
+   00129|     }
+   00130| }
+   00131| 
+   00132| #[test]
+   00133| fn the_bare_form_formalizes_too() {
+   00134|     let answer = answer(URL_PROMPT, true);
+   00135|     assert_eq!(answer.intent, "page_formalization");
+   00136|     assert_eq!(answer.answer.split('\n').nth(2), Some(FIRST_STATEMENT));
+   00137| }
+   00138| 
+   00139| #[test]
+   00140| fn a_refused_fetch_says_so_and_formalizes_nothing() {
+   00141|     let answer = answer("formalize https://example.org/missing", true);
+   00142|     assert_eq!(
+   00143|         answer.answer,
+   00144|         "I could not fetch `https://example.org/missing` to formalize it: source answered HTTP \
+   00145|          404 for https://example.org/missing."
+   00146|     );
+   00147| }
+   00148| 
+   00149| #[test]
+   00150| fn offline_with_no_cached_capture_the_answer_says_nothing_was_fetched() {
+   00151|     let answer = answer(URL_PROMPT, false);
+   00152|     assert_eq!(
+   00153|         answer.answer,
+   00154|         "I cannot formalize `https://en.wikipedia.org/wiki/Moon`: the page is not in the source \
+   00155|          cache and live fetching is off, so nothing was fetched."
+   00156|     );
+   00157| }
+   00158| 
+   00159| #[test]
+   00160| fn offline_a_cached_capture_is_formalized() {
+   00161|     let cache = temp_cache();
+   00162|     let online = CachedSourceClient::new(&cache, FixtureTransport).with_online(true);
+   00163|     let mut log = EventLog::new();
+   00164|     try_page_formalization_with_client(URL_PROMPT, &mut log, &online);
+   00165|     let offline = CachedSourceClient::new(&cache, FixtureTransport).with_online(false);
+   00166|     let mut log = EventLog::new();
+   00167|     let answer = try_page_formalization_with_client(URL_PROMPT, &mut log, &offline)
+   00168|         .expect("the cached page is formalized offline");
+   00169|     assert_eq!(answer.answer.split('\n').nth(2), Some(FIRST_STATEMENT));
+   00170| }
+   00171| 
+   00172| #[test]
+   00173| fn a_request_without_a_url_or_a_formalize_cue_is_not_this_route() {
+   00174|     let client = CachedSourceClient::new(temp_cache(), FixtureTransport).with_online(true);
+   00175|     for prompt in [
+   00176|         "formalize every man is mortal",
+   00177|         "fetch https://en.wikipedia.org/wiki/Moon",
+   00178|     ] {
+   00179|         let mut log = EventLog::new();
+   00180|         assert!(
+   00181|             try_page_formalization_with_client(prompt, &mut log, &client).is_none(),
+   00182|             "{prompt}"
+   00183|         );
+   00184|     }
+   00185| }
+   00186| 
+   
+   (End of file - total 186 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/page_formalization_route.rs","file_path":"rust/tests/unit/page_formalization_route.rs","new":".map(|text| [\"<p>\", text.as_str(), \"</p>\"].concat())\n            .collect();","newString":".map(|text| [\"<p>\", text.as_str(), \"</p>\"].concat())\n            .collect();","new_str":".map(|text| [\"<p>\", text.as_str(), \"</p>\"].concat())\n            .collect();","new_string":".map(|text| [\"<p>\", text.as_str(), \"</p>\"].concat())\n            .collect();","old":".map(|text| format!(\"<p>{text}</p>\"))\n            .collect();","oldString":".map(|text| format!(\"<p>{text}</p>\"))\n            .collect();","old_str":".map(|text| format!(\"<p>{text}</p>\"))\n            .collect();","old_string":".map(|text| format!(\"<p>{text}</p>\"))\n            .collect();","path":"rust/tests/unit/page_formalization_route.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/page_formalization_route.rs"}
+   eaa664e03ad469213345104ef2e79b60bfbffbcbb9b7b54617ce21ff9d37136c  rust/tests/unit/page_formalization_route.rs
+   
+== answer ==
+Replaced `.map(|text| format!("<p>{text}</p>"))
+            .collect();` with `.map(|text| ["<p>", text.as_str(), "</p>"].concat())
+            .collect();` in `rust/tests/unit/page_formalization_route.rs` and observed the result.

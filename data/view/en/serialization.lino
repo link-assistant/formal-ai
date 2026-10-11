@@ -1,0 +1,9 @@
+view
+  id M-2c31e9b1831f
+  lemma serialization
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "publication in serial form"
+    provenance (wordnet)

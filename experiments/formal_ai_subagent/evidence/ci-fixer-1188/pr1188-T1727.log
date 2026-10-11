@@ -1,0 +1,22 @@
+>> read {"filePath":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md","file_path":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md","path":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md"}
+   <file>
+   00001| ### Fixed
+   00002| 
+   00003| - Repair Rust test lints and pin complete scalar editing summaries.
+   00004| - Run macOS archived tests from the Cargo workspace source root and keep platform selection assertions current.
+   00005| - Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.
+   00006| - Preserve variable-backed template keys during notation migration and fully render procedural install answers.
+   00007| - Render explicitly listed replacement lines separately and route multiple-file edits through advertised capabilities.
+   00008| - Match workflow jobs at their real indentation even when dispatch inputs share their names.
+   00009| - Preserve native line-plus-blank insertion, classify bare seeded shell commands, and validate formal rewrite escapes with their own grammar.
+   00010| 
+   
+   (End of file - total 10 lines)
+   </file>
+>> edit {"filePath":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md","file_path":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md","new":"- Preserve native line-plus-blank insertion, classify bare seeded shell commands, and validate formal rewrite escapes with their own grammar.\n- Bind declared filesystem options and shell glob collections to verified operands, preserve force consent, and report attempted mutation failures honestly.","newString":"- Preserve native line-plus-blank insertion, classify bare seeded shell commands, and validate formal rewrite escapes with their own grammar.\n- Bind declared filesystem options and shell glob collections to verified operands, preserve force consent, and report attempted mutation failures honestly.","new_str":"- Preserve native line-plus-blank insertion, classify bare seeded shell commands, and validate formal rewrite escapes with their own grammar.\n- Bind declared filesystem options and shell glob collections to verified operands, preserve force consent, and report attempted mutation failures honestly.","new_string":"- Preserve native line-plus-blank insertion, classify bare seeded shell commands, and validate formal rewrite escapes with their own grammar.\n- Bind declared filesystem options and shell glob collections to verified operands, preserve force consent, and report attempted mutation failures honestly.","old":"- Preserve native line-plus-blank insertion, classify bare seeded shell commands, and validate formal rewrite escapes with their own grammar.","oldString":"- Preserve native line-plus-blank insertion, classify bare seeded shell commands, and validate formal rewrite escapes with their own grammar.","old_str":"- Preserve native line-plus-blank insertion, classify bare seeded shell commands, and validate formal rewrite escapes with their own grammar.","old_string":"- Preserve native line-plus-blank insertion, classify bare seeded shell commands, and validate formal rewrite escapes with their own grammar.","path":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md"}
+>> bash {"command":"sha256sum -- changelog.d/20261009_045000_native-ci-and-macos-repairs.md"}
+   9807b58f397fbc4a097fbd456560479f974e825835e37fb0d1b18ddf84392251  changelog.d/20261009_045000_native-ci-and-macos-repairs.md
+   
+== answer ==
+Replaced `- Preserve native line-plus-blank insertion, classify bare seeded shell commands, and validate formal rewrite escapes with their own grammar.` with `- Preserve native line-plus-blank insertion, classify bare seeded shell commands, and validate formal rewrite escapes with their own grammar.
+- Bind declared filesystem options and shell glob collections to verified operands, preserve force consent, and report attempted mutation failures honestly.` in `changelog.d/20261009_045000_native-ci-and-macos-repairs.md` and observed the result.

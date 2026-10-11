@@ -1,13 +1,16 @@
 Q1052
   aliases
+    es ("arcoíris" arcoiris)
     zh ("北部省城际客运" "诺尔省城际客运")
   descriptions
     en "meteorological phenomenon caused by reflection, refraction and dispersion of light in water droplets"
+    es "fenómeno meteorológico que aparece como un arco multicolor cuando la luz del sol se refleja en gotas de agua"
     ru "атмосферное оптическое и метеорологическое явление"
     zh "光学现象"
   id Q1052
   labels
     en rainbow
+    es "arco iris"
     hi "इन्द्रधनुष"
     ru "радуга"
     zh "彩虹"

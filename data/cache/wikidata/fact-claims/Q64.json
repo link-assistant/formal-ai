@@ -1,0 +1,100 @@
+{
+  "entities": {
+    "Q64": {
+      "type": "item",
+      "id": "Q64",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Berlin"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Берлин"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बर्लिन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "柏林"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "柏林"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Berlin, Germany"
+          },
+          {
+            "language": "en",
+            "value": "DE-BE"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "बर्लिन, जर्मनी"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "柏林市"
+          },
+          {
+            "language": "zh",
+            "value": "柏林州"
+          }
+        ],
+        "zh-hans": [
+          {
+            "language": "zh-hans",
+            "value": "柏林市"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Berlin"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Берлин"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "बर्लिन"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "柏林"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [],
+    "claim_ranks": "truthy"
+  }
+}

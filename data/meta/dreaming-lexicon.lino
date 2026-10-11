@@ -1,5 +1,5 @@
 dreaming_lexicon
-  description: Language-independent lexicon grounding dreaming's event detection as data (issues #540/#494). Task/topic/durability detection reads these entries instead of hardcoded English keyword lists; edit or extend this file (or ship a copy under FORMAL_AI_DATA_DIR) to teach the pipeline new languages without recompiling.
+  description: Language-independent lexicon grounding dreaming's event detection as data (issues 540 and 494). Task/topic/durability detection reads these entries instead of hardcoded English keyword lists; edit or extend this file (or ship a copy under FORMAL_AI_DATA_DIR) to teach the pipeline new languages without recompiling.
   task_kind_cue "task"
   task_kind_cue "test_run"
   task_kind_cue "test-run"

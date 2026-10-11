@@ -624,3 +624,5 @@
 (624: 1 (meta: (t: semantic) (n: 1) (term: label) (def: typescript) (lang: grammar-projection-noform)))
 (625: 1 (meta: (t: semantic) (n: 1) (term: await_expression) (def: javascript) (lang: grammar-projection-noform)))
 (626: 1 (meta: (t: semantic) (n: 1) (term: await_expression) (def: typescript) (lang: grammar-projection-noform)))
+(627: 1 (meta: (t: semantic) (n: 1) (term: object_assignment_pattern) (def: rust) (lang: grammar-projection-noform)))
+(628: 1 (meta: (t: semantic) (n: 1) (term: import-attribute) (def: rust) (lang: grammar-projection-noform)))

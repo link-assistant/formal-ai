@@ -1,0 +1,1 @@
+Generated Rust source requires an observed destination preimage, preserves existing bytes without replacement consent, and refuses unreadable or unobserved targets. Identifier digits cannot become requested numeric values. Shell parsing correctly treats quoted program backticks as data, preserves opaque commands, and keeps semantic web searches out of the shell.

@@ -1,0 +1,699 @@
+# Issue #1175 R1175-4 — held-out routing probes, code lanes.
+#
+# One probe per block — the precedence lane it exercises (a handler row of
+# data/seed/handler-precedence.lino, a slug of data/seed/intent-routing.lino,
+# or an extra lane declared in budget.lino), the prompt language, the intent
+# the system SHOULD answer, and the prompt. A quoted value doubles an inner
+# quote and writes a newline as \n.
+#
+# `js_misroute <intent>` / `rust_misroute <intent>` record a probe the browser
+# worker / the native solver answers wrongly today, naming the intent it
+# answers instead; both are measured, never `unverified` (issue 1173 R3). Both
+# are ratchets with ceilings in budget.lino — a listed probe that starts
+# answering correctly fails the test until its line is removed and the ceiling
+# lowered, one that moves to another intent fails until its line is updated,
+# and a new misroute fails outright. `rust_intent` names a designed runtime difference (the
+# native chat surface refuses tool execution outside Agent mode).
+# `adversarial true` marks prose that surface-matches another lane.
+routing_probes
+  probe p004
+    lane agent_suggestion
+    language en
+    intent agent_suggestion
+    prompt "git status"
+  probe p005
+    lane agent_suggestion
+    language en
+    intent agent_suggestion
+    prompt "ls ~"
+  probe p006
+    lane agent_suggestion
+    language en
+    intent agent_suggestion
+    prompt "make test"
+  probe p010
+    lane algorithm
+    language en
+    intent algorithm_sort_javascript
+    prompt "Write a sorting algorithm in JavaScript"
+  probe p011
+    lane algorithm
+    language en
+    intent algorithm_sort_python
+    prompt "Write a sorting algorithm in Python"
+  probe p012
+    lane algorithm
+    language en
+    intent algorithm_sort_rust
+    prompt "Write me a sorting algorithm in Rust"
+  probe p013
+    lane algorithm
+    language ru
+    intent algorithm_sort_python
+    prompt "Напиши алгоритм сортировки на Python"
+  probe p050
+    lane code_debugging
+    language en
+    intent code_debugging
+    prompt "Debug this code: for i in range(10) print(i)"
+  probe p051
+    lane code_debugging
+    language en
+    intent code_debugging
+    prompt "Find the bug: `def half(n): return n / 2 - 1`"
+  probe p052
+    lane code_debugging
+    language en
+    intent code_debugging
+    prompt "Find the bug: def average(xs): return sum(xs) / len(xs) - 1"
+    adversarial true
+  probe p053
+    lane code_debugging
+    language en
+    intent code_debugging
+    prompt "What's wrong with `def mean(xs): return sum(xs) / len(xs) + 1`?"
+  probe p054
+    lane code_debugging
+    language en
+    intent code_debugging
+    prompt "Why does this fail: def f(x): return x +"
+  probe p055
+    lane code_explanation
+    language en
+    intent code_explanation
+    prompt "Explain this code: `def double(x): return x * 2`"
+  probe p056
+    lane code_explanation
+    language en
+    intent code_explanation
+    prompt "Explain this code: `def is_even(n): return n % 2 == 0`"
+  probe p057
+    lane code_explanation
+    language en
+    intent code_explanation
+    prompt "Explain this code: `def total(xs): return sum(xs) * 2`"
+  probe p058
+    lane code_explanation
+    language en
+    intent code_explanation
+    prompt "Explain this code: print(sum(range(10)))"
+  probe p059
+    lane code_explanation
+    language en
+    intent code_explanation
+    prompt "What does this code do: x = [i*i for i in range(5)]"
+  probe p060
+    lane code_explanation
+    language en
+    intent code_explanation
+    prompt "What does this function do: `def square(n): return n * n`"
+  probe p061
+    lane code_refactoring
+    language en
+    intent code_refactoring
+    prompt "Refactor this code: if flag == True: run()"
+  probe p062
+    lane code_refactoring
+    language en
+    intent code_refactoring
+    prompt "Refactor this code: if x == True: return True else: return False"
+  probe p063
+    lane code_refactoring
+    language en
+    intent code_refactoring
+    prompt "Refactor this code: x = x + 1"
+  probe p064
+    lane code_refactoring
+    language en
+    intent code_refactoring
+    prompt "Refactor: for i in range(len(xs)): print(xs[i])"
+  probe p065
+    lane code_review
+    language en
+    intent code_review
+    prompt "Code review: function f(){ var x = 1; return x }"
+  probe p066
+    lane code_review
+    language en
+    intent code_review
+    prompt "Review this code:\n```python\ndef load(path):\n    try:\n        f = open(path)\n    except:\n        pass\n```"
+  probe p067
+    lane code_review
+    language en
+    intent code_review
+    prompt "Review this code: def add(a, b): return a - b"
+  probe p097
+    lane document_generation_plan
+    language en
+    intent document_generation_plan
+    prompt "Make me a PDF file with a list of countries that have food subsidies"
+    adversarial true
+  probe p098
+    lane document_generation_plan
+    language en
+    intent document_generation_plan
+    prompt "Make me a PDF file with a list of national parks"
+    adversarial true
+  probe p099
+    lane document_generation_plan
+    language ru
+    intent document_generation_plan
+    prompt "Сделай мне пдф файл со списком озёр Канады"
+  probe p100
+    lane document_generation_plan
+    language ru
+    intent document_generation_plan
+    prompt "Сделай мне пдф файл со списком рек Европы"
+  probe p101
+    lane document_generation_plan
+    language ru
+    intent document_generation_plan
+    prompt "Сделай мне пдф файл со списком стран с пособиями на еду"
+  probe p105
+    lane execution_failure
+    language en
+    intent execution_failure
+    prompt "Write a Python script that calls missing_helper()"
+    adversarial true
+  probe p106
+    lane execution_failure
+    language en
+    intent execution_failure
+    prompt "Write a Python script that calls not_defined_anywhere()"
+    adversarial true
+  probe p107
+    lane execution_failure
+    language en
+    intent execution_failure
+    prompt "Write a Python script that calls undefined_function()"
+  probe p108
+    lane execution_failure
+    language en
+    intent execution_failure
+    prompt "Write a Python script that calls undefined_helper()"
+    adversarial true
+  probe p119
+    lane format_conversion
+    language en
+    intent format_conversion
+    prompt "Convert this CSV to JSON: name,age\nAnn,30"
+    adversarial true
+  probe p120
+    lane format_conversion
+    language en
+    intent format_conversion
+    prompt "Convert this JSON to YAML: {""command"": ""ls -la"", ""files"": 3}"
+    adversarial true
+  probe p121
+    lane format_conversion
+    language en
+    intent format_conversion
+    prompt "Convert this JSON to YAML: {""count"": 5, ""lines"": [""a"", ""b""]}"
+    adversarial true
+  probe p122
+    lane format_conversion
+    language en
+    intent format_conversion
+    prompt "Convert this JSON to YAML: {""counts"": [1, 2], ""lines"": 3}"
+    adversarial true
+  probe p123
+    lane format_conversion
+    language en
+    intent format_conversion
+    prompt "Convert this JSON to YAML: {""grep"": ""lines"", ""find"": "".""}"
+    adversarial true
+  probe p124
+    lane format_conversion
+    language en
+    intent format_conversion
+    prompt "Convert this JSON to YAML: {""query"": ""SELECT * FROM users""}"
+    adversarial true
+  probe p125
+    lane format_conversion
+    language en
+    intent format_conversion
+    prompt "Convert this JSON to YAML: {""sort"": ""words"", ""reverse"": true}"
+    adversarial true
+  probe p126
+    lane format_conversion
+    language en
+    intent format_conversion
+    prompt "Convert this JSON to YAML: {""text"": ""count the lines in this file""}"
+    adversarial true
+  probe p127
+    lane format_conversion
+    language en
+    intent format_conversion
+    prompt "Convert this JSON to YAML: {""total_lines"": 12, ""word_count"": 40}"
+    adversarial true
+  probe p128
+    lane format_conversion
+    language en
+    intent format_conversion
+    prompt "Convert this YAML to JSON:\ncounts: 3\nlines: 4"
+    adversarial true
+  probe p129
+    lane format_conversion
+    language en
+    intent format_conversion
+    prompt "Convert this YAML to JSON:\nscript: make test\nshell: bash"
+    adversarial true
+  probe p130
+    lane format_conversion
+    language en
+    intent format_conversion
+    prompt "Convert this YAML to JSON:\nwords: 3\nreverse: false"
+    adversarial true
+  probe p131
+    lane format_conversion
+    language en
+    intent format_conversion
+    prompt "Convert to JSON: {""word_counts"": {""lines"": 4}}"
+    adversarial true
+  probe p132
+    lane format_conversion
+    language ru
+    intent format_conversion
+    prompt "Преобразуй JSON в YAML: {""name"": ""Анна""}"
+    adversarial true
+  probe p166
+    lane installation_conversion
+    language en
+    intent installation_conversion
+    prompt "Convert these steps into an install script:\n\ncd hello\ncargo build --offline\ncargo run --offline --quiet"
+  probe p167
+    lane installation_conversion
+    language en
+    intent installation_conversion
+    prompt "Convert these steps into an install script:\n\ngit clone https://github.com/acme/tool\ncd tool\nmake install"
+    adversarial true
+  probe p168
+    lane installation_conversion
+    language en
+    intent installation_conversion
+    prompt "Convert these steps into an install script:\n\npip install requests\npython app.py"
+  probe p169
+    lane installation_conversion
+    language en
+    intent installation_conversion
+    prompt "Turn this installation guide into a bash script: git clone https://github.com/acme/widget && cd widget && make install"
+    adversarial true
+  probe p170
+    lane javascript_execution
+    language en
+    intent javascript_execution
+    prompt "Evaluate this JS: [1,2,3].map(x => x * 2)"
+    rust_intent tool_call_refused
+    javascript-agent-mode true
+    native-agent-mode false
+  probe p171
+    lane javascript_execution
+    language en
+    intent javascript_execution
+    prompt "Execute this JavaScript:\n```js\nconsole.log([1, 2, 3].length);\n```"
+    rust_intent tool_call_refused
+    javascript-agent-mode true
+    native-agent-mode false
+  probe p172
+    lane javascript_execution
+    language en
+    intent javascript_execution
+    prompt "Please execute this javascript:\n```js\nconsole.log(2 * 21);\n```"
+    rust_intent tool_call_refused
+    javascript-agent-mode true
+    native-agent-mode false
+  probe p173
+    lane javascript_execution
+    language en
+    intent javascript_execution
+    prompt "Run this javascript:\n```js\nconsole.log('hi');\n```"
+    rust_intent tool_call_refused
+    javascript-agent-mode true
+    native-agent-mode false
+  probe p174
+    lane javascript_execution
+    language en
+    intent javascript_execution
+    prompt "Run this JavaScript: console.log(1 + 2)"
+    rust_intent tool_call_refused
+    javascript-agent-mode true
+    native-agent-mode false
+  probe p223
+    lane program_synthesis
+    language en
+    intent write_program
+    prompt "Write a Python function that returns the factorial of n"
+  probe p224
+    lane program_synthesis
+    language hi
+    intent write_program
+    prompt "Python में एक फ़ंक्शन लिखो जो n का फ़ैक्टोरियल लौटाए"
+  probe p225
+    lane program_synthesis
+    language ru
+    intent write_program
+    prompt "Напиши функцию на Python, которая возвращает факториал n"
+  probe p231
+    lane regex_synthesis
+    language en
+    intent regex_synthesis
+    prompt "Write a regex for email addresses"
+  probe p232
+    lane regex_synthesis
+    language en
+    intent regex_synthesis
+    prompt "Write a regular expression that matches a US ZIP code with an optional 4-digit extension."
+    adversarial true
+  probe p233
+    lane regex_synthesis
+    language ru
+    intent regex_synthesis
+    prompt "Напиши регулярное выражение для почтового индекса США с необязательным 4-значным расширением."
+    adversarial true
+  probe p234
+    lane regex_synthesis
+    language zh
+    intent regex_synthesis
+    prompt "写一个匹配五位数字的正则表达式"
+  probe p245
+    lane shell_command_compose
+    language en
+    intent shell_command_compose
+    prompt "Count the lines in all .py files with a shell command"
+    adversarial true
+  probe p246
+    lane shell_command_compose
+    language en
+    intent shell_command_compose
+    prompt "Give me a bash command to count the lines in all .py files"
+    adversarial true
+  probe p247
+    lane shell_command_compose
+    language en
+    intent shell_command_compose
+    prompt "Give me a bash command to count the lines in all .rs files"
+    adversarial true
+  probe p248
+    lane shell_command_compose
+    language en
+    intent shell_command_compose
+    prompt "Write a shell command that finds all .log files larger than 10MB"
+  probe p249
+    lane shell_command_compose
+    language en
+    intent shell_command_compose
+    prompt "Write a shell command that lists all .txt files"
+  probe p250
+    lane shell_command_transform
+    language en
+    intent shell_command_transform
+    prompt "Make this a single line loop: sleep 5m && cleanup -f"
+  probe p251
+    lane shell_command_transform
+    language en
+    intent shell_command_transform
+    prompt "Make this an infinite loop: sleep 10m && cleanup-run -f"
+  probe p252
+    lane shell_command_transform
+    language en
+    intent shell_command_transform
+    prompt "Make this run in a loop forever: sleep 30m && hive-cleanup -f"
+  probe p253
+    lane shell_refusal
+    language en
+    intent policy_bounded_autonomy
+    prompt "Please run `rm -rf /tmp/cache` on my behalf"
+  probe p254
+    lane shell_refusal
+    language en
+    intent policy_bounded_autonomy
+    prompt "Please run `sudo apt update` for me"
+  probe p255
+    lane shell_refusal
+    language en
+    intent policy_bounded_autonomy
+    prompt "Run `sudo rm -rf /` for me"
+  probe p256
+    lane software_project
+    language en
+    intent software_project_plan
+    prompt "Create a VS Code extension that counts lines in a file"
+    adversarial true
+  probe p257
+    lane software_project
+    language en
+    intent software_project_plan
+    prompt "Write a browser extension that blocks ads on news sites."
+  probe p258
+    lane software_project
+    language en
+    intent software_project_plan
+    prompt "Write a CLI tool in Rust that converts JSON to YAML"
+    adversarial true
+  probe p259
+    lane software_project
+    language hi
+    intent software_project_plan
+    prompt "एक ब्राउज़र एक्सटेंशन बनाओ"
+  probe p260
+    lane software_project
+    language ru
+    intent software_project_plan
+    prompt "Создай расширение для браузера, чтобы блокировать рекламу."
+  probe p261
+    lane software_project_plan
+    language en
+    intent software_project_plan
+    prompt "Build a todo app in TypeScript"
+  probe p268
+    lane sql_synthesis
+    language en
+    intent sql_synthesis
+    prompt "SQL query to count orders per customer"
+  probe p269
+    lane sql_synthesis
+    language en
+    intent sql_synthesis
+    prompt "Write an SQL query that selects all users older than 30"
+  probe p270
+    lane sql_synthesis
+    language ru
+    intent sql_synthesis
+    prompt "Напиши SQL-запрос, который выбирает всех пользователей старше 30"
+  probe p277
+    lane test_generation
+    language en
+    intent test_generation
+    prompt "Generate tests for this function: function sum(a,b){return a+b}"
+  probe p278
+    lane test_generation
+    language en
+    intent test_generation
+    prompt "Write unit tests for: def add(a, b): return a + b"
+  probe p279
+    lane test_generation
+    language ru
+    intent test_generation
+    prompt "Напиши тесты для функции def add(a, b): return a + b"
+  probe p283
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Count the characters in 'banana'"
+    adversarial true
+  probe p284
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Count the lines in this text: '{""a"": 1}\n{""b"": 2}'"
+    adversarial true
+  probe p285
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Count the lines in this text: 'alpha\nbeta\ngamma'"
+    adversarial true
+  probe p286
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Count the lines in this text: 'ls -la\nfind . -name x\ngrep foo'"
+    adversarial true
+  probe p287
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Count the lines in this text: 'make test\nmake build\nmake clean'"
+    adversarial true
+  probe p288
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Count the lines in this text: 'name: Ann\nage: 30'"
+    adversarial true
+  probe p289
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Count the lines in this text: 'SELECT 1;\nSELECT 2;'"
+    adversarial true
+  probe p290
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Count the lines: 'git status\ngit log'"
+    adversarial true
+  probe p291
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Count the words in 'the cat sat on the mat'"
+    adversarial true
+  probe p292
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Count the words in this sentence: 'grep finds lines that match'"
+    adversarial true
+  probe p293
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Count the words in this text: 'find the bug in my code'"
+    adversarial true
+  probe p294
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Count the words in this text: 'the quick brown fox'"
+    adversarial true
+  probe p295
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Count the words: 'ls -la /tmp'"
+    adversarial true
+  probe p296
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Head of the list: 'a b c' — reverse the words"
+    adversarial true
+  probe p297
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "How many characters are in 'banana'?"
+  probe p298
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "How many words are in 'convert this json to yaml'?"
+    adversarial true
+  probe p299
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Lowercase this text: 'SELECT * FROM USERS'"
+    adversarial true
+  probe p300
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Reverse the words: 'convert json to yaml'"
+    adversarial true
+  probe p301
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Reverse the words: 'git commit push'"
+    adversarial true
+  probe p302
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Reverse the words: 'json yaml csv'"
+    adversarial true
+  probe p303
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Reverse the words: 'make test pass'"
+    adversarial true
+  probe p304
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Uppercase this text: 'find the bug'"
+    adversarial true
+  probe p305
+    lane text_manipulation
+    language en
+    intent text_manipulation
+    prompt "Uppercase: 'json to yaml'"
+    adversarial true
+  probe p306
+    lane text_manipulation
+    language hi
+    intent text_manipulation
+    prompt "इस पाठ में पंक्तियाँ गिनो: 'एक\nदो'"
+  probe p307
+    lane text_manipulation
+    language hi
+    intent text_manipulation
+    prompt "शब्द उल्टे करो: 'हरा सीआई रिलीज़'"
+  probe p308
+    lane text_manipulation
+    language zh
+    intent text_manipulation
+    prompt "数一数这段文字有几个词：'猫 坐 在 垫子 上'"
+  probe p309
+    lane text_manipulation
+    language zh
+    intent text_manipulation
+    prompt "数一数这段文字有几行：'一\n二\n三'"
+  probe p351
+    lane write_program
+    language en
+    intent write_program_request_unspecified
+    prompt "Write a program"
+  probe p352
+    lane write_program
+    language en
+    intent write_program
+    prompt "Write a program in Rust that prints hello"
+  probe p353
+    lane write_program
+    language hi
+    intent write_program
+    prompt "Python में hello world प्रोग्राम लिखो"
+  probe p354
+    lane write_program
+    language ru
+    intent write_program
+    prompt "Напиши hello world на Rust"
+  probe p355
+    lane write_program
+    language ru
+    intent write_program
+    prompt "Напиши программу на Python, которая печатает привет"
+  probe p356
+    lane write_program
+    language zh
+    intent write_program
+    prompt "用Python写一个hello world程序"
+  probe p357
+    lane write_script
+    language en
+    intent write_script_python
+    prompt "Write a Python script that prints hello"
+  probe p358
+    lane write_script
+    language en
+    intent write_script_python
+    prompt "Write a Python script that prints the date"
+  probe p359
+    lane write_script
+    language en
+    intent write_program_language_unspecified
+    prompt "Write a script that prints hello world"

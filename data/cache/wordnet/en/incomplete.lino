@@ -1,0 +1,19 @@
+language en
+lemma incomplete
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "not complete or total; not completed"
+    examples ("an incomplete account of his life" "political consequences of incomplete military success" "an incomplete forward pass")
+    id oewn-00526155-a
+    partOfSpeech a
+    synonyms (uncomplete)
+  entry
+    definition "not yet finished"
+    examples ("his thesis is still incomplete" "an uncompleted play")
+    id oewn-01008130-s
+    partOfSpeech s
+    synonyms (uncompleted)
+source "oewn:2024"

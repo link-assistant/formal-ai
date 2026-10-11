@@ -1,0 +1,120 @@
+diff --git a/rust/src/translation/rust_layout.rs b/rust/src/translation/rust_layout.rs
+index 07ad4eb..f092635 100644
+--- a/rust/src/translation/rust_layout.rs
++++ b/rust/src/translation/rust_layout.rs
+@@ -231,51 +231,3 @@ pub fn wrap_rust(code: &str, width: usize) -> String {
+     }
+     lines.join("\n")
+ }
+-
+-#[cfg(test)]
+-mod tests {
+-    use super::{RUST_WIDTH, wrap_rust};
+-
+-    #[test]
+-    fn a_short_line_is_kept() {
+-        assert_eq!(
+-            wrap_rust("let x = vec![1, 2];", RUST_WIDTH),
+-            "let x = vec![1, 2];"
+-        );
+-    }
+-
+-    #[test]
+-    fn a_long_list_goes_one_item_per_line() {
+-        let line = format!(
+-            "    let words = vec![{}];",
+-            (0..30)
+-                .map(|index| format!("\"word{index}\""))
+-                .collect::<Vec<_>>()
+-                .join(", ")
+-        );
+-        let wrapped = wrap_rust(&line, RUST_WIDTH);
+-        assert!(wrapped.starts_with("    let words = vec![\n        \"word0\",\n"));
+-        assert!(wrapped.ends_with("\n        \"word29\",\n    ];"));
+-        assert!(
+-            wrapped
+-                .lines()
+-                .all(|line| line.chars().count() <= RUST_WIDTH)
+-        );
+-    }
+-
+-    #[test]
+-    fn a_parenthesized_expression_never_becomes_a_tuple() {
+-        let line = "    let total = (alpha_value_long_name + beta_value_long_name + gamma_value_long_name + delta_value) * 2;";
+-        let wrapped = wrap_rust(line, RUST_WIDTH);
+-        assert_eq!(
+-            wrapped,
+-            "    let total = (\n        alpha_value_long_name + beta_value_long_name + gamma_value_long_name + delta_value\n    ) * 2;"
+-        );
+-    }
+-
+-    #[test]
+-    fn brackets_and_commas_inside_literals_are_text() {
+-        let line = format!("    let text = \"{}\";", "a, (b) [c], ".repeat(12));
+-        assert_eq!(wrap_rust(&line, RUST_WIDTH), line);
+-    }
+-}
+diff --git a/rust/tests/unit/mod.rs b/rust/tests/unit/mod.rs
+index 78557d9..de61a9b 100644
+--- a/rust/tests/unit/mod.rs
++++ b/rust/tests/unit/mod.rs
+@@ -132,6 +132,7 @@ mod query_matching;
+ mod query_plan;
+ mod query_transform;
+ mod rust_codec;
++mod rust_layout;
+ mod self_description;
+ mod self_translation;
+ mod source_generation;
+diff --git a/rust/tests/unit/rust_layout.rs b/rust/tests/unit/rust_layout.rs
+new file mode 100644
+index 0000000..8cfcc4b
+--- /dev/null
++++ b/rust/tests/unit/rust_layout.rs
+@@ -0,0 +1,46 @@
++//! Layout of emitted Rust that does not fit 100 columns (issue #217).
++
++use meta_language::translation::rust_layout::{RUST_WIDTH, wrap_rust};
++
++#[test]
++fn a_short_line_is_kept() {
++    assert_eq!(
++        wrap_rust("let x = vec![1, 2];", RUST_WIDTH),
++        "let x = vec![1, 2];"
++    );
++}
++
++#[test]
++fn a_long_list_goes_one_item_per_line() {
++    let line = format!(
++        "    let words = vec![{}];",
++        (0..30)
++            .map(|index| format!("\"word{index}\""))
++            .collect::<Vec<_>>()
++            .join(", ")
++    );
++    let wrapped = wrap_rust(&line, RUST_WIDTH);
++    assert!(wrapped.starts_with("    let words = vec![\n        \"word0\",\n"));
++    assert!(wrapped.ends_with("\n        \"word29\",\n    ];"));
++    assert!(
++        wrapped
++            .lines()
++            .all(|line| line.chars().count() <= RUST_WIDTH)
++    );
++}
++
++#[test]
++fn a_parenthesized_expression_never_becomes_a_tuple() {
++    let line = "    let total = (alpha_value_long_name + beta_value_long_name + gamma_value_long_name + delta_value) * 2;";
++    let wrapped = wrap_rust(line, RUST_WIDTH);
++    assert_eq!(
++        wrapped,
++        "    let total = (\n        alpha_value_long_name + beta_value_long_name + gamma_value_long_name + delta_value\n    ) * 2;"
++    );
++}
++
++#[test]
++fn brackets_and_commas_inside_literals_are_text() {
++    let line = format!("    let text = \"{}\";", "a, (b) [c], ".repeat(12));
++    assert_eq!(wrap_rust(&line, RUST_WIDTH), line);
++}

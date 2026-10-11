@@ -1,0 +1,141 @@
+{
+  "prompt": "Create a file status.txt containing exactly: failed",
+  "outcomes": [
+    {
+      "name": "actual bare full-file Read",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Create a file status.txt containing exactly: failed"
+        },
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "target-preflight",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"path\":\"status.txt\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "read",
+          "tool_call_id": "target-preflight",
+          "content": "{\"is_error\":true,\"error\":\"ENOENT: status.txt\"}"
+        },
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "event-read",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"path\":\".formal-ai/general-change-plan.lino\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "read",
+          "tool_call_id": "event-read",
+          "content": "general_change_plan\n  id \"general_change_plan_1ab0c125e67679a7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create a file status.txt containing exactly: failed\"\n  target \"status.txt\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_7bd0595539da95b3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to status.txt\"\n    expected_evidence \"workspace file status.txt\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"failed\"\n    command \"cat status.txt\"\n  verification_command \"cat status.txt\"\n"
+        }
+      ],
+      "plan": {
+        "kind": "final",
+        "answer": "The command failed: general_change_plan\n  id \"general_change_plan_1ab0c125e67679a7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create a file status.txt containing exactly: failed\"\n  target \"status.txt\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_7bd0595539da95b3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to status.txt\"\n    expected_evidence \"workspace file status.txt\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"failed\"\n    command \"cat status.txt\"\n  verification_command \"cat status.txt\"\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`."
+      },
+      "attempts": [
+        {
+          "capability": "read",
+          "succeeded": false,
+          "detail": "ENOENT: status.txt",
+          "arguments": "{\"path\":\"status.txt\"}",
+          "tool": "read"
+        },
+        {
+          "capability": "read",
+          "succeeded": false,
+          "detail": "general_change_plan\n  id \"general_change_plan_1ab0c125e67679a7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create a file status.txt containing exactly: failed\"\n  target \"status.txt\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_7bd0595539da95b3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to status.txt\"\n    expected_evidence \"workspace file status.txt\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"failed\"\n    command \"cat status.txt\"\n  verification_command \"cat status.txt\"",
+          "arguments": "{\"path\":\".formal-ai/general-change-plan.lino\"}",
+          "tool": "read"
+        }
+      ]
+    },
+    {
+      "name": "explicit successful Read",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Create a file status.txt containing exactly: failed"
+        },
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "target-preflight",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"path\":\"status.txt\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "read",
+          "tool_call_id": "target-preflight",
+          "content": "{\"is_error\":true,\"error\":\"ENOENT: status.txt\"}"
+        },
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "event-read",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"path\":\".formal-ai/general-change-plan.lino\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "read",
+          "tool_call_id": "event-read",
+          "content": "{\"exit_code\":0,\"output\":\"general_change_plan\\n  id \\\"general_change_plan_1ab0c125e67679a7\\\"\\n  execution_mode \\\"literal_file\\\"\\n  terminal_state \\\"executed\\\"\\n  goal \\\"Create a file status.txt containing exactly: failed\\\"\\n  target \\\"status.txt\\\"\\n  step 1\\n    capability \\\"Write\\\"\\n    action \\\"append the composed plan to .formal-ai/general-change-plan.lino\\\"\\n    expected_evidence \\\"written plan event impulse_7bd0595539da95b3\\\"\\n  step 2\\n    capability \\\"Write\\\"\\n    action \\\"write the requested content to status.txt\\\"\\n    expected_evidence \\\"workspace file status.txt\\\"\\n  step 3\\n    capability \\\"Run\\\"\\n    action \\\"run the request-derived verification command\\\"\\n    expected_evidence \\\"failed\\\"\\n    command \\\"cat status.txt\\\"\\n  verification_command \\\"cat status.txt\\\"\\n\"}"
+        }
+      ],
+      "plan": {
+        "kind": "final",
+        "answer": "The command failed: general_change_plan\n  id \"general_change_plan_1ab0c125e67679a7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create a file status.txt containing exactly: failed\"\n  target \"status.txt\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_7bd0595539da95b3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to status.txt\"\n    expected_evidence \"workspace file status.txt\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"failed\"\n    command \"cat status.txt\"\n  verification_command \"cat status.txt\"\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`."
+      },
+      "attempts": [
+        {
+          "capability": "read",
+          "succeeded": false,
+          "detail": "ENOENT: status.txt",
+          "arguments": "{\"path\":\"status.txt\"}",
+          "tool": "read"
+        },
+        {
+          "capability": "read",
+          "succeeded": false,
+          "detail": "general_change_plan\n  id \"general_change_plan_1ab0c125e67679a7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create a file status.txt containing exactly: failed\"\n  target \"status.txt\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_7bd0595539da95b3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to status.txt\"\n    expected_evidence \"workspace file status.txt\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"failed\"\n    command \"cat status.txt\"\n  verification_command \"cat status.txt\"",
+          "arguments": "{\"path\":\".formal-ai/general-change-plan.lino\"}",
+          "tool": "read"
+        }
+      ]
+    }
+  ],
+  "actualNativeFailure": "/tmp/pr1188-new-job-113777810903.log",
+  "physicalEffects": 0
+}

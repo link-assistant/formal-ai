@@ -1,0 +1,166 @@
+{
+  "lemma": "project",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00797381-n",
+      "partOfSpeech": "n",
+      "definition": "any piece of work that is undertaken or attempted",
+      "examples": [
+        "he prepared for great undertakings"
+      ],
+      "synonyms": [
+        "undertaking",
+        "task",
+        "labor",
+        "labour"
+      ]
+    },
+    {
+      "id": "oewn-05919047-n",
+      "partOfSpeech": "n",
+      "definition": "a planned undertaking",
+      "synonyms": [
+        "projection"
+      ]
+    },
+    {
+      "id": "oewn-00745209-v",
+      "partOfSpeech": "v",
+      "definition": "communicate vividly",
+      "examples": [
+        "He projected his feelings"
+      ]
+    },
+    {
+      "id": "oewn-02719247-v",
+      "partOfSpeech": "v",
+      "definition": "extend out or project in space",
+      "examples": [
+        "His sharp nose jutted out",
+        "A single rock sticks out from the cliff"
+      ],
+      "synonyms": [
+        "stick out",
+        "protrude",
+        "jut out",
+        "jut"
+      ]
+    },
+    {
+      "id": "oewn-01438648-v",
+      "partOfSpeech": "v",
+      "definition": "transfer (ideas or principles) from one domain into another"
+    },
+    {
+      "id": "oewn-02142548-v",
+      "partOfSpeech": "v",
+      "definition": "project on a screen",
+      "examples": [
+        "The images are projected onto the screen"
+      ]
+    },
+    {
+      "id": "oewn-02185193-v",
+      "partOfSpeech": "v",
+      "definition": "cause to be heard",
+      "examples": [
+        "His voice projects well"
+      ]
+    },
+    {
+      "id": "oewn-01694867-v",
+      "partOfSpeech": "v",
+      "definition": "draw a projection of"
+    },
+    {
+      "id": "oewn-01641910-v",
+      "partOfSpeech": "v",
+      "definition": "make or work out a plan for; devise",
+      "examples": [
+        "They contrived to murder their boss",
+        "design a new sales strategy",
+        "plan an attack"
+      ],
+      "synonyms": [
+        "plan",
+        "contrive",
+        "design"
+      ]
+    },
+    {
+      "id": "oewn-00708009-v",
+      "partOfSpeech": "v",
+      "definition": "present for consideration, examination, criticism, etc.",
+      "examples": [
+        "He proposed a new plan for dealing with terrorism",
+        "She proposed a new theory of relativity",
+        "The candidate projects himself as a moderate and a reformer"
+      ],
+      "synonyms": [
+        "propose"
+      ]
+    },
+    {
+      "id": "oewn-01638974-v",
+      "partOfSpeech": "v",
+      "definition": "imagine; conceive of; see in one's mind",
+      "examples": [
+        "I can't see him on horseback!",
+        "I can see what will happen",
+        "I can see a risk in this strategy"
+      ],
+      "synonyms": [
+        "visualize",
+        "visualise",
+        "envision",
+        "fancy",
+        "see",
+        "figure",
+        "picture",
+        "image"
+      ]
+    },
+    {
+      "id": "oewn-01636439-v",
+      "partOfSpeech": "v",
+      "definition": "put or send forth",
+      "examples": [
+        "She threw the flashlight beam into the corner",
+        "The setting sun threw long shadows",
+        "cast a spell",
+        "cast a warm light"
+      ],
+      "synonyms": [
+        "cast",
+        "contrive",
+        "throw"
+      ]
+    },
+    {
+      "id": "oewn-01518423-v",
+      "partOfSpeech": "v",
+      "definition": "throw, send, or cast forward",
+      "examples": [
+        "project a missile"
+      ],
+      "synonyms": [
+        "send off"
+      ]
+    },
+    {
+      "id": "oewn-00731627-v",
+      "partOfSpeech": "v",
+      "definition": "regard as objective",
+      "synonyms": [
+        "externalize",
+        "externalise"
+      ]
+    }
+  ]
+}

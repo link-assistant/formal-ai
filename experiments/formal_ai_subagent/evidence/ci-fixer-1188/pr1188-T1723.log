@@ -1,0 +1,8 @@
+>> bash {"command":"test -e rust/tests/web/prompt-specialization.test.mjs"}
+>> bash {"command":"test ! -e rust/tests/web/mutating-action-bindings.test.mjs"}
+>> bash {"command":"mkdir -p -- rust/tests/web"}
+>> bash {"command":"cp rust/tests/web/prompt-specialization.test.mjs rust/tests/web/mutating-action-bindings.test.mjs"}
+>> bash {"command":"test -e rust/tests/web/mutating-action-bindings.test.mjs"}
+>> bash {"command":"test -e rust/tests/web/prompt-specialization.test.mjs"}
+== answer ==
+Completed the action `cp rust/tests/web/prompt-specialization.test.mjs rust/tests/web/mutating-action-bindings.test.mjs` and verified it with `test -e rust/tests/web/mutating-action-bindings.test.mjs`, `test -e rust/tests/web/prompt-specialization.test.mjs`.

@@ -1,0 +1,35 @@
+{
+  "selected": [
+    {
+      "kind": "final",
+      "result": {
+        "text": "Callable discovery MissingContract:\n{\"authored\":false,\"goal\":\"Implement general typed repository read/query and explicit verified-Run obligations using the observed native CLI/workspace interfaces. Reuse owned reads and allowlisted commands, preserve root/source/command evidence and mutation guards. Add meaningful closest tests. If source-backed implementation cannot be established, report MissingContract before writing. Work only in this selected scratch workspace; never run Cargo or Rust compilation.\",\"missingContracts\":[\"source-bound-implementation-plan\",\"independent-goal-validation\"],\"reason\":\"MissingContract\",\"verified\":false}",
+        "disposition": "gap",
+        "origin": "semantic-authoring-missing-contract",
+        "payloadRole": "finding",
+        "artifact": null,
+        "discovery": {
+          "reason": "MissingContract",
+          "goal": "Implement general typed repository read/query and explicit verified-Run obligations using the observed native CLI/workspace interfaces. Reuse owned reads and allowlisted commands, preserve root/source/command evidence and mutation guards. Add meaningful closest tests. If source-backed implementation cannot be established, report MissingContract before writing. Work only in this selected scratch workspace; never run Cargo or Rust compilation.",
+          "authored": false,
+          "verified": false,
+          "missingContracts": [
+            "source-bound-implementation-plan",
+            "independent-goal-validation"
+          ]
+        }
+      }
+    }
+  ],
+  "transcript": [],
+  "answer": "Callable discovery MissingContract:\n{\"authored\":false,\"goal\":\"Implement general typed repository read/query and explicit verified-Run obligations using the observed native CLI/workspace interfaces. Reuse owned reads and allowlisted commands, preserve root/source/command evidence and mutation guards. Add meaningful closest tests. If source-backed implementation cannot be established, report MissingContract before writing. Work only in this selected scratch workspace; never run Cargo or Rust compilation.\",\"missingContracts\":[\"source-bound-implementation-plan\",\"independent-goal-validation\"],\"reason\":\"MissingContract\",\"verified\":false}",
+  "stop": "final",
+  "toolsAdvertised": [
+    "bash",
+    "edit",
+    "grep",
+    "list",
+    "read",
+    "write"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "archivalTask": "T2946",
+  "originalPath": "network-retry/desktopJobs.json",
+  "archivePath": "network-retry/desktopJobs.json.gz",
+  "encoding": "gzip",
+  "decodedBytes": 159515,
+  "decodedSha256": "0242f6fc9cb3b69356c66eab3d315740a88ec61271ac41cea3b66a8171a3b57d",
+  "compressedBytes": 8018,
+  "compressedSha256": "8ba12cf18a0f2e09795635052346fa53c2386a6424f813ca1ccae16aba6c73cc",
+  "decodeByteEqual": true,
+  "observationSource": "T2936 genuine GitHub Desktop Release run37870721641 on4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+  "sourceCommit": "c8b5e63e136f064216a74dfd2dcc77c826b67392"
+}

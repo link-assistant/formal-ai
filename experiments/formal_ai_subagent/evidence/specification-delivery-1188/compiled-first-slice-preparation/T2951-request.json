@@ -1,0 +1,5 @@
+{
+  "taskId": "T2951",
+  "directory": "/private/tmp/spec-recurrence-1188/typed-reader-next",
+  "prompt": "Run node probe-return-action-roundtrip.mjs"
+}

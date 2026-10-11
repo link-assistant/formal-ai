@@ -1,0 +1,48 @@
+coding_bound	सीमा	अधिकतम
+completion_criterion	पूर्णता मानदंड
+coding_search_rendering	रेंडरिंग	क्रमांकन
+coding_search_adapter	एडाप्टर
+coding_relationship_reference	रिलेशनशिप	एसोसिएशन
+coding_serialization_action	क्रमबद्ध करना	एन्कोडिंग
+coding_search_check	जांच
+coding_search_completion_criterion	पूर्णता अनुबंध	पूर्णता मानदंड
+coding_search_missing_leaf_contract	बिना अवलोकनीय पूर्णता अनुबंध वाला पत्ता
+binary_decomposition_invariant	आंतरिक नोड के ठीक दो बच्चे होते हैं
+coding_search_binary_decomposition_invariant	आंतरिक नोड के ठीक दो बच्चे होते हैं
+atomic_leaf_invariant	पत्ता परमाणु है और स्वतंत्र रूप से जांचने योग्य है
+coding_search_atomic_leaf_invariant	पत्ता परमाणु है और स्वतंत्र रूप से जांचने योग्य है
+decomposition_node_identifier	सामग्री-आधारित स्थिर पहचानकर्ता
+coding_search_decomposition_node_identifier	सामग्री-आधारित स्थिर पहचानकर्ता
+dotted_child_path	चाइल्ड पथ बिंदीदार संख्यात्मक परिपाटी का पालन करते हैं
+coding_search_dotted_child_path	चाइल्ड पथ बिंदीदार संख्यात्मक परिपाटी का पालन करते हैं
+complete_tree_node_count	गहराई पाँच के पूर्ण वृक्ष में मूल सहित ठीक 63 नोड होते हैं
+coding_search_complete_tree_node_count	गहराई पाँच के पूर्ण वृक्ष में मूल सहित ठीक 63 नोड होते हैं
+agent_cli_ladder_depth_selector	Agent-CLI सीढ़ी गहराई चयनकर्ता
+coding_search_agent_cli_ladder_depth_selector	Agent-CLI सीढ़ी गहराई चयनकर्ता
+leaf_first_ladder_order	परमाणु पत्ते संयुक्त माता-पिता से पहले चलते हैं
+coding_search_leaf_first_ladder_order_fact	परमाणु पत्ते संयुक्त माता-पिता से पहले चलते हैं
+fresh_ladder_repository_copy	हर चुना गया नोड रिपॉजिटरी की नई अस्थायी प्रति में चलता है
+coding_search_fresh_ladder_repository_copy_fact	हर चुना गया नोड रिपॉजिटरी की नई अस्थायी प्रति में चलता है
+real_agent_formal_ai_ladder	चुना गया नोड असली Formal AI सर्वर के साथ असली Agent CLI का उपयोग करता है
+coding_search_real_agent_formal_ai_ladder_fact	चुना गया नोड असली Formal AI सर्वर के साथ असली Agent CLI का उपयोग करता है
+exact_node_path_proof	सटीक नोड पथ वाली अवलोकनीय प्रमाण फ़ाइल
+coding_search_exact_node_path_proof_fact	सटीक नोड पथ वाली अवलोकनीय प्रमाण फ़ाइल
+complete_binary_tree_not_flat	केस स्टडी एक वृक्ष का वर्णन करती है, सपाट सूची का नहीं
+coding_search_complete_binary_tree_not_flat_fact	केस स्टडी एक वृक्ष का वर्णन करती है, सपाट सूची का नहीं
+ladder_leaf_count	निष्पादन योग्य सीढ़ी ठीक 32 अलग परमाणु पत्ते बनाती है
+coding_search_ladder_leaf_count_fact	निष्पादन योग्य सीढ़ी ठीक 32 अलग परमाणु पत्ते बनाती है
+generated_child_path_existence	उत्पन्न चाइल्ड पथ पूर्ण वृक्ष में मौजूद होने चाहिए
+coding_search_generated_child_path_existence_fact	उत्पन्न चाइल्ड पथ पूर्ण वृक्ष में मौजूद होने चाहिए
+decomposition_prompt_matrix	विघटन परीक्षण बहुभाषी प्रॉम्प्ट मैट्रिक्स पर चलते हैं
+coding_search_decomposition_prompt_matrix_fact	विघटन परीक्षण बहुभाषी प्रॉम्प्ट मैट्रिक्स पर चलते हैं
+composed_observations_heading	नोट रचयिता वर्तमान सत्र के अवलोकनों को शीर्षक देता है
+coding_search_composed_observations_heading_fact	नोट रचयिता वर्तमान सत्र के अवलोकनों को शीर्षक देता है
+dotted_binary_node_filter	बिंदीदार पथ से एकल नोड चयन
+coding_search_dotted_binary_node_filter	बिंदीदार पथ से एकल नोड चयन
+decomposition_node_counts	गहराई पर विघटन नोड
+coding_search_decomposition_node_counts_fact	गहराई पर विघटन नोड
+coding_search_power_of_two_levels_invariant	32 तक दो की घात वाले स्तर
+coding_search_recursive_task_conversion	विघटन वृक्ष का निष्पादन
+coding_search_approved_task_strategy	स्वीकृत विघटन रणनीतियाँ
+coding_search_independent_leaf_lower_bound	स्वतंत्र रूप से जांचने योग्य पत्तों की न्यूनतम संख्या
+coding_search_issue_creation	GitHub इश्यू बनाने का कमांड

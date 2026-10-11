@@ -1,0 +1,12 @@
+language en
+lemma greatest
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "highest in quality"
+    id oewn-02351683-s
+    partOfSpeech s
+    synonyms (sterling superlative)
+source "oewn:2024"

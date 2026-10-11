@@ -1,0 +1,117 @@
+{
+  "entities": {
+    "Q159": {
+      "type": "item",
+      "id": "Q159",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Russia"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Россия"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रूस"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "俄罗斯"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "俄罗斯"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Russian Federation"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Российская Федерация"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "俄羅斯"
+          },
+          {
+            "language": "zh",
+            "value": "俄国"
+          },
+          {
+            "language": "zh",
+            "value": "俄國"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Russia"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Россия"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "रूस"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "俄罗斯"
+        }
+      },
+      "claims": {
+        "P36": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P36",
+              "hash": "a07cdb39100f676ce7038a44fa7bb3cd7cb297ce",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 649,
+                  "id": "Q649"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [
+      "P36"
+    ],
+    "claim_ranks": "truthy"
+  }
+}

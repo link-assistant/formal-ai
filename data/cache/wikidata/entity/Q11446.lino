@@ -1,15 +1,18 @@
 Q11446
   aliases
     en (vessel "marine vessel" "water vessel" ships Ships)
+    es (barcos "navío" "navíos")
     ru ("судно")
     zh ("輪船")
   descriptions
     en "large buoyant watercraft"
+    es "vehículo con cubierta para navegaciones marítimas"
     ru "большое судно"
     zh "浮于水面上的大型结构，不同于Q1229765"
   id Q11446
   labels
     en ship
+    es barco
     hi "जलयान"
     ru "корабль"
     zh "船"

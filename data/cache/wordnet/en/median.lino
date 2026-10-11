@@ -1,0 +1,28 @@
+language en
+lemma median
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the number midway between the two middle numbers in a series containing an even or odd number of items"
+    id oewn-06033170-n
+    partOfSpeech n
+    synonyms ("median value")
+  entry
+    definition "relating to or constituting the middle value of an ordered set of values (or the average of the middle two in a set with an even number of values)"
+    examples ("the median value of 17, 20, and 36 is 20" "the median income for the year was $15,000")
+    id oewn-01599054-s
+    partOfSpeech s
+    synonyms (average)
+  entry
+    definition "dividing an animal into right and left halves"
+    id oewn-00782692-s
+    partOfSpeech s
+    synonyms (medial)
+  entry
+    definition "relating to or situated in or extending toward the middle"
+    id oewn-00331928-s
+    partOfSpeech s
+    synonyms (medial)
+source "oewn:2024"

@@ -1,0 +1,8 @@
+$ python3 scripts/check-web-ui-boundary.py
+js/app/application-worker-hooks.jsx: unregistered lowercase function
+js/app/application-desktop-hooks.jsx: unregistered lowercase function
+js/app/application-conversation-hooks.jsx: unregistered lowercase function
+js/app/application-memory-hooks.jsx: unregistered lowercase function
+js/app/application-layout-hooks.jsx: unregistered lowercase function
+js/app/application-constants.jsx: unregistered lowercase function
+js/app/*.jsx have 306367 non-whitespace characters in total; allowed 306259

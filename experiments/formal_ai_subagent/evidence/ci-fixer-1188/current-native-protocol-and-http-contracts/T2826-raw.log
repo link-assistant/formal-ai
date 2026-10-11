@@ -1,0 +1,68 @@
+>> bash {"command":"node --test rust/tests/web/native-protocol-capture.test.mjs"}
+   Output: TAP version 13
+   # Subtest: immutable legacy session bytes retain their recorded provenance
+   ok 1 - immutable legacy session bytes retain their recorded provenance
+     ---
+     duration_ms: 0.910209
+     ...
+   # Subtest: versioned sessions preserve complete actual native comparison operands
+   ok 2 - versioned sessions preserve complete actual native comparison operands
+     ---
+     duration_ms: 0.5875
+     ...
+   # Subtest: missing template capture remains explicit rather than synthesizing an observation
+   ok 3 - missing template capture remains explicit rather than synthesizing an observation
+     ---
+     duration_ms: 0.085667
+     ...
+   # Subtest: capture validation refuses a foreign task or turn-cap outcome
+   ok 4 - capture validation refuses a foreign task or turn-cap outcome
+     ---
+     duration_ms: 1.369292
+     ...
+   1..4
+   # tests 4
+   # suites 0
+   # pass 4
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 41.607958
+   
+   Exit Code: 0
+== answer ==
+The `node --test rust/tests/web/native-protocol-capture.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: immutable legacy session bytes retain their recorded provenance
+ok 1 - immutable legacy session bytes retain their recorded provenance
+  ---
+  duration_ms: 0.910209
+  ...
+# Subtest: versioned sessions preserve complete actual native comparison operands
+ok 2 - versioned sessions preserve complete actual native comparison operands
+  ---
+  duration_ms: 0.5875
+  ...
+# Subtest: missing template capture remains explicit rather than synthesizing an observation
+ok 3 - missing template capture remains explicit rather than synthesizing an observation
+  ---
+  duration_ms: 0.085667
+  ...
+# Subtest: capture validation refuses a foreign task or turn-cap outcome
+ok 4 - capture validation refuses a foreign task or turn-cap outcome
+  ---
+  duration_ms: 1.369292
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 41.607958
+```

@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_conversation_summary_request.js"
+  ceiling 29
+  rationale "General conversation request ownership extracted from write-program/research; exact supplied-text delimiters and loaded head roles distinguish text summary from historical summary. Parent ceiling falls; existing module ceilings do not rise."

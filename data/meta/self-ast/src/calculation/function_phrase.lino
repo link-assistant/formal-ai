@@ -1,0 +1,11 @@
+self_ast_census
+  target src/calculation/function_phrase.rs
+  language rust
+  fidelity signature
+  byte_len 3792
+  line_count 103
+  content_id source_module_c9d1e256eca442cb
+  symbol_count 2
+  symbols
+    function rewrite_function_phrases 22 49
+    function rewrite_at 54 103

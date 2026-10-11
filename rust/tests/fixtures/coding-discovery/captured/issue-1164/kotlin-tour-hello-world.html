@@ -1,0 +1,68 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#307FFF" data-external-links-in-new-tab="false"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="robots" content="noindex"><meta name="built-on" content="2026-10-06T09:08:13.412778173"><meta name="build-number" content="1292"><link rel="canonical" href="/docs/kotlin-tour-hello-world.html" data-react-helmet="true"><script>
+    (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+        var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&amp;l=' + l : '';
+        j.async = true;
+        j.src = '//www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-5P98');
+</script>
+<script src="https://resources.jetbrains.com/storage/help-app/v6/analytics.js"></script>
+<title>Hello world | Kotlin Documentation</title><script type="application/json" id="virtual-toc-data">[{"id":"variables","level":0,"title":"Variables","anchor":"#variables"},{"id":"string-templates","level":0,"title":"String templates","anchor":"#string-templates"},{"id":"practice","level":0,"title":"Practice","anchor":"#practice"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="custom-frontend-app/app.css?141" rel="stylesheet"><link rel="icon" type="image/svg" sizes="16x16" href="https://kotlinlang.org/assets/images/favicon.svg?v2"><link rel="icon" type="image/x-icon" sizes="32x32" href="https://kotlinlang.org/assets/images/favicon.ico?v2"><link rel="icon" type="image/png" sizes="96x96" href="https://kotlinlang.org/assets/images/apple-touch-icon.png?v2"><link rel="icon" type="image/png" sizes="300x300" href="https://kotlinlang.org/assets/images/apple-touch-icon-72x72.png?v2"><link rel="icon" type="image/png" sizes="500x500" href="https://kotlinlang.org/assets/images/apple-touch-icon-114x114.png?v2"><meta name="image" content="https://kotlinlang.org/assets/images/open-graph/docs.png"><!-- Open Graph --><meta property="og:title" content="Hello world | Kotlin"><meta property="og:description" content=""><meta property="og:image" content="https://kotlinlang.org/assets/images/open-graph/docs.png"><meta property="og:site_name" content="Kotlin Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="https://kotlinlang.org/docs/kotlin-tour-hello-world.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@kotlin"><meta name="twitter:title" content="Hello world | Kotlin"><meta name="twitter:description" content=""><meta name="twitter:creator" content="@kotlin"><meta name="twitter:image:src" content="https://kotlinlang.org/assets/images/open-graph/docs.png"><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "https://kotlinlang.org/docs/kotlin-tour-hello-world.html#webpage",
+    "url": "https://kotlinlang.org/docs/kotlin-tour-hello-world.html",
+    "name": "Hello world | Kotlin",
+    "description": "",
+    "image": "https://kotlinlang.org/assets/images/open-graph/docs.png",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "https://kotlinlang.org/docs/#website",
+    "url": "https://kotlinlang.org/docs/",
+    "name": "Kotlin Help"
+}</script><!-- End Schema.org --><style>a[href="test-page.html"] { visibility: hidden; }</style></head><body data-id="kotlin-tour-hello-world" data-main-title="Hello world" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="Take Kotlin tour///Beginner" data-edit-url="https://github.com/JetBrains/kotlin-web-site/edit/master/docs/topics/tour/kotlin-tour-hello-world.md"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Kotlin  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="kotlin-tour-hello-world" id="kotlin-tour-hello-world.md">Hello world</h1><p id="a2ozyb_3">Here is a simple program that prints &quot;Hello, world!&quot;:</p><div class="code-block" data-lang="kotlin" data-runnable="true" data-min-compiler-version="1.3" id="hello-world-kotlin">
+fun main() {
+    println(&quot;Hello, world!&quot;)
+    // Hello, world!
+}
+</div><p id="a2ozyb_5">In Kotlin:</p><ul class="list _bullet" id="a2ozyb_6"><li class="list__item" id="a2ozyb_13"><p id="a2ozyb_17"><code class="code" id="a2ozyb_18">fun</code> is used to declare a function</p></li><li class="list__item" id="a2ozyb_14"><p id="a2ozyb_19">The <code class="code" id="a2ozyb_20">main()</code> function is where your program starts from</p></li><li class="list__item" id="a2ozyb_15"><p id="a2ozyb_21">The body of a function is written within curly braces <code class="code" id="a2ozyb_22">{}</code></p></li><li class="list__item" id="a2ozyb_16"><p id="a2ozyb_23"><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.io/println.html" id="a2ozyb_24" data-external="true" rel="noopener noreferrer"><code class="code" id="a2ozyb_26">println()</code></a> and <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.io/print.html" id="a2ozyb_25" data-external="true" rel="noopener noreferrer"><code class="code" id="a2ozyb_27">print()</code></a> functions print their arguments to standard output</p></li></ul><p id="a2ozyb_7">A function is a set of instructions that performs a specific task. Once you create a function, you can use it whenever you need to perform that task, without having to write the instructions all over again. Functions are discussed in more detail in a couple of chapters. Until then, all examples use the <code class="code" id="a2ozyb_28">main()</code> function.</p><section class="chapter"><h2 id="variables" data-toc="variables">Variables</h2><p id="a2ozyb_29">All programs need to be able to store data, and variables help you to do just that. In Kotlin, you can declare:</p><ul class="list _bullet" id="a2ozyb_30"><li class="list__item" id="a2ozyb_38"><p id="a2ozyb_40">Read-only variables with <code class="code" id="a2ozyb_41">val</code></p></li><li class="list__item" id="a2ozyb_39"><p id="a2ozyb_42">Mutable variables with <code class="code" id="a2ozyb_43">var</code></p></li></ul><aside class="prompt" data-type="note" data-title="" id="a2ozyb_31"><p id="a2ozyb_44">You can't change a read-only variable once you have given it a value.</p></aside><p id="a2ozyb_32">To assign a value, use the assignment operator <code class="code" id="a2ozyb_45">=</code>.</p><p id="a2ozyb_33">For example:</p><div class="code-block" data-lang="kotlin" data-runnable="true" data-min-compiler-version="1.3" id="kotlin-tour-variables">
+fun main() { 
+//sampleStart
+    val popcorn = 5    // There are 5 boxes of popcorn
+    val hotdog = 7     // There are 7 hotdogs
+    var customers = 10 // There are 10 customers in the queue
+    
+    // Some customers leave the queue
+    customers = 8
+    println(customers)
+    // 8
+//sampleEnd
+}
+</div><aside class="prompt" data-type="tip" data-title="" id="a2ozyb_35"><p id="a2ozyb_46">Variables can be declared outside the <code class="code" id="a2ozyb_47">main()</code> function at the beginning of your program. Variables declared in this way are said to be declared at <span class="control" id="a2ozyb_48">top level</span>.</p></aside><p id="a2ozyb_36">As <code class="code" id="a2ozyb_49">customers</code> is a mutable variable, its value can be reassigned after declaration.</p><aside class="prompt" data-type="note" data-title="" id="a2ozyb_37"><p id="a2ozyb_50">We recommend declaring all variables as read-only (<code class="code" id="a2ozyb_51">val</code>) by default. Only use mutable variables (<code class="code" id="a2ozyb_52">var</code>) if you really need to. That way, you're less likely to accidentally change something that wasn't meant to change.</p></aside></section><section class="chapter"><h2 id="string-templates" data-toc="string-templates">String templates</h2><p id="a2ozyb_53">It's useful to know how to print the contents of variables to standard output. You can do this with <span class="control" id="a2ozyb_59">string templates</span>. You can use template expressions to access data stored in variables and other objects, and convert them into strings. A string value is a sequence of characters in double quotes <code class="code" id="a2ozyb_60">&quot;</code>. Template expressions always start with a dollar sign <code class="code" id="a2ozyb_61">$</code>.</p><p id="a2ozyb_54">To evaluate a piece of code in a template expression, place the code within curly braces <code class="code" id="a2ozyb_62">{}</code> after the dollar sign <code class="code" id="a2ozyb_63">$</code>.</p><p id="a2ozyb_55">For example:</p><div class="code-block" data-lang="kotlin" data-runnable="true" data-min-compiler-version="1.3" id="kotlin-tour-string-templates">
+fun main() { 
+//sampleStart
+    val customers = 10
+    println(&quot;There are $customers customers&quot;)
+    // There are 10 customers
+    
+    println(&quot;There are ${customers + 1} customers&quot;)
+    // There are 11 customers
+//sampleEnd
+}
+</div><p id="a2ozyb_57">For more information, see <a href="strings.html#string-templates" id="a2ozyb_64">String templates</a>.</p><p id="a2ozyb_58">You will notice that there aren't any types declared for variables. Kotlin has inferred the type itself: <code class="code" id="a2ozyb_65">Int</code>. This tour explains the different Kotlin basic types and how to declare them in the <a href="kotlin-tour-basic-types.html" id="a2ozyb_66">next chapter</a>.</p></section><section class="chapter"><h2 id="practice" data-toc="practice" data-completion-point="true">Practice</h2><dl id="a2ozyb_67" data-style="title-top" data-appearance="clear"><dt id="a2ozyb_68" data-expandable="true" data-expanded="false">Print a statement using string templates</dt><dd><p id="a2ozyb_69">Complete the code to make the program print <code class="code" id="a2ozyb_72">&quot;Mary is 20 years old&quot;</code> to standard output:</p><div class="code-block" data-lang="kotlin" data-runnable="true" data-min-compiler-version="1.3" id="kotlin-tour-hello-world-exercise">
+fun main() {
+    val name = &quot;Mary&quot;
+    val age = 20
+    // Write your code here
+}
+</div><div class="code-collapse" data-lang="kotlin" id="kotlin-tour-hello-world-solution" data-is-expanded="false" data-synopsis="Example solution">
+fun main() {
+    val name = &quot;Mary&quot;
+    val age = 20
+    println(&quot;$name is $age years old&quot;)
+}
+</div></dd></dl></section><ul class="list _bullet" id="tour-nav"><li class="list__item" id="a2ozyb_73"><p><a href="kotlin-tour-basic-types.html" id="a2ozyb_74" mode="classic" as="button" icon="arrow-right" icon-position="right">Next step</a></p></li></ul><div class="last-modified">02 September 2026</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="kotlin-tour-welcome.html" class="navigation-links__prev">Welcome to our tour of Kotlin!</a><a href="kotlin-tour-basic-types.html" class="navigation-links__next">Basic types</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="custom-frontend-app/app.js?141"></script></body></html>

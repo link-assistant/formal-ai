@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "葉"
+        },
+        "es": {
+          "language": "es",
+          "value": "hoja"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "植物的营养器官"
+        },
+        "es": {
+          "language": "es",
+          "value": "parte de una planta que sirve para hacer la fotosíntesis."
         }
       },
       "aliases": {
@@ -130,6 +138,20 @@
           {
             "language": "zh",
             "value": "叶基"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "follaje"
+          },
+          {
+            "language": "es",
+            "value": "hojas"
+          },
+          {
+            "language": "es",
+            "value": "foliar"
           }
         ]
       }

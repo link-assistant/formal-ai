@@ -933,3 +933,41 @@ fn upstream_records_are_parsed_into_gradable_cases() {
     assert!(!outcomes[0].passed);
     assert!(outcomes[0].detail.contains("official SWE-bench criterion"));
 }
+
+/// R1177-12: a full upstream slice that cannot finish in one job runs as
+/// concurrent `--offset` windows whose graded counts add up to the whole.
+/// Run 37594798452 reached `HumanEval` case 90 of 164 in 81 minutes and was
+/// cancelled before grading, so the single job reported nothing.
+#[test]
+fn a_full_slice_runs_as_offset_shards_that_add_up() {
+    let workflow = read(".github/workflows/external-benchmarks.yml");
+    let cli = read("rust/src/cli_benchmark.rs");
+    assert!(
+        cli.contains("offset: usize") && cli.contains("run_suite_window"),
+        "the benchmark command must accept an --offset window"
+    );
+    assert!(
+        cli.contains("offset > 0 && (append || frontier_record.is_some())"),
+        "a shard must refuse to append or rewrite the frontier from part of a suite"
+    );
+    let shards = workflow
+        .split("# === SHARDED MEASUREMENT")
+        .nth(1)
+        .expect("the workflow must carry a sharded measurement mode");
+    for needle in [
+        "--offset \"${OFFSET}\"",
+        "fromJSON(needs.shard-plan.outputs.windows)",
+        "fail-fast: false",
+        "only ${total} of ${SLICE} cases were graded",
+    ] {
+        assert!(shards.contains(needle), "sharded mode lacks {needle:?}");
+    }
+    assert!(
+        !shards.contains("--append") && !shards.contains("push-to-shared-branch"),
+        "shards read only; the combined count is recorded by a reviewed commit"
+    );
+    assert!(
+        workflow.contains("if: github.event_name != 'pull_request' && !inputs.shard_size"),
+        "a sharded dispatch must not also run the single-job measurement"
+    );
+}

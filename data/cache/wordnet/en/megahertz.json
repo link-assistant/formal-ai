@@ -1,0 +1,22 @@
+{
+  "lemma": "megahertz",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-15305175-n",
+      "partOfSpeech": "n",
+      "definition": "one million periods per second",
+      "synonyms": [
+        "MHz",
+        "megacycle per second",
+        "megacycle",
+        "Mc"
+      ]
+    }
+  ]
+}

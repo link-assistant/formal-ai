@@ -1,0 +1,161 @@
+# The style rules of the links notation we own (PR #1188, R1188-U6 and
+# R1188-U7; docs/links-notation-style.md). Names prefer `-` over `_`, use
+# full English words, and shared structure is stated once.
+#
+# scripts/measure-notation.mjs measures the scopes below against
+# data/meta/notation-ratchet.lino (gate check-notation), and
+# experiments/formal_ai_subagent/apply-notation-rules.mjs applies the
+# families below by rule, one family at a time, with --check.
+notation-rules
+  scope data/seed
+  scope data/meta
+  excluded data/meta/self-ast
+    reason "a generated census of the Rust syntax trees: its names are code identifiers, which follow the language's own convention"
+  duplicate-block-minimum-lines 3
+  excluded data/meta/notation-renames.lino
+    reason "the record of every rename keeps the old spellings on purpose"
+  family ratchets
+    files data/meta/*-ratchet.lino
+  family seed-lexemes
+    rule concise-lexemes
+    files data/seed/*.lino
+    except data/seed/meanings-intent.lino
+      reason "CIFIX-LOOP is editing it; converted in the next application"
+    except data/seed/meanings-translation.lino
+      reason "the meaning-detail recipe (js/agentic/meaning_detail.mjs and its Rust twin) writes its tomato and potato blocks long, byte for byte; converted when the recipe writes the concise form"
+    except data/seed/meanings-wikidata.lino
+      reason "rust/src/web_search_fusion_core.rs, also built into the WASM worker, scans it line by line; converted when that reader parses the seed"
+    except data/seed/meanings-statement-merge.lino
+      reason "rust/src/web_search_fusion_core.rs, also built into the WASM worker, scans it line by line; converted when that reader parses the seed"
+    except data/seed/meanings-lexicon-import-actor-to-diamond.lino
+      reason "RENAME tree 5 renames the lexicon-import shards; converted after it"
+    except data/seed/meanings-lexicon-import-dog-to-lake.lino
+      reason "RENAME tree 5 renames the lexicon-import shards; converted after it"
+    except data/seed/meanings-lexicon-import-lamp-to-rainbow.lino
+      reason "RENAME tree 5 renames the lexicon-import shards; converted after it"
+    except data/seed/meanings-lexicon-import-religion-to-wall.lino
+      reason "RENAME tree 5 renames the lexicon-import shards; converted after it"
+    except data/seed/meanings-lexicon-import-war-to-wood.lino
+      reason "RENAME tree 5 renames the lexicon-import shards; converted after it"
+  family gate-names
+    files data/meta/ci-gates/*.lino
+    merge-collisions true
+      reason "a gate's name and the shard file it lives in (data/meta/ci-gates/check-file-size.lino, enforced-by check-file-size) are one name in two spellings"
+    except data/meta/ci-gates/check-rename-map.lino
+      reason "RENAME owns it while its trees are open"
+  family handler-rules
+    files data/seed/handler-*.lino
+    files data/seed/*-precedence.lino
+    merge-collisions true
+      reason "a seed's root link and its seed-registry slug (handler_rules in handler-rules.lino, seed handler-rules) are one name in two spellings"
+    keep prior_turn
+      reason "also the event-log kind prior_turn:user and prior_turn:assistant that both roots append and read; renamed with the event-log vocabulary"
+    keep mechanism_query
+      reason "also the event-log kind mechanism_query:request, which the evidence lines of both roots print; renamed with the event-log vocabulary"
+    keep undefined_function
+      reason "the text a prompt is searched for (substring undefined_function of lowercase), not a name"
+    keep world_state_query
+      reason "the cue set of data/meta/cue-lexicon.lino names it in quotes; renamed with that file"
+    keep periods_compounding_monthly periods_compounding_quarterly periods_compounding_weekly periods_compounding_daily periods_compounding_annual
+      reason "the compound-interest readers build the key from a meaning slug (periods_compounding_monthly); renamed with the meanings family"
+    keep argument_prompt argument_normalized argument_history argument_language argument_memory argument_preferences result_intent_write_program evidence_kind_write_program_coreference_rewrite
+      reason "js/seed_loader.js reads a code symbol after the prefix of the field name (argument_prompt passes the handler context path prompt); renamed when the browser precedence states its symbols as values"
+    keep default_target
+      reason "also the end of the response intent software_project_followup_default_target, which both roots build from it; renamed with the responses family"
+  abbreviations
+    app application
+    arg argument
+    args arguments
+    auth authentication
+    avg average
+    calc calculation
+    cfg configuration
+    conf configuration
+    config configuration
+    ctx context
+    cur current
+    db database
+    def definition
+    dest destination
+    dir directory
+    doc document
+    docs documentation
+    dst destination
+    e2e end-to-end
+    env environment
+    err error
+    eval evaluation
+    expr expression
+    fn function
+    fs file-system
+    func function
+    id identifier
+    ids identifiers
+    idx index
+    impl implementation
+    info information
+    init initialization
+    lang language
+    len length
+    lib library
+    max maximum
+    mb megabytes
+    min minimum
+    msg message
+    nl natural-language
+    num number
+    obs observation
+    op operation
+    ops operations
+    param parameter
+    params parameters
+    pos position
+    pr pull-request
+    prev previous
+    ref reference
+    refs references
+    rel relation
+    repo repository
+    req request
+    resp response
+    seq sequence
+    spec specification
+    src source
+    stat statistic
+    stats statistics
+    str string
+    temp temporary
+    tmp temporary
+    util utility
+    val value
+    var variable
+    vars variables
+  proper-terms
+    ai "artificial intelligence, an established acronym"
+    api "application programming interface, an established acronym"
+    ast "abstract syntax tree, an established acronym"
+    ci "continuous integration, an established acronym"
+    cli "command-line interface, an established acronym"
+    cst "concrete syntax tree, an established acronym"
+    csv "a file format name"
+    html "a file format name"
+    http "a protocol name"
+    json "a file format name"
+    llm "large language model, an established acronym"
+    mcp "Model Context Protocol, a protocol name"
+    qid "a Wikidata item identifier, the external term"
+    si "the International System of Units"
+    sql "a language name"
+    toml "a file format name"
+    triz "a method name"
+    url "an established acronym"
+    utf8 "an encoding name"
+    wasm "WebAssembly, a format name"
+    yaml "a file format name"
+  shared-lexeme-fields-schema data/meta/shared-lexeme-fields-schema.lino
+  family shared-lexical-fields
+    rule shared-lexeme-fields
+    files data/seed/meanings-lexicon-import-war-to-wood.lino
+  family source-owned-contracts
+    files data/seed/multilingual-responses-agentic-tools.lino
+    files data/seed/workspace-discovery-grammar.lino

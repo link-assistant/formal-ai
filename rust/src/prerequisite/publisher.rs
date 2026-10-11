@@ -168,10 +168,33 @@ fn procedure_from_sense(
     publisher: &SetupPublisher,
     sense: &crate::concept_lookup::ConceptSense,
 ) -> Option<SetupProcedure> {
-    if !url_has_host(&sense.source_url, &publisher.host) {
+    // A retrieved sense already carries its provenance: the source that
+    // answered and the digest of the bytes it returned. Those outrank the
+    // publisher's default id and a digest recomputed from the gloss alone.
+    parse_setup_document(need, publisher, &sense.source_url, &sense.gloss).map(|procedure| {
+        SetupProcedure {
+            source_id: sense.source_id.clone(),
+            content_id: sense.sha256.clone(),
+            ..procedure
+        }
+    })
+}
+
+/// Parse a fetched, pinned publisher document without running any process.
+///
+/// Ordinary prose cannot authorize a setup command; the document must carry
+/// the same typed setup grammar and postcondition used by source discovery.
+#[must_use]
+pub fn parse_setup_document(
+    need: &PrerequisiteNeed,
+    publisher: &SetupPublisher,
+    source_url: &str,
+    document: &str,
+) -> Option<SetupProcedure> {
+    if !url_has_host(source_url, &publisher.host) {
         return None;
     }
-    let root = parse_lino(&sense.gloss);
+    let root = parse_lino(document);
     let recipe = root
         .children
         .iter()
@@ -224,9 +247,9 @@ fn procedure_from_sense(
 
     Some(SetupProcedure {
         program: need.program.clone(),
-        source_id: sense.source_id.clone(),
-        source_url: sense.source_url.clone(),
-        content_id: sense.sha256.clone(),
+        source_id: publisher.source_id.clone(),
+        source_url: source_url.to_owned(),
+        content_id: crate::engine::stable_id("setup_document", document),
         platform: need.platform,
         steps,
         postcondition: Some(super::probe::ToolchainProbe::new(

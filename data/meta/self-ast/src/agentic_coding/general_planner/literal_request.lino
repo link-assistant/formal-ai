@@ -1,0 +1,115 @@
+self_ast_census
+  target src/agentic_coding/general_planner/literal_request.rs
+  language rust
+  fidelity full_ast
+  byte_len 22852
+  line_count 496
+  content_id source_module_bd67e63e8abff1fd
+  symbol_count 17
+  symbols
+    function binding_has_write_instruction 13 52
+    function parse_write_request 77 80
+    function parse_write_contract 82 109
+    function parse_write_request_bound 112 241
+    function statement_scope 243 252
+    function end_of_statement 280 296
+    function literal_statement_end 307 316
+    function positions_share_statement 317 324
+    function is_literal_content 326 349
+    function is_non_referential_content 356 362
+    function names_deferred_work_product 382 396
+    function ends_with_head_noun 405 413
+    struct LiteralWriteContract 417 422
+    function write_contract 423 453
+    function instruction_view 454 462
+    function owns_instruction_span 465 471
+    function action_qualified_payload_start 473 496
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 12523
+    named_node_count 2590
+    distinct_node_kinds 80
+    node_kinds
+      arguments 198
+      array_expression 1
+      array_type 3
+      assignment_expression 3
+      attribute 1
+      attribute_item 1
+      binary_expression 62
+      block 55
+      boolean_literal 9
+      break_expression 1
+      call_expression 198
+      char_literal 14
+      closure_expression 27
+      closure_parameters 27
+      compound_assignment_expr 1
+      crate 9
+      doc_comment 100
+      else_clause 7
+      escape_sequence 1
+      expression_statement 38
+      field_declaration 4
+      field_declaration_list 1
+      field_expression 227
+      field_identifier 231
+      field_initializer 2
+      field_initializer_list 1
+      for_expression 2
+      function_item 16
+      function_modifiers 1
+      generic_type 13
+      identifier 599
+      if_expression 19
+      index_expression 13
+      inner_doc_comment_marker 1
+      integer_literal 4
+      let_chain 3
+      let_condition 5
+      let_declaration 49
+      lifetime 3
+      line_comment 150
+      macro_invocation 1
+      match_arm 3
+      match_block 1
+      match_expression 1
+      match_pattern 3
+      mutable_specifier 3
+      or_pattern 1
+      outer_doc_comment_marker 99
+      parameter 36
+      parameters 16
+      parenthesized_expression 7
+      primitive_type 39
+      range_expression 24
+      reference_expression 28
+      reference_type 26
+      return_expression 15
+      scoped_identifier 43
+      scoped_type_identifier 4
+      scoped_use_list 2
+      self 1
+      shorthand_field_initializer 2
+      slice_pattern 1
+      source_file 1
+      string_content 8
+      string_literal 7
+      struct_expression 1
+      struct_item 1
+      super 10
+      token_tree 2
+      try_expression 14
+      tuple_expression 4
+      tuple_pattern 2
+      tuple_struct_pattern 10
+      tuple_type 1
+      type_arguments 13
+      type_identifier 30
+      unary_expression 15
+      use_declaration 4
+      use_list 2
+      visibility_modifier 9
