@@ -441,7 +441,7 @@ fn identifier_tokens(text: &str) -> impl Iterator<Item = &str> {
         .filter(|token| !token.is_empty())
 }
 
-fn valid_identifier(identifier: &str) -> bool {
+pub(super) fn valid_identifier(identifier: &str) -> bool {
     identifier_domain::rust_identifier_is_valid(identifier)
 }
 
