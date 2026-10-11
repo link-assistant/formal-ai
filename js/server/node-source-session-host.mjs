@@ -98,17 +98,17 @@ function trackedConsumerSourceBinding() {
     const file = new URL(relative, import.meta.url);
     const physical = fs.realpathSync(file);
     if (physical !== file.pathname) throw Error('AliasedTrackedConsumerSource');
-    const stat = fs.lstatSync(physical, {bigint: true});
-    if (!stat.isFile() || hash(fs.readFileSync(physical)) !== expected) {
+    const fileStatus = fs.lstatSync(physical, {bigint: true});
+    if (!fileStatus.isFile() || hash(fs.readFileSync(physical)) !== expected) {
       throw Error('ChangedTrackedConsumerSource');
     }
-    return {physical, expected, identity: [stat.dev, stat.ino, stat.ctimeNs, stat.size]};
+    return {physical, expected, identity: [fileStatus.dev, fileStatus.ino, fileStatus.ctimeNs, fileStatus.size]};
   });
   return () => {
     for (const input of inputs) {
-      const stat = fs.lstatSync(input.physical, {bigint: true});
-      if (!stat.isFile() || fs.realpathSync(input.physical) !== input.physical
-          || [stat.dev, stat.ino, stat.ctimeNs, stat.size].some((value, index) => value !== input.identity[index])
+      const fileStatus = fs.lstatSync(input.physical, {bigint: true});
+      if (!fileStatus.isFile() || fs.realpathSync(input.physical) !== input.physical
+          || [fileStatus.dev, fileStatus.ino, fileStatus.ctimeNs, fileStatus.size].some((value, index) => value !== input.identity[index])
           || hash(fs.readFileSync(input.physical)) !== input.expected) {
         throw Error('ChangedTrackedConsumerSource');
       }
