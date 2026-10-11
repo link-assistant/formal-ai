@@ -211,7 +211,7 @@ export function readPolicyBlocksPlan(prompt,plan) {
   return false;
 }
 
-function modePathsForClause(prompt) {
+export function modePathsForClause(prompt) {
   prompt=balancedPathText(prompt);
   const root = parseLino(readText('data/seed/meanings-file-write.lino'));
   const contract = childrenNamed(root, 'file-read-mode-contract')[0];

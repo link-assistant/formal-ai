@@ -29,8 +29,11 @@ import { quotedSegmentSpans } from '../../js/agentic/crate/normal_markov.mjs';
 import { mentionsRole } from '../../js/agentic/crate/seed_meanings.mjs';
 import { normalizePrompt } from '../../js/agentic/crate/engine.mjs';
 import { collectionSummaryOwns } from '../../js/agentic/planner/collection_summary.mjs';
-import { bareSurfaces } from '../../js/agentic/write_request.mjs';
-import { ownedReadPaths, readPolicyBlocksPlan } from '../../js/agentic/file_read/ownership.mjs';
+import { bareSurfaces, deliveredWriteTarget, firstActionCueStart, rankedBindings, tokens } from '../../js/agentic/write_request.mjs';
+import { ownedReadPaths, readPolicyBlocksPlan, modePathsForClause } from '../../js/agentic/file_read/ownership.mjs';
+import { sentences } from '../../js/agentic/shell_command_policy.mjs';
+import { namesCallableArtifact } from '../../js/agentic/evidence_record/artifact_header.mjs';
+import { quoteFault } from '../../js/agentic/crate/normal_markov.mjs';
 import { shellCapture } from './shell-capture.mjs';
 import { grepCapture } from './grep-capture.mjs';
 import { lstatSync, realpathSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
@@ -47,6 +50,37 @@ import { installDefaultNodeSourceHost } from '../../js/server/default-node-sourc
 const BASH_TIMEOUT_MS = Number(process.env.FORMAL_AI_BASH_TIMEOUT_MS ?? 60000);
 
 // Only advertise adapters this in-process driver actually executes.
+function ownedReadReportFrame(request) {
+  if (quoteFault(request) !== null) return null;
+  // The shared seeded grammar consumes the entire request, including its topic data domain.
+  let sources = modePathsForClause(request);
+  if (sources === null) {
+    const clauses = sentences(request);
+    if (clauses.length < 3) return null;
+    sources = [];
+    for (const clause of clauses.slice(0, -2)) {
+      const paths = modePathsForClause(clause.text);
+      if (paths === null) return null;
+      sources.push(...paths);
+    }
+    const finalSources = modePathsForClause(request.slice(clauses.at(-2).span.start));
+    if (finalSources === null) return null;
+    sources.push(...finalSources);
+  }
+  const all = tokens(request);
+  const action = firstActionCueStart(all);
+  const target = deliveredWriteTarget(request);
+  const binding = rankedBindings(all).find(item => item.path === target);
+  if (action === null || target === null || !binding
+      || binding.index !== all.length - 1 || namesCallableArtifact(request, target)) return null;
+  let header = request.slice(action, all[binding.index].start);
+  for (const span of quotedSegmentSpans(header)) {
+    header = header.slice(0, span.start) + ' '.repeat(span.end - span.start) + header.slice(span.end);
+  }
+  if (!mentionsRole('evidence-report-artifact-kind', header)) return null;
+  return Object.freeze({ sources, target });
+}
+
 export const AGENT_CLI_TOOLS = ['bash', 'edit', 'grep', 'list', 'read', 'write'];
 
 function argsOf(call) {
@@ -333,6 +367,13 @@ export async function drive(planChatStep, dir, prompt, {
       && current.calls.length > 0 && current.calls.every(call => call.tool === 'read')
       && !readPolicyBlocksPlan(prompt, current);
   }
+  const readReportFrame = readOnlyOperation ? ownedReadReportFrame(prompt) : null;
+  const reportDelivery = sentences(prompt).some(clause => {
+    const target = deliveredWriteTarget(clause.text);
+    return target !== null && !namesCallableArtifact(clause.text, target)
+      && mentionsRole('evidence-report-artifact-kind', clause.text);
+  });
+  if (readOnlyOperation && reportDelivery && readReportFrame === null) readOnlyOperation = false;
   let sourceEditOperation = false;
   const firstGoal = Array.isArray(declaredGoals) ? declaredGoals[0] : null;
   if (createIntent && createContract === null && firstGoal?.kind === 'source_edit'
@@ -439,7 +480,7 @@ export async function drive(planChatStep, dir, prompt, {
       const current = await maintainedResolvedStep(messages, tools);
       if (current?.kind !== 'tool_calls' || readPolicyBlocksPlan(prompt, current)
           || calls.length !== current.calls.length || !calls.every((call, index) =>
-            (sourceEditOperation || call.tool === 'read') && call.tool === current.calls[index].tool
+            (sourceEditOperation || readReportFrame !== null || call.tool === 'read') && call.tool === current.calls[index].tool
               && call.arguments === current.calls[index].arguments)) {
         return { transcript, answer: null, stop: 'unbound-read-operation', toolsAdvertised: tools };
       }

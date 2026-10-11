@@ -235,6 +235,8 @@ meanings
       capture-domain key
         pattern "^[A-Za-z_][A-Za-z0-9_.-]*$"
         precondition "technical captures retain their exact declared case-sensitive byte domain independently from natural-language cue folding"
+    form read-report
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+{sources}[ \\t]*[.][ \\t]+{file-write-action-cue}[ \\t]+(?:(?:a|an|the)[ \\t]+)?{evidence-report-artifact-kind}(?:[ \\t]+about[ \\t]+(?<topic>[\\p{L}\\p{N}_-]+|\\x22[^\\x22\\r\\n]+\\x22|\\x27[^\\x27\\r\\n]+\\x27|\\x60[^\\x60\\r\\n]+\\x60))?[ \\t]+{file-write-target-cue}[ \\t]+(?<target>[^ \\t\\r\\n]+)[ \\t]*[.]?$"
     form first-line
       pattern "^[ \\t]*(?:{file-read-action-cue})[ \\t]+(?:the[ \\t]+)?first[ \\t]+line[ \\t]+of[ \\t]+{source}[ \\t]*[?.]?$"
     form line-slice-count
