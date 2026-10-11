@@ -66,8 +66,12 @@ test('every exemption names a reason, and a stale or reasonless exemption fails'
   const committed = parseExemptions(readFileSync(join(REPOSITORY, EXEMPTIONS_FILE), 'utf8'));
   assert.ok(committed.length > 0);
   for (const exemption of committed) assert.ok(exemption.reason.length > 40, `${exemption.path} has a reason`);
-  assert.ok(committed.some((exemption) => exemption.reason.includes('github.com/link-foundation/meta-language/issues/')),
-    'the translation projections name the upstream issue');
+  for (const exemption of committed) {
+    if (exemption.path.startsWith('rust/tests/fixtures/js-rust-translation/')) {
+      assert.ok(exemption.reason.includes('github.com/link-foundation/meta-language/issues/'),
+        exemption.path + ' names the upstream issue');
+    }
+  }
 
   const repository = mkdtempSync(join(tmpdir(), 'readable-code-'));
   try {
