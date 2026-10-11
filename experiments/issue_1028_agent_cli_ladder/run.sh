@@ -468,25 +468,39 @@ PY
 
   effect="$work/agent-ladder-effects/node-${id}.lino"
   set +e
-  verifier_verdict=$(LADDER_LEAVES="$OUT/leaves.tsv" LADDER_LEAF_SPAN="$leaf_span" LADDER_CHILD_DIFFS="$child_diffs" \
-    "$VERIFY_NODE" "$work" "$proof" "$id" "$depth" "$left" "$right" "$criterion_path" "$criterion_marker" "$criterion_guard")
+  LADDER_LEAVES="$OUT/leaves.tsv" LADDER_LEAF_SPAN="$leaf_span" LADDER_CHILD_DIFFS="$child_diffs" \
+    "$VERIFY_NODE" "$work" "$proof" "$id" "$depth" "$left" "$right" "$criterion_path" "$criterion_marker" "$criterion_guard" \
+    >"$session_dir/verifier-stdout.log" 2>"$session_dir/verifier-stderr.log"
   verifier_status=$?
   set -e
+  verifier_verdict=$(cat "$session_dir/verifier-stdout.log")
+  cat "$session_dir/verifier-stderr.log" >&2 || true
+
+  capture_status=0
+  # Preserve diagnostic artifacts before interpreting the verifier status.
+  [[ ! -f "$proof" ]] || cp "$proof" "$session_dir/proof.md" || capture_status=1
+  [[ ! -f "$effect" ]] || cp "$effect" "$session_dir/effect.lino" || capture_status=1
+  [[ ! -f "$work/.agent-ladder/verify.tsv" ]] || cp "$work/.agent-ladder/verify.tsv" "$session_dir/verify.tsv" || capture_status=1
+  for verification_log in "$work/.agent-ladder"/cargo-*.log; do
+    [[ ! -f "$verification_log" ]] || cp "$verification_log" "$session_dir/" || capture_status=1
+  done
+  if [[ "$depth" -eq 5 ]]; then
+    git -C "$work" diff -- "$criterion_path" > "$session_dir/change.diff" || capture_status=1
+  elif [[ "$depth" -eq 4 ]]; then
+    cat "$OUT/$left/change.diff" "$OUT/$right/change.diff" > "$session_dir/change.diff" || capture_status=1
+  else
+    git -C "$work" diff > "$session_dir/change.diff" || capture_status=1
+  fi
   if [[ "$verifier_status" -ne 0 ]]; then
     printf '%s\tFAIL\t%s\n' "$id" "$verifier_verdict" | tee -a "$RUN_LOG"
     return 1
   fi
-
-  cp "$proof" "$session_dir/proof.md"
-  cp "$effect" "$session_dir/effect.lino"
-  [[ -f "$work/.agent-ladder/verify.tsv" ]] && cp "$work/.agent-ladder/verify.tsv" "$session_dir/verify.tsv"
-  if [[ "$depth" -eq 5 ]]; then
-    git -C "$work" diff -- "$criterion_path" > "$session_dir/change.diff"
-  elif [[ "$depth" -eq 4 ]]; then
-    cat "$OUT/$left/change.diff" "$OUT/$right/change.diff" > "$session_dir/change.diff"
-  else
-    git -C "$work" diff > "$session_dir/change.diff"
+  [[ -f "$proof" && -f "$effect" ]] || capture_status=1
+  if [[ "$capture_status" -ne 0 ]]; then
+    printf '%s\tFAIL\tartifact_capture_failure\n' "$id" | tee -a "$RUN_LOG"
+    return 1
   fi
+
   VERIFIED_EFFECTS["$id"]="$session_dir/effect.lino"
   printf '%s\tPASS\tdepth=%s\n' "$id" "$depth" | tee -a "$RUN_LOG"
 }
