@@ -25,7 +25,9 @@ meanings
   requirement_directive
     defined-by relation
     role requirement_directive_verb
-    precondition "a sentence or list item of an issue starts with this verb"
+    precondition "a sentence or list item of an issue starts with this verb or ends with it in a declared terminal directive language"
+    directive-position terminal
+      language hi
     effect "the sentence is an instruction to the implementer, so it is listed as a requirement"
     unit "not applicable"
     example "Add a dark mode toggle."

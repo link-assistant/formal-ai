@@ -156,14 +156,7 @@ function requirementUnits(text) {
  * @returns {boolean}
  */
 function requirementStatedByWords(unit) {
-  const normalized = requirementNormalizeUnit(unit);
-  const obligation = requirementRoleWords(REQUIREMENT_EXTRACTION_ROLES.obligation)
-    .some((cue) => surfacePresent(normalized, cue));
-  if (obligation) return true;
-  return requirementRoleWords(REQUIREMENT_EXTRACTION_ROLES.directive).some((verb) => {
-    if (containsCjk(verb)) return normalized.startsWith(verb);
-    return normalized === verb || normalized.startsWith(`${verb} `);
-  });
+  return crateModule("crate/requirement_extraction.mjs").isRequirement(unit);
 }
 
 /**

@@ -24,7 +24,7 @@
 // target, translated}`; a round trip is `{source, forward, backward,
 // statements, survivingTerms, knownTerms, survives}`.
 
-const { Polarity, WordKind, clauseStatement, formalizeText, joinSurfaces, knownIds, negationIn, resolveSurface, returnSurface, statementTerms, surfacesIn } = crateRequire("crate/text_formalization.mjs");
+const { Polarity, WordKind, clauseStatement, formalizeText, joinSurfaces, knownIds, negationIn, resolveSurface, returnSurface, seedWords, statementTerms, surfacesIn } = crateRequire("crate/text_formalization.mjs");
 
 /**
  * Mirrors `fn round_trip_score` in rust/src/translation/round_trip.rs: how well `candidate`, a surface in `target`,
@@ -105,6 +105,10 @@ function renderTerm(term, source, target) {
 function renderStatement(statement, source, target) {
   const terms = [];
   const surfaces = [];
+  if (statement.subject === null && statement.terms.length > 0) {
+    const opener = seedWords(target, 'clause-continuation')[0];
+    if (opener !== undefined) surfaces.push(opener);
+  }
   if (statement.subject !== null) {
     const rendered = renderTerm(statement.subject, source, target);
     terms.push(rendered);
@@ -128,8 +132,16 @@ function translateText(text, source, target) {
   return joinSurfaces(pieces);
 }
 
-/** Two sorted id lists are equal (the Rust twin compares the vectors). */
-const sameIds = (left, right) => left.length === right.length && left.every((id, index) => id === right[index]);
+/** A statement keeps its polarity, subject and ordered typed terms across languages. */
+function sameStatementMeaning(left, right) {
+  const sameTerm = (first, second) => first.kind === second.kind && first.id === second.id;
+  const sameSubject = left.subject === null || right.subject === null
+    ? left.subject === right.subject
+    : sameTerm(left.subject, right.subject);
+  return left.polarity === right.polarity && sameSubject
+    && left.terms.length === right.terms.length
+    && left.terms.every((term, index) => sameTerm(term, right.terms[index]));
+}
 
 /**
  * Mirrors `fn round_trip_statement` in rust/src/translation/round_trip.rs: one statement through source -> meta ->
@@ -150,7 +162,7 @@ function roundTripStatement(statement, source, target) {
     backward: backward.text,
     surviving,
     known: original.length,
-    survives: clean && original.length > 0 && sameIds(original, knownIds(meta)) && sameIds(original, knownIds(returned)),
+    survives: clean && original.length > 0 && sameStatementMeaning(statement, meta) && sameStatementMeaning(statement, returned),
   };
 }
 
@@ -182,6 +194,7 @@ return Object.freeze({
   renderTerm,
   renderStatement,
   translateText,
+  sameStatementMeaning,
   roundTripStatement,
   roundTrip,
 });

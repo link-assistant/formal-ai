@@ -10,8 +10,9 @@
 // data/seed/meanings-requirement-extraction.lino; nothing here names a
 // language.
 
-import { cached } from '../host.mjs';
-import { containsCjk, roleWordForms, surfacePresent } from './seed_meanings.mjs';
+import { cached, childrenNamed, parseLino, readText } from '../host.mjs';
+import { containsCjk, meaningsWithRole, roleWordForms, surfacePresent } from './seed_meanings.mjs';
+import { quoteFault, quotedSegmentSpans } from './normal_markov.mjs';
 
 /** The role whose words mark a unit as stating an obligation. */
 const OBLIGATION_ROLE = 'requirement_obligation_cue';
@@ -105,6 +106,35 @@ export function opensWithDirective(unit) {
     (containsCjk(verb) ? normalized.startsWith(verb) : normalized === verb || normalized.startsWith(`${verb} `)));
 }
 
+/** Directive positions are grammar metadata; lexemes remain the existing role vocabulary. */
+function terminalDirectiveWords() {
+  return cached('requirement-terminal-directives', () => {
+    const root = parseLino(readText('data/seed/meanings-requirement-extraction.lino'));
+    const containers = childrenNamed(root, 'meanings');
+    const nodes = (containers.length ? containers : [root]).flatMap((container) => container.children || []);
+    const languages = new Set(nodes
+      .filter((node) => childrenNamed(node, 'role').some((role) => role.value === DIRECTIVE_ROLE))
+      .flatMap((node) => childrenNamed(node, 'directive-position'))
+      .filter((position) => position.value === 'terminal')
+      .flatMap((position) => childrenNamed(position, 'language').map((language) => language.value)));
+    return meaningsWithRole(DIRECTIVE_ROLE).flatMap((meaning) => meaning.lexemes)
+      .filter((lexeme) => languages.has(lexeme.language))
+      .flatMap((lexeme) => lexeme.words.map((word) => normalizeUnit(word.text))).filter(Boolean);
+  });
+}
+
+/** Only unquoted terminal directives are new evidence; preserve the original unit verbatim. */
+export function endsWithDirective(unit) {
+  if (quoteFault(unit) !== null) return false;
+  let instruction = unit;
+  for (const span of quotedSegmentSpans(unit).slice().reverse()) {
+    instruction = instruction.slice(0, span.start) + ' '.repeat(span.end - span.start) + instruction.slice(span.end);
+  }
+  const normalized = normalizeUnit(instruction);
+  if (wordsOfRole('source_attribution_marker').some((word) => surfacePresent(normalized, word))) return false;
+  return terminalDirectiveWords().some((verb) => normalized === verb || normalized.endsWith(` ${verb}`));
+}
+
 /** Whether the heading `line` names a section of requirements. */
 export function namesRequirementSection(line) {
   const normalized = normalizeUnit(line);
@@ -113,7 +143,7 @@ export function namesRequirementSection(line) {
 
 /** Whether the sentence or list item `unit` states a requirement by its words. */
 export function isRequirement(unit) {
-  return statesObligation(unit) || opensWithDirective(unit);
+  return statesObligation(unit) || opensWithDirective(unit) || endsWithDirective(unit);
 }
 
 /** The content words of `unit` (CJK text counts each character). */

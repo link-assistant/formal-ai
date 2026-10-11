@@ -36,6 +36,7 @@ import { REPO_ROOT } from '../js/server/lino.mjs';
 /** The modules the chat routes call; their import closure is generated. */
 export const ENTRY_MODULES = Object.freeze([
   'crate/conversation_summary.mjs',
+  'crate/concise_dependency_restatement.mjs',
   'crate/dependency_summarization.mjs',
   'crate/event_log.mjs',
   'crate/literal_authoring_contract.mjs',
@@ -46,6 +47,7 @@ export const ENTRY_MODULES = Object.freeze([
   'crate/skill_procedure_artifact.mjs',
   'crate/solver_formalization.mjs',
   'crate/solver_event_projection.mjs',
+  'crate/requirement_extraction.mjs',
   'crate/round_trip_translation.mjs',
 ]);
 

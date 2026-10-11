@@ -662,6 +662,7 @@ pub fn describe_project(project: &ProjectRecord, config: &SummarizationConfig) -
     deformalize(&summarized)
 }
 
+pub mod concise_dependency;
 pub mod context;
 pub mod dedup;
 pub mod dependency;

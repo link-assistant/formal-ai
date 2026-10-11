@@ -225,6 +225,73 @@ pub fn opens_with_directive(unit: &str) -> bool {
     })
 }
 
+/// Existing directive lexemes selected by source-owned terminal-position metadata.
+fn terminal_directive_words() -> Vec<String> {
+    let parsed = crate::seed::parser::parse_lino(include_str!(
+        "../../embedded/data/seed/meanings-requirement-extraction.lino"
+    ));
+    let mut languages = BTreeSet::new();
+    for container in parsed
+        .children
+        .iter()
+        .filter(|node| node.name == "meanings")
+    {
+        for node in &container.children {
+            if !node
+                .children
+                .iter()
+                .any(|child| child.name == "role" && child.id == DIRECTIVE_ROLE)
+            {
+                continue;
+            }
+            for position in node
+                .children
+                .iter()
+                .filter(|child| child.name == "directive-position" && child.id == "terminal")
+            {
+                for language in position
+                    .children
+                    .iter()
+                    .filter(|child| child.name == "language")
+                {
+                    languages.insert(language.id.as_str());
+                }
+            }
+        }
+    }
+    lexicon()
+        .words_for_role_in_languages(DIRECTIVE_ROLE, &languages.into_iter().collect::<Vec<_>>())
+        .into_iter()
+        .map(|word| normalize_unit(&word))
+        .filter(|word| !word.is_empty())
+        .collect()
+}
+
+/// Only unquoted terminal directives add evidence; extraction retains the entire original unit.
+#[must_use]
+pub fn ends_with_directive(unit: &str) -> bool {
+    if crate::normal_markov::quote_fault(unit).is_some() {
+        return false;
+    }
+    let mut instruction = unit.to_string();
+    for span in crate::normal_markov::quoted_segment_spans(unit)
+        .into_iter()
+        .rev()
+    {
+        instruction.replace_range(span.start..span.end, &" ".repeat(span.end - span.start));
+    }
+    let normalized = normalize_unit(&instruction);
+    if words_of_role("source_attribution_marker")
+        .iter()
+        .any(|word| surface_present(&normalized, word))
+    {
+        return false;
+    }
+    terminal_directive_words()
+        .iter()
+        .any(|verb| normalized == *verb || normalized.ends_with(&format!(" {verb}")))
+}
+
 /// Whether the heading `line` names a section of requirements.
 #[must_use]
 pub fn names_requirement_section(line: &str) -> bool {
@@ -237,7 +304,7 @@ pub fn names_requirement_section(line: &str) -> bool {
 /// Whether the sentence or list item `unit` states a requirement by its words.
 #[must_use]
 pub fn is_requirement(unit: &str) -> bool {
-    states_obligation(unit) || opens_with_directive(unit)
+    states_obligation(unit) || opens_with_directive(unit) || ends_with_directive(unit)
 }
 
 /// The content words of `unit` (CJK text counts each character).
