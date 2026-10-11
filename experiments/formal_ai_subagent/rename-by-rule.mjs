@@ -36,6 +36,7 @@
 //   node experiments/formal_ai_subagent/rename-by-rule.mjs [--tree <name>] [--dry-run] [--git-mv]
 //   node experiments/formal_ai_subagent/rename-by-rule.mjs --check [--tree <name>]
 //   node experiments/formal_ai_subagent/rename-by-rule.mjs --list [--tree <name>]
+import { sourceQualifiedAliasReferences } from './source-qualified-rust-aliases.mjs';
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmdirSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, posix, resolve } from 'node:path';
@@ -366,10 +367,16 @@ export function findModuleReferences(text, file, moves, byBasename) {
  * @param {Array<{from: string, to: string}>} moves
  * @param {Map<string, Array<string>>} byBasename
  */
-export function renameRustModules(text, file, moves, byBasename) {
+export function renameRustModules(text, file, moves, byBasename, selectedSources) {
   let count = 0;
   let result = text;
-  for (const reference of findModuleReferences(text, file, moves, byBasename).reverse()) {
+  const references = findModuleReferences(text, file, moves, byBasename);
+  if (selectedSources !== undefined && file.endsWith('.rs')) {
+    for (const reference of sourceQualifiedAliasReferences(text, file, moves, selectedSources)) {
+      if (!references.some(existing => existing.start === reference.start)) references.push(reference);
+    }
+  }
+  for (const reference of references.sort((left, right) => right.start - left.start)) {
     result = result.slice(0, reference.start) + reference.to + result.slice(reference.end);
     count += 1;
   }
