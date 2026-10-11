@@ -4,6 +4,7 @@ import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { test } from 'node:test';
 const root=process.env.MARKETPLACE_RETRY_REPOSITORY || fileURLToPath(new URL('../../../',import.meta.url));
 const yaml=createRequire(join(root,'package.json'))('yaml');
@@ -24,7 +25,18 @@ function observe(failures,wrong=false) {
   'echo "link-assistant.formal-ai-vscode@'+(wrong?'9.9.9':'1.2.3')+'";;',
   '*) return 8;;', 'esac', '}', 'sleep() { echo SLEEP >&2; }', ''
  ].join('\n');
- const result=spawnSync('bash',['-e','-o','pipefail','-c',setup+loop],{encoding:'utf8',timeout:3000});
+ const outputDirectory = fs.mkdtempSync(join(tmpdir(), 'marketplace-retry-output-'));
+ const outputFile = join(outputDirectory, 'action-output');
+ fs.writeFileSync(outputFile, '');
+ const result=spawnSync('bash',['-e','-o','pipefail','-c',setup+loop],{
+  encoding:'utf8', timeout:3000,
+  env:{...process.env, GITHUB_OUTPUT:outputFile}
+ });
+ try {
+  result.actionOutput = fs.readFileSync(outputFile, 'utf8');
+ } finally {
+  fs.rmSync(outputDirectory, {recursive:true, force:true});
+ }
  assert.equal(result.error,undefined);
  return result;
 }
@@ -50,3 +62,16 @@ test('an immediately installable exact version succeeds without redundant attemp
  assert.equal(result.status,0);
  assert.equal((result.stderr.match(/INSTALL:/gu)||[]).length,1);
 });
+
+
+for (const observation of [
+  {failures:1, wrong:false, outcome:'observed-installed'},
+  {failures:5, wrong:false, outcome:'failed'},
+  {failures:0, wrong:true, outcome:'failed'}
+]) {
+  test('the mocked Actions output records the exact install outcome: ' + JSON.stringify(observation), () => {
+    const result = observe(observation.failures, observation.wrong);
+    assert.equal(result.actionOutput, 'outcome=' + observation.outcome + '\n');
+    assert.equal(result.status, observation.outcome === 'observed-installed' ? 0 : 1);
+  });
+}
