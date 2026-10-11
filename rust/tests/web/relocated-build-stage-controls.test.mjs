@@ -165,13 +165,25 @@ const browserCoverageRefusals=[
 ];
 for(const [name,mutate]of browserCoverageRefusals)test('refuse incomplete source-bound browser coverage: '+name,()=>{const changed=structuredClone(coverage);mutate(changed);assert.throws(()=>checkCoverage(changed));});
 
-function checkAttestations(workflow){
- const expected={build:'desktop/release/formal-ai-desktop-*\ndesktop/release/latest*.yml',cli:'formal-ai-cli-${{ matrix.target }}.${{ matrix.archive }}',vscode:'vscode/formal-ai-vscode-*.vsix',finalize:'release-evidence/formal-ai-*.json'};
- const all=Object.entries(workflow.jobs).flatMap(([job,value])=>(value.steps??[]).filter(step=>String(step.uses??'').includes('actions/attest')).map(step=>({job,step})));
- assert.equal(all.length,4);
- for(const [job,subject] of Object.entries(expected)){
-  const matches=all.filter(item=>item.job===job);assert.equal(matches.length,1);
-  const step=matches[0].step;assert.equal(step.uses,'actions/attest@v4');assert.equal(step.with['subject-path'].trim(),subject);assert.equal('subject-checksums' in step.with,false);
+function checkAttestations(workflow) {
+ const expected = [
+  ['build', 'desktop/release/formal-ai-desktop-*\ndesktop/release/latest*.yml'],
+  ['cli', 'formal-ai-cli-\${{ matrix.target }}.\${{ matrix.archive }}'],
+  ['vscode', 'vscode/formal-ai-vscode-*.vsix'],
+  ['finalize', 'release-evidence/formal-ai-*.json'],
+  ['finalize', 'SHA256SUMS.txt\nBUILD-PROVENANCE.txt']
+ ];
+ const all = Object.entries(workflow.jobs).flatMap(([job, value]) =>
+  (value.steps ?? []).filter(step => String(step.uses ?? '').includes('actions/attest'))
+   .map(step => ({ job, step })));
+ assert.equal(all.length, expected.length);
+ for (const [job, subject] of expected) {
+  const matches = all.filter(item => item.job === job && item.step.with?.['subject-path']?.trim() === subject);
+  assert.equal(matches.length, 1);
+  const step = matches[0].step;
+  assert.equal(step.uses, 'actions/attest@v4');
+  assert.equal(step.with['subject-path'].trim(), subject);
+  assert.equal('subject-checksums' in step.with, false);
  }
 }
 test('all original artifact attestations and durable JSON evidence remain bound to their actual producers',()=>checkAttestations(desktop));
@@ -181,3 +193,21 @@ for(const job of ['build','cli','vscode','finalize']){
 }
 test('refuse legacy attestation action',()=>{const changed=structuredClone(desktop);changed.jobs.build.steps.find(step=>step.uses==='actions/attest@v4').uses='actions/attest-build-provenance@v2';assert.throws(()=>checkAttestations(changed));});
 test('refuse cross-platform checksum text parsing',()=>{const changed=structuredClone(desktop);changed.jobs.build.steps.find(step=>step.uses==='actions/attest@v4').with['subject-checksums']='SHA256SUMS.txt';assert.throws(()=>checkAttestations(changed));});
+
+test('consolidated attestation retains both exact digest and provenance subjects', () => {
+ const select = workflow => workflow.jobs.finalize.steps.find(step =>
+  step.uses === 'actions/attest@v4' && step.with['subject-path'].trim() === 'SHA256SUMS.txt\nBUILD-PROVENANCE.txt');
+ assert.ok(select(desktop));
+ for (const mutate of [
+  workflow => { workflow.jobs.finalize.steps = workflow.jobs.finalize.steps.filter(step => step !== select(workflow)); },
+  workflow => { select(workflow).with['subject-path'] = 'SHA256SUMS.txt'; },
+  workflow => { select(workflow).with['subject-path'] = 'BUILD-PROVENANCE.txt'; },
+  workflow => { select(workflow).with['subject-checksums'] = 'foreign'; },
+  workflow => { workflow.jobs.finalize.steps.push(structuredClone(select(workflow))); },
+  workflow => { workflow.jobs.foreign = { steps: [structuredClone(select(workflow))] }; }
+ ]) {
+  const changed = structuredClone(desktop);
+  mutate(changed);
+  assert.throws(() => checkAttestations(changed));
+ }
+});
