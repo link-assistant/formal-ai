@@ -106,3 +106,40 @@ source-callable-composition
       pattern "^return the {style}{goal} of the {consumer-parameter} chosen by the {wrapper-parameter}, or null when no {consumer-parameter} is selected[.]?$"
     template javascript-imported-optional-text
       text "import { {producer-export} as {producer-local} } from {producer-url};\nimport { {consumer-export} as {consumer-local} } from {consumer-url};\nexport function {name}({parameter}) {\n  const {value-local} = {producer-local}({parameter});\n  return {value-local} === null ? null : {consumer-local}({value-local});\n}\n"
+compound-task-grammar
+  form 1
+    kind private-constant-rename
+    pattern "^(?:Atomic task (?<taskLabel>[A-Za-z0-9-]+): )?In the file (?<sourcePath>[A-Za-z0-9_./-]+), rename the constant (?<previous>[A-Za-z_][A-Za-z0-9_]*) to (?<replacement>[A-Za-z_][A-Za-z0-9_]*)\\."
+  form 2
+    kind source-scope-native-validity
+    pattern "^Change only that file and keep it valid Rust\\."
+  form 3
+    kind recursive-context
+    pattern "^This is recursive binary-tree node (?<nodePath>[0-9]+(?:\\.[0-9]+)*) at depth (?<depth>[0-9]+)\\."
+  form 4
+    kind isolated-scope
+    pattern "^Solve only this node's task in this fresh temporary repository\\."
+  form 5
+    kind tracked-source-condition
+    pattern "^Its harness-evaluated completion criterion is: (?<criterion>tracked_source_change)\\."
+  form 6
+    kind tracked-owner-condition
+    pattern "^Apply the change to the tracked file `(?<trackedPath>[A-Za-z0-9_./-]+)` itself -- the file has to end up modified in the Git worktree, and nothing else may change\\."
+  form 7
+    kind exact-field-receipt
+    pattern "^Then create `(?<receiptPath>[A-Za-z0-9_./-]+)` with these exact field lines: `(?<fieldOne>[a-z_]+=[A-Za-z0-9_.-]+)`, `(?<fieldTwo>[a-z_]+=[A-Za-z0-9_.-]+)`, `(?<fieldThree>[a-z_]+=[A-Za-z0-9_.-]+)`, and `(?<resultKey>[a-z_]+=)` followed by at least (?<minimumWords>(?:zero|0|one|1|two|2|three|3|four|4|five|5|six|6|seven|7|eight|8|nine|9|ten|10)) words that state the change you made and that contain the exact text (?<requiredIdentifier>[A-Za-z_][A-Za-z0-9_]*)\\."
+  form 8
+    kind proof-target
+    pattern "^Leave supporting evidence in (?<proofPath>[A-Za-z0-9_./-]+)\\."
+  form 9
+    kind proof-first-line
+    pattern "^The first line must be exactly (?<firstLine>[a-z_]+=[A-Za-z0-9_.-]+) and the body must state the concrete result\\."
+  form 10
+    kind separate-git-evidence
+    pattern "^The harness rejects proof without the separate Git effect\\."
+  form 11
+    kind conditional-research
+    pattern "^Use web research when it materially improves factual accuracy\\."
+  form 12
+    kind evidence-required
+    pattern "^Do not claim success without evidence\\."

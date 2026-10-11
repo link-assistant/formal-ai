@@ -19,7 +19,7 @@
 import {createHash} from 'node:crypto';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { types as nodeTypes } from 'node:util';
-import { queryOwnedInferredCommandPolicy } from '../../js/server/node-source-session-host.mjs';
+import { queryOwnedInferredCommandPolicy, registeredSourceReferenceReadPlan, consumeRegisteredSourceReference } from '../../js/server/node-source-session-host.mjs';
 import { sourceOwnedOptionalCommand } from '../../js/agentic/module_function.mjs';
 import { appendDefinition, projectAppendContracts } from '../../js/agentic/append_contract.mjs';
 import { atomicRecordAppend } from './atomic-record-append.mjs';
@@ -434,7 +434,18 @@ export async function drive(planChatStep, dir, prompt, {
           && Object.values(args).every(path => path === firstGoal.target);
       }) && !readPolicyBlocksPlan(prompt, current);
   }
+  let sourceReferencePrerequisite = null;
   if (createIntent && createContract === null && !readOnlyOperation && !sourceEditOperation) {
+    const owned = registeredSourceReferenceReadPlan(prompt, policyWorkspace, tools);
+    if (owned?.kind === 'OnlySourceReferenceReadPrerequisite'
+        && owned.originalRequest === prompt && owned.mutationAuthority === false
+        && Array.isArray(owned.pendingNeeds) && owned.pendingNeeds.length > 0
+        && owned.plan?.kind === 'tool_calls' && owned.plan.calls.length > 0
+        && owned.plan.calls.every(call => call.tool === 'read' && tools.includes(call.tool))
+        && !readPolicyBlocksPlan(prompt, owned.plan)) sourceReferencePrerequisite = owned;
+  }
+  if (createIntent && createContract === null && !readOnlyOperation && !sourceEditOperation
+      && sourceReferencePrerequisite === null) {
     const refusal = await maintainedPlanChatStep(messages, tools);
     if (refusal?.kind === 'final') {
       return { transcript, answer: refusal.answer, stop: 'final', toolsAdvertised: tools };
@@ -475,7 +486,29 @@ export async function drive(planChatStep, dir, prompt, {
       ...(message.append_receipt ? { append_receipt: { ...message.append_receipt } } : {}),
     }));
     const scoped = projectHistory(contracts);
+    if (sourceReferencePrerequisite !== null && step > 0
+        && planChatStep === maintainedPlanChatStep && fallthrough === null) {
+      try {
+        const disposition = await consumeRegisteredSourceReference(prompt, policyWorkspace, tools);
+        return { transcript, answer: null, stop: 'source-reference-obligations-unresolved',
+          toolsAdvertised: tools, sourceReferenceDisposition: disposition };
+      } catch (error) {
+        return { transcript, answer: null, stop: 'source-reference-consumer-refused',
+          toolsAdvertised: tools, sourceReferenceFailure: error.message };
+      }
+    }
     let plan = (await planChatStep(scoped, tools)) ?? (fallthrough ? await fallthrough(projectHistory([]), tools) : null);
+    if (sourceReferencePrerequisite !== null && step === 0) {
+      const current = registeredSourceReferenceReadPlan(prompt, policyWorkspace, tools);
+      if (current === null || current.originalRequest !== prompt || current.mutationAuthority !== false
+          || JSON.stringify(current.plan) !== JSON.stringify(sourceReferencePrerequisite.plan)) {
+        return { transcript, answer: null, stop: 'stale-source-reference-prerequisite', toolsAdvertised: tools };
+      }
+      if (plan === null) plan = current.plan;
+      if (plan?.kind !== 'tool_calls' || JSON.stringify(plan.calls) !== JSON.stringify(current.plan.calls)) {
+        return { transcript, answer: null, stop: 'unbound-source-reference-prerequisite', toolsAdvertised: tools };
+      }
+    }
     try {
       const optional = sourceOwnedOptionalCommand(plan, prompt, tools, scoped, projectHistory(contracts));
       if (optional !== null) {
@@ -487,6 +520,9 @@ export async function drive(planChatStep, dir, prompt, {
     } catch { /* Unknown provenance or policy retains the actual original check plan. */ }
     if (!plan) return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };
     if (plan.kind === 'final') {
+      if (sourceReferencePrerequisite !== null) {
+        return { transcript, answer: null, stop: 'source-reference-obligations-unresolved', toolsAdvertised: tools };
+      }
       if (readOnlyOperation || sourceEditOperation) {
         const current = await maintainedResolvedStep(messages, tools);
         if (current?.kind !== 'final') return { transcript, answer: null, stop: 'unbound-read-operation', toolsAdvertised: tools };
@@ -501,6 +537,9 @@ export async function drive(planChatStep, dir, prompt, {
     }
     // Snapshot the complete batch before validation; getters cannot change executed arguments.
     const calls = plan.calls.map(call => Object.freeze({ tool: call.tool, arguments: call.arguments }));
+    if (sourceReferencePrerequisite !== null && calls.some(call => call.tool !== 'read')) {
+      return { transcript, answer: null, stop: 'missing-source-reference-effect-authority', toolsAdvertised: tools };
+    }
     if (!atomicRecordAppend && calls.some(call => call.tool === 'write'
       && argsOf(call).append_mode !== undefined)) {
       return { transcript, answer: null, stop: 'undeclared-append-contract', toolsAdvertised: tools };
