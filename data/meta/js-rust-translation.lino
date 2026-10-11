@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 293
   workaround_items 33
   inferred_signatures 2
-  carried_items 2316
+  carried_items 2317
   translated_modules 98
   fully_translated_modules 1
   refused_modules 48
@@ -162,7 +162,7 @@ module js/agentic/crate/summarization_resource.mjs translated 1 workaround 0 inf
 module js/agentic/crate/summarization_vocabulary.mjs translated 3 workaround 0 inferred 0 carried 15
 module js/agentic/crate/task_decomposition.mjs translated 3 workaround 0 inferred 0 carried 35
 module js/agentic/crate/task_decomposition_tree.mjs translated 1 workaround 0 inferred 0 carried 15
-module js/agentic/crate/text_formalization.mjs translated 7 workaround 0 inferred 0 carried 55
+module js/agentic/crate/text_formalization.mjs translated 7 workaround 0 inferred 0 carried 56
 module js/agentic/crate/tool_scope.mjs translated 0 workaround 0 inferred 0 carried 22
 module js/agentic/crate/translation_formalization.mjs translated 4 workaround 0 inferred 0 carried 46
 module js/agentic/crate/translation_language_markers.mjs translated 2 workaround 0 inferred 0 carried 5
@@ -174,7 +174,7 @@ module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inf
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 25
 refusal "import of names its module does not translate" 314
 refusal "JSDoc type {…}" 215
-refusal "null" 187
+refusal "null" 186
 refusal "import from '…'" 157
 refusal "arrow function" 117
 refusal "type: unknown name (a sibling item or an import)" 117
@@ -189,12 +189,12 @@ refusal "method call .filter()" 51
 refusal "method call .some()" 45
 refusal "method call .slice()" 43
 refusal "Array.from" 42
+refusal "method call .push()" 34
 refusal "field access" 33
-refusal "method call .push()" 33
 refusal "method call .indexOf()" 28
 refusal "nullish coalescing" 26
+refusal "optional chaining" 24
 refusal "method call .replace()" 23
-refusal "optional chaining" 23
 refusal "export …" 19
 refusal "syntax: malformed number" 19
 refusal "case test" 18

@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/text_formalization.mjs"] = (crateRequire) => {
 // The shared text formalizer (R1188-U18, U19, U21): any text becomes formal
 // statements whose terms are meanings of the seed lexicon, and statements
@@ -40,30 +39,22 @@
 // language, polarity, subject, terms, unknown}` where `subject` is a term or
 // null, `terms` the remaining terms in order and `unknown` the surfaces no
 // meaning was found for.
-
 const { cached, parseLino, readText } = crateRequire("host.mjs");
 const { byteSlice, clauses, scriptOf, sentences } = crateRequire("crate/formalization_segment.mjs");
 const { byteOrder } = crateRequire("crate/rust_str.mjs");
 const { lexicon, meaning, meaningsWithRole } = crateRequire("crate/seed_meanings.mjs");
-
 /** Mirrors `TEXT_FORMALIZATION_LINO` in rust/src/seed/embedded_registry.rs (the repository path it embeds). */
 const TEXT_FORMALIZATION_PATH = 'data/seed/text-formalization.lino';
-
 /** Mirrors `FUNCTION_WORD_ROLES` in rust/src/formalization/text_statements.rs: the lexicon roles whose words carry no term. */
 const FUNCTION_WORD_ROLES = Object.freeze(['translation_stop_word', 'statement_function_word']);
-
 /** Mirrors `NEGATION_ROLE` in rust/src/formalization/text_statements.rs: the lexicon role whose words deny a statement. */
 const NEGATION_ROLE = 'statement_negation_cue';
-
 /** Mirrors `LONGEST_PHRASE` in rust/src/formalization/text_statements.rs: the most words one lexicon surface may span. */
 const LONGEST_PHRASE = 4;
-
 /** Mirrors `LONGEST_HAN_WORD` in rust/src/formalization/text_statements.rs: the most characters one Han lexicon surface may span. */
 const LONGEST_HAN_WORD = 8;
-
 /** Mirrors `SHORTEST_STEM` in rust/src/formalization/text_statements.rs: an inflected word keeps at least this many characters. */
 const SHORTEST_STEM = 3;
-
 /** Mirrors `enum WordKind` in rust/src/formalization/text_statements.rs. */
 const WordKind = Object.freeze({
   Meaning: 'meaning',
@@ -75,10 +66,8 @@ const WordKind = Object.freeze({
   Anaphor: 'anaphor',
   Continuation: 'continuation',
 });
-
 /** Mirrors `enum Polarity` in rust/src/formalization/text_statements.rs. */
 const Polarity = Object.freeze({ Asserted: 'asserted', Denied: 'denied' });
-
 const HAN = 'han';
 const APOSTROPHES = new Set(["'", '’']);
 const NUMBER_SEPARATORS = new Set(['.', ',']);
@@ -87,23 +76,19 @@ const NUMERAL = /^\p{N}+$/u;
 const NUMBER = /^\p{N}+(?:[.,]\p{N}+)*$/u;
 const UPPERCASE = /^\p{Uppercase}$/u;
 const PLACEHOLDER = /[{}<>…|]/u;
-
 const characters = (text) => Array.from(text);
 const isWordCharacter = (character) => WORD_CHARACTER.test(character);
 const isHan = (character) => scriptOf(character) === HAN;
 /** Mirrors `fn is_numeral_character` in rust/src/formalization/text_statements.rs. */
 const isNumeralCharacter = (character) => character !== undefined && NUMERAL.test(character);
-
 /** Mirrors `WordKind::is_term` in rust/src/formalization/text_statements.rs: the word kinds that become terms. */
 function isTermKind(kind) {
   return kind === WordKind.Meaning || kind === WordKind.Name || kind === WordKind.Number || kind === WordKind.Unknown;
 }
-
 /** Mirrors `WordKind::is_known` in rust/src/formalization/text_statements.rs: the term kinds that name something formal. */
 function isKnownKind(kind) {
   return kind === WordKind.Meaning || kind === WordKind.Name || kind === WordKind.Number;
 }
-
 /** Mirrors `fn seed_words` in rust/src/formalization/text_statements.rs: the words of one kind the seed lists for `language`. */
 function seedWords(language, kind) {
   return cached(`text-formalization-${language}-${kind}`, () => {
@@ -115,7 +100,6 @@ function seedWords(language, kind) {
     return (record?.children || []).filter((node) => node.name === kind).map((node) => node.value.toLowerCase());
   });
 }
-
 /** Mirrors `fn inflection_endings` in rust/src/formalization/text_statements.rs: the seeded endings of `language`, longest first. */
 function inflectionEndings(language) {
   return cached(`text-formalization-endings-${language}`, () => seedWords(language, 'inflection-ending')
@@ -123,7 +107,6 @@ function inflectionEndings(language) {
     .sort((left, right) => (right.length - left.length) || (left.index - right.index))
     .map((entry) => entry.ending));
 }
-
 /** Mirrors `fn role_words_in` in rust/src/formalization/text_statements.rs: the lowercased words of `role`'s meanings in `language`. */
 function roleWordsIn(role, language) {
   return cached(`text-formalization-role-${role}-${language}`, () => new Set(meaningsWithRole(role)
@@ -131,7 +114,6 @@ function roleWordsIn(role, language) {
     .filter((lexeme) => lexeme.language === language)
     .flatMap((lexeme) => lexeme.words.map((word) => word.text.toLowerCase()))));
 }
-
 /** Mirrors `fn function_words` in rust/src/formalization/text_statements.rs: every function word of `language`. */
 function functionWords(language) {
   return cached(`text-formalization-function-${language}`, () => {
@@ -140,7 +122,6 @@ function functionWords(language) {
     return out;
   });
 }
-
 /**
  * Mirrors `fn tokens` in rust/src/formalization/text_statements.rs: the maximal runs of word characters in `text`, a Han
  * run apart from any other run, with an apostrophe kept between two word
@@ -180,7 +161,6 @@ function tokens(text) {
   flush();
   return out;
 }
-
 /** Mirrors `fn phrase_key` in rust/src/formalization/text_statements.rs: a surface's lowercased words joined by one space, or null when it is not plain words. */
 function phraseKey(surface) {
   if (PLACEHOLDER.test(surface)) return null;
@@ -191,7 +171,6 @@ function phraseKey(surface) {
   const plain = surface.toLowerCase().split(/\s+/u).filter(Boolean).join(' ');
   return key === plain ? key : null;
 }
-
 /**
  * Mirrors `fn build_meaning_indexes` in rust/src/formalization/text_statements.rs: every plain surface of `language` mapped to the
  * meaning it names. When several meanings list one surface, the one written
@@ -223,14 +202,12 @@ function meaningIndex(language) {
     return new Map([...best.entries()].map(([key, rank]) => [key, rank.slug]));
   });
 }
-
 /** Mirrors `fn outranks` in rust/src/formalization/text_statements.rs. */
 function outranks(candidate, held) {
   if (candidate.languages !== held.languages) return candidate.languages > held.languages;
   if (candidate.size !== held.size) return candidate.size < held.size;
   return candidate.order < held.order;
 }
-
 /**
  * Mirrors `fn fold_inflection` in rust/src/formalization/text_statements.rs: the meaning an inflected word names, reached
  * by removing one seeded ending and trying the bare stem or the stem with
@@ -252,7 +229,6 @@ function foldInflection(lower, language) {
   }
   return null;
 }
-
 /**
  * Mirrors `fn unknown_stem` in rust/src/formalization/text_statements.rs: an unknown word without its longest seeded
  * ending (keeping `SHORTEST_STEM` characters), so `orbits` and `orbited` are
@@ -267,7 +243,6 @@ function unknownStem(lower, language) {
   }
   return lower;
 }
-
 /** Mirrors `fn kind_of_listed` in rust/src/formalization/text_statements.rs: the kind a listed lowercased surface carries in `language`, or null. */
 function kindOfListed(lower, language) {
   if (seedWords(language, 'anaphor').includes(lower)) return WordKind.Anaphor;
@@ -276,16 +251,33 @@ function kindOfListed(lower, language) {
   if (functionWords(language).has(lower)) return WordKind.Function;
   return null;
 }
-
 /**
  * Mirrors `fn read_plain_run` in rust/src/formalization/text_statements.rs: the words of a run of non-Han tokens;
  * `opensSentence` when its first token is the first word of a sentence.
  */
+/** Mirrors `fn contextual_auxiliary` in rust/src/formalization/text_statements.rs: a seeded auxiliary before a lowercase participle, never a numeric unit. */
+function contextualAuxiliary(run, position, language) {
+  const surface = run[position].surface;
+  const following = run[position + 1]?.surface;
+  if (surface !== surface.toLowerCase() || !seedWords(language, 'auxiliary').includes(surface)
+    || following === undefined || following !== following.toLowerCase()
+    || !/^[\p{L}\p{M}]+$/u.test(following)
+    || (position > 0 && NUMBER.test(run[position - 1].surface))) return false;
+  return seedWords(language, 'participle-ending').some(ending =>
+    following.endsWith(ending)
+      && characters(following).length - characters(ending).length >= SHORTEST_STEM);
+}
 function readPlainRun(run, language, opensSentence) {
   const index = meaningIndex(language);
   const out = [];
   let position = 0;
   while (position < run.length) {
+    if (contextualAuxiliary(run, position, language)) {
+      const surface = run[position].surface;
+      out.push({ surface, kind: WordKind.Function, id: surface });
+      position += 1;
+      continue;
+    }
     const phrase = longestPhrase(run, position, index);
     if (phrase !== null) {
       out.push(phrase.word);
@@ -297,7 +289,6 @@ function readPlainRun(run, language, opensSentence) {
   }
   return joinNames(out);
 }
-
 /** Mirrors `fn longest_phrase` in rust/src/formalization/text_statements.rs: a lexicon phrase of two or more tokens starting at `position`. */
 function longestPhrase(run, position, index) {
   for (let length = Math.min(LONGEST_PHRASE, run.length - position); length >= 2; length -= 1) {
@@ -307,7 +298,6 @@ function longestPhrase(run, position, index) {
   }
   return null;
 }
-
 /** Mirrors `fn read_single` in rust/src/formalization/text_statements.rs: one non-Han token as a word; `initial` when it opens a sentence. */
 function readSingle(surface, language, initial) {
   const lower = surface.toLowerCase();
@@ -321,7 +311,6 @@ function readSingle(surface, language, initial) {
   if (!initial && UPPERCASE.test(characters(surface)[0])) return { surface, kind: WordKind.Name, id: `name:${lower}` };
   return { surface, kind: WordKind.Unknown, id: `unknown:${unknownStem(lower, language)}` };
 }
-
 /** Mirrors `fn join_names` in rust/src/formalization/text_statements.rs: consecutive names become one name. */
 function joinNames(words) {
   const out = [];
@@ -336,7 +325,6 @@ function joinNames(words) {
   }
   return out;
 }
-
 /**
  * Mirrors `fn read_han_run` in rust/src/formalization/text_statements.rs: a Han run cut by longest match against the
  * lexicon and the listed words; characters no entry covers gather into one
@@ -366,7 +354,6 @@ function readHanRun(surface, language) {
   flushUnknown();
   return out;
 }
-
 /** Mirrors `fn longest_han_word` in rust/src/formalization/text_statements.rs. */
 function longestHanWord(list, position, index, language) {
   for (let length = Math.min(LONGEST_HAN_WORD, list.length - position); length >= 1; length -= 1) {
@@ -377,7 +364,6 @@ function longestHanWord(list, position, index, language) {
   }
   return null;
 }
-
 /**
  * Mirrors `fn read_words` in rust/src/formalization/text_statements.rs: the words of one clause in `language`;
  * `opensSentence` when the clause is the first of its sentence.
@@ -403,10 +389,8 @@ function readWords(text, language, opensSentence) {
   flushRun();
   return out;
 }
-
 /** A word as a term (the Rust twin clones the `Word`). */
 const termOf = (word) => ({ kind: word.kind, id: word.id, surface: word.surface });
-
 /**
  * Mirrors `fn clause_statement` in rust/src/formalization/text_statements.rs: one clause as a statement. A clause whose
  * first word that is not a function word is an anaphor or a continuation
@@ -432,7 +416,6 @@ function clauseStatement(text, language, previousSubject, opensSentence) {
     unknown: content.filter((term) => term.kind === WordKind.Unknown).map((term) => term.surface),
   };
 }
-
 /**
  * Mirrors `fn statement_clauses` in rust/src/formalization/text_statements.rs: the clauses of a sentence, with a separator
  * that stands between two digits (`378,000`) kept inside its number.
@@ -453,7 +436,6 @@ function statementClauses(sentence) {
   }
   return out;
 }
-
 /**
  * Mirrors `fn formalize_sentences` in rust/src/formalization/text_statements.rs: every sentence of `text` with the
  * statements of its clauses. Each sentence is `{text, statements}`; a
@@ -476,7 +458,6 @@ function formalizeSentences(text, language) {
   }
   return promoteNames(out);
 }
-
 /**
  * Mirrors `fn promote_names` in rust/src/formalization/text_statements.rs: a capitalized word read as unknown because it
  * opened a sentence is the name the same text writes inside a sentence
@@ -503,28 +484,23 @@ function promoteNames(formalized) {
     })),
   }));
 }
-
 /** Mirrors `fn formalize_text` in rust/src/formalization/text_statements.rs: the statements of `text`, in order. */
 function formalizeText(text, language) {
   return formalizeSentences(text, language).flatMap((sentence) => sentence.statements);
 }
-
 /** Mirrors `fn statement_terms` in rust/src/formalization/text_statements.rs: the subject (when there is one) and the other terms. */
 function statementTerms(statement) {
   return statement.subject === null ? statement.terms : [statement.subject, ...statement.terms];
 }
-
 /** Mirrors `fn content_ids` in rust/src/formalization/text_statements.rs: the distinct ids of every term, sorted (Rust byte order). */
 function contentIds(statement) {
   return [...new Set(statementTerms(statement).map((term) => term.id))].sort(byteOrder);
 }
-
 /** Mirrors `fn known_ids` in rust/src/formalization/text_statements.rs: the distinct ids of the known terms, sorted. */
 function knownIds(statement) {
   return [...new Set(statementTerms(statement).filter((term) => isKnownKind(term.kind)).map((term) => term.id))]
     .sort(byteOrder);
 }
-
 /**
  * Mirrors `fn statement_identity` in rust/src/formalization/text_statements.rs: the formal identity of a statement, its
  * polarity, its subject and the set of its other terms. Two statements with
@@ -535,13 +511,11 @@ function statementIdentity(statement) {
   const others = [...new Set(statement.terms.map((term) => term.id))].filter((id) => id !== subject).sort(byteOrder);
   return `${statement.polarity}|${subject}|${others.join(' ')}`;
 }
-
 /** Mirrors `fn has_no_unknown` in rust/src/formalization/text_statements.rs: a statement of at least two terms, all of them known. */
 function hasNoUnknown(statement) {
   const terms = statementTerms(statement);
   return terms.length >= 2 && terms.every((term) => isKnownKind(term.kind));
 }
-
 /** Mirrors `fn surfaces_in` in rust/src/formalization/statement_rendering.rs: every plain surface `slug` has in `language`, in declaration order. */
 function surfacesIn(slug, language) {
   const found = meaning(slug);
@@ -550,7 +524,6 @@ function surfacesIn(slug, language) {
   if (lexeme === undefined) return [];
   return lexeme.words.map((word) => word.text).filter((text) => phraseKey(text) !== null);
 }
-
 /**
  * Mirrors `fn resolve_surface` in rust/src/formalization/statement_rendering.rs: the meaning a surface is read as in
  * `language`, or null (a function word, anaphor, continuation or negation cue
@@ -563,7 +536,6 @@ function resolveSurface(surface, language) {
   if (index.has(key)) return index.get(key);
   return key.includes(' ') ? null : foldInflection(key, language);
 }
-
 /**
  * Mirrors `fn return_surface` in rust/src/formalization/statement_rendering.rs: the surface a meaning is written with in
  * `language`, the first one that reads back as the same meaning there, else
@@ -574,7 +546,6 @@ function returnSurface(slug, language) {
   if (surfaces.length === 0) return null;
   return surfaces.find((surface) => resolveSurface(surface, language) === slug) ?? surfaces[0];
 }
-
 /**
  * Mirrors `fn surface_in` in rust/src/formalization/statement_rendering.rs: a term rendered in `language` from its meaning
  * alone (`return_surface`); a name or number keeps its surface, and an
@@ -585,13 +556,11 @@ function surfaceIn(term, language) {
   if (term.kind !== WordKind.Meaning) return term.surface;
   return returnSurface(term.id, language) ?? term.surface;
 }
-
 /** Mirrors `fn negation_in` in rust/src/formalization/statement_rendering.rs: the first negation cue the lexicon lists for `language`. */
 function negationIn(language) {
   const words = [...roleWordsIn(NEGATION_ROLE, language)];
   return words.length > 0 ? words[0] : null;
 }
-
 /**
  * Mirrors `fn join_surfaces` in rust/src/formalization/statement_rendering.rs: pieces joined by a space, except before a Han
  * piece that follows a character outside ASCII (Han text and its full-width
@@ -607,7 +576,6 @@ function joinSurfaces(surfaces) {
   }
   return out;
 }
-
 /**
  * Mirrors `fn deformalize_statement` in rust/src/formalization/statement_rendering.rs: a statement rendered in `language`,
  * subject first, the negation cue after it when the statement is denied, then
@@ -623,7 +591,6 @@ function deformalizeStatement(statement, language) {
   for (const term of statement.terms) surfaces.push(surfaceIn(term, language));
   return joinSurfaces(surfaces);
 }
-
 return Object.freeze({
   TEXT_FORMALIZATION_PATH,
   FUNCTION_WORD_ROLES,

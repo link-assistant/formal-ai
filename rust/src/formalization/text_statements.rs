@@ -518,10 +518,56 @@ const fn word(surface: String, kind: WordKind, id: String) -> Word {
 
 /// The words of a run of non-Han tokens; `opens_sentence` when its first
 /// token is the first word of a sentence.
+/// A seeded auxiliary before a lowercase participle, never a numeric unit.
+fn contextual_auxiliary(run: &[Token], position: usize, language: &str) -> bool {
+    let surface = &run[position].surface;
+    let Some(following) = run.get(position + 1).map(|token| &token.surface) else {
+        return false;
+    };
+    if *surface != surface.to_lowercase()
+        || !seed_words(language, "auxiliary").contains(surface)
+        || *following != following.to_lowercase()
+        || !following.chars().all(|character| {
+            matches!(
+                get_general_category(character),
+                GeneralCategory::UppercaseLetter
+                    | GeneralCategory::LowercaseLetter
+                    | GeneralCategory::TitlecaseLetter
+                    | GeneralCategory::ModifierLetter
+                    | GeneralCategory::OtherLetter
+                    | GeneralCategory::NonspacingMark
+                    | GeneralCategory::SpacingMark
+                    | GeneralCategory::EnclosingMark
+            )
+        })
+        || position
+            .checked_sub(1)
+            .is_some_and(|previous| is_number(&run[previous].surface))
+    {
+        return false;
+    }
+    seed_words(language, "participle-ending")
+        .iter()
+        .any(|ending| {
+            following.ends_with(ending.as_str())
+                && following
+                    .chars()
+                    .count()
+                    .saturating_sub(ending.chars().count())
+                    >= SHORTEST_STEM
+        })
+}
+
 fn read_plain_run(run: &[Token], language: &str, opens_sentence: bool) -> Vec<Word> {
     let mut out = Vec::new();
     let mut position = 0;
     while position < run.len() {
+        if contextual_auxiliary(run, position, language) {
+            let surface = run[position].surface.clone();
+            out.push(word(surface.clone(), WordKind::Function, surface));
+            position += 1;
+            continue;
+        }
         if let Some((length, phrase)) = longest_phrase(run, position, language) {
             out.push(phrase);
             position += length;

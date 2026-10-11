@@ -274,11 +274,30 @@ function kindOfListed(lower, language) {
  * Mirrors `fn read_plain_run` in rust/src/formalization/text_statements.rs: the words of a run of non-Han tokens;
  * `opensSentence` when its first token is the first word of a sentence.
  */
+/** Mirrors `fn contextual_auxiliary` in rust/src/formalization/text_statements.rs: a seeded auxiliary before a lowercase participle, never a numeric unit. */
+function contextualAuxiliary(run, position, language) {
+  const surface = run[position].surface;
+  const following = run[position + 1]?.surface;
+  if (surface !== surface.toLowerCase() || !seedWords(language, 'auxiliary').includes(surface)
+    || following === undefined || following !== following.toLowerCase()
+    || !/^[\p{L}\p{M}]+$/u.test(following)
+    || (position > 0 && NUMBER.test(run[position - 1].surface))) return false;
+  return seedWords(language, 'participle-ending').some(ending =>
+    following.endsWith(ending)
+      && characters(following).length - characters(ending).length >= SHORTEST_STEM);
+}
+
 function readPlainRun(run, language, opensSentence) {
   const index = meaningIndex(language);
   const out = [];
   let position = 0;
   while (position < run.length) {
+    if (contextualAuxiliary(run, position, language)) {
+      const surface = run[position].surface;
+      out.push({ surface, kind: WordKind.Function, id: surface });
+      position += 1;
+      continue;
+    }
     const phrase = longestPhrase(run, position, index);
     if (phrase !== null) {
       out.push(phrase.word);
