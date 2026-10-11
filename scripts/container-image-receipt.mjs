@@ -84,6 +84,33 @@ export function validatePublishedIndex(index,receipts) {
  return index;
 }
 
+
+/** Emit only metadata already verified by the producer; downstream authority is independent. */
+export function containerPublicationDataInputs(inputByArch) {
+ const arches=Object.keys(CONTAINER_TARGETS);
+ assert.deepEqual(Object.keys(inputByArch).sort(),[...arches].sort());
+ const first=inputByArch[arches[0]];
+ assert.ok(Buffer.isBuffer(first.sourceBytes)&&first.sourceBytes.length>0&&first.sourceBytes.length<=1048576);
+ const entries=[{name:'source-selection.json',bytes:Buffer.from(first.sourceBytes)}];
+ const natives=[];
+ for(const arch of arches) {
+  const inputs=inputByArch[arch];
+  assert.ok(Buffer.isBuffer(inputs.sourceBytes)&&inputs.sourceBytes.equals(first.sourceBytes));
+  assert.ok(Buffer.isBuffer(inputs.nativeBytes)&&inputs.nativeBytes.length>0&&inputs.nativeBytes.length<=1048576);
+  for(const key of ['sourceCommit','sourceTree','sourceSha256','version','run','protocolSha256'])
+   assert.equal(inputs[key],first[key],'container input binding differs: '+key);
+  validateImageInputs(inputs,arch);
+  const name='native-'+arch+'.json',bytes=Buffer.from(inputs.nativeBytes);
+  entries.push({name,bytes});
+  natives.push({architecture:arch,target:CONTAINER_TARGETS[arch],name,bytes:bytes.length,sha256:hash(bytes)});
+ }
+ const binding={schema:'release-container-data-inputs/v1',sourceCommit:first.sourceCommit,
+  sourceTree:first.sourceTree,sourceSha256:first.sourceSha256,version:first.version,run:String(first.run),
+  protocolSha256:first.protocolSha256,native:natives,complete:false,publicationAuthority:false};
+ entries.push({name:'container-source-binding.json',bytes:Buffer.from(JSON.stringify(binding,null,2)+'\n')});
+ return {entries,binding,complete:false,publicationAuthority:false};
+}
+
 /** Execute each Docker command; failed startup/runtime or unavailable registry refuses a receipt. */
 export function observeContainer(inputs,{image,arch,variant,published,repository},run=execFileSync) {
  const {source,native,nativeSha256}=validateImageInputs(inputs,arch);
@@ -156,5 +183,7 @@ if(import.meta.url===pathToFileURL(process.argv[1]??'').href) {
    const anonymous=await verifyAnonymousImageManifest(immutable,fetch,manifest=>validatePublishedIndex(manifest,receipts));
    writeFileSync(join(receiptRoot,'published-'+currentVariant+'-index.json'),JSON.stringify({version:1,image:immutable,index,anonymous},null,2)+'\n');
   }
+  for(const entry of containerPublicationDataInputs(inputByArch).entries)
+   writeFileSync(join(receiptRoot,entry.name),entry.bytes);
  } else assert.fail('unknown container receipt operation');
 }

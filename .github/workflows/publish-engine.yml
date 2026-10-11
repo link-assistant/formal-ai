@@ -21,6 +21,7 @@ on: # zizmor: ignore[dangerous-triggers]
       - "rust/tests/web/legacy-release-protocol.test.mjs"
       - "scripts/resolve-package-release.mjs"
       - "scripts/publish-browser-engine.mjs"
+      - "scripts/release-publication-observation.mjs"
       - "scripts/build-selected-wasm.mjs"
       - "scripts/browser-engine-*.mjs"
       - "vscode/package.json"
@@ -248,6 +249,36 @@ jobs:
           node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/release-protocol.mjs" verify \
             "$GITHUB_WORKSPACE" "$FORMAL_AI_RELEASE_PROTOCOL_DIR" "$RELEASE_PROTOCOL_COMMIT" "$RELEASE_PROTOCOL_SHA256"
           node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" publish node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/publish-browser-engine.mjs"
+      - name: Record source-bound browser publication data
+        if: needs.resolve.outputs.publish == 'true'
+        timeout-minutes: 1
+        env:
+          PACKAGE_SOURCE_COMMIT: ${{ steps.source.outputs.commit }}
+          RELEASE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+          RELEASE_PROTOCOL_SHA256: ${{ steps.protocol.outputs.protocol-sha256 }}
+          WASM_RECEIPT_SHA256: ${{ steps.wasm.outputs.receipt-sha256 }}
+          PUBLICATION_REQUESTED: ${{ needs.resolve.outputs.publish }}
+          PUBLICATION_STATUS: ${{ steps.publication.outputs.status }}
+        run: >-
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/release-publication-observation.mjs"
+          capture-browser "$GITHUB_WORKSPACE" "$FORMAL_AI_RELEASE_PROTOCOL_DIR"
+          "$RUNNER_TEMP/browser-publication-data"
+      - uses: actions/upload-artifact@v7
+        if: needs.resolve.outputs.publish == 'true'
+        with:
+          name: browser-publication-data
+          path: ${{ runner.temp }}/browser-publication-data/*.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Attach source-bound browser publication receipt
+        if: needs.resolve.outputs.publish == 'true'
+        timeout-minutes: 1
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+        run: >-
+          gh release upload "$PACKAGE_RELEASE_TAG"
+          "$RUNNER_TEMP/browser-publication-data/browser-publication.json" --clobber
       - name: Cold install and verify the genuine browser worker
         timeout-minutes: 8
         env:

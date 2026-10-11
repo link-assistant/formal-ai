@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {expectedIdentity} from '../../../scripts/native-release-artifact.mjs';
-import {CONTAINER_TARGETS,validateContainerReceipt,manifestSources,validatePublishedIndex,publicationTags,observeContainer} from '../../../scripts/container-image-receipt.mjs';
+import {CONTAINER_TARGETS,containerPublicationDataInputs,validateContainerReceipt,manifestSources,validatePublishedIndex,publicationTags,observeContainer} from '../../../scripts/container-image-receipt.mjs';
 import {verifyAnonymousImageManifest} from '../../../scripts/verify-anonymous-image-manifest.mjs';
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const encode=value=>Buffer.from(JSON.stringify(value)+'\n');
@@ -234,4 +234,33 @@ test('missing foreign cancelling duplicate ancestor or altered promotion authori
  (r,i)=>{r.jobs['manual-release'].steps.find(s=>s.run==='node scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"').run='node scripts/release-image-factory.mjs publish spoof';},
  ];
  for(const mutate of mutations){const {release,images}=structuredClone(baseline);mutate(release,images);assert.throws(()=>mutablePublicationLease(release,images));}
+});
+
+test('published data sidecars retain both independently verified native inputs without authority',()=>{
+ const inputs=Object.fromEntries(Object.keys(CONTAINER_TARGETS).map(arch=>[arch,fixture(arch).inputs]));
+ const result=containerPublicationDataInputs(inputs);
+ assert.deepEqual(result.entries.map(entry=>entry.name),
+  ['source-selection.json','native-amd64.json','native-arm64.json','container-source-binding.json']);
+ assert.equal(result.complete,false);assert.equal(result.publicationAuthority,false);
+ for(const arch of Object.keys(CONTAINER_TARGETS)) {
+  const entry=result.entries.find(item=>item.name==='native-'+arch+'.json');
+  assert.ok(entry.bytes.equals(inputs[arch].nativeBytes));
+  assert.equal(result.binding.native.find(item=>item.architecture===arch).sha256,hash(entry.bytes));
+ }
+ assert.deepEqual(JSON.parse(result.entries.at(-1).bytes),result.binding);
+});
+test('data export refuses missing extra foreign or untyped architecture/source/protocol inputs',()=>{
+ const fresh=()=>Object.fromEntries(Object.keys(CONTAINER_TARGETS).map(arch=>[arch,fixture(arch).inputs]));
+ for(const mutate of [value=>delete value.arm64,value=>value.foreign=value.amd64,
+  value=>value.arm64.sourceBytes=Buffer.from('{}'),value=>value.arm64.nativeBytes=Buffer.from('{}'),
+  value=>value.arm64.sourceCommit='0'.repeat(40),value=>value.arm64.protocolSha256='0'.repeat(64),
+  value=>value.arm64.run='82',value=>value.arm64.nativeBytes='not bytes']) {
+  const value=fresh();mutate(value);assert.throws(()=>containerPublicationDataInputs(value));
+ }
+});
+test('exported sidecar bytes are copied and cannot modify selected producer buffers',()=>{
+ const inputs=Object.fromEntries(Object.keys(CONTAINER_TARGETS).map(arch=>[arch,fixture(arch).inputs]));
+ const original=Buffer.from(inputs.amd64.nativeBytes),result=containerPublicationDataInputs(inputs);
+ result.entries.find(entry=>entry.name==='native-amd64.json').bytes.fill(0);
+ assert.ok(inputs.amd64.nativeBytes.equals(original));
 });

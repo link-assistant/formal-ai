@@ -54,3 +54,6 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const decision=publishBrowserEngine();
   if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT,"status="+publicationStatus(decision)+"\n");
 }
+
+// A static source edge keeps the publication data observer in the declared protocol closure.
+export {captureBrowserPublication} from './release-publication-observation.mjs';

@@ -124,6 +124,7 @@ jobs:
       compiler-commit: ${{ steps.seal.outputs.compiler-commit }}
       selection-sha256: ${{ steps.seal.outputs.selection-sha256 }}
       protocol-sha256: ${{ steps.seal.outputs.protocol-sha256 }}
+      advertisement-protocol-sha256: ${{ steps.advertisement.outputs.protocol-sha256 }}
       package-version: ${{ steps.seal.outputs.package-version }}
       wasm-receipt-sha256: ${{ steps.selected_wasm.outputs.receipt-sha256 }}
     defaults:
@@ -161,6 +162,12 @@ jobs:
             tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
           writeFileSync(join(directory,'protocol-selection.json'),JSON.stringify(record,null,2)+'\n');
           NODE
+      - name: Capture source-owned advertised release targets
+        id: advertisement
+        env:
+          NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+        run: |
+          node scripts/release-advertisement.mjs capture "$GITHUB_WORKSPACE" "$RUNNER_TEMP/formal-ai-advertisement-protocol" "$NATIVE_PROTOCOL_COMMIT"
       - name: Independently authorize a published stable release source
         if: github.event_name != 'pull_request'
         env:
@@ -234,6 +241,7 @@ jobs:
           NODE
           fi
           cp "$FORMAL_AI_NATIVE_PROTOCOL_DIR/protocol-selection.json" native-source/
+          cp -R "$RUNNER_TEMP/formal-ai-advertisement-protocol" native-source/advertisement
           node --input-type=module - <<'NODE'
           import {readFileSync,appendFileSync} from 'node:fs';
           import {createHash} from 'node:crypto';
@@ -1232,6 +1240,7 @@ jobs:
           mkdir -p "$protocol_dir"
           cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
           cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
+          cp scripts/release-advertisement.mjs scripts/release-protocol.mjs "$protocol_dir/"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
           import {readFileSync,writeFileSync} from 'node:fs';
@@ -1292,6 +1301,7 @@ jobs:
       - name: Validate and prepare exact-byte durable release evidence
         id: evidence
         env:
+          ADVERTISEMENT_PROTOCOL_SHA256: ${{ needs.native-source.outputs.advertisement-protocol-sha256 }}
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
           NATIVE_PROTOCOL_SHA256: ${{ needs.native-source.outputs.protocol-sha256 }}
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
@@ -1304,6 +1314,8 @@ jobs:
           set -euo pipefail
           mkdir -p native-receipts native-signing
           node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-evidence.mjs" collect native-source native-receipts native-signing release-evidence
+          node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/release-advertisement.mjs" verify "$GITHUB_WORKSPACE" native-source/advertisement "$NATIVE_PROTOCOL_COMMIT" "$ADVERTISEMENT_PROTOCOL_SHA256" "release-evidence/formal-ai-advertisement-$NATIVE_PACKAGE_VERSION.json"
+          (cd release-evidence && sha256sum "formal-ai-advertisement-$NATIVE_PACKAGE_VERSION.json") >> release-evidence/SHA256SUMS-evidence.partial
           node --input-type=module - <<'NODE'
           import {readFileSync,appendFileSync} from 'node:fs';
           const result=JSON.parse(readFileSync('release-evidence/collection-result.json'));
@@ -1429,6 +1441,13 @@ jobs:
           if [ ${#missing[@]} -gt 0 ]; then
             echo "incomplete=${missing[*]}" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Attest consolidated digest and provenance data
+        uses: actions/attest@v4
+        with:
+          subject-path: |
+            SHA256SUMS.txt
+            BUILD-PROVENANCE.txt
 
       - name: Upload SHA256SUMS.txt and BUILD-PROVENANCE.txt to release
         env:

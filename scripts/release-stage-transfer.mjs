@@ -345,6 +345,14 @@ async function execute(mode, kind) {
     assert.ok(bytes.length > 0 && bytes.length < 64 * 1024 * 1024);
     writeFileSync('.release-transfer/registry.crate', bytes);
     assert.deepEqual(crateContents('.release-transfer/registry.crate'), read('rust/target/package/staged-package-contents.json'), 'actual registry source differs from real verified package');
+    const { crateRegistryDataRecord } = await import('./release-crate-publication.mjs');
+    const packageProducer = /^(auto|manual)_registry-availability$/u.exec(process.env.GITHUB_JOB);
+    assert.ok(packageProducer, 'only the source-owned registry availability producer');
+    const registryRecord = crateRegistryDataRecord({ ...identity(), producerJob: packageProducer[1] + '_verify-package' },
+      readFileSync('.release-transfer/package/descriptor.json'),
+      readFileSync('rust/target/package/staged-package-contents.json'), bytes,
+      { url: 'https://static.crates.io/crates/formal-ai/formal-ai-' + process.env.RELEASE_VERSION + '.crate', status: response.status });
+    writeFileSync('.release-transfer/registry-publication.json', JSON.stringify(registryRecord, null, 2) + '\n');
     return;
   }
   if (mode === 'capture' && kind === 'images') {
