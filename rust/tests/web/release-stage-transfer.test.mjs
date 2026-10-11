@@ -268,6 +268,13 @@ function validateProjection(projection, canonicalBytes = readCheckedReleaseOpera
         assert.equal(rewritten.split('        env:\n').length, 2);
         rewritten = rewritten.replace('        env:\n', () => '        env:\n          GH_TOKEN: ${{ github.token }}\n');
       }
+      // Source-owned recovery checks consume only the immutable protocol checkout.
+      if (operation.stage === 'prepare-source' && parsedRaw.run === 'rust-script scripts/check-release-needed.rs') {
+        assert.equal(rewritten.split('        env:\n').length, 2);
+        rewritten = rewritten.replace('        env:\n', () => '        env:\n' +
+          '          RELEASE_RECOVERY_PROTOCOL_ROOT: _protocol\n' +
+          '          RELEASE_RECOVERY_PROTOCOL_COMMIT: \${{ github.sha }}\n');
+      }
       const expected = YAML.parse('steps:\n' + rewritten).steps[0];
       const matches = stage.steps.map((step, index) => ({
         step,
@@ -403,5 +410,32 @@ test('manual hosted token projection is limited to the actual retained version o
     const candidate = structuredClone(projection);
     mutation(candidate);
     assert.throws(() => validateProjection(candidate));
+  }
+});
+
+test('recovery context is exact and confined to its source-owned release check', () => {
+  const modes = coverage.callers.filter(caller => caller.steps.some(operation => operation.stage === 'prepare-source' && YAML.parse('steps:\n' + operation.raw).steps[0].run === 'rust-script scripts/check-release-needed.rs')).map(caller => caller.caller.replace('-release', ''));
+  assert.ok(modes.length > 0);
+  for (const mode of modes) {
+    const original = readProjection();
+    const select = candidate => candidate.jobs[mode + '_prepare-source'].steps.find(step => step.run === 'rust-script scripts/check-release-needed.rs');
+    assert.equal(select(original).env.RELEASE_RECOVERY_PROTOCOL_ROOT, '_protocol');
+    assert.equal(select(original).env.RELEASE_RECOVERY_PROTOCOL_COMMIT, '\${{ github.sha }}');
+    for (const mutate of [
+      step => { delete step.env.RELEASE_RECOVERY_PROTOCOL_ROOT; },
+      step => { step.env.RELEASE_RECOVERY_PROTOCOL_ROOT = 'foreign'; },
+      step => { delete step.env.RELEASE_RECOVERY_PROTOCOL_COMMIT; },
+      step => { step.env.RELEASE_RECOVERY_PROTOCOL_COMMIT = 'foreign'; }
+    ]) {
+      const candidate = structuredClone(original);
+      mutate(select(candidate));
+      assert.throws(() => validateProjection(candidate));
+    }
+    const foreign = structuredClone(original);
+    const caller = coverage.callers.find(item => item.caller === mode + '-release');
+    const operation = caller.steps.find(item => item.stage === 'prepare-source' && item.name !== select(original).name);
+    const step = foreign.jobs[mode + '_prepare-source'].steps.find(item => (item.name || item.uses) === operation.name);
+    step.env = { RELEASE_RECOVERY_PROTOCOL_ROOT: '_protocol' };
+    assert.throws(() => validateProjection(foreign));
   }
 });
