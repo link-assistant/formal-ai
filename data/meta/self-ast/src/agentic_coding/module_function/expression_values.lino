@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/module_function/expression_values.rs
   language rust
   fidelity full_ast
-  byte_len 6040
+  byte_len 5930
   line_count 160
-  content_id source_module_2b211de8b7158a06
+  content_id source_module_64e8880b8e4bb083
   symbol_count 3
   symbols
     function specified_value 10 31
@@ -15,16 +15,16 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4490
-    named_node_count 909
-    distinct_node_kinds 58
+    total_link_count 4468
+    named_node_count 905
+    distinct_node_kinds 59
     node_kinds
       arguments 85
       array_expression 1
       array_type 4
       assignment_expression 2
       binary_expression 15
-      block 25
+      block 24
       boolean_literal 8
       call_expression 85
       char_literal 1
@@ -34,7 +34,7 @@ self_ast_census
       crate 5
       doc_comment 11
       else_clause 4
-      expression_statement 24
+      expression_statement 23
       field_expression 72
       field_identifier 72
       for_expression 2
@@ -42,9 +42,10 @@ self_ast_census
       generic_function 5
       generic_type 9
       identifier 176
-      if_expression 13
+      if_expression 12
       index_expression 8
       integer_literal 12
+      let_chain 1
       let_condition 2
       let_declaration 18
       lifetime 1
@@ -58,7 +59,7 @@ self_ast_census
       primitive_type 6
       range_expression 6
       raw_string_literal 3
-      reference_expression 12
+      reference_expression 10
       reference_type 10
       return_expression 8
       scoped_identifier 17

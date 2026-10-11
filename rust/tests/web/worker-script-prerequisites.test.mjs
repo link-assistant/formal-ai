@@ -40,3 +40,57 @@ assert.equal(vm.runInContext('typeof metaPrograms', entry), 'function');
 const mirror = loadWorkerMirror();
 assert.equal(vm.runInContext('typeof metaPrograms', mirror), 'function');
 console.log('T10395_ORDINARY_ENTRY_MIRROR_CONTEXT_PASS');
+
+import test from 'node:test';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { REPO_ROOT } from '../../../js/server/worker-host.mjs';
+
+function freshBrowserEntry(failBootstrap = false) {
+  const imports = [];
+  const browser = vm.createContext({
+    console, setTimeout, clearTimeout, URL, URLSearchParams,
+    TextEncoder, TextDecoder, postMessage() {},
+    fetch: () => Promise.reject(Error('OfflineTestTransport')),
+    location: { href: 'https://example.test/js/worker/formal_ai_worker.js', search: '' }
+  });
+  browser.self = browser;
+  browser.importScripts = (...urls) => {
+    for (const url of urls) {
+      const owner = new URL(url, 'https://example.test/js/').pathname.replace(/^\/js\//, 'js/');
+      imports.push(owner);
+      if (failBootstrap && owner === 'js/parser-cache-primordials.js') {
+        throw Error('ActualBootstrapImportFailed');
+      }
+      vm.runInContext(readFileSync(path.join(REPO_ROOT, owner), 'utf8'), browser, { filename: owner });
+    }
+  };
+  const owner = 'js/worker/formal_ai_worker.js';
+  vm.runInContext(readFileSync(path.join(REPO_ROOT, owner), 'utf8'), browser, { filename: owner });
+  return { browser, imports };
+}
+
+test('fresh browser imports the real parser provider before seed and dependent modules', () => {
+  const { browser, imports } = freshBrowserEntry();
+  const bootstrap = imports.indexOf('js/parser-cache-primordials.js');
+  assert(bootstrap >= 0);
+  assert(bootstrap < imports.indexOf('js/seed_loader.js'));
+  assert.equal(vm.runInContext('typeof metaPrograms', browser), 'function');
+  assert.equal(vm.runInContext('typeof solve', browser), 'function');
+  assert.equal(vm.runInContext('typeof self.FormalAiSeed', browser), 'object');
+});
+
+test('failed browser bootstrap import does not admit seed or dependent modules', () => {
+  const { browser, imports } = freshBrowserEntry(true);
+  assert(imports.includes('js/parser-cache-primordials.js'));
+  assert(!imports.includes('js/seed_loader.js'));
+  assert.equal(vm.runInContext('typeof metaPrograms', browser), 'undefined');
+});
+
+test('genuine constructor bootstrap can be loaded again without lexical redeclaration', () => {
+  const genuine = createBrowserContext();
+  loadBrowserScript(genuine, 'js/parser-cache-primordials.js');
+  loadBrowserScript(genuine, 'js/parser-cache-primordials.js');
+  loadBrowserScript(genuine, 'js/seed_loader.js');
+  assert.equal(vm.runInContext('typeof self.FormalAiSeed', genuine), 'object');
+});

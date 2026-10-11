@@ -1,20 +1,22 @@
 import assert from 'node:assert/strict';
+import {parseLino, childrenNamed} from '../../js/server/lino.mjs';
 import {factorSharedLexemeFields, expandSharedLexemeFields} from './notation-shared-lexeme-fields.mjs';
 
 /** A source-format choice, never a runtime or publication authority. */
 export function registeredSharedLexemeShard(rules, fileName) {
-  let sharedFamily = false;
+  const document = parseLino(rules);
+  const roots = document.name === 'notation-rules' ? [document] : childrenNamed(document, 'notation-rules');
   let selected = false;
-  for (const line of rules.split('\n')) {
-    if (line.startsWith('  family ')) sharedFamily = false;
-    else if (line.startsWith('    rule ')) {
-      sharedFamily = line.slice('    rule '.length) === 'shared-lexeme-fields';
-    } else if (sharedFamily && line.startsWith('    files ')) {
-      const source = line.slice('    files '.length);
-      assert.ok(source.startsWith('data/seed/'), 'shared lexeme output must name a seed source');
-      const relative = source.slice('data/seed/'.length);
-      assert.ok(!/[*?\[\]]/u.test(relative), 'explicit shared source required');
-      selected ||= relative === fileName;
+  for (const root of roots) for (const family of childrenNamed(root, 'family')) {
+    let sharedFamily = false;
+    for (const field of family.children) {
+      if (field.name === 'rule') sharedFamily = field.id === 'shared-lexeme-fields';
+      else if (sharedFamily && field.name === 'files') {
+        assert.ok(field.id.startsWith('data/seed/'), 'shared lexeme output must name a seed source');
+        const relative = field.id.slice('data/seed/'.length);
+        assert.ok(!/[*?\[\]]/u.test(relative), 'explicit shared source required');
+        selected ||= relative === fileName;
+      }
     }
   }
   return selected;

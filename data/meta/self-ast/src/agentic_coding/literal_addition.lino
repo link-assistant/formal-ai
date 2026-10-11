@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/literal_addition.rs
   language rust
   fidelity full_ast
-  byte_len 5768
+  byte_len 5764
   line_count 161
-  content_id source_module_b49eed8a57f3e3d3
+  content_id source_module_ece45814ece48359
   symbol_count 2
   symbols
     function refused 17 32
@@ -14,8 +14,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4499
-    named_node_count 887
+    total_link_count 4495
+    named_node_count 886
     distinct_node_kinds 54
     node_kinds
       arguments 85
@@ -52,7 +52,7 @@ self_ast_census
       parenthesized_expression 1
       primitive_type 4
       range_expression 1
-      reference_expression 28
+      reference_expression 27
       reference_type 8
       return_expression 11
       scoped_identifier 37

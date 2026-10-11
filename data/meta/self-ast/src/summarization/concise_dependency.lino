@@ -1,0 +1,19 @@
+self_ast_census
+  target src/summarization/concise_dependency.rs
+  language rust
+  fidelity signature
+  byte_len 5751
+  line_count 165
+  content_id source_module_be1c96e16a5e08fd
+  symbol_count 10
+  symbols
+    struct FactTerm 12 16
+    struct RestatementFacts 19 25
+    enum RestatementReason 28 34
+    struct Restatement 37 43
+    struct CoreRestatementItem 46 52
+    struct CoreRestatement 55 60
+    function fact_term 61 67
+    function restatement_facts 69 77
+    function verified_restatement 79 114
+    function summarize_with_restatement 116 165

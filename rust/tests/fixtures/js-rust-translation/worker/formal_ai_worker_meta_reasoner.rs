@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=24fc6dac3590112b0e8354846ab1817717e3bb5b3ebb9563ef3db559470100d3 bytes=58269
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=9aae36050953abed3844db4c44636d7876d2acc4e387dc3005da33598fd0d4ea bytes=58310
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
@@ -6,6 +6,24 @@
 // meta-language:prelude end
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=515488973ba47ad0a2df22fb5d865e4c76f068bbb055c5dd75aad252c53cf63b
+// | // @worker-prerequisite js/seed_loader.js
+// | // The recursive meta reasoner, JavaScript first (2026-10-06 meta-algorithm
+// | // doctrine; VISION.md "Universal Problem-Solving Algorithm").
+// | //
+// | // Nothing here knows a task. Every word of a request starts as an Unknown.
+// | // The loop grounds unknowns into hypotheses from four places, in this order:
+// | // a definition the request itself gives, a chunk learned on an earlier turn,
+// | // the documentation of the instruction set (data/seed/meta-reasoning.lino),
+// | // and dictionary captures fetched through the source walk. A gloss is itself
+// | // text, so its words are grounded by the same function one level deeper
+// | // (impasse -> subgoal), bounded by depth and a cycle stack. The goal state is
+// | // the request's own examples: programs are enumerated over the typed
+// | // instruction set, shortest first (Occam), ordered by grounded evidence, and
+// | // each candidate's difference from the goal is the number of failing
+// | // examples. The first failing example is the counterexample that rejects it
+// | // (CEGIS). The program the answer shows is the exact source the verifier ran.
+// | // Every decision is a trace event; the derivation serialises to links
+// | // notation.
 // | const META_REASONING_FILE = "meta-reasoning.lino";
 pub const META_REASONING_FILE: &str = "meta-reasoning.lino";
 

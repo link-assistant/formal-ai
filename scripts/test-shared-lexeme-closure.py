@@ -54,6 +54,12 @@ with tempfile.TemporaryDirectory(prefix='pr1188-scoped-closure-') as f:
  put('data/meta/total-closure-schema.lino',base_schema+'  scoped-shared-lexeme-schema data/meta/shared-lexeme-fields-schema.lino\n')
  technical=open(root+'/data/meta/shared-lexeme-fields-schema.lino').read();put('data/meta/shared-lexeme-fields-schema.lino',technical)
  for p in ['js/seed_loader.js','ts/seed_loader.ts','rust/src/seed/parser.rs','rust/src/seed/meanings/parse.rs']:put(p,open(root+'/'+p).read())
+ # Pin this isolated fixture to the authentic bytes copied above, once before mutations.
+ runtime_rows=re.findall(r'^  runtime-source (\S+) ([a-f0-9]{64})$',technical,re.M)
+ assert {p for p,_ in runtime_rows}=={'js/seed_loader.js','ts/seed_loader.ts','rust/src/seed/parser.rs'} and len(runtime_rows)==3
+ fixture_runtime_digests={p:hashlib.sha256(open(f+'/'+p,'rb').read()).hexdigest() for p,_ in runtime_rows}
+ technical=re.sub(r'(?m)^(  runtime-source )(\S+)( )[a-f0-9]{64}$',lambda match:match[1]+match[2]+match[3]+fixture_runtime_digests[match[2]],technical)
+ put('data/meta/shared-lexeme-fields-schema.lino',technical)
  normal='meanings\n  sample\n    shared-lexeme-fields unbound_scope_probe\n      part_of_speech noun\n    lexeme en\n      surface\n        text one\n        use-lexeme-fields unbound_scope_probe\n    lexeme es\n      surface\n        text two\n        use-lexeme-fields unbound_scope_probe\n'
  put('data/seed/shared.lino',normal+'  other\n    semantic unbound_scope_probe\n')
  report=new.audit(f);assert report['resolved_scoped_reference_bindings']==1;assert 'unbound_scope_probe' in report['unresolved'];controls.append('local identity never globally resolves ordinary same-name occurrence')

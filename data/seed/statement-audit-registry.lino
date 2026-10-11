@@ -24,6 +24,13 @@ statement_audit_registry
     source "rust/src/cli_statement_audit.rs"
     operation "statement-audit"
     command-template "formal-ai statement-audit --root . --output {output}"
+    explicit-output-when
+      requires-role audit
+      requires-role deliver
+    explicit-output-when
+      requires-role audit
+      requires-role weigh
+      requires-role persist
     role audit
       pattern "audit (?:all )?(?:statement-bearing repository prose, code comments, and structured facts|repository statements|repository requirements)"
     role weigh

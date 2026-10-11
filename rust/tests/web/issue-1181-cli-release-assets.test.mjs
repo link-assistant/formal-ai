@@ -24,7 +24,7 @@
 
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -147,12 +147,26 @@ test("R1181-3: finalize consolidates the CLI fragments and reports missing legs 
     const evidenceFixture = createEvidenceFixture({version: "9.9.9"});
     const evidence = prepareReleaseEvidence(path.join(dir, "release-evidence"), collectReleaseEvidence(evidenceFixture));
     assert.equal(evidence.complete, true, "canonical typed fixture is complete");
+    // The real manifest step consumes its declared protocol and output identity.
+    // These source/run values are fixture data, not publication authentication.
+    const protocol = path.join(realpathSync(dir), "protocol");
+    mkdirSync(protocol);
+    copyFileSync(path.join(REPO_ROOT, "scripts/release-producer-output-receipt.mjs"), path.join(protocol, "release-producer-output-receipt.mjs"));
+    writeFileSync(path.join(protocol, "producer-output-workflow.yml"), WORKFLOW);
+    writeFileSync(path.join(protocol, "protocol-selection.json"), JSON.stringify({
+      commit: evidenceFixture.source.source_commit, tree: evidenceFixture.source.source_tree,
+    }));
     bash(script, {
       cwd: dir,
-      env: { ...process.env, PATH: `${path.join(dir, "bin")}:${process.env.PATH}`, GH_TOKEN: "x", REPO: "o/r", TAG: "v9.9.9", RUN_URL: "u", GITHUB_OUTPUT: path.join(dir, "output"),
+      env: { ...process.env, PATH: `${path.join(dir, "bin")}:${process.env.PATH}`, GH_TOKEN: "x", REPO: "o/r", TAG: "v9.9.9", RUN_URL: "u", GITHUB_OUTPUT: realpathSync(path.join(dir, "output")),
         NATIVE_SOURCE_COMMIT: evidenceFixture.source.source_commit, NATIVE_SOURCE_TREE: evidenceFixture.source.source_tree,
         NATIVE_SELECTION_SHA256: evidenceFixture.bindings.sourceSha256, NATIVE_COMPILER_RELEASE: evidenceFixture.source.compiler_release,
-        NATIVE_COMPILER_COMMIT: evidenceFixture.source.compiler_commit, EVIDENCE_INCOMPLETE: "" },
+        NATIVE_COMPILER_COMMIT: evidenceFixture.source.compiler_commit, EVIDENCE_INCOMPLETE: "",
+        FORMAL_AI_NATIVE_PROTOCOL_DIR: protocol, GITHUB_REPOSITORY: "o/r", GITHUB_JOB: "finalize",
+        GITHUB_RUN_ID: "1181", GITHUB_RUN_ATTEMPT: "1", GITHUB_SHA: evidenceFixture.source.source_commit,
+        GITHUB_WORKFLOW_REF: "o/r/.github/workflows/desktop-release.yml@refs/tags/v9.9.9",
+        RELEASE_PRODUCER_PROTOCOL_COMMIT: evidenceFixture.source.source_commit,
+        RELEASE_PRODUCER_OUTPUT_STEP: "manifest", RELEASE_PRODUCER_OUTPUT_KEYS: "incomplete" },
     });
     const evidenceLines = readFileSync(path.join(dir, "release-evidence", "SHA256SUMS-evidence.partial"), "utf8").trim().split("\n");
     const expectedLines = [line.trim(), ...evidenceLines].sort((left, right) => left.split("  ")[1].localeCompare(right.split("  ")[1], "en"));

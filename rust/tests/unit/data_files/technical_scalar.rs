@@ -121,10 +121,10 @@ fn declared_regex_pair(content: &str, index: usize, keyword: &str, value: &str) 
     {
         return false;
     }
-    let Ok(schema) = formal_ai::seed::parser::parse_lino_checked(&schema_text) else {
+    let Ok(schema) = formal_ai::seed::parse_lino_checked(&schema_text) else {
         return false;
     };
-    let Ok(document) = formal_ai::seed::parser::parse_lino_checked(content) else {
+    let Ok(document) = formal_ai::seed::parse_lino_checked(content) else {
         return false;
     };
     let Some(schema_root) = schema.children.first() else {
@@ -212,9 +212,9 @@ fn declared_regex_pair(content: &str, index: usize, keyword: &str, value: &str) 
     }
     let mut headers = Vec::new();
     for (_, position) in &ancestors {
-        let Ok(parsed) = formal_ai::seed::parser::parse_lino_checked(
-            super::strip_lino_comment(lines[*position]).trim(),
-        ) else {
+        let Ok(parsed) =
+            formal_ai::seed::parse_lino_checked(super::strip_lino_comment(lines[*position]).trim())
+        else {
             return false;
         };
         if parsed.children.len() != 1 {
@@ -248,7 +248,7 @@ fn declared_regex_pair(content: &str, index: usize, keyword: &str, value: &str) 
         return false;
     }
     let selected = super::strip_lino_comment(line).trim();
-    let Ok(selected_tree) = formal_ai::seed::parser::parse_lino_checked(selected) else {
+    let Ok(selected_tree) = formal_ai::seed::parse_lino_checked(selected) else {
         return false;
     };
     if selected_tree.children.len() != 1 || selected_tree.children[0].name != keyword {

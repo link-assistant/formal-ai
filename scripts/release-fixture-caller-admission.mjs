@@ -18,7 +18,8 @@ export function validateCallerAdmission(run, jobs, group, context) {
   assert.equal(String(run.body.run_attempt), context.attempt);
   assert.equal(run.body.head_sha, context.eventHead);
   assert.equal(run.body.path, '.github/workflows/release-runtime-fixture.yml');
-  assert.equal(run.body.status, 'in_progress');
+  assert.ok(['queued', 'in_progress'].includes(run.body.status), 'nonterminal aggregate run required');
+  assert.equal(run.body.conclusion, null, 'terminal aggregate conclusion refused');
   assert.ok(Array.isArray(jobs.body.jobs));
   assert.equal(jobs.body.total_count, jobs.body.jobs.length, 'complete bounded job listing required');
   const matches = jobs.body.jobs.filter(job => job.name === descendantName);

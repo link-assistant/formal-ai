@@ -14,7 +14,7 @@ function syntheticSnapshots() {
   return [
     {status: 200, route: base + '/runs/123', observedAt: '2026-10-11T00:00:00Z',
       body: {id: 123, run_attempt: 2, head_sha: context.eventHead,
-        path: '.github/workflows/release-runtime-fixture.yml', status: 'in_progress'}},
+        path: '.github/workflows/release-runtime-fixture.yml', status: 'in_progress', conclusion: null}},
     {status: 200, route: base + '/runs/123/jobs?filter=latest&per_page=100',
       observedAt: '2026-10-11T00:00:01Z', body: {total_count: 1, jobs: [job]}},
     {status: 200, route: base + '/concurrency_groups/' + groupName,
@@ -49,7 +49,7 @@ test('synthetic foreign, ambiguous, truncated, terminal and stale admissions ref
     values => values[0].body.run_attempt = 1,
     values => values[0].body.head_sha = 'b'.repeat(40),
     values => values[0].body.path = '.github/workflows/release.yml',
-    values => values[0].body.status = 'queued',
+    values => values[0].body.status = 'completed',
     values => values[1].body.jobs.push(structuredClone(values[1].body.jobs[0])),
     values => values[1].body.total_count = 2,
     values => values[1].body.jobs[0].name = 'foreign caller',
@@ -140,4 +140,22 @@ test('production queue call site supplies missing-runner refusal rather than opt
   const source = readFileSync(new URL('../../../scripts/release-runtime-fixture.mjs', import.meta.url), 'utf8');
   assert.ok(source.includes('runnerName: process.env.RUNNER_NAME ?? null'));
   assert.ok(source.includes("assert.equal(typeof runnerName, 'string')"));
+});
+
+test('queued aggregate requires authentic matching admitted group without execution promotion',()=>{
+ const values=syntheticSnapshots();values[0].body.status='queued';
+ const observed=validateCallerAdmission(...values,context);
+ assert.equal(observed.descendantStatus,'queued');assert.equal(observed.executingLeaseProof,false);assert.equal(observed.productionAuthority,false);
+ for(const mutate of [
+  x=>x[0].body.conclusion='success',
+  x=>delete x[0].body.conclusion,
+  x=>x[0].body.status='waiting',
+  x=>x[2].body.group_members[0].status='queued',
+  x=>x[2].body.group_members[0].job_id=43,
+  x=>x[2].observedAt='2026-10-11T00:00:06Z'
+ ]){
+  const x=structuredClone(values);
+  mutate(x);
+  assert.throws(()=>validateCallerAdmission(...x,context));
+ }
 });

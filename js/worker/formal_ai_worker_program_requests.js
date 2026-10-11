@@ -215,7 +215,7 @@ function programOperandAfter(after) {
     const accounted = [...nouns, ...wordsForRole("request_function_word")];
     const nominal = lexiconMentionsRole("program_genus", normalized)
       && remainder.toLowerCase().split(/\s+/u).every((word) => programTokenAccountedFor(word, accounted));
-    const complete = remainder === "" || nominal || wordsForRole("program_termination_clause").includes(remainder.toLowerCase());
+    const complete = remainder === "" || nominal || wordsForRole("program-termination-clause").includes(remainder.toLowerCase());
     return complete && quotedTextSpans(sentence).length === 0 ? programOperandLiteral(quoted.text) : null;
   }
   const greetings = wordsForRole("social_greeting").slice().sort((left, right) => right.length - left.length);

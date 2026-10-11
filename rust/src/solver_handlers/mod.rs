@@ -146,7 +146,7 @@ fn numeric_calculation_response<'a>(
         .to_lowercase();
     let lexicon = crate::seed::lexicon();
     if !lexicon
-        .words_for_role("numeric_response_only_clause")
+        .words_for_role("numeric-response-only-clause")
         .contains(&clause)
     {
         return None;

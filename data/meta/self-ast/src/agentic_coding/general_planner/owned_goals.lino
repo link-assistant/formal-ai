@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/general_planner/owned_goals.rs
   language rust
   fidelity full_ast
-  byte_len 33512
-  line_count 887
-  content_id source_module_9e8a50bd5a177005
-  symbol_count 33
+  byte_len 34723
+  line_count 921
+  content_id source_module_3c445c34ee7fa36e
+  symbol_count 34
   symbols
     enum GoalKind 22 26
     struct Goal 27 30
@@ -30,92 +30,93 @@ self_ast_census
     static ANNOTATIONS 532 533
     function source_context_whitespace_supported 619 627
     function source_context_atom 629 652
-    function source_context_label 654 680
-    function source_context_declaration 682 702
-    function attributed_action_prefix 704 718
-    function contract_action_prologue 720 761
-    function declared_creation_prologue 763 781
-    function owned_declared_create_frame 784 810
-    function declared_addition_contract 813 824
-    function has_additive_position 827 848
-    function owned_additive_literal_frame 851 881
-    function owned_additive_literal 884 887
+    function source_context_condition 655 675
+    function source_context_label 677 708
+    function source_context_declaration 710 730
+    function attributed_action_prefix 732 746
+    function contract_action_prologue 748 789
+    function declared_creation_prologue 791 809
+    function owned_declared_create_frame 813 839
+    function declared_addition_contract 843 854
+    function has_additive_position 858 880
+    function owned_additive_literal_frame 884 914
+    function owned_additive_literal 918 921
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 27686
-    named_node_count 5716
+    total_link_count 28514
+    named_node_count 5898
     distinct_node_kinds 84
     node_kinds
-      arguments 532
-      array_expression 5
+      arguments 553
+      array_expression 6
       array_type 6
       assignment_expression 10
-      attribute 1
-      attribute_item 1
-      binary_expression 154
-      block 148
-      boolean_literal 33
+      attribute 6
+      attribute_item 6
+      binary_expression 156
+      block 152
+      boolean_literal 34
       break_expression 2
-      call_expression 532
-      char_literal 39
-      closure_expression 80
-      closure_parameters 80
+      call_expression 553
+      char_literal 40
+      closure_expression 86
+      closure_parameters 86
       continue_expression 2
-      crate 44
-      doc_comment 8
-      else_clause 10
+      crate 47
+      doc_comment 9
+      else_clause 9
       enum_item 1
       enum_variant 3
       enum_variant_list 1
       escape_sequence 3
-      expression_statement 143
+      expression_statement 145
       field_declaration 2
       field_declaration_list 1
-      field_expression 534
-      field_identifier 539
+      field_expression 551
+      field_identifier 556
       field_initializer 4
       field_initializer_list 4
       field_pattern 1
       for_expression 17
-      function_item 28
+      function_item 29
       function_type 1
-      generic_function 17
-      generic_type 39
-      identifier 1342
+      generic_function 19
+      generic_type 41
+      identifier 1375
       if_expression 60
       index_expression 27
       inner_doc_comment_marker 1
       integer_literal 30
       let_chain 2
-      let_condition 9
-      let_declaration 110
+      let_condition 8
+      let_declaration 114
       lifetime 3
-      line_comment 9
+      line_comment 10
       macro_invocation 13
       mutable_specifier 18
-      outer_doc_comment_marker 7
-      parameter 49
-      parameters 29
+      outer_doc_comment_marker 8
+      parameter 50
+      parameters 30
       parenthesized_expression 10
-      primitive_type 59
+      primitive_type 61
       range_expression 44
       raw_string_literal 1
-      reference_expression 87
-      reference_type 46
+      reference_expression 86
+      reference_type 47
       remaining_field_pattern 1
-      return_expression 52
-      scoped_identifier 149
+      return_expression 53
+      scoped_identifier 155
       scoped_type_identifier 20
       scoped_use_list 7
       shorthand_field_identifier 1
       shorthand_field_initializer 2
       source_file 1
       static_item 3
-      string_content 81
-      string_literal 81
+      string_content 85
+      string_literal 85
       struct_expression 4
       struct_item 1
       struct_pattern 1
@@ -124,12 +125,12 @@ self_ast_census
       try_expression 31
       tuple_expression 8
       tuple_pattern 7
-      tuple_struct_pattern 16
+      tuple_struct_pattern 15
       tuple_type 9
-      type_arguments 56
+      type_arguments 60
       type_cast_expression 1
-      type_identifier 102
-      unary_expression 39
+      type_identifier 106
+      unary_expression 40
       use_declaration 14
       use_list 7
       visibility_modifier 11

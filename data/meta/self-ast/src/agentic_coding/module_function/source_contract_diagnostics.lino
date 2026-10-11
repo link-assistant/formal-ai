@@ -2,23 +2,25 @@ self_ast_census
   target src/agentic_coding/module_function/source_contract_diagnostics.rs
   language rust
   fidelity full_ast
-  byte_len 1323
-  line_count 43
-  content_id source_module_f7051f6cf796b634
+  byte_len 1335
+  line_count 44
+  content_id source_module_6e3f404749677fa8
   symbol_count 2
   symbols
     const MEANINGS 3 4
-    function source_contract_diagnostic 5 43
+    function source_contract_diagnostic 6 44
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 1381
-    named_node_count 268
-    distinct_node_kinds 38
+    total_link_count 1394
+    named_node_count 271
+    distinct_node_kinds 40
     node_kinds
       arguments 22
+      attribute 1
+      attribute_item 1
       binary_expression 12
       block 6
       call_expression 22
@@ -32,7 +34,7 @@ self_ast_census
       field_identifier 30
       function_item 1
       generic_type 5
-      identifier 43
+      identifier 44
       if_expression 4
       index_expression 4
       inner_doc_comment_marker 1

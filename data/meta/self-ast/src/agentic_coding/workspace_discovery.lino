@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/workspace_discovery.rs
   language rust
   fidelity full_ast
-  byte_len 15391
-  line_count 446
-  content_id source_module_0a8c831e2cdaaa44
-  symbol_count 19
+  byte_len 11885
+  line_count 362
+  content_id source_module_ed34ee9bd4c99f75
+  symbol_count 16
   symbols
     function contract_text 15 50
     const MAXIMUM_FILES 52 52
@@ -13,108 +13,96 @@ self_ast_census
     struct DiscoveryContract 55 62
     function workspace_discovery_contract_bound 64 86
     function utf16_boundary 88 92
-    function workspace_discovery_contract 94 150
-    function workspace_discovery_command 152 157
-    function safe_path 159 165
-    function candidate_read_command 167 177
+    function workspace_discovery_contract 94 153
+    function workspace_discovery_command 155 160
+    function safe_path 162 168
+    function candidate_read_command 170 177
     enum DiscoveryStep 179 182
     function observation 184 189
-    function incomplete 191 207
-    function qualified_payload 209 221
-    function workspace_discovery_step 223 366
-    module tests 369 446
-    function shared_seed_retains_original_subject_and_unconsumed_unicode_tail 372 390
-    function structural_binding_rejects_foreign_source_and_inconsistent_spans 392 425
-    function partial_receipts_and_unsafe_candidate_paths_cannot_become_source_evidence 428 445
+    function incomplete 191 205
+    function qualified_payload 207 219
+    function workspace_discovery_step 221 358
+    module tests 362 362
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 13105
-    named_node_count 2666
-    distinct_node_kinds 83
+    total_link_count 10856
+    named_node_count 2219
+    distinct_node_kinds 74
     node_kinds
       abstract_type 1
-      arguments 255
-      array_expression 28
+      arguments 225
+      array_expression 19
       array_type 4
-      assignment_expression 3
-      attribute 4
-      attribute_item 4
+      attribute 2
+      attribute_item 2
       binary_expression 47
-      block 47
+      block 41
       boolean_literal 7
-      call_expression 255
-      char_literal 13
-      closure_expression 20
-      closure_parameters 20
-      compound_assignment_expr 3
+      call_expression 225
+      char_literal 12
+      closure_expression 23
+      closure_parameters 23
       const_item 2
       crate 5
-      declaration_list 1
       doc_comment 4
       enum_item 1
       enum_variant 2
       enum_variant_list 1
       escape_sequence 3
-      expression_statement 82
+      expression_statement 51
       field_declaration 7
       field_declaration_list 2
-      field_expression 199
-      field_identifier 211
+      field_expression 177
+      field_identifier 189
       field_initializer 5
       field_initializer_list 2
-      for_expression 5
-      function_item 14
+      for_expression 2
+      function_item 11
       generic_function 1
       generic_type 18
-      identifier 577
+      identifier 455
       if_expression 18
-      index_expression 14
+      index_expression 9
       inner_doc_comment_marker 2
-      integer_literal 43
+      integer_literal 29
       let_chain 1
       let_condition 1
-      let_declaration 52
+      let_declaration 40
       lifetime 2
       line_comment 4
-      macro_invocation 32
-      match_arm 4
-      match_block 2
-      match_expression 2
-      match_pattern 4
+      macro_invocation 16
       mod_item 1
-      mutable_specifier 12
+      mutable_specifier 4
       ordered_field_declaration_list 1
       outer_doc_comment_marker 2
       parameter 19
-      parameters 14
-      parenthesized_expression 12
+      parameters 11
+      parenthesized_expression 8
       primitive_type 27
       range_expression 3
-      raw_string_literal 3
-      reference_expression 55
+      reference_expression 44
       reference_type 22
       return_expression 22
-      scoped_identifier 45
+      scoped_identifier 44
       scoped_type_identifier 2
       scoped_use_list 3
       shorthand_field_initializer 2
       source_file 1
-      string_content 88
-      string_literal 87
+      string_content 73
+      string_literal 75
       struct_expression 2
       struct_item 1
-      super 17
-      token_tree 69
+      super 16
+      token_tree 27
       try_expression 14
       tuple_pattern 1
-      tuple_struct_pattern 9
+      tuple_struct_pattern 7
       type_arguments 19
       type_identifier 47
       unary_expression 10
-      use_declaration 7
+      use_declaration 6
       use_list 3
-      use_wildcard 1
       visibility_modifier 11

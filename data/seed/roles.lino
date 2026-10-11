@@ -697,9 +697,9 @@ roles
     kind meaning
   numbered_line_noun
     kind meaning
-  numeric_concept
+  numeric-response-only-clause
     kind predicate
-  numeric_response_only_clause
+  numeric_concept
     kind predicate
   observable_task_action
     kind meaning
@@ -755,6 +755,8 @@ roles
     kind meaning
   production_relation
     kind predicate
+  program-termination-clause
+    kind meaning
   program_artifact
     kind predicate
   program_genus
@@ -783,8 +785,6 @@ roles
     kind meaning
   program_task_alias
     kind predicate
-  program_termination_clause
-    kind meaning
   projection_fidelity
     kind predicate
   projection_refusal

@@ -1,3 +1,4 @@
+// @worker-prerequisite js/parser-cache-primordials.js
 // Shared Links Notation seed loader for the demo.
 //
 // The browser demo loads its multilingual response phrases, concept summaries,
@@ -399,7 +400,7 @@ const formalAiWorkerPrimordials = Object.freeze({
   var parsedTextMemo = (function () {
     var profile = formalAiParserCacheBootstrap;
     var entries = [], retainedCharacters = 0, retainedNodes = 0, retainedTextBytes = 0, retainedPayloadBytes = 0;
-    var maxEntries = 128, maxTextBytes = 4194304, maxPayloadBytes = 16777216, maxNodes = 65536;
+    var maximumEntries = 128, maxTextBytes = 4194304, maxPayloadBytes = 16777216, maxNodes = 65536;
     function utf8Bytes(value) {
       var bytes=0;
       for(var at=0;at<value.length;at++) {
@@ -436,7 +437,7 @@ const formalAiWorkerPrimordials = Object.freeze({
     retainedNodes:retainedNodes,
     retainedTextBytes:retainedTextBytes,
     retainedPayloadBytes:retainedPayloadBytes,
-    maxEntries:maxEntries,
+    maxEntries:maximumEntries,
     maxTextBytes:maxTextBytes,
     maxPayloadBytes:maxPayloadBytes,
     diagnosticOmitted:diagnosticOmitted,
@@ -483,7 +484,7 @@ const formalAiWorkerPrimordials = Object.freeze({
           count(result,0);
           var stored=copy(result,0), textBytes=utf8Bytes(input)+(observedEffect.last===null?0:utf8Bytes(observedEffect.last.input)), payloadBytes=utf8Bytes(JSON.stringify(stored));
           if(textBytes>maxTextBytes || payloadBytes>maxPayloadBytes) throw new Error('ParserMemoByteBound');
-          while(entries.length && (entries.length>=maxEntries || retainedTextBytes+textBytes>maxTextBytes || retainedPayloadBytes+payloadBytes>maxPayloadBytes || retainedNodes+nodes>maxNodes)) {
+          while(entries.length && (entries.length>=maximumEntries || retainedTextBytes+textBytes>maxTextBytes || retainedPayloadBytes+payloadBytes>maxPayloadBytes || retainedNodes+nodes>maxNodes)) {
             var removed=entries.shift();evictions++;note(removed.text,"evictions",removed.tree.name);retainedCharacters-=removed.characters;retainedNodes-=removed.nodes;retainedTextBytes-=removed.textBytes;retainedPayloadBytes-=removed.payloadBytes;
           }
           if(observedEffect.unsupported) throw new Error("UnknownParserRegexEffect");

@@ -2,63 +2,63 @@ self_ast_census
   target src/agentic_coding/general_execution.rs
   language rust
   fidelity full_ast
-  byte_len 31777
-  line_count 767
-  content_id source_module_dcff0ea961598180
+  byte_len 31747
+  line_count 768
+  content_id source_module_1e56bd1e08ba3d7e
   symbol_count 30
   symbols
-    const EXPECTED_PLACEHOLDER 15 15
-    const OBSERVED_PLACEHOLDER 16 16
-    const PLAN_PLACEHOLDER 17 17
-    const PLAN_PATH_PLACEHOLDER 18 18
-    function plan_general_change_step 20 27
-    function plan_work_item_change_step 30 36
-    function general_change_step 38 255
-    enum PlanEventOutcome 258 262
-    function plan_event_append_command 266 284
-    function unverified_plan_event 286 291
-    function plan_event_step 293 403
-    function plan_work_item_execution 406 437
-    function plan_work_item_read 440 494
-    function prepared_pull_reference 497 508
-    function work_item_fetch_arguments 510 517
-    function issue_view_command 521 533
-    function rest_segments 536 548
-    function issue_rest_read_command 551 562
-    function issue_api_read_command 565 576
-    function work_item_read_failure_report 579 591
-    function repository_work_item_objective 594 601
-    function literal_verification_matches 605 610
-    function finish_general_change 612 672
-    function work_item_completion 675 688
-    function general_plan_completed 694 708
-    function tool_argument_path 710 716
-    function read_arguments 718 725
-    function capability_label 727 744
-    function general_plan_mismatch 746 759
-    function general_plan_unverified 761 767
+    const EXPECTED_PLACEHOLDER 17 17
+    const OBSERVED_PLACEHOLDER 18 18
+    const PLAN_PLACEHOLDER 19 19
+    const PLAN_PATH_PLACEHOLDER 20 20
+    function plan_general_change_step 22 29
+    function plan_work_item_change_step 32 38
+    function general_change_step 40 257
+    enum PlanEventOutcome 260 264
+    function plan_event_append_command 268 286
+    function unverified_plan_event 288 293
+    function plan_event_step 295 404
+    function plan_work_item_execution 407 438
+    function plan_work_item_read 441 495
+    function prepared_pull_reference 498 509
+    function work_item_fetch_arguments 511 518
+    function issue_view_command 522 534
+    function rest_segments 537 549
+    function issue_rest_read_command 552 563
+    function issue_api_read_command 566 577
+    function work_item_read_failure_report 580 592
+    function repository_work_item_objective 595 602
+    function literal_verification_matches 606 611
+    function finish_general_change 613 673
+    function work_item_completion 676 689
+    function general_plan_completed 695 709
+    function tool_argument_path 711 717
+    function read_arguments 719 726
+    function capability_label 728 745
+    function general_plan_mismatch 747 760
+    function general_plan_unverified 762 768
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21010
-    named_node_count 4259
+    total_link_count 20998
+    named_node_count 4258
     distinct_node_kinds 75
     node_kinds
-      arguments 369
+      arguments 370
       array_expression 9
       array_type 13
       assignment_expression 7
       attribute 1
       attribute_item 1
-      binary_expression 71
+      binary_expression 69
       block 92
       boolean_literal 4
-      call_expression 369
+      call_expression 370
       char_literal 10
-      closure_expression 37
-      closure_parameters 37
+      closure_expression 38
+      closure_parameters 38
       const_item 4
       crate 11
       doc_comment 17
@@ -76,7 +76,7 @@ self_ast_census
       function_item 25
       function_modifiers 1
       generic_type 12
-      identifier 1103
+      identifier 1101
       if_expression 49
       inner_doc_comment_marker 1
       integer_literal 15
@@ -101,7 +101,7 @@ self_ast_census
       reference_expression 79
       reference_type 59
       return_expression 40
-      scoped_identifier 173
+      scoped_identifier 172
       scoped_type_identifier 2
       scoped_use_list 4
       source_file 1

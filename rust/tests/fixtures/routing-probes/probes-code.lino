@@ -690,7 +690,7 @@ routing_probes
   probe p358
     lane write_script
     language en
-    intent write_script_python
+    intent write_program_skill_gap
     prompt "Write a Python script that prints the date"
   probe p359
     lane write_script

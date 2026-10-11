@@ -71,7 +71,7 @@ function numericCalculationResponse(prompt, expression, formatted) {
   const boundary = request.lastIndexOf(". ");
   if (boundary < 0) return null;
   const clause = request.slice(boundary + 2).replace(/\.$/u, "").trim().toLowerCase();
-  const clauses = meaningsWithRole("numeric_response_only_clause");
+  const clauses = meaningsWithRole("numeric-response-only-clause");
   if (!clauses.some((meaning) => meaning.words.includes(clause))) return null;
   const operand = expression.trim().toLowerCase();
   const prefix = request.slice(0, boundary).trim().toLowerCase();

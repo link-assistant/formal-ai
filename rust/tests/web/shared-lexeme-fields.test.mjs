@@ -5,6 +5,7 @@ import vm from 'node:vm';
 import test from 'node:test';
 const root=path.resolve(import.meta.dirname,'../../..');
 const context={self:{}};
+vm.runInNewContext(readFileSync(path.join(root,'js/parser-cache-primordials.js'),'utf8'),context);
 vm.runInNewContext(readFileSync(path.join(root,'js/seed_loader.js'),'utf8'),context);
 const parse=context.self.FormalAiSeed.parse;
 const surface=(word,fields)=>'      surface\n        text '+word+'\n'+fields;

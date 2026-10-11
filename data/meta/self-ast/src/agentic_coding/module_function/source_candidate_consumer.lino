@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/module_function/source_candidate_consumer.rs
   language rust
   fidelity full_ast
-  byte_len 11248
-  line_count 280
-  content_id source_module_067eb583828ecfa3
+  byte_len 11271
+  line_count 281
+  content_id source_module_5f154a9a8447e494
   symbol_count 12
   symbols
     trait SourceCompositionHost 20 30
@@ -17,20 +17,22 @@ self_ast_census
     function authorize_source_candidate_write 213 217
     function record_prepared_source_write 218 222
     function abort_source_candidate 225 232
-    struct SourceCandidateContext 235 240
-    function execute_source_candidate 241 280
+    struct SourceCandidateContext 236 241
+    function execute_source_candidate 242 281
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 8472
-    named_node_count 1721
-    distinct_node_kinds 80
+    total_link_count 8500
+    named_node_count 1727
+    distinct_node_kinds 82
     node_kinds
       arguments 108
       array_type 4
       assignment_expression 2
+      attribute 1
+      attribute_item 1
       binary_expression 12
       block 21
       boolean_literal 11
@@ -53,7 +55,7 @@ self_ast_census
       function_signature_item 3
       function_type 2
       generic_type 20
-      identifier 362
+      identifier 365
       if_expression 5
       index_expression 17
       inner_doc_comment_marker 1
@@ -90,7 +92,7 @@ self_ast_census
       struct_item 2
       struct_pattern 1
       super 7
-      token_tree 28
+      token_tree 29
       trait_bounds 13
       trait_item 1
       try_expression 31

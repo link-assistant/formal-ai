@@ -48,21 +48,7 @@ try {
 importScripts(withAssetVersion("worker-script-prerequisites.js"));
 
 // The completed set is private to this actual import closure, not caller globals.
-const loadWorkerAsset = (() => {
-  const nativeImport = importScripts;
-  const completed = new Map();
-  const records = new Map(formalAiWorkerScriptPrerequisites.map(record => [record.script, record]));
-  return (asset) => {
-    const script = "js/" + asset;
-    completed.delete(script);
-    const record = records.get(script);
-    if (record && record.requires.some(dependency => completed.get(dependency.script) !== dependency.sourceSha256)) return false;
-    nativeImport(withAssetVersion(asset));
-    const declared = formalAiWorkerScriptPrerequisites.flatMap(item => item.requires).find(item => item.script === script);
-    completed.set(script, record ? record.sourceSha256 : declared ? declared.sourceSha256 : null);
-    return true;
-  };
-})();
+const loadWorkerAsset = createWorkerAssetLoader(importScripts, withAssetVersion);
 
 try {
   // `seed-files.js` first: it is the generated inventory of `seed/*.lino` files
@@ -71,6 +57,7 @@ try {
   // `data/meta/seed-registry.lino`; shipped responses also boot offline.
   loadWorkerAsset("worker-bootstrap-responses.js");
   loadWorkerAsset("seed-files.js");
+  loadWorkerAsset("parser-cache-primordials.js");
   loadWorkerAsset("seed_loader.js");
 } catch (_error) {
   // Mock workers may omit the optional loader.
@@ -96,18 +83,6 @@ try {
   });
 }
 
-// The module list lives in its own file so it can be union merged: see
-// `data/meta/merge-conflict-policy.lino`. Two branches that each add a worker
-// module then produce a superset instead of an add/add conflict, and
-// `rust-script scripts/normalize-ordered-lists.rs --write` regenerates the list
 importScripts(withAssetVersion("worker-modules.js"));
 
-let pendingWorkerModules = self.FORMAL_AI_WORKER_MODULES.slice();
-while (pendingWorkerModules.length) {
-  const deferred = [];
-  for (const modulePath of pendingWorkerModules) {
-    if (!loadWorkerAsset(modulePath)) deferred.push(modulePath);
-  }
-  if (deferred.length === pendingWorkerModules.length) break;
-  pendingWorkerModules = deferred;
-}
+loadWorkerModules(self.FORMAL_AI_WORKER_MODULES, loadWorkerAsset);

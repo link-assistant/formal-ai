@@ -2,47 +2,48 @@ self_ast_census
   target src/agentic_coding/general_planner/additive_scope.rs
   language rust
   fidelity full_ast
-  byte_len 9930
-  line_count 249
-  content_id source_module_1d77bed6d4a57413
+  byte_len 9708
+  line_count 244
+  content_id source_module_0b7fcf0d0bcd2980
   symbol_count 1
   symbols
-    function owns_additive_scope 10 249
+    function owns_additive_scope 10 244
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 8022
-    named_node_count 1694
-    distinct_node_kinds 65
+    total_link_count 7958
+    named_node_count 1683
+    distinct_node_kinds 66
     node_kinds
-      arguments 183
+      arguments 182
       array_expression 7
       array_type 1
       assignment_expression 2
-      binary_expression 34
-      block 38
+      binary_expression 33
+      block 36
       boolean_literal 6
       break_expression 1
-      call_expression 183
+      call_expression 182
       char_literal 18
       closure_expression 33
       closure_parameters 33
       crate 9
       doc_comment 2
       escape_sequence 10
-      expression_statement 47
-      field_expression 168
-      field_identifier 168
+      expression_statement 45
+      field_expression 167
+      field_identifier 167
       for_expression 4
       function_item 1
       generic_type 11
       identifier 345
-      if_expression 18
+      if_expression 16
       index_expression 14
       inner_doc_comment_marker 1
       integer_literal 13
+      let_chain 2
       let_condition 9
       let_declaration 31
       line_comment 2
@@ -59,7 +60,7 @@ self_ast_census
       primitive_type 7
       range_expression 21
       raw_string_literal 2
-      reference_expression 27
+      reference_expression 25
       reference_type 4
       return_expression 7
       scoped_identifier 35

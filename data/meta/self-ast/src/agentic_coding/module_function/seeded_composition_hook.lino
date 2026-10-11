@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/module_function/seeded_composition_hook.rs
   language rust
   fidelity full_ast
-  byte_len 8409
+  byte_len 8415
   line_count 210
-  content_id source_module_27a60fb3087d64d3
+  content_id source_module_7c6223812e571b12
   symbol_count 6
   symbols
     function string 9 11
@@ -18,9 +18,9 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7223
-    named_node_count 1477
-    distinct_node_kinds 60
+    total_link_count 7229
+    named_node_count 1478
+    distinct_node_kinds 61
     node_kinds
       arguments 136
       array_expression 1
@@ -40,6 +40,7 @@ self_ast_census
       field_identifier 85
       for_expression 4
       function_item 6
+      function_modifiers 1
       generic_type 10
       identifier 305
       if_expression 5

@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/module_function/source_operation_transaction.rs
   language rust
   fidelity full_ast
-  byte_len 10078
-  line_count 323
-  content_id source_module_db40e951c715f61c
-  symbol_count 33
+  byte_len 6522
+  line_count 194
+  content_id source_module_a7434931159aa305
+  symbol_count 25
   symbols
     trait SourceOperationHost 5 14
     type Receipt 6 6
@@ -31,92 +31,78 @@ self_ast_census
     function record_write 127 139
     function abort 141 163
     function finish 164 189
-    module finalized_operation_tests 193 323
-    struct Receipt 197 197
-    struct ProofHost 198 201
-    type Receipt 203 203
-    function accepted_sources 204 215
-    function candidate_status 218 229
-    function finalized_candidate_status 232 244
-    function successful_process_requires_finalized_ownership 247 290
-    function absent_host_and_foreign_receipt_refuse 292 322
+    module finalized_operation_tests 194 194
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7531
-    named_node_count 1478
-    distinct_node_kinds 71
+    total_link_count 5205
+    named_node_count 1053
+    distinct_node_kinds 65
     node_kinds
-      arguments 55
-      assignment_expression 7
+      arguments 40
+      assignment_expression 6
       associated_type 2
-      attribute 4
-      attribute_item 4
+      attribute 3
+      attribute_item 3
       binary_expression 7
-      block 35
-      boolean_literal 8
-      call_expression 55
-      declaration_list 9
+      block 27
+      boolean_literal 5
+      call_expression 40
+      declaration_list 5
       doc_comment 8
-      else_clause 3
+      else_clause 2
       enum_item 2
       enum_variant 6
       enum_variant_list 2
-      expression_statement 45
-      field_declaration 6
-      field_declaration_list 2
-      field_expression 51
-      field_identifier 60
-      field_initializer 4
-      field_initializer_list 3
-      function_item 13
+      expression_statement 36
+      field_declaration 4
+      field_declaration_list 1
+      field_expression 45
+      field_identifier 50
+      field_initializer 1
+      field_initializer_list 1
+      function_item 8
       function_signature_item 7
-      generic_type 28
-      identifier 266
-      if_expression 19
-      impl_item 4
+      generic_type 20
+      identifier 166
+      if_expression 17
+      impl_item 1
       inner_doc_comment_marker 1
-      integer_literal 4
-      let_declaration 9
-      lifetime 19
+      let_declaration 3
+      lifetime 16
       lifetime_parameter 1
       line_comment 8
-      macro_invocation 13
+      macro_invocation 8
       mod_item 1
-      mutable_specifier 7
-      ordered_field_declaration_list 2
+      mutable_specifier 6
+      ordered_field_declaration_list 1
       outer_doc_comment_marker 7
-      parameter 52
-      parameters 20
-      primitive_type 61
-      reference_expression 10
-      reference_type 66
-      return_expression 16
-      scoped_identifier 19
+      parameter 36
+      parameters 15
+      primitive_type 42
+      reference_expression 7
+      reference_type 47
+      return_expression 15
+      scoped_identifier 11
       scoped_type_identifier 7
-      self 55
-      self_parameter 15
-      shorthand_field_initializer 4
+      self 48
+      self_parameter 12
+      shorthand_field_initializer 3
       source_file 1
-      string_content 71
-      string_literal 71
-      struct_expression 3
-      struct_item 3
-      super 1
-      token_tree 37
+      string_content 44
+      string_literal 44
+      struct_expression 1
+      struct_item 1
+      token_tree 17
       trait_bounds 7
       trait_item 4
-      try_expression 5
-      type_arguments 28
-      type_identifier 92
-      type_item 1
+      try_expression 3
+      type_arguments 20
+      type_identifier 68
       type_parameter 5
       type_parameters 5
-      unary_expression 9
-      unit_expression 3
-      unit_type 2
-      use_declaration 3
-      use_wildcard 1
+      unary_expression 8
+      use_declaration 1
       visibility_modifier 14

@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/requirement_extraction.rs
   language rust
   fidelity full_ast
-  byte_len 10074
-  line_count 296
-  content_id source_module_cd1ba0951c1896aa
-  symbol_count 23
+  byte_len 12336
+  line_count 363
+  content_id source_module_be6da80bc9b28fdd
+  symbol_count 25
   symbols
     const OBLIGATION_ROLE 22 22
     const DIRECTIVE_ROLE 25 25
@@ -25,88 +25,90 @@ self_ast_census
     function words_of_role 195 204
     function states_obligation 208 213
     function opens_with_directive 217 226
-    function names_requirement_section 230 235
-    function is_requirement 239 241
-    function content_words 245 263
-    function overlap 267 276
-    function extract_requirements 280 296
+    function terminal_directive_words 229 268
+    function ends_with_directive 272 293
+    function names_requirement_section 297 302
+    function is_requirement 306 308
+    function content_words 312 330
+    function overlap 334 343
+    function extract_requirements 347 363
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7667
-    named_node_count 1532
+    total_link_count 9476
+    named_node_count 1915
     distinct_node_kinds 71
     node_kinds
-      arguments 132
+      arguments 172
       array_expression 4
       array_type 1
       assignment_expression 3
-      attribute 13
-      attribute_item 13
-      binary_expression 34
-      block 48
-      boolean_literal 3
-      call_expression 132
+      attribute 14
+      attribute_item 14
+      binary_expression 46
+      block 58
+      boolean_literal 5
+      call_expression 172
       char_literal 20
-      closure_expression 16
-      closure_parameters 16
+      closure_expression 24
+      closure_parameters 24
       const_item 8
-      continue_expression 6
-      crate 2
-      doc_comment 38
+      continue_expression 7
+      crate 5
+      doc_comment 40
       else_clause 4
-      expression_statement 48
+      expression_statement 61
       field_declaration 2
       field_declaration_list 1
-      field_expression 104
-      field_identifier 110
+      field_expression 149
+      field_identifier 155
       field_initializer 4
       field_initializer_list 2
       float_literal 2
-      for_expression 5
-      function_item 14
-      generic_function 1
-      generic_type 11
-      identifier 333
-      if_expression 20
+      for_expression 10
+      function_item 16
+      generic_function 2
+      generic_type 13
+      identifier 405
+      if_expression 23
       index_expression 2
       inner_doc_comment_marker 12
       integer_literal 15
       let_chain 1
       let_condition 4
-      let_declaration 30
-      line_comment 38
-      macro_invocation 4
-      mutable_specifier 9
-      outer_doc_comment_marker 26
-      parameter 15
-      parameters 14
+      let_declaration 34
+      line_comment 40
+      macro_invocation 6
+      mutable_specifier 11
+      outer_doc_comment_marker 28
+      parameter 16
+      parameters 16
       parenthesized_expression 1
-      primitive_type 32
-      range_expression 3
-      reference_expression 11
-      reference_type 19
-      return_expression 5
-      scoped_identifier 17
+      primitive_type 34
+      range_expression 4
+      reference_expression 18
+      reference_type 20
+      return_expression 7
+      scoped_identifier 25
       scoped_use_list 2
       source_file 1
-      string_content 11
-      string_literal 11
+      string_content 20
+      string_literal 20
       struct_expression 2
       struct_item 1
-      token_tree 7
+      token_tree 9
       try_expression 1
       tuple_expression 3
       tuple_pattern 3
       tuple_struct_pattern 4
       tuple_type 2
-      type_arguments 12
+      type_arguments 15
       type_cast_expression 2
-      type_identifier 28
-      unary_expression 12
+      type_identifier 32
+      unary_expression 15
       use_declaration 4
       use_list 2
-      visibility_modifier 14
+      visibility_modifier 15
       while_expression 2

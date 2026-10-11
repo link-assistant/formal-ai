@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/module_function.rs
   language rust
   fidelity full_ast
-  byte_len 35700
-  line_count 963
-  content_id source_module_aa86ed35cb106eca
+  byte_len 35675
+  line_count 961
+  content_id source_module_abfb6e4f5068c9d9
   symbol_count 48
   symbols
     module callable_catalog 27 27
@@ -53,16 +53,16 @@ self_ast_census
     function with_final_newline 761 767
     function module_function_recipe 771 863
     function read_source 867 877
-    function plan_module_function_step 882 960
-    module source_contract_diagnostics 962 962
+    function plan_module_function_step 882 958
+    module source_contract_diagnostics 960 960
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 27516
-    named_node_count 5655
-    distinct_node_kinds 83
+    total_link_count 27498
+    named_node_count 5652
+    distinct_node_kinds 84
     node_kinds
       arguments 517
       array_expression 14
@@ -71,7 +71,7 @@ self_ast_census
       attribute 2
       attribute_item 2
       binary_expression 107
-      block 121
+      block 120
       boolean_literal 20
       break_expression 3
       call_expression 517
@@ -85,7 +85,7 @@ self_ast_census
       doc_comment 84
       else_clause 11
       escape_sequence 4
-      expression_statement 107
+      expression_statement 106
       field_declaration 14
       field_declaration_list 3
       field_expression 457
@@ -98,10 +98,11 @@ self_ast_census
       generic_function 5
       generic_type 46
       identifier 1217
-      if_expression 43
+      if_expression 42
       index_expression 51
       inner_doc_comment_marker 25
       integer_literal 45
+      let_chain 1
       let_condition 6
       let_declaration 121
       line_comment 96
@@ -119,7 +120,7 @@ self_ast_census
       primitive_type 54
       range_expression 32
       raw_string_literal 1
-      reference_expression 89
+      reference_expression 88
       reference_type 57
       return_expression 35
       scoped_identifier 151

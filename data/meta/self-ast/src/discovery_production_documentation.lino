@@ -2,9 +2,9 @@ self_ast_census
   target src/discovery_production_documentation.rs
   language rust
   fidelity signature
-  byte_len 21509
-  line_count 549
-  content_id source_module_0dd7b8d31d56fb1b
+  byte_len 21822
+  line_count 555
+  content_id source_module_afe60154b5a001a5
   symbol_count 25
   symbols
     const DOCUMENTATION_CAPTURES 14 15
@@ -19,16 +19,16 @@ self_ast_census
     function block_names_language 147 156
     function documented_example 165 202
     function rediscover_from_documentation 212 220
-    function rediscover_documented_program 242 306
-    function rediscover_documented_program 316 327
-    function record_discovered 340 346
-    function answer_cache_miss 357 395
-    function catalog_run_commands 400 408
-    function rediscover_catalog_program 421 435
-    function documented_pairs 440 452
-    struct DocumentedCommand 456 462
-    function documented_run_commands 472 487
-    function language_has_documented_procedure 496 509
-    const DOCUMENTATION_ROUTE_SOURCE 513 513
-    struct DocumentedCatalogProgram 517 524
-    function documented_catalog_programs 533 549
+    function rediscover_documented_program 242 312
+    function rediscover_documented_program 322 333
+    function record_discovered 346 352
+    function answer_cache_miss 363 401
+    function catalog_run_commands 406 414
+    function rediscover_catalog_program 427 441
+    function documented_pairs 446 458
+    struct DocumentedCommand 462 468
+    function documented_run_commands 478 493
+    function language_has_documented_procedure 502 515
+    const DOCUMENTATION_ROUTE_SOURCE 519 519
+    struct DocumentedCatalogProgram 523 530
+    function documented_catalog_programs 539 555

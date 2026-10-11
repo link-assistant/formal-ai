@@ -5,6 +5,8 @@ import {existsSync,mkdirSync,mkdtempSync,readFileSync,rmSync,writeFileSync} from
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {Progress} from '../../../js/agentic/progress.mjs';
+import {localizedResponse} from '../../../js/agentic/crate/seed.mjs';
+import {detect} from '../../../js/agentic/crate/language.mjs';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {planChatStep} from '../../../js/agentic/planner.mjs';
@@ -91,7 +93,12 @@ test('the original no-artifact fetched source verifies only auxiliary history an
 });
 test('the unchanged client without Read or Run cannot claim a persisted auxiliary write',async()=>{
  const result=await planChatStep([{role:'user',content:request}],['write_file']);
- assert.equal(result.kind,'final');assert.equal(result.answer,plannedNotExecutedAnswer(composeGeneralChangePlan(request)));
+ assert.equal(result.kind,'final');
+ const refusal=localizedResponse('general_plan_unverified',detect(request))
+  .split('{target}').join(PLAN_PATH).split('{command}').join('cat '+PLAN_PATH);
+ assert.equal(result.answer,refusal);assert.deepEqual(result.calls??[],[]);
+ assert.equal(result.answer.includes('Planned, not executed'),false);
+ assert.equal(result.answer.includes('Recorded and verified'),false);
 });
 
 test('successful Fetch JSON error and status keys are document bytes, never provider status',()=>{

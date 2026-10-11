@@ -2,27 +2,29 @@ self_ast_census
   target src/agentic_coding/module_function/complete_source_preflight.rs
   language rust
   fidelity full_ast
-  byte_len 7380
-  line_count 190
-  content_id source_module_e827f3f38908d69d
+  byte_len 7404
+  line_count 192
+  content_id source_module_749880d7ed43a085
   symbol_count 3
   symbols
-    function source_goal_scope 7 20
-    function derive_complete_source_request 22 124
-    function bind_complete_source_needs 127 190
+    function source_goal_scope 8 21
+    function derive_complete_source_request 24 126
+    function bind_complete_source_needs 129 192
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 6132
-    named_node_count 1272
-    distinct_node_kinds 57
+    total_link_count 6158
+    named_node_count 1278
+    distinct_node_kinds 59
     node_kinds
       arguments 96
       array_expression 1
       array_type 1
       assignment_expression 1
+      attribute 2
+      attribute_item 2
       binary_expression 48
       block 27
       boolean_literal 7
@@ -39,7 +41,7 @@ self_ast_census
       for_expression 4
       function_item 3
       generic_type 4
-      identifier 247
+      identifier 249
       if_expression 15
       index_expression 28
       inner_doc_comment_marker 1

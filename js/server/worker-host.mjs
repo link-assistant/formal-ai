@@ -38,6 +38,7 @@ function initializeParserBootstrap(context) {
   // The same captured loader evaluator must actually complete producer evaluation.
   applyWorkerScript(runWorkerScript,new WorkerScript(current.source,{filename:current.absolute}),[context]);
   parserBootstrapContexts.set(context,parserBootstrapIdentity);
+  evaluatedWorkerScripts.set(context, new Map([["js/parser-cache-primordials.js", parserBootstrapIdentity]]));
 }
 function requireParserBootstrap(context) {
   if(parserBootstrapContexts.get(context)!==parserBootstrapIdentity) throw new Error("MissingFreshParserBootstrap");
@@ -296,6 +297,12 @@ export function loadBrowserScript(context, relativePath) {
   if (!evaluated) {
     evaluated = new Map();
     evaluatedWorkerScripts.set(context, evaluated);
+  }
+  if (script === "js/parser-cache-primordials.js"
+      && parserBootstrapContexts.get(context) === parserBootstrapIdentity) {
+    requireParserBootstrap(context);
+    evaluated.set(script, parserBootstrapIdentity);
+    return;
   }
   evaluated.delete(script);
   const record = prerequisiteRecords.get(script);

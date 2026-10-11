@@ -217,7 +217,7 @@ fn operand_after(after: &str) -> Option<String> {
         let complete = remainder.is_empty()
             || nominal
             || lexicon
-                .words_for_role("program_termination_clause")
+                .words_for_role("program-termination-clause")
                 .contains(&remainder.to_lowercase());
         if complete && quoted_segment_spans(sentence).is_empty() {
             return operand_literal(&quoted.text);

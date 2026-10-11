@@ -198,8 +198,22 @@ fn audit_role_frame(prompt: &str) -> Option<AuditRoleFrame> {
     }
     Some(AuditRoleFrame {
         complete: complete && seen.len() == roles.len() && output.is_some(),
-        explicit_output: seen.contains("audit")
-            && (seen.contains("deliver") || (seen.contains("weigh") && seen.contains("persist"))),
+        explicit_output: contract
+            .children
+            .iter()
+            .filter(|node| node.name == "explicit-output-when")
+            .any(|condition| {
+                let required = condition
+                    .children
+                    .iter()
+                    .filter(|node| node.name == "requires-role")
+                    .collect::<Vec<_>>();
+                !required.is_empty()
+                    && required.iter().all(|role| {
+                        roles.iter().any(|declared| declared.id == role.id)
+                            && seen.contains(role.id.as_str())
+                    })
+            }),
         output,
     })
 }

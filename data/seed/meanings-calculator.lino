@@ -235,10 +235,10 @@ meanings
     lexeme hi का
     lexeme zh 的
     lexeme es de
-  numeric_response_only
+  numeric-response-only
     defined-by answer
     defined-by predicate
-    role numeric_response_only_clause
+    role numeric-response-only-clause
     lexeme en "return only the numeric result" "return only the number" "answer with only the numeric result"
     precondition "a complete calculation operand is followed by an unquoted numeric-only clause, and evaluation yields a finite scalar numeric string"
     effect "returns the evaluated scalar numeric string without the expression or explanatory text; conflicting or incomplete clauses and evaluation errors remain unshaped"

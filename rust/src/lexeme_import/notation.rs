@@ -13,40 +13,65 @@ pub(super) fn project(file_name: &str, content: String) -> String {
 }
 
 fn selected(rules: &str, file_name: &str) -> bool {
-    let mut shared_family = false;
+    let document = crate::seed::parser::parse_lino(rules);
+    let roots = if document.name == "notation-rules" {
+        vec![&document]
+    } else {
+        document
+            .children
+            .iter()
+            .filter(|node| node.name == "notation-rules")
+            .collect()
+    };
     let mut selected = false;
-    for line in rules.lines() {
-        if line.starts_with("  family ") {
-            shared_family = false;
-        } else if let Some(rule) = line.strip_prefix("    rule ") {
-            shared_family = rule == "shared-lexeme-fields";
-        } else if shared_family && let Some(source) = line.strip_prefix("    files ") {
-            let relative = source
-                .strip_prefix("data/seed/")
-                .expect("shared lexeme output must name a seed source");
-            assert!(
-                !relative.contains(['*', '?', '[', ']']),
-                "explicit shared source required"
-            );
-            selected |= relative == file_name;
+    for root in roots {
+        for family in root.children.iter().filter(|node| node.name == "family") {
+            let mut shared_family = false;
+            for field in &family.children {
+                if field.name == "rule" {
+                    shared_family = field.id == "shared-lexeme-fields";
+                } else if shared_family && field.name == "files" {
+                    let relative = field
+                        .id
+                        .strip_prefix("data/seed/")
+                        .expect("shared lexeme output must name a seed source");
+                    assert!(
+                        !relative.contains(['*', '?', '[', ']']),
+                        "explicit shared source required"
+                    );
+                    selected |= relative == file_name;
+                }
+            }
         }
     }
     selected
 }
 
+fn indentation(line: &str) -> usize {
+    line.bytes()
+        .take_while(|character| *character == b' ')
+        .count()
+}
+
 fn factor(content: &str) -> String {
     assert!(content.ends_with('\n'), "generated shard must end with LF");
     let lines: Vec<_> = content.lines().collect();
+    let record_depth = lines
+        .iter()
+        .filter(|line| !line.trim().is_empty())
+        .map(|line| indentation(line))
+        .filter(|depth| *depth > 0)
+        .min();
     let mut output = String::new();
     let mut start = 0;
     while start < lines.len() {
-        if !lines[start].starts_with("  ") || lines[start].starts_with("    ") {
+        if record_depth != Some(indentation(lines[start])) || lines[start].trim().is_empty() {
             let _ = writeln!(output, "{}", lines[start]);
             start += 1;
             continue;
         }
         let mut end = start + 1;
-        while end < lines.len() && lines[end].starts_with("    ") {
+        while end < lines.len() && indentation(lines[end]) > indentation(lines[start]) {
             end += 1;
         }
         let record = &lines[start..end];

@@ -2,45 +2,46 @@ self_ast_census
   target src/agentic_coding/module_function/source_need_preflight.rs
   language rust
   fidelity full_ast
-  byte_len 3993
-  line_count 79
-  content_id source_module_59759d1e5cea1338
+  byte_len 4159
+  line_count 85
+  content_id source_module_d3165840a71b4da3
   symbol_count 2
   symbols
     function source_need_is_read 9 14
-    function source_need_preflight 17 79
+    function source_need_preflight 18 85
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3075
-    named_node_count 629
+    total_link_count 3115
+    named_node_count 639
     distinct_node_kinds 54
     node_kinds
-      arguments 42
+      arguments 44
       array_type 1
+      attribute 1
+      attribute_item 1
       binary_expression 9
-      block 13
+      block 14
       boolean_literal 3
-      call_expression 42
+      call_expression 44
       char_literal 1
-      closure_expression 12
-      closure_parameters 12
+      closure_expression 14
+      closure_parameters 14
       crate 6
       doc_comment 3
-      else_clause 4
+      else_clause 3
       expression_statement 6
-      field_expression 43
-      field_identifier 43
+      field_expression 45
+      field_identifier 45
       function_item 2
       generic_function 2
       generic_type 3
       identifier 151
-      if_expression 6
+      if_expression 5
       index_expression 1
       inner_doc_comment_marker 1
-      let_condition 1
       let_declaration 12
       line_comment 3
       macro_invocation 3
@@ -52,7 +53,7 @@ self_ast_census
       parameter 4
       parameters 2
       primitive_type 3
-      reference_expression 4
+      reference_expression 3
       reference_type 3
       return_expression 2
       scoped_identifier 21
@@ -65,7 +66,6 @@ self_ast_census
       try_expression 3
       tuple_expression 3
       tuple_pattern 1
-      tuple_struct_pattern 1
       type_arguments 5
       type_identifier 8
       unary_expression 2

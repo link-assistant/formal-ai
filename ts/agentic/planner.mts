@@ -1,4 +1,4 @@
-import { ownedAdditiveLiteralFrame, planGoalLedger, ownsCompleteEditRequest, instructionViewForRequest, pendingReadGap } from './planner/owned_goals.mjs';
+import { planGoalLedger, ownsCompleteEditRequest, instructionViewForRequest, pendingReadGap } from './planner/owned_goals.mjs';
 import { ownedSemanticAuthoringLead } from './crate/literal_authoring_contract.mjs';
 // Deterministic agentic planner: the next tool call or final answer from a
 // conversation and its advertised tools, without hidden neural state
@@ -256,10 +256,6 @@ async function planChatStepRoutes(messages, toolNames, received) {
   traceRoute('agentic_task', task);
   const preflight = planRequestPreflight(task);
   if (preflight.claimed) return preflight.plan;
-  const additionFrame = ownedAdditiveLiteralFrame(task);
-  if (additionFrame !== null && additionFrame.atEnd === null) return resolvedFinalAnswer(
-    codeTask.renderSeededOutcome('file-addition-position-unknown', task, additionFrame.target) ?? additionFrame.target,
-    FinalDisposition.Gap, 'literal-addition-position-unknown');
   if (
     // An edit request's block is its payload: a `when … then` inside it is text
     // being written, not a skill being taught (PR #1188 T57).

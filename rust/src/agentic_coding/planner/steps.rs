@@ -131,23 +131,6 @@ pub(super) fn plan_request_preflight(
     if let Some(plan) = crate::agentic_coding::general_planner::pending_read_gap(task, result) {
         return SourceOrOwnedGoalStep::Claimed(Some(plan));
     }
-    if let Some((target, _, None)) =
-        crate::agentic_coding::general_planner::owned_additive_literal_frame(task)
-    {
-        return SourceOrOwnedGoalStep::Claimed(Some(crate::agentic_coding::final_result::record(
-            AgenticPlan::Final(
-                crate::agentic_coding::code_task::render_seeded_outcome(
-                    "file-addition-position-unknown",
-                    task,
-                    &target,
-                )
-                .unwrap_or(target),
-            ),
-            crate::agentic_coding::final_result::FinalDisposition::Gap,
-            "literal-addition-position-unknown",
-            result,
-        )));
-    }
     SourceOrOwnedGoalStep::Unclaimed
 }
 

@@ -1,6 +1,6 @@
 meanings
-  program_termination_clause
-    role program_termination_clause
+  program-termination-clause
+    role program-termination-clause
     defined-by program
     defined-by print_stdout
     precondition "a literal-print request ends with a non-mutating process completion clause"

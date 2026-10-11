@@ -8,6 +8,8 @@
 # (scripts/check-server-parity.mjs) compares both servers' bodies, so a Rust
 # literal that changes without this file fails CI. `{name}` is a placeholder.
 server_messages
+  message parser_cache_source_owned_lexical_memo_observation
+    text "source-owned lexical memo observation"
   message route_not_found
     text "route not found"
   message bearer_token_invalid

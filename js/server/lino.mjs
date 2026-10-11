@@ -65,12 +65,25 @@ export function childValue(node, name) {
   return childrenNamed(node, name)[0]?.value ?? '';
 }
 
+let parserObservationWording = null;
+
+function parserObservationProvenance() {
+  if (parserObservationWording === null) {
+    const source = seedParser()(readRepoFile('data/meta/server-messages.lino'));
+    const entries = childrenNamed(source, 'message').filter(
+      (node) => node.value === 'parser_cache_source_owned_lexical_memo_observation',
+    );
+    parserObservationWording = entries.length === 1 ? childValue(entries[0], 'text') : 'Unknown';
+  }
+  return parserObservationWording;
+}
+
 /** Diagnostic only: actual outer calls; source-owned inner reuse is separate. */
 export function parserCacheObservation() {
   const inner = parserContext === null ? null : parserMemoObservation(parserContext);
   return Object.freeze({
     serverParseInvocations: parseInvocations, outerParseReuse: false,
     innerCacheObservation: inner,
-    innerCacheProvenance: inner === null ? 'Unknown' : 'source-owned lexical memo observation',
+    innerCacheProvenance: inner === null ? 'Unknown' : parserObservationProvenance(),
   });
 }

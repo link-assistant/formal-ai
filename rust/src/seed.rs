@@ -63,7 +63,7 @@ use parser::{
 /// The local seed parser, re-exported for the issue #1182 conformance
 /// harness that compares it against `links_notation` until it is deleted,
 /// with the concise lexeme expansion both parsers read through.
-pub use parser::{expand_concise_lexemes, parse_lino};
+pub use parser::{expand_concise_lexemes, parse_lino, parse_lino_checked};
 pub use reports::{fill_slots, report_text};
 
 pub use agentic_tool_capabilities::{AgenticToolCapability, agentic_tool_capabilities};

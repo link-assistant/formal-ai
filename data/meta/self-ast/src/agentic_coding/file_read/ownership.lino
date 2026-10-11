@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/file_read/ownership.rs
   language rust
   fidelity full_ast
-  byte_len 26951
-  line_count 733
-  content_id source_module_3d5169fbad0a16a7
+  byte_len 27602
+  line_count 748
+  content_id source_module_e207e519186b5dbf
   symbol_count 23
   symbols
     const FUNCTION_ROLES 6 6
@@ -20,65 +20,65 @@ self_ast_census
     function balanced_path_text 116 169
     function policy_starts 171 179
     function pending_read_condition 180 218
-    function negative_read_objects 219 282
-    function unbound_effect_operation 283 323
-    function conflicts 324 332
-    function bound_read_paths 334 440
-    function owned_read_paths 441 449
-    function read_policy_blocks_plan 450 498
-    function mode_paths_for_clause 500 624
-    function instruction_sentence_texts 627 657
-    function read_precedes_owned_authoring 660 706
-    function read_request_envelope 709 733
+    function negative_read_objects 219 285
+    function unbound_effect_operation 286 326
+    function conflicts 327 335
+    function bound_read_paths 337 455
+    function owned_read_paths 456 464
+    function read_policy_blocks_plan 465 513
+    function mode_paths_for_clause 515 639
+    function instruction_sentence_texts 642 672
+    function read_precedes_owned_authoring 675 721
+    function read_request_envelope 724 748
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 22327
-    named_node_count 4544
+    total_link_count 22847
+    named_node_count 4656
     distinct_node_kinds 81
     node_kinds
-      arguments 420
-      array_expression 26
+      arguments 431
+      array_expression 30
       array_type 6
       assignment_expression 5
       attribute 1
       attribute_item 1
-      binary_expression 115
-      block 154
-      boolean_literal 28
+      binary_expression 118
+      block 157
+      boolean_literal 29
       break_expression 3
-      call_expression 420
+      call_expression 431
       char_literal 23
-      closure_expression 62
-      closure_parameters 62
-      compound_assignment_expr 4
+      closure_expression 63
+      closure_parameters 63
+      compound_assignment_expr 5
       const_item 3
       continue_expression 31
       crate 18
       doc_comment 6
       else_clause 10
       escape_sequence 1
-      expression_statement 184
+      expression_statement 191
       field_declaration 6
       field_declaration_list 3
-      field_expression 448
-      field_identifier 461
+      field_expression 457
+      field_identifier 470
       field_initializer 7
       field_initializer_list 6
       for_expression 26
       function_item 17
       generic_function 5
       generic_type 17
-      identifier 1026
-      if_expression 62
-      index_expression 34
+      identifier 1051
+      if_expression 65
+      index_expression 36
       inner_doc_comment_marker 1
       integer_literal 22
       let_chain 1
       let_condition 1
-      let_declaration 99
+      let_declaration 100
       lifetime 1
       line_comment 6
       macro_invocation 7
@@ -86,24 +86,24 @@ self_ast_census
       match_block 1
       match_expression 1
       match_pattern 4
-      mutable_specifier 28
+      mutable_specifier 29
       outer_doc_comment_marker 5
       parameter 28
       parameters 17
       parenthesized_expression 3
       primitive_type 39
-      range_expression 24
+      range_expression 26
       raw_string_literal 1
-      reference_expression 92
+      reference_expression 100
       reference_type 34
-      return_expression 31
-      scoped_identifier 91
+      return_expression 32
+      scoped_identifier 92
       scoped_type_identifier 2
       scoped_use_list 2
       shorthand_field_initializer 5
       source_file 1
-      string_content 51
-      string_literal 49
+      string_content 53
+      string_literal 51
       struct_expression 6
       struct_item 3
       super 11
@@ -115,7 +115,7 @@ self_ast_census
       tuple_type 1
       type_arguments 22
       type_identifier 49
-      unary_expression 31
+      unary_expression 34
       use_declaration 4
       use_list 2
       visibility_modifier 5

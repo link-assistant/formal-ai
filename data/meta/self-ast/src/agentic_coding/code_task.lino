@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/code_task.rs
   language rust
   fidelity full_ast
-  byte_len 22431
+  byte_len 22442
   line_count 595
-  content_id source_module_8337a1ae0f762ef3
+  content_id source_module_464e622d8e9bbdae
   symbol_count 25
   symbols
     module identifier_domain 11 11
@@ -37,8 +37,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 16701
-    named_node_count 3347
+    total_link_count 16713
+    named_node_count 3349
     distinct_node_kinds 84
     node_kinds
       abstract_type 1
@@ -110,7 +110,7 @@ self_ast_census
       string_literal 72
       struct_expression 1
       struct_item 1
-      super 36
+      super 37
       token_tree 22
       try_expression 39
       tuple_expression 25
@@ -123,5 +123,5 @@ self_ast_census
       unary_expression 21
       use_declaration 7
       use_list 3
-      visibility_modifier 12
+      visibility_modifier 13
       while_expression 3

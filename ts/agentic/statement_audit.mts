@@ -76,7 +76,10 @@ function auditRoleFrame(prompt) {
   return {
     output,
     complete: complete && seen.size === roles.length && output !== null,
-    explicitOutput: seen.has('audit') && (seen.has('deliver') || (seen.has('weigh') && seen.has('persist'))),
+    explicitOutput: childrenNamed(contracts[0], 'explicit-output-when').some(condition => {
+      const required = childrenNamed(condition, 'requires-role');
+      return required.length !== 0 && required.every(role => roles.some(declared => declared.id === role.id) && seen.has(role.id));
+    }),
   };
 }
 

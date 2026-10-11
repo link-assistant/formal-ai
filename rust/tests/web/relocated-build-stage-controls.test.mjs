@@ -171,7 +171,8 @@ function checkAttestations(workflow) {
   ['cli', 'formal-ai-cli-\${{ matrix.target }}.\${{ matrix.archive }}'],
   ['vscode', 'vscode/formal-ai-vscode-*.vsix'],
   ['finalize', 'release-evidence/formal-ai-*.json'],
-  ['finalize', 'SHA256SUMS.txt\nBUILD-PROVENANCE.txt']
+  ['finalize', 'SHA256SUMS.txt\nBUILD-PROVENANCE.txt'],
+  ['finalize', 'producer-output-receipt.json']
  ];
  const all = Object.entries(workflow.jobs).flatMap(([job, value]) =>
   (value.steps ?? []).filter(step => String(step.uses ?? '').includes('actions/attest'))
@@ -205,6 +206,30 @@ test('consolidated attestation retains both exact digest and provenance subjects
   workflow => { select(workflow).with['subject-checksums'] = 'foreign'; },
   workflow => { workflow.jobs.finalize.steps.push(structuredClone(select(workflow))); },
   workflow => { workflow.jobs.foreign = { steps: [structuredClone(select(workflow))] }; }
+ ]) {
+  const changed = structuredClone(desktop);
+  mutate(changed);
+  assert.throws(() => checkAttestations(changed));
+ }
+});
+
+
+test('canonical producer receipt attestation retains its exact job and subject', () => {
+ const receipt = workflow => workflow.jobs.finalize.steps.find(step =>
+  step.name === 'Attest canonical producer outputs');
+ assert.equal(receipt(desktop).uses, 'actions/attest@v4');
+ assert.equal(receipt(desktop).with['subject-path'], 'producer-output-receipt.json');
+ const producer = desktop.jobs.finalize.steps.findIndex(step =>
+  step.run?.includes('release-producer-output-receipt.mjs') &&
+  step.run.includes('producer-output-receipt.json'));
+ assert.ok(producer >= 0);
+ assert.ok(producer < desktop.jobs.finalize.steps.indexOf(receipt(desktop)));
+ for (const mutate of [
+  workflow => { workflow.jobs.finalize.steps = workflow.jobs.finalize.steps.filter(step => step !== receipt(workflow)); },
+  workflow => { receipt(workflow).with['subject-path'] = 'unbound-receipt.json'; },
+  workflow => { workflow.jobs.finalize.steps.push(structuredClone(receipt(workflow))); },
+  workflow => { receipt(workflow).with['subject-checksums'] = 'foreign'; },
+  workflow => { const step = receipt(workflow); workflow.jobs.finalize.steps = workflow.jobs.finalize.steps.filter(item => item !== step); workflow.jobs.foreign = { steps: [step] }; }
  ]) {
   const changed = structuredClone(desktop);
   mutate(changed);

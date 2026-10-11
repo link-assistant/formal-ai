@@ -2,10 +2,10 @@ self_ast_census
   target src/seed/parser.rs
   language rust
   fidelity signature
-  byte_len 31180
-  line_count 873
-  content_id source_module_2b63ab175131f52d
-  symbol_count 48
+  byte_len 29558
+  line_count 843
+  content_id source_module_39918955b8974f4e
+  symbol_count 44
   symbols
     struct LinoNode 21 25
     function find_child_value 29 36
@@ -50,8 +50,4 @@ self_ast_census
     function parse_lino_checked 769 774
     function parse_lino 778 780
     function validate_shared_lexeme_source 782 839
-    module shared_lexeme_fields_tests 842 873
-    const SHARED 845 845
-    const LEGACY 846 846
-    function shared_fields_preserve_complete_legacy_tree_and_combined_roots 849 859
-    function malformed_shared_fields_refuse_whole_documents 862 872
+    module shared_lexeme_fields_tests 843 843
