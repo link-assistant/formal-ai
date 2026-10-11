@@ -234,7 +234,13 @@ mod tests {
     }
     #[test]
     fn unknown_tail_duplicate_kind_and_collision_refuse() {
-        assert!(compile_compound_task("asrcOLDNEW bsrc creceiptNEW dproof!", &grammar()).is_none());
+        assert!(
+            compile_compound_task(
+                include_str!("../../tests/fixtures/compound-task/native-span-request.txt"),
+                &grammar()
+            )
+            .is_none()
+        );
         assert!(
             compile_compound_task("asrcOLDNEW bother creceiptNEW dproof", &grammar()).is_none()
         );
