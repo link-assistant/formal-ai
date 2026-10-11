@@ -1,0 +1,7 @@
+# Full Cargo witness and bounded local shard evidence
+
+This tenth finite part retains exact closed coordinator/archive receipts, original JavaScript parse/configuration failures, reviewed Cargo preimages and complete witness payloads, independent source controls, and full original four-shard TAP/process streams. Exact physical stock retries and all original skips/TODOs remain distinct. Existing compressed objects are verified and reused across previous parts, with no broad temporary-directory scan or whole source/runtime copy.
+
+Only four Cargo fixture digests changed. All original complete specification/native manifest fields remain exact. Shards2 and3 pass their reviewed-witness/permission-capable retries under the unchanged360-second cap; shard4 report and network-permission retry remains pending. Every initial shard finished under136seconds, but mixed source/permission lineage is explicit and all-four semantic/hosted green is not claimed.
+
+The full source-bound completion inventory retains thirty unfinished acceptance rows; externally referenced code witnesses are not silently promoted to archived acceptance. Authentic default repository workflow policy metadata is read-only evidence, not proof of chosen credentials, writer lease, merge or future publication. Native builds and executable downloads were not performed. Supplied guarded automation has zero autonomy/amplification/cost credit. The running archive receipt is excluded nonrecursively.
