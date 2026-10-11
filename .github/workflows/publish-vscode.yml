@@ -1,7 +1,5 @@
 name: Publish VS Code extension
-# GITHUB_TOKEN-created releases suppress release events. Resolve only the
-# published tag from a completed main run; no fork head is executed here.
-on: # zizmor: ignore[dangerous-triggers]
+on:
   release:
     types:
       - published
@@ -38,7 +36,8 @@ on: # zizmor: ignore[dangerous-triggers]
       mode:
         description: Run package checks without publication
         type: choice
-        options: [checks]
+        options:
+          - checks
         default: checks
       pull-request:
         description: Pull request whose package checks were dispatched
@@ -161,7 +160,8 @@ jobs:
       - name: Verify the worker copied into extension resources
         env:
           WASM_RECEIPT_SHA256: ${{ steps.selected_wasm.outputs.receipt-sha256 }}
-        run: node "$FORMAL_AI_WASM_PROTOCOL" verify "$GITHUB_WORKSPACE" vscode/dist-web "$WASM_RECEIPT_SHA256"
+        run: node "$FORMAL_AI_WASM_PROTOCOL" verify "$GITHUB_WORKSPACE" vscode/dist-web
+          "$WASM_RECEIPT_SHA256"
       - name: Compare the packaged extension version with the preceding release
         id: version
         run: >
@@ -237,23 +237,35 @@ jobs:
           'true'
         working-directory: _package/vscode
         env:
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+          EXTENSION_SOURCE_COMMIT: ${{ steps.transfer.outputs.source-commit }}
+          EXTENSION_SOURCE_TREE: ${{ steps.transfer.outputs.source-tree }}
+          EXTENSION_PRODUCER_RUN: ${{ steps.transfer.outputs.producer-run }}
+          EXTENSION_PRODUCER_ATTEMPT: ${{ steps.transfer.outputs.producer-attempt }}
+          EXTENSION_PACKAGE_SHA256: ${{ steps.transfer.outputs.sha256 }}
+          EXTENSION_PACKAGE_PATH: ${{ steps.transfer.outputs.package-path }}
+          EXTENSION_OUTCOME_DIRECTORY: ${{ runner.temp }}/extension-publication-outcomes
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
-        run: >
-          if [ -z "$VSCE_PAT" ]; then echo 'Marketplace publishing unavailable:
-          VSCE_PAT is not configured'; exit 0; fi
-
-          npx --no-install vsce publish --packagePath ./*.vsix
+          EXTENSION_BUILT_VERSION: ${{ needs.publish.outputs.current }}
+        run: node ../../_protocol/scripts/release-extension-publication.mjs publish
+          marketplace
       - name: Publish Open VSX
         if: needs.resolve.outputs.publish == 'true' && needs.publish.outputs.changed ==
           'true'
         working-directory: _package/vscode
         env:
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+          EXTENSION_SOURCE_COMMIT: ${{ steps.transfer.outputs.source-commit }}
+          EXTENSION_SOURCE_TREE: ${{ steps.transfer.outputs.source-tree }}
+          EXTENSION_PRODUCER_RUN: ${{ steps.transfer.outputs.producer-run }}
+          EXTENSION_PRODUCER_ATTEMPT: ${{ steps.transfer.outputs.producer-attempt }}
+          EXTENSION_PACKAGE_SHA256: ${{ steps.transfer.outputs.sha256 }}
+          EXTENSION_PACKAGE_PATH: ${{ steps.transfer.outputs.package-path }}
+          EXTENSION_OUTCOME_DIRECTORY: ${{ runner.temp }}/extension-publication-outcomes
           OVSX_PAT: ${{ secrets.OVSX_PAT }}
-        run: >
-          if [ -z "$OVSX_PAT" ]; then echo 'Open VSX publishing unavailable:
-          OVSX_PAT is not configured'; exit 0; fi
-
-          npx --yes ovsx@1.2.0 publish ./*.vsix
+          EXTENSION_BUILT_VERSION: ${{ needs.publish.outputs.current }}
+        run: node ../../_protocol/scripts/release-extension-publication.mjs publish
+          open-vsx
       - name: Install published Marketplace extension in a clean profile
         if: needs.resolve.outputs.publish == 'true' && needs.publish.outputs.changed ==
           'true'
@@ -262,7 +274,8 @@ jobs:
           EXPECTED_VERSION: ${{ needs.publish.outputs.current }}
         run: >
           if [ -z "$VSCE_PAT" ]; then echo 'Install-by-id smoke unavailable:
-          publication was not configured'; exit 0; fi
+          publication was not configured'; echo 'outcome=skipped-unconfigured'
+          >> "$GITHUB_OUTPUT"; exit 0; fi
 
           curl -fsSL https://update.code.visualstudio.com/latest/linux-x64/stable -o /tmp/vscode.tar.gz
 
@@ -274,9 +287,33 @@ jobs:
 
           for _ in 1 2 3 4 5; do
             if "$code" --no-sandbox --user-data-dir /tmp/formal-ai-vscode-profile --extensions-dir /tmp/formal-ai-vscode-extensions --install-extension link-assistant.formal-ai-vscode --force; then
-              if "$code" --no-sandbox --user-data-dir /tmp/formal-ai-vscode-profile --extensions-dir /tmp/formal-ai-vscode-extensions --list-extensions --show-versions | grep -Fx "link-assistant.formal-ai-vscode@$EXPECTED_VERSION"; then exit 0; fi
+              if "$code" --no-sandbox --user-data-dir /tmp/formal-ai-vscode-profile --extensions-dir /tmp/formal-ai-vscode-extensions --list-extensions --show-versions | grep -Fx "link-assistant.formal-ai-vscode@$EXPECTED_VERSION"; then echo 'outcome=observed-installed' >> "$GITHUB_OUTPUT"; exit 0; fi
             fi
             sleep 15
           done
 
-          echo 'Published version did not become installable by id'; exit 1
+          echo 'Published version did not become installable by id'; echo 'outcome=failed' >> "$GITHUB_OUTPUT"; exit 1
+        id: marketplace-install
+      - name: Record registry publication outcomes
+        if: always() && steps.transfer.outcome == 'success'
+        working-directory: _package/vscode
+        env:
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+          EXTENSION_SOURCE_COMMIT: ${{ steps.transfer.outputs.source-commit }}
+          EXTENSION_SOURCE_TREE: ${{ steps.transfer.outputs.source-tree }}
+          EXTENSION_PRODUCER_RUN: ${{ steps.transfer.outputs.producer-run }}
+          EXTENSION_PRODUCER_ATTEMPT: ${{ steps.transfer.outputs.producer-attempt }}
+          EXTENSION_PACKAGE_SHA256: ${{ steps.transfer.outputs.sha256 }}
+          EXTENSION_PACKAGE_PATH: ${{ steps.transfer.outputs.package-path }}
+          EXTENSION_OUTCOME_DIRECTORY: ${{ runner.temp }}/extension-publication-outcomes
+          EXTENSION_CHANGED: ${{ needs.publish.outputs.changed }}
+          EXTENSION_INSTALL_OUTCOME: ${{ steps.marketplace-install.outputs.outcome }}
+          EXTENSION_BUILT_VERSION: ${{ needs.publish.outputs.current }}
+        run: node ../../_protocol/scripts/release-extension-publication.mjs collect
+      - name: Preserve data-only extension publication outcomes
+        if: always() && steps.transfer.outcome == 'success'
+        uses: actions/upload-artifact@v7
+        with:
+          name: extension-publication-outcomes
+          path: ${{ runner.temp }}/extension-publication-outcomes/*.json
+          if-no-files-found: error

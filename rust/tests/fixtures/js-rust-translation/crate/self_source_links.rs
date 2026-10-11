@@ -98,6 +98,24 @@ pub const FNV_PRIME_LOW: f64 = 435f64;
 // ~ export function quote(value) {
 // ~   return waStrReplaceAll(waStrReplaceAll(waStrReplaceAll(waStrReplaceAll(waStrReplaceAll(value, '\\', '\\\\'), '"', "'"), '\n', '\\n'), '\r', '\\r'), '\t', '\\t');
 // ~ }
+// formal-ai:presentation:v1 rawSHA256=fb9c0e3f7c40a2791894e2c6f9252dd6217842486f68d2f0edca1b100dffdf61 rawBytes=398 renderedSHA256=9770a93bf6e447e2c253d76ce9a36b09f45a6bf052f76be32a7b7989d88df510
+// formal-ai:presentation-raw cHViIGZuIHF1b3RlKHZhbHVlOiBTdHJpbmcpIC0+IFN0cmluZyB7CiAgICBjcmF0ZTo6d2Ffc3RyX3JlcGxhY2VfYWxsKGNy
+// formal-ai:presentation-raw YXRlOjp3YV9zdHJfcmVwbGFjZV9hbGwoY3JhdGU6OndhX3N0cl9yZXBsYWNlX2FsbChjcmF0ZTo6d2Ffc3RyX3JlcGxhY2Vf
+// formal-ai:presentation-raw YWxsKGNyYXRlOjp3YV9zdHJfcmVwbGFjZV9hbGwodmFsdWUuY2xvbmUoKSwgU3RyaW5nOjpmcm9tKCJcXCIpLCBTdHJpbmc6
+// formal-ai:presentation-raw OmZyb20oIlxcXFwiKSksIFN0cmluZzo6ZnJvbSgiXCIiKSwgU3RyaW5nOjpmcm9tKCInIikpLCBTdHJpbmc6OmZyb20oIlxu
+// formal-ai:presentation-raw IiksIFN0cmluZzo6ZnJvbSgiXFxuIikpLCBTdHJpbmc6OmZyb20oIlxyIiksIFN0cmluZzo6ZnJvbSgiXFxyIikpLCBTdHJp
+// formal-ai:presentation-raw bmc6OmZyb20oIlx0IiksIFN0cmluZzo6ZnJvbSgiXFx0IikpCn0=
+// formal-ai:presentation-raw end
 pub fn quote(value: String) -> String {
-    crate::wa_str_replace_all(crate::wa_str_replace_all(crate::wa_str_replace_all(crate::wa_str_replace_all(crate::wa_str_replace_all(value.clone(), String::from("\\"), String::from("\\\\")), String::from("\""), String::from("'")), String::from("\n"), String::from("\\n")), String::from("\r"), String::from("\\r")), String::from("\t"), String::from("\\t"))
+    crate::wa_str_replace_all(crate::wa_str_replace_all(crate::wa_str_replace_all(crate::wa_str_replace_all(crate::wa_str_replace_all(value.clone(),
+    String::from("\\"),
+    String::from("\\\\")),
+    String::from("\""),
+    String::from("'")),
+    String::from("\n"),
+    String::from("\\n")),
+    String::from("\r"),
+    String::from("\\r")),
+    String::from("\t"),
+    String::from("\\t"))
 }

@@ -14,7 +14,29 @@
 // |   'await', 'case', 'delete', 'do', 'else', 'in', 'instanceof', 'new', 'of', 'return', 'throw',
 // |   'typeof', 'void', 'yield',
 // | ];
-pub static REGEX_CONTEXT_KEYWORDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("await"), String::from("case"), String::from("delete"), String::from("do"), String::from("else"), String::from("in"), String::from("instanceof"), String::from("new"), String::from("of"), String::from("return"), String::from("throw"), String::from("typeof"), String::from("void"), String::from("yield")]);
+// formal-ai:presentation:v1 rawSHA256=36e417d81c90fce382d2770abb23ed63e23949ea949154a6a5c45038cde5cd3f rawBytes=420 renderedSHA256=d0dd12b9cce52591af625ff9171fb2416baaa4d88d5fc6e2ba61cb8e34479109
+// formal-ai:presentation-raw cHViIHN0YXRpYyBSRUdFWF9DT05URVhUX0tFWVdPUkRTOiBzdGQ6OnN5bmM6OkxhenlMb2NrPFZlYzxTdHJpbmc+PiA9IHN0
+// formal-ai:presentation-raw ZDo6c3luYzo6TGF6eUxvY2s6Om5ldyh8fCB2ZWMhW1N0cmluZzo6ZnJvbSgiYXdhaXQiKSwgU3RyaW5nOjpmcm9tKCJjYXNl
+// formal-ai:presentation-raw IiksIFN0cmluZzo6ZnJvbSgiZGVsZXRlIiksIFN0cmluZzo6ZnJvbSgiZG8iKSwgU3RyaW5nOjpmcm9tKCJlbHNlIiksIFN0
+// formal-ai:presentation-raw cmluZzo6ZnJvbSgiaW4iKSwgU3RyaW5nOjpmcm9tKCJpbnN0YW5jZW9mIiksIFN0cmluZzo6ZnJvbSgibmV3IiksIFN0cmlu
+// formal-ai:presentation-raw Zzo6ZnJvbSgib2YiKSwgU3RyaW5nOjpmcm9tKCJyZXR1cm4iKSwgU3RyaW5nOjpmcm9tKCJ0aHJvdyIpLCBTdHJpbmc6OmZy
+// formal-ai:presentation-raw b20oInR5cGVvZiIpLCBTdHJpbmc6OmZyb20oInZvaWQiKSwgU3RyaW5nOjpmcm9tKCJ5aWVsZCIpXSk7
+// formal-ai:presentation-raw end
+pub static REGEX_CONTEXT_KEYWORDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from("await"),
+    String::from("case"),
+    String::from("delete"),
+    String::from("do"),
+    String::from("else"),
+    String::from("in"),
+    String::from("instanceof"),
+    String::from("new"),
+    String::from("of"),
+    String::from("return"),
+    String::from("throw"),
+    String::from("typeof"),
+    String::from("void"),
+    String::from("yield")]);
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=6308b4c88400fa31faf9d9d2c144145c38283f0ddf62396fee9331474391da31
 // | const PUNCTUATORS = [
@@ -23,7 +45,86 @@ pub static REGEX_CONTEXT_KEYWORDS: std::sync::LazyLock<Vec<String>> = std::sync:
 // |   '<<', '>>', '**', '{', '}', '(', ')', '[', ']', ';', ',', '<', '>', '+', '-', '*', '/', '%',
 // |   '&', '|', '^', '!', '~', '?', ':', '=', '.', '@', '#',
 // | ];
-pub static PUNCTUATORS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from(">>>="), String::from("..."), String::from("==="), String::from("!=="), String::from("**="), String::from("<<="), String::from(">>="), String::from(">>>"), String::from("&&="), String::from("||="), String::from("??="), String::from("=>"), String::from("=="), String::from("!="), String::from("<="), String::from(">="), String::from("&&"), String::from("||"), String::from("??"), String::from("?."), String::from("++"), String::from("--"), String::from("+="), String::from("-="), String::from("*="), String::from("/="), String::from("%="), String::from("&="), String::from("|="), String::from("^="), String::from("<<"), String::from(">>"), String::from("**"), String::from("{"), String::from("}"), String::from("("), String::from(")"), String::from("["), String::from("]"), String::from(";"), String::from(","), String::from("<"), String::from(">"), String::from("+"), String::from("-"), String::from("*"), String::from("/"), String::from("%"), String::from("&"), String::from("|"), String::from("^"), String::from("!"), String::from("~"), String::from("?"), String::from(":"), String::from("="), String::from("."), String::from("@"), String::from("#")]);
+// formal-ai:presentation:v1 rawSHA256=6308b4c88400fa31faf9d9d2c144145c38283f0ddf62396fee9331474391da31 rawBytes=1259 renderedSHA256=d45c74e06cca94acb5ac0b88189b6f84cbb3f7e51e2b4e50f51df28f23c1617c
+// formal-ai:presentation-raw cHViIHN0YXRpYyBQVU5DVFVBVE9SUzogc3RkOjpzeW5jOjpMYXp5TG9jazxWZWM8U3RyaW5nPj4gPSBzdGQ6OnN5bmM6Okxh
+// formal-ai:presentation-raw enlMb2NrOjpuZXcofHwgdmVjIVtTdHJpbmc6OmZyb20oIj4+Pj0iKSwgU3RyaW5nOjpmcm9tKCIuLi4iKSwgU3RyaW5nOjpm
+// formal-ai:presentation-raw cm9tKCI9PT0iKSwgU3RyaW5nOjpmcm9tKCIhPT0iKSwgU3RyaW5nOjpmcm9tKCIqKj0iKSwgU3RyaW5nOjpmcm9tKCI8PD0i
+// formal-ai:presentation-raw KSwgU3RyaW5nOjpmcm9tKCI+Pj0iKSwgU3RyaW5nOjpmcm9tKCI+Pj4iKSwgU3RyaW5nOjpmcm9tKCImJj0iKSwgU3RyaW5n
+// formal-ai:presentation-raw Ojpmcm9tKCJ8fD0iKSwgU3RyaW5nOjpmcm9tKCI/Pz0iKSwgU3RyaW5nOjpmcm9tKCI9PiIpLCBTdHJpbmc6OmZyb20oIj09
+// formal-ai:presentation-raw IiksIFN0cmluZzo6ZnJvbSgiIT0iKSwgU3RyaW5nOjpmcm9tKCI8PSIpLCBTdHJpbmc6OmZyb20oIj49IiksIFN0cmluZzo6
+// formal-ai:presentation-raw ZnJvbSgiJiYiKSwgU3RyaW5nOjpmcm9tKCJ8fCIpLCBTdHJpbmc6OmZyb20oIj8/IiksIFN0cmluZzo6ZnJvbSgiPy4iKSwg
+// formal-ai:presentation-raw U3RyaW5nOjpmcm9tKCIrKyIpLCBTdHJpbmc6OmZyb20oIi0tIiksIFN0cmluZzo6ZnJvbSgiKz0iKSwgU3RyaW5nOjpmcm9t
+// formal-ai:presentation-raw KCItPSIpLCBTdHJpbmc6OmZyb20oIio9IiksIFN0cmluZzo6ZnJvbSgiLz0iKSwgU3RyaW5nOjpmcm9tKCIlPSIpLCBTdHJp
+// formal-ai:presentation-raw bmc6OmZyb20oIiY9IiksIFN0cmluZzo6ZnJvbSgifD0iKSwgU3RyaW5nOjpmcm9tKCJePSIpLCBTdHJpbmc6OmZyb20oIjw8
+// formal-ai:presentation-raw IiksIFN0cmluZzo6ZnJvbSgiPj4iKSwgU3RyaW5nOjpmcm9tKCIqKiIpLCBTdHJpbmc6OmZyb20oInsiKSwgU3RyaW5nOjpm
+// formal-ai:presentation-raw cm9tKCJ9IiksIFN0cmluZzo6ZnJvbSgiKCIpLCBTdHJpbmc6OmZyb20oIikiKSwgU3RyaW5nOjpmcm9tKCJbIiksIFN0cmlu
+// formal-ai:presentation-raw Zzo6ZnJvbSgiXSIpLCBTdHJpbmc6OmZyb20oIjsiKSwgU3RyaW5nOjpmcm9tKCIsIiksIFN0cmluZzo6ZnJvbSgiPCIpLCBT
+// formal-ai:presentation-raw dHJpbmc6OmZyb20oIj4iKSwgU3RyaW5nOjpmcm9tKCIrIiksIFN0cmluZzo6ZnJvbSgiLSIpLCBTdHJpbmc6OmZyb20oIioi
+// formal-ai:presentation-raw KSwgU3RyaW5nOjpmcm9tKCIvIiksIFN0cmluZzo6ZnJvbSgiJSIpLCBTdHJpbmc6OmZyb20oIiYiKSwgU3RyaW5nOjpmcm9t
+// formal-ai:presentation-raw KCJ8IiksIFN0cmluZzo6ZnJvbSgiXiIpLCBTdHJpbmc6OmZyb20oIiEiKSwgU3RyaW5nOjpmcm9tKCJ+IiksIFN0cmluZzo6
+// formal-ai:presentation-raw ZnJvbSgiPyIpLCBTdHJpbmc6OmZyb20oIjoiKSwgU3RyaW5nOjpmcm9tKCI9IiksIFN0cmluZzo6ZnJvbSgiLiIpLCBTdHJp
+// formal-ai:presentation-raw bmc6OmZyb20oIkAiKSwgU3RyaW5nOjpmcm9tKCIjIildKTs=
+// formal-ai:presentation-raw end
+pub static PUNCTUATORS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from(">>>="),
+    String::from("..."),
+    String::from("==="),
+    String::from("!=="),
+    String::from("**="),
+    String::from("<<="),
+    String::from(">>="),
+    String::from(">>>"),
+    String::from("&&="),
+    String::from("||="),
+    String::from("??="),
+    String::from("=>"),
+    String::from("=="),
+    String::from("!="),
+    String::from("<="),
+    String::from(">="),
+    String::from("&&"),
+    String::from("||"),
+    String::from("??"),
+    String::from("?."),
+    String::from("++"),
+    String::from("--"),
+    String::from("+="),
+    String::from("-="),
+    String::from("*="),
+    String::from("/="),
+    String::from("%="),
+    String::from("&="),
+    String::from("|="),
+    String::from("^="),
+    String::from("<<"),
+    String::from(">>"),
+    String::from("**"),
+    String::from("{"),
+    String::from("}"),
+    String::from("("),
+    String::from(")"),
+    String::from("["),
+    String::from("]"),
+    String::from(";"),
+    String::from(","),
+    String::from("<"),
+    String::from(">"),
+    String::from("+"),
+    String::from("-"),
+    String::from("*"),
+    String::from("/"),
+    String::from("%"),
+    String::from("&"),
+    String::from("|"),
+    String::from("^"),
+    String::from("!"),
+    String::from("~"),
+    String::from("?"),
+    String::from(":"),
+    String::from("="),
+    String::from("."),
+    String::from("@"),
+    String::from("#")]);
 
 // meta-language:translated JavaScript function_declaration items=1 sha256=e408bad3068c382e51b83cc7577baba71d89d072f58e23141111501757202a4f
 // | /** @param {number} b @returns {boolean} */

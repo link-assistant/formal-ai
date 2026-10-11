@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { resolvePackageRelease } from './resolve-package-release.mjs';
+import { resolvePackageRelease, productionPackageObserver } from './resolve-package-release.mjs';
 import { selectCompletedSource } from './release-extension-selection.mjs';
 import { createReadonlyGithub,
  transferFromAuthenticatedGithub } from './release-extension-github.mjs';
@@ -177,9 +177,11 @@ export function main(arguments_,
     deadline: Date.now() + (arguments_[0] === 'resolve' ? 170000 : 15 * 60 * 1000)
   });
   if (arguments_[0] === 'resolve') {
+    const sourceGithub = environment.EVENT === 'workflow_run' && event.workflow_run?.name === 'Desktop Release'
+      ? github : {...github, json: productionPackageObserver(environment, github.json)};
     const result = resolveExtensionRelease(environment,
  event,
- github);
+ sourceGithub);
     const outputs = 'tag=' + result.tag + '\npublish=' + result.publish + '\nbuild=' + result.build + '\n';
     fs.appendFileSync(environment.GITHUB_OUTPUT,
  outputs);
@@ -190,7 +192,7 @@ export function main(arguments_,
  github,
  directory);
   fs.appendFileSync(environment.GITHUB_OUTPUT,
- 'source-commit=' + result.sourceCommit + '\npackage-path=' + result.path + '\nsha256=' + result.sha256 + '\n');
+ 'source-commit=' + result.sourceCommit + '\npackage-path=' + result.path + '\nsha256=' + result.sha256 + '\n' + 'source-tree=' + result.sourceTree + '\nproducer-run=' + result.producerRun + '\nproducer-attempt=' + result.producerAttempt + '\n');
   return result;
 }
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) console.log(JSON.stringify(main(process.argv.slice(2))));

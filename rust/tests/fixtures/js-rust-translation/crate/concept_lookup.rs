@@ -28,7 +28,24 @@
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=f74f728d8e1e2ea542f31cf8ce3bd16ac821397530aae7504396f29a5151a9ca
 // | const PAIRS = [['"', '"'], ['«', '»'], ['“', '”'], ['‘', '’'], ['「', '」']];
-pub static PAIRS: std::sync::LazyLock<Vec<Vec<String>>> = std::sync::LazyLock::new(|| vec![vec![String::from("\""), String::from("\"")], vec![String::from("«"), String::from("»")], vec![String::from("“"), String::from("”")], vec![String::from("‘"), String::from("’")], vec![String::from("「"), String::from("」")]]);
+// formal-ai:presentation:v1 rawSHA256=f74f728d8e1e2ea542f31cf8ce3bd16ac821397530aae7504396f29a5151a9ca rawBytes=328 renderedSHA256=f967b726120d5c95dc9fbdbfd560698e9593912168e58cc3803b5bacd16c5053
+// formal-ai:presentation-raw cHViIHN0YXRpYyBQQUlSUzogc3RkOjpzeW5jOjpMYXp5TG9jazxWZWM8VmVjPFN0cmluZz4+PiA9IHN0ZDo6c3luYzo6TGF6
+// formal-ai:presentation-raw eUxvY2s6Om5ldyh8fCB2ZWMhW3ZlYyFbU3RyaW5nOjpmcm9tKCJcIiIpLCBTdHJpbmc6OmZyb20oIlwiIildLCB2ZWMhW1N0
+// formal-ai:presentation-raw cmluZzo6ZnJvbSgiwqsiKSwgU3RyaW5nOjpmcm9tKCLCuyIpXSwgdmVjIVtTdHJpbmc6OmZyb20oIuKAnCIpLCBTdHJpbmc6
+// formal-ai:presentation-raw OmZyb20oIuKAnSIpXSwgdmVjIVtTdHJpbmc6OmZyb20oIuKAmCIpLCBTdHJpbmc6OmZyb20oIuKAmSIpXSwgdmVjIVtTdHJp
+// formal-ai:presentation-raw bmc6OmZyb20oIuOAjCIpLCBTdHJpbmc6OmZyb20oIuOAjSIpXV0pOw==
+// formal-ai:presentation-raw end
+pub static PAIRS: std::sync::LazyLock<Vec<Vec<String>>> = std::sync::LazyLock::new(||
+    vec![vec![String::from("\""),
+    String::from("\"")],
+    vec![String::from("«"),
+    String::from("»")],
+    vec![String::from("“"),
+    String::from("”")],
+    vec![String::from("‘"),
+    String::from("’")],
+    vec![String::from("「"),
+    String::from("」")]]);
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function

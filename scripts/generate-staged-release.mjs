@@ -120,6 +120,7 @@ export function buildStagedReleaseProjection(source, packet) {
       }] of crossNames.get(stage) ?? []) yaml += '      ' + key + ': ' + expression('steps.' + step + '.outputs.' + output) + '\n';
       if (stage === 'prepare-source') {
         yaml += '      active: ' + expression(active) + '\n';
+        for (const name of ['recovery_state', 'recovery_missing_assets']) yaml += '      check__' + name + ': ' + expression('steps.check.outputs.' + name) + '\n';
         for (const name of ['source_sha', 'source_tree', 'version', 'compiler_sha', 'rust_version']) yaml += '      ' + name + ': ' + expression('steps.capture-source.outputs.' + name + ' || steps.baseline-source.outputs.' + name) + '\n';
         for (const name of ['source_descriptor_sha', 'source_archive_sha']) yaml += '      ' + name + ': ' + expression('steps.capture-source.outputs.' + name) + '\n';
       }
@@ -181,6 +182,14 @@ export function buildStagedReleaseProjection(source, packet) {
           assert.equal(raw.split('        env:\n').length,2);
           raw=raw.replace('        env:\n',()=> '        env:\n          GH_TOKEN: '+expression('github.token')+'\n');
         }
+        // Only source-owned original release checks receive the immutable recovery context.
+        const originalRun = YAML.parse('steps:\n' + operation.raw).steps[0].run;
+        if (stage === 'prepare-source' && originalRun === 'rust-script scripts/check-release-needed.rs') {
+          assert.equal(raw.split('        env:\n').length, 2);
+          raw = raw.replace('        env:\n', () => '        env:\n' +
+            '          RELEASE_RECOVERY_PROTOCOL_ROOT: _protocol\n' +
+            '          RELEASE_RECOVERY_PROTOCOL_COMMIT: ' + expression('github.sha') + '\n');
+        }
         // Runtime caps change at the real execution site; original commands/assertions remain.
         raw = raw.replace(/(^        timeout-minutes:) (\d+)/gm, (_, prefix, value) => prefix + ' ' + Math.min(Number(value), 21));
         // These workflow-owned immutable protocol helpers operate on the checked-out selected source cwd.
@@ -192,7 +201,7 @@ export function buildStagedReleaseProjection(source, packet) {
         if (stage === 'prepare-source' && operation.ordinal === 0) yaml += '      # #1079: persist-credentials is retained for the root version/tag git push.\n';
         yaml += raw.endsWith('\n') ? raw : raw + '\n';
         if (stage === 'prepare-source' && operation.ordinal === 0) {
-        action('Check out immutable trusted workflow protocol', '        uses: actions/checkout@v7\n        with: { ref: ' + JSON.stringify(expression('github.sha')) + ', path: _protocol, persist-credentials: false }\n');
+        action('Check out immutable trusted workflow protocol', '        uses: actions/checkout@v7\n        with: { ref: ' + JSON.stringify(expression('github.sha')) + ', path: _protocol, fetch-depth: 0, persist-credentials: false }\n');
         action('Set up immutable protocol dependencies', '        uses: oven-sh/setup-bun@v2\n        with:\n          bun-version-file: _protocol/.bun-version\n');
         action('Install immutable locked protocol dependencies', '        timeout-minutes: 5\n        working-directory: _protocol\n        run: bun install --frozen-lockfile --ignore-scripts\n');
         }

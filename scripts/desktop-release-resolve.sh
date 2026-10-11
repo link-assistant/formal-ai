@@ -214,8 +214,8 @@ case "$EVENT" in
       RUN_CONCLUSION="${WORKFLOW_RUN_CONCLUSION:-}" \
       node --input-type=module - "$(dirname "$0")/resolve-package-release.mjs" <<'NODE'
 import { pathToFileURL } from 'node:url';
-const { qualifiesCompletedRun } = await import(pathToFileURL(process.argv[2]));
-if (!qualifiesCompletedRun(process.env)) process.exit(1);
+const { qualifiesCompletedRun, productionPackageObserver } = await import(pathToFileURL(process.argv[2]));
+if (!qualifiesCompletedRun(process.env, productionPackageObserver(process.env))) process.exit(1);
 NODE
     then
       should_build=false

@@ -100,7 +100,34 @@ pub const SESSION_SCHEMA: &str = "formal-ai-agent-session-v1";
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=b9bef72d50baed8d481709325f6570f7f64cfb03107b87913e58844038d739f9
 // | const SESSION_FIELDS = ['schema', 'cli', 'target', 'task', 'model', 'base_url', 'workspace', 'program', 'args', 'status', 'exit_code', 'wall_time_ms', 'stdout', 'stderr', 'changes', 'verification', 'events'];
-pub static SESSION_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("schema"), String::from("cli"), String::from("target"), String::from("task"), String::from("model"), String::from("base_url"), String::from("workspace"), String::from("program"), String::from("args"), String::from("status"), String::from("exit_code"), String::from("wall_time_ms"), String::from("stdout"), String::from("stderr"), String::from("changes"), String::from("verification"), String::from("events")]);
+// formal-ai:presentation:v1 rawSHA256=b9bef72d50baed8d481709325f6570f7f64cfb03107b87913e58844038d739f9 rawBytes=518 renderedSHA256=5db1c680b2dbbf5f6b86b3e1b15ab1bbad65e7520c9fde583f1db8062f42a583
+// formal-ai:presentation-raw cHViIHN0YXRpYyBTRVNTSU9OX0ZJRUxEUzogc3RkOjpzeW5jOjpMYXp5TG9jazxWZWM8U3RyaW5nPj4gPSBzdGQ6OnN5bmM6
+// formal-ai:presentation-raw OkxhenlMb2NrOjpuZXcofHwgdmVjIVtTdHJpbmc6OmZyb20oInNjaGVtYSIpLCBTdHJpbmc6OmZyb20oImNsaSIpLCBTdHJp
+// formal-ai:presentation-raw bmc6OmZyb20oInRhcmdldCIpLCBTdHJpbmc6OmZyb20oInRhc2siKSwgU3RyaW5nOjpmcm9tKCJtb2RlbCIpLCBTdHJpbmc6
+// formal-ai:presentation-raw OmZyb20oImJhc2VfdXJsIiksIFN0cmluZzo6ZnJvbSgid29ya3NwYWNlIiksIFN0cmluZzo6ZnJvbSgicHJvZ3JhbSIpLCBT
+// formal-ai:presentation-raw dHJpbmc6OmZyb20oImFyZ3MiKSwgU3RyaW5nOjpmcm9tKCJzdGF0dXMiKSwgU3RyaW5nOjpmcm9tKCJleGl0X2NvZGUiKSwg
+// formal-ai:presentation-raw U3RyaW5nOjpmcm9tKCJ3YWxsX3RpbWVfbXMiKSwgU3RyaW5nOjpmcm9tKCJzdGRvdXQiKSwgU3RyaW5nOjpmcm9tKCJzdGRl
+// formal-ai:presentation-raw cnIiKSwgU3RyaW5nOjpmcm9tKCJjaGFuZ2VzIiksIFN0cmluZzo6ZnJvbSgidmVyaWZpY2F0aW9uIiksIFN0cmluZzo6ZnJv
+// formal-ai:presentation-raw bSgiZXZlbnRzIildKTs=
+// formal-ai:presentation-raw end
+pub static SESSION_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from("schema"),
+    String::from("cli"),
+    String::from("target"),
+    String::from("task"),
+    String::from("model"),
+    String::from("base_url"),
+    String::from("workspace"),
+    String::from("program"),
+    String::from("args"),
+    String::from("status"),
+    String::from("exit_code"),
+    String::from("wall_time_ms"),
+    String::from("stdout"),
+    String::from("stderr"),
+    String::from("changes"),
+    String::from("verification"),
+    String::from("events")]);
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=145b21d25b65560d44971da1f577d9e2bd4c2f31283ce82ecb4c699336e3e857
 // | const SESSION_OPTIONAL = ['native_session', 'continuation'];
@@ -108,15 +135,50 @@ pub static SESSION_OPTIONAL: std::sync::LazyLock<Vec<String>> = std::sync::LazyL
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=50b78fe0a43cb66156ca70da0bc81a279272d9e21b9f4a6cff35795e0266a08c
 // | const EVENT_FIELDS = ['sequence', 'kind', 'detail', 'previous_sha256', 'sha256'];
-pub static EVENT_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("sequence"), String::from("kind"), String::from("detail"), String::from("previous_sha256"), String::from("sha256")]);
+// formal-ai:presentation:v1 rawSHA256=50b78fe0a43cb66156ca70da0bc81a279272d9e21b9f4a6cff35795e0266a08c rawBytes=223 renderedSHA256=ea25093a976ae2ece3ad1bcb34e4df2c35066182ade733951d4ea27bb9782108
+// formal-ai:presentation-raw cHViIHN0YXRpYyBFVkVOVF9GSUVMRFM6IHN0ZDo6c3luYzo6TGF6eUxvY2s8VmVjPFN0cmluZz4+ID0gc3RkOjpzeW5jOjpM
+// formal-ai:presentation-raw YXp5TG9jazo6bmV3KHx8IHZlYyFbU3RyaW5nOjpmcm9tKCJzZXF1ZW5jZSIpLCBTdHJpbmc6OmZyb20oImtpbmQiKSwgU3Ry
+// formal-ai:presentation-raw aW5nOjpmcm9tKCJkZXRhaWwiKSwgU3RyaW5nOjpmcm9tKCJwcmV2aW91c19zaGEyNTYiKSwgU3RyaW5nOjpmcm9tKCJzaGEy
+// formal-ai:presentation-raw NTYiKV0pOw==
+// formal-ai:presentation-raw end
+pub static EVENT_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from("sequence"),
+    String::from("kind"),
+    String::from("detail"),
+    String::from("previous_sha256"),
+    String::from("sha256")]);
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=bf6d031af084b0f71585c2e64fad03b776a2e9f08362c366c7adbd603975eb4f
 // | const CHANGE_FIELDS = ['path', 'kind', 'before_sha256', 'after_sha256', 'bytes_changed'];
-pub static CHANGE_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("path"), String::from("kind"), String::from("before_sha256"), String::from("after_sha256"), String::from("bytes_changed")]);
+// formal-ai:presentation:v1 rawSHA256=bf6d031af084b0f71585c2e64fad03b776a2e9f08362c366c7adbd603975eb4f rawBytes=231 renderedSHA256=2f7a3060c46ee91a1e6a9769c04238100ecd0518918a5b2b34c3e0a2b95f3183
+// formal-ai:presentation-raw cHViIHN0YXRpYyBDSEFOR0VfRklFTERTOiBzdGQ6OnN5bmM6OkxhenlMb2NrPFZlYzxTdHJpbmc+PiA9IHN0ZDo6c3luYzo6
+// formal-ai:presentation-raw TGF6eUxvY2s6Om5ldyh8fCB2ZWMhW1N0cmluZzo6ZnJvbSgicGF0aCIpLCBTdHJpbmc6OmZyb20oImtpbmQiKSwgU3RyaW5n
+// formal-ai:presentation-raw Ojpmcm9tKCJiZWZvcmVfc2hhMjU2IiksIFN0cmluZzo6ZnJvbSgiYWZ0ZXJfc2hhMjU2IiksIFN0cmluZzo6ZnJvbSgiYnl0
+// formal-ai:presentation-raw ZXNfY2hhbmdlZCIpXSk7
+// formal-ai:presentation-raw end
+pub static CHANGE_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from("path"),
+    String::from("kind"),
+    String::from("before_sha256"),
+    String::from("after_sha256"),
+    String::from("bytes_changed")]);
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=9f0ff6fb144a8298a6f74a4a03516e339237eee68b50904a26708f721fbaf05a
 // | const VERIFICATION_FIELDS = ['program', 'args', 'exit_code', 'stdout', 'stderr', 'timed_out', 'passed'];
-pub static VERIFICATION_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("program"), String::from("args"), String::from("exit_code"), String::from("stdout"), String::from("stderr"), String::from("timed_out"), String::from("passed")]);
+// formal-ai:presentation:v1 rawSHA256=9f0ff6fb144a8298a6f74a4a03516e339237eee68b50904a26708f721fbaf05a rawBytes=274 renderedSHA256=3a2a49ceaea26a1d8936427e813ad42e365da2b0a3c73823d93d0dec4e516fab
+// formal-ai:presentation-raw cHViIHN0YXRpYyBWRVJJRklDQVRJT05fRklFTERTOiBzdGQ6OnN5bmM6OkxhenlMb2NrPFZlYzxTdHJpbmc+PiA9IHN0ZDo6
+// formal-ai:presentation-raw c3luYzo6TGF6eUxvY2s6Om5ldyh8fCB2ZWMhW1N0cmluZzo6ZnJvbSgicHJvZ3JhbSIpLCBTdHJpbmc6OmZyb20oImFyZ3Mi
+// formal-ai:presentation-raw KSwgU3RyaW5nOjpmcm9tKCJleGl0X2NvZGUiKSwgU3RyaW5nOjpmcm9tKCJzdGRvdXQiKSwgU3RyaW5nOjpmcm9tKCJzdGRl
+// formal-ai:presentation-raw cnIiKSwgU3RyaW5nOjpmcm9tKCJ0aW1lZF9vdXQiKSwgU3RyaW5nOjpmcm9tKCJwYXNzZWQiKV0pOw==
+// formal-ai:presentation-raw end
+pub static VERIFICATION_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from("program"),
+    String::from("args"),
+    String::from("exit_code"),
+    String::from("stdout"),
+    String::from("stderr"),
+    String::from("timed_out"),
+    String::from("passed")]);
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=9224c42cde6defea78cb6fb8e0d8a9caa452e5f95ee17d7d73bae309dd4dd64b
 // | const NATIVE_FIELDS = ['id', 'resume_command'];
@@ -124,11 +186,29 @@ pub static NATIVE_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=a6e920fb2c0cc84a9e810ac2c39d5cc7d54b0772f9735eefde12703877a235ce
 // | const CONTINUATION_FIELDS = ['parent_session_sha256', 'native_session_id', 'disproved_claim', 'evidence'];
-pub static CONTINUATION_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("parent_session_sha256"), String::from("native_session_id"), String::from("disproved_claim"), String::from("evidence")]);
+// formal-ai:presentation:v1 rawSHA256=a6e920fb2c0cc84a9e810ac2c39d5cc7d54b0772f9735eefde12703877a235ce rawBytes=234 renderedSHA256=2072104aa15a40697790320758e6071177bb5bb1de82e227b66384d37f752fd1
+// formal-ai:presentation-raw cHViIHN0YXRpYyBDT05USU5VQVRJT05fRklFTERTOiBzdGQ6OnN5bmM6OkxhenlMb2NrPFZlYzxTdHJpbmc+PiA9IHN0ZDo6
+// formal-ai:presentation-raw c3luYzo6TGF6eUxvY2s6Om5ldyh8fCB2ZWMhW1N0cmluZzo6ZnJvbSgicGFyZW50X3Nlc3Npb25fc2hhMjU2IiksIFN0cmlu
+// formal-ai:presentation-raw Zzo6ZnJvbSgibmF0aXZlX3Nlc3Npb25faWQiKSwgU3RyaW5nOjpmcm9tKCJkaXNwcm92ZWRfY2xhaW0iKSwgU3RyaW5nOjpm
+// formal-ai:presentation-raw cm9tKCJldmlkZW5jZSIpXSk7
+// formal-ai:presentation-raw end
+pub static CONTINUATION_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from("parent_session_sha256"),
+    String::from("native_session_id"),
+    String::from("disproved_claim"),
+    String::from("evidence")]);
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=e7acbe53b43589fba8d0da05fd86a5ae356dbb2289d225e660196b0be0c1db07
 // | const STATUSES = ['succeeded', 'failed', 'timed_out'];
-pub static STATUSES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("succeeded"), String::from("failed"), String::from("timed_out")]);
+// formal-ai:presentation:v1 rawSHA256=e7acbe53b43589fba8d0da05fd86a5ae356dbb2289d225e660196b0be0c1db07 rawBytes=168 renderedSHA256=8e87eaa258a5d2df656ab00b5b16891d7e2df834f263b8d36b4e4de7d51003f2
+// formal-ai:presentation-raw cHViIHN0YXRpYyBTVEFUVVNFUzogc3RkOjpzeW5jOjpMYXp5TG9jazxWZWM8U3RyaW5nPj4gPSBzdGQ6OnN5bmM6OkxhenlM
+// formal-ai:presentation-raw b2NrOjpuZXcofHwgdmVjIVtTdHJpbmc6OmZyb20oInN1Y2NlZWRlZCIpLCBTdHJpbmc6OmZyb20oImZhaWxlZCIpLCBTdHJp
+// formal-ai:presentation-raw bmc6OmZyb20oInRpbWVkX291dCIpXSk7
+// formal-ai:presentation-raw end
+pub static STATUSES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from("succeeded"),
+    String::from("failed"),
+    String::from("timed_out")]);
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=2c52931d91a22a388c4e72067b0349bf3acf1d69c7eff68941ee0fd0ce0ad525
 // | const TARGETS = ['formal_ai', 'vendor'];
@@ -136,7 +216,15 @@ pub static TARGETS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=0ebfdf8dfbae15e5ec52fdbdce541e29cf7e5bb18e75fae56a1dd483a6447c56
 // | const CHANGE_KINDS = ['added', 'modified', 'removed'];
-pub static CHANGE_KINDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("added"), String::from("modified"), String::from("removed")]);
+// formal-ai:presentation:v1 rawSHA256=0ebfdf8dfbae15e5ec52fdbdce541e29cf7e5bb18e75fae56a1dd483a6447c56 rawBytes=168 renderedSHA256=32adcecf523cc512677449fc67cda1d0b8ab90b1419622eb01f9b8dbee21b651
+// formal-ai:presentation-raw cHViIHN0YXRpYyBDSEFOR0VfS0lORFM6IHN0ZDo6c3luYzo6TGF6eUxvY2s8VmVjPFN0cmluZz4+ID0gc3RkOjpzeW5jOjpM
+// formal-ai:presentation-raw YXp5TG9jazo6bmV3KHx8IHZlYyFbU3RyaW5nOjpmcm9tKCJhZGRlZCIpLCBTdHJpbmc6OmZyb20oIm1vZGlmaWVkIiksIFN0
+// formal-ai:presentation-raw cmluZzo6ZnJvbSgicmVtb3ZlZCIpXSk7
+// formal-ai:presentation-raw end
+pub static CHANGE_KINDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from("added"),
+    String::from("modified"),
+    String::from("removed")]);
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal namespace property …

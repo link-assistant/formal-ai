@@ -11,7 +11,28 @@
 // |   'link', 'reference', 'relation link', 'language', 'grammar', 'type', 'Type', 'concept', 'point',
 // |   'field', 'trivia', 'region', 'object',
 // | ];
-pub static SELF_DESCRIPTION_TERMS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("link"), String::from("reference"), String::from("relation link"), String::from("language"), String::from("grammar"), String::from("type"), String::from("Type"), String::from("concept"), String::from("point"), String::from("field"), String::from("trivia"), String::from("region"), String::from("object")]);
+// formal-ai:presentation:v1 rawSHA256=8fc3287c3029994d875b3fbe4b54b92bd58ce7ce2d1529a272d009804c1d15bc rawBytes=422 renderedSHA256=cfb60d199a2b6507433590ffddf3ce827b7fd7d0a036990e71800ced128b26f3
+// formal-ai:presentation-raw cHViIHN0YXRpYyBTRUxGX0RFU0NSSVBUSU9OX1RFUk1TOiBzdGQ6OnN5bmM6OkxhenlMb2NrPFZlYzxTdHJpbmc+PiA9IHN0
+// formal-ai:presentation-raw ZDo6c3luYzo6TGF6eUxvY2s6Om5ldyh8fCB2ZWMhW1N0cmluZzo6ZnJvbSgibGluayIpLCBTdHJpbmc6OmZyb20oInJlZmVy
+// formal-ai:presentation-raw ZW5jZSIpLCBTdHJpbmc6OmZyb20oInJlbGF0aW9uIGxpbmsiKSwgU3RyaW5nOjpmcm9tKCJsYW5ndWFnZSIpLCBTdHJpbmc6
+// formal-ai:presentation-raw OmZyb20oImdyYW1tYXIiKSwgU3RyaW5nOjpmcm9tKCJ0eXBlIiksIFN0cmluZzo6ZnJvbSgiVHlwZSIpLCBTdHJpbmc6OmZy
+// formal-ai:presentation-raw b20oImNvbmNlcHQiKSwgU3RyaW5nOjpmcm9tKCJwb2ludCIpLCBTdHJpbmc6OmZyb20oImZpZWxkIiksIFN0cmluZzo6ZnJv
+// formal-ai:presentation-raw bSgidHJpdmlhIiksIFN0cmluZzo6ZnJvbSgicmVnaW9uIiksIFN0cmluZzo6ZnJvbSgib2JqZWN0IildKTs=
+// formal-ai:presentation-raw end
+pub static SELF_DESCRIPTION_TERMS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from("link"),
+    String::from("reference"),
+    String::from("relation link"),
+    String::from("language"),
+    String::from("grammar"),
+    String::from("type"),
+    String::from("Type"),
+    String::from("concept"),
+    String::from("point"),
+    String::from("field"),
+    String::from("trivia"),
+    String::from("region"),
+    String::from("object")]);
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=d6f6ad759846f778bfa5067858b5bf9dfa78ad5548e9d09df8ffe6a191a201b4
 // | /** Links per extra token under the default `TriviaAttachmentPolicy::Both`. */

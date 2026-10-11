@@ -64,7 +64,37 @@ pub const TOOLCHAINS: &str = "data/seed/toolchains.lino";
 // |   ['setup_coursier', 'setup_coursier_action'],
 // |   ['scala', 'scala_compiler'],
 // | ];
-pub static PIN_IDS: std::sync::LazyLock<Vec<Vec<String>>> = std::sync::LazyLock::new(|| vec![vec![String::from("checkout"), String::from("actions_checkout")], vec![String::from("setup_java"), String::from("actions_setup_java")], vec![String::from("setup_kotlin"), String::from("setup_kotlin_action")], vec![String::from("setup_python"), String::from("actions_setup_python")], vec![String::from("python_interpreter"), String::from("python_interpreter")], vec![String::from("kotlin"), String::from("kotlin_compiler")], vec![String::from("java_lts"), String::from("java_lts")], vec![String::from("setup_coursier"), String::from("setup_coursier_action")], vec![String::from("scala"), String::from("scala_compiler")]]);
+// formal-ai:presentation:v1 rawSHA256=d13f659d5ba21cf75f8e21f12baf7494d8e95cc9ee421318dd4e207a1f148218 rawBytes=714 renderedSHA256=25962c11713ff68c1c3ad3bc95b06c77234a8b7ae6f75193cc408c253e3c14f4
+// formal-ai:presentation-raw cHViIHN0YXRpYyBQSU5fSURTOiBzdGQ6OnN5bmM6OkxhenlMb2NrPFZlYzxWZWM8U3RyaW5nPj4+ID0gc3RkOjpzeW5jOjpM
+// formal-ai:presentation-raw YXp5TG9jazo6bmV3KHx8IHZlYyFbdmVjIVtTdHJpbmc6OmZyb20oImNoZWNrb3V0IiksIFN0cmluZzo6ZnJvbSgiYWN0aW9u
+// formal-ai:presentation-raw c19jaGVja291dCIpXSwgdmVjIVtTdHJpbmc6OmZyb20oInNldHVwX2phdmEiKSwgU3RyaW5nOjpmcm9tKCJhY3Rpb25zX3Nl
+// formal-ai:presentation-raw dHVwX2phdmEiKV0sIHZlYyFbU3RyaW5nOjpmcm9tKCJzZXR1cF9rb3RsaW4iKSwgU3RyaW5nOjpmcm9tKCJzZXR1cF9rb3Rs
+// formal-ai:presentation-raw aW5fYWN0aW9uIildLCB2ZWMhW1N0cmluZzo6ZnJvbSgic2V0dXBfcHl0aG9uIiksIFN0cmluZzo6ZnJvbSgiYWN0aW9uc19z
+// formal-ai:presentation-raw ZXR1cF9weXRob24iKV0sIHZlYyFbU3RyaW5nOjpmcm9tKCJweXRob25faW50ZXJwcmV0ZXIiKSwgU3RyaW5nOjpmcm9tKCJw
+// formal-ai:presentation-raw eXRob25faW50ZXJwcmV0ZXIiKV0sIHZlYyFbU3RyaW5nOjpmcm9tKCJrb3RsaW4iKSwgU3RyaW5nOjpmcm9tKCJrb3RsaW5f
+// formal-ai:presentation-raw Y29tcGlsZXIiKV0sIHZlYyFbU3RyaW5nOjpmcm9tKCJqYXZhX2x0cyIpLCBTdHJpbmc6OmZyb20oImphdmFfbHRzIildLCB2
+// formal-ai:presentation-raw ZWMhW1N0cmluZzo6ZnJvbSgic2V0dXBfY291cnNpZXIiKSwgU3RyaW5nOjpmcm9tKCJzZXR1cF9jb3Vyc2llcl9hY3Rpb24i
+// formal-ai:presentation-raw KV0sIHZlYyFbU3RyaW5nOjpmcm9tKCJzY2FsYSIpLCBTdHJpbmc6OmZyb20oInNjYWxhX2NvbXBpbGVyIildXSk7
+// formal-ai:presentation-raw end
+pub static PIN_IDS: std::sync::LazyLock<Vec<Vec<String>>> = std::sync::LazyLock::new(||
+    vec![vec![String::from("checkout"),
+    String::from("actions_checkout")],
+    vec![String::from("setup_java"),
+    String::from("actions_setup_java")],
+    vec![String::from("setup_kotlin"),
+    String::from("setup_kotlin_action")],
+    vec![String::from("setup_python"),
+    String::from("actions_setup_python")],
+    vec![String::from("python_interpreter"),
+    String::from("python_interpreter")],
+    vec![String::from("kotlin"),
+    String::from("kotlin_compiler")],
+    vec![String::from("java_lts"),
+    String::from("java_lts")],
+    vec![String::from("setup_coursier"),
+    String::from("setup_coursier_action")],
+    vec![String::from("scala"),
+    String::from("scala_compiler")]]);
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag

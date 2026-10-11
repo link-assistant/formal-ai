@@ -115,3 +115,29 @@ test('actual pinned upstream serializes selected historical sources and joins al
  put(f.source,'js/meaning.mjs','export const changed = true;\n');
  assert.throws(()=>execFileSync(process.execPath,[join(f.protocol,'scripts/verify-source-network-distribution.mjs'),distribution,'--source-root',f.source,'--upstream-commit',f.record.upstreamCommit],{cwd:f.source,stdio:['ignore','pipe','pipe']}));
 });
+
+
+for (const dependency of [
+  'scripts/lib/rust-projection-presentation.mjs',
+  'scripts/self-translation/lexer.mjs',
+  'scripts/check-readable-code.mjs',
+ ]) {
+ test('captured presentation dependency stays independently bound: ' + dependency, t => {
+ const f = fixture(t);
+ const adapter = join(f.protocol, 'scripts/translate-js-rust.mjs');
+ const invocationArguments = ['--input-type=module', '-e', 'await import(' + JSON.stringify(pathToFileURL(adapter).href) + ')'];
+ assert.doesNotThrow(() => execFileSync(process.execPath, invocationArguments, {cwd: f.base, stdio: ['ignore', 'pipe', 'pipe']}));
+  const target = join(f.protocol, dependency);
+  const bytes = readFileSync(target);
+  rmSync(target);
+  assert.throws(() => verifyReleaseProtocol(f.source, f.protocol, f.workflow));
+  assert.throws(() => execFileSync(process.execPath, invocationArguments, {cwd: f.base, stdio: ['ignore', 'pipe', 'pipe']}),
+   error => error.status !== 0 && /ERR_MODULE_NOT_FOUND/u.test(String(error.stderr)));
+  writeFileSync(target, bytes);
+  assert.equal(verifyReleaseProtocol(f.source, f.protocol, f.workflow).sha256, f.record.sha256);
+  assert.doesNotThrow(() => execFileSync(process.execPath, invocationArguments, {cwd: f.base, stdio: ['ignore', 'pipe', 'pipe']}));
+  writeFileSync(target, Buffer.concat([bytes, Buffer.from('\n// changed captured bytes\n')]));
+  assert.throws(() => verifyReleaseProtocol(f.source, f.protocol, f.workflow), /differs from workflow source/);
+  writeFileSync(target, bytes);
+ });
+}

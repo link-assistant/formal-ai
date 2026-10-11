@@ -21,7 +21,18 @@
 // meta-language:translated JavaScript export_statement items=1 sha256=af4c04522de8630bf4ede8978b5718c494f97c55d4280728391ad205c7df9bd7
 // | /** Mirrors `PRELUDE_METHOD_NAMES` in rust/src/solver_dispatch.rs. */
 // | export const PRELUDE_METHOD_NAMES = Object.freeze(['diagnostic', 'nl_tool', 'behavior_rules', 'feature_capability', 'playwright_script']);
-pub static PRELUDE_METHOD_NAMES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("diagnostic"), String::from("nl_tool"), String::from("behavior_rules"), String::from("feature_capability"), String::from("playwright_script")]);
+// formal-ai:presentation:v1 rawSHA256=af4c04522de8630bf4ede8978b5718c494f97c55d4280728391ad205c7df9bd7 rawBytes=258 renderedSHA256=afaf1cb67b4633ce4ab72f77a11470a292f1ba160c98cfe234c7209705445b92
+// formal-ai:presentation-raw cHViIHN0YXRpYyBQUkVMVURFX01FVEhPRF9OQU1FUzogc3RkOjpzeW5jOjpMYXp5TG9jazxWZWM8U3RyaW5nPj4gPSBzdGQ6
+// formal-ai:presentation-raw OnN5bmM6OkxhenlMb2NrOjpuZXcofHwgdmVjIVtTdHJpbmc6OmZyb20oImRpYWdub3N0aWMiKSwgU3RyaW5nOjpmcm9tKCJu
+// formal-ai:presentation-raw bF90b29sIiksIFN0cmluZzo6ZnJvbSgiYmVoYXZpb3JfcnVsZXMiKSwgU3RyaW5nOjpmcm9tKCJmZWF0dXJlX2NhcGFiaWxp
+// formal-ai:presentation-raw dHkiKSwgU3RyaW5nOjpmcm9tKCJwbGF5d3JpZ2h0X3NjcmlwdCIpXSk7
+// formal-ai:presentation-raw end
+pub static PRELUDE_METHOD_NAMES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from("diagnostic"),
+    String::from("nl_tool"),
+    String::from("behavior_rules"),
+    String::from("feature_capability"),
+    String::from("playwright_script")]);
 
 // meta-language:translated JavaScript export_statement items=1 sha256=b630b6627ef9625c1562cfc3df9f73795f7e45fd27146fe92b4c7991b9eee570
 // | /** Mirrors `CONTEXTUAL_HANDLER_NAMES` in rust/src/solver_dispatch.rs. */
@@ -30,7 +41,31 @@ pub static PRELUDE_METHOD_NAMES: std::sync::LazyLock<Vec<String>> = std::sync::L
 // |   'shell_command_transform', 'text_manipulation', 'task_decomposition', 'response_language_followup',
 // |   'fact_checking', 'world_state', 'web_search', 'procedural_how_to', 'fact_lookup',
 // | ]);
-pub static CONTEXTUAL_HANDLER_NAMES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("http_fetch"), String::from("proof_request"), String::from("meta_explanation"), String::from("numeric_list"), String::from("program_synthesis"), String::from("shell_command_transform"), String::from("text_manipulation"), String::from("task_decomposition"), String::from("response_language_followup"), String::from("fact_checking"), String::from("world_state"), String::from("web_search"), String::from("procedural_how_to"), String::from("fact_lookup")]);
+// formal-ai:presentation:v1 rawSHA256=b630b6627ef9625c1562cfc3df9f73795f7e45fd27146fe92b4c7991b9eee570 rawBytes=572 renderedSHA256=74ef49f6c8bd047ec89c8cdb0e8fb479f2851bc9410920236db764b9352ff37d
+// formal-ai:presentation-raw cHViIHN0YXRpYyBDT05URVhUVUFMX0hBTkRMRVJfTkFNRVM6IHN0ZDo6c3luYzo6TGF6eUxvY2s8VmVjPFN0cmluZz4+ID0g
+// formal-ai:presentation-raw c3RkOjpzeW5jOjpMYXp5TG9jazo6bmV3KHx8IHZlYyFbU3RyaW5nOjpmcm9tKCJodHRwX2ZldGNoIiksIFN0cmluZzo6ZnJv
+// formal-ai:presentation-raw bSgicHJvb2ZfcmVxdWVzdCIpLCBTdHJpbmc6OmZyb20oIm1ldGFfZXhwbGFuYXRpb24iKSwgU3RyaW5nOjpmcm9tKCJudW1l
+// formal-ai:presentation-raw cmljX2xpc3QiKSwgU3RyaW5nOjpmcm9tKCJwcm9ncmFtX3N5bnRoZXNpcyIpLCBTdHJpbmc6OmZyb20oInNoZWxsX2NvbW1h
+// formal-ai:presentation-raw bmRfdHJhbnNmb3JtIiksIFN0cmluZzo6ZnJvbSgidGV4dF9tYW5pcHVsYXRpb24iKSwgU3RyaW5nOjpmcm9tKCJ0YXNrX2Rl
+// formal-ai:presentation-raw Y29tcG9zaXRpb24iKSwgU3RyaW5nOjpmcm9tKCJyZXNwb25zZV9sYW5ndWFnZV9mb2xsb3d1cCIpLCBTdHJpbmc6OmZyb20o
+// formal-ai:presentation-raw ImZhY3RfY2hlY2tpbmciKSwgU3RyaW5nOjpmcm9tKCJ3b3JsZF9zdGF0ZSIpLCBTdHJpbmc6OmZyb20oIndlYl9zZWFyY2gi
+// formal-ai:presentation-raw KSwgU3RyaW5nOjpmcm9tKCJwcm9jZWR1cmFsX2hvd190byIpLCBTdHJpbmc6OmZyb20oImZhY3RfbG9va3VwIildKTs=
+// formal-ai:presentation-raw end
+pub static CONTEXTUAL_HANDLER_NAMES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from("http_fetch"),
+    String::from("proof_request"),
+    String::from("meta_explanation"),
+    String::from("numeric_list"),
+    String::from("program_synthesis"),
+    String::from("shell_command_transform"),
+    String::from("text_manipulation"),
+    String::from("task_decomposition"),
+    String::from("response_language_followup"),
+    String::from("fact_checking"),
+    String::from("world_state"),
+    String::from("web_search"),
+    String::from("procedural_how_to"),
+    String::from("fact_lookup")]);
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=83968f47c4e6fd50ca2edd074533d2b4dbe5b43ba66a60998c7db9200d9cecd4
 // | const HANDLER_PRECEDENCE_PATH = 'data/seed/handler-precedence.lino';

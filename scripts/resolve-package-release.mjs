@@ -61,9 +61,83 @@ export function resolvePackageRelease(environment, readGithub = githubJson) {
   throw new Error('No published stable release exists for package publication');
 }
 
+/** The production reader fixes the official API host and per-response bounds. */
+export function productionGithubJson(endpoint) {
+  return JSON.parse(execFileSync('gh', ['api', '--hostname', 'github.com', endpoint], {
+    encoding: 'utf8', timeout: 10000, maxBuffer: 1024 * 1024,
+    env: {...process.env, GH_HOST: 'github.com'}, stdio: ['ignore', 'pipe', 'pipe']
+  }));
+}
+
+/** Production entrypoints reject nonproduction run events before selecting release source. */
+export function productionPackageObserver(environment, readGithub = productionGithubJson) {
+  const repository = environment.REPOSITORY;
+  if (typeof repository !== 'string' || !/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository)) {
+    throw new Error('Production package observer requires a repository identity');
+  }
+  const prefix = 'repos/' + repository + '/';
+  const runEndpoint = prefix + 'actions/runs/' + environment.RUN_ID;
+  const deadline = Date.now() + 90000;
+  let calls = 0, total = 0;
+  function publishedRelease(release, requestedTag) {
+    if (!release || typeof release !== 'object' || Array.isArray(release)
+      || typeof release.draft !== 'boolean' || typeof release.prerelease !== 'boolean') {
+      throw new Error('Selected release lacks exact published metadata booleans');
+    }
+    if (requestedTag !== undefined && (
+      !/^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$/.test(requestedTag)
+      || release.tag_name !== requestedTag)) {
+      throw new Error('Requested release tag does not match published metadata');
+    }
+    if (release.draft || release.prerelease || !RELEASE_TAG.test(release.tag_name ?? '')) return;
+    if (!/^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$/.test(release.tag_name)
+      || !Number.isSafeInteger(release.id) || release.id <= 0
+      || release.url !== 'https://api.github.com/' + prefix + 'releases/' + release.id
+      || typeof release.published_at !== 'string'
+      || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(release.published_at)
+      || !Number.isFinite(Date.parse(release.published_at))
+      || Date.parse(release.published_at) > Date.now()
+      || new Date(release.published_at).toISOString() !== release.published_at.replace(/Z$/,
+        release.published_at.includes('.') ? 'Z' : '.000Z')) {
+      throw new Error('Selected stable release lacks exact published metadata');
+    }
+  }
+  return endpoint => {
+    if (typeof endpoint !== 'string' || !endpoint.startsWith(prefix)) {
+      throw new Error('Foreign production metadata endpoint refused');
+    }
+    if (Date.now() >= deadline || ++calls > 40) throw new Error('Bounded production observation expired');
+    const result = readGithub(endpoint);
+    const serialized = JSON.stringify(result);
+    if (typeof serialized !== 'string') {
+      throw new Error('Production observation lacks published metadata JSON');
+    }
+    total += Buffer.byteLength(serialized);
+    if (total > 8 * 1024 * 1024) throw new Error('Bounded production metadata exceeded');
+    if (environment.EVENT === 'workflow_run' && endpoint === runEndpoint
+      && !['push', 'workflow_dispatch'].includes(result?.event)) {
+      throw new Error('Completed producer must be a supported production release event');
+    }
+    if (endpoint.startsWith(prefix + 'releases/tags/')) {
+      const requestedTag = endpoint.slice((prefix + 'releases/tags/').length);
+      publishedRelease(result, requestedTag);
+    }
+    else if (endpoint.startsWith(prefix + 'releases?')) {
+      if (!Array.isArray(result) || result.length > 30) throw new Error('Bounded release list required');
+      for (const release of result) publishedRelease(release);
+    }
+    return result;
+  };
+}
+
+/** Structural decisions alone grant neither signer nor writer authority. */
+export function resolveProductionPackageRelease(environment, readGithub = productionGithubJson) {
+  return resolvePackageRelease(environment, productionPackageObserver(environment, readGithub));
+}
+
 /** Emit the resolver's decision as Actions outputs. */
 export function main(environment = process.env) {
-  const decision = resolvePackageRelease(environment);
+  const decision = resolveProductionPackageRelease(environment);
   const output = 'tag=' + decision.tag + '\npublish=' + decision.publish + '\nbuild=' + decision.build + '\n';
   process.stdout.write(output);
   if (environment.GITHUB_OUTPUT) appendFileSync(environment.GITHUB_OUTPUT, output);

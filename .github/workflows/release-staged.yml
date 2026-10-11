@@ -54,6 +54,8 @@ jobs:
       prepared__crate_published: ${{ steps.prepared.outputs.crate_published }}
       version__new_version: ${{ steps.version.outputs.new_version }}
       active: ${{ steps.check.outputs.should_release == 'true' }}
+      check__recovery_state: ${{ steps.check.outputs.recovery_state }}
+      check__recovery_missing_assets: ${{ steps.check.outputs.recovery_missing_assets }}
       source_sha: ${{ steps.capture-source.outputs.source_sha || steps.baseline-source.outputs.source_sha }}
       source_tree: ${{ steps.capture-source.outputs.source_tree || steps.baseline-source.outputs.source_tree }}
       version: ${{ steps.capture-source.outputs.version || steps.baseline-source.outputs.version }}
@@ -71,7 +73,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+        with: { ref: "${{ github.sha }}", path: _protocol, fetch-depth: 0, persist-credentials: false }
       - name: Set up immutable protocol dependencies
         uses: oven-sh/setup-bun@v2
         with:
@@ -92,6 +94,8 @@ jobs:
       - name: Check if version already released or no fragments
         id: check
         env:
+          RELEASE_RECOVERY_PROTOCOL_ROOT: _protocol
+          RELEASE_RECOVERY_PROTOCOL_COMMIT: ${{ github.sha }}
           HAS_FRAGMENTS: ${{ steps.bump_type.outputs.has_fragments }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: rust-script scripts/check-release-needed.rs
@@ -116,6 +120,8 @@ jobs:
         id: prepared
         if: steps.check.outputs.should_release == 'true'
         env:
+          RELEASE_RECOVERY_PROTOCOL_ROOT: _protocol
+          RELEASE_RECOVERY_PROTOCOL_COMMIT: ${{ github.sha }}
           HAS_FRAGMENTS: 'false'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: rust-script scripts/check-release-needed.rs
@@ -788,6 +794,8 @@ jobs:
       version__already_released: ${{ steps.version.outputs.already_released }}
       version__new_version: ${{ steps.version.outputs.new_version }}
       active: ${{ steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true' }}
+      check__recovery_state: ${{ steps.check.outputs.recovery_state }}
+      check__recovery_missing_assets: ${{ steps.check.outputs.recovery_missing_assets }}
       source_sha: ${{ steps.capture-source.outputs.source_sha || steps.baseline-source.outputs.source_sha }}
       source_tree: ${{ steps.capture-source.outputs.source_tree || steps.baseline-source.outputs.source_tree }}
       version: ${{ steps.capture-source.outputs.version || steps.baseline-source.outputs.version }}
@@ -805,7 +813,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Check out immutable trusted workflow protocol
         uses: actions/checkout@v7
-        with: { ref: "${{ github.sha }}", path: _protocol, persist-credentials: false }
+        with: { ref: "${{ github.sha }}", path: _protocol, fetch-depth: 0, persist-credentials: false }
       - name: Set up immutable protocol dependencies
         uses: oven-sh/setup-bun@v2
         with:

@@ -53,10 +53,35 @@ pub fn wa_str_code_point_at(text: String, index: f64) -> f64 {
 // ~     || (code >= 0x0a80 && code <= 0x0aff)
 // ~     || (code >= 0x0b00 && code <= 0x0b7f);
 // ~ }
+// formal-ai:presentation:v1 rawSHA256=e1001b40a62a22b64237088c0828198320d5d0b3b6f9ddbcf3d79d6145d84278 rawBytes=548 renderedSHA256=4e73cf79a7a8aa3b0e92830bbb3a5f172e827026f331ee3a5e7a836e78eaec13
+// formal-ai:presentation-raw cHViIGZuIGlzX3NjcmlwdF9jb21iaW5pbmdfbWFyayhjaGFyYWN0ZXI6IFN0cmluZykgLT4gYm9vbCB7CiAgICB7CiAgICAg
+// formal-ai:presentation-raw ICAgbGV0IGNvZGUgPSBjcmF0ZTo6d2Ffc3RyX2NvZGVfcG9pbnRfYXQoY2hhcmFjdGVyLmNsb25lKCksIDBmNjQpOwogICAg
+// formal-ai:presentation-raw ICAgICgoKCgoKCgoKGNvZGUgPj0gKDc2OGY2NCkpICYmIChjb2RlIDw9ICg4NzlmNjQpKSkgfHwgKChjb2RlID49ICgyMzA0
+// formal-ai:presentation-raw ZjY0KSkgJiYgKGNvZGUgPD0gKDIzODNmNjQpKSkpIHx8ICgoY29kZSA+PSAoMjM4NWY2NCkpICYmIChjb2RlIDw9ICgyMzkx
+// formal-ai:presentation-raw ZjY0KSkpKSB8fCAoKGNvZGUgPj0gKDI0MDJmNjQpKSAmJiAoY29kZSA8PSAoMjQwM2Y2NCkpKSkgfHwgKChjb2RlID49ICgy
+// formal-ai:presentation-raw NDMyZjY0KSkgJiYgKGNvZGUgPD0gKDI1NTlmNjQpKSkpIHx8ICgoY29kZSA+PSAoMjU2MGY2NCkpICYmIChjb2RlIDw9ICgy
+// formal-ai:presentation-raw Njg3ZjY0KSkpKSB8fCAoKGNvZGUgPj0gKDI2ODhmNjQpKSAmJiAoY29kZSA8PSAoMjgxNWY2NCkpKSkgfHwgKChjb2RlID49
+// formal-ai:presentation-raw ICgyODE2ZjY0KSkgJiYgKGNvZGUgPD0gKDI5NDNmNjQpKSkpCiAgICB9Cn0=
+// formal-ai:presentation-raw end
 pub fn is_script_combining_mark(character: String) -> bool {
     {
         let code = crate::wa_str_code_point_at(character.clone(), 0f64);
-        (((((((((code >= (768f64)) && (code <= (879f64))) || ((code >= (2304f64)) && (code <= (2383f64)))) || ((code >= (2385f64)) && (code <= (2391f64)))) || ((code >= (2402f64)) && (code <= (2403f64)))) || ((code >= (2432f64)) && (code <= (2559f64)))) || ((code >= (2560f64)) && (code <= (2687f64)))) || ((code >= (2688f64)) && (code <= (2815f64)))) || ((code >= (2816f64)) && (code <= (2943f64))))
+        (((((((((code >= (768f64)) &&
+    (code <= (879f64))) ||
+    ((code >= (2304f64)) &&
+    (code <= (2383f64)))) ||
+    ((code >= (2385f64)) &&
+    (code <= (2391f64)))) ||
+    ((code >= (2402f64)) &&
+    (code <= (2403f64)))) ||
+    ((code >= (2432f64)) &&
+    (code <= (2559f64)))) ||
+    ((code >= (2560f64)) &&
+    (code <= (2687f64)))) ||
+    ((code >= (2688f64)) &&
+    (code <= (2815f64)))) ||
+    ((code >= (2816f64)) &&
+    (code <= (2943f64))))
     }
 }
 

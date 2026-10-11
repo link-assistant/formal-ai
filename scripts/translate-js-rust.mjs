@@ -43,6 +43,7 @@
 //
 // FORMAL_AI_META_LANGUAGE names the checkout instead of --meta-language.
 
+import {encodeRustPresentation, decodeRustPresentation, validatePresentationScope, projectionNeedsPresentation} from './lib/rust-projection-presentation.mjs';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -160,11 +161,15 @@ export function upstreamBlocks(code) {
         index = last;
       } else {
         const hash = /sha256=([0-9a-f]{64})/u.exec(line)?.[1];
-        let end = last + 1;
-        while (end <= lines.length && sha256(lines.slice(last + 1, end).join('\n')) !== hash) end += 1;
+        const presentation = lines[last + 1]?.startsWith('// formal-ai:presentation:v1 ')
+          ? decodeRustPresentation(lines, last + 1, hash) : null;
+        let end = presentation?.end ?? last + 1;
+        while (!presentation && end <= lines.length && sha256(lines.slice(last + 1, end).join('\n')) !== hash) end += 1;
         if (end > lines.length) throw new Error(`translated block at line ${index + 1} has no code matching its hash`);
         const term = /^\/\/ meta-language:translated \S+ (\S+)/u.exec(line)?.[1] ?? workaround?.[4] ?? '';
-        blocks.push({ kind: workaround ? 'workaround' : 'translated', rule: workaround?.[1] ?? null, term, source, text: lines.slice(index, end).join('\n') });
+        blocks.push({ kind: workaround ? 'workaround' : 'translated', rule: workaround?.[1] ?? null, term, source,
+          text: presentation ? [...lines.slice(index, last + 1), presentation.raw].join('\n') : lines.slice(index, end).join('\n'),
+          renderedText: lines.slice(index, end).join('\n'), presentation });
         index = end - 1;
       }
     }
@@ -209,6 +214,47 @@ export function refusalClass(reason, message) {
  * @param {{ header: string, prelude: string[], blocks: object[] }} parsed
  * @returns {string}
  */
+
+/** Raw block identity stays upstream-owned; readable code is a reversible checked derivative. */
+function presentTranslatedBlock(block) {
+  const lines = block.text.split('\n');
+  let last = 0;
+  while (lines[last + 1]?.startsWith(SOURCE_LINE)) last++;
+  while (lines[last + 1]?.startsWith(LOWERED_LINE)) last++;
+  const code = lines.slice(last + 1).join('\n');
+  const expected = /sha256=([0-9a-f]{64})/u.exec(lines[0])?.[1];
+  if (!expected || sha256(code) !== expected) throw Error('RawTranslatedBlockIdentityDrift');
+  return [...lines.slice(0, last + 1), encodeRustPresentation(code)].join('\n');
+}
+
+
+/** Preserve full committed metadata/preludes and replace only parser-owned translated spans. */
+export function presentCommittedProjection(source, ...extra) {
+  if (typeof source !== 'string' || extra.length !== 0
+      || Buffer.from(source).toString('utf8') !== source) throw Error('PrimitiveUtf8ProjectionRequired');
+  const parsed = upstreamBlocks(source);
+  if (!projectionNeedsPresentation(source)) return source;
+  validatePresentationScope(source);
+  const replacements = [];
+  let cursor = 0;
+  for (const block of parsed.blocks) {
+    if (block.kind === 'carried') continue;
+    const written = block.renderedText;
+    const start = source.indexOf(written, cursor);
+    if (start < 0 || (start > 0 && source[start - 1] !== '\n')) throw Error('ProjectionSourceSpanMissing');
+    const end = start + written.length;
+    if (end < source.length && source[end] !== '\n') throw Error('ProjectionSourceSpanTail');
+    replacements.push({start, end, source: written, rendered: presentTranslatedBlock(block)});
+    cursor = end;
+  }
+  let rendered = source;
+  for (const replacement of replacements.reverse()) {
+    if (rendered.slice(replacement.start, replacement.end) !== replacement.source) throw Error('ProjectionSourceSpanDrift');
+    rendered = rendered.slice(0, replacement.start) + replacement.rendered + rendered.slice(replacement.end);
+  }
+  return rendered;
+}
+
 export function renderProjection(parsed) {
   const applied = appliedWorkarounds(parsed.blocks);
   const parts = [[parsed.header, PROJECTION_NOTE, ...(applied ? [`${APPLIED}${applied}`] : [])].join('\n')];
@@ -222,7 +268,7 @@ export function renderProjection(parsed) {
     if (block.kind !== 'carried') parts.push(block.text);
     else parts.push([block.marker, `${REFUSAL}${block.refusal}`, ...(block.blockers?.length ? [`${BLOCKERS}${block.blockers.join(' | ')}`] : [])].join('\n'));
   }
-  return `${parts.join('\n\n')}\n`;
+  return presentCommittedProjection(`${parts.join('\n\n')}\n`);
 }
 
 /**

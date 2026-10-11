@@ -12,6 +12,9 @@ on: # zizmor: ignore[dangerous-triggers]
     paths:
       - ".github/workflows/publish-source-networks.yml"
       - "scripts/release-protocol.mjs"
+      - "scripts/lib/rust-projection-presentation.mjs"
+      - "scripts/self-translation/lexer.mjs"
+      - "scripts/check-readable-code.mjs"
       - "rust/tests/web/legacy-release-protocol.test.mjs"
       - "scripts/check-source-networks.mjs"
       - "scripts/verify-source-network-distribution.mjs"

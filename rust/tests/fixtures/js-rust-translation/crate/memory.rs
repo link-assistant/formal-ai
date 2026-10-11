@@ -53,7 +53,42 @@ pub const TARGET_MEMORY_SCHEMA_VERSION: f64 = 2f64;
 // |   ['conversationId', 'conversation_id'],
 // |   ['conversationTitle', 'conversation_title'],
 // | ];
-pub static FIELD_KEYS: std::sync::LazyLock<Vec<Vec<String>>> = std::sync::LazyLock::new(|| vec![vec![String::from("kind"), String::from("kind")], vec![String::from("role"), String::from("role")], vec![String::from("intent"), String::from("intent")], vec![String::from("tool"), String::from("tool")], vec![String::from("inputs"), String::from("inputs")], vec![String::from("outputs"), String::from("outputs")], vec![String::from("content"), String::from("content")], vec![String::from("sentAt"), String::from("sent_at")], vec![String::from("demoLabel"), String::from("demo_label")], vec![String::from("conversationId"), String::from("conversation_id")], vec![String::from("conversationTitle"), String::from("conversation_title")]]);
+// formal-ai:presentation:v1 rawSHA256=5f018f59494c176d656a8ad4eb835e92df2273db834b790e53cc08a16d8e09d0 rawBytes=731 renderedSHA256=e5f4e324ae806370d055c6d7730b8dee78dad43700a16a05a29f99b18c3c329e
+// formal-ai:presentation-raw cHViIHN0YXRpYyBGSUVMRF9LRVlTOiBzdGQ6OnN5bmM6OkxhenlMb2NrPFZlYzxWZWM8U3RyaW5nPj4+ID0gc3RkOjpzeW5j
+// formal-ai:presentation-raw OjpMYXp5TG9jazo6bmV3KHx8IHZlYyFbdmVjIVtTdHJpbmc6OmZyb20oImtpbmQiKSwgU3RyaW5nOjpmcm9tKCJraW5kIild
+// formal-ai:presentation-raw LCB2ZWMhW1N0cmluZzo6ZnJvbSgicm9sZSIpLCBTdHJpbmc6OmZyb20oInJvbGUiKV0sIHZlYyFbU3RyaW5nOjpmcm9tKCJp
+// formal-ai:presentation-raw bnRlbnQiKSwgU3RyaW5nOjpmcm9tKCJpbnRlbnQiKV0sIHZlYyFbU3RyaW5nOjpmcm9tKCJ0b29sIiksIFN0cmluZzo6ZnJv
+// formal-ai:presentation-raw bSgidG9vbCIpXSwgdmVjIVtTdHJpbmc6OmZyb20oImlucHV0cyIpLCBTdHJpbmc6OmZyb20oImlucHV0cyIpXSwgdmVjIVtT
+// formal-ai:presentation-raw dHJpbmc6OmZyb20oIm91dHB1dHMiKSwgU3RyaW5nOjpmcm9tKCJvdXRwdXRzIildLCB2ZWMhW1N0cmluZzo6ZnJvbSgiY29u
+// formal-ai:presentation-raw dGVudCIpLCBTdHJpbmc6OmZyb20oImNvbnRlbnQiKV0sIHZlYyFbU3RyaW5nOjpmcm9tKCJzZW50QXQiKSwgU3RyaW5nOjpm
+// formal-ai:presentation-raw cm9tKCJzZW50X2F0IildLCB2ZWMhW1N0cmluZzo6ZnJvbSgiZGVtb0xhYmVsIiksIFN0cmluZzo6ZnJvbSgiZGVtb19sYWJl
+// formal-ai:presentation-raw bCIpXSwgdmVjIVtTdHJpbmc6OmZyb20oImNvbnZlcnNhdGlvbklkIiksIFN0cmluZzo6ZnJvbSgiY29udmVyc2F0aW9uX2lk
+// formal-ai:presentation-raw IildLCB2ZWMhW1N0cmluZzo6ZnJvbSgiY29udmVyc2F0aW9uVGl0bGUiKSwgU3RyaW5nOjpmcm9tKCJjb252ZXJzYXRpb25f
+// formal-ai:presentation-raw dGl0bGUiKV1dKTs=
+// formal-ai:presentation-raw end
+pub static FIELD_KEYS: std::sync::LazyLock<Vec<Vec<String>>> = std::sync::LazyLock::new(||
+    vec![vec![String::from("kind"),
+    String::from("kind")],
+    vec![String::from("role"),
+    String::from("role")],
+    vec![String::from("intent"),
+    String::from("intent")],
+    vec![String::from("tool"),
+    String::from("tool")],
+    vec![String::from("inputs"),
+    String::from("inputs")],
+    vec![String::from("outputs"),
+    String::from("outputs")],
+    vec![String::from("content"),
+    String::from("content")],
+    vec![String::from("sentAt"),
+    String::from("sent_at")],
+    vec![String::from("demoLabel"),
+    String::from("demo_label")],
+    vec![String::from("conversationId"),
+    String::from("conversation_id")],
+    vec![String::from("conversationTitle"),
+    String::from("conversation_title")]]);
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal new expression

@@ -49,7 +49,32 @@
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=0cc0ba74032ac3247c1a7f9b6f28fc6d026d8dd3288afa1e41ad38c52de31ff3
 // | const OBJECT_TYPES = ['url', 'path', 'pattern', 'path_set', 'path_scope', 'quoted_content', 'time_expression',
 // |   'relative_period', 'language_name', 'quantity_question', 'task_list', 'delegation', 'bare_term', 'self_surface', 'none'];
-pub static OBJECT_TYPES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("url"), String::from("path"), String::from("pattern"), String::from("path_set"), String::from("path_scope"), String::from("quoted_content"), String::from("time_expression"), String::from("relative_period"), String::from("language_name"), String::from("quantity_question"), String::from("task_list"), String::from("delegation"), String::from("bare_term"), String::from("self_surface"), String::from("none")]);
+// formal-ai:presentation:v1 rawSHA256=0cc0ba74032ac3247c1a7f9b6f28fc6d026d8dd3288afa1e41ad38c52de31ff3 rawBytes=514 renderedSHA256=9db4ca5d457603bfbc6f9aeb0e8ef0f1d8ce34a33226fa9049d8229c9785e88d
+// formal-ai:presentation-raw cHViIHN0YXRpYyBPQkpFQ1RfVFlQRVM6IHN0ZDo6c3luYzo6TGF6eUxvY2s8VmVjPFN0cmluZz4+ID0gc3RkOjpzeW5jOjpM
+// formal-ai:presentation-raw YXp5TG9jazo6bmV3KHx8IHZlYyFbU3RyaW5nOjpmcm9tKCJ1cmwiKSwgU3RyaW5nOjpmcm9tKCJwYXRoIiksIFN0cmluZzo6
+// formal-ai:presentation-raw ZnJvbSgicGF0dGVybiIpLCBTdHJpbmc6OmZyb20oInBhdGhfc2V0IiksIFN0cmluZzo6ZnJvbSgicGF0aF9zY29wZSIpLCBT
+// formal-ai:presentation-raw dHJpbmc6OmZyb20oInF1b3RlZF9jb250ZW50IiksIFN0cmluZzo6ZnJvbSgidGltZV9leHByZXNzaW9uIiksIFN0cmluZzo6
+// formal-ai:presentation-raw ZnJvbSgicmVsYXRpdmVfcGVyaW9kIiksIFN0cmluZzo6ZnJvbSgibGFuZ3VhZ2VfbmFtZSIpLCBTdHJpbmc6OmZyb20oInF1
+// formal-ai:presentation-raw YW50aXR5X3F1ZXN0aW9uIiksIFN0cmluZzo6ZnJvbSgidGFza19saXN0IiksIFN0cmluZzo6ZnJvbSgiZGVsZWdhdGlvbiIp
+// formal-ai:presentation-raw LCBTdHJpbmc6OmZyb20oImJhcmVfdGVybSIpLCBTdHJpbmc6OmZyb20oInNlbGZfc3VyZmFjZSIpLCBTdHJpbmc6OmZyb20o
+// formal-ai:presentation-raw Im5vbmUiKV0pOw==
+// formal-ai:presentation-raw end
+pub static OBJECT_TYPES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from("url"),
+    String::from("path"),
+    String::from("pattern"),
+    String::from("path_set"),
+    String::from("path_scope"),
+    String::from("quoted_content"),
+    String::from("time_expression"),
+    String::from("relative_period"),
+    String::from("language_name"),
+    String::from("quantity_question"),
+    String::from("task_list"),
+    String::from("delegation"),
+    String::from("bare_term"),
+    String::from("self_surface"),
+    String::from("none")]);
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal namespace property …
@@ -62,7 +87,23 @@ pub static OBJECT_TYPES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock:
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=b0490b7667775168eef7a3ea90a16b6aa9f5e9940311b0954280e99daed4f626
 // | const ACTS_IN_PRECEDENCE = ['schedule', 'demonstrate', 'compose', 'enumerate', 'transform', 'explain', 'record',
 // |   'learn', 'retrieve'];
-pub static ACTS_IN_PRECEDENCE: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("schedule"), String::from("demonstrate"), String::from("compose"), String::from("enumerate"), String::from("transform"), String::from("explain"), String::from("record"), String::from("learn"), String::from("retrieve")]);
+// formal-ai:presentation:v1 rawSHA256=b0490b7667775168eef7a3ea90a16b6aa9f5e9940311b0954280e99daed4f626 rawBytes=332 renderedSHA256=1d8a754b6dc6e26f0eff5a266ed578a647b49210825386f4bc90860d51ce7e29
+// formal-ai:presentation-raw cHViIHN0YXRpYyBBQ1RTX0lOX1BSRUNFREVOQ0U6IHN0ZDo6c3luYzo6TGF6eUxvY2s8VmVjPFN0cmluZz4+ID0gc3RkOjpz
+// formal-ai:presentation-raw eW5jOjpMYXp5TG9jazo6bmV3KHx8IHZlYyFbU3RyaW5nOjpmcm9tKCJzY2hlZHVsZSIpLCBTdHJpbmc6OmZyb20oImRlbW9u
+// formal-ai:presentation-raw c3RyYXRlIiksIFN0cmluZzo6ZnJvbSgiY29tcG9zZSIpLCBTdHJpbmc6OmZyb20oImVudW1lcmF0ZSIpLCBTdHJpbmc6OmZy
+// formal-ai:presentation-raw b20oInRyYW5zZm9ybSIpLCBTdHJpbmc6OmZyb20oImV4cGxhaW4iKSwgU3RyaW5nOjpmcm9tKCJyZWNvcmQiKSwgU3RyaW5n
+// formal-ai:presentation-raw Ojpmcm9tKCJsZWFybiIpLCBTdHJpbmc6OmZyb20oInJldHJpZXZlIildKTs=
+// formal-ai:presentation-raw end
+pub static ACTS_IN_PRECEDENCE: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from("schedule"),
+    String::from("demonstrate"),
+    String::from("compose"),
+    String::from("enumerate"),
+    String::from("transform"),
+    String::from("explain"),
+    String::from("record"),
+    String::from("learn"),
+    String::from("retrieve")]);
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=d2436be8075649fd43b7732a4d46fea54ff23415c380ce3052f27055455c3c30
 // | /**
@@ -85,7 +126,17 @@ pub fn act_role(act: String) -> String {
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=dc6c6bdfd0f774fc603b9302550b88f9b538e1b0a2eb1703975bd1e65f4153e6
 // | const LOCI = ['workspace', 'web', 'dialogue', 'self', 'unresolved'];
-pub static LOCI: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("workspace"), String::from("web"), String::from("dialogue"), String::from("self"), String::from("unresolved")]);
+// formal-ai:presentation:v1 rawSHA256=dc6c6bdfd0f774fc603b9302550b88f9b538e1b0a2eb1703975bd1e65f4153e6 rawBytes=210 renderedSHA256=3187b1c72f7d2c7364d8c3c5e585051bf436be91b69b3e9bb162dd56991db388
+// formal-ai:presentation-raw cHViIHN0YXRpYyBMT0NJOiBzdGQ6OnN5bmM6OkxhenlMb2NrPFZlYzxTdHJpbmc+PiA9IHN0ZDo6c3luYzo6TGF6eUxvY2s6
+// formal-ai:presentation-raw Om5ldyh8fCB2ZWMhW1N0cmluZzo6ZnJvbSgid29ya3NwYWNlIiksIFN0cmluZzo6ZnJvbSgid2ViIiksIFN0cmluZzo6ZnJv
+// formal-ai:presentation-raw bSgiZGlhbG9ndWUiKSwgU3RyaW5nOjpmcm9tKCJzZWxmIiksIFN0cmluZzo6ZnJvbSgidW5yZXNvbHZlZCIpXSk7
+// formal-ai:presentation-raw end
+pub static LOCI: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
+    vec![String::from("workspace"),
+    String::from("web"),
+    String::from("dialogue"),
+    String::from("self"),
+    String::from("unresolved")]);
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal namespace property …
@@ -225,7 +276,19 @@ pub const DEFAULT_OUTCOME: &str = "ask";
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=8281d29ab2869ba70f967cb91ec0d6b13194e1c7a87a914891a366a0159bff50
 // | const QUOTE_PAIRS = [['"', '"'], ['“', '”'], ['«', '»']];
-pub static QUOTE_PAIRS: std::sync::LazyLock<Vec<Vec<String>>> = std::sync::LazyLock::new(|| vec![vec![String::from("\""), String::from("\"")], vec![String::from("“"), String::from("”")], vec![String::from("«"), String::from("»")]]);
+// formal-ai:presentation:v1 rawSHA256=8281d29ab2869ba70f967cb91ec0d6b13194e1c7a87a914891a366a0159bff50 rawBytes=238 renderedSHA256=356626a6dec67d85ec4376271c03dfc4819bf751486b937eaf286e52e37d3499
+// formal-ai:presentation-raw cHViIHN0YXRpYyBRVU9URV9QQUlSUzogc3RkOjpzeW5jOjpMYXp5TG9jazxWZWM8VmVjPFN0cmluZz4+PiA9IHN0ZDo6c3lu
+// formal-ai:presentation-raw Yzo6TGF6eUxvY2s6Om5ldyh8fCB2ZWMhW3ZlYyFbU3RyaW5nOjpmcm9tKCJcIiIpLCBTdHJpbmc6OmZyb20oIlwiIildLCB2
+// formal-ai:presentation-raw ZWMhW1N0cmluZzo6ZnJvbSgi4oCcIiksIFN0cmluZzo6ZnJvbSgi4oCdIildLCB2ZWMhW1N0cmluZzo6ZnJvbSgiwqsiKSwg
+// formal-ai:presentation-raw U3RyaW5nOjpmcm9tKCLCuyIpXV0pOw==
+// formal-ai:presentation-raw end
+pub static QUOTE_PAIRS: std::sync::LazyLock<Vec<Vec<String>>> = std::sync::LazyLock::new(||
+    vec![vec![String::from("\""),
+    String::from("\"")],
+    vec![String::from("“"),
+    String::from("”")],
+    vec![String::from("«"),
+    String::from("»")]]);
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal for with const

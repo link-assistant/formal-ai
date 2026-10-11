@@ -292,6 +292,9 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
             // The js -> rust leg's translator driver, its pinned ledger and
             // the committed translation (R1000): the js-rust job checks them.
             || file == "scripts/translate-js-rust.mjs"
+            || file == "scripts/lib/rust-projection-presentation.mjs"
+            || file == "scripts/self-translation/lexer.mjs"
+            || file == "scripts/check-readable-code.mjs"
             || file == "data/meta/js-rust-translation.lino"
             || file.starts_with("rust/tests/fixtures/js-rust-translation/")
             || file == LAYERED_WORKFLOW
@@ -722,5 +725,19 @@ mod tests {
             !suite.ts_changed,
             "the ts tree is a function of js/, not of its tests"
         );
+    }
+
+    #[test]
+    fn presentation_source_dependencies_rerun_all_translation_tiers() {
+        for path in [
+            "scripts/lib/rust-projection-presentation.mjs",
+            "scripts/self-translation/lexer.mjs",
+            "scripts/check-readable-code.mjs",
+        ] {
+            let flags = classify_changes(&[path.to_string()]);
+            assert!(flags.js_changed && flags.ts_changed && flags.rust_changed);
+        }
+        let unrelated = classify_changes(&["docs/presentation.md".to_string()]);
+        assert!(!unrelated.js_changed && !unrelated.ts_changed && !unrelated.rust_changed);
     }
 }

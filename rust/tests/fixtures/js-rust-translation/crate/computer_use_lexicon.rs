@@ -56,7 +56,67 @@ pub const GAP_PREFIX: &str = "computer_use_gap_";
 // |   [0x0e31, 0x0e3a], [0x0e47, 0x0e4e],
 // |   [0x1ab0, 0x1aff], [0x1dc0, 0x1dff], [0x20d0, 0x20f0], [0xfe20, 0xfe2f],
 // | ];
-pub static COMBINING_RANGES: std::sync::LazyLock<Vec<Vec<f64>>> = std::sync::LazyLock::new(|| vec![vec![768f64, 879f64], vec![1155f64, 1161f64], vec![1425f64, 1469f64], vec![1552f64, 1562f64], vec![1611f64, 1631f64], vec![1648f64, 1648f64], vec![1750f64, 1756f64], vec![2304f64, 2307f64], vec![2362f64, 2383f64], vec![2385f64, 2391f64], vec![2402f64, 2403f64], vec![2433f64, 2435f64], vec![2492f64, 2509f64], vec![2561f64, 2563f64], vec![2620f64, 2637f64], vec![2817f64, 2893f64], vec![3072f64, 3149f64], vec![3328f64, 3405f64], vec![3633f64, 3642f64], vec![3655f64, 3662f64], vec![6832f64, 6911f64], vec![7616f64, 7679f64], vec![8400f64, 8432f64], vec![65056f64, 65071f64]]);
+// formal-ai:presentation:v1 rawSHA256=8ec28d597b46aa364c6c48048ee3a63ab57f71732967283f9495f8cdc181d0d3 rawBytes=676 renderedSHA256=8f05c2c6e58295f136c92a44962bf5b85e4736b2ab4621c2e40cb2edcdcc4b23
+// formal-ai:presentation-raw cHViIHN0YXRpYyBDT01CSU5JTkdfUkFOR0VTOiBzdGQ6OnN5bmM6OkxhenlMb2NrPFZlYzxWZWM8ZjY0Pj4+ID0gc3RkOjpz
+// formal-ai:presentation-raw eW5jOjpMYXp5TG9jazo6bmV3KHx8IHZlYyFbdmVjIVs3NjhmNjQsIDg3OWY2NF0sIHZlYyFbMTE1NWY2NCwgMTE2MWY2NF0s
+// formal-ai:presentation-raw IHZlYyFbMTQyNWY2NCwgMTQ2OWY2NF0sIHZlYyFbMTU1MmY2NCwgMTU2MmY2NF0sIHZlYyFbMTYxMWY2NCwgMTYzMWY2NF0s
+// formal-ai:presentation-raw IHZlYyFbMTY0OGY2NCwgMTY0OGY2NF0sIHZlYyFbMTc1MGY2NCwgMTc1NmY2NF0sIHZlYyFbMjMwNGY2NCwgMjMwN2Y2NF0s
+// formal-ai:presentation-raw IHZlYyFbMjM2MmY2NCwgMjM4M2Y2NF0sIHZlYyFbMjM4NWY2NCwgMjM5MWY2NF0sIHZlYyFbMjQwMmY2NCwgMjQwM2Y2NF0s
+// formal-ai:presentation-raw IHZlYyFbMjQzM2Y2NCwgMjQzNWY2NF0sIHZlYyFbMjQ5MmY2NCwgMjUwOWY2NF0sIHZlYyFbMjU2MWY2NCwgMjU2M2Y2NF0s
+// formal-ai:presentation-raw IHZlYyFbMjYyMGY2NCwgMjYzN2Y2NF0sIHZlYyFbMjgxN2Y2NCwgMjg5M2Y2NF0sIHZlYyFbMzA3MmY2NCwgMzE0OWY2NF0s
+// formal-ai:presentation-raw IHZlYyFbMzMyOGY2NCwgMzQwNWY2NF0sIHZlYyFbMzYzM2Y2NCwgMzY0MmY2NF0sIHZlYyFbMzY1NWY2NCwgMzY2MmY2NF0s
+// formal-ai:presentation-raw IHZlYyFbNjgzMmY2NCwgNjkxMWY2NF0sIHZlYyFbNzYxNmY2NCwgNzY3OWY2NF0sIHZlYyFbODQwMGY2NCwgODQzMmY2NF0s
+// formal-ai:presentation-raw IHZlYyFbNjUwNTZmNjQsIDY1MDcxZjY0XV0pOw==
+// formal-ai:presentation-raw end
+pub static COMBINING_RANGES: std::sync::LazyLock<Vec<Vec<f64>>> = std::sync::LazyLock::new(||
+    vec![vec![768f64,
+    879f64],
+    vec![1155f64,
+    1161f64],
+    vec![1425f64,
+    1469f64],
+    vec![1552f64,
+    1562f64],
+    vec![1611f64,
+    1631f64],
+    vec![1648f64,
+    1648f64],
+    vec![1750f64,
+    1756f64],
+    vec![2304f64,
+    2307f64],
+    vec![2362f64,
+    2383f64],
+    vec![2385f64,
+    2391f64],
+    vec![2402f64,
+    2403f64],
+    vec![2433f64,
+    2435f64],
+    vec![2492f64,
+    2509f64],
+    vec![2561f64,
+    2563f64],
+    vec![2620f64,
+    2637f64],
+    vec![2817f64,
+    2893f64],
+    vec![3072f64,
+    3149f64],
+    vec![3328f64,
+    3405f64],
+    vec![3633f64,
+    3642f64],
+    vec![3655f64,
+    3662f64],
+    vec![6832f64,
+    6911f64],
+    vec![7616f64,
+    7679f64],
+    vec![8400f64,
+    8432f64],
+    vec![65056f64,
+    65071f64]]);
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .codePointAt()
