@@ -31,6 +31,30 @@ export function validateDefinition(definition) {
   }
   assert.equal(definition.targets.browser.releaseAttachment, 'required');
   assert.equal(definition.targets.browser.npm, 'required-if-configured');
+  const extension = definition.targets.extensions;
+  if (extension !== undefined) {
+    assert.deepEqual(Object.keys(extension).sort(), ['outcomes', 'package', 'publisher', 'registries', 'releaseAttachment', 'template']);
+    for (const field of ['publisher', 'package']) assert.match(extension[field], /^[a-z0-9][a-z0-9_.-]*$/u);
+    assert.equal(extension.releaseAttachment, 'required');
+    assert.equal(extension.template, extension.package + '-$' + '{version}.vsix');
+    assert.ok(Array.isArray(extension.registries) && extension.registries.length > 0 && extension.registries.length <= 128);
+    assert.equal(new Set(extension.registries.map(row => row.name)).size, extension.registries.length);
+    for (const row of extension.registries) {
+      assert.deepEqual(Object.keys(row).sort(), ['credential', 'job', 'name', 'policy', 'workflow']);
+      assert.match(row.name, /^[a-z][a-z0-9-]*$/u);
+      assert.match(row.credential, /^[A-Z][A-Z0-9_]*$/u);
+      assert.match(row.job, /^[A-Za-z0-9_-]+$/u);
+      assert.equal(row.policy, 'required-if-configured');
+      assert.ok(names.has(row.workflow), 'registry producer source is not declared');
+    }
+    assert.deepEqual(Object.keys(extension.outcomes).sort(), ['delivery', 'publicationComplete', 'schema', 'statuses']);
+    assert.equal(extension.outcomes.delivery, 'Unknown');
+    assert.equal(extension.outcomes.publicationComplete, false);
+    assert.equal(extension.outcomes.schema, 'formal-ai-extension-publication-outcome/v1');
+    assert.ok(Array.isArray(extension.outcomes.statuses) && extension.outcomes.statuses.length > 0 && extension.outcomes.statuses.length <= 128);
+    assert.equal(new Set(extension.outcomes.statuses).size, extension.outcomes.statuses.length);
+    for (const status of extension.outcomes.statuses) assert.match(status, /^[a-z][a-z0-9-]*$/u);
+  }
   return definition;
 }
 export function advertisementProtocolPaths(definition) {
@@ -38,7 +62,6 @@ export function advertisementProtocolPaths(definition) {
   assert.equal(new Set(ownPaths).size, ownPaths.length, 'duplicate protocol-role source input');
   return [...new Set([...ownPaths, ...definition.files.map(file => file.path)])].sort();
 }
-
 export function validateSnapshotFiles(definition, files) {
   validateDefinition(definition);
   assert.ok(Array.isArray(files));
@@ -134,18 +157,20 @@ export function validateDigestCoverage(definition, version, checksumBytes, asset
     assert.ok(!checksums.has(match[2]), 'duplicate checksum member');
     checksums.set(match[2], match[1]);
   }
-  const expected = [
-    ...definition.targets.native.map(row => 'formal-ai-native-' + row.target + '-' + version + '.json'),
-    ...definition.targets.desktopAssets.map(row => row.template.replace('$' + '{version}', version)),
-    ...definition.targets.cli.map(row => row.template),
-    'formal-ai-native-source-' + version + '.json',
-    'formal-ai-native-protocol-' + version + '.json',
-    ...definition.targets.desktop.filter(row => row.ebflag === '--mac').map(row => 'formal-ai-signing-' + row.label + '-' + version + '.json'),
-    'formal-ai-worker-' + version + '.wasm',
-    'formal-ai-wasm-' + version + '.json',
-    'formal-ai-vscode-' + version + '.vsix',
-    definition.targets.browser.package.replace(/^@/u, '').replace('/', '-') + '-' + version + '.tgz'
-  ];
+  const expected = [...definition.targets.native.map(row => 'formal-ai-native-' + row.target + '-' + version + '.json'),
+     ...definition.targets.desktopAssets.map(row => row.template.replace('$' + '{version}',
+     version)),
+     ...definition.targets.cli.map(row => row.template),
+     'formal-ai-native-source-' + version + '.json',
+     'formal-ai-native-protocol-' + version + '.json',
+     ...definition.targets.desktop.filter(row => row.ebflag === '--mac').map(row => 'formal-ai-signing-' + row.label + '-' + version + '.json'),
+     'formal-ai-worker-' + version + '.wasm',
+     'formal-ai-wasm-' + version + '.json',
+     definition.targets.extensions ? definition.targets.extensions.template.replace('$' + '{version}',
+     version) : 'formal-ai-vscode-' + version + '.vsix',
+     definition.targets.browser.package.replace(/^@/u,
+     '').replace('/',
+     '-') + '-' + version + '.tgz'];
   assert.equal(new Set(expected).size, expected.length, 'duplicate source-advertised asset');
   const missing = [];
   for (const name of expected) {

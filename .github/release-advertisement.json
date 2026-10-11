@@ -11,6 +11,9 @@
       "path": ".github/workflows/publish-engine.yml"
     },
     {
+      "path": ".github/workflows/publish-vscode.yml"
+    },
+    {
       "path": ".github/workflows/release-staged.yml"
     },
     {
@@ -47,6 +50,18 @@
       "path": "scripts/free-runner-disk.sh"
     },
     {
+      "path": "scripts/github-artifact-by-identifier.mjs"
+    },
+    {
+      "path": "scripts/lib/native-response-capture.mjs"
+    },
+    {
+      "path": "scripts/lib/native-session-projections.mjs"
+    },
+    {
+      "path": "scripts/lib/release-completion-producer.mjs"
+    },
+    {
       "path": "scripts/native-release-artifact.mjs"
     },
     {
@@ -65,7 +80,28 @@
       "path": "scripts/publish-browser-engine.mjs"
     },
     {
+      "path": "scripts/qualified-data-artifact-profiles.mjs"
+    },
+    {
+      "path": "scripts/release-extension-github.mjs"
+    },
+    {
+      "path": "scripts/release-extension-policy.mjs"
+    },
+    {
+      "path": "scripts/release-extension-publication.mjs"
+    },
+    {
+      "path": "scripts/release-extension-selection.mjs"
+    },
+    {
+      "path": "scripts/release-extension-transfer.mjs"
+    },
+    {
       "path": "scripts/release-image-factory.mjs"
+    },
+    {
+      "path": "scripts/release-native-publication.mjs"
     },
     {
       "path": "scripts/release-protocol.mjs"
@@ -290,6 +326,40 @@
       "package": "@link-assistant/formal-ai-engine",
       "releaseAttachment": "required",
       "npm": "required-if-configured"
+    },
+    "extensions": {
+      "publisher": "link-assistant",
+      "package": "formal-ai-vscode",
+      "template": "formal-ai-vscode-${version}.vsix",
+      "releaseAttachment": "required",
+      "registries": [
+        {
+          "name": "marketplace",
+          "policy": "required-if-configured",
+          "credential": "VSCE_PAT",
+          "workflow": ".github/workflows/publish-vscode.yml",
+          "job": "authoritative-publication"
+        },
+        {
+          "name": "open-vsx",
+          "policy": "required-if-configured",
+          "credential": "OVSX_PAT",
+          "workflow": ".github/workflows/publish-vscode.yml",
+          "job": "authoritative-publication"
+        }
+      ],
+      "outcomes": {
+        "schema": "formal-ai-extension-publication-outcome/v1",
+        "statuses": [
+          "skipped-unconfigured",
+          "publication-command-completed",
+          "publication-failed",
+          "existing-publication-unverified",
+          "not-attempted"
+        ],
+        "delivery": "Unknown",
+        "publicationComplete": false
+      }
     }
   },
   "publicationAuthority": false

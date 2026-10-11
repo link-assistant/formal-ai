@@ -175,3 +175,97 @@ test('unsafe advertised source paths still refuse before deduplicating roles', (
   for (const path of ['../source.mjs', '.git/config', '/source.mjs'])
     assert.throws(() => advertisementProtocolPaths({...definition, files: [{path}]}));
 });
+import { createRequire } from 'node:module';
+const advertisementYaml = createRequire(import.meta.url)('yaml');
+function changedExtensionWorkflow(change) {
+  const name = '.github/workflows/publish-vscode.yml';
+  const document = advertisementYaml.parse(sources[name].toString('utf8'));
+  const steps = Object.values(document.jobs).flatMap(job => job.steps ?? []);
+  const selected = steps.filter(step => typeof step.run === 'string' && step.run.trim().replace(/\s+/gu, ' ').endsWith('release-extension-publication.mjs publish marketplace'));
+  assert.equal(selected.length, 1);
+  change(selected[0]);
+  return {
+    ...sources,
+    [name]: Buffer.from(advertisementYaml.stringify(document))
+  };
+}
+test('all native and extension producer helpers belong to the declared source closure', () => {
+  const definition = deriveDefinition(sources);
+  for (const path of ['.github/workflows/publish-vscode.yml', 'scripts/release-extension-publication.mjs', 'scripts/release-extension-transfer.mjs', 'scripts/release-native-publication.mjs', 'scripts/lib/release-completion-producer.mjs']) {
+    assert.ok(definition.files.some(file => file.path === path));
+    const missing = {
+      ...sources
+    };
+    delete missing[path];
+    assert.throws(() => deriveDefinition(missing));
+  }
+});
+test('source-owned VSIX registry declarations preserve conditional configuration and incomplete outcomes', () => {
+  const extension = deriveDefinition(sources).targets.extensions;
+  assert.equal(extension.publisher, 'link-assistant');
+  assert.equal(extension.package, 'formal-ai-vscode');
+  assert.equal(extension.template, 'formal-ai-vscode-$' + '{version}.vsix');
+  assert.deepEqual(extension.registries.map(row => [row.name, row.credential, row.policy]), [['marketplace', 'VSCE_PAT', 'required-if-configured'], ['open-vsx', 'OVSX_PAT', 'required-if-configured']]);
+  assert.ok(extension.outcomes.statuses.includes('skipped-unconfigured'));
+  assert.ok(extension.outcomes.statuses.includes('existing-publication-unverified'));
+  assert.equal(extension.outcomes.delivery, 'Unknown');
+  assert.equal(extension.outcomes.publicationComplete, false);
+});
+test('the six existing producer target groups and registry policies are conserved', () => {
+  const actual = deriveDefinition(sources);
+  assert.deepEqual(Object.keys(actual.targets), ['native', 'desktop', 'desktopAssets', 'cli', 'containers', 'browser', 'extensions']);
+  assert.equal(actual.targets.native.length, 8);
+  assert.equal(actual.targets.desktop.length, 6);
+  assert.equal(actual.targets.cli.length, 5);
+  assert.equal(actual.targets.containers.length, 4);
+  assert.equal(actual.targets.desktopAssets.length, 14);
+  assert.equal(actual.distribution.dockerHub.policy, 'required-if-configured');
+  assert.equal(actual.targets.browser.npm, 'required-if-configured');
+});
+test('registry credential, source namespace and publication guard drift refuse', () => {
+  for (const change of [step => delete step.env.VSCE_PAT, step => step.run = step.run.replace('../../_protocol/', '../../_untrusted/'), step => step.if += ' || true']) {
+    assert.throws(() => deriveDefinition(changedExtensionWorkflow(change)));
+  }
+});
+test('dynamic registry source, unconfigured publication and false delivery authority refuse', () => {
+  const name = 'scripts/release-extension-publication.mjs';
+  const text = sources[name].toString('utf8');
+  for (const [before, after] of [["const registries = ['marketplace', 'open-vsx'];", 'const registries = discoverRegistries();'], ['if (environment[tokenName]) {', 'if (true) {'], ['registryDigestObserved: false', 'registryDigestObserved: true']]) {
+    assert.equal(text.split(before).length, 2);
+    assert.throws(() => deriveDefinition({
+      ...sources,
+      [name]: Buffer.from(text.replace(before, () => after))
+    }));
+  }
+});
+test('extended definitions reject duplicate registries and invented delivery flags', () => {
+  const actual = deriveDefinition(sources);
+  const duplicate = structuredClone(actual);
+  duplicate.targets.extensions.registries.push(duplicate.targets.extensions.registries[0]);
+  assert.throws(() => validateDefinition(duplicate));
+  const invented = structuredClone(actual);
+  invented.targets.extensions.outcomes.publicationComplete = true;
+  assert.throws(() => validateDefinition(invented));
+  const foreign = structuredClone(actual);
+  foreign.targets.extensions.registries[0].workflow = '.github/workflows/foreign.yml';
+  assert.throws(() => validateDefinition(foreign));
+});
+test('legacy definitions retain their original structural scope without receiving extension credit', () => {
+  const legacy = deriveDefinition(sources);
+  delete legacy.targets.extensions;
+  validateDefinition(legacy);
+  const missing = validateDigestCoverage(legacy, '1.2.3', Buffer.from('a'.repeat(64) + '  unrelated.txt\n'), []);
+  assert.equal(missing.complete, false);
+  assert.equal(missing.publicationAuthority, false);
+  assert.equal(missing.registryCoverage, 'Unknown');
+});
+test('relative native observer imports require complete safe source inputs', () => {
+  const name = 'scripts/release-native-publication.mjs';
+  for (const dependency of ['../../outside.mjs', '/outside.mjs', './undeclared-helper.mjs']) {
+    const changed = Buffer.from('import "' + dependency + '";\n' + sources[name].toString('utf8'));
+    assert.throws(() => deriveDefinition({
+      ...sources,
+      [name]: changed
+    }));
+  }
+});
