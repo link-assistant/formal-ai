@@ -17,8 +17,8 @@ export function resolveRequirementTarget(requirement) {
   const complete = hasHost() && typeof host().censusSourceClosureComplete === 'function'
     && host().censusSourceClosureComplete() === true;
   const resolved = scoped === census && !complete ? null : resolveIn(census, requirement);
-  const generatedCensus = scoped === census && !complete ? { modules: [] } : census;
-  return resolved !== null ? resolved : resolveGeneratedSeedTarget(generatedCensus, requirement);
+  // Observed declarations can refuse fallback without authorizing an unqualified target.
+  return resolved !== null ? resolved : resolveGeneratedSeedTarget(census, requirement);
 }
 
 /** Mirrors `fn resolve_in`. */
