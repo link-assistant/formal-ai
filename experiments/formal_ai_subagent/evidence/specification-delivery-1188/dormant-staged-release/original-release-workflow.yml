@@ -1494,3 +1494,7 @@ jobs:
           NEEDS_JSON: ${{ toJSON(needs) }}
           IS_MAIN: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
         run: bash scripts/check-pipeline-status.sh
+  self-authored-after-publication: {needs: ["auto-release","manual-release"], if: "${{ !cancelled() && github.ref == 'refs/heads/main' && (needs.auto-release.result == 'success' || needs.manual-release.result == 'success') }}",
+    uses: "./.github/workflows/self-authored-pull-request.yml", permissions: {"contents":"write","pull-requests":"write","issues":"write","actions":"write"},
+    with: {"production-run-id":"${{ github.run_id }}","production-run-attempt":"${{ github.run_attempt }}"},
+    secrets: {"AUTOMATION_APP_ID":"${{ secrets.AUTOMATION_APP_ID }}","AUTOMATION_APP_PRIVATE_KEY":"${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}","AUTOMATION_TOKEN":"${{ secrets.AUTOMATION_TOKEN }}"}}

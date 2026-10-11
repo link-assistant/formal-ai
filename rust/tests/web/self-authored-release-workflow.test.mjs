@@ -7,7 +7,9 @@ const action = YAML.parse(readFileSync(new URL('../../../.github/actions/author-
 
 test('release routes use only published or completed declared main producers', () => {
   assert.deepEqual(workflow.on.release, {types: ['published']});
-  assert.deepEqual(workflow.on.workflow_run, {workflows: ['CI/CD Pipeline'], types: ['completed'], branches: ['main']});
+  assert.equal(workflow.on.workflow_run, undefined);
+  assert.deepEqual(workflow.on.workflow_call.inputs, {'production-run-id': {type: 'string', required: true}, 'production-run-attempt': {type: 'string', required: true}});
+  assert.deepEqual(workflow.on.workflow_call.secrets, Object.fromEntries(['AUTOMATION_APP_ID', 'AUTOMATION_APP_PRIVATE_KEY', 'AUTOMATION_TOKEN'].map(name => [name, {required: false}])));
   assert.deepEqual(workflow.permissions, {});
   assert.equal(workflow.jobs.author['timeout-minutes'], 30);
   assert.deepEqual(workflow.jobs.author.permissions, {contents: 'write', 'pull-requests': 'write', issues: 'write', actions: 'write'});
@@ -20,13 +22,15 @@ test('release context precedes build and both authoring and cache require active
   const context = steps.find(step => step.id === 'release-context');
   const author = steps.find(step => step.id === 'author');
   const cache = steps.find(step => step.uses === './.github/actions/cache-cargo-registry');
-  const gate = "github.event_name != 'release' && github.event_name != 'workflow_run' || steps.release-context.outputs.active == 'true'";
+  const gate = "github.event_name != 'release' && inputs.production-run-id == '' || steps.release-context.outputs.active == 'true'";
   assert.ok(steps.indexOf(context) < steps.indexOf(cache));
   assert.ok(steps.indexOf(context) < steps.indexOf(author));
   assert.equal(author.if, gate); assert.equal(cache.if, gate);
   assert.equal(context.run, 'node scripts/resolve-self-authored-release.mjs');
-  assert.equal(context.env.RUN_ATTEMPT, '${{ github.event.workflow_run.run_attempt }}');
-  assert.equal(context.env.RUN_WORKFLOW_ID, '${{ github.event.workflow_run.workflow_id }}');
+  assert.equal(context.env.CURRENT_RUN_ATTEMPT, '${{ github.run_attempt }}');
+  assert.equal(context.env.PRODUCER_RUN_ATTEMPT, '${{ inputs.production-run-attempt }}');
+  assert.equal(context.env.CURRENT_WORKFLOW_REF, '${{ github.workflow_ref }}');
+  assert.equal(context.env.CURRENT_RUN_ID, '${{ github.run_id }}');
   assert.equal(author.with['base-branch'], '${{ steps.release-context.outputs.branch }}');
   assert.equal(author.with['starting-ref'], '${{ steps.release-context.outputs.branch }}');
   assert.equal(author.with['formal-ai-source'], 'source');

@@ -1,185 +1,895 @@
 {
-  "schema": "release-original-stage-coverage/v1",
-  "workflowSha256": "d1222bfbe9e0c614f46e618a298d0ce357724d49e1947b78f3e588deb5e6af80",
+  "schema": "release-original-stage-coverage/v1", "workflowSha256": "5c85dd83ae2b123acc031fce4b11ff7a8dca6875588a91b568747464de311089",
   "callers": [
     {
-      "caller": "auto-release",
-      "bodySha256": "75b2a44214e9a495d66dfe634919a91b93b137cf85d1c4f9bf6c10babe428537",
-      "originalSteps": 28,
+      "caller": "auto-release", "bodySha256": "75b2a44214e9a495d66dfe634919a91b93b137cf85d1c4f9bf6c10babe428537", "originalSteps": 28,
       "steps": [
-        {"ordinal":0,"name":"actions/checkout@v7","stage":"prepare-source","sha256":"78bf11c402b6253fa5bf89c76c386e0ff199ed9747fd2c904efb90be01ef15a0","raw":"      - uses: actions/checkout@v7\n        with:\n          fetch-depth: 0\n          token: ${{ secrets.GITHUB_TOKEN }}\n","stepId":null,"referencedStepOutputs":[]},
-        {"ordinal":1,"name":"Setup Rust","stage":"prepare-source","sha256":"94b3fedfbed2293e213b3ddf37e68799652fb93920b22cb314f892147ecfd292","raw":"      - name: Setup Rust\n        uses: dtolnay/rust-toolchain@stable\n","stepId":null,"referencedStepOutputs":[]},
-        {"ordinal":2,"name":"Install rust-script","stage":"prepare-source","sha256":"4639e031a83ff232d087a14d40e61b3c777f715c045f5b36a299ee5fdb2def8f","raw":"      - name: Install rust-script\n        run: bash scripts/install-rust-script.sh\n","stepId":null,"referencedStepOutputs":[]},
-        {"ordinal":3,"name":"Configure git","stage":"prepare-source","sha256":"5fbc764e408a70ddee893a04e019d6a1ffab0082bda2a10b9fae48003559ec8e","raw":"      - name: Configure git\n        run: rust-script scripts/git-config.rs\n","stepId":null,"referencedStepOutputs":[]},
-        {"ordinal":4,"name":"Determine bump type from changelog fragments","stage":"prepare-source","sha256":"e40f3906df6533b333f68ac52ef446f83b5817ac8bc4cd109ba5d1a349780933","raw":"      - name: Determine bump type from changelog fragments\n        id: bump_type\n        run: rust-script scripts/get-bump-type.rs\n","stepId":"bump_type","referencedStepOutputs":[]},
-        {"ordinal":5,"name":"Check if version already released or no fragments","stage":"prepare-source","sha256":"0b102a5c8ec4ad1ddde3b2b18845747322d3901923c3f0bcbe328e0b024cc018","raw":"      - name: Check if version already released or no fragments\n        id: check\n        env:\n          HAS_FRAGMENTS: ${{ steps.bump_type.outputs.has_fragments }}\n          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n        run: rust-script scripts/check-release-needed.rs\n","stepId":"check","referencedStepOutputs":[{"step":"bump_type","output":"has_fragments"}]},
-        {"ordinal":6,"name":"Collect changelog and bump version","stage":"prepare-source","sha256":"370f7ac8c592cb395ee7871e5d717f044b9a534e5d4643926618133939b6cd26","raw":"      - name: Collect changelog and bump version\n        id: version\n        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.skip_bump != 'true'\n        env:\n          # Issue #1085 (D3.3): the ledger row names who opened each qualifying\n          # pull request, read through `gh` with the job token.\n          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n          FORMAL_AI_PULL_REQUEST_AUTHOR_LOOKUP: gh\n        run: |\n          rust-script scripts/version-and-commit.rs \\\n            --bump-type \"${{ steps.bump_type.outputs.bump_type }}\" \\\n            --resume-prepared \\\n            --branch main\n","stepId":"version","referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"check","output":"skip_bump"},{"step":"bump_type","output":"bump_type"}]},
-        {"ordinal":7,"name":"Get current version","stage":"prepare-source","sha256":"4a84208ce257bd5ac906c17de3405c6f8d9cbadb2cace50d10cd7f0445caaf27","raw":"      - name: Get current version\n        id: current_version\n        if: steps.check.outputs.should_release == 'true'\n        run: rust-script scripts/get-version.rs\n","stepId":"current_version","referencedStepOutputs":[{"step":"check","output":"should_release"}]},
-        {"ordinal":8,"name":"Recheck prepared release state","stage":"prepare-source","sha256":"4babdb163448dd3b36bfe622775d8216e2803fc5f646184a15dbdb36f218a92a","raw":"      - name: Recheck prepared release state\n        id: prepared\n        if: steps.check.outputs.should_release == 'true'\n        env:\n          HAS_FRAGMENTS: 'false'\n          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n        run: rust-script scripts/check-release-needed.rs\n","stepId":"prepared","referencedStepOutputs":[{"step":"check","output":"should_release"}]},
-        {"ordinal":9,"name":"Build release","stage":"compile-release","sha256":"5768d995674298156be0c6c99ed29fb29a2995c01fe292a5d6d28a26a02eef0c","raw":"      - name: Build release\n        if: steps.check.outputs.should_release == 'true'\n        env:\n          RELEASE_VERSION: ${{ steps.current_version.outputs.version }}\n          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}\n        run: node scripts/prepared-release-binary.mjs \"$RELEASE_VERSION\" prepared-release\n","stepId":null,"referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"current_version","output":"version"}]},
-        {"ordinal":10,"name":"Verify packaged crate archive","stage":"verify-package","sha256":"15172312a02742109df6ed9f5ed51622de182b64935a917842772be9762b141e","raw":"      - name: Verify packaged crate archive\n        if: steps.check.outputs.should_release == 'true'\n        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai\n","stepId":null,"referencedStepOutputs":[{"step":"check","output":"should_release"}]},
-        {"ordinal":11,"name":"Publish to Crates.io","stage":"publish-crate","sha256":"6069e87ff178f75276c023a069e1551830b5031a9ad71abf35e8317b5c5a1b7f","raw":"      - name: Publish to Crates.io\n        if: steps.check.outputs.should_release == 'true' && steps.prepared.outputs.crate_published != 'true'\n        id: publish-crate\n        env:\n          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}\n          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}\n        run: rust-script scripts/publish-crate.rs\n","stepId":"publish-crate","referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"}]},
-        {"ordinal":12,"name":"Wait for Crate availability on Crates.io","stage":"registry-availability","sha256":"98b1c5431eda86da6fb0afb3b802a0d4fb870cc305d7a24317f9970035e191b9","raw":"      - name: Wait for Crate availability on Crates.io\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        run: rust-script scripts/wait-for-crate.rs --release-version \"${{ steps.current_version.outputs.version }}\"\n","stepId":null,"referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"},{"step":"current_version","output":"version"}]},
-        {"ordinal":13,"name":"Smoke test the published crate","stage":"published-crate-smoke","sha256":"5ee309655dfd3f941518d5f91a782975aa069071ebb31a38daeeec2f18b46719","raw":"      - name: Smoke test the published crate\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        run: scripts/smoke-test-published-crate.sh \"${{ steps.current_version.outputs.version }}\"\n","stepId":null,"referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"},{"step":"current_version","output":"version"}]},
-        {"ordinal":14,"name":"Free up runner disk space","stage":"publish-verify-images","sha256":"a4cafac2e3fcf668de2adb48161a11dc29677df83d412a5ea9ed48b8a2ed75d6","raw":"      - name: Free up runner disk space\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        run: bash scripts/free-runner-disk.sh\n","stepId":null,"referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"}]},
-        {"ordinal":15,"name":"Log in to GitHub Container Registry","stage":"publish-verify-images","sha256":"02c6b93b9fa5da6e5f8baf51ad689b9a0a4797d5b846ea21ae044fc67bd081f9","raw":"      - name: Log in to GitHub Container Registry\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        uses: docker/login-action@v4\n        with:\n          registry: ghcr.io\n          username: ${{ github.actor }}\n          password: ${{ secrets.GITHUB_TOKEN }}\n","stepId":null,"referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"}]},
-        {"ordinal":16,"name":"Set up Docker Buildx","stage":"publish-verify-images","sha256":"67b21067ad2a4d8b85577660edfd134e2f26db95844690357c3db6bc4575fa15","raw":"      - name: Set up Docker Buildx\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        uses: ./.github/actions/setup-buildx-resilient\n","stepId":null,"referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"}]},
-        {"ordinal":17,"name":"Expose actual BuildKit cache runtime","stage":"publish-verify-images","sha256":"184bb5a5609cb1cb055ec4f6ed145cc94a68d95f02276c37eb88d6627257ad76","raw":"      - name: Expose actual BuildKit cache runtime\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        uses: actions/github-script@v8\n        with:\n          script: |\n            for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {\n              const value = process.env[key];\n              if (!value) throw new Error(`Required BuildKit cache environment missing: ${key}`);\n              if (key === 'ACTIONS_RUNTIME_TOKEN') core.setSecret(value);\n              core.exportVariable(key, value);\n            }\n            core.exportVariable('ACTIONS_CACHE_SERVICE_V2', 'true');\n","stepId":null,"referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"}]},
-        {"ordinal":18,"name":"Publish Docker image to GHCR","stage":"publish-verify-images","sha256":"30e0f277d1d6d108cdfba24ff9552fa8cff816a409971634eb8cc56a3ab1d6e9","raw":"      - name: Publish Docker image to GHCR\n        id: ghcr-publish\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        timeout-minutes: 45\n        env:\n          RELEASE_VERSION: ${{ steps.current_version.outputs.version }}\n          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}\n          BUILD_CACHE_SETTINGS: |\n            cache-from: type=gha,scope=docker-image\n            cache-to: type=gha,mode=max,scope=docker-image\n        run: node scripts/release-image-factory.mjs publish prepared-release \"$RELEASE_VERSION\" \"$GHCR_IMAGE\"\n","stepId":"ghcr-publish","referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"},{"step":"current_version","output":"version"}]},
-        {"ordinal":19,"name":"Publish and verify the slim GHCR sidecar","stage":"publish-verify-images","sha256":"46e4598972f17b7086c08da3a1b6c882548d66e2ce7f05d88f82049eeeaaae49","raw":"      - name: Publish and verify the slim GHCR sidecar\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        timeout-minutes: 15\n        uses: ./.github/actions/publish-slim-image\n        with:\n          image: ${{ env.GHCR_IMAGE }}\n          version: ${{ steps.current_version.outputs.version }}\n","stepId":null,"referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"},{"step":"current_version","output":"version"}]},
-        {"ordinal":20,"name":"Verify the published GHCR image is anonymously pullable","stage":"publish-verify-images","sha256":"b9cc9dda28910ecaf38dc56e703fb5d056c5d3fe467085a6522b32e9b6ecc69a","raw":"      - name: Verify the published GHCR image is anonymously pullable\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        run: bash scripts/verify-ghcr-visibility.sh\n","stepId":null,"referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"}]},
-        {"ordinal":21,"name":"Verify anonymous access to the immutable published manifest","stage":"publish-verify-images","sha256":"281c3fd3445297753e20ce1e25ecdefdd93ab8ebb7ca397e1425adc4086a1dfc","raw":"      - name: Verify anonymous access to the immutable published manifest\n        if: steps.ghcr-publish.outputs.digest != ''\n        timeout-minutes: 2\n        env:\n          IMAGE_REFERENCE: ${{ env.GHCR_IMAGE }}@${{ steps.ghcr-publish.outputs.digest }}\n        run: node scripts/verify-anonymous-image-manifest.mjs \"$IMAGE_REFERENCE\"\n","stepId":null,"referencedStepOutputs":[{"step":"ghcr-publish","output":"digest"},{"step":"ghcr-publish","output":"digest"}]},
-        {"ordinal":22,"name":"Configure Docker Hub publishing","stage":"publish-verify-images","sha256":"305918be2ccf0b9f2ff4a5b48add83504cc5a42518461fa7d13a1395e4d6fc26","raw":"      - name: Configure Docker Hub publishing\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        id: dockerhub\n        run: bash scripts/configure-dockerhub-publishing.sh\n","stepId":"dockerhub","referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"}]},
-        {"ordinal":23,"name":"Log in to Docker Hub","stage":"publish-verify-images","sha256":"1010acb7611040f0807cd6e7d01c02398947564aea8bdbf5611b183170fa660c","raw":"      - name: Log in to Docker Hub\n        if: steps.dockerhub.outputs.enabled == 'true'\n        uses: docker/login-action@v4\n        with:\n          username: ${{ env.DOCKERHUB_USERNAME }}\n          password: ${{ env.DOCKERHUB_TOKEN }}\n","stepId":null,"referencedStepOutputs":[{"step":"dockerhub","output":"enabled"}]},
-        {"ordinal":24,"name":"Publish Docker image to Docker Hub","stage":"publish-verify-images","sha256":"3bb902999a9ecb352168a51ff4a2866d07463f23dfb7b74b2e3c4acad38c76e3","raw":"      - name: Publish Docker image to Docker Hub\n        if: steps.dockerhub.outputs.enabled == 'true'\n        timeout-minutes: 20\n        env:\n          RELEASE_VERSION: ${{ steps.current_version.outputs.version }}\n          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}\n        run: node scripts/release-image-factory.mjs mirror prepared-release \"$RELEASE_VERSION\" \"$DOCKERHUB_IMAGE\"\n","stepId":null,"referencedStepOutputs":[{"step":"dockerhub","output":"enabled"},{"step":"current_version","output":"version"}]},
-        {"ordinal":25,"name":"Create GitHub Release","stage":"create-release","sha256":"fdc10ae0d858d6377c0a296b492da7930a1927b8002e28298f04248916681b5c","raw":"      - name: Create GitHub Release\n        id: create-release\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        env:\n          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n          GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai\n          DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}\n          RELEASE_VERSION: ${{ steps.version.outputs.new_version || steps.current_version.outputs.version }}\n        run: bash scripts/invoke-create-github-release.sh\n","stepId":"create-release","referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"},{"step":"dockerhub","output":"docker_hub_url"},{"step":"version","output":"new_version"},{"step":"current_version","output":"version"}]},
-        {"ordinal":26,"name":"Attach the verified immutable slim image receipt","stage":"create-release","sha256":"6f7a17a38212abd9d799b0e1e341c1dca847655cc8e3db0e4d4db0304e234707","raw":"      - name: Attach the verified immutable slim image receipt\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        env:\n          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n          REPO: ${{ github.repository }}\n          MIRROR_ENABLED: ${{ steps.dockerhub.outputs.enabled }}\n          RELEASE_VERSION: ${{ steps.version.outputs.new_version || steps.current_version.outputs.version }}\n        run: |\n          set -euo pipefail\n          test -s slim-image-release-receipt.json\n          test -s slim-image-release-receipt.json.sha256\n          gh release upload \"v$RELEASE_VERSION\" slim-image-release-receipt.json slim-image-release-receipt.json.sha256 --repo \"$REPO\" --clobber\n          cp prepared-release/source/source-selection.json prepared-release-source.json\n          cp prepared-release/binary/native-executable-receipt.json prepared-release-executable.json\n          cp prepared-release/prepared-build.json prepared-release-build.json\n          cp prepared-release/full-image.json prepared-release-full-image.json\n          files=(prepared-release-source.json prepared-release-executable.json prepared-release-build.json prepared-release-full-image.json)\n          if [ \"$MIRROR_ENABLED\" = true ]; then\n            cp prepared-release/dockerhub-image.json prepared-release-dockerhub-image.json\n            files+=(prepared-release-dockerhub-image.json)\n          fi\n          sha256sum \"${files[@]}\" > prepared-release-SHA256SUMS.txt\n          gh release upload \"v$RELEASE_VERSION\" \"${files[@]}\" prepared-release-SHA256SUMS.txt --repo \"$REPO\" --clobber\n","stepId":null,"referencedStepOutputs":[{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"},{"step":"dockerhub","output":"enabled"},{"step":"version","output":"new_version"},{"step":"current_version","output":"version"}]},
-        {"ordinal":27,"name":"Resolve Pages deploy ref","stage":"create-release","sha256":"1c8d48a3ee948a436958c8aaa5207e285d50236f35bc9e95a61c110fb40a35f7","raw":"      - name: Resolve Pages deploy ref\n        id: release_pages_ref\n        if: always()\n        run: |\n          sha=\"$(git rev-parse HEAD)\"\n          echo \"sha=${sha}\" >> \"$GITHUB_OUTPUT\"\n          rust-script scripts/get-version.rs","stepId":"release_pages_ref","referencedStepOutputs":[]}
+        {
+          "ordinal": 0, "name": "actions/checkout@v7", "stage": "prepare-source", "sha256": "78bf11c402b6253fa5bf89c76c386e0ff199ed9747fd2c904efb90be01ef15a0",
+          "raw": "      - uses: actions/checkout@v7\n        with:\n          fetch-depth: 0\n          token: ${{ secrets.GITHUB_TOKEN }}\n", "stepId": null,
+          "referencedStepOutputs": []
+        },
+        {
+          "ordinal": 1, "name": "Setup Rust", "stage": "prepare-source", "sha256": "94b3fedfbed2293e213b3ddf37e68799652fb93920b22cb314f892147ecfd292",
+          "raw": "      - name: Setup Rust\n        uses: dtolnay/rust-toolchain@stable\n", "stepId": null, "referencedStepOutputs": []
+        },
+        {
+          "ordinal": 2, "name": "Install rust-script", "stage": "prepare-source", "sha256": "4639e031a83ff232d087a14d40e61b3c777f715c045f5b36a299ee5fdb2def8f",
+          "raw": "      - name: Install rust-script\n        run: bash scripts/install-rust-script.sh\n", "stepId": null, "referencedStepOutputs": []
+        },
+        {
+          "ordinal": 3, "name": "Configure git", "stage": "prepare-source", "sha256": "5fbc764e408a70ddee893a04e019d6a1ffab0082bda2a10b9fae48003559ec8e",
+          "raw": "      - name: Configure git\n        run: rust-script scripts/git-config.rs\n", "stepId": null, "referencedStepOutputs": []
+        },
+        {
+          "ordinal": 4, "name": "Determine bump type from changelog fragments", "stage": "prepare-source",
+          "sha256": "e40f3906df6533b333f68ac52ef446f83b5817ac8bc4cd109ba5d1a349780933",
+          "raw": "      - name: Determine bump type from changelog fragments\n        id: bump_type\n        run: rust-script scripts/get-bump-type.rs\n",
+          "stepId": "bump_type", "referencedStepOutputs": []
+        },
+        {
+          "ordinal": 5, "name": "Check if version already released or no fragments", "stage": "prepare-source",
+          "sha256": "0b102a5c8ec4ad1ddde3b2b18845747322d3901923c3f0bcbe328e0b024cc018",
+          "raw": "      - name: Check if version already released or no fragments\n        id: check\n        env:\n          HAS_FRAGMENTS: ${{ steps.bump_type.outputs.has_fragments }}\n          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n        run: rust-script scripts/check-release-needed.rs\n",
+          "stepId": "check", "referencedStepOutputs": [{"step":"bump_type","output":"has_fragments"}]
+        },
+        {
+          "ordinal": 6, "name": "Collect changelog and bump version", "stage": "prepare-source",
+          "sha256": "370f7ac8c592cb395ee7871e5d717f044b9a534e5d4643926618133939b6cd26",
+          "raw": "      - name: Collect changelog and bump version\n        id: version\n        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.skip_bump != 'true'\n        env:\n          # Issue #1085 (D3.3): the ledger row names who opened each qualifying\n          # pull request, read through `gh` with the job token.\n          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n          FORMAL_AI_PULL_REQUEST_AUTHOR_LOOKUP: gh\n        run: |\n          rust-script scripts/version-and-commit.rs \\\n            --bump-type \"${{ steps.bump_type.outputs.bump_type }}\" \\\n            --resume-prepared \\\n            --branch main\n",
+          "stepId": "version",
+          "referencedStepOutputs": [{"step":"check","output":"should_release"},{"step":"check","output":"skip_bump"},{"step":"bump_type","output":"bump_type"}]
+        },
+        {
+          "ordinal": 7, "name": "Get current version", "stage": "prepare-source", "sha256": "4a84208ce257bd5ac906c17de3405c6f8d9cbadb2cace50d10cd7f0445caaf27",
+          "raw": "      - name: Get current version\n        id: current_version\n        if: steps.check.outputs.should_release == 'true'\n        run: rust-script scripts/get-version.rs\n",
+          "stepId": "current_version", "referencedStepOutputs": [{"step":"check","output":"should_release"}]
+        },
+        {
+          "ordinal": 8, "name": "Recheck prepared release state", "stage": "prepare-source",
+          "sha256": "4babdb163448dd3b36bfe622775d8216e2803fc5f646184a15dbdb36f218a92a",
+          "raw": "      - name: Recheck prepared release state\n        id: prepared\n        if: steps.check.outputs.should_release == 'true'\n        env:\n          HAS_FRAGMENTS: 'false'\n          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n        run: rust-script scripts/check-release-needed.rs\n",
+          "stepId": "prepared", "referencedStepOutputs": [{"step":"check","output":"should_release"}]
+        },
+        {
+          "ordinal": 9, "name": "Build release", "stage": "compile-release", "sha256": "5768d995674298156be0c6c99ed29fb29a2995c01fe292a5d6d28a26a02eef0c",
+          "raw": "      - name: Build release\n        if: steps.check.outputs.should_release == 'true'\n        env:\n          RELEASE_VERSION: ${{ steps.current_version.outputs.version }}\n          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}\n        run: node scripts/prepared-release-binary.mjs \"$RELEASE_VERSION\" prepared-release\n",
+          "stepId": null, "referencedStepOutputs": [{"step":"check","output":"should_release"},{"step":"current_version","output":"version"}]
+        },
+        {
+          "ordinal": 10, "name": "Verify packaged crate archive", "stage": "verify-package",
+          "sha256": "15172312a02742109df6ed9f5ed51622de182b64935a917842772be9762b141e",
+          "raw": "      - name: Verify packaged crate archive\n        if: steps.check.outputs.should_release == 'true'\n        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai\n",
+          "stepId": null, "referencedStepOutputs": [{"step":"check","output":"should_release"}]
+        },
+        {
+          "ordinal": 11, "name": "Publish to Crates.io", "stage": "publish-crate", "sha256": "6069e87ff178f75276c023a069e1551830b5031a9ad71abf35e8317b5c5a1b7f",
+          "raw": "      - name: Publish to Crates.io\n        if: steps.check.outputs.should_release == 'true' && steps.prepared.outputs.crate_published != 'true'\n        id: publish-crate\n        env:\n          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}\n          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}\n        run: rust-script scripts/publish-crate.rs\n",
+          "stepId": "publish-crate", "referencedStepOutputs": [{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"}]
+        },
+        {
+          "ordinal": 12, "name": "Wait for Crate availability on Crates.io", "stage": "registry-availability",
+          "sha256": "98b1c5431eda86da6fb0afb3b802a0d4fb870cc305d7a24317f9970035e191b9",
+          "raw": "      - name: Wait for Crate availability on Crates.io\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        run: rust-script scripts/wait-for-crate.rs --release-version \"${{ steps.current_version.outputs.version }}\"\n",
+          "stepId": null,
+          "referencedStepOutputs": [
+            {"step":"check","output":"should_release"}, {"step":"prepared","output":"crate_published"}, {"step":"publish-crate","output":"publish_result"},
+            {"step":"current_version","output":"version"}
+          ]
+        },
+        {
+          "ordinal": 13, "name": "Smoke test the published crate", "stage": "published-crate-smoke",
+          "sha256": "5ee309655dfd3f941518d5f91a782975aa069071ebb31a38daeeec2f18b46719",
+          "raw": "      - name: Smoke test the published crate\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        run: scripts/smoke-test-published-crate.sh \"${{ steps.current_version.outputs.version }}\"\n",
+          "stepId": null,
+          "referencedStepOutputs": [
+            {"step":"check","output":"should_release"}, {"step":"prepared","output":"crate_published"}, {"step":"publish-crate","output":"publish_result"},
+            {"step":"current_version","output":"version"}
+          ]
+        },
+        {
+          "ordinal": 14, "name": "Free up runner disk space", "stage": "publish-verify-images",
+          "sha256": "a4cafac2e3fcf668de2adb48161a11dc29677df83d412a5ea9ed48b8a2ed75d6",
+          "raw": "      - name: Free up runner disk space\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        run: bash scripts/free-runner-disk.sh\n",
+          "stepId": null,
+          "referencedStepOutputs": [{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"}]
+        },
+        {
+          "ordinal": 15, "name": "Log in to GitHub Container Registry", "stage": "publish-verify-images",
+          "sha256": "02c6b93b9fa5da6e5f8baf51ad689b9a0a4797d5b846ea21ae044fc67bd081f9",
+          "raw": "      - name: Log in to GitHub Container Registry\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        uses: docker/login-action@v4\n        with:\n          registry: ghcr.io\n          username: ${{ github.actor }}\n          password: ${{ secrets.GITHUB_TOKEN }}\n",
+          "stepId": null,
+          "referencedStepOutputs": [{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"}]
+        },
+        {
+          "ordinal": 16, "name": "Set up Docker Buildx", "stage": "publish-verify-images",
+          "sha256": "67b21067ad2a4d8b85577660edfd134e2f26db95844690357c3db6bc4575fa15",
+          "raw": "      - name: Set up Docker Buildx\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        uses: ./.github/actions/setup-buildx-resilient\n",
+          "stepId": null,
+          "referencedStepOutputs": [{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"}]
+        },
+        {
+          "ordinal": 17, "name": "Expose actual BuildKit cache runtime", "stage": "publish-verify-images",
+          "sha256": "184bb5a5609cb1cb055ec4f6ed145cc94a68d95f02276c37eb88d6627257ad76",
+          "raw": "      - name: Expose actual BuildKit cache runtime\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        uses: actions/github-script@v8\n        with:\n          script: |\n            for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {\n              const value = process.env[key];\n              if (!value) throw new Error(`Required BuildKit cache environment missing: ${key}`);\n              if (key === 'ACTIONS_RUNTIME_TOKEN') core.setSecret(value);\n              core.exportVariable(key, value);\n            }\n            core.exportVariable('ACTIONS_CACHE_SERVICE_V2', 'true');\n",
+          "stepId": null,
+          "referencedStepOutputs": [{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"}]
+        },
+        {
+          "ordinal": 18, "name": "Publish Docker image to GHCR", "stage": "publish-verify-images",
+          "sha256": "30e0f277d1d6d108cdfba24ff9552fa8cff816a409971634eb8cc56a3ab1d6e9",
+          "raw": "      - name: Publish Docker image to GHCR\n        id: ghcr-publish\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        timeout-minutes: 45\n        env:\n          RELEASE_VERSION: ${{ steps.current_version.outputs.version }}\n          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}\n          BUILD_CACHE_SETTINGS: |\n            cache-from: type=gha,scope=docker-image\n            cache-to: type=gha,mode=max,scope=docker-image\n        run: node scripts/release-image-factory.mjs publish prepared-release \"$RELEASE_VERSION\" \"$GHCR_IMAGE\"\n",
+          "stepId": "ghcr-publish",
+          "referencedStepOutputs": [
+            {"step":"check","output":"should_release"}, {"step":"prepared","output":"crate_published"}, {"step":"publish-crate","output":"publish_result"},
+            {"step":"current_version","output":"version"}
+          ]
+        },
+        {
+          "ordinal": 19, "name": "Publish and verify the slim GHCR sidecar", "stage": "publish-verify-images",
+          "sha256": "46e4598972f17b7086c08da3a1b6c882548d66e2ce7f05d88f82049eeeaaae49",
+          "raw": "      - name: Publish and verify the slim GHCR sidecar\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        timeout-minutes: 15\n        uses: ./.github/actions/publish-slim-image\n        with:\n          image: ${{ env.GHCR_IMAGE }}\n          version: ${{ steps.current_version.outputs.version }}\n",
+          "stepId": null,
+          "referencedStepOutputs": [
+            {"step":"check","output":"should_release"}, {"step":"prepared","output":"crate_published"}, {"step":"publish-crate","output":"publish_result"},
+            {"step":"current_version","output":"version"}
+          ]
+        },
+        {
+          "ordinal": 20, "name": "Verify the published GHCR image is anonymously pullable", "stage": "publish-verify-images",
+          "sha256": "b9cc9dda28910ecaf38dc56e703fb5d056c5d3fe467085a6522b32e9b6ecc69a",
+          "raw": "      - name: Verify the published GHCR image is anonymously pullable\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        run: bash scripts/verify-ghcr-visibility.sh\n",
+          "stepId": null,
+          "referencedStepOutputs": [{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"}]
+        },
+        {
+          "ordinal": 21, "name": "Verify anonymous access to the immutable published manifest", "stage": "publish-verify-images",
+          "sha256": "281c3fd3445297753e20ce1e25ecdefdd93ab8ebb7ca397e1425adc4086a1dfc",
+          "raw": "      - name: Verify anonymous access to the immutable published manifest\n        if: steps.ghcr-publish.outputs.digest != ''\n        timeout-minutes: 2\n        env:\n          IMAGE_REFERENCE: ${{ env.GHCR_IMAGE }}@${{ steps.ghcr-publish.outputs.digest }}\n        run: node scripts/verify-anonymous-image-manifest.mjs \"$IMAGE_REFERENCE\"\n",
+          "stepId": null, "referencedStepOutputs": [{"step":"ghcr-publish","output":"digest"},{"step":"ghcr-publish","output":"digest"}]
+        },
+        {
+          "ordinal": 22, "name": "Configure Docker Hub publishing", "stage": "publish-verify-images",
+          "sha256": "305918be2ccf0b9f2ff4a5b48add83504cc5a42518461fa7d13a1395e4d6fc26",
+          "raw": "      - name: Configure Docker Hub publishing\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        id: dockerhub\n        run: bash scripts/configure-dockerhub-publishing.sh\n",
+          "stepId": "dockerhub",
+          "referencedStepOutputs": [{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"}]
+        },
+        {
+          "ordinal": 23, "name": "Log in to Docker Hub", "stage": "publish-verify-images",
+          "sha256": "1010acb7611040f0807cd6e7d01c02398947564aea8bdbf5611b183170fa660c",
+          "raw": "      - name: Log in to Docker Hub\n        if: steps.dockerhub.outputs.enabled == 'true'\n        uses: docker/login-action@v4\n        with:\n          username: ${{ env.DOCKERHUB_USERNAME }}\n          password: ${{ env.DOCKERHUB_TOKEN }}\n",
+          "stepId": null, "referencedStepOutputs": [{"step":"dockerhub","output":"enabled"}]
+        },
+        {
+          "ordinal": 24, "name": "Publish Docker image to Docker Hub", "stage": "publish-verify-images",
+          "sha256": "3bb902999a9ecb352168a51ff4a2866d07463f23dfb7b74b2e3c4acad38c76e3",
+          "raw": "      - name: Publish Docker image to Docker Hub\n        if: steps.dockerhub.outputs.enabled == 'true'\n        timeout-minutes: 20\n        env:\n          RELEASE_VERSION: ${{ steps.current_version.outputs.version }}\n          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}\n        run: node scripts/release-image-factory.mjs mirror prepared-release \"$RELEASE_VERSION\" \"$DOCKERHUB_IMAGE\"\n",
+          "stepId": null, "referencedStepOutputs": [{"step":"dockerhub","output":"enabled"},{"step":"current_version","output":"version"}]
+        },
+        {
+          "ordinal": 25, "name": "Create GitHub Release", "stage": "create-release",
+          "sha256": "fdc10ae0d858d6377c0a296b492da7930a1927b8002e28298f04248916681b5c",
+          "raw": "      - name: Create GitHub Release\n        id: create-release\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        env:\n          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n          GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai\n          DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}\n          RELEASE_VERSION: ${{ steps.version.outputs.new_version || steps.current_version.outputs.version }}\n        run: bash scripts/invoke-create-github-release.sh\n",
+          "stepId": "create-release",
+          "referencedStepOutputs": [
+            {"step":"check","output":"should_release"}, {"step":"prepared","output":"crate_published"}, {"step":"publish-crate","output":"publish_result"},
+            {"step":"dockerhub","output":"docker_hub_url"}, {"step":"version","output":"new_version"}, {"step":"current_version","output":"version"}
+          ]
+        },
+        {
+          "ordinal": 26, "name": "Attach the verified immutable slim image receipt", "stage": "create-release",
+          "sha256": "6f7a17a38212abd9d799b0e1e341c1dca847655cc8e3db0e4d4db0304e234707",
+          "raw": "      - name: Attach the verified immutable slim image receipt\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        env:\n          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n          REPO: ${{ github.repository }}\n          MIRROR_ENABLED: ${{ steps.dockerhub.outputs.enabled }}\n          RELEASE_VERSION: ${{ steps.version.outputs.new_version || steps.current_version.outputs.version }}\n        run: |\n          set -euo pipefail\n          test -s slim-image-release-receipt.json\n          test -s slim-image-release-receipt.json.sha256\n          gh release upload \"v$RELEASE_VERSION\" slim-image-release-receipt.json slim-image-release-receipt.json.sha256 --repo \"$REPO\" --clobber\n          cp prepared-release/source/source-selection.json prepared-release-source.json\n          cp prepared-release/binary/native-executable-receipt.json prepared-release-executable.json\n          cp prepared-release/prepared-build.json prepared-release-build.json\n          cp prepared-release/full-image.json prepared-release-full-image.json\n          files=(prepared-release-source.json prepared-release-executable.json prepared-release-build.json prepared-release-full-image.json)\n          if [ \"$MIRROR_ENABLED\" = true ]; then\n            cp prepared-release/dockerhub-image.json prepared-release-dockerhub-image.json\n            files+=(prepared-release-dockerhub-image.json)\n          fi\n          sha256sum \"${files[@]}\" > prepared-release-SHA256SUMS.txt\n          gh release upload \"v$RELEASE_VERSION\" \"${files[@]}\" prepared-release-SHA256SUMS.txt --repo \"$REPO\" --clobber\n",
+          "stepId": null,
+          "referencedStepOutputs": [
+            {"step":"check","output":"should_release"}, {"step":"prepared","output":"crate_published"}, {"step":"publish-crate","output":"publish_result"},
+            {"step":"dockerhub","output":"enabled"}, {"step":"version","output":"new_version"}, {"step":"current_version","output":"version"}
+          ]
+        },
+        {
+          "ordinal": 27, "name": "Resolve Pages deploy ref", "stage": "create-release",
+          "sha256": "1c8d48a3ee948a436958c8aaa5207e285d50236f35bc9e95a61c110fb40a35f7",
+          "raw": "      - name: Resolve Pages deploy ref\n        id: release_pages_ref\n        if: always()\n        run: |\n          sha=\"$(git rev-parse HEAD)\"\n          echo \"sha=${sha}\" >> \"$GITHUB_OUTPUT\"\n          rust-script scripts/get-version.rs",
+          "stepId": "release_pages_ref", "referencedStepOutputs": []
+        }
       ],
       "crossStageOutputTransfers": [
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"compile-release","consumerStep":"Build release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"current_version","output":"version","consumerStage":"compile-release","consumerStep":"Build release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"verify-package","consumerStep":"Verify packaged crate archive","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"publish-crate","consumerStep":"Publish to Crates.io","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"prepared","output":"crate_published","consumerStage":"publish-crate","consumerStep":"Publish to Crates.io","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"registry-availability","consumerStep":"Wait for Crate availability on Crates.io","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"prepared","output":"crate_published","consumerStage":"registry-availability","consumerStep":"Wait for Crate availability on Crates.io","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"registry-availability","consumerStep":"Wait for Crate availability on Crates.io","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"current_version","output":"version","consumerStage":"registry-availability","consumerStep":"Wait for Crate availability on Crates.io","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"published-crate-smoke","consumerStep":"Smoke test the published crate","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"prepared","output":"crate_published","consumerStage":"published-crate-smoke","consumerStep":"Smoke test the published crate","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"published-crate-smoke","consumerStep":"Smoke test the published crate","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"current_version","output":"version","consumerStage":"published-crate-smoke","consumerStep":"Smoke test the published crate","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"publish-verify-images","consumerStep":"Free up runner disk space","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"prepared","output":"crate_published","consumerStage":"publish-verify-images","consumerStep":"Free up runner disk space","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Free up runner disk space","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"publish-verify-images","consumerStep":"Log in to GitHub Container Registry","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"prepared","output":"crate_published","consumerStage":"publish-verify-images","consumerStep":"Log in to GitHub Container Registry","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Log in to GitHub Container Registry","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"publish-verify-images","consumerStep":"Set up Docker Buildx","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"prepared","output":"crate_published","consumerStage":"publish-verify-images","consumerStep":"Set up Docker Buildx","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Set up Docker Buildx","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"publish-verify-images","consumerStep":"Expose actual BuildKit cache runtime","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"prepared","output":"crate_published","consumerStage":"publish-verify-images","consumerStep":"Expose actual BuildKit cache runtime","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Expose actual BuildKit cache runtime","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"publish-verify-images","consumerStep":"Publish Docker image to GHCR","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"prepared","output":"crate_published","consumerStage":"publish-verify-images","consumerStep":"Publish Docker image to GHCR","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Publish Docker image to GHCR","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"current_version","output":"version","consumerStage":"publish-verify-images","consumerStep":"Publish Docker image to GHCR","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"publish-verify-images","consumerStep":"Publish and verify the slim GHCR sidecar","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"prepared","output":"crate_published","consumerStage":"publish-verify-images","consumerStep":"Publish and verify the slim GHCR sidecar","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Publish and verify the slim GHCR sidecar","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"current_version","output":"version","consumerStage":"publish-verify-images","consumerStep":"Publish and verify the slim GHCR sidecar","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"publish-verify-images","consumerStep":"Verify the published GHCR image is anonymously pullable","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"prepared","output":"crate_published","consumerStage":"publish-verify-images","consumerStep":"Verify the published GHCR image is anonymously pullable","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Verify the published GHCR image is anonymously pullable","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"publish-verify-images","consumerStep":"Configure Docker Hub publishing","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"prepared","output":"crate_published","consumerStage":"publish-verify-images","consumerStep":"Configure Docker Hub publishing","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Configure Docker Hub publishing","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"current_version","output":"version","consumerStage":"publish-verify-images","consumerStep":"Publish Docker image to Docker Hub","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"create-release","consumerStep":"Create GitHub Release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"prepared","output":"crate_published","consumerStage":"create-release","consumerStep":"Create GitHub Release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"create-release","consumerStep":"Create GitHub Release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-verify-images","producerStep":"dockerhub","output":"docker_hub_url","consumerStage":"create-release","consumerStep":"Create GitHub Release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"new_version","consumerStage":"create-release","consumerStep":"Create GitHub Release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"current_version","output":"version","consumerStage":"create-release","consumerStep":"Create GitHub Release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"check","output":"should_release","consumerStage":"create-release","consumerStep":"Attach the verified immutable slim image receipt","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"prepared","output":"crate_published","consumerStage":"create-release","consumerStep":"Attach the verified immutable slim image receipt","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"create-release","consumerStep":"Attach the verified immutable slim image receipt","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-verify-images","producerStep":"dockerhub","output":"enabled","consumerStage":"create-release","consumerStep":"Attach the verified immutable slim image receipt","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"new_version","consumerStage":"create-release","consumerStep":"Attach the verified immutable slim image receipt","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"current_version","output":"version","consumerStage":"create-release","consumerStep":"Attach the verified immutable slim image receipt","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"}
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "compile-release",
+          "consumerStep": "Build release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "current_version", "output": "version", "consumerStage": "compile-release",
+          "consumerStep": "Build release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "verify-package",
+          "consumerStep": "Verify packaged crate archive",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "publish-crate",
+          "consumerStep": "Publish to Crates.io",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "prepared", "output": "crate_published", "consumerStage": "publish-crate",
+          "consumerStep": "Publish to Crates.io",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "registry-availability",
+          "consumerStep": "Wait for Crate availability on Crates.io",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "prepared", "output": "crate_published", "consumerStage": "registry-availability",
+          "consumerStep": "Wait for Crate availability on Crates.io",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "registry-availability",
+          "consumerStep": "Wait for Crate availability on Crates.io",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "current_version", "output": "version", "consumerStage": "registry-availability",
+          "consumerStep": "Wait for Crate availability on Crates.io",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "published-crate-smoke",
+          "consumerStep": "Smoke test the published crate",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "prepared", "output": "crate_published", "consumerStage": "published-crate-smoke",
+          "consumerStep": "Smoke test the published crate",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "published-crate-smoke",
+          "consumerStep": "Smoke test the published crate",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "current_version", "output": "version", "consumerStage": "published-crate-smoke",
+          "consumerStep": "Smoke test the published crate",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "publish-verify-images",
+          "consumerStep": "Free up runner disk space",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "prepared", "output": "crate_published", "consumerStage": "publish-verify-images",
+          "consumerStep": "Free up runner disk space",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Free up runner disk space",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "publish-verify-images",
+          "consumerStep": "Log in to GitHub Container Registry",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "prepared", "output": "crate_published", "consumerStage": "publish-verify-images",
+          "consumerStep": "Log in to GitHub Container Registry",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Log in to GitHub Container Registry",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "publish-verify-images",
+          "consumerStep": "Set up Docker Buildx",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "prepared", "output": "crate_published", "consumerStage": "publish-verify-images",
+          "consumerStep": "Set up Docker Buildx",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Set up Docker Buildx",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "publish-verify-images",
+          "consumerStep": "Expose actual BuildKit cache runtime",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "prepared", "output": "crate_published", "consumerStage": "publish-verify-images",
+          "consumerStep": "Expose actual BuildKit cache runtime",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Expose actual BuildKit cache runtime",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish Docker image to GHCR",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "prepared", "output": "crate_published", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish Docker image to GHCR",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish Docker image to GHCR",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "current_version", "output": "version", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish Docker image to GHCR",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish and verify the slim GHCR sidecar",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "prepared", "output": "crate_published", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish and verify the slim GHCR sidecar",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish and verify the slim GHCR sidecar",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "current_version", "output": "version", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish and verify the slim GHCR sidecar",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "publish-verify-images",
+          "consumerStep": "Verify the published GHCR image is anonymously pullable",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "prepared", "output": "crate_published", "consumerStage": "publish-verify-images",
+          "consumerStep": "Verify the published GHCR image is anonymously pullable",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Verify the published GHCR image is anonymously pullable",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "publish-verify-images",
+          "consumerStep": "Configure Docker Hub publishing",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "prepared", "output": "crate_published", "consumerStage": "publish-verify-images",
+          "consumerStep": "Configure Docker Hub publishing",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Configure Docker Hub publishing",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "current_version", "output": "version", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish Docker image to Docker Hub",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "create-release",
+          "consumerStep": "Create GitHub Release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "prepared", "output": "crate_published", "consumerStage": "create-release",
+          "consumerStep": "Create GitHub Release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "create-release",
+          "consumerStep": "Create GitHub Release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-verify-images", "producerStep": "dockerhub", "output": "docker_hub_url", "consumerStage": "create-release",
+          "consumerStep": "Create GitHub Release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "new_version", "consumerStage": "create-release",
+          "consumerStep": "Create GitHub Release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "current_version", "output": "version", "consumerStage": "create-release",
+          "consumerStep": "Create GitHub Release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "check", "output": "should_release", "consumerStage": "create-release",
+          "consumerStep": "Attach the verified immutable slim image receipt",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "prepared", "output": "crate_published", "consumerStage": "create-release",
+          "consumerStep": "Attach the verified immutable slim image receipt",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "create-release",
+          "consumerStep": "Attach the verified immutable slim image receipt",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-verify-images", "producerStep": "dockerhub", "output": "enabled", "consumerStage": "create-release",
+          "consumerStep": "Attach the verified immutable slim image receipt",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "new_version", "consumerStage": "create-release",
+          "consumerStep": "Attach the verified immutable slim image receipt",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "current_version", "output": "version", "consumerStage": "create-release",
+          "consumerStep": "Attach the verified immutable slim image receipt",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        }
       ]
     },
     {
-      "caller": "manual-release",
-      "bodySha256": "24564369f149af5961efe112c4a13ad37bc56f0c2df55265ebf957efc1d767d8",
-      "originalSteps": 24,
+      "caller": "manual-release", "bodySha256": "24564369f149af5961efe112c4a13ad37bc56f0c2df55265ebf957efc1d767d8", "originalSteps": 24,
       "steps": [
-        {"ordinal":0,"name":"actions/checkout@v7","stage":"prepare-source","sha256":"78bf11c402b6253fa5bf89c76c386e0ff199ed9747fd2c904efb90be01ef15a0","raw":"      - uses: actions/checkout@v7\n        with:\n          fetch-depth: 0\n          token: ${{ secrets.GITHUB_TOKEN }}\n","stepId":null,"referencedStepOutputs":[]},
-        {"ordinal":1,"name":"Setup Rust","stage":"prepare-source","sha256":"94b3fedfbed2293e213b3ddf37e68799652fb93920b22cb314f892147ecfd292","raw":"      - name: Setup Rust\n        uses: dtolnay/rust-toolchain@stable\n","stepId":null,"referencedStepOutputs":[]},
-        {"ordinal":2,"name":"Install rust-script","stage":"prepare-source","sha256":"4639e031a83ff232d087a14d40e61b3c777f715c045f5b36a299ee5fdb2def8f","raw":"      - name: Install rust-script\n        run: bash scripts/install-rust-script.sh\n","stepId":null,"referencedStepOutputs":[]},
-        {"ordinal":3,"name":"Configure git","stage":"prepare-source","sha256":"5fbc764e408a70ddee893a04e019d6a1ffab0082bda2a10b9fae48003559ec8e","raw":"      - name: Configure git\n        run: rust-script scripts/git-config.rs\n","stepId":null,"referencedStepOutputs":[]},
-        {"ordinal":4,"name":"Version and commit","stage":"prepare-source","sha256":"b8ded46e7febf0adbe46314858b81ecc01d66fd6f16d5b73df8fc347435a3dec","raw":"      - name: Version and commit\n        id: version\n        env:\n          BUMP_TYPE: ${{ github.event.inputs.bump_type }}\n          DESCRIPTION: ${{ github.event.inputs.description }}\n        run: rust-script scripts/version-and-commit.rs --bump-type \"$BUMP_TYPE\" --description \"$DESCRIPTION\"\n","stepId":"version","referencedStepOutputs":[]},
-        {"ordinal":5,"name":"Build release","stage":"compile-release","sha256":"ada1010e8bc27326aec2dbb723cca469516265e7aab4af584984d52546f48321","raw":"      - name: Build release\n        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'\n        env:\n          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}\n          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}\n        run: node scripts/prepared-release-binary.mjs \"$RELEASE_VERSION\" prepared-release\n","stepId":null,"referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"version","output":"new_version"}]},
-        {"ordinal":6,"name":"Verify packaged crate archive","stage":"verify-package","sha256":"495aa8a1fa375daa1f54834b2ae348aad513098ec33188e5e556b64d3c95f0e1","raw":"      - name: Verify packaged crate archive\n        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'\n        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai\n","stepId":null,"referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"}]},
-        {"ordinal":7,"name":"Publish to Crates.io","stage":"publish-crate","sha256":"1b7b61f221de1dd1383c688a4408647eeb0b3af987293d9f62e34f45dec1d4c8","raw":"      - name: Publish to Crates.io\n        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'\n        id: publish-crate\n        env:\n          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}\n          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}\n        run: rust-script scripts/publish-crate.rs\n","stepId":"publish-crate","referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"}]},
-        {"ordinal":8,"name":"Wait for Crate availability on Crates.io","stage":"registry-availability","sha256":"cc49e95ce966d8c18a77937f25e20f26fee975693cf68e847b8e622528e9e8cd","raw":"      - name: Wait for Crate availability on Crates.io\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        run: rust-script scripts/wait-for-crate.rs --release-version \"${{ steps.version.outputs.new_version }}\"\n","stepId":null,"referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"},{"step":"version","output":"new_version"}]},
-        {"ordinal":9,"name":"Smoke test the published crate","stage":"published-crate-smoke","sha256":"d6ef0311eb28d48125ecb86fe775ed8b8ca4cf3740c2197a6bbf968483de07b2","raw":"      - name: Smoke test the published crate\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        run: scripts/smoke-test-published-crate.sh \"${{ steps.version.outputs.new_version }}\"\n","stepId":null,"referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"},{"step":"version","output":"new_version"}]},
-        {"ordinal":10,"name":"Free up runner disk space","stage":"publish-verify-images","sha256":"e5669db7c3265c6a41a83ca28ece3765a141427d733b3873880eb401cb036c64","raw":"      - name: Free up runner disk space\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        run: bash scripts/free-runner-disk.sh\n","stepId":null,"referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"}]},
-        {"ordinal":11,"name":"Log in to GitHub Container Registry","stage":"publish-verify-images","sha256":"6f4f0638555a933ea8ac34676596104b12b2f3611475872e3ea4b03f7c691a0a","raw":"      - name: Log in to GitHub Container Registry\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        uses: docker/login-action@v4\n        with:\n          registry: ghcr.io\n          username: ${{ github.actor }}\n          password: ${{ secrets.GITHUB_TOKEN }}\n","stepId":null,"referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"}]},
-        {"ordinal":12,"name":"Set up Docker Buildx","stage":"publish-verify-images","sha256":"fdd4bbb02bcc2801e14abafb4cf7fdc699795bbc280cf15777aa29a313baaa62","raw":"      - name: Set up Docker Buildx\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        uses: ./.github/actions/setup-buildx-resilient\n","stepId":null,"referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"}]},
-        {"ordinal":13,"name":"Expose actual BuildKit cache runtime","stage":"publish-verify-images","sha256":"3a341adf166577f3aa65d9f88c132b47a982e6030f97f34c24e341e78a8ec609","raw":"      - name: Expose actual BuildKit cache runtime\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        uses: actions/github-script@v8\n        with:\n          script: |\n            for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {\n              const value = process.env[key];\n              if (!value) throw new Error(`Required BuildKit cache environment missing: ${key}`);\n              if (key === 'ACTIONS_RUNTIME_TOKEN') core.setSecret(value);\n              core.exportVariable(key, value);\n            }\n            core.exportVariable('ACTIONS_CACHE_SERVICE_V2', 'true');\n","stepId":null,"referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"}]},
-        {"ordinal":14,"name":"Publish Docker image to GHCR","stage":"publish-verify-images","sha256":"2927a3642d161c18ab1a376c0e02bc4ba6be644382263906cbd0571864eb12c8","raw":"      - name: Publish Docker image to GHCR\n        id: ghcr-publish\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        timeout-minutes: 45\n        env:\n          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}\n          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}\n          BUILD_CACHE_SETTINGS: |\n            cache-from: type=gha,scope=docker-image\n            cache-to: type=gha,mode=max,scope=docker-image\n        run: node scripts/release-image-factory.mjs publish prepared-release \"$RELEASE_VERSION\" \"$GHCR_IMAGE\"\n","stepId":"ghcr-publish","referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"},{"step":"version","output":"new_version"}]},
-        {"ordinal":15,"name":"Publish and verify the slim GHCR sidecar","stage":"publish-verify-images","sha256":"0ff17dd769a1a453617e33ca62a38cc7e8edf419d3a3abb908f594709887f406","raw":"      - name: Publish and verify the slim GHCR sidecar\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        timeout-minutes: 15\n        uses: ./.github/actions/publish-slim-image\n        with:\n          image: ${{ env.GHCR_IMAGE }}\n          version: ${{ steps.version.outputs.new_version }}\n","stepId":null,"referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"},{"step":"version","output":"new_version"}]},
-        {"ordinal":16,"name":"Verify the published GHCR image is anonymously pullable","stage":"publish-verify-images","sha256":"dad7b2e7fbfb82b61e90bd07d4f100a2716e2b31cd07e689cca02c2c1246ac70","raw":"      - name: Verify the published GHCR image is anonymously pullable\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        run: bash scripts/verify-ghcr-visibility.sh\n","stepId":null,"referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"}]},
-        {"ordinal":17,"name":"Verify anonymous access to the immutable published manifest","stage":"publish-verify-images","sha256":"281c3fd3445297753e20ce1e25ecdefdd93ab8ebb7ca397e1425adc4086a1dfc","raw":"      - name: Verify anonymous access to the immutable published manifest\n        if: steps.ghcr-publish.outputs.digest != ''\n        timeout-minutes: 2\n        env:\n          IMAGE_REFERENCE: ${{ env.GHCR_IMAGE }}@${{ steps.ghcr-publish.outputs.digest }}\n        run: node scripts/verify-anonymous-image-manifest.mjs \"$IMAGE_REFERENCE\"\n","stepId":null,"referencedStepOutputs":[{"step":"ghcr-publish","output":"digest"},{"step":"ghcr-publish","output":"digest"}]},
-        {"ordinal":18,"name":"Configure Docker Hub publishing","stage":"publish-verify-images","sha256":"41b08810ea4d407261d10a03e88f5aada4201dc7b86919bca6d18a8401f4af06","raw":"      - name: Configure Docker Hub publishing\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        id: dockerhub\n        run: bash scripts/configure-dockerhub-publishing.sh\n","stepId":"dockerhub","referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"}]},
-        {"ordinal":19,"name":"Log in to Docker Hub","stage":"publish-verify-images","sha256":"1010acb7611040f0807cd6e7d01c02398947564aea8bdbf5611b183170fa660c","raw":"      - name: Log in to Docker Hub\n        if: steps.dockerhub.outputs.enabled == 'true'\n        uses: docker/login-action@v4\n        with:\n          username: ${{ env.DOCKERHUB_USERNAME }}\n          password: ${{ env.DOCKERHUB_TOKEN }}\n","stepId":null,"referencedStepOutputs":[{"step":"dockerhub","output":"enabled"}]},
-        {"ordinal":20,"name":"Publish Docker image to Docker Hub","stage":"publish-verify-images","sha256":"6b63ab1499aefbded4c84396d25ddd43f317d1ceb3ad005ba648d47b3ded4c2a","raw":"      - name: Publish Docker image to Docker Hub\n        if: steps.dockerhub.outputs.enabled == 'true'\n        timeout-minutes: 20\n        env:\n          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}\n          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}\n        run: node scripts/release-image-factory.mjs mirror prepared-release \"$RELEASE_VERSION\" \"$DOCKERHUB_IMAGE\"\n","stepId":null,"referencedStepOutputs":[{"step":"dockerhub","output":"enabled"},{"step":"version","output":"new_version"}]},
-        {"ordinal":21,"name":"Create GitHub Release","stage":"create-release","sha256":"3f29c2c1b611e426a3da2bf38a5f93e2b9adb823bb8664b0d9c250f881a696f8","raw":"      - name: Create GitHub Release\n        id: create-release\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        env:\n          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n          GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai\n          DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}\n          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}\n        run: bash scripts/invoke-create-github-release.sh\n","stepId":"create-release","referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"},{"step":"dockerhub","output":"docker_hub_url"},{"step":"version","output":"new_version"}]},
-        {"ordinal":22,"name":"Attach the verified immutable slim image receipt","stage":"create-release","sha256":"b919cad18f2a42a0ee85fae1d92ab4d851e4687e292813ff86e9f85621250140","raw":"      - name: Attach the verified immutable slim image receipt\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        env:\n          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n          REPO: ${{ github.repository }}\n          MIRROR_ENABLED: ${{ steps.dockerhub.outputs.enabled }}\n          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}\n        run: |\n          set -euo pipefail\n          test -s slim-image-release-receipt.json\n          test -s slim-image-release-receipt.json.sha256\n          gh release upload \"v$RELEASE_VERSION\" slim-image-release-receipt.json slim-image-release-receipt.json.sha256 --repo \"$REPO\" --clobber\n          cp prepared-release/source/source-selection.json prepared-release-source.json\n          cp prepared-release/binary/native-executable-receipt.json prepared-release-executable.json\n          cp prepared-release/prepared-build.json prepared-release-build.json\n          cp prepared-release/full-image.json prepared-release-full-image.json\n          files=(prepared-release-source.json prepared-release-executable.json prepared-release-build.json prepared-release-full-image.json)\n          if [ \"$MIRROR_ENABLED\" = true ]; then\n            cp prepared-release/dockerhub-image.json prepared-release-dockerhub-image.json\n            files+=(prepared-release-dockerhub-image.json)\n          fi\n          sha256sum \"${files[@]}\" > prepared-release-SHA256SUMS.txt\n          gh release upload \"v$RELEASE_VERSION\" \"${files[@]}\" prepared-release-SHA256SUMS.txt --repo \"$REPO\" --clobber\n","stepId":null,"referencedStepOutputs":[{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"},{"step":"dockerhub","output":"enabled"},{"step":"version","output":"new_version"}]},
-        {"ordinal":23,"name":"Resolve Pages deploy ref","stage":"create-release","sha256":"1c8d48a3ee948a436958c8aaa5207e285d50236f35bc9e95a61c110fb40a35f7","raw":"      - name: Resolve Pages deploy ref\n        id: release_pages_ref\n        if: always()\n        run: |\n          sha=\"$(git rev-parse HEAD)\"\n          echo \"sha=${sha}\" >> \"$GITHUB_OUTPUT\"\n          rust-script scripts/get-version.rs","stepId":"release_pages_ref","referencedStepOutputs":[]}
+        {
+          "ordinal": 0, "name": "actions/checkout@v7", "stage": "prepare-source", "sha256": "78bf11c402b6253fa5bf89c76c386e0ff199ed9747fd2c904efb90be01ef15a0",
+          "raw": "      - uses: actions/checkout@v7\n        with:\n          fetch-depth: 0\n          token: ${{ secrets.GITHUB_TOKEN }}\n", "stepId": null,
+          "referencedStepOutputs": []
+        },
+        {
+          "ordinal": 1, "name": "Setup Rust", "stage": "prepare-source", "sha256": "94b3fedfbed2293e213b3ddf37e68799652fb93920b22cb314f892147ecfd292",
+          "raw": "      - name: Setup Rust\n        uses: dtolnay/rust-toolchain@stable\n", "stepId": null, "referencedStepOutputs": []
+        },
+        {
+          "ordinal": 2, "name": "Install rust-script", "stage": "prepare-source", "sha256": "4639e031a83ff232d087a14d40e61b3c777f715c045f5b36a299ee5fdb2def8f",
+          "raw": "      - name: Install rust-script\n        run: bash scripts/install-rust-script.sh\n", "stepId": null, "referencedStepOutputs": []
+        },
+        {
+          "ordinal": 3, "name": "Configure git", "stage": "prepare-source", "sha256": "5fbc764e408a70ddee893a04e019d6a1ffab0082bda2a10b9fae48003559ec8e",
+          "raw": "      - name: Configure git\n        run: rust-script scripts/git-config.rs\n", "stepId": null, "referencedStepOutputs": []
+        },
+        {
+          "ordinal": 4, "name": "Version and commit", "stage": "prepare-source", "sha256": "b8ded46e7febf0adbe46314858b81ecc01d66fd6f16d5b73df8fc347435a3dec",
+          "raw": "      - name: Version and commit\n        id: version\n        env:\n          BUMP_TYPE: ${{ github.event.inputs.bump_type }}\n          DESCRIPTION: ${{ github.event.inputs.description }}\n        run: rust-script scripts/version-and-commit.rs --bump-type \"$BUMP_TYPE\" --description \"$DESCRIPTION\"\n",
+          "stepId": "version", "referencedStepOutputs": []
+        },
+        {
+          "ordinal": 5, "name": "Build release", "stage": "compile-release", "sha256": "ada1010e8bc27326aec2dbb723cca469516265e7aab4af584984d52546f48321",
+          "raw": "      - name: Build release\n        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'\n        env:\n          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}\n          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}\n        run: node scripts/prepared-release-binary.mjs \"$RELEASE_VERSION\" prepared-release\n",
+          "stepId": null,
+          "referencedStepOutputs": [{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"version","output":"new_version"}]
+        },
+        {
+          "ordinal": 6, "name": "Verify packaged crate archive", "stage": "verify-package",
+          "sha256": "495aa8a1fa375daa1f54834b2ae348aad513098ec33188e5e556b64d3c95f0e1",
+          "raw": "      - name: Verify packaged crate archive\n        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'\n        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai\n",
+          "stepId": null, "referencedStepOutputs": [{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"}]
+        },
+        {
+          "ordinal": 7, "name": "Publish to Crates.io", "stage": "publish-crate", "sha256": "1b7b61f221de1dd1383c688a4408647eeb0b3af987293d9f62e34f45dec1d4c8",
+          "raw": "      - name: Publish to Crates.io\n        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'\n        id: publish-crate\n        env:\n          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}\n          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}\n        run: rust-script scripts/publish-crate.rs\n",
+          "stepId": "publish-crate", "referencedStepOutputs": [{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"}]
+        },
+        {
+          "ordinal": 8, "name": "Wait for Crate availability on Crates.io", "stage": "registry-availability",
+          "sha256": "cc49e95ce966d8c18a77937f25e20f26fee975693cf68e847b8e622528e9e8cd",
+          "raw": "      - name: Wait for Crate availability on Crates.io\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        run: rust-script scripts/wait-for-crate.rs --release-version \"${{ steps.version.outputs.new_version }}\"\n",
+          "stepId": null,
+          "referencedStepOutputs": [
+            {"step":"version","output":"version_committed"}, {"step":"version","output":"already_released"}, {"step":"publish-crate","output":"publish_result"},
+            {"step":"version","output":"new_version"}
+          ]
+        },
+        {
+          "ordinal": 9, "name": "Smoke test the published crate", "stage": "published-crate-smoke",
+          "sha256": "d6ef0311eb28d48125ecb86fe775ed8b8ca4cf3740c2197a6bbf968483de07b2",
+          "raw": "      - name: Smoke test the published crate\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        run: scripts/smoke-test-published-crate.sh \"${{ steps.version.outputs.new_version }}\"\n",
+          "stepId": null,
+          "referencedStepOutputs": [
+            {"step":"version","output":"version_committed"}, {"step":"version","output":"already_released"}, {"step":"publish-crate","output":"publish_result"},
+            {"step":"version","output":"new_version"}
+          ]
+        },
+        {
+          "ordinal": 10, "name": "Free up runner disk space", "stage": "publish-verify-images",
+          "sha256": "e5669db7c3265c6a41a83ca28ece3765a141427d733b3873880eb401cb036c64",
+          "raw": "      - name: Free up runner disk space\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        run: bash scripts/free-runner-disk.sh\n",
+          "stepId": null,
+          "referencedStepOutputs": [{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"}]
+        },
+        {
+          "ordinal": 11, "name": "Log in to GitHub Container Registry", "stage": "publish-verify-images",
+          "sha256": "6f4f0638555a933ea8ac34676596104b12b2f3611475872e3ea4b03f7c691a0a",
+          "raw": "      - name: Log in to GitHub Container Registry\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        uses: docker/login-action@v4\n        with:\n          registry: ghcr.io\n          username: ${{ github.actor }}\n          password: ${{ secrets.GITHUB_TOKEN }}\n",
+          "stepId": null,
+          "referencedStepOutputs": [{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"}]
+        },
+        {
+          "ordinal": 12, "name": "Set up Docker Buildx", "stage": "publish-verify-images",
+          "sha256": "fdd4bbb02bcc2801e14abafb4cf7fdc699795bbc280cf15777aa29a313baaa62",
+          "raw": "      - name: Set up Docker Buildx\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        uses: ./.github/actions/setup-buildx-resilient\n",
+          "stepId": null,
+          "referencedStepOutputs": [{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"}]
+        },
+        {
+          "ordinal": 13, "name": "Expose actual BuildKit cache runtime", "stage": "publish-verify-images",
+          "sha256": "3a341adf166577f3aa65d9f88c132b47a982e6030f97f34c24e341e78a8ec609",
+          "raw": "      - name: Expose actual BuildKit cache runtime\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        uses: actions/github-script@v8\n        with:\n          script: |\n            for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {\n              const value = process.env[key];\n              if (!value) throw new Error(`Required BuildKit cache environment missing: ${key}`);\n              if (key === 'ACTIONS_RUNTIME_TOKEN') core.setSecret(value);\n              core.exportVariable(key, value);\n            }\n            core.exportVariable('ACTIONS_CACHE_SERVICE_V2', 'true');\n",
+          "stepId": null,
+          "referencedStepOutputs": [{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"}]
+        },
+        {
+          "ordinal": 14, "name": "Publish Docker image to GHCR", "stage": "publish-verify-images",
+          "sha256": "2927a3642d161c18ab1a376c0e02bc4ba6be644382263906cbd0571864eb12c8",
+          "raw": "      - name: Publish Docker image to GHCR\n        id: ghcr-publish\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        timeout-minutes: 45\n        env:\n          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}\n          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}\n          BUILD_CACHE_SETTINGS: |\n            cache-from: type=gha,scope=docker-image\n            cache-to: type=gha,mode=max,scope=docker-image\n        run: node scripts/release-image-factory.mjs publish prepared-release \"$RELEASE_VERSION\" \"$GHCR_IMAGE\"\n",
+          "stepId": "ghcr-publish",
+          "referencedStepOutputs": [
+            {"step":"version","output":"version_committed"}, {"step":"version","output":"already_released"}, {"step":"publish-crate","output":"publish_result"},
+            {"step":"version","output":"new_version"}
+          ]
+        },
+        {
+          "ordinal": 15, "name": "Publish and verify the slim GHCR sidecar", "stage": "publish-verify-images",
+          "sha256": "0ff17dd769a1a453617e33ca62a38cc7e8edf419d3a3abb908f594709887f406",
+          "raw": "      - name: Publish and verify the slim GHCR sidecar\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        timeout-minutes: 15\n        uses: ./.github/actions/publish-slim-image\n        with:\n          image: ${{ env.GHCR_IMAGE }}\n          version: ${{ steps.version.outputs.new_version }}\n",
+          "stepId": null,
+          "referencedStepOutputs": [
+            {"step":"version","output":"version_committed"}, {"step":"version","output":"already_released"}, {"step":"publish-crate","output":"publish_result"},
+            {"step":"version","output":"new_version"}
+          ]
+        },
+        {
+          "ordinal": 16, "name": "Verify the published GHCR image is anonymously pullable", "stage": "publish-verify-images",
+          "sha256": "dad7b2e7fbfb82b61e90bd07d4f100a2716e2b31cd07e689cca02c2c1246ac70",
+          "raw": "      - name: Verify the published GHCR image is anonymously pullable\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        run: bash scripts/verify-ghcr-visibility.sh\n",
+          "stepId": null,
+          "referencedStepOutputs": [{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"}]
+        },
+        {
+          "ordinal": 17, "name": "Verify anonymous access to the immutable published manifest", "stage": "publish-verify-images",
+          "sha256": "281c3fd3445297753e20ce1e25ecdefdd93ab8ebb7ca397e1425adc4086a1dfc",
+          "raw": "      - name: Verify anonymous access to the immutable published manifest\n        if: steps.ghcr-publish.outputs.digest != ''\n        timeout-minutes: 2\n        env:\n          IMAGE_REFERENCE: ${{ env.GHCR_IMAGE }}@${{ steps.ghcr-publish.outputs.digest }}\n        run: node scripts/verify-anonymous-image-manifest.mjs \"$IMAGE_REFERENCE\"\n",
+          "stepId": null, "referencedStepOutputs": [{"step":"ghcr-publish","output":"digest"},{"step":"ghcr-publish","output":"digest"}]
+        },
+        {
+          "ordinal": 18, "name": "Configure Docker Hub publishing", "stage": "publish-verify-images",
+          "sha256": "41b08810ea4d407261d10a03e88f5aada4201dc7b86919bca6d18a8401f4af06",
+          "raw": "      - name: Configure Docker Hub publishing\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        id: dockerhub\n        run: bash scripts/configure-dockerhub-publishing.sh\n",
+          "stepId": "dockerhub",
+          "referencedStepOutputs": [{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"}]
+        },
+        {
+          "ordinal": 19, "name": "Log in to Docker Hub", "stage": "publish-verify-images",
+          "sha256": "1010acb7611040f0807cd6e7d01c02398947564aea8bdbf5611b183170fa660c",
+          "raw": "      - name: Log in to Docker Hub\n        if: steps.dockerhub.outputs.enabled == 'true'\n        uses: docker/login-action@v4\n        with:\n          username: ${{ env.DOCKERHUB_USERNAME }}\n          password: ${{ env.DOCKERHUB_TOKEN }}\n",
+          "stepId": null, "referencedStepOutputs": [{"step":"dockerhub","output":"enabled"}]
+        },
+        {
+          "ordinal": 20, "name": "Publish Docker image to Docker Hub", "stage": "publish-verify-images",
+          "sha256": "6b63ab1499aefbded4c84396d25ddd43f317d1ceb3ad005ba648d47b3ded4c2a",
+          "raw": "      - name: Publish Docker image to Docker Hub\n        if: steps.dockerhub.outputs.enabled == 'true'\n        timeout-minutes: 20\n        env:\n          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}\n          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}\n        run: node scripts/release-image-factory.mjs mirror prepared-release \"$RELEASE_VERSION\" \"$DOCKERHUB_IMAGE\"\n",
+          "stepId": null, "referencedStepOutputs": [{"step":"dockerhub","output":"enabled"},{"step":"version","output":"new_version"}]
+        },
+        {
+          "ordinal": 21, "name": "Create GitHub Release", "stage": "create-release",
+          "sha256": "3f29c2c1b611e426a3da2bf38a5f93e2b9adb823bb8664b0d9c250f881a696f8",
+          "raw": "      - name: Create GitHub Release\n        id: create-release\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        env:\n          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n          GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai\n          DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}\n          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}\n        run: bash scripts/invoke-create-github-release.sh\n",
+          "stepId": "create-release",
+          "referencedStepOutputs": [
+            {"step":"version","output":"version_committed"}, {"step":"version","output":"already_released"}, {"step":"publish-crate","output":"publish_result"},
+            {"step":"dockerhub","output":"docker_hub_url"}, {"step":"version","output":"new_version"}
+          ]
+        },
+        {
+          "ordinal": 22, "name": "Attach the verified immutable slim image receipt", "stage": "create-release",
+          "sha256": "b919cad18f2a42a0ee85fae1d92ab4d851e4687e292813ff86e9f85621250140",
+          "raw": "      - name: Attach the verified immutable slim image receipt\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        env:\n          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n          REPO: ${{ github.repository }}\n          MIRROR_ENABLED: ${{ steps.dockerhub.outputs.enabled }}\n          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}\n        run: |\n          set -euo pipefail\n          test -s slim-image-release-receipt.json\n          test -s slim-image-release-receipt.json.sha256\n          gh release upload \"v$RELEASE_VERSION\" slim-image-release-receipt.json slim-image-release-receipt.json.sha256 --repo \"$REPO\" --clobber\n          cp prepared-release/source/source-selection.json prepared-release-source.json\n          cp prepared-release/binary/native-executable-receipt.json prepared-release-executable.json\n          cp prepared-release/prepared-build.json prepared-release-build.json\n          cp prepared-release/full-image.json prepared-release-full-image.json\n          files=(prepared-release-source.json prepared-release-executable.json prepared-release-build.json prepared-release-full-image.json)\n          if [ \"$MIRROR_ENABLED\" = true ]; then\n            cp prepared-release/dockerhub-image.json prepared-release-dockerhub-image.json\n            files+=(prepared-release-dockerhub-image.json)\n          fi\n          sha256sum \"${files[@]}\" > prepared-release-SHA256SUMS.txt\n          gh release upload \"v$RELEASE_VERSION\" \"${files[@]}\" prepared-release-SHA256SUMS.txt --repo \"$REPO\" --clobber\n",
+          "stepId": null,
+          "referencedStepOutputs": [
+            {"step":"version","output":"version_committed"}, {"step":"version","output":"already_released"}, {"step":"publish-crate","output":"publish_result"},
+            {"step":"dockerhub","output":"enabled"}, {"step":"version","output":"new_version"}
+          ]
+        },
+        {
+          "ordinal": 23, "name": "Resolve Pages deploy ref", "stage": "create-release",
+          "sha256": "1c8d48a3ee948a436958c8aaa5207e285d50236f35bc9e95a61c110fb40a35f7",
+          "raw": "      - name: Resolve Pages deploy ref\n        id: release_pages_ref\n        if: always()\n        run: |\n          sha=\"$(git rev-parse HEAD)\"\n          echo \"sha=${sha}\" >> \"$GITHUB_OUTPUT\"\n          rust-script scripts/get-version.rs",
+          "stepId": "release_pages_ref", "referencedStepOutputs": []
+        }
       ],
       "crossStageOutputTransfers": [
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"compile-release","consumerStep":"Build release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"compile-release","consumerStep":"Build release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"new_version","consumerStage":"compile-release","consumerStep":"Build release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"verify-package","consumerStep":"Verify packaged crate archive","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"verify-package","consumerStep":"Verify packaged crate archive","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"publish-crate","consumerStep":"Publish to Crates.io","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"publish-crate","consumerStep":"Publish to Crates.io","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"registry-availability","consumerStep":"Wait for Crate availability on Crates.io","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"registry-availability","consumerStep":"Wait for Crate availability on Crates.io","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"registry-availability","consumerStep":"Wait for Crate availability on Crates.io","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"new_version","consumerStage":"registry-availability","consumerStep":"Wait for Crate availability on Crates.io","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"published-crate-smoke","consumerStep":"Smoke test the published crate","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"published-crate-smoke","consumerStep":"Smoke test the published crate","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"published-crate-smoke","consumerStep":"Smoke test the published crate","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"new_version","consumerStage":"published-crate-smoke","consumerStep":"Smoke test the published crate","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"publish-verify-images","consumerStep":"Free up runner disk space","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"publish-verify-images","consumerStep":"Free up runner disk space","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Free up runner disk space","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"publish-verify-images","consumerStep":"Log in to GitHub Container Registry","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"publish-verify-images","consumerStep":"Log in to GitHub Container Registry","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Log in to GitHub Container Registry","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"publish-verify-images","consumerStep":"Set up Docker Buildx","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"publish-verify-images","consumerStep":"Set up Docker Buildx","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Set up Docker Buildx","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"publish-verify-images","consumerStep":"Expose actual BuildKit cache runtime","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"publish-verify-images","consumerStep":"Expose actual BuildKit cache runtime","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Expose actual BuildKit cache runtime","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"publish-verify-images","consumerStep":"Publish Docker image to GHCR","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"publish-verify-images","consumerStep":"Publish Docker image to GHCR","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Publish Docker image to GHCR","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"new_version","consumerStage":"publish-verify-images","consumerStep":"Publish Docker image to GHCR","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"publish-verify-images","consumerStep":"Publish and verify the slim GHCR sidecar","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"publish-verify-images","consumerStep":"Publish and verify the slim GHCR sidecar","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Publish and verify the slim GHCR sidecar","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"new_version","consumerStage":"publish-verify-images","consumerStep":"Publish and verify the slim GHCR sidecar","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"publish-verify-images","consumerStep":"Verify the published GHCR image is anonymously pullable","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"publish-verify-images","consumerStep":"Verify the published GHCR image is anonymously pullable","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Verify the published GHCR image is anonymously pullable","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"publish-verify-images","consumerStep":"Configure Docker Hub publishing","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"publish-verify-images","consumerStep":"Configure Docker Hub publishing","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"publish-verify-images","consumerStep":"Configure Docker Hub publishing","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"new_version","consumerStage":"publish-verify-images","consumerStep":"Publish Docker image to Docker Hub","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"create-release","consumerStep":"Create GitHub Release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"create-release","consumerStep":"Create GitHub Release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"create-release","consumerStep":"Create GitHub Release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-verify-images","producerStep":"dockerhub","output":"docker_hub_url","consumerStage":"create-release","consumerStep":"Create GitHub Release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"new_version","consumerStage":"create-release","consumerStep":"Create GitHub Release","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"version_committed","consumerStage":"create-release","consumerStep":"Attach the verified immutable slim image receipt","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"already_released","consumerStage":"create-release","consumerStep":"Attach the verified immutable slim image receipt","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-crate","producerStep":"publish-crate","output":"publish_result","consumerStage":"create-release","consumerStep":"Attach the verified immutable slim image receipt","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"publish-verify-images","producerStep":"dockerhub","output":"enabled","consumerStage":"create-release","consumerStep":"Attach the verified immutable slim image receipt","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"},
-        {"producerStage":"prepare-source","producerStep":"version","output":"new_version","consumerStage":"create-release","consumerStep":"Attach the verified immutable slim image receipt","status":"Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"}
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "compile-release",
+          "consumerStep": "Build release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "compile-release",
+          "consumerStep": "Build release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "new_version", "consumerStage": "compile-release",
+          "consumerStep": "Build release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "verify-package",
+          "consumerStep": "Verify packaged crate archive",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "verify-package",
+          "consumerStep": "Verify packaged crate archive",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "publish-crate",
+          "consumerStep": "Publish to Crates.io",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "publish-crate",
+          "consumerStep": "Publish to Crates.io",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "registry-availability",
+          "consumerStep": "Wait for Crate availability on Crates.io",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "registry-availability",
+          "consumerStep": "Wait for Crate availability on Crates.io",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "registry-availability",
+          "consumerStep": "Wait for Crate availability on Crates.io",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "new_version", "consumerStage": "registry-availability",
+          "consumerStep": "Wait for Crate availability on Crates.io",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "published-crate-smoke",
+          "consumerStep": "Smoke test the published crate",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "published-crate-smoke",
+          "consumerStep": "Smoke test the published crate",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "published-crate-smoke",
+          "consumerStep": "Smoke test the published crate",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "new_version", "consumerStage": "published-crate-smoke",
+          "consumerStep": "Smoke test the published crate",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "publish-verify-images",
+          "consumerStep": "Free up runner disk space",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "publish-verify-images",
+          "consumerStep": "Free up runner disk space",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Free up runner disk space",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "publish-verify-images",
+          "consumerStep": "Log in to GitHub Container Registry",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "publish-verify-images",
+          "consumerStep": "Log in to GitHub Container Registry",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Log in to GitHub Container Registry",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "publish-verify-images",
+          "consumerStep": "Set up Docker Buildx",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "publish-verify-images",
+          "consumerStep": "Set up Docker Buildx",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Set up Docker Buildx",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "publish-verify-images",
+          "consumerStep": "Expose actual BuildKit cache runtime",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "publish-verify-images",
+          "consumerStep": "Expose actual BuildKit cache runtime",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Expose actual BuildKit cache runtime",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish Docker image to GHCR",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish Docker image to GHCR",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish Docker image to GHCR",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "new_version", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish Docker image to GHCR",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish and verify the slim GHCR sidecar",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish and verify the slim GHCR sidecar",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish and verify the slim GHCR sidecar",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "new_version", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish and verify the slim GHCR sidecar",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "publish-verify-images",
+          "consumerStep": "Verify the published GHCR image is anonymously pullable",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "publish-verify-images",
+          "consumerStep": "Verify the published GHCR image is anonymously pullable",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Verify the published GHCR image is anonymously pullable",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "publish-verify-images",
+          "consumerStep": "Configure Docker Hub publishing",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "publish-verify-images",
+          "consumerStep": "Configure Docker Hub publishing",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "publish-verify-images",
+          "consumerStep": "Configure Docker Hub publishing",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "new_version", "consumerStage": "publish-verify-images",
+          "consumerStep": "Publish Docker image to Docker Hub",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "create-release",
+          "consumerStep": "Create GitHub Release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "create-release",
+          "consumerStep": "Create GitHub Release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "create-release",
+          "consumerStep": "Create GitHub Release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-verify-images", "producerStep": "dockerhub", "output": "docker_hub_url", "consumerStage": "create-release",
+          "consumerStep": "Create GitHub Release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "new_version", "consumerStage": "create-release",
+          "consumerStep": "Create GitHub Release",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "version_committed", "consumerStage": "create-release",
+          "consumerStep": "Attach the verified immutable slim image receipt",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "already_released", "consumerStage": "create-release",
+          "consumerStep": "Attach the verified immutable slim image receipt",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-crate", "producerStep": "publish-crate", "output": "publish_result", "consumerStage": "create-release",
+          "consumerStep": "Attach the verified immutable slim image receipt",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "publish-verify-images", "producerStep": "dockerhub", "output": "enabled", "consumerStage": "create-release",
+          "consumerStep": "Attach the verified immutable slim image receipt",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        },
+        {
+          "producerStage": "prepare-source", "producerStep": "version", "output": "new_version", "consumerStage": "create-release",
+          "consumerStep": "Attach the verified immutable slim image receipt",
+          "status": "Required explicit source-bound job output/input transfer; original expression cannot be copied unchanged across stages"
+        }
       ]
     }
   ],
   "scope": "Scratch extraction and complete original byte/operation mapping; not an executable workflow. Cross-stage references require real inputs/outputs, checkout/artifact transfer/setup/receipt authority before production adoption.",
-  "implemented": false,
-  "githubExecuted": false,
-  "nativeExecuted": false,
-  "publication": false
+  "implemented": false, "githubExecuted": false, "nativeExecuted": false, "publication": false
 }

@@ -223,21 +223,33 @@ export function buildStagedReleaseProjection(source, packet) {
     assert.equal(callerSource.split(original.body).length, 2);
     callerSource = callerSource.replace(original.body, replacement);
   }
-  // Evidence layout only; designated arrays keep one complete JSON record per line.
-  function format(value, depth = 0, key = '') {
-    const indent = '  '.repeat(depth),
-      child = '  '.repeat(depth + 1);
-    if (Array.isArray(value)) {
-      if (!value.length) return '[]';
-      const records = ['steps', 'crossStageOutputTransfers'].includes(key);
-      return '[\n' + value.map(item => child + (records ? JSON.stringify(item) : format(item, depth + 1))).join(',\n') + '\n' + indent + ']';
+  // Pack short JSON fields to a readable width; preserve long data strings whole.
+  function format(value, depth = 0) {
+    const width = 160;
+    const indent = '  '.repeat(depth), child = indent + '  ';
+    const compact = JSON.stringify(value);
+    if (value === null || typeof value !== 'object' || compact.length + indent.length <= width) return compact;
+    const array = Array.isArray(value);
+    const entries = array ? value : Object.entries(value);
+    const parts = entries.map(item => array ? format(item, depth + 1)
+      : JSON.stringify(item[0]) + ': ' + format(item[1], depth + 1));
+    const lines = [];
+    let row = '';
+    for (const part of parts) {
+      if (part.includes('\n') || row && child.length + row.length + 2 + part.length > width) {
+        if (row) {
+          lines.push(child + row);
+          row = '';
+        }
+        if (part.includes('\n')) {
+          lines.push(child + part);
+          continue;
+        }
+      }
+      row += (row ? ', ' : '') + part;
     }
-    if (value !== null && typeof value === 'object') {
-      const fields = Object.entries(value);
-      if (!fields.length) return '{}';
-      return '{\n' + fields.map(([name, item]) => child + JSON.stringify(name) + ': ' + format(item, depth + 1, name)).join(',\n') + '\n' + indent + '}';
-    }
-    return JSON.stringify(value);
+    if (row) lines.push(child + row);
+    return (array ? '[' : '{') + '\n' + lines.join(',\n') + '\n' + indent + (array ? ']' : '}');
   }
   yaml = yaml.replace(/    outputs:\n(?=    steps:)/g, '');
   const workflow = YAML.parseDocument(yaml);

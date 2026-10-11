@@ -46,15 +46,21 @@ export function resolveSelfAuthoredRelease(cwd, environment, readGithub = github
   };
 }
 
-export function main(environment = process.env) {
+export async function main(environment = process.env) {
   // The CLI fixes the observer; callers cannot provide a callback through event data.
   const repository = environment.REPOSITORY;
-  const decision = resolvePackageRelease(environment, productionReleaseObserver(environment, githubJson));
+  const producerRoute = Boolean(environment.PRODUCER_RUN_ID);
+  const decision = producerRoute
+    ? (await import('./self-authored-publication-source.mjs')).resolvePublishedProducer(process.cwd(), environment, githubJson)
+    : resolvePackageRelease(environment, productionReleaseObserver(environment, githubJson));
+  const releaseEnvironment = producerRoute
+    ? {...environment, EVENT: 'release', RELEASE_ACTION: 'published', RELEASE_TAG: decision.tag}
+    : environment;
   if (decision.publish) {
     execFileSync('git', ['fetch', '--no-tags', 'origin',
       'refs/tags/' + decision.tag + ':refs/tags/' + decision.tag], {stdio: 'pipe', timeout: 30000});
   }
-  const result = resolveSelfAuthoredRelease(process.cwd(), environment);
+  const result = decision.publish ? resolveSelfAuthoredRelease(process.cwd(), releaseEnvironment) : {active: false};
   const output = 'active=' + result.active + '\nbranch=' + (result.branch ?? '') + '\n'
     + 'release_id=' + (result.releaseId ?? '') + '\n';
   assert.ok(repository && environment.GITHUB_OUTPUT);
