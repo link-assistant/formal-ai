@@ -14,14 +14,14 @@
 js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
-  modules 144
+  modules 146
   translated_items 293
   workaround_items 33
   inferred_signatures 2
-  carried_items 2304
+  carried_items 2316
   translated_modules 98
   fully_translated_modules 1
-  refused_modules 46
+  refused_modules 48
 workaround array-push items 2
 workaround callback-loops items 1
 workaround import-pruning items 8
@@ -43,6 +43,7 @@ module js/agentic/crate/computer_use_seed.mjs translated 2 workaround 0 inferred
 module js/agentic/crate/computer_use_synthesis.mjs translated 2 workaround 3 inferred 0 carried 13
 module js/agentic/crate/concept_lookup.mjs translated 1 workaround 0 inferred 0 carried 12
 module js/agentic/crate/concepts_lookup.mjs translated 0 workaround 0 inferred 0 carried 3
+module js/agentic/crate/concise_dependency_restatement.mjs translated 0 workaround 0 inferred 0 carried 6
 module js/agentic/crate/conversation_summary.mjs translated 0 workaround 0 inferred 0 carried 8
 module js/agentic/crate/dependency_summarization.mjs translated 3 workaround 0 inferred 0 carried 17
 module js/agentic/crate/derivation.mjs translated 13 workaround 1 inferred 0 carried 31
@@ -110,10 +111,11 @@ module js/agentic/crate/repository_workspace.mjs translated 6 workaround 1 infer
 module js/agentic/crate/repository_workspace_authoring.mjs translated 0 workaround 1 inferred 0 carried 1
 module js/agentic/crate/repository_workspace_runner.mjs translated 0 workaround 1 inferred 0 carried 7
 module js/agentic/crate/repository_workspace_stages.mjs translated 0 workaround 0 inferred 0 carried 17
-module js/agentic/crate/requirement_extraction.mjs translated 8 workaround 0 inferred 0 carried 15
+module js/agentic/crate/requirement_extraction.mjs translated 8 workaround 0 inferred 0 carried 18
 module js/agentic/crate/round_trip_translation.mjs translated 0 workaround 0 inferred 0 carried 11
 module js/agentic/crate/rule_interpreter.mjs translated 0 workaround 0 inferred 0 carried 5
 module js/agentic/crate/rust_ast_census.mjs translated 0 workaround 0 inferred 0 carried 4
+module js/agentic/crate/rust_constant_rename.mjs translated 0 workaround 0 inferred 0 carried 3
 module js/agentic/crate/rust_str.mjs translated 1 workaround 1 inferred 0 carried 45
 module js/agentic/crate/seed.mjs translated 1 workaround 0 inferred 0 carried 13
 module js/agentic/crate/seed_agent_info.mjs translated 0 workaround 0 inferred 0 carried 3
@@ -170,19 +172,19 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 6
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 25
-refusal "import of names its module does not translate" 310
+refusal "import of names its module does not translate" 314
 refusal "JSDoc type {…}" 215
-refusal "null" 186
-refusal "import from '…'" 156
+refusal "null" 187
+refusal "import from '…'" 157
+refusal "arrow function" 117
 refusal "type: unknown name (a sibling item or an import)" 117
-refusal "arrow function" 113
 refusal "function value …" 101
 refusal "new expression" 90
 refusal "object without a $ tag" 85
 refusal "regular expression" 61
 refusal "method call .find()" 59
 refusal "method call .split()" 55
-refusal "method call .map()" 52
+refusal "method call .map()" 53
 refusal "method call .filter()" 51
 refusal "method call .some()" 45
 refusal "method call .slice()" 43
@@ -192,13 +194,13 @@ refusal "method call .push()" 33
 refusal "method call .indexOf()" 28
 refusal "nullish coalescing" 26
 refusal "method call .replace()" 23
-refusal "optional chaining" 22
+refusal "optional chaining" 23
 refusal "export …" 19
 refusal "syntax: malformed number" 19
 refusal "case test" 18
 refusal "try statement" 17
-refusal "method call .every()" 14
 refusal "undefined" 14
+refusal "method call .every()" 13
 refusal "typeof operator" 13
 refusal "syntax: @param needs a type and a name" 12
 refusal "for with const" 11
@@ -264,6 +266,7 @@ refusal "method call .values()" 1
 refusal "method in an object value" 1
 refusal "namespace member …" 1
 refusal "rest property" 1
+refusal "several declarators" 1
 refusal "shift >>" 1
 refusal "shift >>>" 1
 refusal "syntax: unsupported string escape \]" 1

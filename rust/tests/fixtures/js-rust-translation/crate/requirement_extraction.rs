@@ -1,6 +1,6 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=c4e2a454ea3859ae5dd3df0d9282716070e4a8fb61fb70e7b0d9e9e6a37be7ab bytes=6363
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=6db026038691195f7e840628fb50d930198b142737859f89250d394af45c04b6 bytes=8237
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=1
+// formal-ai:workarounds import-pruning items=0 carried=2
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -9,6 +9,10 @@
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
 // formal-ai:blockers import from outside the module directory
+
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -85,6 +89,14 @@ pub static FENCES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
 // formal-ai:blockers arrow callback of .some() | call of a sibling function | call of an imported function | method call .some()
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal arrow function
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .flatMap() | arrow callback of .map() | arrow callback of .some() | arrow function | call of a sibling function | call of an imported function | field access | global value Boolean | method call .filter() | method call .flatMap() | method call .has() | method call .map() | method call .some() | new Set | object without a $ tag
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal null
+// formal-ai:blockers arrow callback of .some() | call of a sibling function | call of an imported function | field access | method call .repeat() | method call .reverse() | method call .slice() | method call .some() | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …

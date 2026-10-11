@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=682a2ec2214b51c5840441fb4bf8fff36e8bd1ceb07c507d2996bfeaad165783 bytes=8111
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b30eb724359a2e59ddaefe26bbd02e273a590cd9c93cac32dd27bfc803495755 bytes=8699
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1
 
@@ -32,15 +32,15 @@
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers call of a sibling function | call of an imported function | field access | imported value | method call .push() | null | object without a $ tag
+// formal-ai:blockers call of a sibling function | call of an imported function | field access | imported value | method call .push() | null | object without a $ tag | undefined
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .map()
 // formal-ai:blockers arrow callback of .map() | call of a sibling function | call of an imported function | field access | method call .map()
 
-// meta-language:carried JavaScript lexical_declaration (unsupported)
-// formal-ai:refusal method call .every()
-// formal-ai:blockers arrow callback of .every() | arrow function | method call .every()
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal arrow function
+// formal-ai:blockers arrow callback of .every() | arrow function | field access | method call .every() | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
