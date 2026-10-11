@@ -393,3 +393,12 @@ javascript-test-durations
     seconds 0.1
   test "rust/tests/web/desktop-read-only-tools.test.mjs"
     seconds 0.1
+  test "rust/tests/web/multilingual-read-actions.test.mjs"
+    seconds 147.900114291
+    receipt-sha256 14732a74fc94562faa707bbaff7d5bb81217e0615d9500c990fcf1f6e55cac09
+    request-sha256 43a2ec45afcee27a50a6f02c65c5b828f309d10f3afedb9a1956369f612bcd94
+    source-sha256 1dcd649d60cd2d1215dcefdf2d0c331ce8380c1a994747963e4feafff2ba91f5
+    measurement-kind local-single-file
+    runtime-source-closure Unknown
+    execution-source-authentication Unknown
+    definition-binding import-time-only
