@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/round_trip_translation.mjs"] = (crateRequire) => {
 // Round-trip translation (R1188-U19, extends R526-1): the best translation is
 // the one that survives the round trip source -> meta -> target -> meta ->
@@ -23,9 +22,7 @@
 // Representation: a rendering is `{text, terms}` with each term `{source,
 // target, translated}`; a round trip is `{source, forward, backward,
 // statements, survivingTerms, knownTerms, survives}`.
-
 const { Polarity, WordKind, clauseStatement, formalizeText, joinSurfaces, knownIds, negationIn, resolveSurface, returnSurface, seedWords, statementTerms, surfacesIn } = crateRequire("crate/text_formalization.mjs");
-
 /**
  * Mirrors `fn round_trip_score` in rust/src/translation/round_trip.rs: how well `candidate`, a surface in `target`,
  * carries `meaning`, read from `surface` in `source`, through the round trip. Two points when the candidate is read
@@ -43,7 +40,6 @@ function roundTripScore(candidate, meaning, surface, source, target) {
   const sameSurface = returned !== null && returned.toLowerCase() === surface.toLowerCase();
   return (sameMeaning ? 2 : 0) + (sameSurface ? 1 : 0);
 }
-
 /**
  * Mirrors `fn best_candidate` in rust/src/translation/round_trip.rs: the index and score of the candidate that
  * survives the round trip best, the first one on a tie, or null when there is none.
@@ -56,7 +52,6 @@ function bestCandidate(candidates, meaning, surface, source, target) {
   });
   return best;
 }
-
 /**
  * Mirrors `fn best_surface` in rust/src/translation/round_trip.rs: the target surface of a meaning term whose round
  * trip survives best, or null when the meaning has no target surface.
@@ -69,7 +64,6 @@ function bestSurface(term, source, target) {
   const best = bestCandidate(candidates, term.id, term.surface, source, target);
   return best === null ? null : candidates[best.index];
 }
-
 /**
  * Mirrors `fn round_trip_choice` in rust/src/translation/round_trip.rs: which of several `candidates`, surfaces in
  * `target` offered for `surface` in `source`, survives the round trip best: the index of the highest
@@ -87,7 +81,6 @@ function roundTripChoice(surface, source, target, candidates) {
   const best = bestCandidate(candidates, meaning, surface, source, target);
   return best !== null && best.score > 0 ? best.index : null;
 }
-
 /** Mirrors `fn render_term` in rust/src/translation/round_trip.rs: one term in `target`, `{source, target, translated}`. */
 function renderTerm(term, source, target) {
   if (term.kind !== WordKind.Meaning) return { source: term.surface, target: term.surface, translated: term.kind !== WordKind.Unknown };
@@ -96,7 +89,6 @@ function renderTerm(term, source, target) {
     ? { source: term.surface, target: term.surface, translated: false }
     : { source: term.surface, target: surface, translated: true };
 }
-
 /**
  * Mirrors `fn render_statement` in rust/src/translation/round_trip.rs: a statement in `target`, subject first, the
  * target's negation cue after it when the statement is denied, then the other
@@ -125,13 +117,11 @@ function renderStatement(statement, source, target) {
   }
   return { text: joinSurfaces(surfaces), terms };
 }
-
 /** Mirrors `fn translate_text` in rust/src/translation/round_trip.rs: every statement of `text` rendered in `target`, joined. */
 function translateText(text, source, target) {
   const pieces = formalizeText(text, source).map((statement) => renderStatement(statement, source, target).text);
   return joinSurfaces(pieces);
 }
-
 /** A statement keeps its polarity, subject and ordered typed terms across languages. */
 function sameStatementMeaning(left, right) {
   const sameTerm = (first, second) => first.kind === second.kind && first.id === second.id;
@@ -142,7 +132,6 @@ function sameStatementMeaning(left, right) {
     && left.terms.length === right.terms.length
     && left.terms.every((term, index) => sameTerm(term, right.terms[index]));
 }
-
 /**
  * Mirrors `fn round_trip_statement` in rust/src/translation/round_trip.rs: one statement through source -> meta ->
  * target -> meta -> source. `{forward, backward, surviving, known, survives}`.
@@ -165,7 +154,6 @@ function roundTripStatement(statement, source, target) {
     survives: clean && original.length > 0 && sameStatementMeaning(statement, meta) && sameStatementMeaning(statement, returned),
   };
 }
-
 /**
  * Mirrors `fn round_trip` in rust/src/translation/round_trip.rs: a text through the round trip, statement by
  * statement. It survives when every statement survives: all its words known,
@@ -186,7 +174,6 @@ function roundTrip(text, source, target) {
     survives: statements.length > 0 && statements.every((statement) => statement.survives),
   };
 }
-
 return Object.freeze({
   roundTripScore,
   bestSurface,

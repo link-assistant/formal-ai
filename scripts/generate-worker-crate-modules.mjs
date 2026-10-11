@@ -13,9 +13,10 @@
 //   (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/text_formalization.mjs"] =
 //     (crateRequire) => { <the module body>; return { <its exports> }; };
 //
-// Its body is the module's own text, byte for byte, with each `import` turned
+// Its body preserves module tokens and comments, with each `import` turned
 // into a `crateRequire` of the module it names and each `export` keyword
-// dropped. A factory runs on first use, so the worker loads the files in any
+// dropped. Over-budget factories collapse repeated blank trivia lines only.
+// A factory runs on first use, so the worker loads the files in any
 // order. js/worker/formal_ai_worker_crate_modules.js instantiates them and
 // installs the worker as the host of js/agentic/host.mjs.
 //
@@ -32,6 +33,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 
 import { REPO_ROOT } from '../js/server/lino.mjs';
+import { tokenize, layoutOf, renderSource } from './translate-es.mjs';
 
 /** The modules the chat routes call; their import closure is generated. */
 export const ENTRY_MODULES = Object.freeze([
@@ -150,7 +152,49 @@ export function workerFileOf(name) {
  * @param {string} name
  * @param {string} source
  */
-export function factoryOf(name, source) {
+/** Collapse blank whitespace only, preserving comments, literals and ASI newlines. */
+export function compactFactoryLayout(source, ceiling) {
+  if (!Number.isSafeInteger(ceiling) || ceiling < 1) throw new Error('Invalid worker ceiling');
+  const count = text => text === '' ? 0 : text.split('\n').length - Number(text.endsWith('\n'));
+  if (count(source) <= ceiling) return source;
+  const trees = tokenize(source);
+  const compact = trivia => {
+    let result = '';
+    let cursor = 0;
+    for (const match of trivia.matchAll(/[/][/][^\n]*(?:\n|$)|[/]\*[\s\S]*?\*[/]|\s+/gu)) {
+      if (match.index !== cursor) throw new Error('Unsupported worker trivia');
+      cursor += match[0].length;
+      const part = match[0];
+      if (part.startsWith('//') || part.startsWith('/*')) result += part;
+      else {
+        let space = part.replace(/\n(?:[ \t\f\r]*\n)+/gu, '\n');
+        if (result.endsWith('\n')) space = space.replace(/^[ \t\f\r]*\n/u, '');
+        result += space;
+      }
+    }
+    if (cursor !== trivia.length) throw new Error('Unsupported worker trivia');
+    return result;
+  };
+  const result = renderSource(trees, layoutOf(source, trees).map(compact));
+  if (JSON.stringify(tokenize(result)) !== JSON.stringify(trees)) throw new Error('Worker token drift');
+  if (count(result) > ceiling) throw new Error('Worker cannot fit unchanged ceiling with blank trivia alone');
+  new vm.Script(result);
+  return result;
+}
+
+/** Read the exact source-owned reviewed budget; missing or ambiguous values refuse. */
+function reviewedCeiling(file) {
+  const shard = path.join(REPO_ROOT, 'data/meta/worker-line-budget', file.replace(/\.js$/u, '.lino'));
+  const text = readFileSync(shard, 'utf8');
+  const modules = [...text.matchAll(/^\s*module "([^"]+)"\s*$/gmu)];
+  const values = [...text.matchAll(/^\s*ceiling (\d+)\s*$/gmu)];
+  const value = Number(values[0]?.[1]);
+  if (modules.length !== 1 || modules[0][1] !== file || values.length !== 1
+    || !Number.isSafeInteger(value) || value < 1) throw new Error('Invalid reviewed worker budget');
+  return value;
+}
+
+export function factoryOf(name, source, ceiling = null) {
   let body = source;
   for (const dependency of importsOf(name, source)) {
     const binding = `const { ${dependency.pattern} } = crateRequire("${dependency.module}");\n`;
@@ -180,7 +224,7 @@ export function factoryOf(name, source) {
   ].join('\n');
   // Validate the classic-script target before any generated file is written.
   new vm.Script(text, { filename: workerFileOf(name) });
-  return text;
+  return ceiling === null ? text : compactFactoryLayout(text, ceiling);
 }
 
 /**
@@ -225,7 +269,7 @@ export function generatedFiles() {
   const read = (name) => readFileSync(path.join(REPO_ROOT, AGENTIC_ROOT, name), 'utf8');
   const files = new Map();
   for (const name of importClosure(ENTRY_MODULES, read)) {
-    files.set(`${WORKER_ROOT}/${workerFileOf(name)}`, factoryOf(name, read(name)));
+    files.set(`${WORKER_ROOT}/${workerFileOf(name)}`, factoryOf(name, read(name), reviewedCeiling(workerFileOf(name))));
   }
   const registry = readFileSync(path.join(REPO_ROOT, SEED_REGISTRY), 'utf8');
   files.set(`${WORKER_ROOT}/${REGISTRY_FILE}`, registryFileOf(meaningSeeds(registry), meaningSeeds(registry, 'response')));
