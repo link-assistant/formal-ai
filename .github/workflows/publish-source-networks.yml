@@ -20,6 +20,15 @@ on: # zizmor: ignore[dangerous-triggers]
       - "scripts/verify-source-network-distribution.mjs"
       - "scripts/lib/source-network-packets.mjs"
       - "rust/tests/web/source-network-packets.test.mjs"
+      - "scripts/translate-js-rust.mjs"
+      - "scripts/lib/source-network-workers.mjs"
+      - "scripts/lib/source-network-worker.mjs"
+      - "scripts/lib/translation-blockers.mjs"
+      - "scripts/lib/translation-lowering.mjs"
+      - "scripts/lib/translation-workarounds.mjs"
+      - "scripts/run-with-budget-warning.sh"
+      - "scripts/check-sccache-write-health.sh"
+      - ".github/workflows/layered-ci.yml"
   workflow_dispatch:
     inputs:
       mode:
