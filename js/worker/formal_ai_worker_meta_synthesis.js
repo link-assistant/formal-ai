@@ -3,7 +3,6 @@
 // data/seed/meta-reasoning.lino, parameter and threshold inference from the
 // request's examples, rendering, and verification of the rendered source.
 // Domain-free: every operation, filter and probe is seed data.
-
 /**
  * The type of a runtime value in the instruction set's vocabulary.
  * @param {*} value
@@ -19,7 +18,6 @@ function metaTypeOf(value) {
   }
   return "unknown";
 }
-
 /**
  * The type a primitive produces from a concrete input type, or null.
  * @param {object} primitive
@@ -31,7 +29,6 @@ function metaApply(primitive, type) {
   if (primitive.from === "list_any" && type.startsWith("list_")) return primitive.to === "list_any" ? type : primitive.to;
   return null;
 }
-
 /**
  * A parameter as the JavaScript literal its code is given: a number as
  * written, a text or a list of values as JSON.
@@ -41,7 +38,6 @@ function metaApply(primitive, type) {
 function metaLiteral(value) {
   return typeof value === "string" || Array.isArray(value) ? JSON.stringify(value) : String(value);
 }
-
 /**
  * An operation's code with its parameter slots filled: `{k}` takes the whole
  * parameter, `{k0}`, `{k1}` ... the values of a list parameter in order.
@@ -55,7 +51,6 @@ function metaSubstitute(code, parameter) {
   for (const [index, value] of values.entries()) out = out.split(`{k${index}}`).join(metaLiteral(value));
   return out;
 }
-
 /**
  * Compiled primitive functions, keyed by id and parameter.
  * @param {object} primitive
@@ -71,7 +66,6 @@ function metaCompile(primitive, parameter) {
   metaCompiled.set(source, fn);
   return fn;
 }
-
 /**
  * The measures a list of `element` can be filtered by: every primitive from
  * the element type to a number, and a number element itself. A text measure
@@ -126,7 +120,6 @@ function metaMeasures(element, type) {
   seed.measureCache.set(key, out);
   return out;
 }
-
 /**
  * All typed programs from a type, shortest first, each step a primitive or a
  * primitive mapped over a list.
@@ -137,6 +130,8 @@ function metaMeasures(element, type) {
  * @returns {Array<{steps: Array<object>, type: string}>}
  */
 function metaPrograms(fromType, length, mustUse = null) {
+  // Call-local descriptors cannot retain a different request, seed or worker realm.
+  const transitionsByType = new Map();
   const primitives = metaSeed().primitives;
   let frontier = [mustUse === null ? { steps: [], type: fromType } : { steps: [], type: fromType, uses: false }];
   const out = [];
@@ -144,48 +139,55 @@ function metaPrograms(fromType, length, mustUse = null) {
     const next = [];
     // A last-length program using none of `mustUse` is never built.
     const extend = (program, step, type) => {
-      if (mustUse === null) {
-        next.push({ steps: program.steps.concat(step), type });
-        return;
-      }
-      const uses = program.uses || metaStepUsesAny(step, mustUse);
-      if (size === length && !uses) return;
-      next.push({ steps: program.steps.concat(step), type, uses });
+      const uses = mustUse === null ? null : program.uses || metaStepUsesAny(step, mustUse);
+      if (mustUse !== null && size === length && !uses) return;
+      const grown = { steps: program.steps.concat(step), type };
+      if (mustUse !== null) grown.uses = uses;
+      next.push(grown);
     };
     for (const program of frontier) {
-      for (const primitive of primitives) {
-        const direct = metaApply(primitive, program.type);
-        if (direct) extend(program, { primitive, mapped: false }, direct);
-        if (program.type.startsWith("list_")) {
-          const element = program.type.slice(5);
-          const mapped = metaApply(primitive, element);
-          if (mapped && !mapped.startsWith("list_")) extend(program, { primitive, mapped: true }, `list_${mapped}`);
-        }
-      }
-      // A file is edited in place by any text transformation: read it,
-      // transform the text, write it back ("rewrite_file").
-      if (program.type === "path" || program.type === "list_path") {
+      let typedTransitions = transitionsByType.get(program.type);
+      if (typedTransitions === undefined) {
+        typedTransitions = [];
+        const recordTransition = (step, type) => typedTransitions.push({ step, type });
+
         for (const primitive of primitives) {
-          if (primitive.from !== "text" || primitive.to !== "text" || primitive.infer || primitive.takes.length) continue;
-          extend(program, { primitive, mapped: program.type === "list_path", rewrite: true }, program.type);
-        }
-      }
-      if (program.type.startsWith("list_")) {
-        for (const measure of metaMeasures(program.type.slice(5))) {
-          for (const filter of metaSeed().filters) {
-            if (filter.measure === "number") extend(program, { primitive: measure, mapped: false, filter }, program.type);
+          const direct = metaApply(primitive, program.type);
+          if (direct) recordTransition({ primitive, mapped: false }, direct);
+          if (program.type.startsWith("list_")) {
+            const element = program.type.slice(5);
+            const mapped = metaApply(primitive, element);
+            if (mapped && !mapped.startsWith("list_")) recordTransition({ primitive, mapped: true }, `list_${mapped}`);
           }
         }
-        // A filter comparing the element's content with a value.
-        for (const filter of metaSeed().filters) {
-          if (filter.measure === "number") continue;
-          for (const measure of metaMeasures(program.type.slice(5), filter.measure)) extend(program, { primitive: measure, mapped: false, filter }, program.type);
+        // A file is edited in place by any text transformation: read it,
+        // transform the text, write it back ("rewrite_file").
+        if (program.type === "path" || program.type === "list_path") {
+          for (const primitive of primitives) {
+            if (primitive.from !== "text" || primitive.to !== "text" || primitive.infer || primitive.takes.length) continue;
+            recordTransition({ primitive, mapped: program.type === "list_path", rewrite: true }, program.type);
+          }
         }
-        // A selector picks one element by its measure ("the longest word").
-        for (const measure of metaMeasures(program.type.slice(5))) {
-          for (const select of metaSeed().selectors) extend(program, { primitive: measure, mapped: false, select }, program.type.slice(5));
+        if (program.type.startsWith("list_")) {
+          for (const measure of metaMeasures(program.type.slice(5))) {
+            for (const filter of metaSeed().filters) {
+              if (filter.measure === "number") recordTransition({ primitive: measure, mapped: false, filter }, program.type);
+            }
+          }
+          // A filter comparing the element's content with a value.
+          for (const filter of metaSeed().filters) {
+            if (filter.measure === "number") continue;
+            for (const measure of metaMeasures(program.type.slice(5), filter.measure)) recordTransition({ primitive: measure, mapped: false, filter }, program.type);
+          }
+          // A selector picks one element by its measure ("the longest word").
+          for (const measure of metaMeasures(program.type.slice(5))) {
+            for (const select of metaSeed().selectors) recordTransition({ primitive: measure, mapped: false, select }, program.type.slice(5));
+          }
         }
+
+        transitionsByType.set(program.type, typedTransitions);
       }
+      for (const transition of typedTransitions) extend(program, { ...transition.step }, transition.type);
     }
     for (const program of next) if (mustUse === null || program.uses) out.push(program);
     frontier = next;
@@ -362,7 +364,6 @@ function metaRender(steps, parameter) {
   lines.push("  return value;", "}");
   return lines.join("\n");
 }
-
 /**
  * Run rendered source on every example; the verifier never trusts the
  * enumerator's own evaluation.
@@ -385,7 +386,6 @@ function metaVerify(source, examples) {
   }
   return { passed: examples.length - failures.length, total: examples.length, failures };
 }
-
 /**
  * Evidence for a program: the grounded score of every operation it uses.
  * @param {Array<object>} steps
@@ -397,7 +397,6 @@ function metaEvidenceScore(steps, evidence) {
   for (const operation of new Set(steps.flatMap(metaStepOperations))) score += evidence.get(operation) || 0;
   return score;
 }
-
 /**
  * Coverage of the request: each grounded word credits once, with the best
  * of its hypotheses the program uses.
@@ -416,7 +415,6 @@ function metaCoverageScore(steps, words) {
   }
   return score;
 }
-
 /**
  * Search for a program whose difference from the goal (failing examples) is
  * zero: shortest first, then most evidenced.
@@ -481,7 +479,6 @@ function metaSynthesizeFromExamples(examples, evidence, trace) {
   trace.emit("impasse", metaNote("no_program", { length: META_BOUNDS.programLength, evaluated }));
   return null;
 }
-
 /**
  * A short label for one program step.
  * @param {object} step
@@ -492,7 +489,6 @@ function metaStepLabel(step) {
   if (step.filter || step.select) return `${(step.filter || step.select).id}(${step.primitive.id})`;
   return step.mapped ? `each(${step.primitive.id})` : step.primitive.id;
 }
-
 /**
  * Without examples, the goal is a program that uses one operation from every
  * grounded word's hypothesis group, preferring a type-preserving program.
@@ -579,7 +575,6 @@ function metaSynthesizeFromMeaning(groups, evidence, trace, values, words, input
   else if (best.uncovered) trace.emit("evidence", metaNote("uncovered", { count: best.uncovered }));
   return best;
 }
-
 /**
  * The request's values a parametric step reads, by type in the order the
  * request names them, or undefined when one is missing. One value is bound
@@ -599,7 +594,6 @@ function metaBindValues(types, values) {
   }
   return out.length === 1 ? out[0] : out;
 }
-
 /**
  * How far a program departs from the request's composition: coordinated
  * clauses apply in order; within a clause the head acts last, after its
@@ -634,7 +628,6 @@ function metaClauseOrder(program, fromType, clauses) {
   }
   return { violations, objectMismatch, types: inputs.concat(type) };
 }
-
 /**
  * The in-place edit of one file by a text transformation: the seeded
  * combinator `rewrite_file` applied to an operation's code.
