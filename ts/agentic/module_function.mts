@@ -23,7 +23,7 @@ import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { sourceFromAgentReadResult, sourceFromReadResult } from './code_artifact.mjs';
 import { planSymbolicCommandReroute } from './command_reroute.mjs';
-import { cached, readText, realm, solve } from './host.mjs';
+import { cached, host, readText, realm, solve } from './host.mjs';
 import { planOne, resolvedFinalAnswer, FinalDisposition } from './plan.mjs';
 import { renderSeededOutcome } from './code_task.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
@@ -329,7 +329,7 @@ function specifiedValue(request, samples) {
 }
 
 /**
- * Mirrors `fn stated_value` in rust/src/agentic_coding/module_function.rs: the
+ * Mirrors `fn stated_value` in rust/src/agentic_coding/module_function/expression_values.rs: the
  * value a stated return computes at `samples` -- the longest expression the
  * words open with, its parameters bound to the samples ("a - b to m.mjs" ->
  * "2 - 3"; the words after it belong to the request, PR #1188 T92), or else
@@ -460,7 +460,7 @@ function specifierFrom(from, module) {
 const withFinalNewline = (text) => (text === '' || text.endsWith('\n') ? text : `${text}\n`);
 
 /** The recipe that adds the function and its test and runs the check, or null. */
-async function moduleFunctionRecipe(request, moduleSource, testSource) {
+async function moduleFunctionRecipe(request, moduleSource, testSource, task, toolNames) {
   const terms = contract(request.language);
   const catalog = programLanguageBySlug(request.language);
   // The module is where the function goes and the member-add verb how it
@@ -480,9 +480,18 @@ async function moduleFunctionRecipe(request, moduleSource, testSource) {
   const defined = moduleSource.split('\n').some((line) => line.startsWith(definition));
   const source = defined ? moduleSource
     : `${withFinalNewline(moduleSource)}${moduleSource.trim() === '' ? '' : '\n'}${composed}`;
-  const commands = (request.command === null ? [catalog.execution.check_command] : [])
-    .filter((command) => command !== null && command !== undefined)
-    .map((command) => command.split(catalog.save_as).join(request.module));
+  let inferred = null;
+  if (catalog.execution.check_command !== null && catalog.execution.check_command !== undefined) {
+    inferred = catalog.execution.check_command.split(catalog.save_as).join(request.module);
+    const session = host().sourceSession;
+    if (session) {
+      try {
+        const { queryOwnedInferredCommandPolicy } = await import('../server/node-source-session-host.mjs');
+        if (queryOwnedInferredCommandPolicy(session, task, inferred, toolNames) === false) inferred = null;
+      } catch { /* Unknown host context preserves the historical seeded check. */ }
+    }
+  }
+  const commands = inferred === null ? [] : [inferred];
   const supporting = [];
   if (request.test !== null) {
     const samples = findChildValue(terms, 'samples').split(/\s+/u).slice(0, request.parameters.length);
@@ -528,7 +537,7 @@ export async function planModuleFunctionStep(task, messages, toolNames) {
     if (source === null) return readTool ? planOne(readTool, readArguments(path)) : null;
     sources.push(source);
   }
-  const recipe = await moduleFunctionRecipe(request, sources[0], sources[1] ?? '');
+  const recipe = await moduleFunctionRecipe(request, sources[0], sources[1] ?? '', task, toolNames);
   return recipe ? planSymbolicCommandReroute(messages, toolNames, { execution_recipe: recipe })
     : resolvedFinalAnswer(renderSeededOutcome('coding-source-authoring-contract-missing', task, '') ?? '',
       FinalDisposition.Gap, 'module-function-recipe-missing');

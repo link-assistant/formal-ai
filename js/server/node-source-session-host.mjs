@@ -1,4 +1,5 @@
 import { AsyncLocalStorage } from "node:async_hooks";
+import { declaredVerificationPermission } from '../../experiments/js_dogfood/drive.mjs';
 import { host as installedHost } from "../agentic/host.mjs";
 import fs from "node:fs";
 import path from "node:path";
@@ -13,6 +14,12 @@ import { userRequestText } from "../agentic/content.mjs";
 import { readPolicyBlocksPlan } from "../agentic/file_read/ownership.mjs";
 import { planOne } from "../agentic/plan.mjs";
 import { readArguments } from "../agentic/workspace_change.mjs";
+const sourceSessionPolicies = new WeakMap();
+/** Unknown APIs and public context copies cannot issue an inferred-command decision. */
+export function queryOwnedInferredCommandPolicy(api, request, command, tools) {
+  const query = sourceSessionPolicies.get(api);
+  return query ? query(request, command, tools) : null;
+}
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 function declaredPhysicalReadOperand(call, argumentsValue) {
     if (argumentsValue === null || typeof argumentsValue !== 'object' || Array.isArray(argumentsValue)
@@ -162,9 +169,15 @@ export function createNodeSourceSessionHost(readText) {
     active: () => storage.getStore() !== undefined,
     async run(context, executeSession) {
       const frame = deriveCompleteSourceRequest(context.request, requestSeed);
-      if (frame === null) return storage.run({
-        passthrough: true
-      }, executeSession);
+      if (frame === null) {
+        let workspace = null;
+        try { workspace = fs.realpathSync(context.workspace); } catch { /* Unknown workspace is passthrough only. */ }
+        const owned = { passthrough: true, request: context.request, workspace,
+          tools: Array.isArray(context.tools) ? Object.freeze([...context.tools]) : null, active: true };
+        return storage.run(owned, async () => {
+          try { return await executeSession(); } finally { owned.active = false; }
+        });
+      }
       if (!Array.isArray(context.tools) || typeof executeSession !== 'function') throw Error('UnknownSourceExecutionPlatform');
       for (const capability of [Capability.Read, Capability.Write, Capability.Run]) {
         if (!context.tools.some(tool => classifyTool(tool) === capability)) throw Error('MissingSourceExecutionCapability');
@@ -271,5 +284,12 @@ export function createNodeSourceSessionHost(readText) {
       };
     }
   };
+  sourceSessionPolicies.set(api, (request, command, tools) => {
+    const context = storage.getStore();
+    if (!context?.active || context.request !== request
+        || installedHost().sourceSession !== api || installedHost().sourceOperation !== operation
+        || JSON.stringify(context.tools) !== JSON.stringify(tools)) return null;
+    return declaredVerificationPermission(request, context.workspace, tools, command);
+  });
   return Object.freeze(api);
 }

@@ -17,6 +17,7 @@
 // Write/Edit text receipts and actual Bash process observations keep their APIs.
 
 import {createHash} from 'node:crypto';
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { appendDefinition, projectAppendContracts } from '../../js/agentic/append_contract.mjs';
 import { atomicRecordAppend } from './atomic-record-append.mjs';
 import { exclusiveCreate } from './exclusive-create.mjs';
@@ -45,6 +46,15 @@ import { template } from '../../js/agentic/work_item_steps.mjs';
 import { WorkerHost } from '../../js/server/worker-host.mjs';
 import { hasHost, host } from '../../js/agentic/host.mjs';
 import { installDefaultNodeSourceHost } from '../../js/server/default-node-source-bootstrap.mjs';
+
+const verificationPolicies = new AsyncLocalStorage();
+/** Read-only observation of the actual validated live drive invocation. */
+export function declaredVerificationPermission(request, workspace, tools, command) {
+  const current = verificationPolicies.getStore();
+  if (!current?.active || current.request !== request || current.workspace !== workspace
+      || JSON.stringify(current.tools) !== JSON.stringify(tools) || typeof command !== 'string') return null;
+  return current.commands === undefined ? null : current.commands.includes(command);
+}
 
 /** How long one bash call may run before the driver kills it. */
 const BASH_TIMEOUT_MS = Number(process.env.FORMAL_AI_BASH_TIMEOUT_MS ?? 60000);
@@ -270,6 +280,19 @@ export async function drive(planChatStep, dir, prompt, {
       return { transcript: [], answer: null, stop: 'invalid-command-policy', toolsAdvertised: tools };
     }
     allowedCommands = Object.freeze([...allowedCommands]);
+  }
+  const activePolicy = verificationPolicies.getStore();
+  const policyWorkspace = existsSync(dir) ? realpathSync(dir) : resolve(dir);
+  if (!activePolicy?.active || activePolicy.request !== prompt || activePolicy.workspace !== policyWorkspace
+      || JSON.stringify(activePolicy.tools) !== JSON.stringify(tools)
+      || JSON.stringify(activePolicy.commands) !== JSON.stringify(allowedCommands)) {
+    const ownedPolicy = { request: prompt, workspace: policyWorkspace, tools,
+      commands: allowedCommands, active: true };
+    return verificationPolicies.run(ownedPolicy, async () => {
+      try { return await drive(planChatStep, dir, prompt, {
+        tools, steps, fallthrough, allowedCommands, atomicRecordAppend,
+      }); } finally { ownedPolicy.active = false; }
+    });
   }
   if (!hasHost()) await installDefaultNodeSourceHost(new WorkerHost());
   const sourceSession = host().sourceSession;

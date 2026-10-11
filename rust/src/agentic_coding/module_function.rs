@@ -800,7 +800,6 @@ fn module_function_recipe(
         .execution
         .check_command
         .as_deref()
-        .filter(|_| request.command.is_none())
         .into_iter()
         .map(|command| command.replace(catalog.save_as.as_ref(), &request.module))
         .collect();

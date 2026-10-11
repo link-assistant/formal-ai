@@ -17,11 +17,11 @@ test('explicit verification stays inside the original command allowlist',async()
  assert.equal(result.deniedCalls?.length??0,0);
  }finally{rmSync(workspace,{recursive:true,force:true});}
 });
-test('an unapproved explicit verification is refused without substituting a check',async()=>{
+test('an unapproved requested verification is denied after its permitted inferred check',async()=>{
  const workspace=mkdtempSync(join(tmpdir(),'formal-command-denied-'));
  try {const result=await drive(planChatStep,workspace,task,{steps:12,tools:['read','write','edit','bash'],allowedCommands:['node --check p.mjs']});
  assert.equal(result.stop,'command-policy-denied');
- assert.equal(result.transcript.filter(x=>x.tool==='bash').length,0);
+ assert.deepEqual(result.transcript.filter(x=>x.tool==='bash').map(x=>JSON.parse(x.arguments).command),['node --check p.mjs']);
  assert.deepEqual(result.deniedCalls.map(x=>JSON.parse(x.arguments).command),['node --test p.test.mjs']);
  }finally{rmSync(workspace,{recursive:true,force:true});}
 });
