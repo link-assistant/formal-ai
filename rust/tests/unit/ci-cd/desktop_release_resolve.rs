@@ -63,6 +63,10 @@ fn write_mock_gh(dir: &Path) {
 sub="$1"; shift || true
 case "$sub" in
   api)
+    if [ "${1:-}" = --hostname ]; then
+      [ "${2:-}" = github.com ] || exit 2
+      shift 2
+    fi
     path="$1"; shift || true
     case "$path" in
       *"/actions/runs/"*)
@@ -71,6 +75,7 @@ process.stdout.write(JSON.stringify(({id:42,
   run_attempt:1,
   workflow_id:7,
   path:'.github/workflows/release.yml',
+  event:'push',
   status:'completed',
   conclusion:process.env.WORKFLOW_RUN_CONCLUSION,
   head_sha:process.env.WORKFLOW_RUN_HEAD_SHA,
@@ -85,6 +90,20 @@ process.stdout.write(JSON.stringify(({id:7,path:'.github/workflows/release.yml'}
 WORKFLOW_METADATA
         ;;
       *"/tags?"*|*"/tags") [ -n "${MOCK_TAGS_JQ_OUTPUT:-}" ] && printf '%s\n' "${MOCK_TAGS_JQ_OUTPUT}" ;;
+      *"/releases?"*)
+        node <<'RELEASE_LIST'
+const tag = process.env.MOCK_TAGS_JQ_OUTPUT || process.env.MOCK_LATEST_TAG;
+const entries = process.env.MOCK_RELEASE_EXISTS === '1' && tag ? [{
+  id:1,
+  tag_name:tag,
+  draft:false,
+  prerelease:false,
+  url:'https://api.github.com/repos/' + process.env.REPO + '/releases/1',
+  published_at:'2026-01-01T00:00:00Z'
+}] : [];
+process.stdout.write(JSON.stringify(entries));
+RELEASE_LIST
+        ;;
       *"/releases/tags/"*)
         directory="$(mktemp -d)"
         printf '%s\n' "${MOCK_ASSET_NAMES:-}" > "$directory/names.txt"
@@ -97,7 +116,15 @@ WORKFLOW_METADATA
         case "$*" in
           *".commit.tree.sha"*) printf '%s\n' "dddddddddddddddddddddddddddddddddddddddd" ;;
           *"--jq .sha"*) printf '%s\n' "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" ;;
-          *) printf '%s\n' "${MOCK_PARENT_SHA:-}" ;;
+          *) node <<'COMMIT_METADATA'
+const head = process.env.WORKFLOW_RUN_HEAD_SHA;
+const exact = Boolean(process.env.MOCK_TAGS_JQ_OUTPUT);
+process.stdout.write(JSON.stringify({
+  sha:exact ? head : 'b'.repeat(40),
+  parents:process.env.MOCK_PARENT_SHA ? [{sha:process.env.MOCK_PARENT_SHA}] : []
+}));
+COMMIT_METADATA
+            ;;
         esac ;;
     esac ;;
   release)

@@ -25,13 +25,18 @@ const creator = CREATOR_PLACEHOLDER;
 const {materializePublishedFixture}=await import(creator);
 const fs=require('node:fs');const os=require('node:os');const path=require('node:path');
 const args = process.argv.slice(2);
+if (args[0] === 'api' && args[1] === '--hostname') {
+  if (args[2] !== 'github.com') throw new Error('Foreign fixture API host');
+  args.splice(1, 2);
+}
 const write = (value) => process.stdout.write(String(value ?? '') + '\n');
 if (args[0] === 'api') {
   const endpoint = args[1];
-  if (endpoint.includes('/actions/runs/')) write(JSON.stringify(scenario.actualRun ?? ({id:42,
+  if (endpoint.includes('/actions/runs/')) write(JSON.stringify(scenario.actualRun ? {event:'push', ...scenario.actualRun} : ({id:42,
     run_attempt:1,
     workflow_id:7,
     path:'.github/workflows/release.yml',
+    event:'push',
     status:'completed',
     conclusion:process.env.WORKFLOW_RUN_CONCLUSION,
     head_sha:process.env.WORKFLOW_RUN_HEAD_SHA,
@@ -42,7 +47,12 @@ if (args[0] === 'api') {
   else if (endpoint.includes('/tags?')) write(scenario.exact ?? '');
   else if (endpoint.includes('/releases?')) {
     if (scenario.releaseFailure) { console.error('HTTP 401'); process.exit(1); }
-    write(JSON.stringify(scenario.releases ?? []));
+    write(JSON.stringify((scenario.releases ?? []).map((entry, index) => ({
+      id:index + 1,
+      url:'https://api.github.com/repos/' + process.env.REPO + '/releases/' + (index + 1),
+      published_at:'2026-01-01T00:00:00Z',
+      ...entry
+    }))));
   } else if (endpoint.includes('/releases/tags/')) {
     const directory=fs.mkdtempSync(path.join(os.tmpdir(),'release-metadata-fixture-'));
     const tag=endpoint.split('/').at(-1);
@@ -363,3 +373,21 @@ test('an exact published tag remains available after an authenticated later job 
   assert.equal(result.outputs.tag, 'v1.2.3');
   assert.equal(result.outputs.should_build, 'true');
 });
+
+
+for (const productionEvent of ['pull_request', 'workflow_call']) {
+  test('an explicit nonproduction provider event refuses healing: ' + productionEvent, context => {
+    const actualRun = {
+      id:42, run_attempt:1, workflow_id:7, path:'.github/workflows/release.yml',
+      event:productionEvent, status:'completed', conclusion:'success', head_sha:HEAD,
+      head_branch:'main', repository:{full_name:'owner/repository'},
+      head_repository:{full_name:'owner/repository'}
+    };
+    const result = resolve(context, {
+      exact:'v1.2.3', latest:'v1.2.3', actualRun,
+      commits:{'v1.2.3':{sha:HEAD,parents:[]}}
+    });
+    assert.equal(result.outputs.tag, '');
+    assert.equal(result.outputs.should_build, 'false');
+  });
+}
