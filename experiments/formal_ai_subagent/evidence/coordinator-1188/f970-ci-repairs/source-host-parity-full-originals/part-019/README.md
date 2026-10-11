@@ -1,0 +1,7 @@
+# Full originals: failed stock and qualified source repairs
+
+This finite cut preserves 592 logical members and 555 original content identities, including exact declared encoded gzip originals. Selected physical inputs plus authority controllers total 9950189 bytes under the unchanged 32 MiB bound. Lossless gzip inputs retain their complete decoded source identities; their size is the encoded physical read size. Historical verification reads total 94665402 bytes and are disclosed separately. New compressed bytes: 9501292; verified prior blobs reused: 43. Every JSONL shard contains at most 700 rows.
+
+Original stock T7132 failed: 807 tests, 772 passes, 35 failures; later phases did not run. Reviewed source repairs, independent counterexamples and full available inverse bytes retain their original scope. T7148 remains a timed-out commit attempt with incomplete process capture; its observed Git objects and T7150 successor are separate evidence. Native6084, the first failed alias commit standalone receipt, and T7137 other ignored browser-seed preimages retain their explicit losses. No missing original is reconstructed.
+
+Root installs this exact private materialization through maintained JavaScript Formal AI T7153. Its own running receipt, current final stock, native acceptance and fresh hosted/publication evidence are outside this nonrecursive cut. At least two dedicated Formal AI-only agents and continuous CI monitoring remain required. Supplied programs receive zero autonomy credit; complete cost is Unknown.
