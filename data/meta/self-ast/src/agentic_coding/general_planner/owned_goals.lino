@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/general_planner/owned_goals.rs
   language rust
   fidelity full_ast
-  byte_len 23787
-  line_count 632
-  content_id source_module_b18141035d7106d4
-  symbol_count 22
+  byte_len 33512
+  line_count 887
+  content_id source_module_9e8a50bd5a177005
+  symbol_count 33
   symbols
     enum GoalKind 22 26
     struct Goal 27 30
@@ -17,103 +17,119 @@ self_ast_census
     function literal_write_ownership 168 188
     function instruction_view_for_request 189 196
     function complete_edit_frame 197 197
-    function owns_complete_edit_request 218 229
-    function goal_ledger 231 321
-    function goal_gap 322 334
-    function pending_read_gap 336 357
-    function plan_owned_goal_step 360 436
-    function context_grammar_patterns 438 521
-    static PATTERNS 439 440
-    function source_context_whitespace_supported 523 531
-    function source_context_atom 533 556
-    function source_context_declaration 558 578
-    function attributed_action_prefix 580 594
-    function contract_action_prologue 596 632
+    function owns_complete_literal_request 218 223
+    function owns_complete_edit_request 225 232
+    function goal_ledger 234 328
+    function goal_gap 329 341
+    function pending_read_gap 343 364
+    function collection_summary_owns 368 442
+    function plan_owned_goal_step 444 525
+    function context_grammar_patterns 527 617
+    static PATTERNS 528 529
+    static PROLOGUES 530 531
+    static ANNOTATIONS 532 533
+    function source_context_whitespace_supported 619 627
+    function source_context_atom 629 652
+    function source_context_label 654 680
+    function source_context_declaration 682 702
+    function attributed_action_prefix 704 718
+    function contract_action_prologue 720 761
+    function declared_creation_prologue 763 781
+    function owned_declared_create_frame 784 810
+    function declared_addition_contract 813 824
+    function has_additive_position 827 848
+    function owned_additive_literal_frame 851 881
+    function owned_additive_literal 884 887
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19681
-    named_node_count 4059
-    distinct_node_kinds 79
+    total_link_count 27686
+    named_node_count 5716
+    distinct_node_kinds 84
     node_kinds
-      arguments 373
-      array_expression 3
-      array_type 5
+      arguments 532
+      array_expression 5
+      array_type 6
       assignment_expression 10
       attribute 1
       attribute_item 1
-      binary_expression 108
-      block 101
-      boolean_literal 22
+      binary_expression 154
+      block 148
+      boolean_literal 33
       break_expression 2
-      call_expression 373
-      char_literal 37
-      closure_expression 63
-      closure_parameters 63
-      crate 25
-      doc_comment 3
-      else_clause 6
+      call_expression 532
+      char_literal 39
+      closure_expression 80
+      closure_parameters 80
+      continue_expression 2
+      crate 44
+      doc_comment 8
+      else_clause 10
       enum_item 1
       enum_variant 3
       enum_variant_list 1
       escape_sequence 3
-      expression_statement 100
+      expression_statement 143
       field_declaration 2
       field_declaration_list 1
-      field_expression 406
-      field_identifier 410
+      field_expression 534
+      field_identifier 539
       field_initializer 4
       field_initializer_list 4
-      for_expression 9
-      function_item 19
+      field_pattern 1
+      for_expression 17
+      function_item 28
       function_type 1
-      generic_function 7
-      generic_type 25
-      identifier 967
-      if_expression 40
-      index_expression 20
+      generic_function 17
+      generic_type 39
+      identifier 1342
+      if_expression 60
+      index_expression 27
       inner_doc_comment_marker 1
-      integer_literal 23
+      integer_literal 30
       let_chain 2
-      let_condition 8
-      let_declaration 76
-      lifetime 2
-      line_comment 3
-      macro_invocation 10
-      mutable_specifier 16
-      outer_doc_comment_marker 2
-      parameter 37
-      parameters 20
-      parenthesized_expression 8
-      primitive_type 41
-      range_expression 34
+      let_condition 9
+      let_declaration 110
+      lifetime 3
+      line_comment 9
+      macro_invocation 13
+      mutable_specifier 18
+      outer_doc_comment_marker 7
+      parameter 49
+      parameters 29
+      parenthesized_expression 10
+      primitive_type 59
+      range_expression 44
       raw_string_literal 1
-      reference_expression 49
-      reference_type 35
-      return_expression 36
-      scoped_identifier 87
-      scoped_type_identifier 12
+      reference_expression 87
+      reference_type 46
+      remaining_field_pattern 1
+      return_expression 52
+      scoped_identifier 149
+      scoped_type_identifier 20
       scoped_use_list 7
+      shorthand_field_identifier 1
       shorthand_field_initializer 2
       source_file 1
-      static_item 1
-      string_content 52
-      string_literal 50
+      static_item 3
+      string_content 81
+      string_literal 81
       struct_expression 4
       struct_item 1
+      struct_pattern 1
       super 4
-      token_tree 22
-      try_expression 24
-      tuple_expression 4
-      tuple_pattern 3
-      tuple_struct_pattern 14
-      tuple_type 3
-      type_arguments 32
+      token_tree 26
+      try_expression 31
+      tuple_expression 8
+      tuple_pattern 7
+      tuple_struct_pattern 16
+      tuple_type 9
+      type_arguments 56
       type_cast_expression 1
-      type_identifier 64
-      unary_expression 23
-      use_declaration 13
+      type_identifier 102
+      unary_expression 39
+      use_declaration 14
       use_list 7
-      visibility_modifier 5
+      visibility_modifier 11

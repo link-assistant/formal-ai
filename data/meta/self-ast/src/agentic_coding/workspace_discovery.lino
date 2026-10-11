@@ -1,0 +1,120 @@
+self_ast_census
+  target src/agentic_coding/workspace_discovery.rs
+  language rust
+  fidelity full_ast
+  byte_len 15391
+  line_count 446
+  content_id source_module_0a8c831e2cdaaa44
+  symbol_count 19
+  symbols
+    function contract_text 15 50
+    const MAXIMUM_FILES 52 52
+    const MAXIMUM_BYTES 53 53
+    struct DiscoveryContract 55 62
+    function workspace_discovery_contract_bound 64 86
+    function utf16_boundary 88 92
+    function workspace_discovery_contract 94 150
+    function workspace_discovery_command 152 157
+    function safe_path 159 165
+    function candidate_read_command 167 177
+    enum DiscoveryStep 179 182
+    function observation 184 189
+    function incomplete 191 207
+    function qualified_payload 209 221
+    function workspace_discovery_step 223 366
+    module tests 369 446
+    function shared_seed_retains_original_subject_and_unconsumed_unicode_tail 372 390
+    function structural_binding_rejects_foreign_source_and_inconsistent_spans 392 425
+    function partial_receipts_and_unsafe_candidate_paths_cannot_become_source_evidence 428 445
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 13105
+    named_node_count 2666
+    distinct_node_kinds 83
+    node_kinds
+      abstract_type 1
+      arguments 255
+      array_expression 28
+      array_type 4
+      assignment_expression 3
+      attribute 4
+      attribute_item 4
+      binary_expression 47
+      block 47
+      boolean_literal 7
+      call_expression 255
+      char_literal 13
+      closure_expression 20
+      closure_parameters 20
+      compound_assignment_expr 3
+      const_item 2
+      crate 5
+      declaration_list 1
+      doc_comment 4
+      enum_item 1
+      enum_variant 2
+      enum_variant_list 1
+      escape_sequence 3
+      expression_statement 82
+      field_declaration 7
+      field_declaration_list 2
+      field_expression 199
+      field_identifier 211
+      field_initializer 5
+      field_initializer_list 2
+      for_expression 5
+      function_item 14
+      generic_function 1
+      generic_type 18
+      identifier 577
+      if_expression 18
+      index_expression 14
+      inner_doc_comment_marker 2
+      integer_literal 43
+      let_chain 1
+      let_condition 1
+      let_declaration 52
+      lifetime 2
+      line_comment 4
+      macro_invocation 32
+      match_arm 4
+      match_block 2
+      match_expression 2
+      match_pattern 4
+      mod_item 1
+      mutable_specifier 12
+      ordered_field_declaration_list 1
+      outer_doc_comment_marker 2
+      parameter 19
+      parameters 14
+      parenthesized_expression 12
+      primitive_type 27
+      range_expression 3
+      raw_string_literal 3
+      reference_expression 55
+      reference_type 22
+      return_expression 22
+      scoped_identifier 45
+      scoped_type_identifier 2
+      scoped_use_list 3
+      shorthand_field_initializer 2
+      source_file 1
+      string_content 88
+      string_literal 87
+      struct_expression 2
+      struct_item 1
+      super 17
+      token_tree 69
+      try_expression 14
+      tuple_pattern 1
+      tuple_struct_pattern 9
+      type_arguments 19
+      type_identifier 47
+      unary_expression 10
+      use_declaration 7
+      use_list 3
+      use_wildcard 1
+      visibility_modifier 11

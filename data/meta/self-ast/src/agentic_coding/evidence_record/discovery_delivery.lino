@@ -1,0 +1,70 @@
+self_ast_census
+  target src/agentic_coding/evidence_record/discovery_delivery.rs
+  language rust
+  fidelity full_ast
+  byte_len 2903
+  line_count 86
+  content_id source_module_1c63e6602ddabf20
+  symbol_count 2
+  symbols
+    function recorded_discovery_gap 10 42
+    function plan_discovery_delivery 44 86
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 1826
+    named_node_count 358
+    distinct_node_kinds 50
+    node_kinds
+      arguments 19
+      array_type 2
+      block 7
+      call_expression 19
+      closure_expression 1
+      closure_parameters 1
+      doc_comment 3
+      else_clause 1
+      expression_statement 5
+      field_expression 10
+      field_identifier 10
+      field_pattern 2
+      function_item 2
+      generic_type 5
+      identifier 91
+      if_expression 3
+      inner_doc_comment_marker 3
+      let_chain 2
+      let_condition 2
+      let_declaration 1
+      line_comment 3
+      macro_invocation 1
+      match_arm 2
+      match_block 1
+      match_expression 1
+      match_pattern 2
+      mutable_specifier 2
+      parameter 12
+      parameters 2
+      primitive_type 5
+      reference_expression 11
+      reference_type 14
+      remaining_field_pattern 1
+      return_expression 2
+      scoped_identifier 33
+      scoped_type_identifier 2
+      scoped_use_list 3
+      shorthand_field_identifier 2
+      source_file 1
+      string_content 5
+      string_literal 5
+      struct_pattern 2
+      super 23
+      token_tree 1
+      tuple_struct_pattern 3
+      type_arguments 5
+      type_identifier 16
+      use_declaration 4
+      use_list 3
+      visibility_modifier 2

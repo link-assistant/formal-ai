@@ -2,20 +2,20 @@ self_ast_census
   target src/agentic_coding/file_read/source.rs
   language rust
   fidelity full_ast
-  byte_len 2515
-  line_count 72
-  content_id source_module_635dac36e745103c
+  byte_len 2548
+  line_count 73
+  content_id source_module_ab75d9a2ee271bd4
   symbol_count 2
   symbols
-    function read_observation 8 26
-    function source_read_answer 27 72
+    function read_observation 8 27
+    function source_read_answer 28 73
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2113
-    named_node_count 422
+    total_link_count 2137
+    named_node_count 427
     distinct_node_kinds 50
     node_kinds
       arguments 34
@@ -30,15 +30,15 @@ self_ast_census
       doc_comment 1
       else_clause 2
       expression_statement 6
-      field_expression 31
-      field_identifier 35
-      field_initializer 4
+      field_expression 32
+      field_identifier 37
+      field_initializer 5
       field_initializer_list 1
       for_expression 1
       function_item 2
       generic_function 3
       generic_type 7
-      identifier 113
+      identifier 114
       if_expression 4
       inner_doc_comment_marker 1
       let_condition 2

@@ -1,0 +1,84 @@
+self_ast_census
+  target src/agentic_coding/module_function/optional_command_port.rs
+  language rust
+  fidelity full_ast
+  byte_len 3348
+  line_count 98
+  content_id source_module_93f596a2b3de5aca
+  symbol_count 6
+  symbols
+    struct OptionalCommandPlan 7 14
+    function from_source_plan 16 55
+    function command 58 60
+    function original_plan 63 65
+    function without_inferred_check 67 83
+    function source_owned_optional_command 86 98
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2635
+    named_node_count 541
+    distinct_node_kinds 60
+    node_kinds
+      arguments 28
+      array_type 6
+      attribute 2
+      attribute_item 2
+      binary_expression 11
+      block 8
+      call_expression 28
+      crate 7
+      declaration_list 1
+      doc_comment 6
+      expression_statement 6
+      field_declaration 6
+      field_declaration_list 1
+      field_expression 30
+      field_identifier 43
+      field_initializer 7
+      field_initializer_list 2
+      float_literal 1
+      function_item 5
+      generic_type 6
+      identifier 128
+      if_expression 2
+      impl_item 1
+      inner_doc_comment_marker 1
+      integer_literal 2
+      let_declaration 5
+      lifetime 21
+      lifetime_parameter 4
+      line_comment 6
+      macro_invocation 1
+      mutable_specifier 1
+      outer_doc_comment_marker 5
+      parameter 10
+      parameters 5
+      parenthesized_expression 1
+      primitive_type 7
+      reference_expression 5
+      reference_type 21
+      return_expression 3
+      scoped_identifier 30
+      scoped_use_list 2
+      self 8
+      self_parameter 3
+      shorthand_field_initializer 6
+      source_file 1
+      string_content 2
+      string_literal 2
+      struct_expression 2
+      struct_item 1
+      super 1
+      token_tree 2
+      try_expression 3
+      tuple_struct_pattern 1
+      type_arguments 6
+      type_identifier 21
+      type_parameters 3
+      unary_expression 1
+      use_declaration 3
+      use_list 2
+      visibility_modifier 6

@@ -1,0 +1,112 @@
+self_ast_census
+  target src/agentic_coding/qualified_tool_observation.rs
+  language rust
+  fidelity full_ast
+  byte_len 9289
+  line_count 253
+  content_id source_module_899c50c0d107c706
+  symbol_count 11
+  symbols
+    enum Binding 10 14
+    struct QualifiedToolAttempt 16 26
+    enum ExactArgumentNumber 29 32
+    function exact_argument_number 34 63
+    const MAXIMUM 35 35
+    function argument_values_equal 68 99
+    module argument_domain_tests 102 147
+    function exact_numeric_domain_normalizes_without_lossy_integer_conversion 107 130
+    function unsafe_arguments_never_accept_an_exact_success_receipt 133 146
+    function scan 149 243
+    function latest 245 253
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 7096
+    named_node_count 1413
+    distinct_node_kinds 83
+    node_kinds
+      arguments 78
+      array_expression 1
+      array_type 2
+      assignment_expression 16
+      attribute 5
+      attribute_item 5
+      binary_expression 23
+      block 40
+      boolean_literal 27
+      call_expression 78
+      closure_expression 13
+      closure_parameters 13
+      const_item 1
+      continue_expression 11
+      crate 2
+      declaration_list 1
+      doc_comment 4
+      else_clause 1
+      enum_item 2
+      enum_variant 5
+      enum_variant_list 2
+      escape_sequence 15
+      expression_statement 60
+      field_declaration 9
+      field_declaration_list 1
+      field_expression 107
+      field_identifier 122
+      field_initializer 6
+      field_initializer_list 1
+      float_literal 1
+      for_expression 6
+      function_item 6
+      generic_function 1
+      generic_type 4
+      identifier 335
+      if_expression 16
+      inner_doc_comment_marker 1
+      integer_literal 3
+      let_declaration 16
+      lifetime 3
+      lifetime_parameter 1
+      line_comment 5
+      macro_invocation 3
+      match_arm 10
+      match_block 2
+      match_expression 2
+      match_pattern 10
+      mod_item 1
+      mutable_specifier 2
+      ordered_field_declaration_list 2
+      outer_doc_comment_marker 3
+      parameter 8
+      parameters 6
+      parenthesized_expression 3
+      primitive_type 13
+      range_expression 2
+      reference_expression 8
+      reference_type 7
+      return_expression 8
+      scoped_identifier 45
+      scoped_type_identifier 1
+      scoped_use_list 1
+      shorthand_field_initializer 3
+      source_file 1
+      string_content 50
+      string_literal 35
+      struct_expression 1
+      struct_item 1
+      super 12
+      token_tree 18
+      try_expression 1
+      tuple_expression 13
+      tuple_pattern 9
+      tuple_struct_pattern 18
+      type_arguments 5
+      type_cast_expression 5
+      type_identifier 28
+      type_parameters 1
+      unary_expression 9
+      use_declaration 7
+      use_list 1
+      use_wildcard 1
+      visibility_modifier 8

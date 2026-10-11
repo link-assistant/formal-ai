@@ -2,61 +2,61 @@ self_ast_census
   target src/agentic_coding/file_read.rs
   language rust
   fidelity full_ast
-  byte_len 23169
-  line_count 725
-  content_id source_module_2968c433679024fe
+  byte_len 23196
+  line_count 726
+  content_id source_module_d5b821d3c64c5acb
   symbol_count 43
   symbols
     module audit 3 3
     module ownership 4 4
-    module exact 8 8
-    module records 9 9
-    module source 10 10
-    module supplied 15 15
-    const AUDIT_READ_LINE_LIMIT 30 30
-    const AUDIT_READ_COLUMN_LIMIT 31 31
-    enum FileReadTask 34 49
-    function is_analysis 52 58
-    enum FileReadMode 62 71
-    enum FileSelection 74 78
-    struct FileReadTools 82 87
-    function plan_file_read_step 92 128
-    function failed_step_answer 138 141
-    function plan_direct_file_read 143 226
-    function plan_list_then_read 228 317
-    const SHELL_OPERATORS 320 320
-    function file_read_task_for 322 397
-    function read_paths_named_beside_their_cue 399 401
-    function asks_to_read_every_file 403 406
-    function asks_to_list_then_read 408 418
-    function asks_to_read_file_in_folder 420 422
-    function selection_for_prompt 424 430
-    function mode_for_prompt 432 454
-    function extract_value_key 456 467
-    function leading_cat_path 469 480
-    function clean_file_token 489 503
-    function looks_like_local_file_path 505 524
-    function is_file_path_char 526 528
-    function directory_for_list_read 530 561
-    function read_arguments 563 576
-    function grep_arguments 578 580
-    function file_analysis_pattern 584 596
-    function regex_escape 598 612
-    function read_command_for 614 640
-    function list_files_command 642 651
-    function cat_many_command 653 665
-    function shell_path 667 675
-    function shell_string 677 679
-    function selected_paths_from_listing 681 711
-    function tool_for 713 718
-    function plan_one 720 725
+    module exact 9 9
+    module records 10 10
+    module source 11 11
+    module supplied 16 16
+    const AUDIT_READ_LINE_LIMIT 31 31
+    const AUDIT_READ_COLUMN_LIMIT 32 32
+    enum FileReadTask 35 50
+    function is_analysis 53 59
+    enum FileReadMode 63 72
+    enum FileSelection 75 79
+    struct FileReadTools 83 88
+    function plan_file_read_step 93 129
+    function failed_step_answer 139 142
+    function plan_direct_file_read 144 227
+    function plan_list_then_read 229 318
+    const SHELL_OPERATORS 321 321
+    function file_read_task_for 323 398
+    function read_paths_named_beside_their_cue 400 402
+    function asks_to_read_every_file 404 407
+    function asks_to_list_then_read 409 419
+    function asks_to_read_file_in_folder 421 423
+    function selection_for_prompt 425 431
+    function mode_for_prompt 433 455
+    function extract_value_key 457 468
+    function leading_cat_path 470 481
+    function clean_file_token 490 504
+    function looks_like_local_file_path 506 525
+    function is_file_path_char 527 529
+    function directory_for_list_read 531 562
+    function read_arguments 564 577
+    function grep_arguments 579 581
+    function file_analysis_pattern 585 597
+    function regex_escape 599 613
+    function read_command_for 615 641
+    function list_files_command 643 652
+    function cat_many_command 654 666
+    function shell_path 668 676
+    function shell_string 678 680
+    function selected_paths_from_listing 682 712
+    function tool_for 714 719
+    function plan_one 721 726
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 17655
-    named_node_count 3476
+    total_link_count 17662
+    named_node_count 3477
     distinct_node_kinds 93
     node_kinds
       arguments 265
@@ -94,7 +94,7 @@ self_ast_census
       function_modifiers 1
       generic_function 3
       generic_type 20
-      identifier 850
+      identifier 851
       if_expression 43
       impl_item 1
       index_expression 21

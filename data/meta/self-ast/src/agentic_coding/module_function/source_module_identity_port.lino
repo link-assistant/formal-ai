@@ -1,0 +1,52 @@
+self_ast_census
+  target src/agentic_coding/module_function/source_module_identity_port.rs
+  language rust
+  fidelity full_ast
+  byte_len 467
+  line_count 12
+  content_id source_module_aed7a6296fc57451
+  symbol_count 3
+  symbols
+    trait SourceModuleIdentityHost 2 4
+    function module_url 3 3
+    function source_operation_module_url 5 12
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 417
+    named_node_count 76
+    distinct_node_kinds 31
+    node_kinds
+      arguments 2
+      block 1
+      call_expression 2
+      declaration_list 1
+      doc_comment 1
+      field_expression 2
+      field_identifier 2
+      function_item 1
+      function_signature_item 1
+      generic_type 3
+      identifier 12
+      inner_doc_comment_marker 1
+      lifetime 2
+      line_comment 1
+      parameter 5
+      parameters 2
+      primitive_type 6
+      reference_type 7
+      self 1
+      self_parameter 1
+      source_file 1
+      string_content 1
+      string_literal 1
+      trait_bounds 1
+      trait_item 1
+      try_expression 1
+      type_arguments 3
+      type_identifier 9
+      type_parameter 1
+      type_parameters 1
+      visibility_modifier 2

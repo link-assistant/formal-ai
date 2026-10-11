@@ -2,65 +2,65 @@ self_ast_census
   target src/agentic_coding/tool_result.rs
   language rust
   fidelity full_ast
-  byte_len 30644
-  line_count 874
-  content_id source_module_20534ec88899fac5
+  byte_len 30734
+  line_count 877
+  content_id source_module_6ca30f71a8cfdee9
   symbol_count 47
   symbols
     module command_keys 14 14
     module response_language 15 15
     module result_kind 16 16
     module source_observation 17 17
-    function reported_exit_code 22 24
-    struct NormalizedResult 30 36
-    enum StepOutcome 40 47
-    function step_outcome 51 62
-    function failed_verification 65 74
-    struct ShellStep 78 80
-    function failure_message 83 102
-    const PROSE_FAILURE_PREFIX_CHARS 105 105
-    function looks_like_error 107 114
-    const CITED_LINES_THAT_MAKE_A_QUOTATION 117 117
-    function own_words 120 135
-    function citation_offset 138 148
-    function word_start 151 156
-    function render 158 194
-    function render_failure 197 201
-    function failure_report 205 228
-    function latest_turn_answer 230 249
-    function latest_turn_quiet_success 252 270
-    function has_latest_turn_result 272 283
-    function is_write_run_recipe 285 295
-    function follow_up_answer 297 328
-    function requested_index 330 342
-    function normalize 344 448
-    struct ShellEnvelope 451 455
-    function into_result 458 484
-    function parse_shell_envelope 487 545
-    function is_field 547 553
-    function envelope_section 557 577
-    function from_payload 579 625
-    function mcp_text_content 627 658
-    function structured_content_text 661 685
-    function strip_transport_envelope 691 723
-    function nonzero_status 725 733
-    function failed_status 735 748
-    function expected_stop_status 750 764
-    function nonempty_text 766 776
-    function pretty_json 778 780
-    function command_argument 783 801
-    function result_tool 803 813
-    function result_label 815 830
-    function extract_urls 832 848
-    function response_language 852 866
-    function fill 868 874
+    function reported_exit_code 25 27
+    struct NormalizedResult 33 39
+    enum StepOutcome 43 50
+    function step_outcome 54 65
+    function failed_verification 68 77
+    struct ShellStep 81 83
+    function failure_message 86 105
+    const PROSE_FAILURE_PREFIX_CHARS 108 108
+    function looks_like_error 110 117
+    const CITED_LINES_THAT_MAKE_A_QUOTATION 120 120
+    function own_words 123 138
+    function citation_offset 141 151
+    function word_start 154 159
+    function render 161 197
+    function render_failure 200 204
+    function failure_report 208 231
+    function latest_turn_answer 233 252
+    function latest_turn_quiet_success 255 273
+    function has_latest_turn_result 275 286
+    function is_write_run_recipe 288 298
+    function follow_up_answer 300 331
+    function requested_index 333 345
+    function normalize 347 451
+    struct ShellEnvelope 454 458
+    function into_result 461 487
+    function parse_shell_envelope 490 548
+    function is_field 550 556
+    function envelope_section 560 580
+    function from_payload 582 628
+    function mcp_text_content 630 661
+    function structured_content_text 664 688
+    function strip_transport_envelope 694 726
+    function nonzero_status 728 736
+    function failed_status 738 751
+    function expected_stop_status 753 767
+    function nonempty_text 769 779
+    function pretty_json 781 783
+    function command_argument 786 804
+    function result_tool 806 816
+    function result_label 818 833
+    function extract_urls 835 851
+    function response_language 855 869
+    function fill 871 877
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 24843
-    named_node_count 5003
+    total_link_count 24872
+    named_node_count 5006
     distinct_node_kinds 88
     node_kinds
       arguments 470
@@ -99,7 +99,7 @@ self_ast_census
       function_item 37
       generic_function 11
       generic_type 24
-      identifier 1086
+      identifier 1089
       if_expression 41
       impl_item 1
       index_expression 16
