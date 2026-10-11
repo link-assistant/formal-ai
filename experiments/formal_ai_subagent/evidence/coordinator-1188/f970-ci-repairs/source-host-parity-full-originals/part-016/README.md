@@ -1,0 +1,5 @@
+# Complete source repairs and bounded original CI evidence
+
+This finite part preserves closed Formal AI source effects, inverse bytes, original requests, full successful and failed process streams, authentic old-head CI/API/artifact data, and the explicit historical source-index relocation. Every selected physical input is counted under the unchanged32MiB limit. Prior exact gzip objects are reused; no raw originals are discarded, no local native builds or executable downloads are made.
+
+Focused installed root7078/7079 checks pass with unmodified readers, but the complete474-file fresh qualification failed on dependency direction and stopped before partition4. All original failures remain unchanged; withdrawn private reader-substitution results are not qualification. The host-port repair, new full stock run, native producer data and production acceptance remain pending. The old8537 head has106 successful,62 failed and37 skipped checks; all requirements and fresh-head native/release acceptance remain pending. Supplied effects receive zero autonomy, amplification or cost credit. This archive excludes its own running receipt nonrecursively.
