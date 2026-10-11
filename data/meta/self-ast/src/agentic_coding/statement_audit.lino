@@ -2,52 +2,87 @@ self_ast_census
   target src/agentic_coding/statement_audit.rs
   language rust
   fidelity full_ast
-  byte_len 2080
-  line_count 47
-  content_id source_module_f81e28e434383dbf
-  symbol_count 5
+  byte_len 7553
+  line_count 219
+  content_id source_module_3890c6ca3382c7f8
+  symbol_count 9
   symbols
     const STATEMENT_AUDIT_PATH 9 9
     const STATEMENT_AUDIT_COMMAND 12 13
     const STATEMENT_AUDIT_WITH_EVIDENCE_COMMAND 17 18
-    function command_for 25 31
-    function is_statement_audit_task 35 47
+    function command_for 25 40
+    function registered_audit_command 42 80
+    function is_statement_audit_task 84 105
+    function owned_statement_audit_output 108 113
+    struct AuditRoleFrame 115 119
+    function audit_role_frame 121 219
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 1084
-    named_node_count 213
-    distinct_node_kinds 30
+    total_link_count 5892
+    named_node_count 1189
+    distinct_node_kinds 61
     node_kinds
-      arguments 13
+      arguments 104
+      assignment_expression 2
       attribute 2
       attribute_item 2
-      binary_expression 8
-      block 5
-      boolean_literal 1
-      call_expression 13
+      binary_expression 33
+      block 34
+      boolean_literal 4
+      call_expression 104
+      closure_expression 17
+      closure_parameters 17
       const_item 3
-      doc_comment 15
-      else_clause 1
-      expression_statement 3
-      field_expression 13
-      field_identifier 13
-      function_item 2
-      identifier 32
-      if_expression 2
+      continue_expression 2
+      crate 3
+      doc_comment 16
+      else_clause 2
+      expression_statement 38
+      field_declaration 3
+      field_declaration_list 1
+      field_expression 128
+      field_identifier 133
+      field_initializer 2
+      field_initializer_list 1
+      for_expression 2
+      function_item 5
+      generic_function 7
+      generic_type 11
+      identifier 215
+      if_expression 16
       inner_doc_comment_marker 6
-      let_declaration 4
-      lifetime 1
-      line_comment 15
-      outer_doc_comment_marker 9
-      parameter 2
-      parameters 2
-      primitive_type 7
-      reference_type 6
-      return_expression 1
+      integer_literal 3
+      let_chain 1
+      let_condition 3
+      let_declaration 28
+      line_comment 16
+      macro_invocation 3
+      mutable_specifier 4
+      outer_doc_comment_marker 10
+      parameter 5
+      parameters 5
+      primitive_type 11
+      reference_expression 3
+      reference_type 8
+      return_expression 15
+      scoped_identifier 20
+      shorthand_field_initializer 1
+      slice_pattern 7
       source_file 1
-      string_content 13
-      string_literal 13
-      visibility_modifier 5
+      string_content 30
+      string_literal 30
+      struct_expression 1
+      struct_item 1
+      super 4
+      token_tree 3
+      try_expression 3
+      tuple_expression 1
+      tuple_pattern 1
+      tuple_struct_pattern 3
+      type_arguments 18
+      type_identifier 25
+      unary_expression 6
+      visibility_modifier 6
