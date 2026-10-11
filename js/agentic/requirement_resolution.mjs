@@ -13,8 +13,12 @@ import { meaningFiles, parseLexiconText, words as meaningWords } from './crate/s
 /** Mirrors `fn resolve_requirement_target`: `{module_path, symbol, kind}` or null. */
 export function resolveRequirementTarget(requirement) {
   const census = workspace();
-  const resolved = resolveIn(census, requirement);
-  return resolved !== null ? resolved : resolveGeneratedSeedTarget(census, requirement);
+  const scoped = explicitModuleScope(census, requirement);
+  const complete = hasHost() && typeof host().censusSourceClosureComplete === 'function'
+    && host().censusSourceClosureComplete() === true;
+  const resolved = scoped === census && !complete ? null : resolveIn(census, requirement);
+  const generatedCensus = scoped === census && !complete ? { modules: [] } : census;
+  return resolved !== null ? resolved : resolveGeneratedSeedTarget(generatedCensus, requirement);
 }
 
 /** Mirrors `fn resolve_in`. */

@@ -4,7 +4,7 @@
 // install the same shape from the worker's own globals.
 
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { lstatSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 import { REPO_ROOT, parseLino, readRepoFile } from '../server/lino.mjs';
@@ -49,32 +49,81 @@ export function generatedSeedOwnerDeclarations(repository = REPO_ROOT) {
 }
 
 /** Read committed census documents only when their actual source identity still agrees. */
-export function censusDocuments(repository = REPO_ROOT) {
-  const visit = (relative) => {
+function censusRegularPath(repository, relative, kind) {
+  try {
+    const parts = relative.split('/');
+    if (parts.some(part => !part || part === '.' || part === '..')) return false;
+    let current = path.resolve(repository);
+    if (!lstatSync(current).isDirectory()) return false;
+    for (let index = 0; index < parts.length; index += 1) {
+      current = path.join(current, parts[index]);
+      const status = lstatSync(current);
+      if (status.isSymbolicLink()) return false;
+      if (index < parts.length - 1 || kind === 'directory') {
+        if (!status.isDirectory()) return false;
+      } else if (!status.isFile()) return false;
+    }
+    return true;
+  } catch { return false; }
+}
+
+function observeCensusDocuments(repository) {
+  let complete = true;
+  const incomplete = () => { complete = false; return []; };
+  const visit = relative => {
+    if (!censusRegularPath(repository, relative, 'directory')) return incomplete();
     let entries;
-    try { entries = readdirSync(path.join(repository, relative), { withFileTypes: true }); }
-    catch { return []; }
-    return entries.sort((a, b) => a.name.localeCompare(b.name)).flatMap((entry) => {
+    try { entries = readdirSync(path.join(repository, relative), {withFileTypes: true}); }
+    catch { return incomplete(); }
+    return entries.sort((a, b) => a.name.localeCompare(b.name)).flatMap(entry => {
       const file = relative + '/' + entry.name;
+      if (entry.isSymbolicLink()) return incomplete();
       if (entry.isDirectory()) return visit(file);
-      if (!entry.isFile() || !entry.name.endsWith('.lino')) return [];
-      const text = readFileSync(path.join(repository, file), 'utf8');
-      const parsed = parseLino(text);
-      const fields = parsed.name === 'self_ast_census' ? parsed.children
-        : parsed.children.find((node) => node.name === 'self_ast_census')?.children ?? [];
-      const field = (name) => fields.find((node) => node.name === name)?.value;
+      if (!entry.name.endsWith('.lino')) return [];
+      if (!censusRegularPath(repository, file, 'file')) return incomplete();
+      let text, parsed;
+      try {
+        text = readFileSync(path.join(repository, file), 'utf8');
+        parsed = parseLino(text);
+      } catch { return incomplete(); }
+      if (parsed.name !== 'self_ast_census') return incomplete();
+      const fields = parsed.children;
+      const required = ['target', 'content_id', 'byte_len'];
+      if (required.some(name => {
+        const values = fields.filter(node => node.name === name);
+        return values.length !== 1 || values[0].children.length !== 0
+          || typeof values[0].value !== 'string';
+      })) return incomplete();
+      const field = name => fields.find(node => node.name === name).value;
       const target = field('target');
-      if (!target?.startsWith('src/') || !target.endsWith('.rs') || target.split('/').includes('..')) return [];
+      if (!target.startsWith('src/') || !target.endsWith('.rs')
+        || !censusRegularPath(repository, 'rust/' + target, 'file')) return incomplete();
       let source;
       try { source = readFileSync(path.join(repository, 'rust', target), 'utf8'); }
-      catch { return []; }
+      catch { return incomplete(); }
       const contentIdentifier = stableId('source_module', source);
       const byteLength = Buffer.byteLength(source);
-      if (field('content_id') !== contentIdentifier || Number(field('byte_len')) !== byteLength) return [];
-      return [{ path: file, text, sourceIdentity: { path: target, content_id: contentIdentifier, byte_len: byteLength } }];
+      if (field('content_id') !== contentIdentifier || Number(field('byte_len')) !== byteLength) {
+        return incomplete();
+      }
+      return [{path: file, text, sourceIdentity: {
+        path: target, content_id: contentIdentifier, byte_len: byteLength,
+      }}];
     });
   };
-  return visit(CENSUS_DIR);
+  const documents = visit(CENSUS_DIR);
+  return {documents, complete};
+}
+
+/** Validated documents retain their original payload; incompleteness grants no unique owner. */
+export function censusDocuments(repository = REPO_ROOT) {
+  return observeCensusDocuments(repository).documents;
+}
+
+/** A failed or stale observed census source prevents unqualified uniqueness claims. */
+export function censusSourceClosureComplete(repository = REPO_ROOT) {
+  try { return observeCensusDocuments(repository).complete; }
+  catch { return false; }
 }
 
 /** `cli_env::flag_enabled`: a true spelling of the variable. */
@@ -137,6 +186,7 @@ export async function installNodeHost(worker) {
     currentDirectory: () => process.cwd(),
     listDirectory: listRepoDirectory,
     censusDocuments,
+    censusSourceClosureComplete,
     generatedSeedOwnerDeclarations,
     sourceFetch: nodeSourceFetch,
   };
