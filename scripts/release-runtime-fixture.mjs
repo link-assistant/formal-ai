@@ -1,4 +1,5 @@
-import { collectLeaseDiagnostics } from './release-fixture-lease-diagnostics.mjs';
+import { collectLeaseDiagnostics, validateDiagnosticDescendant } from './release-fixture-lease-diagnostics.mjs';
+import { observeCallerAdmission } from './release-fixture-caller-admission.mjs';
 // Harmless GitHub runtime fixture: text tar only, scoped GET requests and private fixture lease.
 // It deliberately never invokes the production transfer CLI, compiler, package or release authority.
 import assert from 'node:assert/strict';
@@ -113,7 +114,7 @@ export function validateFixtureOutputs(active, inactive, source) {
   assert.equal(inactive.artifact, 'SkippedInactive');
   assert.equal(inactive.marker, '');
 }
-export async function observeActiveAncestor({ get, context, name, label, snapshots, diagnose }) {
+export async function observeActiveAncestor({ get, context, name, label, snapshots, diagnose, runnerName }) {
   const base = '/repos/' + context.repository + '/actions';
   const jobs = await get(base + '/runs/' + context.run + '/jobs?filter=latest&per_page=100');
   snapshots.push(jobs);
@@ -123,6 +124,13 @@ export async function observeActiveAncestor({ get, context, name, label, snapsho
   const child = matches[0];
   assert.ok(Number.isSafeInteger(child.id) && child.id > 0);
   assert.equal(String(child.run_id), context.run, 'descendant run differs');
+  if (runnerName !== undefined) {
+    assert.equal(typeof runnerName, 'string');
+    assert.ok(runnerName.length > 0, 'physical runner identity required');
+    const physical = await get(base + '/jobs/' + child.id);
+    snapshots.push(physical);
+    validateDiagnosticDescendant(physical, { ...context, id: child.id, name: child.name, runnerName });
+  }
   const ancestor = await get(base + '/concurrency_groups/' + encodeURIComponent(name) + '?ahead_of_job=' + child.id);
   snapshots.push(ancestor);
   if (diagnose) await diagnose(child);
@@ -152,7 +160,7 @@ async function queueObservation(final = false) {
       validateQueueSnapshot(state, { group: name, run: context.run }, { requireContender: false });
       const label = final ? 'Fixture final active' : 'Fixture lease holder active';
       try {
-        ancestorCheckpoint = await observeActiveAncestor({ get: api, context, name, label, snapshots,
+        ancestorCheckpoint = await observeActiveAncestor({ get: api, context, name, label, snapshots, runnerName: process.env.RUNNER_NAME ?? null,
           diagnose: async child => {
             if (ancestorDiagnostic === null) ancestorDiagnostic = await collectLeaseDiagnostics({
               context, child, group: name, runnerName: process.env.RUNNER_NAME,
@@ -257,6 +265,43 @@ function consume() {
     artifact_observation: receipt.observation
   });
 }
+async function stageContenderAdmission() {
+  const context = identity();
+  assert.equal(process.env.GITHUB_JOB, 'observer', 'source-declared admission observer only');
+  const snapshots = [];
+  const failures = [];
+  const deadline = Date.now() + 180000;
+  let bytes = 0;
+  const get = async (route, timeout) => {
+    const result = await api(route, timeout);
+    bytes += Buffer.byteLength(JSON.stringify(result));
+    assert.ok(bytes <= 4 * 1024 * 1024, 'bounded admission observations exhausted');
+    snapshots.push(result);
+    return result;
+  };
+  while (Date.now() < deadline) {
+    try {
+      const admission = await observeCallerAdmission(get, context, deadline);
+      write('observer.json', { ...context, ...admission, snapshots });
+      return;
+    } catch (error) {
+      failures.push({reason: error.message, observedAt: new Date().toISOString()});
+      if (bytes > 4 * 1024 * 1024) break;
+    }
+    const remaining = deadline - Date.now();
+    if (remaining > 0) await pause(Math.min(2000, remaining));
+  }
+  write('observer.json', {
+    ...context,
+    observation: 'MissingAuthenticatedCallerAdmission',
+    executingLeaseProof: false,
+    productionAuthority: false,
+    snapshots,
+    failures
+  });
+  throw Error('Actual caller admission was not observed; contender must not be queued');
+}
+
 async function observeStart() {
   const context = identity();
   const name = 'release-fixture-lease-start-' + context.run + '-' + context.attempt;
@@ -383,11 +428,12 @@ function downloadFixtureArtifact() {
     run: context.run, head: context.eventHead, name: process.env.ARTIFACT_NAME }, route[1]);
 }
 async function main(mode) {
-  assert.ok(['download', 'produce', 'consume', 'lease-start', 'wait-queue', 'observe-start', 'verify-start', 'finalize', 'contender', 'collect'].includes(mode), 'fixed fixture modes only');
+  assert.ok(['download', 'produce', 'consume', 'lease-start', 'wait-queue', 'observe-start', 'stage-contender', 'verify-start', 'finalize', 'contender', 'collect'].includes(mode), 'fixed fixture modes only');
   if (mode === 'download') return downloadFixtureArtifact();
   if (mode === 'produce') return produce();
   if (mode === 'consume') return consume();
   if (mode === 'observe-start') return observeStart();
+  if (mode === 'stage-contender') return stageContenderAdmission();
   if (mode === 'verify-start') return verifyStart();
   if (mode === 'lease-start') {
     const context = identity();

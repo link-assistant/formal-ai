@@ -8,6 +8,8 @@ on:
     paths:
       - .github/workflows/release-runtime-fixture*.yml
       - scripts/release-runtime-fixture.mjs
+      - scripts/release-fixture-caller-admission.mjs
+      - rust/tests/web/release-fixture-caller-admission.test.mjs
       - scripts/release-stage-transfer.mjs
       - rust/tests/web/release-runtime-fixture.test.mjs
       - scripts/github-artifact-by-identifier.mjs
@@ -109,7 +111,7 @@ jobs:
       bundle-sha: ""
       descriptor-sha: ""
   observer:
-    name: Observe active callee before queueing contender
+    name: Stage contender after authenticated caller admission
     needs: auto_compile-release
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -118,22 +120,11 @@ jobs:
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
-      - name: Observe actual live same-run lease witness
+      - name: Observe authenticated caller admission before queueing contender
         id: observe
         env:
           GH_TOKEN: ${{ github.token }}
-        run: node scripts/release-runtime-fixture.mjs observe-start
-      - name: Download actual running callee witness by ID
-        env:
-          GH_TOKEN: ${{ github.token }}
-          ARTIFACT_ID: ${{ steps.observe.outputs.witness_id }}
-          ARTIFACT_NAME: release-fixture-lease-start-${{ github.run_id }}-${{
-            github.run_attempt }}
-          ARTIFACT_DESTINATION: .release-fixture/observer-start
-          DIGEST_MISMATCH: error
-        run: node scripts/release-runtime-fixture.mjs download
-      - name: Verify actual live callee witness identity
-        run: node scripts/release-runtime-fixture.mjs verify-start
+        run: node scripts/release-runtime-fixture.mjs stage-contender
       - name: Upload independent observer receipt
         if: always()
         uses: actions/upload-artifact@v7

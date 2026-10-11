@@ -65,10 +65,14 @@ function validateGraph(parent, child) {
     ordinaryGroups.add(expected);
   }
   assert.equal(ordinaryGroups.size, 3);
-  const witness = parent.jobs.observer.steps.find(step => step.name === 'Download actual running callee witness by ID');
-  assert.equal(downloadInputs(witness)['artifact-ids'], '${{ steps.observe.outputs.witness_id }}');
-  assert.equal(downloadInputs(witness).path, '.release-fixture/observer-start');
-  assert.equal(witness.env.ARTIFACT_NAME, 'release-fixture-lease-start-${{ github.run_id }}-${{ github.run_attempt }}');
+  const admission = parent.jobs.observer.steps.find(step => step.name === 'Observe authenticated caller admission before queueing contender');
+  assert.equal(admission.run, 'node scripts/release-runtime-fixture.mjs stage-contender');
+  assert.deepEqual(admission.env, {GH_TOKEN: '${{ github.token }}'});
+  assert.equal(parent.jobs.observer.steps.some(step => step.run === 'node scripts/release-runtime-fixture.mjs download'), false);
+  const liveWitness = child.jobs['lease-holder'].steps.find(step => step.name === 'Expose live callee witness before observer finishes');
+  assert.equal(liveWitness.uses, 'actions/upload-artifact@v7');
+  assert.equal(liveWitness.with.name, 'release-fixture-lease-start-${{ github.run_id }}-${{ github.run_attempt }}');
+  assert.equal(liveWitness.with.path, '.release-fixture/lease-start.json');
   assert.equal(child.jobs['lease-holder'].if, 'inputs.active');
   assert.equal(child.jobs['artifact-consumer'].if, 'inputs.active');
   assert.equal(child.jobs['artifact-consumer'].needs, 'lease-holder');
@@ -102,7 +106,7 @@ function validateGraph(parent, child) {
             ref: '${{ github.sha }}',
             'persist-credentials': false
           });
-          assert.ok(!step.run || /^node scripts\/release-runtime-fixture\.mjs (?:download|produce|consume|lease-start|wait-queue|observe-start|verify-start|finalize|contender|collect)$/.test(step.run));
+          assert.ok(!step.run || /^node scripts\/release-runtime-fixture\.mjs (?:download|produce|consume|lease-start|wait-queue|observe-start|stage-contender|verify-start|finalize|contender|collect)$/.test(step.run));
           if (step.uses === 'actions/download-artifact@v8') for (const forbidden of ['github-token', 'repository', 'run-id', 'pattern', 'name']) assert.equal(step.with[forbidden], undefined);
         }
       }
