@@ -18,7 +18,7 @@ use crate::formalization::statement_rendering::{
     join_surfaces, negation_in, resolve_surface, return_surface, surfaces_in,
 };
 use crate::formalization::text_statements::{
-    Polarity, Statement, Word, WordKind, clause_statement, formalize_text, known_ids,
+    Polarity, Statement, Word, WordKind, clause_statement, formalize_text, known_ids, seed_words,
     statement_terms,
 };
 
@@ -176,6 +176,12 @@ pub fn render_term(term: &Word, source: &str, target: &str) -> RenderedTerm {
 pub fn render_statement(statement: &Statement, source: &str, target: &str) -> Rendering {
     let mut terms = Vec::new();
     let mut surfaces = Vec::new();
+    if statement.subject.is_none()
+        && !statement.terms.is_empty()
+        && let Some(opener) = seed_words(target, "clause-continuation").into_iter().next()
+    {
+        surfaces.push(opener);
+    }
     if let Some(subject) = &statement.subject {
         let rendered = render_term(subject, source, target);
         surfaces.push(rendered.target.clone());
@@ -207,6 +213,26 @@ pub fn translate_text(text: &str, source: &str, target: &str) -> String {
     join_surfaces(&pieces)
 }
 
+/// A statement keeps its polarity, subject and ordered typed terms across languages.
+#[must_use]
+pub fn same_statement_meaning(left: &Statement, right: &Statement) -> bool {
+    let same_term =
+        |first: &Word, second: &Word| first.kind == second.kind && first.id == second.id;
+    let same_subject = match (&left.subject, &right.subject) {
+        (Some(first), Some(second)) => same_term(first, second),
+        (None, None) => true,
+        _ => false,
+    };
+    left.polarity == right.polarity
+        && same_subject
+        && left.terms.len() == right.terms.len()
+        && left
+            .terms
+            .iter()
+            .zip(&right.terms)
+            .all(|(first, second)| same_term(first, second))
+}
+
 /// One statement through source -> meta -> target -> meta -> source.
 #[must_use]
 pub fn round_trip_statement(statement: &Statement, source: &str, target: &str) -> StatementTrip {
@@ -225,7 +251,10 @@ pub fn round_trip_statement(statement: &Statement, source: &str, target: &str) -
         .iter()
         .all(|term| term.kind != WordKind::Unknown);
     StatementTrip {
-        survives: clean && !original.is_empty() && original == middle && original == end,
+        survives: clean
+            && !original.is_empty()
+            && same_statement_meaning(statement, &meta)
+            && same_statement_meaning(statement, &returned),
         forward: forward.text,
         backward: backward.text,
         surviving,

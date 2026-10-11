@@ -19,7 +19,7 @@
 
 import {
   Polarity, WordKind, clauseStatement, formalizeText, joinSurfaces, knownIds, negationIn, resolveSurface,
-  returnSurface, statementTerms, surfacesIn,
+  returnSurface, seedWords, statementTerms, surfacesIn,
 } from './text_formalization.mjs';
 
 /**
@@ -101,6 +101,10 @@ export function renderTerm(term, source, target) {
 export function renderStatement(statement, source, target) {
   const terms = [];
   const surfaces = [];
+  if (statement.subject === null && statement.terms.length > 0) {
+    const opener = seedWords(target, 'clause-continuation')[0];
+    if (opener !== undefined) surfaces.push(opener);
+  }
   if (statement.subject !== null) {
     const rendered = renderTerm(statement.subject, source, target);
     terms.push(rendered);
@@ -124,8 +128,16 @@ export function translateText(text, source, target) {
   return joinSurfaces(pieces);
 }
 
-/** Two sorted id lists are equal (the Rust twin compares the vectors). */
-const sameIds = (left, right) => left.length === right.length && left.every((id, index) => id === right[index]);
+/** A statement keeps its polarity, subject and ordered typed terms across languages. */
+export function sameStatementMeaning(left, right) {
+  const sameTerm = (first, second) => first.kind === second.kind && first.id === second.id;
+  const sameSubject = left.subject === null || right.subject === null
+    ? left.subject === right.subject
+    : sameTerm(left.subject, right.subject);
+  return left.polarity === right.polarity && sameSubject
+    && left.terms.length === right.terms.length
+    && left.terms.every((term, index) => sameTerm(term, right.terms[index]));
+}
 
 /**
  * Mirrors `fn round_trip_statement` in rust/src/translation/round_trip.rs: one statement through source -> meta ->
@@ -146,7 +158,7 @@ export function roundTripStatement(statement, source, target) {
     backward: backward.text,
     surviving,
     known: original.length,
-    survives: clean && original.length > 0 && sameIds(original, knownIds(meta)) && sameIds(original, knownIds(returned)),
+    survives: clean && original.length > 0 && sameStatementMeaning(statement, meta) && sameStatementMeaning(statement, returned),
   };
 }
 
