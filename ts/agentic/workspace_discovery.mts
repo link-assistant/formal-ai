@@ -75,6 +75,24 @@ export function workspaceDiscoveryContract(task) {
     words, model:'Unknown', schema:'Unknown', fulfilled:false };
 }
 
+/** Structural source binding only; this predicate grants no observation authority. */
+export function workspaceDiscoveryContractBound(contract, task) {
+  if (!contract || typeof task !== 'string' || contract.source !== task
+      || typeof contract.subject !== 'string' || !/^[\x00-\x7f]*$/u.test(contract.subject)) return false;
+  const span = contract.subjectSpan;
+  const remaining = contract.remainingSpan;
+  if (!Array.isArray(span) || span.length !== 2
+      || !span.every(value => Number.isSafeInteger(value) && value >= 0)
+      || span[0] > span[1] || span[1] > task.length
+      || !Array.isArray(remaining) || remaining.length !== 2
+      || remaining[0] !== span[1] || remaining[1] !== task.length
+      || task.slice(span[0], span[1]) !== contract.subject) return false;
+  const words = contract.subject.toLowerCase().split(/[ _-]+/u);
+  return words.length > 0 && words.every(word => word.length >= 2)
+    && Array.isArray(contract.words) && contract.words.length === words.length
+    && words.every((word, index) => contract.words[index] === word);
+}
+
 export function workspaceDiscoveryCommand(originalNeed) {
   // The identity binds the observed call, not approval or source closure.
   const identity = stableId('workspace_discovery_need', originalNeed);
@@ -96,7 +114,7 @@ export function workspaceCandidateReadCommand(originalNeed,path) {
 /** Existing transcript/provider contracts bind observations; supplied custom metadata is ignored. */
 export function workspaceDiscoveryStep(task, progress, tools, originalNeed = task) {
   const contract = workspaceDiscoveryContract(task);
-  if (!contract) return null;
+  if (!workspaceDiscoveryContractBound(contract, task)) return null;
   const command = workspaceDiscoveryCommand(originalNeed);
   const run = qualifiedToolAttempt(progress,Capability.Run,{command});
   if (!run) {

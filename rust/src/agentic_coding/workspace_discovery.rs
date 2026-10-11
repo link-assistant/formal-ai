@@ -61,6 +61,30 @@ pub(super) struct DiscoveryContract {
     words: Vec<String>,
 }
 
+pub(super) fn workspace_discovery_contract_bound(contract: &DiscoveryContract, task: &str) -> bool {
+    if contract.source != task || !contract.subject.is_ascii() {
+        return false;
+    }
+    let units: Vec<u16> = contract.source.encode_utf16().collect();
+    let Some(subject) = units.get(contract.subject_span[0]..contract.subject_span[1]) else {
+        return false;
+    };
+    let Ok(subject) = String::from_utf16(subject) else {
+        return false;
+    };
+    let words: Vec<String> = contract
+        .subject
+        .to_ascii_lowercase()
+        .split([' ', '_', '-'])
+        .map(str::to_owned)
+        .collect();
+    subject == contract.subject
+        && contract.remaining_span == [contract.subject_span[1], units.len()]
+        && !words.is_empty()
+        && words.iter().all(|word| word.len() >= 2)
+        && contract.words == words
+}
+
 fn utf16_boundary(source: &str, byte: usize) -> Option<usize> {
     source
         .get(..byte)
@@ -203,6 +227,9 @@ pub(super) fn workspace_discovery_step(
     need: &str,
 ) -> Option<DiscoveryStep> {
     let contract = workspace_discovery_contract(task)?;
+    if !workspace_discovery_contract_bound(&contract, task) {
+        return None;
+    }
     let command = workspace_discovery_command(need);
     let arguments = json!({"command": command});
     let Some(run) = progress.latest_attempt_for(Capability::Run, &arguments) else {
@@ -361,6 +388,42 @@ mod tests {
         assert!(workspace_discovery_contract("Inspect ../task_model").is_none());
         assert!(workspace_discovery_contract("node_path=1.1.1.1.1").is_none());
     }
+    #[test]
+    fn structural_binding_rejects_foreign_source_and_inconsistent_spans() {
+        let source = "Inspect the task model. Unconsumed α😀 tail";
+        let fresh = || workspace_discovery_contract(source).expect("source grammar");
+        assert!(workspace_discovery_contract_bound(&fresh(), source));
+        let foreign_source = contract_text("original-request-1", &[]);
+        assert!(!workspace_discovery_contract_bound(
+            &fresh(),
+            &foreign_source
+        ));
+        let mut contract = fresh();
+        contract.source.push('x');
+        assert!(!workspace_discovery_contract_bound(&contract, source));
+        let mut contract = fresh();
+        contract.subject = "queue model".to_owned();
+        assert!(!workspace_discovery_contract_bound(&contract, source));
+        let mut contract = fresh();
+        contract.subject_span[0] += 1;
+        assert!(!workspace_discovery_contract_bound(&contract, source));
+        let mut contract = fresh();
+        contract.subject_span.reverse();
+        assert!(!workspace_discovery_contract_bound(&contract, source));
+        let mut contract = fresh();
+        contract.subject_span[1] = usize::MAX;
+        assert!(!workspace_discovery_contract_bound(&contract, source));
+        let mut contract = fresh();
+        contract.remaining_span[0] += 1;
+        assert!(!workspace_discovery_contract_bound(&contract, source));
+        let mut contract = fresh();
+        contract.remaining_span[1] -= 1;
+        assert!(!workspace_discovery_contract_bound(&contract, source));
+        let mut contract = fresh();
+        contract.words[0] = "queue".to_owned();
+        assert!(!workspace_discovery_contract_bound(&contract, source));
+    }
+
     #[test]
     fn partial_receipts_and_unsafe_candidate_paths_cannot_become_source_evidence() {
         for raw in [
