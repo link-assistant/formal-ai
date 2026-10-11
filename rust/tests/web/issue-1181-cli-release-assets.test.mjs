@@ -174,12 +174,13 @@ test("R1181-1: the release resolver builds a release that lacks the CLI archives
     const head = "a".repeat(40), commit = "b".repeat(40), tree = "d".repeat(40);
     const mock = "#!/usr/bin/env node\n" + "const fixture=" + JSON.stringify({published,head,commit,tree}) + ";\n" + String.raw`
 const fs=require('node:fs'),path=require('node:path');
-const args=process.argv.slice(2), endpoint=args[1]??'';
+const args=process.argv.slice(2), endpoint=args.find(argument=>argument.startsWith('repos/'))??'';
 const write=value=>process.stdout.write(String(value)+'\n');
 if(args[0]==='api') {
  if(endpoint.includes('/actions/runs/'))write(JSON.stringify(({id:42,
    run_attempt:1,
    workflow_id:7,
+   event:'push',
    path:'.github/workflows/release.yml',
    status:'completed',
    conclusion:process.env.WORKFLOW_RUN_CONCLUSION,
