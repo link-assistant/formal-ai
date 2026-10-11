@@ -75,7 +75,14 @@ export function planWorkspaceChangeStep(rawTask, messages, toolNames) {
   // A whole-line operation (numbered, adjacent, moved, swapped lines) is read
   // before a rewrite: `move 'x' after 'y'` is not an insertion (PR #1188).
   const lineOperation = groundedLineOperation(task);
-  if (lineOperation) return planComputedChangeStep(task, currentTurn, toolNames, { ...lineOperation, edit: changedLinesEdit });
+  if (lineOperation) {
+    const scoped = ["line_moved_start","line_moved_end","line_moved_after","line_moved_before","lines_swapped"].includes(lineOperation.intent);
+    if (scoped && !ownsAdditiveScope(task)) return resolvedFinalAnswer(
+      renderSeededOutcome('coding-source-authoring-contract-missing', task, lineOperation.target) ?? task,
+      FinalDisposition.Gap, 'coding-source-authoring-contract-missing'
+    );
+    return planComputedChangeStep(task, currentTurn, toolNames, { ...lineOperation, edit: changedLinesEdit });
+  }
   const inserts = insertSequence(task);
   if (inserts) return planInsertSequenceStep(task, currentTurn, toolNames, inserts);
   // Several replacements asked in one sentence are made in order (G82).

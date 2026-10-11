@@ -166,6 +166,29 @@ pub(super) fn plan_workspace_change_step(
         );
     }
     if let Some(change) = super::workspace_computed_change::grounded_line_change(task) {
+        let scoped = matches!(
+            change.intent,
+            "line_moved_start"
+                | "line_moved_end"
+                | "line_moved_after"
+                | "line_moved_before"
+                | "lines_swapped"
+        );
+        if scoped && !super::general_planner::owns_additive_scope(task) {
+            return Some(record(
+                AgenticPlan::Final(
+                    render_seeded_outcome(
+                        "coding-source-authoring-contract-missing",
+                        task,
+                        &change.target,
+                    )
+                    .unwrap_or_else(|| task.to_owned()),
+                ),
+                FinalDisposition::Gap,
+                "coding-source-authoring-contract-missing",
+                result,
+            ));
+        }
         return super::workspace_computed_change::plan_computed_change_step(
             task,
             current_turn,

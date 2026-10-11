@@ -8,6 +8,58 @@ use crate::normal_markov::{quote_fault, quoted_segment_spans};
 
 /// Mirrors `ownsAdditiveScope`; this syntactic preflight does not grant effect authority.
 pub fn owns_additive_scope(request: &str) -> bool {
+    if let Some(block) = crate::agentic_coding::positional_edit::introduced_block(request) {
+        let quotes = quoted_segment_spans(block.head);
+        let words: Vec<_> = tokens(block.head)
+            .into_iter()
+            .filter(|token| {
+                !quotes
+                    .iter()
+                    .any(|span| token.start < span.end && token.end > span.start)
+            })
+            .collect();
+        let addition = bare_surfaces("coding_member_add_action")
+            .into_iter()
+            .any(|surface| {
+                let lowered = surface.to_lowercase();
+                let cue: Vec<_> = lowered.split_whitespace().collect();
+                !cue.is_empty()
+                    && (0..words.len()).any(|index| {
+                        cue.iter().enumerate().all(|(offset, word)| {
+                            words
+                                .get(index + offset)
+                                .is_some_and(|token| clean_cue_token(token.text) == *word)
+                        })
+                    })
+            });
+        return (first_action_cue_start(&words).is_some() || addition)
+            && owns_additive_scope(block.head);
+    }
+    let operation =
+        crate::agentic_coding::workspace_line_operation::grounded_line_operation(request);
+    let line_roles: Option<&[&str]> =
+        operation
+            .as_ref()
+            .and_then(|operation| match operation.intent {
+                "line_moved_start" => Some(&["line_move_action", "file_edit_position_start"][..]),
+                "line_moved_end" => Some(&["line_move_action", "file_edit_position_end"][..]),
+                "line_moved_after" => Some(
+                    &[
+                        "line_move_action",
+                        "file_edit_position_after",
+                        "line_move_after_cue",
+                    ][..],
+                ),
+                "line_moved_before" => Some(
+                    &[
+                        "line_move_action",
+                        "file_edit_position_before",
+                        "line_move_before_cue",
+                    ][..],
+                ),
+                "lines_swapped" => Some(&["line_swap_action"][..]),
+                _ => None,
+            });
     if quote_fault(request).is_some() {
         return false;
     }
@@ -84,7 +136,8 @@ pub fn owns_additive_scope(request: &str) -> bool {
         }
     }
     let owned_end = spans.iter().map(|(_, end)| *end).max().unwrap_or(0);
-    if owned_end > 0
+    if line_roles.is_none()
+        && owned_end > 0
         && !request[owned_end..]
             .chars()
             .all(|character| " \t\n\r\u{000b}\u{000c}.!?。！？।,，:：;；".contains(character))
@@ -114,7 +167,10 @@ pub fn owns_additive_scope(request: &str) -> bool {
         return false;
     }
     let words = tokens(&remaining);
-    if let Some((start, end)) = first_action_cue_start(&words).zip(first_action_cue_end(&words)) {
+    if let Some((start, end)) = first_action_cue_start(&words)
+        .zip(first_action_cue_end(&words))
+        .filter(|_| line_roles.is_none())
+    {
         remaining.replace_range(start..end, &" ".repeat(end - start));
     }
     let mut roles = vec![
@@ -130,8 +186,14 @@ pub fn owns_additive_scope(request: &str) -> bool {
         "file_declared_noun",
         "file_contents_source_cue",
     ];
-    if crate::agentic_coding::markdown_section::section_scope(request, &view.to_lowercase())
-        .is_some()
+    if let Some(line_roles) = line_roles {
+        roles
+            .retain(|role| !matches!(*role, "file_edit_position_end" | "file_edit_position_start"));
+        roles.extend_from_slice(line_roles);
+    }
+    if line_roles.is_none()
+        && crate::agentic_coding::markdown_section::section_scope(request, &view.to_lowercase())
+            .is_some()
     {
         roles.push("file_section_noun");
         let mut actions: Vec<String> = bare_surfaces("coding_member_add_action")
@@ -168,7 +230,13 @@ pub fn owns_additive_scope(request: &str) -> bool {
             let before = remaining[..start].chars().next_back();
             let after = remaining[end..].chars().next();
             let is_word = |character: Option<char>| {
-                character.is_some_and(|value| word.is_match(&value.to_string()))
+                character.is_some_and(|value| {
+                    let point = value as u32;
+                    let han = (0x3400..=0x4dbf).contains(&point)
+                        || (0x4e00..=0x9fff).contains(&point)
+                        || (0xf900..=0xfaff).contains(&point);
+                    !han && word.is_match(&value.to_string())
+                })
             };
             if !is_word(before) && !is_word(after) {
                 remaining.replace_range(start..end, &" ".repeat(surface.len()));
