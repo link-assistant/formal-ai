@@ -9,7 +9,7 @@ use super::{DeliveryBinding, render_obligation, written_observation};
 
 pub(super) fn recorded_discovery_gap(
     obligation: &DeliveryBinding,
-    content: &Option<String>,
+    content: Option<&str>,
     progress: &Progress,
     tool_names: &[&str],
     task: &str,
@@ -22,14 +22,13 @@ pub(super) fn recorded_discovery_gap(
         && let Some(super::super::workspace_discovery::DiscoveryStep::Observation { .. }) =
             super::super::workspace_discovery::workspace_discovery_step(
                 &obligation.residual,
-                &progress,
+                progress,
                 tool_names,
                 task,
             )
     {
         let answer = content
-            .as_deref()
-            .map(|bytes| written_observation(&obligation, bytes))
+            .map(|bytes| written_observation(obligation, bytes))
             .unwrap_or_default();
         return Some(record(
             AgenticPlan::Final(answer),
@@ -55,7 +54,7 @@ pub(super) fn plan_discovery_delivery(
     .is_none()
         && let Some(discovery) = super::super::workspace_discovery::workspace_discovery_step(
             &obligation.residual,
-            &progress,
+            progress,
             tool_names,
             task,
         )
@@ -68,7 +67,7 @@ pub(super) fn plan_discovery_delivery(
                         write_tool,
                         write_arguments(
                             &obligation.target,
-                            &render_obligation(&obligation, &answer),
+                            &render_obligation(obligation, &answer),
                         ),
                     )
                 } else {

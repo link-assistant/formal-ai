@@ -765,13 +765,13 @@ fn declared_creation_prologue(request: &str, contract: &LiteralWriteContract) ->
     let Some(last) = words.last() else {
         return false;
     };
-    if !bare_surfaces("file_declared_noun").contains(&clean_cue_token(&last.text)) {
+    if !bare_surfaces("file_declared_noun").contains(&clean_cue_token(last.text)) {
         return false;
     }
     let prefix = crate::engine::normalize_prompt(
         &words
             .iter()
-            .map(|word| clean_cue_token(&word.text))
+            .map(|word| clean_cue_token(word.text))
             .collect::<Vec<_>>()
             .join(" "),
     );
@@ -781,6 +781,7 @@ fn declared_creation_prologue(request: &str, contract: &LiteralWriteContract) ->
 }
 
 /// Mirrors `ownedDeclaredCreateFrame`; classification does not grant filesystem authority.
+#[must_use]
 pub fn owned_declared_create_frame(request: &str) -> Option<(String, String)> {
     let contract = parse_write_contract(request)?;
     if quote_fault(request).is_some()
@@ -810,6 +811,7 @@ pub fn owned_declared_create_frame(request: &str) -> Option<(String, String)> {
 }
 
 /// Mirrors `declaredAdditionContract`: explicit content follows the owned destination.
+#[must_use]
 pub fn declared_addition_contract(request: &str) -> Option<(String, String)> {
     let contract = parse_write_contract(request)?;
     if contract.target_span.end > contract.payload.start
@@ -824,21 +826,23 @@ pub fn declared_addition_contract(request: &str) -> Option<(String, String)> {
 }
 
 /// Mirrors `hasAdditivePosition`; owned payload words are not operation cues.
+#[must_use]
 pub fn has_additive_position(request: &str) -> bool {
     let complete = parse_write_contract(request).filter(|contract| {
         literal_tail(request, contract)
             && !attributed_action_prefix(request)
             && contract_action_prologue(request, contract)
     });
-    let view = if let Some(contract) = complete {
-        instruction_view(request, &contract)
-    } else {
-        let mut bytes = request.as_bytes().to_vec();
-        for span in quoted_segment_spans(request) {
-            bytes[span.start..span.end].fill(b' ');
-        }
-        String::from_utf8(bytes).ok()
-    };
+    let view = complete.map_or_else(
+        || {
+            let mut bytes = request.as_bytes().to_vec();
+            for span in quoted_segment_spans(request) {
+                bytes[span.start..span.end].fill(b' ');
+            }
+            String::from_utf8(bytes).ok()
+        },
+        |contract| instruction_view(request, &contract),
+    );
     view.is_some_and(|source| {
         let normalized = crate::engine::normalize_prompt(&source);
         let lexicon = crate::seed::lexicon();
@@ -848,6 +852,7 @@ pub fn has_additive_position(request: &str) -> bool {
 }
 
 /// Full owned literal addition frame; absent position refuses ambiguous addition.
+#[must_use]
 pub fn owned_additive_literal_frame(request: &str) -> Option<(String, String, Option<bool>)> {
     if crate::agentic_coding::module_function::closed_arithmetic_declaration(request) {
         return None;
@@ -881,6 +886,7 @@ pub fn owned_additive_literal_frame(request: &str) -> Option<(String, String, Op
 }
 
 /// A completed ownership contract includes one unambiguous source-owned position.
+#[must_use]
 pub fn owned_additive_literal(request: &str) -> Option<(String, String, bool)> {
     let (target, content, position) = owned_additive_literal_frame(request)?;
     Some((target, content, position?))

@@ -4,6 +4,7 @@ use crate::seed::parser::parse_lino;
 use crate::source_fetch::sha256_hex;
 use serde_json::{Value, json};
 
+#[must_use]
 pub fn source_goal_scope(source: &str) -> Option<String> {
     if crate::normal_markov::quote_fault(source).is_some() {
         return None;
@@ -19,6 +20,7 @@ pub fn source_goal_scope(source: &str) -> Option<String> {
     Some(result)
 }
 
+#[must_use]
 pub fn derive_complete_source_request(text: &str, seed: &str) -> Option<Value> {
     let scope = source_goal_scope(text)?;
     let request = super::discovery::observed_callable_request(text)?;

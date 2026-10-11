@@ -112,7 +112,7 @@ pub(super) fn closed_arithmetic_declaration(request: &str) -> bool {
     }
     let path_tokens = unquoted_path_tokens(request)
         .into_iter()
-        .filter(|token| looks_like_file_path(&clean_path_token(token.text)))
+        .filter(|token| looks_like_file_path(clean_path_token(token.text)))
         .collect::<Vec<_>>();
     if path_tokens.len() != 1 || clean_path_token(path_tokens[0].text) != declaration.module {
         return false;
@@ -949,12 +949,10 @@ pub(super) fn plan_module_function_step(
     )?;
     if let Some(owned) =
         OptionalCommandPlan::from_source_plan(&plan, task, tool_names, messages, &recipe)
-    {
-        if let Some(verified) =
+        && let Some(verified) =
             source_owned_optional_command(&owned, &plan, task, tool_names, messages)
-        {
-            return Some(verified.original_plan().clone());
-        }
+    {
+        return Some(verified.original_plan().clone());
     }
     Some(plan)
 }

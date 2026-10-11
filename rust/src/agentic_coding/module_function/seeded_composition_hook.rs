@@ -12,7 +12,7 @@ fn string<'a>(value: &'a Value, key: &str) -> Result<&'a str, &'static str> {
 fn list<'a>(value: &'a Value, key: &str) -> Result<&'a Vec<Value>, &'static str> {
     value[key].as_array().ok_or("MissingSourceContractList")
 }
-fn require(condition: bool, error: &'static str) -> Result<(), &'static str> {
+const fn require(condition: bool, error: &'static str) -> Result<(), &'static str> {
     if condition { Ok(()) } else { Err(error) }
 }
 pub fn bind_accepted_import<Host: SourceModuleIdentityHost>(

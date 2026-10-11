@@ -67,21 +67,20 @@ pub fn owns_additive_scope(request: &str) -> bool {
         .into_iter()
         .map(|span| (span.start, span.end))
         .collect();
-    if let Some(contract) = parse_write_contract(request) {
-        if contract.target_span.end <= contract.payload.start
-            && crate::agentic_coding::write_request::first_content_lead_end(
-                &request[contract.target_span.end..].to_lowercase(),
-            )
-            .is_some()
-        {
-            spans.push((contract.target_span.end, contract.payload.end));
-        }
+    if let Some(contract) = parse_write_contract(request)
+        && contract.target_span.end <= contract.payload.start
+        && crate::agentic_coding::write_request::first_content_lead_end(
+            &request[contract.target_span.end..].to_lowercase(),
+        )
+        .is_some()
+    {
+        spans.push((contract.target_span.end, contract.payload.end));
     }
     if quoted_segment_spans(request).is_empty() {
         let words = tokens(request);
         let paths: Vec<_> = words
             .iter()
-            .filter(|token| looks_like_file_path(&clean_path_token(token.text)))
+            .filter(|token| looks_like_file_path(clean_path_token(token.text)))
             .collect();
         let mut leads: Vec<Vec<String>> = bare_surfaces("file_edit_line_lead")
             .into_iter()
@@ -108,30 +107,26 @@ pub fn owns_additive_scope(request: &str) -> bool {
                 break;
             }
         }
-        if let (Some(end), [path]) = (lead, paths.as_slice()) {
-            if end < path.start {
-                let destinations = bare_surfaces("file_write_destination_cue");
-                let segment = &request[end..path.start];
-                if let Some(destination) = tokens(segment)
-                    .into_iter()
-                    .filter(|token| {
-                        destinations.contains(
-                            &token
-                                .text
-                                .to_lowercase()
-                                .trim_end_matches(['.', '!', '?', ',', ':', ';'])
-                                .to_owned(),
-                        )
-                    })
-                    .next_back()
-                {
-                    spans.push((end, end + destination.start));
-                }
+        if let (Some(end), [path]) = (lead, paths.as_slice())
+            && end < path.start
+        {
+            let destinations = bare_surfaces("file_write_destination_cue");
+            let segment = &request[end..path.start];
+            if let Some(destination) = tokens(segment).into_iter().rfind(|token| {
+                destinations.contains(
+                    &token
+                        .text
+                        .to_lowercase()
+                        .trim_end_matches(['.', '!', '?', ',', ':', ';'])
+                        .to_owned(),
+                )
+            }) {
+                spans.push((end, end + destination.start));
             }
         }
     }
     for token in tokens(request) {
-        if looks_like_file_path(&clean_path_token(token.text)) {
+        if looks_like_file_path(clean_path_token(token.text)) {
             spans.push((token.start, token.end));
         }
     }

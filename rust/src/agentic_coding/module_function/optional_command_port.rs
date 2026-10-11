@@ -37,10 +37,12 @@ impl<'a> OptionalCommandPlan<'a> {
             return None;
         };
         let call = calls.first()?;
+        let expected_arguments =
+            serde_json::to_string(&serde_json::json!({"command": command})).ok()?;
         if calls.len() != 1
             || Some(call.tool.as_str())
                 != crate::agentic_coding::capability_router::tool_for(tools, Capability::Run)
-            || call.arguments != serde_json::json!({"command": command}).to_string()
+            || call.arguments != expected_arguments
         {
             return None;
         }
@@ -60,10 +62,11 @@ impl<'a> OptionalCommandPlan<'a> {
     }
     /// The unchanged actual owner-produced plan.
     #[must_use]
-    pub fn original_plan(&self) -> &AgenticPlan {
+    pub const fn original_plan(&self) -> &AgenticPlan {
         self.plan
     }
     /// Recompute from the immutable original borrowed history without issuing a receipt.
+    #[must_use]
     pub fn without_inferred_check(&self) -> Option<AgenticPlan> {
         let mut recipe = self.recipe.clone();
         recipe.commands.remove(0);
@@ -83,6 +86,7 @@ impl<'a> OptionalCommandPlan<'a> {
     }
 }
 /// Consume only an exact source-owner witness and its original immutable inputs.
+#[must_use]
 pub fn source_owned_optional_command<'w, 'a>(
     owned: &'w OptionalCommandPlan<'a>,
     plan: &AgenticPlan,

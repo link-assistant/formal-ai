@@ -2,6 +2,8 @@
 
 use serde_json::json;
 
+use super::append_contract::{AppendRecordStep, append_record_step};
+
 use super::capability_router::shell_command_tool;
 use super::final_result::{FinalDisposition, FinalResult, record};
 use super::general_planner::{
@@ -377,7 +379,6 @@ fn plan_event_step(
         return PlanEventOutcome::Pending(plan_one(write, write_arguments(PLAN_PATH, &stream)));
     }
     // A declared append provider retains its exact receipt contract with a shell present.
-    use super::append_contract::{AppendRecordStep, append_record_step};
     if let Some(appended) = append_record_step(messages, tool_names, PLAN_PATH, &event, identity) {
         return match appended {
             AppendRecordStep::Pending(step) => PlanEventOutcome::Pending(step),
@@ -385,7 +386,7 @@ fn plan_event_step(
             AppendRecordStep::Refused => PlanEventOutcome::Pending(unverified_plan_event(plan)),
         };
     }
-    let Some(run) = run else {
+    let Some(run) = run.filter(|_| atomic_shell) else {
         return PlanEventOutcome::Unavailable;
     };
     let append = plan_event_append_command(plan);

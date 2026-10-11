@@ -126,34 +126,34 @@ pub(in crate::agentic_coding) fn stated_value(
                 .next()
                 .map(|candidate| candidate.expression)
         };
-        if let Some(expression) = expression {
-            if let Some(value) = evaluated(&expression) {
-                let suffix = &words[end..];
-                if suffix.is_empty() {
-                    return Some(value);
-                }
-                let path = clean_path_token(suffix[suffix.len() - 1]);
-                let cue = suffix[..suffix.len() - 1]
-                    .join(" ")
-                    .split_whitespace()
-                    .collect::<Vec<_>>()
-                    .join(" ")
-                    .to_lowercase();
-                let owned_target = crate::agentic_coding::write_request::safe_relative_path(&path)
-                    && looks_like_file_path(&path)
-                    && ["file_edit_target_cue", "file_write_destination_cue"]
-                        .iter()
-                        .flat_map(|role| bare_surfaces(role))
-                        .any(|surface| {
-                            surface
-                                .split_whitespace()
-                                .collect::<Vec<_>>()
-                                .join(" ")
-                                .to_lowercase()
-                                == cue
-                        });
-                return owned_target.then_some(value);
+        if let Some(expression) = expression
+            && let Some(value) = evaluated(&expression)
+        {
+            let suffix = &words[end..];
+            if suffix.is_empty() {
+                return Some(value);
             }
+            let path = clean_path_token(suffix[suffix.len() - 1]);
+            let cue = suffix[..suffix.len() - 1]
+                .join(" ")
+                .split_whitespace()
+                .collect::<Vec<_>>()
+                .join(" ")
+                .to_lowercase();
+            let owned_target = crate::agentic_coding::write_request::safe_relative_path(path)
+                && looks_like_file_path(path)
+                && ["file_edit_target_cue", "file_write_destination_cue"]
+                    .iter()
+                    .flat_map(|role| bare_surfaces(role))
+                    .any(|surface| {
+                        surface
+                            .split_whitespace()
+                            .collect::<Vec<_>>()
+                            .join(" ")
+                            .to_lowercase()
+                            == cue
+                    });
+            return owned_target.then_some(value);
         }
     }
     evaluated(&relation_expression(relation_text, samples)?)

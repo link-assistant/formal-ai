@@ -110,14 +110,17 @@ pub(super) fn workspace_discovery_contract(task: &str) -> Option<DiscoveryContra
     let template = &field("pattern")?.id;
     let subject = &field("subject-pattern")?.id;
     if actions.is_empty()
-        || template.matches("{action}").count() != 1
-        || template.matches("{subject}").count() != 1
+        || template.matches(concat!("{", "action", "}")).count() != 1
+        || template.matches(concat!("{", "subject", "}")).count() != 1
     {
         return None;
     }
     let pattern = template
-        .replace("{action}", &format!("({})", actions.join("|")))
-        .replace("{subject}", &format!("({subject})"));
+        .replace(
+            concat!("{", "action", "}"),
+            &format!("({})", actions.join("|")),
+        )
+        .replace(concat!("{", "subject", "}"), &format!("({subject})"));
     let expression = regex::RegexBuilder::new(&pattern)
         .case_insensitive(true)
         .build()
@@ -152,7 +155,7 @@ pub(super) fn workspace_discovery_contract(task: &str) -> Option<DiscoveryContra
 pub(super) fn workspace_discovery_command(need: &str) -> String {
     contract_text(
         "source-template-1",
-        &[&(stable_id("workspace_discovery_need", need)).to_string()],
+        &[&(stable_id("workspace_discovery_need", need))],
     )
 }
 
@@ -168,10 +171,7 @@ fn candidate_read_command(need: &str, path: &str) -> Option<String> {
     safe_path(path).then(|| {
         contract_text(
             "source-template-2",
-            &[
-                &(stable_id("workspace_candidate_need", need)).to_string(),
-                &(path).to_string(),
-            ],
+            &[&(stable_id("workspace_candidate_need", need)), path],
         )
     })
 }
@@ -192,18 +192,16 @@ fn incomplete(raw: &str) -> bool {
     if incomplete_receipt(raw) {
         return true;
     }
-    serde_json::from_str::<Value>(raw)
-        .ok()
-        .is_some_and(|value| {
-            value
-                .get("command_output_complete")
+    serde_json::from_str::<Value>(raw).is_ok_and(|value| {
+        value
+            .get("command_output_complete")
+            .and_then(Value::as_bool)
+            == Some(false)
+            || value
+                .pointer("/stdout_capture/complete")
                 .and_then(Value::as_bool)
                 == Some(false)
-                || value
-                    .pointer("/stdout_capture/complete")
-                    .and_then(Value::as_bool)
-                    == Some(false)
-        })
+    })
 }
 
 fn qualified_payload(
@@ -241,10 +239,10 @@ pub(super) fn workspace_discovery_step(
         {
             return Some(DiscoveryStep::Calls(plan_one(tool, listing.to_string())));
         }
-        return Some(match tool_for(tools, Capability::Run) {
-            Some(tool) => DiscoveryStep::Calls(plan_one(tool, arguments.to_string())),
-            None => observation("unavailable", contract_text("source-template-8", &[])),
-        });
+        return Some(tool_for(tools, Capability::Run).map_or_else(
+            || observation("unavailable", contract_text("source-template-8", &[])),
+            |tool| DiscoveryStep::Calls(plan_one(tool, arguments.to_string())),
+        ));
     };
     let Some(payload) = qualified_payload(run) else {
         return Some(observation(
@@ -306,7 +304,7 @@ pub(super) fn workspace_discovery_step(
                 "source-template-3",
                 &[
                     &(unique.len()).to_string(),
-                    &(serde_json::to_string(&contract.words).ok()?).to_string(),
+                    &(serde_json::to_string(&contract.words).ok()?),
                 ],
             ),
         ));
@@ -316,23 +314,17 @@ pub(super) fn workspace_discovery_step(
             "ambiguous",
             contract_text(
                 "source-template-4",
-                &[
-                    &(candidates.len()).to_string(),
-                    &(candidates.join(", ")).to_string(),
-                ],
+                &[&(candidates.len()).to_string(), &(candidates.join(", "))],
             ),
         ));
     }
     let path = candidates[0].strip_prefix("./")?;
     let arguments = json!({"command":candidate_read_command(need,path)?});
     let Some(read) = progress.latest_attempt_for(Capability::Run, &arguments) else {
-        return Some(match tool_for(tools, Capability::Run) {
-            Some(tool) => DiscoveryStep::Calls(plan_one(tool, arguments.to_string())),
-            None => observation(
-                "unavailable",
-                contract_text("source-template-5", &[&(path).to_string()]),
-            ),
-        });
+        return Some(tool_for(tools, Capability::Run).map_or_else(
+            || observation("unavailable", contract_text("source-template-5", &[path])),
+            |tool| DiscoveryStep::Calls(plan_one(tool, arguments.to_string())),
+        ));
     };
     let source = qualified_payload(read).and_then(|payload| {
         payload
@@ -343,7 +335,7 @@ pub(super) fn workspace_discovery_step(
     let Some(source) = source else {
         return Some(observation(
             "unqualified_read",
-            contract_text("source-template-6", &[&(path).to_string()]),
+            contract_text("source-template-6", &[path]),
         ));
     };
     if source.len() > MAXIMUM_BYTES {
@@ -357,9 +349,9 @@ pub(super) fn workspace_discovery_step(
         contract_text(
             "source-template-7",
             &[
-                &(path).to_string(),
+                path,
                 &(source.len()).to_string(),
-                &(stable_id("observed_candidate", &source)).to_string(),
+                &(stable_id("observed_candidate", &source)),
             ],
         ),
     ))

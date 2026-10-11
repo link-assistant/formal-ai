@@ -208,7 +208,10 @@ pub fn complete_owned_source_read_frame(source: &str) -> String {
     // Fill source last so authored placeholder-looking bytes remain exact data.
     super::super::work_item_steps::fill(
         "agent-file-read-frame",
-        &[("{lines}", &rows.len().to_string()), ("{body}", &body)],
+        &[
+            (concat!("{", "lines", "}"), &rows.len().to_string()),
+            (concat!("{", "body", "}"), &body),
+        ],
     )
 }
 

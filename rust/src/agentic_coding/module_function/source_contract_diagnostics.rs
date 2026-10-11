@@ -2,6 +2,7 @@
 use crate::seed::parser::parse_lino;
 const MEANINGS: &str =
     include_str!("../../../embedded/data/seed/meanings-source-authoring-grammar.lino");
+#[must_use]
 pub fn source_contract_diagnostic(code: &str, language: &str) -> Option<String> {
     let root = parse_lino(MEANINGS);
     let meanings: Vec<_> = root

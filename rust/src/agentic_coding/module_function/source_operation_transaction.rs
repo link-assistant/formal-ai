@@ -62,7 +62,7 @@ pub fn accepted_operation_candidate_status<Host: SourceFinalizedCandidateOperati
         .finalized_candidate_status(receipt, request, command, workspace, destination, identity)
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub enum CandidateFile {
     Absent,
     File(String),

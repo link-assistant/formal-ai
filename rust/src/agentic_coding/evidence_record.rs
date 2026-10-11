@@ -297,7 +297,7 @@ pub(super) fn plan_evidence_record_step(
             }
             if let Some(plan) = discovery_delivery::recorded_discovery_gap(
                 &obligation,
-                &content,
+                content.as_deref(),
                 &progress,
                 tool_names,
                 task,

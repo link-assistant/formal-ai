@@ -187,7 +187,7 @@ function planEventStep(plan, progress, toolNames, messages) {
   const appended = appendRecordStep(messages, toolNames, PLAN_PATH, event, identity);
   if (appended?.kind === 'refused') return { kind: 'pending', plan: unverifiedPlanEvent(plan) };
   if (appended !== null) return appended;
-  if (!run) return { kind: 'unavailable' };
+  if (!run || !atomicShell) return { kind: 'unavailable' };
   const append = planEventAppendCommand(plan);
   if (progress.successfulRunCountFor(append) === 0) return { kind: 'pending', plan: planOne(run, command(append)) };
   const raw = progress.latestSuccessfulRunOutputFor(append);

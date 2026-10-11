@@ -14,6 +14,7 @@ fn source_need_is_read(need: &Value) -> bool {
 }
 
 /// Mirrors sourceNeedPreflight; actual host message ownership remains required.
+#[must_use]
 pub fn source_need_preflight(source: &str, messages: &[ChatMessage]) -> Option<Value> {
     if crate::normal_markov::quote_fault(source).is_some() {
         return None;
@@ -37,15 +38,20 @@ pub fn source_need_preflight(source: &str, messages: &[ChatMessage]) -> Option<V
         let read = progress.source_read_for(path);
         let status = if policy { "policy-refused" } else {
             read.map_or("unattempted", |observation| {
-                if let Some(error) = &observation.error {
-                    if role == "destination" && error.split(|character: char|
-                        !character.is_ascii_alphanumeric() && character != '_')
-                        .any(|word| word == "ENOENT") {
-                        "conditional-satisfied-absence"
-                    } else { "failed" }
-                } else if observation.complete && observation.source.is_some() {
-                    "conditional-satisfied-read"
-                } else { "incomplete" }
+                observation.error.as_ref().map_or_else(
+                    || {
+                        if observation.complete && observation.source.is_some() {
+                            "conditional-satisfied-read"
+                        } else { "incomplete" }
+                    },
+                    |error| {
+                        if role == "destination" && error.split(|character: char|
+                            !character.is_ascii_alphanumeric() && character != '_')
+                            .any(|word| word == "ENOENT") {
+                            "conditional-satisfied-absence"
+                        } else { "failed" }
+                    },
+                )
             })
         };
         let identity = read.filter(|value| value.error.is_none() && value.complete)

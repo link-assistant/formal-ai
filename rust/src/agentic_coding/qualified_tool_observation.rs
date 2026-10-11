@@ -42,8 +42,9 @@ fn exact_argument_number(number: &serde_json::Number) -> Option<ExactArgumentNum
     if number.is_u64() {
         return number
             .as_u64()
-            .filter(|value| *value <= MAXIMUM as u64)
-            .map(|value| ExactArgumentNumber::Integer(value as i64));
+            .filter(|value| *value <= 9_007_199_254_740_991_u64)
+            .and_then(|value| i64::try_from(value).ok())
+            .map(ExactArgumentNumber::Integer);
     }
     if !number.is_f64() {
         return None;
@@ -54,10 +55,13 @@ fn exact_argument_number(number: &serde_json::Number) -> Option<ExactArgumentNum
         return None;
     }
     if value.fract() == 0.0 {
-        if !(-(MAXIMUM as f64)..=MAXIMUM as f64).contains(&value) {
+        if !(-9_007_199_254_740_991.0..=9_007_199_254_740_991.0).contains(&value) {
             return None;
         }
-        return Some(ExactArgumentNumber::Integer(value as i64));
+        return format!("{value:.0}")
+            .parse::<i64>()
+            .ok()
+            .map(ExactArgumentNumber::Integer);
     }
     Some(ExactArgumentNumber::Fraction(value.to_bits()))
 }
@@ -95,54 +99,6 @@ pub(super) fn argument_values_equal(left: &Value, right: &Value) -> bool {
                 })
         }
         _ => false,
-    }
-}
-
-#[cfg(test)]
-mod argument_domain_tests {
-    use super::*;
-    use crate::protocol::{FunctionCall, ToolCall};
-
-    #[test]
-    fn exact_numeric_domain_normalizes_without_lossy_integer_conversion() {
-        for (left, right, expected) in [
-            ("1", "1.0", true),
-            ("-0.0", "0", true),
-            ("0.125", "0.125", true),
-            ("0.125", "0.25", false),
-            ("9007199254740991", "9007199254740991.0", true),
-            ("-9007199254740991", "-9007199254740991.0", true),
-            ("9007199254740992", "9007199254740992", false),
-            ("9007199254740992", "9007199254740993", false),
-            ("-9007199254740992", "-9007199254740992", false),
-            ("18446744073709551615", "18446744073709551615", false),
-            ("{\"a\":[1,null]}", "{\"a\":[1.0,null]}", true),
-            (
-                "{\"a\":[9007199254740993]}",
-                "{\"a\":[9007199254740993]}",
-                false,
-            ),
-        ] {
-            let left: Value = serde_json::from_str(left).expect("left JSON");
-            let right: Value = serde_json::from_str(right).expect("right JSON");
-            assert_eq!(argument_values_equal(&left, &right), expected);
-        }
-    }
-
-    #[test]
-    fn unsafe_arguments_never_accept_an_exact_success_receipt() {
-        let messages = vec![
-            ChatMessage::assistant_tool_calls(vec![ToolCall {
-                id: "unsafe-call".into(),
-                kind: "function".into(),
-                function: FunctionCall {
-                    name: "bash".into(),
-                    arguments: "{\"command\":\"true\",\"nested\":[9007199254740993]}".into(),
-                },
-            }]),
-            ChatMessage::tool_result("unsafe-call", "bash", "Output: done\nExit Code: 0"),
-        ];
-        assert!(scan(&messages, 0).is_empty());
     }
 }
 
@@ -229,7 +185,7 @@ pub(super) fn scan(messages: &[ChatMessage], start: usize) -> Vec<QualifiedToolA
         }
         frame.receipt_present = true;
         let raw = message.content.plain_text();
-        frame.detail = raw.clone();
+        frame.detail.clone_from(&raw);
         frame.binding = match message.name.as_deref() {
             None => Binding::Unknown,
             Some(name) if name == frame.declared_tool => Binding::Exact,
@@ -250,4 +206,52 @@ pub(super) fn latest<'a>(
     frames.iter().rev().find(|frame| {
         frame.capability == capability && argument_values_equal(&frame.arguments_value, arguments)
     })
+}
+
+#[cfg(test)]
+mod argument_domain_tests {
+    use super::*;
+    use crate::protocol::{FunctionCall, ToolCall};
+
+    #[test]
+    fn exact_numeric_domain_normalizes_without_lossy_integer_conversion() {
+        for (left, right, expected) in [
+            ("1", "1.0", true),
+            ("-0.0", "0", true),
+            ("0.125", "0.125", true),
+            ("0.125", "0.25", false),
+            ("9007199254740991", "9007199254740991.0", true),
+            ("-9007199254740991", "-9007199254740991.0", true),
+            ("9007199254740992", "9007199254740992", false),
+            ("9007199254740992", "9007199254740993", false),
+            ("-9007199254740992", "-9007199254740992", false),
+            ("18446744073709551615", "18446744073709551615", false),
+            ("{\"a\":[1,null]}", "{\"a\":[1.0,null]}", true),
+            (
+                "{\"a\":[9007199254740993]}",
+                "{\"a\":[9007199254740993]}",
+                false,
+            ),
+        ] {
+            let left: Value = serde_json::from_str(left).expect("left JSON");
+            let right: Value = serde_json::from_str(right).expect("right JSON");
+            assert_eq!(argument_values_equal(&left, &right), expected);
+        }
+    }
+
+    #[test]
+    fn unsafe_arguments_never_accept_an_exact_success_receipt() {
+        let messages = vec![
+            ChatMessage::assistant_tool_calls(vec![ToolCall {
+                id: "unsafe-call".into(),
+                kind: "function".into(),
+                function: FunctionCall {
+                    name: "bash".into(),
+                    arguments: "{\"command\":\"true\",\"nested\":[9007199254740993]}".into(),
+                },
+            }]),
+            ChatMessage::tool_result("unsafe-call", "bash", "Output: done\nExit Code: 0"),
+        ];
+        assert!(scan(&messages, 0).is_empty());
+    }
 }

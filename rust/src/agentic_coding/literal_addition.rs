@@ -56,7 +56,7 @@ pub(super) fn plan_literal_addition_step(
                 && words.iter().any(|word| {
                     word.end <= binding.cue_start
                         && bare_surfaces("file_write_destination_cue")
-                            .contains(&clean_cue_token(&word.text))
+                            .contains(&clean_cue_token(word.text))
                 })
         });
         let progress = Progress::scan(messages);
@@ -152,7 +152,7 @@ pub(super) fn plan_literal_addition_step(
     Some(record(
         AgenticPlan::Final(
             render_seeded_change(intent, task, &target, &[("{new}", &content)])
-                .unwrap_or_else(|| target.to_owned()),
+                .unwrap_or_else(|| target.clone()),
         ),
         FinalDisposition::Finding,
         "literal-addition-observed",

@@ -242,7 +242,7 @@ impl ExecutionRecipe {
 }
 
 /// Whether the actual history is at the first inferred check after all source writes.
-pub(crate) fn optional_check_stage(
+pub fn optional_check_stage(
     messages: &[ChatMessage],
     tools: &[&str],
     recipe: &ExecutionRecipe,

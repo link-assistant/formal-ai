@@ -232,6 +232,7 @@ pub fn abort_source_candidate<Io: CandidateIo>(
 }
 
 /// Trusted execution callbacks consume the same private prepared transaction as the JavaScript session.
+#[derive(Clone, Copy)]
 pub struct SourceCandidateContext<'context> {
     pub request: &'context str,
     pub messages: &'context [ChatMessage],
