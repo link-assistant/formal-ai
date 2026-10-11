@@ -143,14 +143,14 @@ function resolveGeneratedSeedTarget(census, requirement) {
     || explicitModuleScope(census, requirement) !== census) return null;
   const tokens = tokensOf(requirement);
   const words = tokens.map(token => singular(token.toLowerCase()));
-  // An unresolved existing declaration is ambiguity, not permission to guess another owner.
-  if (tokens.some(token => looksLikeDeclaredName(token) && modulesDeclaring(census, token).length)) return null;
-  if (census.modules.some(module => module.symbols.some(symbol => {
-    if (symbol.kind !== 'const' && symbol.kind !== 'static') return false;
-    const parts = symbol.name.split('_').filter(Boolean).map(part => singular(part.toLowerCase()));
-    return parts.length >= 2 && parts.every(part => words.includes(part));
-  }))) return null;
   const owners = host().generatedSeedOwnerDeclarations();
+  // Incomplete census observations can agree with independently qualified generated owners,
+  // but any relevant observed declaration outside that owner set remains a conflict.
+  const qualifiedObservedOwner = (module, symbol) => owners.some(owner =>
+    owner.module_path === module.path && owner.symbol === symbol.name && owner.kind === symbol.kind);
+  if (tokens.some(token => looksLikeDeclaredName(token) && modulesDeclaring(census, token)
+    .some(module => module.symbols.some(symbol => symbol.name === token
+      && !qualifiedObservedOwner(module, symbol))))) return null;
   const declarationTarget = owner => ({module_path: owner.module_path, symbol: owner.symbol, kind: owner.kind});
   const uniqueOwners = candidates => {
     const targets = [...new Map(candidates.map(owner => [owner.module_path + ':' + owner.symbol, declarationTarget(owner)])).values()];
@@ -165,6 +165,11 @@ function resolveGeneratedSeedTarget(census, requirement) {
     const candidates = owners.filter(owner => owner.symbol === token);
     if (candidates.length) return uniqueOwners(candidates);
   }
+  if (census.modules.some(module => module.symbols.some(symbol => {
+    const parts = symbol.name.split('_').filter(Boolean).map(part => singular(part.toLowerCase()));
+    return parts.length >= 2 && parts.every(part => words.includes(part))
+      && !qualifiedObservedOwner(module, symbol);
+  }))) return null;
   let bestLength = 0, best = [];
   for (const owner of owners) {
     const parts = owner.symbol.split('_').filter(Boolean).map(part => singular(part.toLowerCase()));

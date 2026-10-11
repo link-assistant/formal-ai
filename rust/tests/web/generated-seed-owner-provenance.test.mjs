@@ -52,3 +52,37 @@ test('existing census declaration ambiguity is not replaced by generated fallbac
   hostFixture(root,[{text:text('src/first.rs')},{text:text('src/second.rs')}]);
   assert.equal(resolveRequirementTarget('Rename ARBITRARY_ALPHA_LINO after changing signal'),null);
 }));
+
+test('incomplete observed declarations agree only with exact qualified module and kind',()=>withFixture(root=>{
+  const text=(module,kind)=>'self_ast_census\n  target '+module+'\n  symbols\n    '+kind+' ARBITRARY_ALPHA_LINO 1 1\n';
+  const expected={module_path:'src/seed/embedded_registry.rs',symbol:'ARBITRARY_ALPHA_LINO',kind:'const'};
+  hostFixture(root,[{text:text('src/seed/embedded_registry.rs','const')}]);
+  assert.deepEqual(resolveRequirementTarget('Rename ARBITRARY_ALPHA_LINO after changing signal'),expected);
+  assert.deepEqual(resolveRequirementTarget('Change arbitrary alpha lino signal surface from azure dawn'),expected);
+  for(const [module,kind] of [['src/foreign.rs','const'],['src/seed/embedded_registry.rs','static'],['src/seed/embedded_registry.rs','fn']]){
+    hostFixture(root,[{text:text(module,kind)}]);
+    assert.equal(resolveRequirementTarget('Rename ARBITRARY_ALPHA_LINO after changing signal'),null,module+kind);
+    assert.equal(resolveRequirementTarget('Change arbitrary alpha lino signal surface from azure dawn'),null,module+kind);
+  }
+  hostFixture(root,[{text:text('src/seed/embedded_registry.rs','const')},{text:text('src/foreign.rs','const')}]);
+  assert.equal(resolveRequirementTarget('Rename ARBITRARY_ALPHA_LINO after changing signal'),null);
+  hostFixture(root,[{text:text('src/seed/embedded_registry.rs','const')}]);
+  fs.appendFileSync(path.join(root,'rust/src/seed/embedded_registry.rs'),'// stale\n');
+  assert.equal(resolveRequirementTarget('Rename ARBITRARY_ALPHA_LINO after changing signal'),null);
+}));
+
+test('exact qualified declaration wins over weaker word matches while equal declaration conflicts refuse',()=>withFixture(root=>{
+  const text=(module,kind,name)=>'self_ast_census\n  target '+module+'\n  symbols\n    '+kind+' '+name+' 1 1\n';
+  const exact={text:text('src/seed/embedded_registry.rs','const','ARBITRARY_ALPHA_LINO')};
+  hostFixture(root,[exact,{text:text('src/foreign.rs','function','from_seed')}]);
+  assert.deepEqual(resolveRequirementTarget('Change ARBITRARY_ALPHA_LINO from seed surface azure dawn'),{module_path:'src/seed/embedded_registry.rs',symbol:'ARBITRARY_ALPHA_LINO',kind:'const'});
+  hostFixture(root,[exact,{text:text('src/foreign.rs','const','ARBITRARY_ALPHA_LINO')}]);
+  assert.equal(resolveRequirementTarget('Change ARBITRARY_ALPHA_LINO from seed surface azure dawn'),null);
+  assert.deepEqual(resolveRequirementTarget('Change ARBITRARY_ALPHA_LINO in rust/src/foreign.rs'),{module_path:'src/foreign.rs',symbol:'ARBITRARY_ALPHA_LINO',kind:'const'});
+}));
+
+test('all same-module declaration kinds must agree with the generated owner',()=>withFixture(root=>{
+  const document='self_ast_census\n  target src/seed/embedded_registry.rs\n  symbols\n    const ARBITRARY_ALPHA_LINO 1 1\n    static ARBITRARY_ALPHA_LINO 2 2\n';
+  hostFixture(root,[{text:document}]);
+  assert.equal(resolveRequirementTarget('Rename ARBITRARY_ALPHA_LINO after changing signal'),null);
+}));
