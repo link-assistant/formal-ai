@@ -26,6 +26,9 @@
 
 pub mod callable_catalog;
 mod complete_source_preflight;
+mod expression_values;
+use expression_values::specified_value;
+pub(super) use expression_values::stated_value;
 mod conditional_ir;
 mod conditional_schema;
 mod discovery;
@@ -635,65 +638,6 @@ fn evaluated(expression: &str) -> Option<String> {
         .map(|evaluation| evaluation.formatted)
 }
 
-/// The specification's value at `samples`, computed by the calculator: the
-/// clause after the seeded return action with the parameters bound to the
-/// samples, or, when that names no operands, the arithmetic relation the
-/// clause names around its return action applied to the samples in parameter
-/// order. Mirrors `specifiedValue`.
-fn specified_value(request: &ModuleFunctionRequest, samples: &[String]) -> Option<String> {
-    let lexicon = seed::lexicon();
-    let words: Vec<&str> = request.clause.split_whitespace().collect();
-    let returns = words
-        .iter()
-        .position(|word| lexicon.mentions_role("coding_return_action", &bare(word)))?;
-    let after_signature = request
-        .clause
-        .find(')')
-        .map_or(request.clause.as_str(), |close| {
-            &request.clause[close + 1..]
-        });
-    stated_value(
-        &words[returns + 1..],
-        after_signature,
-        &request.parameters,
-        samples,
-    )
-}
-
-/// The value a stated return computes at `samples`.
-///
-/// The longest expression the words open with, its parameters bound to the
-/// samples (`a - b to m.mjs` reads `2 - 3`; the words after it belong to the
-/// request, PR #1188 T92), or else the arithmetic relation `relation_text`
-/// names applied to the samples. Mirrors `statedValue`.
-pub(super) fn stated_value(
-    words: &[&str],
-    relation_text: &str,
-    parameters: &[String],
-    samples: &[String],
-) -> Option<String> {
-    let bound = words
-        .iter()
-        .map(|word| {
-            parameters
-                .iter()
-                .position(|parameter| *parameter == bare(word))
-                .and_then(|index| samples.get(index))
-                .map_or_else(|| (*word).to_owned(), Clone::clone)
-        })
-        .collect::<Vec<_>>();
-    for end in (1..=bound.len()).rev() {
-        if let Some(candidate) =
-            crate::calculation::calculation_expression_candidates(&bound[..end].join(" "))
-                .into_iter()
-                .next()
-        {
-            return evaluated(&candidate.expression);
-        }
-    }
-    evaluated(&relation_expression(relation_text, samples)?)
-}
-
 /// The function's source in `request.language`: the one seeded binary
 /// operation whose idiom meets the specification at every sample pair of the
 /// contract, applied to the parameters in order and lowered through the
@@ -856,6 +800,7 @@ fn module_function_recipe(
         .execution
         .check_command
         .as_deref()
+        .filter(|_| request.command.is_none())
         .into_iter()
         .map(|command| command.replace(catalog.save_as.as_ref(), &request.module))
         .collect();
@@ -973,7 +918,21 @@ pub(super) fn plan_module_function_step(
     }
     let module_source = sources.first().map_or("", String::as_str);
     let test_source = sources.get(1).map_or("", String::as_str);
-    let recipe = module_function_recipe(&request, module_source, test_source)?;
+    let Some(recipe) = module_function_recipe(&request, module_source, test_source) else {
+        return Some(super::final_result::record(
+            AgenticPlan::Final(
+                super::code_task::render_seeded_outcome(
+                    "coding-source-authoring-contract-missing",
+                    task,
+                    "",
+                )
+                .unwrap_or_default(),
+            ),
+            super::final_result::FinalDisposition::Gap,
+            "module-function-recipe-missing",
+            result,
+        ));
+    };
     super::command_reroute::plan_symbolic_command_reroute(
         messages,
         tool_names,

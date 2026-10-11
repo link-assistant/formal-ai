@@ -335,14 +335,61 @@ function specifiedValue(request, samples) {
  * "2 - 3"; the words after it belong to the request, PR #1188 T92), or else
  * the arithmetic relation `relationText` names applied to the samples.
  */
+function completeSymbolicExpression(expression) {
+  const lexical = expression.match(/[0-9]+(?:\.[0-9]+)?|[()+*/%−^-]/gu) ?? [];
+  if (lexical.join('') !== expression.replace(/\s/gu, '')) return false;
+  let operand = true;
+  let depth = 0;
+  for (const token of lexical) {
+    if (operand) {
+      if (token === '(') depth += 1;
+      else if (token !== '+' && token !== '-' && token !== '−') {
+        if (!/^[0-9]/u.test(token)) return false;
+        operand = false;
+      }
+    } else if (token === ')') {
+      if (depth === 0) return false;
+      depth -= 1;
+    } else {
+      if (!/^[+*/%−^-]$/u.test(token)) return false;
+      operand = true;
+    }
+  }
+  return !operand && depth === 0;
+}
+
 export function statedValue(words, relationText, parameters, samples) {
   const bound = words.map((word) => {
+    // Bind complete arithmetic lexical tokens; target paths and prose stay intact.
+    if (/^(?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+(?:\.[0-9]+)?|[()+*/%−-])+$/u.test(word)) {
+      return word.replace(/[A-Za-z_][A-Za-z0-9_]*/gu, (identifier) => {
+        const index = parameters.indexOf(identifier);
+        return index < 0 ? identifier : (samples[index] ?? identifier);
+      });
+    }
     const index = parameters.indexOf(bare(word));
-    return index < 0 ? word : samples[index];
+    return index < 0 ? word : (samples[index] ?? word);
   });
   for (let end = bound.length; end > 0; end -= 1) {
-    const extracted = realm().extractArithmeticExpression(bound.slice(0, end).join(' '));
-    if (extracted && extracted.expression) return evaluated(extracted.expression);
+    const prefix = bound.slice(0, end).join(' ');
+    const symbolic = /[+*/%−-]/u.test(prefix);
+    const extracted = symbolic
+      ? (completeSymbolicExpression(prefix) ? { expression: prefix } : null)
+      : realm().extractArithmeticExpression(prefix);
+    if (extracted && extracted.expression) {
+      const value = evaluated(extracted.expression);
+      if (value !== null) {
+        const suffix = words.slice(end);
+        if (suffix.length === 0) return value;
+        const path = cleanPathToken(suffix.at(-1));
+        const cue = suffix.slice(0, -1).join(' ').trim().replace(/\s+/gu, ' ').toLowerCase();
+        const ownedTarget = safeRelativePath(path) && looksLikeFilePath(path)
+          && ['file_edit_target_cue', 'file_write_destination_cue'].flatMap(role => bareSurfaces(role))
+            .some(surface => surface.trim().replace(/\s+/gu, ' ').toLowerCase() === cue);
+        if (ownedTarget) return value;
+        return null;
+      }
+    }
   }
   const relation = relationExpression(relationText, samples);
   return relation === null ? null : evaluated(relation);
@@ -433,7 +480,7 @@ async function moduleFunctionRecipe(request, moduleSource, testSource) {
   const defined = moduleSource.split('\n').some((line) => line.startsWith(definition));
   const source = defined ? moduleSource
     : `${withFinalNewline(moduleSource)}${moduleSource.trim() === '' ? '' : '\n'}${composed}`;
-  const commands = [catalog.execution.check_command]
+  const commands = (request.command === null ? [catalog.execution.check_command] : [])
     .filter((command) => command !== null && command !== undefined)
     .map((command) => command.split(catalog.save_as).join(request.module));
   const supporting = [];
@@ -482,5 +529,7 @@ export async function planModuleFunctionStep(task, messages, toolNames) {
     sources.push(source);
   }
   const recipe = await moduleFunctionRecipe(request, sources[0], sources[1] ?? '');
-  return recipe ? planSymbolicCommandReroute(messages, toolNames, { execution_recipe: recipe }) : null;
+  return recipe ? planSymbolicCommandReroute(messages, toolNames, { execution_recipe: recipe })
+    : resolvedFinalAnswer(renderSeededOutcome('coding-source-authoring-contract-missing', task, '') ?? '',
+      FinalDisposition.Gap, 'module-function-recipe-missing');
 }
