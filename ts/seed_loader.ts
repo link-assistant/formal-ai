@@ -17,12 +17,8 @@
 // (`self.FormalAiSeed`) without any bundler step.
 // Captured before worker module evaluation or client task exposure.
 // This readonly lexical primitive grants no seed or operation ownership.
-const formalAiWorkerPrimordials = Object.freeze({
-  ownDescriptor: Object.getOwnPropertyDescriptor,
-  freeze: Object.freeze
-});
-(function (global) {
-  "use strict";
+const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwnPropertyDescriptor,
+  freeze: Object.freeze }); (function (global) {   "use strict";
   // The seed inventory lives in `seed-files.js`, generated from
   // `data/meta/seed-registry.lino` by
   // `rust-script scripts/generate-seed-registry.rs --write`. Issue #991: this
@@ -33,21 +29,11 @@ const formalAiWorkerPrimordials = Object.freeze({
   //
   // `formal_ai_worker.js` loads `seed-files.js` first. A host that omits it gets
   // an empty inventory rather than a stale copy, and `loadAll` says so.
-  function defaultFiles() {
-    var files = global.FORMAL_AI_SEED_FILES;
-    return Array.isArray(files) ? files.slice() : [];
-  }
-  function isWorker() {
-    return (
-      typeof global.WorkerGlobalScope !== "undefined" &&
-      global instanceof global.WorkerGlobalScope
-    );
-  }
-  function assetVersion() {
-    if (typeof global.FORMAL_AI_ASSET_VERSION === "string") {
-      return global.FORMAL_AI_ASSET_VERSION;
-    }
-    try {
+  function defaultFiles() {     var files = global.FORMAL_AI_SEED_FILES;
+    return Array.isArray(files) ? files.slice() : [];   }   function isWorker() {     return (
+      typeof global.WorkerGlobalScope !== "undefined" &&       global instanceof global.WorkerGlobalScope     );   }
+  function assetVersion() {     if (typeof global.FORMAL_AI_ASSET_VERSION === "string") {
+      return global.FORMAL_AI_ASSET_VERSION;     }     try {
       var search = global.location && global.location.search;
       var match = search && /[?&]v=([^&]+)/.exec(search);
       return match ? decodeURIComponent(match[1].replace(/\+/g, " ")) : "";
@@ -442,7 +428,6 @@ const formalAiWorkerPrimordials = Object.freeze({
     maxPayloadBytes:maxPayloadBytes,
     diagnosticOmitted:diagnosticOmitted,
     inputs:freezeSnapshot(inputs)});
-
       };
     }
     function copy(node,depth) {
@@ -1253,7 +1238,6 @@ const formalAiWorkerPrimordials = Object.freeze({
       }),
     ).then(buildSeed);
   }
-
   function mergeResponses(a, b) {
     var out = {};
     var keys = Object.keys(a).concat(Object.keys(b || {}));
@@ -1263,7 +1247,6 @@ const formalAiWorkerPrimordials = Object.freeze({
     }
     return out;
   }
-
   // Parse a single merged bundle (the `formal_ai_seed_bundle` document
   // produced by `seed::merged_bundle()` on the Rust side) back into a list
   // of `{ file, text }` pairs. Indentation contract:
@@ -1320,7 +1303,6 @@ const formalAiWorkerPrimordials = Object.freeze({
     if (current) sections.push(current);
     return sections;
   }
-
   // Build a seed object from a pre-fetched merged bundle. Mirrors `loadAll`
   // but skips the network step, so a worker booted offline (or one given a
   // user-uploaded bundle) can hydrate without touching `fetch`.
@@ -1328,7 +1310,6 @@ const formalAiWorkerPrimordials = Object.freeze({
     var sections = parseBundle(text);
     return buildSeed(sections);
   }
-
   function buildSeed(results) {
     var seed = {
       responses: {},
@@ -1407,7 +1388,6 @@ const formalAiWorkerPrimordials = Object.freeze({
     }
     return seed;
   }
-
   // Shared deterministic helpers used by both the browser worker and local
   // parity probes. Keeping them beside the seed parser avoids duplicating
   // data-projection mechanics in the legacy worker shards.
@@ -1421,7 +1401,6 @@ const formalAiWorkerPrimordials = Object.freeze({
     }
     return variants[Number(hash % BigInt(variants.length))] || entry.text;
   }
-
   function assistantNameAfterCue(text, cues) {
     var source = String(text || "").trim();
     if (/[?？]$/.test(source)) return null;
@@ -1437,7 +1416,6 @@ const formalAiWorkerPrimordials = Object.freeze({
     }
     return null;
   }
-
   function independentQuestionSegments(prompt) {
     var characters = Array.from(String(prompt || ""));
     var segments = [];
@@ -1456,7 +1434,6 @@ const formalAiWorkerPrimordials = Object.freeze({
     if (current.trim()) segments.push(current.trim());
     return segments.length > 1 ? segments.slice(0, 6) : [];
   }
-
   async function solveIndependentQuestions(prompt, history, preferences, userContext, memory, options, solveOne) {
     if (options && options.compoundSubsolve) return null;
     var segments = independentQuestionSegments(prompt);
@@ -1479,7 +1456,6 @@ const formalAiWorkerPrimordials = Object.freeze({
       toolCalls: results.reduce(function (all, result) { return all.concat(result.toolCalls || []); }, []),
     };
   }
-
   global.FormalAiSeed = {
     parse: parseLino,
     expandConciseLexemes: expandConciseLexemes,

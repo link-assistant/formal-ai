@@ -1086,6 +1086,12 @@ source analysis, the deleted answer arms, and the evidence live in
 | R1173-4 | The answer states what was searched, which pages were read (URL + hash, through #1184's derivation), and which statements the answer rests on. | Implemented for the executed body: the localized fusion header names the query, and every statement lists its source URLs and quotes (issue #709 `render_markdown`). Page-content hashes are #1184's derivation and are not claimed here. Pinned by the citation assertions in `rust/tests/unit/issue_1173_fallback_executes_search.rs`. |
 | R1173-5 | Three-roots parity: the browser worker's fallback follows the same rule (translated code, parity case). | Implemented 2026-10-07: the browser worker applies the same rule — `guardCannedWebSearchAnswer` (`js/worker/formal_ai_worker_reasoning_guards.js`) turns any canned search-machinery description into the seeded `web_search_unavailable` response naming the query, and an offline research prompt never shows it; pinned by `rust/tests/web/issue-1172-1173-worker-parity.test.mjs`. The TypeScript twin is regenerated from the worker. |
 
+## Hosted native routing measurement at the retained 95998 source tree
+
+On 2026-10-11, the hosted Ubuntu shard completed `solver::issue_1175_routing_probes::the_native_solver_answers_every_probe_as_measured` successfully. Its merge-preview checkout `2829bf56d9b91873b4efab9ad218b319cfd0f7f4` and official PR head `95998af35217f647973eb708506eac8df78d89f6` have the same complete Git tree `900413018cbfbac9a89eba9c24a65f320074d972`, established by retained full official API responses and the local PR-head tree. The original test therefore supplies actual hosted measurement of all 364 original native intent pins at that source tree, replacing the earlier reasoned-only measurement caveat for this narrowly scoped result. Independent private audit T12300 binds the log, checkout, source, corpus and full API identities; portable evidence integration remains pending.
+
+The [containing shard](https://github.com/link-assistant/formal-ai/actions/runs/38157149213/job/114527544865) still failed other tests. This passing test does not complete the broader requirement or qualify later source changes, emitted program behavior, universal browser/native equivalence, coding cohorts, or input/token/cost savings. Existing failures and broader acceptance conditions remain unchanged.
+
 ## Issue #1174 Text Transforms Answered Formally
 
 Issue [#1174](https://github.com/link-assistant/formal-ai/issues/1174) (E139,

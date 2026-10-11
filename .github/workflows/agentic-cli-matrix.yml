@@ -247,6 +247,8 @@ jobs:
           # `replay.sh` accepts verbatim — refreshing a committed session is then
           # a download and a copy, not a hand edit.
           MATRIX_RECORD: '1'
+          # Keep the installed clients.lock version during the controlled TUI run.
+          OPENCODE_DISABLE_AUTOUPDATE: 'true'
         run: |
           if [ "${{ matrix.display }}" = "true" ]; then
             xvfb-run -a experiments/agentic_cli_matrix/run_leg.sh

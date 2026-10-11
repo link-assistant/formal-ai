@@ -1,5 +1,22 @@
 //! Specialized free-function handlers extracted from `solver.rs`.
 include!("modules.rs");
+use crate::calculation::{
+    PromptInterpretation, calculation_expression_candidates, evaluate_calculation,
+    interpretation_statements, numeric_calculation_response,
+};
+use crate::engine::{
+    SymbolicAnswer, answer_links_notation, hello_world_program_by_alias, stable_id,
+};
+use crate::event_log::{EventLog, build_evidence_links};
+use crate::solver_helpers::{
+    detect_program_languages, extract_backticked, extract_javascript_program,
+    extract_quoted_phrase, format_write_script_execution, infer_program_languages_from_code,
+    infer_source_from_prompt, is_write_script_request, normalize_code_meaning, normalize_meaning,
+    translate_program,
+};
+use crate::translation::{
+    detect_source_language, detect_target_language, extract_unquoted_translation_surface,
+};
 pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
 pub use benchmark_prompts::{
@@ -105,71 +122,10 @@ pub use {
     web_requests::answer_web_search_query, web_search_intent::WebSearchQueryKind,
     web_search_intent::web_search_query_for,
 };
-
-use crate::calculation::{
-    PromptInterpretation, calculation_expression_candidates, evaluate_calculation,
-    interpretation_statements,
-};
-use crate::engine::{
-    SymbolicAnswer, answer_links_notation, hello_world_program_by_alias, stable_id,
-};
-use crate::event_log::{EventLog, build_evidence_links};
-use crate::solver_helpers::{
-    detect_program_languages, extract_backticked, extract_javascript_program,
-    extract_quoted_phrase, format_write_script_execution, infer_program_languages_from_code,
-    infer_source_from_prompt, is_write_script_request, normalize_code_meaning, normalize_meaning,
-    translate_program,
-};
-use crate::translation::{
-    detect_source_language, detect_target_language, extract_unquoted_translation_surface,
-};
-
-// Twin of numericCalculationResponse in the maintained worker arithmetic handler.
-fn numeric_calculation_response<'a>(
-    prompt: &str,
-    expression: &str,
-    formatted: &'a str,
-) -> Option<&'a str> {
-    static NUMERIC: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| {
-        regex::Regex::new(r"^-?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?$")
-            .expect("valid scalar numeric grammar")
-    });
-    if !NUMERIC.is_match(formatted) {
-        return None;
-    }
-    let request = prompt.trim();
-    let (prefix, clause) = request.rsplit_once(". ")?;
-    let clause = clause
-        .strip_suffix('.')
-        .unwrap_or(clause)
-        .trim()
-        .to_lowercase();
-    let lexicon = crate::seed::lexicon();
-    if !lexicon
-        .words_for_role("numeric-response-only-clause")
-        .contains(&clause)
-    {
-        return None;
-    }
-    let operand = expression.trim().to_lowercase();
-    let prefix = prefix.trim().to_lowercase();
-    let complete_operand = prefix == operand
-        || lexicon
-            .words_for_role("calculation_request_cue")
-            .iter()
-            .any(|cue| {
-                prefix
-                    .strip_prefix(&format!("{cue} "))
-                    .is_some_and(|tail| tail.trim() == operand)
-            });
-    complete_operand.then_some(formatted)
-}
-
 pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     if let Some(answer) = calculator_rate::try_calculator_rate_basis(prompt, log) {
         return Some(answer);
     }
-
     let candidates = calculation_expression_candidates(prompt);
     let mut first_explicit_error: Option<(String, String, Vec<PromptInterpretation>)> = None;
     for candidate in candidates {
@@ -294,7 +250,6 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
         0.3,
     ))
 }
-
 fn render_calculation_reasoning_step(index: usize, step: &str) -> String {
     if step.trim_start().starts_with('[') {
         step.to_owned()
@@ -302,12 +257,10 @@ fn render_calculation_reasoning_step(index: usize, step: &str) -> String {
         format!("Step {}: {step}", index + 1)
     }
 }
-
 // Concept lookup, rendering, extraction and ranking live in `src/concepts.rs`.
 pub use crate::concepts::{
     render_source_link, try_concept_lookup, try_concept_lookup_with_response_language,
 };
-
 pub fn try_javascript_execution(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let program = extract_javascript_program(prompt)?;
     log.append("execution:request", "javascript".to_owned());
@@ -332,12 +285,10 @@ pub fn try_javascript_execution(prompt: &str, log: &mut EventLog) -> Option<Symb
         0.6,
     ))
 }
-
 // Plan 09 leaf 18: learn-from-source lives beside the M2 retrieval interpreter;
 // network query, source refresh and source conflict are seed rules (#918).
 pub use crate::retrieval_procedures::try_learn_from_source;
 pub use shell_command_compose::cue_phrases as code_task_cue_phrases;
-
 pub fn try_translation(
     prompt: &str,
     normalized: &str,
@@ -346,7 +297,6 @@ pub fn try_translation(
     if document_request::looks_like_document_conversion_request(prompt, normalized) {
         return None;
     }
-
     let target = detect_target_language(normalized);
     let formal_language = crate::translation::formal_language_in_prompt(normalized);
     let backticked = extract_backticked(prompt);
@@ -411,7 +361,6 @@ pub fn try_translation(
     {
         return None;
     }
-
     // Plan 16 L2g routes source-tree requests through the meta pivot after
     // the meaning gate. Paths and target spellings are structural vocabulary.
     // Paths resolve against the working directory, as translate --input.
@@ -476,12 +425,10 @@ pub fn try_translation(
             ));
         }
     }
-
     let mut source = detect_source_language(normalized);
     if source.is_none() {
         source = Some(infer_source_from_prompt(prompt));
     }
-
     // Issue #917: natural and formal statements are concrete syntaxes of the
     // same seed-defined semantic triple. A natural target means the formal
     // syntax is the source (`from FOL to Russian`); otherwise the named formal
@@ -516,7 +463,6 @@ pub fn try_translation(
             ));
         }
     }
-
     if let Some(code) = &backticked
         && let Some((source_lang, target_lang)) = detected_program
     {
@@ -542,7 +488,6 @@ pub fn try_translation(
             1.0,
         ));
     }
-
     // Prefer an explicitly quoted fragment (`Translate "apple" to Russian`).
     // When the user omits the quotes (`translate apple to russian`),
     // fall back to a structural extraction of the substring between the
@@ -553,7 +498,6 @@ pub fn try_translation(
         .unwrap_or_default();
     let source_slug = source.unwrap_or("en");
     let target_slug = target.unwrap_or("en");
-
     // A well-formed sentence with no quoted or backticked surface still names
     // the text to translate (`Translate to Russian: The weather is nice
     // today, let's go for a walk.`): take the free text after the command
@@ -572,20 +516,17 @@ pub fn try_translation(
             &free_sentence,
         ));
     }
-
     log.append("language_from", source_slug.to_owned());
     log.append("language_to", target_slug.to_owned());
     if surface.is_empty() && no_backticked_text {
         log.append("translation:refusal", "no source phrase".to_owned());
     }
-
     // Run the real Wiktionary + Wikidata translation pipeline. The pipeline
     // returns a `MeaningId` that we publish into the trace verbatim, so two
     // surfaces that resolve to the same Wikidata Q-item end up with the
     // same `meaning:...` id regardless of source language.
     let pipeline_result =
         crate::solver_helpers::translate_surface_detailed(&surface, source_slug, target_slug);
-
     let (target_surface, meaning_id, translation_gap) = if let Ok(translation) = pipeline_result {
         let target_surface = translation.round_trip_surface().map(str::to_owned);
         let gap = target_surface.is_none();
@@ -614,7 +555,6 @@ pub fn try_translation(
     if translation_gap && !surface.is_empty() {
         log.append("translation_gap", surface.clone());
     }
-
     let body = target_surface.map_or_else(
         || render_translation_gap(&surface, source_slug, target_slug),
         |raw_target| {
@@ -638,7 +578,6 @@ pub fn try_translation(
         1.0,
     ))
 }
-
 /// A seeded English `translation_*` response with each slot filled once.
 fn translation_text(intent: &str, values: &[(&str, &str)]) -> String {
     crate::seed::fill_template_once(
@@ -646,7 +585,6 @@ fn translation_text(intent: &str, values: &[(&str, &str)]) -> String {
         values,
     )
 }
-
 /// The seeded gap answer: no phrase named, or a phrase with no translation.
 fn render_translation_gap(surface: &str, source: &str, target: &str) -> String {
     let surface = surface.trim();
@@ -658,7 +596,6 @@ fn render_translation_gap(surface: &str, source: &str, target: &str) -> String {
     let slots = [("surface", surface), ("source", source), ("target", target)];
     translation_text(intent, &slots)
 }
-
 /// Word-by-word translation of the free sentence a translation request names
 /// after its command head (issue #1174). Each source segment goes through
 /// [`crate::translation::pipeline::TranslationPipeline::translate_sentence`];
@@ -742,7 +679,6 @@ fn translate_free_sentence(
         1.0,
     )
 }
-
 pub fn try_write_script(
     prompt: &str,
     normalized: &str,

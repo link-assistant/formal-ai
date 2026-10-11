@@ -11,6 +11,8 @@ use crate::fuzzy::is_close_token_typo;
 use crate::seed;
 
 mod function_phrase;
+mod numeric_response;
+pub(crate) use numeric_response::numeric_calculation_response;
 
 /// Engine that produced a calculation result.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

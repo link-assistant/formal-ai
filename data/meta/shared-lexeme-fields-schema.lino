@@ -14,7 +14,7 @@ shared-lexeme-fields-schema
   refuse "unknown fields, effects, nested nodes, cycles, aliases, duplicate declarations or languages, conflicts, unresolved references, partial surfaces"
   legacy "every document without the new operators retains its original parse tree"
   rust-error "parse_lino_checked returns diagnostics; legacy parse_lino raises an explicit refusal for the entire malformed shared document"
-  runtime-source js/seed_loader.js 7a8bab7265dfd301efc78a4182e37c7f41d0e094012de47c58f69b7e80eac1a4
-  runtime-source rust/src/seed/parser.rs dca9ff49a8947be9497566ac9c496a51c3b3aa57df18d2cd9308c3235a1a1a8c
-  runtime-source ts/seed_loader.ts 7a8bab7265dfd301efc78a4182e37c7f41d0e094012de47c58f69b7e80eac1a4
+  runtime-source js/seed_loader.js 62e9682efeb745471a8c81b19adccbb2d6d03250823883bb0b221f61ca1a73d7
+  runtime-source rust/src/seed/parser.rs 6202e0a3d5210006f5e01fdfaa506afb55606701ab046b98ee42329ace67ac0e
+  runtime-source ts/seed_loader.ts 62e9682efeb745471a8c81b19adccbb2d6d03250823883bb0b221f61ca1a73d7
   facet-source rust/src/seed/meanings/parse.rs de6bf428fae301da85770cf3ad301a50d02dc6eeb9f175ae2e789f28caa3309b

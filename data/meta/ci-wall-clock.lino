@@ -3,7 +3,7 @@
 # timeout-weighted needs DAG. measured_minutes is that static maximum,
 # excluding push-only and dispatch-only jobs; it is not observed runtime.
 #
-# Discovery after the measured ladder retirement (2026-10-09):
+# Historical discovery before the release-first PR ladder deferral (2026-10-09):
 #   release.yml: 115 min
 #     detect-changes(5m)->macos-core-tests(reusable85m)->build(20m)->pipeline-status(5m)
 #   issue-1028-agent-ladder.yml: 120 min
@@ -15,10 +15,10 @@
 # Each semantic verdict remains25PASS/38FAIL; timing does not certify task success.
 # Their raw100-job/step observations are preserved in the coordinator evidence.
 ci_wall_clock pull_request_pipeline
-  measured_minutes 120
-  measured_date "2026-10-09"
+  measured_minutes 115
+  measured_date "2026-10-12"
   ceiling_minutes 225
-  workflow ".github/workflows/issue-1028-agent-ladder.yml"
-  chain "plan(30m)->ladder(30m)->leaf-evidence(15m)->composites(30m)->compare(15m)"
-  note "The all-mode ladder preserves all63 nodes across31 primary legs and16 artifact-fed composites. Actual complete cold cycles37870805740 and37870809771 meet the job retirement criterion, so its primary cap is30 minutes and its static DAG is120. The global static maximum is the ladder at120, followed by release.yml at115, below the retained225-minute ceiling. Historical duration observations remain unchanged; the final source head must repeat its checks."
+  workflow ".github/workflows/release.yml"
+  chain "base(->reusable:pin-base-commit.yml:5m)->macos-core-tests(->reusable:macos-core-tests.yml:85m)->build(20m)->pipeline-status(5m)"
+  note "The optional all-mode Agent CLI ladder retains schedule/manual execution and its historical cold-cycle observations above. Release-first deferral removes its pull-request reachability. The hosted check-ci-wall-clock on 8cbff5f8109a056dc916de3cdee9a5e9b4813103 discovers release.yml as the current 115-minute static maximum, below the unchanged 225-minute ceiling. This static timeout path does not certify observed timing, semantic success or production publication."
   requirement "R1085-16"

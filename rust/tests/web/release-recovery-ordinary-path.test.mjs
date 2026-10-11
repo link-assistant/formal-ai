@@ -52,7 +52,14 @@ test('generated ordinary source checks preserve commands and use immutable conte
       const checkout = job.steps.find(step => step.with?.path === '_protocol');
       assert.equal(checkout.with['fetch-depth'], 0);
       assert.equal(checkout.with['persist-credentials'], false);
+      const check = job.steps.find(step => step.id === 'check' && step.run === 'rust-script scripts/check-release-needed.rs');
+      if (check) {
       assert.equal(job.outputs.check__recovery_missing_assets, '${{ steps.check.outputs.recovery_missing_assets }}');
+      } else {
+        assert.equal(job.steps.some(step => step.id === 'check'), false);
+        assert.equal(job.outputs.check__recovery_missing_assets, undefined);
+        assert.equal(job.outputs.check__recovery_state, undefined);
+      }
     }
   }
 });

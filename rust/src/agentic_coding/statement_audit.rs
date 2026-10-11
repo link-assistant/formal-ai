@@ -5,6 +5,8 @@
 //! consumes the command result on the following turn. This keeps Agent CLI
 //! evidence on the production boundary rather than a planner-only shortcut.
 
+const OUTPUT_PLACEHOLDER: &str = concat!("{", "output", "}");
+
 /// The artifact produced in the agent workspace.
 pub const STATEMENT_AUDIT_PATH: &str = "statement-audit.lino";
 
@@ -73,23 +75,23 @@ fn registered_audit_command(output: &str) -> Option<String> {
     let [template] = templates.as_slice() else {
         return None;
     };
-    if !template.children.is_empty() || template.id.matches("{output}").count() != 1 {
+    if !template.children.is_empty() || template.id.matches(OUTPUT_PLACEHOLDER).count() != 1 {
         return None;
     }
-    Some(template.id.replace("{output}", output))
+    Some(template.id.replace(OUTPUT_PLACEHOLDER, output))
 }
 
 /// Whether a task requests the generalized repository statement audit.
 #[must_use]
 pub fn is_statement_audit_task(prompt: &str) -> bool {
-    if let Some(frame) = audit_role_frame(prompt) {
-        if frame.explicit_output {
-            return frame.complete
-                && frame
-                    .output
-                    .as_deref()
-                    .is_some_and(|output| registered_audit_command(output).is_some());
-        }
+    if let Some(frame) = audit_role_frame(prompt)
+        && frame.explicit_output
+    {
+        return frame.complete
+            && frame
+                .output
+                .as_deref()
+                .is_some_and(|output| registered_audit_command(output).is_some());
     }
     let lower = prompt.to_lowercase();
     if lower.contains(STATEMENT_AUDIT_PATH) || lower.contains("statement audit") {
@@ -175,13 +177,13 @@ fn audit_role_frame(prompt: &str) -> Option<AuditRoleFrame> {
                 .case_insensitive(true)
                 .build()
                 .ok()?;
-            if let Some(matched) = expression.captures(clause.text) {
-                if matched.get(0)?.as_str() == clause.text {
-                    matches.push((
-                        *role,
-                        matched.get(1).map(|capture| capture.as_str().to_owned()),
-                    ));
-                }
+            if let Some(matched) = expression.captures(clause.text)
+                && matched.get(0)?.as_str() == clause.text
+            {
+                matches.push((
+                    *role,
+                    matched.get(1).map(|capture| capture.as_str().to_owned()),
+                ));
             }
         }
         let [(role, value)] = matches.as_slice() else {

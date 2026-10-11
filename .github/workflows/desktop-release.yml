@@ -1,5 +1,4 @@
 name: Desktop Release
-
 on: # zizmor: ignore[dangerous-triggers]
   workflow_dispatch:
     inputs:
@@ -35,7 +34,6 @@ on: # zizmor: ignore[dangerous-triggers]
       - 'rust/.cargo/**'
       - 'rust/Cargo.toml'
       - 'rust/Cargo.lock'
-
 permissions:
   contents: read
 

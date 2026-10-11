@@ -818,3 +818,24 @@ meanings
     unit "not applicable"
     example "install for install"
     grounding "data/seed/handler-rules.lino"
+  deliver
+    defined-by action
+    precondition "a repository statement audit request declares an output path captured by the deliver role"
+    effect "the statement-audit command writes its rendered findings and associations to that declared artifact"
+    unit "not applicable"
+    example "audit repository statements and write findings.lino"
+    grounding "data/seed/statement-audit-registry.lino request-contract repository-audit role deliver; rust/src/cli_statement_audit.rs output writer"
+  persist
+    defined-by action
+    precondition "a repository statement audit request asks to retain findings and associations and declares a writable output artifact"
+    effect "the statement-audit command retains the rendered audit in the declared output file rather than only standard output"
+    unit "not applicable"
+    example "persist audit findings and associations"
+    grounding "data/seed/statement-audit-registry.lino request-contract repository-audit role persist; rust/src/cli_statement_audit.rs output writer"
+  repository-audit
+    defined-by method
+    precondition "a supported statement-audit request identifies repository statements or requirements and satisfies the declared role contract"
+    effect "the registered statement-audit procedure collects repository statements, evaluates findings, and renders the resulting audit artifact"
+    unit "not applicable"
+    example "audit repository statements"
+    grounding "data/seed/statement-audit-registry.lino request-contract repository-audit; rust/src/cli_statement_audit.rs"
