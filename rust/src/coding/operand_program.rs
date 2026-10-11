@@ -62,6 +62,74 @@ fn bare_word(word: &str) -> String {
 /// प्रिंट करे"): a quoted literal or a greeting that ends right there. `None`
 /// when the request names no such text. The JavaScript twin is
 /// `programTaskOperand`.
+/// Owned quoted print data stays out of instruction classification; mirrors programTaskInstruction.
+#[must_use]
+pub fn program_instruction_view(prompt: &str) -> String {
+    let Some(operand) = program_task_operand(prompt) else {
+        return prompt.to_owned();
+    };
+    let words: Vec<&str> = prompt.split_whitespace().collect();
+    let Some(print) = crate::seed::lexicon().meaning("print_stdout") else {
+        return prompt.to_owned();
+    };
+    let Some(at) = words
+        .iter()
+        .position(|word| print.evidenced_in(&bare_word(word)))
+    else {
+        return prompt.to_owned();
+    };
+    let word = words[at];
+    let mut start = 0;
+    for preceding in &words[..at] {
+        let Some(offset) = prompt[start..].find(*preceding) else {
+            return prompt.to_owned();
+        };
+        start += offset + preceding.len();
+    }
+    let Some(offset) = prompt[start..].find(word) else {
+        return prompt.to_owned();
+    };
+    start += offset;
+    let surface = if crate::coding::contains_cjk(word) {
+        print
+            .words()
+            .find(|candidate| crate::coding::contains_cjk(candidate) && word.contains(*candidate))
+    } else {
+        None
+    };
+    let end = start
+        + surface.map_or(word.len(), |surface| {
+            word.find(surface).unwrap_or(0) + surface.len()
+        });
+    let suffix = &prompt[end..];
+    let after = suffix.trim_start();
+    let Some(quoted) = quoted_segment_spans(after).into_iter().next() else {
+        return prompt.to_owned();
+    };
+    if quoted.start != 0 || operand_after(after.trim()).as_deref() != Some(operand.as_str()) {
+        return prompt.to_owned();
+    }
+    let start = end + suffix.len() - after.len();
+    format!(
+        "{}{}{}",
+        &prompt[..start],
+        " ".repeat(quoted.end),
+        &prompt[start + quoted.end..]
+    )
+}
+
+/// A seeded print instruction claims an operand even when parsing refuses it.
+#[must_use]
+pub fn program_task_print_claim(prompt: &str) -> bool {
+    crate::seed::lexicon()
+        .meaning("print_stdout")
+        .is_some_and(|print| {
+            prompt
+                .split_whitespace()
+                .any(|word| print.evidenced_in(&bare_word(word)))
+        })
+}
+
 #[must_use]
 pub fn program_task_operand(prompt: &str) -> Option<String> {
     let lexicon = crate::seed::lexicon();
@@ -85,16 +153,13 @@ pub fn program_task_operand(prompt: &str) -> Option<String> {
                 .map(|cut| (&word[..cut], &word[cut + surface.len()..]))
         })
         .unwrap_or(("", ""));
-    let before = words[..at]
-        .iter()
-        .copied()
-        .chain(std::iter::once(head))
-        .collect::<Vec<_>>()
-        .join(" ");
-    let after = std::iter::once(tail)
-        .chain(words[at + 1..].iter().copied())
-        .collect::<Vec<_>>()
-        .join(" ");
+    let mut start = 0;
+    for preceding in &words[..at] {
+        start += prompt[start..].find(*preceding)? + preceding.len();
+    }
+    start += prompt[start..].find(word)?;
+    let before = &prompt[..start + head.len()];
+    let after = &prompt[start + word.len() - tail.len()..];
     operand_after(after.trim()).or_else(|| operand_before(before.trim()))
 }
 
@@ -124,7 +189,37 @@ fn operand_after(after: &str) -> Option<String> {
             .split(['\n', '.', ';', '\u{3002}'])
             .next()
             .unwrap_or(rest);
-        if quoted_segment_spans(sentence).is_empty() {
+        let remainder = rest
+            .trim()
+            .trim_end_matches(['.', '!', '?', '。', '！', '？', '।'])
+            .trim();
+        let normalized = crate::engine::normalize_prompt(&remainder.to_lowercase());
+        let lexicon = crate::seed::lexicon();
+        let nouns = lexicon.words_for_role(crate::seed::ROLE_PROGRAM_GENUS);
+        let mut accounted = nouns.clone();
+        accounted.extend(lexicon.words_for_role(crate::seed::ROLE_REQUEST_FUNCTION_WORD));
+        let nominal = nouns.iter().any(|noun| normalized.contains(noun.as_str()))
+            && remainder.to_lowercase().split_whitespace().all(|word| {
+                if accounted.iter().any(|candidate| candidate.as_str() == word) {
+                    return true;
+                }
+                if !crate::coding::contains_cjk(word) {
+                    return false;
+                }
+                let mut rest = word.to_owned();
+                while let Some(surface) = accounted.iter().find(|surface| {
+                    crate::coding::contains_cjk(surface) && rest.contains(surface.as_str())
+                }) {
+                    rest = rest.replace(surface.as_str(), "");
+                }
+                rest.is_empty()
+            });
+        let complete = remainder.is_empty()
+            || nominal
+            || lexicon
+                .words_for_role("program_termination_clause")
+                .contains(&remainder.to_lowercase());
+        if complete && quoted_segment_spans(sentence).is_empty() {
             return operand_literal(&quoted.text);
         }
         return None;

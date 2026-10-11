@@ -110,6 +110,7 @@ function negativeReadObjects(prompt) {
     const prefix=sentence.slice(0,action.start).toLowerCase();
     const rest=policyLeadClause(prefix);
     if (rest===null || !mentionsRole('statement_negation_cue',prefix) || !covered(rest,FUNCTION_ROLES)) continue;
+    if (covered(sentence.slice(action.end),FUNCTION_ROLES)) result.push(null);
     const objects=[...pathSpans(sentence).map(span=>({...span,scope:span.path})),
       ...roleSpans(sentence,[OBJECT_ROLE]).map(span=>({...span,scope:null}))];
     for (const object of objects) {
@@ -155,6 +156,7 @@ export function boundReadPaths(prompt,role) {
   const result=[];
   for (const sentence of instructionSentenceTexts(prompt)) {
     const owned=[];
+    let setModified=false;
     for (const object of pathSpans(sentence)) {
       for (const action of roleSpans(sentence,[role])) {
         const before=sentence.slice(0,Math.min(action.start,object.start)).split('');
@@ -170,6 +172,10 @@ export function boundReadPaths(prompt,role) {
             for(let index=prior.pathStart-action.end;index<prior.pathEnd-action.end;index+=1)gap[index]=' ';
           const gapRoles=role==='module_export_question'
             ? [...FUNCTION_ROLES,OBJECT_ROLE,'coding_declaration_noun','translation_stop_word']: [...FUNCTION_ROLES,OBJECT_ROLE];
+          if (role === READ_ROLE && roleSpans(gap.join(''), [OBJECT_ROLE]).length > 0) {
+            gapRoles.push('file-read-set-modifier');
+            setModified ||= roleSpans(gap.join(''), ['file-read-set-modifier']).length > 0;
+          }
           if(!covered(gap.join(''),gapRoles))continue;
         } else if (object.end<=action.start) {
           if(role==='module_export_question' && !questionWords.some(word=>sentence.toLowerCase().startsWith(word)))continue;
@@ -182,6 +188,7 @@ export function boundReadPaths(prompt,role) {
       }
     }
     if (owned.length>0 && owned.length!==pathSpans(sentence).length) return [];
+    if (setModified && owned.length > 0 && !covered(sentence.slice(owned.at(-1).end), FUNCTION_ROLES)) return [];
   }
   return conflicts(negativeReadObjects(prompt),result)?[]:result;
 }

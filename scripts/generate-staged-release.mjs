@@ -120,7 +120,9 @@ export function buildStagedReleaseProjection(source, packet) {
       }] of crossNames.get(stage) ?? []) yaml += '      ' + key + ': ' + expression('steps.' + step + '.outputs.' + output) + '\n';
       if (stage === 'prepare-source') {
         yaml += '      active: ' + expression(active) + '\n';
+        if (caller.steps.some(operation => operation.stage === stage && operation.stepId === 'check')) {
         for (const name of ['recovery_state', 'recovery_missing_assets']) yaml += '      check__' + name + ': ' + expression('steps.check.outputs.' + name) + '\n';
+        }
         for (const name of ['source_sha', 'source_tree', 'version', 'compiler_sha', 'rust_version']) yaml += '      ' + name + ': ' + expression('steps.capture-source.outputs.' + name + ' || steps.baseline-source.outputs.' + name) + '\n';
         for (const name of ['source_descriptor_sha', 'source_archive_sha']) yaml += '      ' + name + ': ' + expression('steps.capture-source.outputs.' + name) + '\n';
       }

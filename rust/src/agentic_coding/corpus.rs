@@ -16,6 +16,8 @@ use super::formalize::CANONICAL_FISHERMAN_SYNOPSIS;
 use super::meaning_detail::{self, CONCEPTS};
 use super::planner::CANONICAL_SOURCE_URL;
 
+mod cached_issues;
+
 /// One page in the offline corpus. Fields are owned so pages can be built from the
 /// [`CONCEPTS`] registry at call time (one Wikidata-lexeme page per concept).
 struct CorpusPage {
@@ -49,6 +51,14 @@ fn pages() -> Vec<CorpusPage> {
         .collect(),
         body: CANONICAL_FISHERMAN_SYNOPSIS.to_owned(),
     }];
+    for &(url, body) in cached_issues::PAGES {
+        pages.push(CorpusPage {
+            url: url.to_owned(),
+            title: url.to_owned(),
+            keywords: vec![url.to_owned()],
+            body: body.to_owned(),
+        });
+    }
     for concept in CONCEPTS {
         // The concept's own routing keywords plus the shared lexeme vocabulary, so
         // both a concept-specific query and a generic "wikidata lexeme …" query hit.

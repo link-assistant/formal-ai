@@ -25,7 +25,9 @@ meanings
   requirement_directive
     defined-by relation
     role requirement_directive_verb
-    precondition "a sentence or list item of an issue starts with this verb"
+    precondition "a sentence or list item of an issue starts with this verb or ends with it in a declared terminal directive language"
+    directive-position terminal
+      language hi
     effect "the sentence is an instruction to the implementer, so it is listed as a requirement"
     unit "not applicable"
     example "Add a dark mode toggle."
@@ -111,3 +113,12 @@ meanings
     unit "not applicable"
     example "list the requirements of this issue"
     grounding "data/seed/handler-rules.lino"
+  terminal
+    role relation
+    defined-by relation
+    defined-by requirement_directive
+    definition "A positional relation selecting directive verbs at the end of an issue sentence in languages explicitly declared by the requirement meaning."
+    precondition "The original requirement directive meaning declares the language and supplies its existing directive lexemes; quoted text is excluded."
+    effect "Allows the existing extractor to recognize an unquoted terminal directive while retaining the complete original requirement unit; it does not execute the instruction."
+    unit "final lexical position of one requirement unit"
+    example "An existing Hindi directive at the end of an unquoted requirement can identify that whole unit."

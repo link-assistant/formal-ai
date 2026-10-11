@@ -45,22 +45,23 @@ record() {
 target_dir() {
   printf '%s' "${LADDER_CARGO_TARGET_DIR:-$workspace/target}"
 }
-# The unit-test filter for a source or seed path. A `meanings-*.lino` file owns
-# the same semantic family as its suffix, so `meanings-verifiable-task.lino`
-# exercises `verifiable_task` instead of silently running zero tests.
+# Only registered CST-derived tests can witness a changed source module.
 module_filter() {
-  local path="$1" stem
-  stem=$(basename "$path")
-  stem="${stem%.rs}"
-  stem="${stem%.lino}"
-  if [[ "$stem" == mod ]]; then
-    stem=$(basename "$(dirname "$path")")
-  fi
-  if [[ "$path" == data/seed/meanings-*.lino ]]; then
-    stem="${stem#meanings-}"
-  fi
-  printf '%s' "${stem//-/_}"
+  node "$ROOT/scripts/lib/ladder-test-projection.mjs" "$workspace" "$1"
 }
+verify_source_tests() {
+  local source="$1" filters filter target
+  if [[ "${LADDER_CARGO_TEST:-1}" == 0 ]] || ! command -v cargo >/dev/null 2>&1 || [[ ! -f "$workspace/rust/Cargo.toml" ]]; then
+    cargo_test source_projection_unavailable
+    return $?
+  fi
+  filters=$(module_filter "$source") || { record "tests:$source" missing_source_projection; return 1; }
+  [[ -n "$filters" ]] || { record "tests:$source" missing_source_projection; return 1; }
+  while IFS=$'\t' read -r target filter; do
+    cargo_test "$filter" "$target" || return 1
+  done <<< "$filters"
+}
+
 cargo_check() {
   [[ "${LADDER_CARGO_CHECK:-1}" != 0 ]] || { record compile skipped; return 0; }
   command -v cargo >/dev/null 2>&1 || { record compile unavailable; return 0; }
@@ -78,20 +79,31 @@ cargo_check() {
   record compile failed
   return 1
 }
-# Run the unit tests whose names carry the module's stem. A module with no
-# tests runs zero and passes; the count is recorded so the README says so.
+# Run the exact registered cases for their declared Cargo target.
+# A successful harness with no selected tests cannot witness a source change.
 cargo_test() {
-  local filter="$1" log passed
+  local filter="$1" target="${2:-unit}" log passed
+  local -a target_args
+  case "$target" in
+    lib) target_args=(--lib) ;;
+    *)
+      [[ "$target" =~ ^[A-Za-z_][A-Za-z_0-9-]*$ ]] || { record "tests:$filter" missing_test_target; return 1; }
+      target_args=(--test "$target") ;;
+  esac
   [[ "${LADDER_CARGO_TEST:-1}" != 0 ]] || { record "tests:$filter" skipped; return 0; }
   command -v cargo >/dev/null 2>&1 || { record "tests:$filter" unavailable; return 0; }
   [[ -f "$workspace/rust/Cargo.toml" ]] || { record "tests:$filter" unavailable; return 0; }
-  log="$workspace/.agent-ladder/cargo-test-$filter.log"
+  log="$workspace/.agent-ladder/cargo-test-$target-$filter.log"
   local started=$SECONDS
   if (cd "$workspace/rust" && CARGO_TARGET_DIR="$(target_dir)" \
-      cargo test --test unit --quiet -- "$filter" >"$log" 2>&1); then
-    echo "verify $node: cargo test --test unit $filter took $((SECONDS - started))s" >&2
+      cargo test "${target_args[@]}" --quiet -- --exact "$filter" >"$log" 2>&1); then
+    echo "verify $node: cargo test ${target_args[*]} $filter took $((SECONDS - started))s" >&2
     passed=$(sed -n 's/^test result: ok\. \([0-9]*\) passed.*/\1/p' "$log" | tail -1)
-    record "tests:$filter" "passed=${passed:-0}"
+    if [[ ! "$passed" =~ ^[1-9][0-9]*$ ]]; then
+      record "tests:$filter" missing_selected_tests
+      return 1
+    fi
+    record "tests:$filter" "passed=$passed"
     return 0
   fi
   tail -40 "$log" >&2 || true
@@ -161,7 +173,7 @@ if [[ "$depth" -eq 5 ]]; then
   record diff_lines "$(diff_lines "$criterion_path")"
   rustfmt_parses "$criterion_path" || fail unparsable_leaf_change
   cargo_check || fail uncompilable_leaf_change
-  cargo_test "$(module_filter "$criterion_path")" || fail failing_leaf_tests
+  verify_source_tests "$criterion_path" || fail failing_leaf_tests
   [[ "$result" == *"$criterion_marker"* ]] || fail unverified_leaf_result
 elif [[ "$depth" -eq 4 ]]; then
   child_directory=".agent-ladder/verified-children"
@@ -243,9 +255,8 @@ else
     rustfmt_parses "$changed" || fail unparsable_requirement_change
   done
   cargo_check || fail uncompilable_requirement_change
-  filters=$(for changed in "${touched[@]}"; do module_filter "$changed"; echo; done | sort -u)
-  for filter in $filters; do
-    cargo_test "$filter" || fail failing_requirement_tests
+  for changed in "${touched[@]}"; do
+    verify_source_tests "$changed" || fail failing_requirement_tests
   done
 fi
 printf 'ok\n'

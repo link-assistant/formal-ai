@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check-worker-prerequisites
+  stage web
+  description "Check generated worker prerequisites against current declared source dependencies."
+  run "node scripts/generate-worker-prerequisites.mjs --check"
+  justification "Worker consumers must not load with stale generated prerequisite identities."

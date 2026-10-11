@@ -7,22 +7,21 @@
 
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import vm from 'node:vm';
+import { createBrowserContext, loadBrowserScript, parserMemoObservation } from './worker-host.mjs';
 
 export const REPO_ROOT = path.resolve(import.meta.dirname, '../..');
 
 let loader = null;
+let parseInvocations = 0;
+let parserContext = null;
 
 function seedLoader() {
   if (loader) return loader;
-  const sandbox = { console };
-  sandbox.self = sandbox;
-  sandbox.globalThis = sandbox;
-  sandbox.window = sandbox;
-  const context = vm.createContext(sandbox);
-  const file = path.join(REPO_ROOT, 'js/seed_loader.js');
-  new vm.Script(readFileSync(file, 'utf8'), { filename: file }).runInContext(context);
-  loader = sandbox.FormalAiSeed;
+  // The actual host constructor issues the lexical producer before parser load.
+  // Its private observation is readonly; public parse remains invoked every time.
+  parserContext = createBrowserContext();
+  loadBrowserScript(parserContext, 'js/seed_loader.js');
+  loader = parserContext.FormalAiSeed;
   return loader;
 }
 
@@ -47,6 +46,7 @@ export function expandConciseLexemes(text) {
  * @returns {{name: string, id: string, value: string, children: Array<object>}}
  */
 export function parseLino(text) {
+  parseInvocations += 1;
   return JSON.parse(JSON.stringify(seedParser()(text)));
 }
 
@@ -63,4 +63,14 @@ export function childrenNamed(node, name) {
 /** @param {object} node @param {string} name @returns {string} */
 export function childValue(node, name) {
   return childrenNamed(node, name)[0]?.value ?? '';
+}
+
+/** Diagnostic only: actual outer calls; source-owned inner reuse is separate. */
+export function parserCacheObservation() {
+  const inner = parserContext === null ? null : parserMemoObservation(parserContext);
+  return Object.freeze({
+    serverParseInvocations: parseInvocations, outerParseReuse: false,
+    innerCacheObservation: inner,
+    innerCacheProvenance: inner === null ? 'Unknown' : 'source-owned lexical memo observation',
+  });
 }

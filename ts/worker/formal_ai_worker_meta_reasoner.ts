@@ -1,3 +1,4 @@
+// @worker-prerequisite js/seed_loader.js
 // The recursive meta reasoner, JavaScript first (2026-10-06 meta-algorithm
 // doctrine; VISION.md "Universal Problem-Solving Algorithm").
 //
@@ -42,11 +43,75 @@ const metaCompiled = new Map();
  * response templates.
  * @returns {object}
  */
-function metaSeed() {
+const metaMemoSourceSeed = metaSeed;
+const metaDocSourceFunctions = Object.freeze({metaSeed, metaWords, metaLemmas});
+const metaSeedOriginalOwnershipQuery = metaSeedOwnsObject;
+const metaSeedProducerState = (() => {
+  const ownership = new WeakSet();
+  const nativeApply = Reflect.apply, sameValue = Object.is;
+  const weakHas = WeakSet.prototype.has, weakAdd = WeakSet.prototype.add;
+  const ownDescriptor = Object.getOwnPropertyDescriptor;
+  const ownDescriptors = Object.getOwnPropertyDescriptors;
+  const ownKeys = Reflect.ownKeys, objectPrototype = Object.prototype;
+  const originalObjectKeys = ownKeys(objectPrototype);
+  const objectPrototypeOf = Object.getPrototypeOf;
+  const setValues = Set.prototype.values;
+  const globalOwner = globalThis;
+  const expansionOwner = globalThis.FormalAiSeed;
+  const expansionDescriptor = expansionOwner && ownDescriptor(expansionOwner, "expandConciseLexemes");
+  const profileNames = ['Object', 'Array', 'String', 'Set', 'Map', 'WeakSet', 'RegExp', 'Reflect', 'JSON', 'Function', 'Symbol',
+    'parseLinoTree', 'parseLinoValue', 'stripLinoComment', 'unescapeLinoValue',
+    'unescapeSingleLinoValue', 'decodeRawReference', 'decodeCodepoints'];
+  const profileBindings = profileNames.map(name => ownDescriptor(globalOwner, name));
+  const profileOwners = [Object, Array, String, Set, Map, WeakSet, RegExp, JSON, Reflect,
+    Object.prototype, Array.prototype, String.prototype, Set.prototype, Map.prototype,
+    WeakSet.prototype, RegExp.prototype, Function.prototype,
+    objectPrototypeOf(nativeApply(Map.prototype.entries, new Map(), [])),
+    objectPrototypeOf(nativeApply(setValues, new Set(), [])),
+    objectPrototypeOf([][Symbol.iterator]()), objectPrototypeOf(objectPrototypeOf([][Symbol.iterator]())),
+    objectPrototypeOf(''[Symbol.iterator]())];
+  const profileFields = profileOwners.map(owner => ownDescriptors(owner));
+  function sameNativeFields(owner, expected) {
+    const actual = ownDescriptors(owner), names = ownKeys(expected), current = ownKeys(actual);
+    if (names.length !== current.length) return false;
+    for (let i = 0; i < names.length; i += 1) {
+      if (names[i] !== current[i]) return false;
+      const a = actual[names[i]], e = expected[names[i]], fields = ownKeys(a), expectedFields = ownKeys(e);
+      if (fields.length !== expectedFields.length) return false;
+      for (let j = 0; j < fields.length; j += 1) if (fields[j] !== expectedFields[j] || !sameValue(a[fields[j]], e[fields[j]])) return false;
+    }
+    return true;
+  }
+  function eligibleProducer() {
+    const keys = ownKeys(objectPrototype);
+    if (keys.length !== originalObjectKeys.length) return false;
+    for (let i = 0; i < keys.length; i += 1) if (keys[i] !== originalObjectKeys[i]) return false;
+    for (let i = 0; i < profileOwners.length; i += 1) if (!sameNativeFields(profileOwners[i], profileFields[i])) return false;
+    for (let i = 0; i < profileNames.length; i += 1) {
+      const current = ownDescriptor(globalOwner, profileNames[i]), expected = profileBindings[i];
+      if (!current || !expected || !ownDescriptor(current, 'value') || !ownDescriptor(expected, 'value') || current.value !== expected.value) return false;
+    }
+    const parserBinding = ownDescriptor(globalOwner, 'FormalAiSeed');
+    if (!parserBinding || !ownDescriptor(parserBinding, 'value') || parserBinding.value !== expansionOwner || !expansionDescriptor || !ownDescriptor(expansionDescriptor, 'value')) return false;
+    const expansion = ownDescriptor(expansionOwner, 'expandConciseLexemes');
+    if (!expansion || !ownDescriptor(expansion, 'value') || expansion.value !== expansionDescriptor.value) return false;
+    return true;
+  }
+  function registerProducedGraph(value) {
+    if (value === null || typeof value !== 'object' || nativeApply(weakHas, ownership, [value])) return;
+    nativeApply(weakAdd, ownership, [value]);
+    const fields = ownDescriptors(value);
+    for (const key of ownKeys(fields)) registerProducedGraph(fields[key].value);
+    if (objectPrototypeOf(value) === Set.prototype) for (const item of nativeApply(setValues, value, [])) registerProducedGraph(item);
+  }
+function produceSeed() {
   if (metaSeedCache) return metaSeedCache;
   const text = typeof SEED_RAW === "object" ? seedRawText(SEED_RAW, META_REASONING_FILE) : "";
   const seed = { cues: {}, grammatical: {}, affixes: {}, degrees: {}, primitives: [], combinators: [], filters: [], selectors: [], probes: {}, responses: {}, notes: {}, impasse: { intents: [], suffixes: [], named: [] } };
   if (!text) return seed;
+  // Retrieval retains its original behavior. Ownership describes only the
+  // graph subsequently built by the captured canonical parser profile.
+  const eligible = typeof text === "string" && eligibleProducer();
   const root = parseLinoTree(text);
   for (const top of root.children) {
     for (const record of top.children) {
@@ -108,9 +173,18 @@ function metaSeed() {
       }
     }
   }
+  if (eligible && eligibleProducer()) registerProducedGraph(seed);
   metaSeedCache = seed;
   return seed;
 }
+  return Object.freeze({producer: Object.freeze({produce: produceSeed, owns: value => nativeApply(weakHas, ownership, [value])}), profile: Object.freeze({check: eligibleProducer, descriptor: ownDescriptor, freeze: Object.freeze})});
+})();
+const metaSeedProducer = metaSeedProducerState.producer;
+const metaSeedIntrinsicProfile = metaSeedProducerState.profile;
+
+function metaSeed() {return metaSeedProducer.produce();}
+function metaSeedOwnsObject(value) {return metaSeedProducer.owns(value);}
+
 
 /**
  * One response template with its {slots} filled.
@@ -305,24 +379,73 @@ function metaRequestDefinitions(prompt) {
  * shared by most operations ("list", "returns") carries almost no evidence.
  * @returns {{operations: Array<object>, frequency: Map<string, number>}}
  */
-function metaDocIndex() {
+const metaDocIndexProducer = (() => {
+  let issuing = false;
+  const profile = formalAiWorkerPrimordials.ownDescriptor(globalThis, 'metaSeedIntrinsicProfile') === undefined && typeof metaSeedIntrinsicProfile === 'object' && metaSeedIntrinsicProfile !== null ? metaSeedIntrinsicProfile : null;
+  const permitted = profile !== null && profile.check();
+  const apply = permitted ? Reflect.apply : null, descriptor = permitted ? Object.getOwnPropertyDescriptor : null;
+  const descriptors = permitted ? Object.getOwnPropertyDescriptors : null, keys = permitted ? Reflect.ownKeys : null;
+  const prototype = permitted ? Object.getPrototypeOf : null;
+  const weakHas = permitted ? WeakSet.prototype.has : null, weakAdd = permitted ? WeakSet.prototype.add : null;
+  const setHas = permitted ? Set.prototype.has : null, setAdd = permitted ? Set.prototype.add : null;
+  const mapEntries = permitted ? Map.prototype.entries : null, setValues = permitted ? Set.prototype.values : null;
+  const allocated = permitted ? new WeakSet() : null;
+  const parserOwns = permitted ? metaSeedProducer.owns : null;
+  function intact() {
+    if (!permitted || !profile.check()) return false;
+    for (const name of ['metaSeed', 'metaWords', 'metaLemmas']) {
+      const field = descriptor(globalThis, name), expected = metaDocSourceFunctions[name];
+      if (!field || !descriptor(field, 'value') || field.value !== expected) return false;
+    }
+    return true;
+  }
+  function own(value) {return allocated !== null && apply(weakHas, allocated, [value]);}
+  function admitted(value, seen, measureOwns) {
+    if (value === null || typeof value !== 'object') return typeof value !== 'function' && typeof value !== 'symbol';
+    if (!(parserOwns(value) || own(value) || measureOwns !== null && measureOwns(value))) return false;
+    if (apply(setHas, seen, [value])) return true;
+    apply(setAdd, seen, [value]);
+    const parent = prototype(value);
+    if (parent !== Object.prototype && parent !== Array.prototype && parent !== Map.prototype && parent !== Set.prototype && parent !== null) return false;
+    const fields = descriptors(value);
+    for (const name of keys(fields)) {
+      if (typeof name !== 'string' || !descriptor(fields[name], 'value') || !admitted(fields[name].value, seen, measureOwns)) return false;
+    }
+    if (parent === Map.prototype) for (const pair of apply(mapEntries, value, [])) if (!admitted(pair[0], seen, measureOwns) || !admitted(pair[1], seen, measureOwns)) return false;
+    if (parent === Set.prototype) for (const member of apply(setValues, value, [])) if (!admitted(member, seen, measureOwns)) return false;
+    return true;
+  }
+  function eligible(seed) {
+    if (!intact()) return false;
+    const measures = descriptor(globalThis, 'metaMeasureProducer') === undefined && typeof metaMeasureProducer === 'object' && metaMeasureProducer !== null ? metaMeasureProducer : null;
+    return admitted(seed, new Set(), measures === null ? null : measures.owns);
+  }
+  function allocation(value) {if (issuing) apply(weakAdd, allocated, [value]); return value;}
+  function produceDocIndex() {
   const seed = metaSeed();
   if (seed.docIndex) return seed.docIndex;
-  const operations = seed.primitives
-    .map((primitive) => ({ id: primitive.id, kind: "primitive", text: `${primitive.id.replace(/_/gu, " ")} ${primitive.doc}` }))
-    .concat(seed.combinators.map((combinator) => ({ id: combinator.id, kind: "combinator", text: `${combinator.id.replace(/_/gu, " ")} ${combinator.doc}` })))
-    .concat(seed.filters.map((filter) => ({ id: filter.id, kind: "filter", text: `${filter.id.replace(/_/gu, " ")} ${filter.doc}` })))
-    .concat(seed.selectors.map((selector) => ({ id: selector.id, kind: "selector", text: `${selector.id.replace(/_/gu, " ")} ${selector.doc}` })));
-  const frequency = new Map();
+  issuing = eligible(seed);
+  try {
+  const operations = allocation(allocation(allocation(allocation(seed.primitives
+    .map((primitive) => (allocation({ id: primitive.id, kind: "primitive", text: `${primitive.id.replace(/_/gu, " ")} ${primitive.doc}` }))))
+    .concat(allocation(seed.combinators.map((combinator) => (allocation({ id: combinator.id, kind: "combinator", text: `${combinator.id.replace(/_/gu, " ")} ${combinator.doc}` }))))))
+    .concat(allocation(seed.filters.map((filter) => (allocation({ id: filter.id, kind: "filter", text: `${filter.id.replace(/_/gu, " ")} ${filter.doc}` }))))))
+    .concat(allocation(seed.selectors.map((selector) => (allocation({ id: selector.id, kind: "selector", text: `${selector.id.replace(/_/gu, " ")} ${selector.doc}` }))))));
+  const frequency = allocation(new Map());
   for (const operation of operations) {
-    const forms = new Set();
+    const forms = allocation(new Set());
     for (const word of metaWords(operation.text)) for (const lemma of metaLemmas(word, "en")) forms.add(lemma);
     operation.forms = forms;
     for (const form of forms) frequency.set(form, (frequency.get(form) || 0) + 1);
   }
-  seed.docIndex = { operations, frequency };
+  seed.docIndex = allocation({ operations, frequency });
   return seed.docIndex;
+  } finally {issuing = false;}
 }
+  return permitted ? profile.freeze({produce: produceDocIndex, owns: own}) : formalAiWorkerPrimordials.freeze({produce: produceDocIndex, owns: () => false});
+})();
+function metaDocIndex() {return metaDocIndexProducer.produce();}
+
 
 /**
  * Operations whose documentation shares a form with the word, weighted by

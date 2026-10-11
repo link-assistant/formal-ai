@@ -235,3 +235,16 @@ meanings
     lexeme hi का
     lexeme zh 的
     lexeme es de
+  numeric_response_only
+    defined-by answer
+    defined-by predicate
+    role numeric_response_only_clause
+    lexeme en "return only the numeric result" "return only the number" "answer with only the numeric result"
+    precondition "a complete calculation operand is followed by an unquoted numeric-only clause, and evaluation yields a finite scalar numeric string"
+    effect "returns the evaluated scalar numeric string without the expression or explanatory text; conflicting or incomplete clauses and evaluation errors remain unshaped"
+    unit "not applicable"
+    example "Calculate 31 + 6. Return only the numeric result. => 37"
+    lexeme ru "верни только числовой результат" "верни только число" "ответь только числовым результатом"
+    lexeme hi "केवल संख्यात्मक परिणाम लौटाएँ" "केवल संख्या लौटाएँ"
+    lexeme zh "仅返回数值结果" "只返回数字"
+    lexeme es "devuelve solo el resultado numérico" "devuelve solo el número"

@@ -1,5 +1,5 @@
 import { cached, childrenNamed, parseLino, readText } from '../host.mjs';
-import { mentionsRole } from '../write_lexicon.mjs';
+import { mentionsRole, roleWordForms } from '../write_lexicon.mjs';
 import { writesWholeFile } from '../literal_write_guard.mjs';
 import { closedArithmeticDeclaration } from '../module_function.mjs';
 import { boundReadPaths, pendingReadCondition } from '../file_read/ownership.mjs';
@@ -228,11 +228,25 @@ function sourceContextWhitespaceSupported(text) {
   return true;
 }
 
+/** Seeded condition/operator fragments match complete normalized word sequences. */
+function sourceContextCondition(label) {
+  const parts = normalizePrompt(label).trim().split(/\s+/u);
+  return ['coding_recurrence_operator', 'skill_when_then_pair'].some(role =>
+    roleWordForms(role).some(form => [form.before, form.after].some(surface => {
+      const phrase = normalizePrompt(surface).trim();
+      if (!phrase) return false;
+      const words = phrase.split(/\s+/u);
+      return parts.some((_, start) => words.every((word, index) => parts[start + index] === word));
+    })));
+}
+
 function sourceContextLabel(clause) {
   if (!sourceContextWhitespaceSupported(clause)) return false;
   const label = tokens(clause).slice(1).map(token => token.text).join(' ');
+  if (sourceContextCondition(label)) return false;
   if (['file_read_action_cue', 'file_write_action_cue', 'source_attribution_marker',
-    'file_edit_joiner_cue', 'file_leading_line_constraint_lead'].some(role =>
+    'file_edit_joiner_cue', 'file_leading_line_constraint_lead',
+    'file-read-independent-effect-operation', 'execute_url_request'].some(role =>
       mentionsRole(role, normalizePrompt(label)))) return false;
   return contextGrammarPatterns('annotation').some(([prefix, suffix]) =>
     prefix.test(clause) && suffix.test(''));

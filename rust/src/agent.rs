@@ -341,7 +341,7 @@ impl AgentWorkspace {
     }
 
     fn run_command_inner(&self, command_line: &str) -> Result<AgentCommandResult, AgentError> {
-        let parts = split_command(command_line);
+        let parts = split_command(command_line)?;
         let Some((program, args)) = parts.split_first() else {
             return Err(AgentError::EmptyCommand);
         };
@@ -649,13 +649,13 @@ fn delete_path_len(tail: &str) -> usize {
     end
 }
 
-fn split_command(command_line: &str) -> Vec<String> {
-    command_line
-        .split_whitespace()
-        .map(str::trim)
-        .filter(|part| !part.is_empty())
-        .map(|part| part.trim_matches(['"', '\'']).to_owned())
-        .collect()
+fn split_command(command_line: &str) -> Result<Vec<String>, AgentError> {
+    shell_words::split(command_line).map_err(|error| {
+        AgentError::Io(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            error.to_string(),
+        ))
+    })
 }
 
 fn resolve_allowed_program(program: &str) -> Result<PathBuf, AgentError> {

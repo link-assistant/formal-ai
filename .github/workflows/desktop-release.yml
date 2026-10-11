@@ -358,13 +358,18 @@ jobs:
         uses: taiki-e/setup-cross-toolchain-action@v1
         with:
           target: ${{ matrix.target }}
+      - name: Restore Intel native cargo registry
+        if: matrix.target == 'x86_64-apple-darwin'
+        uses: ./.github/actions/cache-cargo-registry
+        with:
+          restore-only: 'true'
       - name: Cache Rust compiler outputs
-        if: runner.os != 'Windows'
+        if: runner.os != 'Windows' && matrix.target != 'x86_64-apple-darwin'
         uses: mozilla-actions/sccache-action@v0.0.11
         with:
           version: v0.16.0
       - name: Enable Rust compiler cache
-        if: runner.os != 'Windows'
+        if: runner.os != 'Windows' && matrix.target != 'x86_64-apple-darwin'
         run: |
           echo "SCCACHE_GHA_ENABLED=true" >> "$GITHUB_ENV"
           echo "RUSTC_WRAPPER=sccache" >> "$GITHUB_ENV"
@@ -1219,7 +1224,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      actions: read
+      actions: write
       contents: write
       id-token: write
       attestations: write
@@ -1241,6 +1246,8 @@ jobs:
           cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
           cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
           cp scripts/release-advertisement.mjs scripts/release-protocol.mjs "$protocol_dir/"
+          cp scripts/release-producer-output-receipt.mjs "$protocol_dir/"
+          cp .github/workflows/desktop-release.yml "$protocol_dir/producer-output-workflow.yml"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
           import {readFileSync,writeFileSync} from 'node:fs';
@@ -1357,6 +1364,9 @@ jobs:
           NATIVE_COMPILER_RELEASE: ${{ needs.native-source.outputs.toolchain }}
           NATIVE_COMPILER_COMMIT: ${{ needs.native-source.outputs.compiler-commit }}
           EVIDENCE_INCOMPLETE: ${{ steps.evidence.outputs.incomplete }}
+          RELEASE_PRODUCER_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+          RELEASE_PRODUCER_OUTPUT_STEP: manifest
+          RELEASE_PRODUCER_OUTPUT_KEYS: incomplete
         run: |
           set -euo pipefail
           shopt -s nullglob
@@ -1438,9 +1448,20 @@ jobs:
           # Still upload what we have (a partial manifest beats none), but never
           # report success for it: a green run here means "all desktop assets
           # shipped", and callers rely on that.
-          if [ ${#missing[@]} -gt 0 ]; then
-            echo "incomplete=${missing[*]}" >> "$GITHUB_OUTPUT"
-          fi
+          echo "incomplete=${missing[*]}" >> "$GITHUB_OUTPUT"
+          node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/release-producer-output-receipt.mjs" "$GITHUB_OUTPUT" "$FORMAL_AI_NATIVE_PROTOCOL_DIR/producer-output-workflow.yml" "$FORMAL_AI_NATIVE_PROTOCOL_DIR/protocol-selection.json" producer-output-receipt.json
+
+      - name: Attest canonical producer outputs
+        uses: actions/attest@v4
+        with:
+          subject-path: producer-output-receipt.json
+      - name: Upload canonical producer outputs
+        uses: actions/upload-artifact@v7
+        with:
+          name: producer-output-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}
+          path: producer-output-receipt.json
+          retention-days: 7
+          if-no-files-found: error
 
       - name: Attest consolidated digest and provenance data
         uses: actions/attest@v4
@@ -1465,3 +1486,16 @@ jobs:
         run: |
           echo "::error title=Incomplete desktop release::No artifacts from: ${{ steps.manifest.outputs.incomplete }}. SHA256SUMS.txt was published but covers only the targets that built."
           exit 1
+
+      - name: Dispatch attested extension publication successor
+        timeout-minutes: 1
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          PRODUCER_RUN: ${{ github.run_id }}
+          PRODUCER_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          gh workflow run publish-vscode.yml --repo "$REPOSITORY" --ref main \
+            -f "producer-run=$PRODUCER_RUN" -f "producer-attempt=$PRODUCER_ATTEMPT"

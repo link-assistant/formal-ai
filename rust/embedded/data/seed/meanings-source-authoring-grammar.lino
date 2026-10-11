@@ -1019,3 +1019,111 @@ meanings
       words "同一个已声明的 Node 验收操作"
     lexeme es
       words "la misma operación de aceptación Node declarada"
+  private-constant-rename
+    role source-authoring-grammar
+    defined-by relation
+    defined-by source-authoring-grammar
+    definition "A relation between the original and replacement private constant identifiers in one explicitly selected Rust source file."
+    precondition "The complete registered clause binds a safe source path and two distinct valid identifiers."
+    effect "Records the rename obligation; it grants no write authority or proof of a completed rename."
+    unit "one source path and two identifiers"
+    example "Rename OLD_LIMIT to NEW_LIMIT in the selected file."
+  source-scope-native-validity
+    role source-authoring-grammar
+    defined-by relation
+    defined-by source-authoring-grammar
+    definition "A constraint relating the permitted source-file scope to a separately required native validity check."
+    precondition "The rename clause already selects exactly one source file."
+    effect "Requires changes to remain in that file and valid Rust; parsing the clause does not certify compilation."
+    unit "one file; native validity remains pending"
+    example "Change only that file and keep it valid Rust."
+  recursive-context
+    role source-authoring-grammar
+    defined-by relation
+    defined-by source-authoring-grammar
+    definition "A relation identifying one binary-tree task node by its dotted numeric path and depth."
+    precondition "The complete registered clause supplies a numeric node path and depth."
+    effect "Records recursion context without granting authority over siblings or descendants."
+    unit "node path and nonnegative depth"
+    example "Node 0.1 at depth 1 identifies one task context."
+  isolated-scope
+    role source-authoring-grammar
+    defined-by relation
+    defined-by source-authoring-grammar
+    definition "A constraint limiting a task to its selected node in a fresh temporary repository."
+    precondition "A node-specific task and an isolated repository scope are declared."
+    effect "Retains isolation as an unresolved obligation; it does not create or authenticate a repository."
+    unit "one node and one isolated repository"
+    example "Solve only this node task in its fresh temporary repository."
+  tracked-source-condition
+    role source-authoring-grammar
+    defined-by relation
+    defined-by source-authoring-grammar
+    definition "A relation between task completion and the source-change criterion evaluated by the independent harness."
+    precondition "The complete clause names the registered tracked source change criterion."
+    effect "Records the criterion while leaving its physical Git and harness evidence unexecuted."
+    unit "one independently evaluated completion criterion"
+    example "A rename needs a tracked source change, not only a report."
+  tracked-owner-condition
+    role source-authoring-grammar
+    defined-by relation
+    defined-by source-authoring-grammar
+    definition "A constraint requiring the selected source path itself to appear in the independent Git modification evidence."
+    precondition "The tracked path agrees with the source path bound by the rename clause."
+    effect "Requires an actual modification of that path and excludes unrelated changes; clause recognition is not a Git receipt."
+    unit "one tracked source path"
+    example "The selected source file itself must be Git-modified."
+  exact-field-receipt
+    role source-authoring-grammar
+    defined-by relation
+    defined-by source-authoring-grammar
+    definition "A relation specifying a receipt destination, three exact field lines, a result key and a minimum-word result containing the replacement identifier."
+    precondition "The complete form binds all field lines, a finite minimum word count and the required identifier; the destination is safe and distinct."
+    effect "Records exact receipt obligations without writing a receipt or certifying its contents."
+    unit "three field lines; result word count; one receipt path"
+    example "A receipt must preserve its exact field lines and include the replacement identifier in its result."
+  proof-target
+    role source-authoring-grammar
+    defined-by relation
+    defined-by source-authoring-grammar
+    definition "A relation selecting the separate destination for supporting task evidence."
+    precondition "The complete form binds a safe proof path distinct from source and receipt destinations."
+    effect "Records the evidence destination without creating evidence or granting write authority."
+    unit "one proof path"
+    example "Leave supporting evidence at the selected proof destination."
+  proof-first-line
+    role source-authoring-grammar
+    defined-by relation
+    defined-by source-authoring-grammar
+    definition "A constraint relating an evidence document to its exact first field line and a body stating the concrete result."
+    precondition "A proof destination exists and the complete form binds its exact first line."
+    effect "Records required proof contents; no produced document or concrete result is inferred."
+    unit "one exact first line and one evidence body"
+    example "The proof starts with its requested field line and states the concrete result."
+  separate-git-evidence
+    role source-authoring-grammar
+    defined-by relation
+    defined-by source-authoring-grammar
+    definition "A requirement relating proof acceptance to a separate physical Git effect observed by the harness."
+    precondition "The task requires proof and independently tracked source modification."
+    effect "Preserves the separate Git-effect requirement; a proof document alone cannot establish completion."
+    unit "one independently observed Git effect"
+    example "Supporting proof does not replace the separate Git modification."
+  conditional-research
+    role source-authoring-grammar
+    defined-by relation
+    defined-by source-authoring-grammar
+    definition "A condition selecting research only when it materially improves factual accuracy for the task."
+    precondition "A factual uncertainty relevant to task accuracy exists."
+    effect "Retains a conditional research obligation without claiming research occurred or granting network authority."
+    unit "one material accuracy condition"
+    example "Research a relevant uncertain fact when it changes the accuracy of the result."
+  evidence-required
+    role source-authoring-grammar
+    defined-by relation
+    defined-by source-authoring-grammar
+    definition "A constraint requiring evidence before a task-success claim."
+    precondition "A task outcome would otherwise be reported as successful."
+    effect "Leaves success unclaimed until independent evidence supports the required effects and checks."
+    unit "one evidence-backed success claim"
+    example "Do not claim a rename succeeded without its required evidence."

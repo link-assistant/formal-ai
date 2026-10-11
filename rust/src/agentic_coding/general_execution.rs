@@ -245,7 +245,7 @@ fn general_change_step(
             GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem => {}
         }
     }
-    if event_unavailable && plan.mode != GeneralPlanMode::RepositoryWorkItem {
+    if event_unavailable {
         return record(
             unverified_plan_event(plan),
             FinalDisposition::Gap,

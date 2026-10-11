@@ -152,16 +152,46 @@ function programBareWord(word) {
  * @param {string} prompt
  * @returns {string|null}
  */
-function programTaskOperand(prompt) {
+/** Owned quoted print data stays out of instruction classification. Mirrors program_instruction_view. */
+function programTaskInstruction(prompt) {
+  const operand = programTaskOperand(prompt);
+  if (operand === null) return prompt;
   const print = findMeaning("print_stdout");
-  const words = String(prompt || "").split(/\s+/u).filter(Boolean);
+  const positions = [...prompt.matchAll(/\S+/gu)];
+  const at = print ? positions.findIndex(match => meaningEvidencedIn(print, programBareWord(match[0]))) : -1;
+  if (at < 0) return prompt;
+  const word = positions[at][0];
+  const surface = containsCjk(word) ? print.words.find(candidate => containsCjk(candidate) && word.includes(candidate)) : null;
+  const end = positions[at].index + (surface ? word.indexOf(surface) + surface.length : word.length);
+  const suffix = prompt.slice(end);
+  const after = suffix.trimStart();
+  const quoted = quotedTextSpans(after)[0];
+  if (!quoted || quoted.start !== 0 || programOperandAfter(after.trim()) !== operand) return prompt;
+  const start = end + suffix.length - after.length;
+  return prompt.slice(0, start) + " ".repeat(quoted.end) + prompt.slice(start + quoted.end);
+}
+
+/** A seeded print instruction claims an operand even when parsing refuses it. Mirrors program_task_print_claim. */
+function programTaskPrintClaim(prompt) {
+  if (typeof prompt !== "string") return false;
+  const print = findMeaning("print_stdout");
+  return Boolean(print) && prompt.split(/\s+/u).some(word => meaningEvidencedIn(print, programBareWord(word)));
+}
+
+function programTaskOperand(prompt) {
+  if (typeof prompt !== "string") return null;
+  const print = findMeaning("print_stdout");
+  const raw = String(prompt || "");
+  const positions = [...raw.matchAll(/\S+/gu)];
+  const words = positions.map((match) => match[0]);
   const at = print ? words.findIndex((word) => meaningEvidencedIn(print, programBareWord(word))) : -1;
   if (at < 0) return null;
   const word = words[at];
   const surface = containsCjk(word) ? print.words.find((candidate) => containsCjk(candidate) && word.includes(candidate)) : null;
   const cut = surface ? word.indexOf(surface) : word.length;
-  const before = [...words.slice(0, at), surface ? word.slice(0, cut) : ""].join(" ").trim();
-  const after = [surface ? word.slice(cut + surface.length) : "", ...words.slice(at + 1)].join(" ").trim();
+  const start = positions[at].index;
+  const before = raw.slice(0, start + (surface ? cut : 0)).trim();
+  const after = raw.slice(start + (surface ? cut + surface.length : word.length)).trim();
   return programOperandAfter(after) ?? programOperandBefore(before);
 }
 
@@ -178,7 +208,16 @@ function programOperandAfter(after) {
   const quoted = quotedTextSpans(after)[0];
   // A second literal in the same sentence ("prints 'a' and 'b'") leaves the operand open.
   const sentence = quoted ? after.slice(quoted.end).split(/[\n.;\u3002]/u)[0] : "";
-  if (quoted && quoted.start === 0) return quotedTextSpans(sentence).length === 0 ? programOperandLiteral(quoted.text) : null;
+  if (quoted && quoted.start === 0) {
+    const remainder = after.slice(quoted.end).trim().replace(/[.!?。！？।]+$/u, "").trim();
+    const normalized = normalizePrompt(remainder.toLowerCase());
+    const nouns = wordsForRole("program_genus");
+    const accounted = [...nouns, ...wordsForRole("request_function_word")];
+    const nominal = lexiconMentionsRole("program_genus", normalized)
+      && remainder.toLowerCase().split(/\s+/u).every((word) => programTokenAccountedFor(word, accounted));
+    const complete = remainder === "" || nominal || wordsForRole("program_termination_clause").includes(remainder.toLowerCase());
+    return complete && quotedTextSpans(sentence).length === 0 ? programOperandLiteral(quoted.text) : null;
+  }
   const greetings = wordsForRole("social_greeting").slice().sort((left, right) => right.length - left.length);
   if (containsCjk(after.slice(0, 1))) return greetings.find((greeting) => containsCjk(greeting) && after.startsWith(greeting)) ?? null;
   const separators = wordsForRole("skill_procedure_clause_separator");

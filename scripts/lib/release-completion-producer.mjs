@@ -4,11 +4,24 @@ import { fileURLToPath } from 'node:url';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import YAML from 'yaml';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {mkdtempSync,writeFileSync,rmSync} from 'node:fs';
+import {verifyArtifactArchive} from '../github-artifact-by-identifier.mjs';
+import {deriveFailureOutputContract,validateProducerOutputReceipt,LOADED_WRITER_SHA256,preflightProducerOutputArchive}
+  from '../release-producer-output-receipt.mjs';
+const guardContracts = new WeakMap(), guardOutputProofs = new WeakMap();
+const guardSourcePaths = ['scripts/release-producer-output-receipt.mjs',
+  'scripts/github-artifact-by-identifier.mjs','scripts/qualified-data-artifact-profiles.mjs',
+  'scripts/lib/native-session-projections.mjs','scripts/lib/native-response-capture.mjs'];
+
 const parse = YAML.parse;
 const profiles = new WeakSet(),
   proofs = new WeakSet();
 const maximum = 1024 * 1024;
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+const loadedGuardSources = new Map(guardSourcePaths.map(name => [name,
+  hash(readFileSync(new URL('../../' + name, import.meta.url)))]));
 const commit = value => assert.match(value, /^[a-f0-9]{40}$/u);
 const positive = value => assert.ok(Number.isSafeInteger(value) && value > 0);
 const git = (root, args) => execFileSync('git', args, {
@@ -56,6 +69,8 @@ export function productionProducerProfile(root, protocolCommit, workflowPath, jo
   assert.ok(Array.isArray(job.steps) && job.steps.length > 0 && job.steps.length <= 128);
   const requiredSteps = job.steps.filter(step => Object.hasOwn(step, 'run')).map(step => {
     assert.ok(typeof step.run === 'string' && step.run.length > 0);
+    assert.ok(step['continue-on-error'] === undefined || step['continue-on-error'] === false,
+      'MissingContract: masked run-step failure cannot qualify success');
     assert.ok(typeof step.name === 'string' && step.name.length > 0 && step.name.length <= 512 && !step.name.includes('${{'), 'MissingContract: run step needs a stable source name');
     return Object.freeze({
       name: step.name,
@@ -76,6 +91,25 @@ export function productionProducerProfile(root, protocolCommit, workflowPath, jo
     requiredSteps: Object.freeze(requiredSteps),
     sourceTree: text(git(root, ['rev-parse', protocolCommit + '^{tree}'])).trim()
   });
+  const outputContract = deriveFailureOutputContract(job);
+  if (outputContract) {
+    const sourceDigests = new Map();
+    for (const name of guardSourcePaths) {
+      const file = fileURLToPath(new URL('../../' + name, import.meta.url));
+      const stat = lstatSync(file);
+      assert.ok(stat.isFile() && !stat.isSymbolicLink() && stat.size > 0 && stat.size <= maximum);
+      assert.equal(realpathSync(file), file);
+      const physical = readFileSync(file);
+      assert.equal(hash(physical), loadedGuardSources.get(name), 'loaded guard source drift');
+      const entry = text(git(root, ['ls-tree', '-z', protocolCommit, '--', name]));
+      assert.match(entry, /^100(?:644|755) blob [a-f0-9]{40}\t[^\0]+\0$/u);
+      assert.equal(entry.slice(entry.indexOf('\t')+1,-1),name);
+      assert.deepEqual(source(root,protocolCommit,name),physical,'guard dependency source mismatch');
+      sourceDigests.set(name,hash(physical));
+    }
+    assert.equal(sourceDigests.get(guardSourcePaths[0]),LOADED_WRITER_SHA256);
+    guardContracts.set(profile,Object.freeze({contract:outputContract,sourceDigests}));
+  }
   profiles.add(profile);
   return profile;
 }
@@ -83,13 +117,13 @@ function profileOnly(profile) {
   assert.ok(profile && profiles.has(profile), 'unknown or copied source profile');
 }
 /** Pure fixture checking cannot mint authenticated proofs or delivery authority. */
-export function validateProducerObservation(profile, {
+function validateProducerObservationInternal(profile, {
   run,
   attempt,
   workflow,
   job,
   defaultBranch
-}) {
+}, outputProof = null, pendingOutputObservation = false) {
   profileOnly(profile);
   positive(run.id);
   positive(run.run_attempt);
@@ -120,7 +154,18 @@ export function validateProducerObservation(profile, {
     const matches = job.steps.filter(step => step.name === required.name);
     assert.equal(matches.length, 1, 'missing or ambiguous source-registered step');
     assert.equal(matches[0].status, 'completed');
-    assert.equal(matches[0].conclusion, 'success', 'skipped step requires separate authenticated existing-artifact evidence');
+    const guard = guardContracts.get(profile)?.contract.guards.find(entry => entry.name === required.name);
+    if (!guard) {
+      assert.equal(matches[0].conclusion,'success','skipped step requires separate authenticated existing-artifact evidence');
+      continue;
+    }
+    assert.equal(matches[0].conclusion,'skipped','source failure-only guard must be skipped with authenticated false predicate');
+    if (pendingOutputObservation) continue;
+    const proof = guardOutputProofs.get(outputProof);
+    assert.ok(proof && proof.profile === profile, 'Missing authenticated canonical guard output');
+    assert.equal(proof.runId,run.id); assert.equal(proof.runAttempt,run.run_attempt);
+    assert.equal(proof.jobId,job.id);
+    assert.equal(proof.outputs[guard.output],'','source failure predicate is not false');
   }
   return Object.freeze({
     state: 'ProducerStepsOnly',
@@ -136,6 +181,20 @@ export function validateProducerObservation(profile, {
     writerLeaseAuthority: false
   });
 }
+/** Public structural JSON cannot carry output proof or admit a skipped guard. */
+export function validateProducerObservation(profile, observed) {
+  return validateProducerObservationInternal(profile,observed);
+}
+function stableGuardSources(profile) {
+  const registered = guardContracts.get(profile);
+  if (!registered) return;
+  for (const [name,digest] of registered.sourceDigests) {
+    const file = fileURLToPath(new URL('../../'+name,import.meta.url));
+    assert.ok(lstatSync(file).isFile() && !lstatSync(file).isSymbolicLink());
+    assert.equal(realpathSync(file),file);
+    assert.equal(hash(readFileSync(file)),digest,'guard source drift');
+  }
+}
 /** Fixed authenticated API observer; no caller transport, booleans, or supplied observations. */
 export function observeProductionProducer(profile, runId, runAttempt) {
   profileOnly(profile);
@@ -144,6 +203,7 @@ export function observeProductionProducer(profile, runId, runAttempt) {
   const started = Date.now(),
     observations = [];
   let metadataBytes = 0;
+  let receiptDirectory;
   const boundedGit = args => {
     const remaining = 90000 - (Date.now() - started);
     assert.ok(remaining > 0, 'shared source observation deadline');
@@ -172,9 +232,12 @@ export function observeProductionProducer(profile, runId, runAttempt) {
       stdoutSha256: hash(stdout),
       stderrBytes: stderr.length,
       stderrSha256: hash(stderr),
-      stdout: text(stdout),
-      stderr: text(stderr)
+      stdoutBase64: stdout.toString('base64'),
+      stderrBase64: stderr.toString('base64'),
+      error: result.error ? {name:result.error.name,message:result.error.message,code:result.error.code??null} : null
     });
+    observations.at(-1).stdout = text(stdout);
+    observations.at(-1).stderr = text(stderr);
     metadataBytes += stdout.length + stderr.length;
     assert.ok(metadataBytes <= 6 * maximum, 'cumulative metadata byte budget');
     assert.equal(result.error, undefined, 'metadata transport unavailable');
@@ -221,13 +284,83 @@ export function observeProductionProducer(profile, runId, runAttempt) {
     assert.equal(new Set(jobs.map(job => job.id)).size, jobs.length, 'duplicate authenticated jobs');
     const matches = jobs.filter(job => job.name === profile.jobName);
     assert.equal(matches.length, 1, 'source producer job ambiguous or missing');
-    const structural = validateProducerObservation(profile, {
-      run,
-      attempt,
-      workflow,
-      job: matches[0],
-      defaultBranch: repository.default_branch
-    });
+    const observed = {run,attempt,workflow,job:matches[0],defaultBranch:repository.default_branch};
+    validateProducerObservationInternal(profile,observed,null,true);
+    let outputProof = null;
+    const registered = guardContracts.get(profile);
+    const skippedGuard = registered?.contract.guards.some(guard =>
+      matches[0].steps.find(step=>step.name===guard.name)?.conclusion==='skipped');
+    if (skippedGuard) {
+      stableGuardSources(profile);
+      for (const [name,digest] of registered.sourceDigests) {
+        assert.equal(hash(boundedGit(['show',profile.protocolCommit+':'+name])),digest);
+      }
+      for (const name of registered.contract.requiredReceiptSteps) {
+        const steps = matches[0].steps.filter(step=>step.name===name);
+        assert.equal(steps.length,1,'receipt action missing or ambiguous');
+        assert.equal(steps[0].status,'completed'); assert.equal(steps[0].conclusion,'success');
+      }
+      const artifactName='producer-output-'+runId+'-'+runAttempt+'-'+profile.jobId;
+      const artifacts=[]; let artifactTotal=null;
+      for (let page=1;page<=10;page++) {
+        const inventory=api(prefix+'/actions/runs/'+runId+'/artifacts?per_page=100&page='+page);
+        assert.ok(Number.isSafeInteger(inventory.total_count) && inventory.total_count>=0 && inventory.total_count<=1000);
+        if (artifactTotal===null) artifactTotal=inventory.total_count;
+        else assert.equal(inventory.total_count,artifactTotal,'artifact inventory changed');
+        assert.ok(Array.isArray(inventory.artifacts) && inventory.artifacts.length<=100);
+        artifacts.push(...inventory.artifacts); assert.ok(artifacts.length<=artifactTotal);
+        if (artifacts.length===artifactTotal) break;
+        assert.equal(inventory.artifacts.length,100,'truncated artifact page');
+      }
+      assert.equal(artifacts.length,artifactTotal,'incomplete artifact inventory');
+      assert.equal(new Set(artifacts.map(artifact=>artifact.id)).size,artifacts.length);
+      const selected=artifacts.filter(artifact=>artifact.name===artifactName);
+      if (!selected.length) return Object.freeze({state:'MissingProducerOutputReceipt',authenticated:false,
+        publicationComplete:false,writerLeaseAuthority:false,signerAuthority:false,
+        observations:Object.freeze(observations.map(Object.freeze))});
+      assert.equal(selected.length,1,'ambiguous output artifact'); positive(selected[0].id);
+      const endpoint=prefix+'/actions/artifacts/'+selected[0].id;
+      const metadata=api(endpoint);
+      assert.deepEqual(metadata,selected[0],'output artifact inventory differs');
+      assert.ok(metadata.size_in_bytes>0 && metadata.size_in_bytes<=256*1024);
+      const fixedData = (args,limit) => {
+        const remaining=90000-(Date.now()-started); assert.ok(remaining>0,'shared output observation deadline');
+        const result=spawnSync('gh',args,{cwd:profile.root,encoding:null,
+          timeout:Math.min(10000,remaining),maxBuffer:limit});
+        const stdout=result.stdout??Buffer.alloc(0),stderr=result.stderr??Buffer.alloc(0);
+        observations.push({args:Object.freeze([...args]),status:result.status,signal:result.signal,
+          stdoutBase64:stdout.toString('base64'),stderrBase64:stderr.toString('base64'),
+          stdoutSha256:hash(stdout),stderrSha256:hash(stderr)});
+        metadataBytes+=stdout.length+stderr.length;
+        assert.ok(metadataBytes<=6*maximum,'cumulative output metadata budget');
+        assert.equal(result.error,undefined,'output transport unavailable'); assert.equal(result.signal,null);
+        assert.equal(result.status,0,'authenticated output data unavailable');
+        return stdout;
+      };
+      const archive=fixedData(['api','--hostname','github.com',endpoint+'/zip'],256*1024+1);
+      preflightProducerOutputArchive(archive);
+      const entries=verifyArtifactArchive({repository:profile.repository,id:metadata.id,
+        run:runId,head:profile.protocolCommit,name:artifactName},metadata,archive);
+      assert.equal(entries.length,1); assert.equal(entries[0].directory,false);
+      assert.equal(entries[0].name,registered.contract.member);
+      assert.ok(entries[0].bytes.length>0 && entries[0].bytes.length<=65536);
+      const binding={repository:profile.repository,runId,runAttempt,runHead:run.head_sha,
+        protocolCommit:profile.protocolCommit,protocolTree:profile.sourceTree,
+        workflowPath:profile.workflowPath,workflowSha256:profile.workflowSha256,
+        writerSha256:registered.sourceDigests.get(guardSourcePaths[0]),jobId:profile.jobId};
+      const receipt=validateProducerOutputReceipt(entries[0].bytes,binding,registered.contract);
+      receiptDirectory=mkdtempSync(join(tmpdir(),'producer-output-data-'));
+      const file=join(receiptDirectory,registered.contract.member);
+      writeFileSync(file,entries[0].bytes,{flag:'wx',mode:0o600});
+      fixedData(['attestation','verify',file,'--repo',profile.repository,
+        '--signer-workflow',profile.repository+'/'+profile.workflowPath,'--signer-digest',profile.protocolCommit],maximum);
+      assert.equal(hash(readFileSync(file)),hash(entries[0].bytes));
+      assert.deepEqual(api(endpoint),metadata,'output artifact metadata changed');
+      stableGuardSources(profile);
+      outputProof=Object.freeze({artifactId:metadata.id,archiveSha256:hash(archive),receiptSha256:hash(entries[0].bytes)});
+      guardOutputProofs.set(outputProof,Object.freeze({profile,runId,runAttempt,jobId:matches[0].id,outputs:receipt.outputs}));
+    }
+    const structural = validateProducerObservationInternal(profile,observed,outputProof);
     assert.equal(hash(boundedGit(['show', profile.protocolCommit + ':' + profile.workflowPath])), profile.workflowSha256, 'protocol source drift');
     assert.equal(hash(ownSourceBytes()), profile.qualifierSha256, 'qualifier source drift');
     assert.ok(Date.now() - started <= 90000, 'shared observer deadline exceeded');
@@ -259,6 +392,8 @@ export function observeProductionProducer(profile, runId, runAttempt) {
       error: String(error.message),
       observations: Object.freeze(observations.map(Object.freeze))
     });
+  } finally {
+    if (receiptDirectory) rmSync(receiptDirectory,{recursive:true,force:true});
   }
 }
 /** A source-required producer join never substitutes for product delivery evidence. */
@@ -388,6 +523,8 @@ export function productionMatrixProducerProfile(root, protocolCommit, workflowPa
   const children = combinations.map(row => {
     const requiredSteps = job.steps.filter(step => Object.hasOwn(step, 'run')).map(step => {
       assert.ok(typeof step.run === 'string' && step.run.length > 0);
+    assert.ok(step['continue-on-error'] === undefined || step['continue-on-error'] === false,
+      'MissingContract: masked run-step failure cannot qualify success');
       return Object.freeze({name: matrixName(step.name, row), sourceSha256: hash(Buffer.from(JSON.stringify(step)))});
     });
     assert.ok(requiredSteps.length > 0);

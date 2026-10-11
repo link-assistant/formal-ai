@@ -31,7 +31,7 @@ on:
         required: false
         default: checks
         type: choice
-        options: [checks]
+        options: [checks, benchmark]
       pull-request:
         description: 'Pull request the dispatched checks report for'
         required: false
@@ -80,6 +80,9 @@ concurrency:
 
 jobs:
   plan:
+    # Temporary PR #1188 release debt: automatic/checks evaluations are deferred.
+    # Schedule and explicit workflow_dispatch mode=benchmark retain the entire evaluation DAG.
+    if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'benchmark') }}
     name: Plan the Agent CLI ladder
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -130,7 +133,7 @@ jobs:
   ladder:
     name: Agent CLI ladder ${{ matrix.leg.id }}
     needs: [plan]
-    if: ${{ needs.plan.outputs.already-green != 'true' }}
+    if: ${{ needs.plan.result == 'success' && needs.plan.outputs.already-green != 'true' }}
     runs-on: ubuntu-latest
     # Both complete cold all-mode runs (37870805740 and 37870809771)
     # measured every full job and step below 30 minutes, including setup and
@@ -208,7 +211,7 @@ jobs:
   leaf-evidence:
     name: Validate the current-run leaf evidence
     needs: [plan, ladder]
-    if: ${{ !cancelled() && needs.plan.outputs.already-green != 'true' && needs.plan.outputs.composites != '[]' }}
+    if: ${{ !cancelled() && needs.plan.result == 'success' && needs.plan.outputs.already-green != 'true' && needs.plan.outputs.composites != '[]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -251,7 +254,7 @@ jobs:
   composites:
     name: Agent CLI composite ${{ matrix.leg.id }}
     needs: [plan, leaf-evidence]
-    if: ${{ !cancelled() && needs.plan.outputs.already-green != 'true' && needs.plan.outputs.composites != '[]' }}
+    if: ${{ !cancelled() && needs.plan.result == 'success' && needs.plan.outputs.already-green != 'true' && needs.plan.outputs.composites != '[]' }}
     runs-on: ubuntu-latest
     # One composite per machine; verification consumes only the current
     # run's two validated child effects and diffs.
@@ -338,7 +341,7 @@ jobs:
     needs: [plan, ladder, leaf-evidence, composites]
     # Not `always()`: a run superseded by a newer push is the one
     # cancellation that is not a defect, and it skips the verdict.
-    if: ${{ !cancelled() && needs.plan.outputs.already-green != 'true' }}
+    if: ${{ !cancelled() && needs.plan.result == 'success' && needs.plan.outputs.already-green != 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:

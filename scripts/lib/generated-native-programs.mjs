@@ -861,24 +861,24 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1491,"end":155
 "maintainedTranslationSha256":"b435e9cb91af878f5d83a95bcd22c60e1f7a91386272c6874b3f57bdfd1064f0"},{"path":
 "formal_ai::lexeme_import::PART_OF_SPEECH","canonicalPath":"formal_ai::lexeme_import::PART_OF_SPEECH","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"noun","nativeSourceQualified":true,
-"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4046,"end":4086},"sourceWitnesses":[{"path":
-"rust/src/lexeme_import.rs","sha256":"b4c4dabb9fff00d550349a2a01115adca957271e036f623041f183b08153ba56"},{"path":
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4060,"end":4100},"sourceWitnesses":[{"path":
+"rust/src/lexeme_import.rs","sha256":"3e7822f5ba5f3c671069003a9ae1d554bc8d887919140f266c7a5d9a0e31f6a6"},{"path":
 "rust/src/lib.rs","sha256":"a347856b9542ecb1583fcb9ababf453217afd2267234f380b42092c348f9b224"}],"maintainedMeta":
 "(constant PART_OF_SPEECH (exported) (type string) (value (string noun)))","maintainedJavaScript":
 "export const PART_OF_SPEECH = 'noun';","maintainedTranslationSha256":
 "4ed83094b8148f992f945d65f94ec601d4969c5aac36676496b9ce722ddcb6ef"},{"path":
 "formal_ai::lexeme_import::GRAMMATICAL_NUMBER","canonicalPath":"formal_ai::lexeme_import::GRAMMATICAL_NUMBER","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"singular","nativeSourceQualified":true,
-"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4169,"end":4217},"sourceWitnesses":[{"path":
-"rust/src/lexeme_import.rs","sha256":"b4c4dabb9fff00d550349a2a01115adca957271e036f623041f183b08153ba56"},{"path":
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4183,"end":4231},"sourceWitnesses":[{"path":
+"rust/src/lexeme_import.rs","sha256":"3e7822f5ba5f3c671069003a9ae1d554bc8d887919140f266c7a5d9a0e31f6a6"},{"path":
 "rust/src/lib.rs","sha256":"a347856b9542ecb1583fcb9ababf453217afd2267234f380b42092c348f9b224"}],"maintainedMeta":
 "(constant GRAMMATICAL_NUMBER (exported) (type string) (value (string singular)))","maintainedJavaScript":
 "export const GRAMMATICAL_NUMBER = 'singular';","maintainedTranslationSha256":
 "8ed21761fd68bfb4d1255ed07d1e46a88a42ec2bf035efc99485484d7db76868"},{"path":"formal_ai::lexeme_import::DEFINED_BY",
 "canonicalPath":"formal_ai::lexeme_import::DEFINED_BY","kind":"nativeConstant","nativeType":"&str","returnType":"string"
-,"value":"entity","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4271,"end":
-4309},"sourceWitnesses":[{"path":"rust/src/lexeme_import.rs","sha256":
-"b4c4dabb9fff00d550349a2a01115adca957271e036f623041f183b08153ba56"},{"path":"rust/src/lib.rs","sha256":
+,"value":"entity","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4285,"end":
+4323},"sourceWitnesses":[{"path":"rust/src/lexeme_import.rs","sha256":
+"3e7822f5ba5f3c671069003a9ae1d554bc8d887919140f266c7a5d9a0e31f6a6"},{"path":"rust/src/lib.rs","sha256":
 "a347856b9542ecb1583fcb9ababf453217afd2267234f380b42092c348f9b224"}],"maintainedMeta":
 "(constant DEFINED_BY (exported) (type string) (value (string entity)))","maintainedJavaScript":
 "export const DEFINED_BY = 'entity';","maintainedTranslationSha256":

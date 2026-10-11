@@ -16,14 +16,19 @@ fn attestations_digest_artifacts_without_parsing_cross_platform_checksum_text() 
 
     assert_eq!(
         desktop.matches("uses: actions/attest@v4").count(),
-        4,
-        "desktop, CLI, VS Code and durable release evidence must use the current generic attestation action"
+        5,
+        "desktop, CLI, VS Code, durable release evidence and consolidated digest/provenance data must use the current generic attestation action"
     );
-    assert_eq!(desktop.matches("subject-path:").count(), 4);
+    assert_eq!(desktop.matches("subject-path:").count(), 5);
     assert!(desktop.contains("desktop/release/formal-ai-desktop-*"));
     assert!(desktop.contains("desktop/release/latest*.yml"));
     assert!(desktop.contains("vscode/formal-ai-vscode-*.vsix"));
     assert!(desktop.contains("subject-path: release-evidence/formal-ai-*.json"));
+    assert!(
+        desktop.contains(
+            "subject-path: |\n            SHA256SUMS.txt\n            BUILD-PROVENANCE.txt"
+        )
+    );
     assert!(
         !desktop.contains("subject-checksums:"),
         "released actions/attest v4 splits checksum text with the host EOL and fails on LF-only Windows manifests"

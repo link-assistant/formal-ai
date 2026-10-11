@@ -110,7 +110,45 @@ pub(super) fn sentence_spans(prompt: &str) -> Vec<&str> {
 /// *"When running sudo commands, run them in the background"* tells the agent how
 /// to treat a class of commands it may later choose to run. Nothing in it names a
 /// command to run now, so no token inside it may become one.
+/// Leading seed-owned negation scopes the entire coordinated command sentence.
+fn negated_command_policy(sentence: &str) -> bool {
+    let lower = sentence.to_lowercase();
+    let quotes = crate::normal_markov::quoted_segment_spans(sentence);
+    for surface in seed::caller_context_vocabulary().policy_leads {
+        let lead = surface.trim().to_lowercase();
+        if lead.is_empty() || !seed::lexicon().mentions_role("statement_negation_cue", &lead) {
+            continue;
+        }
+        for (at, _) in lower.match_indices(&lead) {
+            let Some((start, end)) =
+                super::write_request::raw_lowercase_span(sentence, Some((at, at + lead.len())))
+            else {
+                continue;
+            };
+            if !sentence[..start].trim().is_empty()
+                || quotes
+                    .iter()
+                    .any(|quote| start < quote.end && end > quote.start)
+            {
+                continue;
+            }
+            let word = |character: char| character.is_alphanumeric() || character == '_';
+            if !crate::coding::contains_cjk(&lead)
+                && (sentence[..start].chars().next_back().is_some_and(word)
+                    || sentence[end..].chars().next().is_some_and(word))
+            {
+                continue;
+            }
+            return true;
+        }
+    }
+    false
+}
+
 pub(super) fn states_a_command_policy(sentence: &str) -> bool {
+    if negated_command_policy(sentence) {
+        return true;
+    }
     let lower = sentence.to_lowercase();
     // A lead opens the rule, or qualifies it from the middle: *"Run commands
     // with sudo only when necessary"* is as much a rule as *"When running sudo
@@ -390,4 +428,38 @@ pub(super) fn shell_quotes_paired(command: &str) -> bool {
         }
     }
     quote.is_none() && !escaped
+}
+
+#[cfg(test)]
+mod negated_command_policy_tests {
+    use super::{negated_command_policy, states_a_command_policy};
+
+    #[test]
+    fn leading_negation_keeps_coordinated_commands_inside_policy() {
+        for sentence in [
+            "Do not edit the repository, run node report.mjs or download artifacts",
+            "Never change files, run git status",
+            "Don't alter notes, run node --version",
+            "Никогда изменяй файлы, run node report.mjs",
+            "Nunca cambies archivos, run node report.mjs",
+        ] {
+            assert!(negated_command_policy(sentence), "{sentence}");
+            assert!(states_a_command_policy(sentence), "{sentence}");
+        }
+    }
+
+    #[test]
+    fn operands_quoted_data_and_conditional_orders_do_not_issue_negation() {
+        for sentence in [
+            "Run node never.mjs",
+            "Run node --version",
+            "Run node -e 'console.log(\"do not run cargo\")'",
+            "When finished, run node report.mjs",
+        ] {
+            assert!(!negated_command_policy(sentence), "{sentence}");
+        }
+        assert!(!states_a_command_policy(
+            "When finished, run node report.mjs"
+        ));
+    }
 }

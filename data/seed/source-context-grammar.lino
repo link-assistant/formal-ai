@@ -3,7 +3,7 @@ source-context-grammar
     role source-context-label-introducer
       form "Note"
     annotation opaque-label
-      prefix "^[ \\t]*{source-context-label-introducer}[ \\t]+[\\p{L}\\p{M}\\p{N}\\p{So}]+[.!?。！？।][ \\t\\r\\n]*$"
+      prefix "^[ \\t]*{source-context-label-introducer}[ \\t]+[\\p{L}\\p{M}\\p{N}\\p{So}]+(?:[ \\t]+[\\p{L}\\p{M}\\p{N}\\p{So}]+)*[.!?。！？।][ \\t\\r\\n]*$"
       suffix "^$"
     role source-context-prologue
       form "for context,"

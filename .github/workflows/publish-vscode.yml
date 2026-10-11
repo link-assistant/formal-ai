@@ -3,12 +3,7 @@ on:
   release:
     types:
       - published
-  workflow_run:
-    workflows:
-      - CI/CD Pipeline
-      - Desktop Release
-    types:
-      - completed
+  push:
     branches:
       - main
   pull_request:
@@ -51,6 +46,14 @@ on:
         description: Published release tag (empty selects the latest)
         type: string
         default: ""
+      producer-run:
+        description: Completed Desktop producer run routing hint
+        type: string
+        default: ""
+      producer-attempt:
+        description: Exact Desktop producer attempt routing hint
+        type: string
+        default: ""
 permissions:
   contents: read
 concurrency:
@@ -61,12 +64,6 @@ jobs:
   resolve:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: >-
-      github.event_name != 'workflow_run' ||
-      (github.event.workflow_run.head_branch == 'main' &&
-       github.event.workflow_run.head_repository.full_name == github.repository &&
-       github.event.workflow_run.conclusion != 'cancelled' &&
-       github.event.workflow_run.conclusion != 'skipped')
     outputs:
       tag: ${{ steps.release.outputs.tag }}
       publish: ${{ steps.release.outputs.publish }}

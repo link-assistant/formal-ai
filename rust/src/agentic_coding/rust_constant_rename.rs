@@ -16,6 +16,7 @@ pub struct RustConstantRenameCandidate {
 }
 /// Parse the actual supplied bytes through the maintained engine before reasoning.
 /// An unavailable parser refuses; public trees/JSON cannot assert source ownership.
+#[must_use = "the candidate records source edits and unresolved obligations"]
 pub fn rust_constant_rename_candidate(
     source: &str,
     previous: &str,
@@ -90,7 +91,7 @@ fn candidate_from_source(
         .iter()
         .filter(|node| {
             node.metadata().term() == Some("const_item")
-                && field(node.id(), "name").and_then(&text) == Some(previous)
+                && field(node.id(), "name").and_then(text) == Some(previous)
         })
         .collect();
     if declarations.len() != 1 {
@@ -204,43 +205,9 @@ fn candidate_from_source(
     })
 }
 
-#[cfg(all(test, feature = "meta-language"))]
-mod tests {
-    use super::*;
-    #[test]
-    fn source_bytes_and_utf16_spans_are_owned() {
-        let source = "// 😀\nconst OLD: i32 = 1; fn value() -> i32 { OLD }";
-        let candidate = rust_constant_rename_candidate(source, "OLD", "NEW").unwrap();
-        let expected = source.replace("OLD", "NEW");
-        assert_eq!(candidate.content, expected);
-        assert_eq!(
-            candidate.spans[0][0],
-            source[..source.find("OLD").unwrap()].encode_utf16().count()
-        );
-        assert_eq!(candidate.spans.len(), 2);
-        assert!(!candidate.write_authority);
-        assert_eq!(candidate.compilation, "pending");
-    }
-    #[test]
-    fn shadow_private_module_macro_and_collision_refuse() {
-        for source in [
-            "pub const OLD: i32 = 1;",
-            "const OLD: i32 = 1; fn f(OLD: i32) -> i32 { OLD }",
-            "const OLD: i32 = 1; mod nested {}",
-            "const OLD: i32 = 1; fn f() { println!(\"{}\", OLD); }",
-            "const OLD: i32 = 1; const NEW: i32 = 2;",
-            "const OLD: i32 = ;",
-        ] {
-            assert!(rust_constant_rename_candidate(source, "OLD", "NEW").is_none());
-        }
-    }
-}
-#[cfg(all(test, not(feature = "meta-language")))]
-mod unavailable_tests {
-    #[test]
-    fn unavailable_parser_never_mints_clean_ast() {
-        assert!(
-            super::rust_constant_rename_candidate("const OLD: i32 = 1;", "OLD", "NEW").is_none()
-        );
-    }
-}
+#[cfg(test)]
+#[path = "../../tests/fixtures/rust_constant_rename-tests.rs"]
+mod tests;
+#[cfg(test)]
+#[path = "../../tests/fixtures/rust_constant_rename-unavailable_tests.rs"]
+mod unavailable_tests;

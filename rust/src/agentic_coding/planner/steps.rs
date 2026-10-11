@@ -128,10 +128,27 @@ pub(super) fn plan_request_preflight(
     {
         return SourceOrOwnedGoalStep::Claimed(None);
     }
-    crate::agentic_coding::general_planner::pending_read_gap(task, result)
-        .map_or(SourceOrOwnedGoalStep::Unclaimed, |plan| {
-            SourceOrOwnedGoalStep::Claimed(Some(plan))
-        })
+    if let Some(plan) = crate::agentic_coding::general_planner::pending_read_gap(task, result) {
+        return SourceOrOwnedGoalStep::Claimed(Some(plan));
+    }
+    if let Some((target, _, None)) =
+        crate::agentic_coding::general_planner::owned_additive_literal_frame(task)
+    {
+        return SourceOrOwnedGoalStep::Claimed(Some(crate::agentic_coding::final_result::record(
+            AgenticPlan::Final(
+                crate::agentic_coding::code_task::render_seeded_outcome(
+                    "file-addition-position-unknown",
+                    task,
+                    &target,
+                )
+                .unwrap_or(target),
+            ),
+            crate::agentic_coding::final_result::FinalDisposition::Gap,
+            "literal-addition-position-unknown",
+            result,
+        )));
+    }
+    SourceOrOwnedGoalStep::Unclaimed
 }
 
 /// Preserve verified source priority and owned-goal refusal before later routes.
@@ -150,6 +167,8 @@ pub(super) fn plan_source_or_owned_goal_step(
         let owned_goal =
             if crate::agentic_coding::evidence_record::has_typed_evidence_delivery(task)
                 || crate::meta_translate::owned_source_tree_request(task).is_some()
+                || crate::agentic_coding::statement_audit::owned_statement_audit_output(task)
+                    .is_some()
             {
                 None
             } else {

@@ -45,14 +45,33 @@ try {
   // Hosts without a usable location keep plain worker-relative resolution.
 }
 
+importScripts(withAssetVersion("worker-script-prerequisites.js"));
+
+// The completed set is private to this actual import closure, not caller globals.
+const loadWorkerAsset = (() => {
+  const nativeImport = importScripts;
+  const completed = new Map();
+  const records = new Map(formalAiWorkerScriptPrerequisites.map(record => [record.script, record]));
+  return (asset) => {
+    const script = "js/" + asset;
+    completed.delete(script);
+    const record = records.get(script);
+    if (record && record.requires.some(dependency => completed.get(dependency.script) !== dependency.sourceSha256)) return false;
+    nativeImport(withAssetVersion(asset));
+    const declared = formalAiWorkerScriptPrerequisites.flatMap(item => item.requires).find(item => item.script === script);
+    completed.set(script, record ? record.sourceSha256 : declared ? declared.sourceSha256 : null);
+    return true;
+  };
+})();
+
 try {
   // `seed-files.js` first: it is the generated inventory of `seed/*.lino` files
   // that `seed_loader.js` fetches, kept in its own file so two branches that
   // each add a seed file never edit the same lines. See issue #991 and
   // `data/meta/seed-registry.lino`; shipped responses also boot offline.
-  importScripts(withAssetVersion("worker-bootstrap-responses.js"));
-  importScripts(withAssetVersion("seed-files.js"));
-  importScripts(withAssetVersion("seed_loader.js"));
+  loadWorkerAsset("worker-bootstrap-responses.js");
+  loadWorkerAsset("seed-files.js");
+  loadWorkerAsset("seed_loader.js");
 } catch (_error) {
   // Mock workers may omit the optional loader.
 }
@@ -83,6 +102,12 @@ try {
 // `rust-script scripts/normalize-ordered-lists.rs --write` regenerates the list
 importScripts(withAssetVersion("worker-modules.js"));
 
-for (const modulePath of self.FORMAL_AI_WORKER_MODULES) {
-  importScripts(withAssetVersion(modulePath));
+let pendingWorkerModules = self.FORMAL_AI_WORKER_MODULES.slice();
+while (pendingWorkerModules.length) {
+  const deferred = [];
+  for (const modulePath of pendingWorkerModules) {
+    if (!loadWorkerAsset(modulePath)) deferred.push(modulePath);
+  }
+  if (deferred.length === pendingWorkerModules.length) break;
+  pendingWorkerModules = deferred;
 }

@@ -90,6 +90,7 @@ meanings
     rediscovery_query "whether any element satisfies the predicate"
   quantifier_all
     defined-by quantifier
+    role file-read-set-modifier
     role coding_structure
     role source-projection-scope
     idiom "all({predicate} for {item} in {items})"

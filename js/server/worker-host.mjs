@@ -11,15 +11,38 @@
 // Each script runs with its real absolute path as the `filename`, so coverage
 // is attributed to the file the browser downloads.
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
+import { createHash } from "node:crypto";
+import { workerScriptPrerequisites } from "./worker-script-prerequisites.mjs";
 
 import { serverMessage } from "./messages.mjs";
 import { applyProcedureCache } from "./procedure-cache.mjs";
 
 export const REPO_ROOT = path.resolve(import.meta.dirname, "../..");
 const WORKER_DIR = path.join(REPO_ROOT, "js/worker");
+
+// Constructor-owned prerequisite: only a genuinely fresh context can be issued.
+// No public completion registration or namespace/caller-field authority.
+const parserBootstrapContexts = new WeakMap();
+const parserBootstrapIdentity = "84de01ad3dfd183c2b1bb80ab273d1bad9498acc44ac0691755b1e6ca3246c40";
+function parserBootstrapSource() {
+  const absolute=path.join(REPO_ROOT,"js/parser-cache-primordials.js");
+  const source=readFileSync(absolute,"utf8");
+  if(createHash("sha256").update(source).digest("hex")!==parserBootstrapIdentity) throw new Error("ParserBootstrapSourceIdentityMismatch");
+  return {absolute,source};
+}
+function initializeParserBootstrap(context) {
+  const current=parserBootstrapSource();
+  // The same captured loader evaluator must actually complete producer evaluation.
+  applyWorkerScript(runWorkerScript,new WorkerScript(current.source,{filename:current.absolute}),[context]);
+  parserBootstrapContexts.set(context,parserBootstrapIdentity);
+}
+function requireParserBootstrap(context) {
+  if(parserBootstrapContexts.get(context)!==parserBootstrapIdentity) throw new Error("MissingFreshParserBootstrap");
+  parserBootstrapSource();
+}
 
 /** Map a worker URL to its web-root path, mirroring the entry's base shim. */
 function webRootPath(url) {
@@ -95,6 +118,7 @@ function createDocument() {
 export function createBrowserContext(overrides = {}) {
   const sandbox = {};
   const context = vm.createContext(sandbox);
+  initializeParserBootstrap(context);
   Object.assign(sandbox, {
     globalThis: sandbox,
     window: sandbox,
@@ -155,11 +179,151 @@ export function createBrowserContext(overrides = {}) {
  * The absolute path is passed as the script `filename`, which is what makes the
  * file show up in the coverage report under its real repository path.
  */
+const evaluatedWorkerScripts = new WeakMap();
+const prerequisiteRecords = new Map(workerScriptPrerequisites.map(record => [record.script, record]));
+const WorkerScript = vm.Script;
+const runWorkerScript = vm.Script.prototype.runInContext;
+const parserMemoContexts = new WeakMap();
+const counterOwnDescriptor = Object.getOwnPropertyDescriptor;
+const counterFreeze = Object.freeze;
+const parserMemoSeedIdentity = "4a3b4ef0056d6b191f2b2504189f1e760c419c6ed945e3bb9f022de44d076c4d";
+const counterVmScriptDescriptor = counterOwnDescriptor(vm, "Script");
+const counterVmPrototypeDescriptor = counterOwnDescriptor(WorkerScript, "prototype");
+const counterVmRunDescriptor = counterOwnDescriptor(counterVmPrototypeDescriptor.value, "runInContext");
+function sameCounterDescriptor(a,b) {
+  return a && b && a.value===b.value && a.get===b.get && a.set===b.set && a.writable===b.writable && a.enumerable===b.enumerable && a.configurable===b.configurable;
+}
+function counterEvaluatorIntact() {
+  return sameCounterDescriptor(counterOwnDescriptor(vm,"Script"),counterVmScriptDescriptor) && sameCounterDescriptor(counterOwnDescriptor(WorkerScript,"prototype"),counterVmPrototypeDescriptor) && sameCounterDescriptor(counterOwnDescriptor(counterVmPrototypeDescriptor.value,"runInContext"),counterVmRunDescriptor);
+}
+/** Readonly branch evidence, never parser or mutation authority. */
+export function parserMemoObservation(context) {
+  const entry=parserMemoContexts.get(context);
+  if(!entry || !counterEvaluatorIntact()) return null;
+  try {
+    requireParserBootstrap(context);
+    const source=workerSourceText(path.join(REPO_ROOT,"js/seed_loader.js"));
+    if(createHash("sha256").update(source).digest("hex")!==parserMemoSeedIdentity) return null;
+    const observed=entry.query();
+    const inputs=[];
+    for(let at=0;at<observed.inputs.length;at++) {
+      const row=observed.inputs[at];if(typeof row.text!=="string") return null;
+      inputs[at]=counterFreeze({sha256:createHash("sha256").update(row.text).digest("hex"),bytes:Buffer.byteLength(row.text),characters:row.text.length,rootClass:row.rootName.slice(0,128),hits:row.hits,misses:row.misses,bypasses:row.bypasses,evictions:row.evictions});
+    }
+    return counterFreeze({hits:observed.hits,
+    misses:observed.misses,
+    bypasses:observed.bypasses,
+    evictions:observed.evictions,
+    entries:observed.entries,
+    retainedCharacters:observed.retainedCharacters,
+    retainedNodes:observed.retainedNodes,
+    retainedTextBytes:observed.retainedTextBytes,
+    retainedPayloadBytes:observed.retainedPayloadBytes,
+    maxEntries:observed.maxEntries,
+    maxTextBytes:observed.maxTextBytes,
+    maxPayloadBytes:observed.maxPayloadBytes,
+    diagnosticOmitted:observed.diagnosticOmitted,
+    inputs:counterFreeze(inputs),
+    seedSourceSha256:parserMemoSeedIdentity,
+    bootstrapSourceSha256:parserBootstrapIdentity,
+    authority:false});
+
+  } catch { return null; }
+}
+const applyWorkerScript = Reflect.apply;
+
+class WorkerScriptPrerequisiteError extends Error {}
+
+function workerSourceText(absolute) {
+  return readFileSync(absolute, "utf8");
+}
+
+function verifyCurrentWorkerPrerequisites(record, evaluated) {
+  for (const dependency of record.requires) {
+    if (evaluated.get(dependency.script) !== dependency.sourceSha256) {
+      throw new WorkerScriptPrerequisiteError("IncompleteWorkerScriptPrerequisite");
+    }
+    const absolute = path.resolve(REPO_ROOT, dependency.script);
+    let currentHash;
+    try {
+      currentHash = createHash("sha256").update(workerSourceText(absolute)).digest("hex");
+    } catch (error) {
+      evaluated.delete(dependency.script);
+      throw error;
+    }
+    if (currentHash !== dependency.sourceSha256) {
+      evaluated.delete(dependency.script);
+      throw new Error("WorkerPrerequisiteSourceIdentityMismatch");
+    }
+    const inherited = prerequisiteRecords.get(dependency.script);
+    if (inherited) verifyCurrentWorkerPrerequisites(inherited, evaluated);
+  }
+}
+
+function preflightWorkerSources(scripts) {
+  const required = new Map(), visited = new Set();
+  const visit = (script, expected) => {
+    const known = required.get(script);
+    if (known !== undefined && known !== expected) throw new Error("WorkerPrerequisiteSourceIdentityMismatch");
+    required.set(script, expected);
+    if (visited.has(script)) return;
+    visited.add(script);
+    const record = prerequisiteRecords.get(script);
+    if (!record) return;
+    if (record.sourceSha256 !== expected) throw new Error("WorkerPrerequisiteSourceIdentityMismatch");
+    for (const dependency of record.requires) visit(dependency.script, dependency.sourceSha256);
+  };
+  for (const script of scripts) {
+    const record = prerequisiteRecords.get(script);
+    if (record) visit(script, record.sourceSha256);
+  }
+  for (const [script, expected] of required) {
+    const current = createHash("sha256").update(workerSourceText(path.resolve(REPO_ROOT, script))).digest("hex");
+    if (current !== expected) throw new Error("WorkerSourceIdentityMismatch");
+  }
+}
+
 export function loadBrowserScript(context, relativePath) {
-  const absolute = path.join(REPO_ROOT, relativePath);
-  const source = readFileSync(absolute, "utf8");
-  new vm.Script(source, { filename: absolute }).runInContext(context);
+  const absolute = path.resolve(REPO_ROOT, relativePath);
+  const script = path.relative(REPO_ROOT, absolute).split(path.sep).join("/");
+  const required = path.resolve(REPO_ROOT,"js/seed_loader.js");
+  const actualIdentity=statSync(absolute),requiredIdentity=statSync(required);
+  const isParser=absolute===required || (actualIdentity.dev===requiredIdentity.dev && actualIdentity.ino===requiredIdentity.ino);
+  if(isParser) {requireParserBootstrap(context);parserMemoContexts.delete(context);}
+  const source = workerSourceText(absolute);
+  const sourceHash = createHash("sha256").update(source).digest("hex");
+  let evaluated = evaluatedWorkerScripts.get(context);
+  if (!evaluated) {
+    evaluated = new Map();
+    evaluatedWorkerScripts.set(context, evaluated);
+  }
+  evaluated.delete(script);
+  const record = prerequisiteRecords.get(script);
+  if (record) {
+    if (sourceHash !== record.sourceSha256) throw new Error("WorkerSourceIdentityMismatch");
+    verifyCurrentWorkerPrerequisites(record, evaluated);
+  }
+  const counterEligible=isParser && counterEvaluatorIntact() && sourceHash===parserMemoSeedIdentity;
+  const completion=applyWorkerScript(runWorkerScript, new WorkerScript(source, { filename: absolute }), [context]);
+  if(counterEligible && counterEvaluatorIntact() && typeof completion==="function") parserMemoContexts.set(context,{query:completion});
+  evaluated.set(script, sourceHash);
   return context;
+}
+
+function loadWorkerScripts(context, scripts) {
+  let pending = scripts.slice();
+  while (pending.length) {
+    const deferred = [];
+    for (const script of pending) {
+      try { loadBrowserScript(context, script); }
+      catch (error) {
+        if (!(error instanceof WorkerScriptPrerequisiteError)) throw error;
+        deferred.push(script);
+      }
+    }
+    if (deferred.length === pending.length) break;
+    pending = deferred;
+  }
 }
 
 /** List the worker mirror files in the order the worker loads them. */
@@ -177,11 +341,13 @@ export function workerMirrorFiles() {
  * scope.
  */
 export function loadWorkerMirror(overrides = {}) {
+  preflightWorkerSources(workerMirrorFiles());
   const context = createBrowserContext(overrides);
   loadBrowserScript(context, "js/worker-bootstrap-responses.js");
-  for (const file of workerMirrorFiles()) {
-    loadBrowserScript(context, file);
+  try { loadBrowserScript(context, "js/seed_loader.js"); } catch (_error) {
+    // Optional producers may be absent; dependent scripts remain unevaluated.
   }
+  loadWorkerScripts(context, workerMirrorFiles());
   return context;
 }
 
@@ -199,6 +365,7 @@ export function loadWorkerMirror(overrides = {}) {
  * order to load it in, so a test can prove the modules load in any order.
  */
 export function createWorkerContext(overrides = {}, { reorderModules = null } = {}) {
+  preflightWorkerSources(workerMirrorFiles());
   const context = createBrowserContext({
     location: { href: "http://localhost/worker/formal_ai_worker.js", search: "" },
     fetch: (url) => {

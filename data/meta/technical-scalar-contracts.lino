@@ -1,0 +1,11 @@
+technical-scalar-contracts
+  regex-pair matcher-template
+    producer-root source-context-grammar
+    container language
+    record-kind pattern
+    record-kind annotation
+    record-kind action-prologue
+    member prefix
+    member suffix
+    consumer "rust/src/agentic_coding/general_planner/owned_goals.rs::context_grammar_patterns"
+    consumer "js/agentic/planner/owned_goals.mjs::contextGrammarPatterns"

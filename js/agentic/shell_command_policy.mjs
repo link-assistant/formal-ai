@@ -6,6 +6,7 @@
 // its terminator), the JavaScript twin of the Rust byte range.
 
 import { carriesPolicyLead } from './crate/seed_caller_context.mjs';
+import { negatedCommandPolicy } from './shell-command-negative-ownership.mjs';
 import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
 import { isAlphanumeric, splitOnce, splitWhitespace, toAsciiLowercase, trim, trimMatches, trimStart } from './crate/rust_str.mjs';
 
@@ -56,6 +57,7 @@ export function sentenceSpans(prompt) {
 
 /** Mirrors `fn states_a_command_policy`. */
 export function statesACommandPolicy(sentence) {
+  if (negatedCommandPolicy(sentence)) return true;
   const lower = sentence.toLowerCase();
   if (!carriesPolicyLead(lower)) return false;
   const split = splitOnce(lower, ',');

@@ -135,7 +135,7 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
       return planOne(runTool, command(plan.verification_command));
     }
   }
-  if (event.kind === 'unavailable' && plan.mode !== GeneralPlanMode.RepositoryWorkItem) {
+  if (event.kind === 'unavailable') {
     return resolvedFinalAnswer(generalPlanUnverified({ ...plan, target: PLAN_PATH, verification_command: 'cat ' + PLAN_PATH }),
       FinalDisposition.Gap, 'auxiliary_event_unavailable');
   }

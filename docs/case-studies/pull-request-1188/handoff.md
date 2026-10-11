@@ -4,7 +4,23 @@ Pull request [#1188](https://github.com/link-assistant/formal-ai/pull/1188), "Bu
 
 This document is for the next agent. It covers the owner's requirements, the working method, observed branch results and remaining work. The current arrangement distinguishes committed work from finite local changes awaiting the coordinated integration push.
 
-## Current 44-commit source cut; fresh stock and push pending (2026-10-11)
+## Release-first source batch qualified; commit, push and fresh CI pending (2026-10-12)
+
+The owner reduced the immediate scope to release readiness and a finite technical-debt wrap. Actual root7244 installed26 physical source effects and completed bookkeeping with qualification.ok=true. Its original audit suite was included in seven selected files:82 tests passed, zero skipped and zeroTODO, in9.27seconds. A separate original500 test genuinely skipped, with zero passing tests; its body and Rust fixture remain exact. This skip documents an unresolved performance obligation, not a passing500 run or a blanket test waiver.
+
+Actual root7245 installed two maintained native-program producer effects, passed producer --check and the recorded static source checks, and was admitted. The registry retains all152 program bodies; only nine source-span/witness fields changed. No local native execution was performed. The selected finite source repairs are source-qualified, but source green is not hosted green. Private preflight7, public journal and scoped-coding drafts are excluded from this release-first batch.
+
+Root selected optional-defer candidate12415 with two workflow changes. The Mac restoration gate is `FORMAL_AI_PR1188_RESTORE_OPTIONAL_MAC_TESTS`; restoration requires prior verification that the original work fits its unchanged budget. Root's official repository-variable read returned status0 with `selected: []` and `total_count: 2`, so the restoration variable was absent at that observation. Ladder automatic/checks runs are deferred; scheduled and explicit manual benchmark execution keep their work. These two changes and deletion of an ephemeral generation-observation output are still prospective alongside these documents until root records their guarded effects. No native artifact or core Rust test is skipped by this documentation.
+
+The observed committed cut remains95998 with46 commits beyond the earlier dfe9 cut; the new working-source effects are not yet a newer committed or pushed head. Hosted CI at exact95998 has235 terminal jobs:170 success,36 failure,28 skipped and one cancelled. Fresh CI for the next head is pending its commit and push. Further narrowly scoped fixes may be needed after that run; no completion promise, merge, registry, signing, credential, native or publication outcome is asserted.
+
+All genuine failure history stays authoritative:7233 failed after28 effects,7234 qualified its six-source correction,7235 retained four head/status records plus13 gates (11 passing,two failing) with zero effects,7236 failed after19 effects at package mirroring,7237 after two at readability,7238 after three at the worker producer, and7241 after three at diff checking. Missing7239 qualification is not a success. Full raw/source inverses remain preserved; no new archive partition loop is required for this scope. All prior KnownLoss disclosures remain unchanged.
+
+Acceptance remains153 active rows with30 unfinished:123 recorded evidence claims,29 partial and one not delivered. Original40 coding acceptance remains zero. Specification inventory remains221 carried/961 unsupported/1182 identities. Additional ordinary pilot12318 passed its oracle, while self-coding pilot12319 failed; both have original40 credit zero and provider cost Unknown. The separate host22 success does not erase the original500 timeout.
+
+[Release-readiness technical debt](release-readiness-technical-debt.md) records exact restoration gates and deferred acceptance. Root alone finishes the finite guarded installation, checks, commit and push. Keep at least two exclusive FormalAI-only lanes and continuous single-owner CI monitoring; stop optional features and pilots from holding the release-first barrier. Scale genuine original small tasks with independent useful-output and refusal oracles before larger work; no padding, bytes-as-tokens or guaranteed cost claims. Supplied controllers and these documents receive zero autonomy credit.
+
+## Historical 44-commit source cut; earlier stock and push pending (2026-10-11)
 
 The committed source cut is `af4dfa9056e55991ddb5354ce58620ecf070b58f`, 44 local commits beyond the last pushed cut. Actual Formal AI7206 completed the latest commit and clean readback; independent8391 reviewed it. Actual7204 installed three L04 source repairs, preserving the unchanged32-leaf binding assertion and20 nearest tests, with all17 configured checks passing. Source qualification does not replace fresh stock or hosted execution.
 

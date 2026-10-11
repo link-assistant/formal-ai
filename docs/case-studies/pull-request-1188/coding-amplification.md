@@ -64,6 +64,35 @@ Cache learned contracts and reusable knowledge with valid source identities.
 Amortized benefit must state its repeated-task cohort and account for initial
 learning and repair costs; tool-call counts alone do not establish savings.
 
+## Increasing task scope
+
+Begin with small tasks in a declared task family. Graduate that family to larger
+composition tasks only after representative, predeclared ordinary coding and
+self-coding cohorts each satisfy the existing objective of at least95% independent
+acceptance over at least20 tasks in each eligible category, with recorded size
+exceptions. Preserve the original task IDs, categories, behavior oracles, held-out
+checks and every failed attempt. A successful numeric-response cohort measures
+its own calculation contract; it does not establish coding or self-coding readiness.
+Source prerequisites, applied scripts and passing instrumentation fixtures are
+also distinct from successful autonomous task delivery.
+
+Increase actual task scope or dependency composition one step at a time: move
+from an accepted single-module behavior to a related cross-file change, then to
+a larger composition only when the preceding cohort remains accepted. Keep the
+previous regressions and add independent checks for the new interfaces and
+effects. A regression feeds a general capability repair followed by the unchanged
+original request and oracle; do not rewrite a failed task into an easier member
+or expand the corpus merely to improve its score. Correct shorter repairs,
+refactoring, deletion and translation retain their unrestricted size relation.
+
+For every step, retain full retries and all observed original instructions,
+retrieved source, literal payloads, tool results and setup or cache costs. Report
+independently accepted useful net effects separately from literal reuse, padding,
+generated mirrors and supplied repair work. Complete model input, provider usage
+and monetary cost remain Unknown when genuine receipts do not establish them.
+Smaller requests or measured source bytes alone do not prove token savings,
+cheapness or a useful expansion.
+
 ## Current observation
 
 The existing broad self-coding suite has three passing fixture controls and zero of seven requested feature-composition checks. No feature was synthesized by that attempt. In T2639 the new

@@ -1,6 +1,9 @@
 use regex::Regex;
 
 pub(super) fn is_regex_template(content: &str, index: usize, keyword: &str, value: &str) -> bool {
+    if declared_regex_pair(content, index, keyword, value) {
+        return true;
+    }
     let mut parents: Vec<(usize, &str)> = Vec::new();
     for line in content.lines().take(index) {
         let code = super::strip_lino_comment(line).trim();
@@ -105,4 +108,216 @@ fn pipe_value_classification_keeps_regex_and_reference_roles_distinct() {
             "{keyword} {value} under {parent}"
         );
     }
+}
+
+fn declared_regex_pair(content: &str, index: usize, keyword: &str, value: &str) -> bool {
+    let schema_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../data/meta/technical-scalar-contracts.lino");
+    let Ok(schema_text) = std::fs::read_to_string(schema_path) else {
+        return false;
+    };
+    if links_notation::parse_lino(schema_text.trim()).is_err()
+        || links_notation::parse_lino(content.trim()).is_err()
+    {
+        return false;
+    }
+    let Ok(schema) = formal_ai::seed::parser::parse_lino_checked(&schema_text) else {
+        return false;
+    };
+    let Ok(document) = formal_ai::seed::parser::parse_lino_checked(content) else {
+        return false;
+    };
+    let Some(schema_root) = schema.children.first() else {
+        return false;
+    };
+    let Some(root) = document.children.first() else {
+        return false;
+    };
+    if schema.children.len() != 1 || document.children.len() != 1 {
+        return false;
+    }
+    let contracts = schema_root
+        .children
+        .iter()
+        .filter(|node| node.name == "regex-pair")
+        .collect::<Vec<_>>();
+    if contracts.len() != 1 || schema_root.children.len() != 1 {
+        return false;
+    }
+    let contract = contracts[0];
+    if contract.children.iter().any(|node| {
+        !node.children.is_empty()
+            || !matches!(
+                node.name.as_str(),
+                "producer-root" | "container" | "record-kind" | "member" | "consumer"
+            )
+    }) {
+        return false;
+    }
+    let mut declarations = std::collections::BTreeSet::new();
+    if contract.children.iter().any(|node| {
+        node.id.is_empty() || !declarations.insert((node.name.as_str(), node.id.as_str()))
+    }) {
+        return false;
+    }
+    let unique = |name: &str| {
+        let nodes = contract
+            .children
+            .iter()
+            .filter(|node| node.name == name)
+            .collect::<Vec<_>>();
+        (nodes.len() == 1).then(|| nodes[0].id.as_str())
+    };
+    let Some(producer) = unique("producer-root") else {
+        return false;
+    };
+    let Some(container) = unique("container") else {
+        return false;
+    };
+    let members = contract
+        .children
+        .iter()
+        .filter(|node| node.name == "member")
+        .map(|node| node.id.as_str())
+        .collect::<Vec<_>>();
+    if root.name != producer
+        || members.len() != 2
+        || members[0] == members[1]
+        || !members.contains(&keyword)
+    {
+        return false;
+    }
+    let lines = content.lines().collect::<Vec<_>>();
+    let Some(line) = lines.get(index) else {
+        return false;
+    };
+    let indentation = |line: &str| line.bytes().take_while(|byte| *byte == b' ').count();
+    let mut ancestors = Vec::<(usize, usize)>::new();
+    for (position, line) in lines.iter().enumerate().take(index) {
+        if super::strip_lino_comment(line).trim().is_empty() {
+            continue;
+        }
+        let depth = indentation(line);
+        while ancestors.last().is_some_and(|(level, _)| *level >= depth) {
+            ancestors.pop();
+        }
+        ancestors.push((depth, position));
+    }
+    let depth = indentation(line);
+    while ancestors.last().is_some_and(|(level, _)| *level >= depth) {
+        ancestors.pop();
+    }
+    if ancestors.len() != 3 {
+        return false;
+    }
+    let mut headers = Vec::new();
+    for (_, position) in &ancestors {
+        let Ok(parsed) = formal_ai::seed::parser::parse_lino_checked(
+            super::strip_lino_comment(lines[*position]).trim(),
+        ) else {
+            return false;
+        };
+        if parsed.children.len() != 1 {
+            return false;
+        }
+        headers.push(parsed.children[0].clone());
+    }
+    if headers[0].name != root.name
+        || headers[1].name != container
+        || !contract
+            .children
+            .iter()
+            .any(|node| node.name == "record-kind" && node.id == headers[2].name)
+    {
+        return false;
+    }
+    let languages = root
+        .children
+        .iter()
+        .filter(|node| node.name == container && node.id == headers[1].id)
+        .collect::<Vec<_>>();
+    if languages.len() != 1 {
+        return false;
+    }
+    let records = languages[0]
+        .children
+        .iter()
+        .filter(|node| node.name == headers[2].name && node.id == headers[2].id)
+        .collect::<Vec<_>>();
+    if records.len() != 1 || records[0].children.len() != 2 {
+        return false;
+    }
+    let selected = super::strip_lino_comment(line).trim();
+    let Ok(selected_tree) = formal_ai::seed::parser::parse_lino_checked(selected) else {
+        return false;
+    };
+    if selected_tree.children.len() != 1 || selected_tree.children[0].name != keyword {
+        return false;
+    }
+    let placeholders = Regex::new(r"\{[a-z]+(?:-[a-z]+)*\}").expect("fixed placeholder grammar");
+    for member in members {
+        let fields = records[0]
+            .children
+            .iter()
+            .filter(|node| node.name == member)
+            .collect::<Vec<_>>();
+        if fields.len() != 1 || !fields[0].children.is_empty() {
+            return false;
+        }
+        let expression = &fields[0].id;
+        if !expression.starts_with('^')
+            || !expression.ends_with('$')
+            || Regex::new(&placeholders.replace_all(expression, "(?:x)")).is_err()
+        {
+            return false;
+        }
+        let start = ancestors[2].1 + 1;
+        let end = (start..lines.len())
+            .find(|position| {
+                !super::strip_lino_comment(lines[*position])
+                    .trim()
+                    .is_empty()
+                    && indentation(lines[*position]) <= ancestors[2].0
+            })
+            .unwrap_or(lines.len());
+        let quoted = lines[start..end]
+            .iter()
+            .filter(|source| indentation(source) == depth)
+            .filter_map(|source| {
+                let code = super::strip_lino_comment(source).trim();
+                let (name, scalar) = code.split_once(char::is_whitespace)?;
+                (name == member).then_some(scalar.trim())
+            })
+            .collect::<Vec<_>>();
+        if quoted.len() != 1 || !quoted[0].starts_with('"') || !quoted[0].ends_with('"') {
+            return false;
+        }
+        if member == keyword
+            && (selected_tree.children[0].id != *expression || value.trim() != quoted[0])
+        {
+            return false;
+        }
+    }
+    true
+}
+
+#[test]
+fn declared_regex_pairs_preserve_nontechnical_pipe_rejection() {
+    let valid = "source-context-grammar\n  language en\n    action-prologue issue\n      prefix \"^(a|b)$\"\n      suffix \"^$\"";
+    assert!(is_regex_template(valid, 3, "prefix", "\"^(a|b)$\""));
+    for invalid in [
+        valid.replace("source-context-grammar", "ordinary-values"),
+        valid.replace("language en", "aliases en"),
+        valid.replace("action-prologue issue", "aliases issue"),
+        valid.replace("suffix \"^$\"", "suffix ^$"),
+        valid.replace("suffix \"^$\"", "aliases \"a|b\""),
+        valid.replace("suffix \"^$\"", "prefix \"^$\""),
+        valid.replace("      suffix", "        suffix"),
+        valid.replace("^(a|b)$", "^(a|b$"),
+        valid.replace("^(a|b)$", "a|b"),
+    ] {
+        assert!(!is_regex_template(&invalid, 3, "prefix", "\"^(a|b)$\""));
+    }
+    assert!(!is_regex_template(valid, 3, "aliases", "\"a|b\""));
+    assert!(!is_regex_template(valid, 3, "prefix", "\"^(x|y)$\""));
 }

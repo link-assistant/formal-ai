@@ -4,10 +4,12 @@ import {readFileSync, writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 import vm from 'node:vm';
+import {createBrowserContext} from '../js/server/worker-host.mjs';
 export const OUTPUT = 'js/worker-bootstrap-responses.js';
 export const SOURCE = 'data/seed/multilingual-responses.lino';
 export function renderBootstrap(loader, seed) {
-  const context = vm.createContext({console});
+  // The maintained loader completes the genuine earliest producer before parser evaluation.
+  const context = createBrowserContext({console});
   context.self = context;
   vm.runInContext(loader, context);
   const api = context.FormalAiSeed;

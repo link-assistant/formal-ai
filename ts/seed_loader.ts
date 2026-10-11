@@ -14,6 +14,12 @@
 // The loader is intentionally minimal: indentation-based, untyped, and shared
 // between the main thread (`window.FormalAiSeed`) and the worker
 // (`self.FormalAiSeed`) without any bundler step.
+// Captured before worker module evaluation or client task exposure.
+// This readonly lexical primitive grants no seed or operation ownership.
+const formalAiWorkerPrimordials = Object.freeze({
+  ownDescriptor: Object.getOwnPropertyDescriptor,
+  freeze: Object.freeze
+});
 (function (global) {
   "use strict";
   // The seed inventory lives in `seed-files.js`, generated from
@@ -129,10 +135,12 @@
     } else {
       return raw;
     }
-    return raw
+    return (parserRegexEffect !== null ? parserOwnedRegexOperation(/\s+/,"split",raw
+      .slice(prefix.length)
+      .trim(),"\\s+","") : raw
       .slice(prefix.length)
       .trim()
-      .split(/\s+/)
+      .split(/\s+/))
       .filter(Boolean)
       .map(function (part) {
         return String.fromCodePoint(parseInt(part, 10) || 0);
@@ -161,7 +169,7 @@
         continue;
       }
       if (ch === "#" && previousWasSpace) return line.slice(0, i);
-      previousWasSpace = /\s/.test(ch);
+      previousWasSpace = (parserRegexEffect !== null ? parserOwnedRegexOperation(/\s/,"test",ch,"\\s","") : /\s/.test(ch));
     }
     return line;
   }
@@ -182,13 +190,13 @@
   // form. Mirrors `expand_concise_lexemes` in rust/src/seed/parser.rs.
   var CONCISE_LEXEME_HINT = /^[ \t]*(?:lexeme[ \t]+[^\s#]+[ \t]+[^\s#]|words[ \t]+[^\s#])/m;
   function leadingSpaces(line) {
-    return /^ */.exec(line)[0].length;
+    return (parserRegexEffect !== null ? parserOwnedRegexOperation(/^ */,"exec",line,"^ *","") : /^ */.exec(line))[0].length;
   }
   function spaces(count) {
     return new Array(count + 1).join(" ");
   }
   function isBlankLine(line) {
-    return /^\s*$/.test(stripComment(line));
+    return (parserRegexEffect !== null ? parserOwnedRegexOperation(/^\s*$/,"test",stripComment(line),"^\\s*$","") : /^\s*$/.test(stripComment(line)));
   }
   // The word tokens of a comment-free line tail: quoted words keep their
   // quotes (so `text <word>` reads them exactly as written), bare words end
@@ -198,7 +206,7 @@
     var i = 0;
     while (i < rest.length) {
       var ch = rest[i];
-      if (/\s/.test(ch)) {
+      if ((parserRegexEffect !== null ? parserOwnedRegexOperation(/\s/,"test",ch,"\\s","") : /\s/.test(ch))) {
         i += 1;
         continue;
       }
@@ -218,7 +226,7 @@
           }
         }
       } else {
-        while (i < rest.length && !/\s/.test(rest[i])) i += 1;
+        while (i < rest.length && !(parserRegexEffect !== null ? parserOwnedRegexOperation(/\s/,"test",rest[i],"\\s","") : /\s/.test(rest[i]))) i += 1;
       }
       tokens.push(rest.slice(start, i));
     }
@@ -249,13 +257,13 @@
   }
   function expandConciseLexemes(text) {
     var source = String(text || "");
-    if (!CONCISE_LEXEME_HINT.test(source)) return source;
-    var lines = source.split(/\r?\n/);
+    if (!(parserRegexEffect !== null ? parserOwnedRegexOperation(CONCISE_LEXEME_HINT,"test",source,"^[ \\t]*(?:lexeme[ \\t]+[^\\s#]+[ \\t]+[^\\s#]|words[ \\t]+[^\\s#])","m") : CONCISE_LEXEME_HINT.test(source))) return source;
+    var lines = (parserRegexEffect !== null ? parserOwnedRegexOperation(/\r?\n/,"split",source,"\\r?\\n","") : source.split(/\r?\n/));
     var out = [];
     var i = 0;
     while (i < lines.length) {
       var line = lines[i];
-      var head = isBlankLine(line) ? null : /^( *)lexeme[ \t]+([^\s#]+)(.*)$/.exec(stripComment(line));
+      var head = isBlankLine(line) ? null : (parserRegexEffect !== null ? parserOwnedRegexOperation(/^( *)lexeme[ \t]+([^\s#]+)(.*)$/,"exec",stripComment(line),"^( *)lexeme[ \\t]+([^\\s#]+)(.*)$","") : /^( *)lexeme[ \t]+([^\s#]+)(.*)$/.exec(stripComment(line)));
       if (!head) {
         out.push(line);
         i += 1;
@@ -268,7 +276,7 @@
       var inline = wordTokens(head[3]);
       var children = childBlocks(lines, i + 1, end);
       var isWords = function (child) {
-        return /^words(?:\s|$)/.test(child.content);
+        return (parserRegexEffect !== null ? parserOwnedRegexOperation(/^words(?:\s|$)/,"test",child.content,"^words(?:\\s|$)","") : /^words(?:\s|$)/.test(child.content));
       };
       if (inline.length === 0 && !children.some(isWords)) {
         out.push(line);
@@ -277,7 +285,7 @@
       }
       var step = children.length > 0 && children[0].depth > indent ? children[0].depth - indent : 2;
       var fields = children.filter(function (child) {
-        return !isWords(child) && !/^surface(?:\s|$)/.test(child.content);
+        return !isWords(child) && !(parserRegexEffect !== null ? parserOwnedRegexOperation(/^surface(?:\s|$)/,"test",child.content,"^surface(?:\\s|$)","") : /^surface(?:\s|$)/.test(child.content));
       });
       var emitWord = function (word) {
         out.push(spaces(indent + step) + "surface");
@@ -291,7 +299,7 @@
       children.forEach(function (child) {
         if (isWords(child)) {
           wordTokens(child.content.slice("words".length)).forEach(emitWord);
-        } else if (/^surface(?:\s|$)/.test(child.content)) {
+        } else if ((parserRegexEffect !== null ? parserOwnedRegexOperation(/^surface(?:\s|$)/,"test",child.content,"^surface(?:\\s|$)","") : /^surface(?:\s|$)/.test(child.content))) {
           Array.prototype.push.apply(out, reindented(child, indent + step));
         }
       });
@@ -312,18 +320,18 @@
     if (!containsMarker(root)) return root; if (!root.name) { root.children.forEach(lowerSharedLexemeFields); return root; }
     if (root.name !== "meanings") throw new Error("shared fields require meanings root"); var copy = function (node) {
       return Object.assign({}, node, { children: node.children.map(copy) }); }; root.children.forEach(function (meaning) {
-      var owner = meaning.name === "meaning" ? meaning.id : meaning.name; if (containsMarker(meaning) && (!/^[a-z][a-z0-9_-]*$/.test(owner)
+      var owner = meaning.name === "meaning" ? meaning.id : meaning.name; if (containsMarker(meaning) && (!(parserRegexEffect !== null ? parserOwnedRegexOperation(/^[a-z][a-z0-9_-]*$/,"test",owner,"^[a-z][a-z0-9_-]*$","") : /^[a-z][a-z0-9_-]*$/.test(owner))
         || ["meanings", "lexeme", "surface", declarationName, referenceName, "part_of_speech", "grammatical_number"].indexOf(meaning.name) >= 0)) {
         throw new Error("reserved or invalid shared field owner"); } var declarations = meaning.children.filter(function (node) { return node.name === declarationName; });
       if (declarations.length === 0) { if (containsMarker(meaning)) throw new Error("unresolved shared fields"); return; }
       if (declarations.length !== 1) throw new Error("duplicate shared declaration"); var declaration = declarations[0];
-      if (!/^[a-z][a-z0-9_-]*$/.test(declaration.id)) throw new Error("shared declaration requires identity"); var fields = declaration.children;
+      if (!(parserRegexEffect !== null ? parserOwnedRegexOperation(/^[a-z][a-z0-9_-]*$/,"test",declaration.id,"^[a-z][a-z0-9_-]*$","") : /^[a-z][a-z0-9_-]*$/.test(declaration.id))) throw new Error("shared declaration requires identity"); var fields = declaration.children;
       var names = fields.map(function (field) { return field.name; }); if (fields.length === 0 || new Set(names).size !== names.length) {
         throw new Error("empty or duplicate shared fields"); } fields.forEach(function (field) { if (["part_of_speech", "grammatical_number"].indexOf(field.name) < 0
-          || !/^[a-z][a-z0-9_-]*$/.test(field.id) || field.children.length > 0) { throw new Error("unknown, nested or effect-bearing shared field"); } });
+          || !(parserRegexEffect !== null ? parserOwnedRegexOperation(/^[a-z][a-z0-9_-]*$/,"test",field.id,"^[a-z][a-z0-9_-]*$","") : /^[a-z][a-z0-9_-]*$/.test(field.id)) || field.children.length > 0) { throw new Error("unknown, nested or effect-bearing shared field"); } });
       var lexemes = meaning.children.filter(function (node) { return node.name === "lexeme"; });
       if (lexemes.length < 2) throw new Error("shared fields require multiple languages"); var languages = lexemes.map(function (node) { return node.id; });
-      if (languages.some(function (language) { return !/^[a-z][a-z0-9_-]*$/.test(language); })
+      if (languages.some(function (language) { return !(parserRegexEffect !== null ? parserOwnedRegexOperation(/^[a-z][a-z0-9_-]*$/,"test",language,"^[a-z][a-z0-9_-]*$","") : /^[a-z][a-z0-9_-]*$/.test(language)); })
         || new Set(languages).size !== languages.length) throw new Error("duplicate language"); meaning.children.forEach(function (node) {
         if (node !== declaration && node.name !== "lexeme" && containsMarker(node)) { throw new Error("invalid shared declaration scope"); } }); lexemes.forEach(function (lexeme) {
         if (lexeme.children.length === 0) throw new Error("shared lexeme has no surfaces"); lexeme.children.forEach(function (surface) {
@@ -349,26 +357,155 @@
           lines: fields.map(function (line) { return isBlankLine(line) ? line : spaces(difference) + line; }) }); } }
     replacements.sort(function (left, right) { return right.start - left.start; }); replacements.forEach(function (replacement) {
       lines.splice.apply(lines, [replacement.start, replacement.end - replacement.start].concat(replacement.lines)); }); return lines.join("\n"); }
-  function validateSharedLexemeSource(text) { var lines = String(text || "").split(/\r?\n/); var hasShared = lines.some(function (line) {
-      return /^(shared-lexeme-fields|use-lexeme-fields)(?:\s|$)/.test(stripComment(line).trim()); }); if (!hasShared) return; var stack = []; lines.forEach(function (line) {
-      if (isBlankLine(line)) return; if (/^[ \t]*\t/.test(line)) throw new Error("shared source indentation requires spaces"); var content = stripComment(line).trim();
-      var indent = leadingSpaces(line); while (stack.length && stack[stack.length - 1].indent >= indent) stack.pop(); var head = content.split(/\s+/)[0];
+  function validateSharedLexemeSource(text) { var lines = (parserRegexEffect !== null ? parserOwnedRegexOperation(/\r?\n/,"split",String(text || ""),"\\r?\\n","") : String(text || "").split(/\r?\n/)); var hasShared = lines.some(function (line) {
+      return (parserRegexEffect !== null ? parserOwnedRegexOperation(/^(shared-lexeme-fields|use-lexeme-fields)(?:\s|$)/,
+    "test",
+    stripComment(line).trim(),
+    "^(shared-lexeme-fields|use-lexeme-fields)(?:\\s|$)",
+    "") : /^(shared-lexeme-fields|use-lexeme-fields)(?:\s|$)/.test(stripComment(line).trim()));
+     });
+     if (!hasShared) return;
+     var stack = [];
+     lines.forEach(function (line) {
+      if (isBlankLine(line)) return; if ((parserRegexEffect !== null ? parserOwnedRegexOperation(/^[ \t]*\t/,"test",line,"^[ \\t]*\\t","") : /^[ \t]*\t/.test(line))) throw new Error("shared source indentation requires spaces"); var content = stripComment(line).trim();
+      var indent = leadingSpaces(line); while (stack.length && stack[stack.length - 1].indent >= indent) stack.pop(); var head = (parserRegexEffect !== null ? parserOwnedRegexOperation(/\s+/,"split",content,"\\s+","") : content.split(/\s+/))[0];
       var parent = stack.length ? stack[stack.length - 1].head : ""; if (head === "shared-lexeme-fields" || head === "use-lexeme-fields") {
-        if (!/^(shared-lexeme-fields|use-lexeme-fields) +[a-z][a-z0-9_-]*$/.test(content)) { throw new Error("invalid shared source identity"); }
+        if (!(parserRegexEffect !== null ? parserOwnedRegexOperation(/^(shared-lexeme-fields|use-lexeme-fields) +[a-z][a-z0-9_-]*$/,"test",content,"^(shared-lexeme-fields|use-lexeme-fields) +[a-z][a-z0-9_-]*$","") : /^(shared-lexeme-fields|use-lexeme-fields) +[a-z][a-z0-9_-]*$/.test(content))) { throw new Error("invalid shared source identity"); }
         if (head === "use-lexeme-fields" && (stack.length < 4 || parent !== "surface"
           || stack[stack.length - 2].head !== "lexeme" || stack[stack.length - 4].head !== "meanings")) {
           throw new Error("shared references require explicit surface source scope"); } } if (parent === "shared-lexeme-fields"
-        && !/^(part_of_speech|grammatical_number) +[a-z][a-z0-9_-]*$/.test(content)) { throw new Error("shared fields require bare semantic facet references"); }
+        && !(parserRegexEffect !== null ? parserOwnedRegexOperation(/^(part_of_speech|grammatical_number) +[a-z][a-z0-9_-]*$/,"test",content,"^(part_of_speech|grammatical_number) +[a-z][a-z0-9_-]*$","") : /^(part_of_speech|grammatical_number) +[a-z][a-z0-9_-]*$/.test(content))) { throw new Error("shared fields require bare semantic facet references"); }
       stack.push({ head: head, indent: indent }); }); }
+  var parserRegexEffect = null;
+  function parserOwnedRegexOperation(regex,kind,input,pattern,flags) {
+    var result;
+    if(kind==='test') result=regex.test(input);
+    else if(kind==='exec') result=regex.exec(input);
+    else result=input[kind](regex);
+    var success=(kind==='test' ? result===true : kind==='exec'||kind==='match' ? result!==null : kind==='search' ? result>=0 : result.length>1);
+    if(typeof input!=='string') parserRegexEffect.unsupported=true;
+    else if(success) parserRegexEffect.last={kind:kind,input:input,pattern:pattern,flags:flags};
+    return result;
+  }
+  function replayParserRegexEffect(effect) {
+    var regex=new RegExp(effect.pattern,effect.flags);
+    if(effect.kind==='test') regex.test(effect.input);
+    else if(effect.kind==='exec') regex.exec(effect.input);
+    else effect.input[effect.kind](regex);
+  }
+  // The actual loader must evaluate the private lexical bootstrap first.
+  // Native RegExp observable state is part of the memo eligibility contract.
+  var parserMemoSnapshot = null;
+  var parsedTextMemo = (function () {
+    var profile = formalAiParserCacheBootstrap;
+    var entries = [], retainedCharacters = 0, retainedNodes = 0, retainedTextBytes = 0, retainedPayloadBytes = 0;
+    var maxEntries = 128, maxTextBytes = 4194304, maxPayloadBytes = 16777216, maxNodes = 65536;
+    function utf8Bytes(value) {
+      var bytes=0;
+      for(var at=0;at<value.length;at++) {
+        var point=value.charCodeAt(at);
+        if(point<128) bytes++;
+        else if(point<2048) bytes+=2;
+        else if(point>=55296&&point<=56319&&at+1<value.length&&value.charCodeAt(at+1)>=56320&&value.charCodeAt(at+1)<=57343) {bytes+=4;at++;}
+        else bytes+=3;
+      }
+      return bytes;
+    }
+    var counters = {hits:0, misses:0, bypasses:0}, diagnosticKeys=[], diagnosticCharacters=0, diagnosticOmitted=0, evictions=0;
+    function note(input,kind,rootName) {
+      if(typeof input!=='string' || input.length>1048576) {diagnosticOmitted++;return;}
+      var row=null;
+      for(var at=0;at<diagnosticKeys.length;at++) if(diagnosticKeys[at].text===input) {row=diagnosticKeys[at];break;}
+      if(row===null) {
+        if(diagnosticKeys.length>=256 || diagnosticCharacters+input.length>4194304) {diagnosticOmitted++;return;}
+        row={text:input,hits:0,misses:0,bypasses:0,evictions:0,rootName:''};diagnosticKeys[diagnosticKeys.length]=row;diagnosticCharacters+=input.length;
+      }
+      if(kind!=='stored') row[kind]++;if(typeof rootName==='string') row.rootName=rootName;
+    }
+    if (profile.intact()) {
+      var freezeSnapshot = Object.freeze;
+      parserMemoSnapshot = function () {
+        var inputs=[];
+        for(var at=0;at<diagnosticKeys.length;at++) {var row=diagnosticKeys[at];inputs[at]=freezeSnapshot({text:row.text,hits:row.hits,misses:row.misses,bypasses:row.bypasses,evictions:row.evictions,rootName:row.rootName});}
+        return freezeSnapshot({hits:counters.hits,
+    misses:counters.misses,
+    bypasses:counters.bypasses,
+    evictions:evictions,
+    entries:entries.length,
+    retainedCharacters:retainedCharacters,
+    retainedNodes:retainedNodes,
+    retainedTextBytes:retainedTextBytes,
+    retainedPayloadBytes:retainedPayloadBytes,
+    maxEntries:maxEntries,
+    maxTextBytes:maxTextBytes,
+    maxPayloadBytes:maxPayloadBytes,
+    diagnosticOmitted:diagnosticOmitted,
+    inputs:freezeSnapshot(inputs)});
+
+      };
+    }
+    function copy(node,depth) {
+      if(depth>512) throw new Error('ParserMemoDepthBound');
+      var children=[];
+      for(var at=0;at<node.children.length;at++) children[at]=copy(node.children[at],depth+1);
+      return {name:node.name,id:node.id,value:node.value,children:children,indent:node.indent};
+    }
+    function stateMatches(left,right) {
+      if(!left || !right || left.length!==right.length) return false;
+      for(var at=0;at<left.length;at++) if(left[at]!==right[at]) return false;
+      return true;
+    }
+    return function(input) {
+      if(typeof input!=='string' || input.length>1048576 || !profile.intact()) {counters.bypasses++;note(input,"bypasses",null);return parseLinoUncached(input);}
+      var currentState=profile.regexState();
+      for(var at=entries.length-1;at>=0;at--) {
+        var entry=entries[at];
+        if(input===entry.text && (entry.effect!==null || stateMatches(currentState,entry.regexState))) {
+          if(entry.effect!==null) replayParserRegexEffect(entry.effect);
+          if(profile.intact() && stateMatches(profile.regexState(),entry.regexState)) {counters.hits++;note(input,"hits",entry.tree.name);
+            for(var move=at;move<entries.length-1;move++) entries[move]=entries[move+1];
+            entries[entries.length-1]=entry;return copy(entry.tree,0);}
+          break;
+        }
+      }
+      counters.misses++;note(input,"misses",null);
+      var previousEffect=parserRegexEffect, observedEffect={last:null,unsupported:false}, result;
+      parserRegexEffect=observedEffect;
+      try {result=parseLinoUncached(input);} finally {parserRegexEffect=previousEffect;}
+      if(profile.intact()) {
+        try {
+          var nodes=0, characters=input.length+(observedEffect.last===null?0:observedEffect.last.input.length);
+          function count(node,depth) {
+            if(depth>512 || ++nodes>maxNodes) throw new Error('ParserMemoStorageBound');
+            characters+=node.name.length+node.id.length+node.value.length;
+            for(var at=0;at<node.children.length;at++) count(node.children[at],depth+1);
+          }
+          count(result,0);
+          var stored=copy(result,0), textBytes=utf8Bytes(input)+(observedEffect.last===null?0:utf8Bytes(observedEffect.last.input)), payloadBytes=utf8Bytes(JSON.stringify(stored));
+          if(textBytes>maxTextBytes || payloadBytes>maxPayloadBytes) throw new Error('ParserMemoByteBound');
+          while(entries.length && (entries.length>=maxEntries || retainedTextBytes+textBytes>maxTextBytes || retainedPayloadBytes+payloadBytes>maxPayloadBytes || retainedNodes+nodes>maxNodes)) {
+            var removed=entries.shift();evictions++;note(removed.text,"evictions",removed.tree.name);retainedCharacters-=removed.characters;retainedNodes-=removed.nodes;retainedTextBytes-=removed.textBytes;retainedPayloadBytes-=removed.payloadBytes;
+          }
+          if(observedEffect.unsupported) throw new Error("UnknownParserRegexEffect");
+          entries.push({text:input,tree:stored,regexState:profile.regexState(),effect:observedEffect.last,nodes:nodes,characters:characters,textBytes:textBytes,payloadBytes:payloadBytes});
+          retainedCharacters+=characters;retainedNodes+=nodes;retainedTextBytes+=textBytes;retainedPayloadBytes+=payloadBytes;note(input,"stored",result.name);
+        } catch(_) { /* Unknown or oversized trees are not retained. */ }
+      }
+      return result;
+    };
+  })();
   function parseLino(text) {
+    return parsedTextMemo ? parsedTextMemo(text) : parseLinoUncached(text);
+  }
+  function parseLinoUncached(text) {
     validateSharedLexemeSource(text);
-    var lines = expandConciseLexemes(text).split(/\r?\n/);
+    var lines = (parserRegexEffect !== null ? parserOwnedRegexOperation(/\r?\n/,"split",expandConciseLexemes(text),"\\r?\\n","") : expandConciseLexemes(text).split(/\r?\n/));
     var root = { name: "", id: "", value: "", children: [], indent: -1 };
     var stack = [root];
     for (var i = 0; i < lines.length; i += 1) {
       var line = lines[i];
-      if (!line || /^\s*$/.test(stripComment(line))) continue;
-      var indentMatch = /^(\s*)/.exec(line);
+      if (!line || (parserRegexEffect !== null ? parserOwnedRegexOperation(/^\s*$/,"test",stripComment(line),"^\\s*$","") : /^\s*$/.test(stripComment(line)))) continue;
+      var indentMatch = (parserRegexEffect !== null ? parserOwnedRegexOperation(/^(\s*)/,"exec",line,"^(\\s*)","") : /^(\s*)/.exec(line));
       var indent = indentMatch ? indentMatch[1].length : 0;
       var content = stripComment(line.slice(indent)).trim();
       // Walk back up to find the parent for this indent.
@@ -391,14 +528,14 @@
       indent: indent,
     };
     var colon = content.indexOf(":");
-    var firstSpace = content.search(/\s/);
+    var firstSpace = (parserRegexEffect !== null ? parserOwnedRegexOperation(/\s/,"search",content,"\\s","") : content.search(/\s/));
     if (colon !== -1 && (firstSpace === -1 || colon < firstSpace)) {
       node.name = content.slice(0, colon).trim();
       node.id = decodeRawReference(content.slice(colon + 1).trim());
       node.value = node.id;
       return node;
     }
-    var parts = /^(\S+)(?:\s+([\s\S]*))?$/.exec(content.trim());
+    var parts = (parserRegexEffect !== null ? parserOwnedRegexOperation(/^(\S+)(?:\s+([\s\S]*))?$/,"exec",content.trim(),"^(\\S+)(?:\\s+([\\s\\S]*))?$","") : /^(\S+)(?:\s+([\s\S]*))?$/.exec(content.trim()));
     if (!parts) return node;
     node.name = parts[1] || "";
     var rest = (parts[2] || "").trim();
@@ -1379,4 +1516,6 @@
     },
     isWorker: isWorker(),
   };
+  // Completion value is private loader observation only; public parser API is unchanged.
+  return parserMemoSnapshot;
 })(typeof self !== "undefined" ? self : globalThis);

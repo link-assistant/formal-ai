@@ -4,11 +4,22 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { resolvePackageRelease, productionPackageObserver } from './resolve-package-release.mjs';
 import { selectCompletedSource } from './release-extension-selection.mjs';
+import {dispatchedProducer, awaitCompletedProducer} from './release-extension-dispatch.mjs';
 import { createReadonlyGithub,
  transferFromAuthenticatedGithub } from './release-extension-github.mjs';
 export function resolveExtensionRelease(environment,
  event,
  github) {
+  const producer = dispatchedProducer(environment, event);
+  if (producer) {
+    const selected = selectCompletedSource(producer, github);
+    return {tag: selected.tag, publish: true, build: true};
+  }
+  if (environment.EVENT === 'push') {
+    assert.equal(environment.REFERENCE, 'refs/heads/main');
+    assert.match(environment.REPOSITORY, /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u);
+    return {tag: '', publish: false, build: true};
+  }
   if (environment.EVENT === 'workflow_run' &&
  event.workflow_run?.name === 'Desktop Release') {
     assert.equal(event.workflow_run.head_branch,
@@ -105,6 +116,11 @@ export function receiveExtension(environment,
     assert.equal(event.workflow_run.run_attempt,
  run.run_attempt);
   }
+  const dispatched = dispatchedProducer(environment, event);
+  if (dispatched) {
+    assert.equal(dispatched.runId, receipt.producer_run);
+    assert.equal(dispatched.attempt, String(run.run_attempt));
+  }
   const selected = selectCompletedSource({
     repository,
 
@@ -177,7 +193,9 @@ export function main(arguments_,
     deadline: Date.now() + (arguments_[0] === 'resolve' ? 170000 : 15 * 60 * 1000)
   });
   if (arguments_[0] === 'resolve') {
-    const sourceGithub = environment.EVENT === 'workflow_run' && event.workflow_run?.name === 'Desktop Release'
+    const dispatched = dispatchedProducer(environment, event);
+    if (dispatched) awaitCompletedProducer(dispatched, github);
+    const sourceGithub = dispatched || environment.EVENT === 'workflow_run' && event.workflow_run?.name === 'Desktop Release'
       ? github : {...github, json: productionPackageObserver(environment, github.json)};
     const result = resolveExtensionRelease(environment,
  event,

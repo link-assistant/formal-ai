@@ -149,6 +149,10 @@ pub fn before_target(prompt: &str, tools: &[&str]) -> (Vec<ChatMessage>, Planned
             }));
         } else if read_failed {
             observed.is_error = true;
+            observed.source_read = Some(serde_json::json!({
+                "path": PLAN_PATH, "success": false, "complete": false, "format": "raw",
+                "error_code": "ENOENT"
+            }));
         }
     }
     panic!("auxiliary setup exceeded its three-transition bound");

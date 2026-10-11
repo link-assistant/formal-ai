@@ -124,6 +124,47 @@ use crate::translation::{
     detect_source_language, detect_target_language, extract_unquoted_translation_surface,
 };
 
+// Twin of numericCalculationResponse in the maintained worker arithmetic handler.
+fn numeric_calculation_response<'a>(
+    prompt: &str,
+    expression: &str,
+    formatted: &'a str,
+) -> Option<&'a str> {
+    static NUMERIC: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| {
+        regex::Regex::new(r"^-?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?$")
+            .expect("valid scalar numeric grammar")
+    });
+    if !NUMERIC.is_match(formatted) {
+        return None;
+    }
+    let request = prompt.trim();
+    let (prefix, clause) = request.rsplit_once(". ")?;
+    let clause = clause
+        .strip_suffix('.')
+        .unwrap_or(clause)
+        .trim()
+        .to_lowercase();
+    let lexicon = crate::seed::lexicon();
+    if !lexicon
+        .words_for_role("numeric_response_only_clause")
+        .contains(&clause)
+    {
+        return None;
+    }
+    let operand = expression.trim().to_lowercase();
+    let prefix = prefix.trim().to_lowercase();
+    let complete_operand = prefix == operand
+        || lexicon
+            .words_for_role("calculation_request_cue")
+            .iter()
+            .any(|cue| {
+                prefix
+                    .strip_prefix(&format!("{cue} "))
+                    .is_some_and(|tail| tail.trim() == operand)
+            });
+    complete_operand.then_some(formatted)
+}
+
 pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     if let Some(answer) = calculator_rate::try_calculator_rate_basis(prompt, log) {
         return Some(answer);
@@ -190,7 +231,15 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
                         "Therefore, there are {formatted} {label} in total."
                     ));
                 }
-                let body = sections.join("\n\n");
+                let derivation_body = sections.join("\n\n");
+                let body = if let Some(numeric) =
+                    numeric_calculation_response(prompt, &expression, &formatted)
+                {
+                    log.append("calculation:derivation", derivation_body);
+                    numeric.to_owned()
+                } else {
+                    derivation_body
+                };
                 log.append("calculation", body.clone());
                 return Some(finalize_simple(
                     prompt,
@@ -703,6 +752,21 @@ pub fn try_write_script(
         return None;
     }
     let program = hello_world_program_by_alias(normalized)?;
+    if crate::coding::operand_program::program_task_operand(prompt).is_some() {
+        let task = crate::coding::operand_program::operand_task(prompt)?;
+        let mut answer = crate::coding::operand_program::try_write_operand_program(
+            prompt,
+            Some(task.slug),
+            Some(program.language.slug),
+            crate::language::detect(prompt),
+            log,
+        )?;
+        answer.intent = format!("write_script_{}", program.language.slug);
+        return Some(answer);
+    }
+    if crate::coding::operand_program::program_task_print_claim(prompt) {
+        return None;
+    }
     let body = format!(
         "Here is a minimal {} script:\n\n```{}\n{}\n```\n\n{}",
         program.language.name,

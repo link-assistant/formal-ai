@@ -246,6 +246,15 @@ function generalizeCodeExamples(examples) {
  * @param {string} targetLanguage
  * @returns {{ok: object}|{error: {kind: string, language: string}}}
  */
+function codeExampleEscapeForQuote(literal, quote) {
+  let escaped = "";
+  for (const character of literal) {
+    if (character === "\\" || character === quote) escaped += "\\";
+    escaped += character;
+  }
+  return escaped;
+}
+
 function recomposeCodeExample(procedure, bindings, targetLanguage) {
   const refuse = (kind) => ({ error: { kind: kind, language: targetLanguage } });
   const bound = bindings || {};
@@ -261,11 +270,7 @@ function recomposeCodeExample(procedure, bindings, targetLanguage) {
   const literal = bound.output_literal !== undefined ? bound.output_literal : perLanguage("output_literal");
   if (literal === undefined) return refuse("unbound_output_literal");
   const quote = body.charAt(slotAt - 1);
-  let escaped = "";
-  for (const character of literal) {
-    if (character === "\\" || character === quote) escaped += "\\";
-    escaped += character;
-  }
+  const escaped = codeExampleEscapeForQuote(literal, quote);
   return {
     ok: {
       languageSlug: targetLanguage,
@@ -561,8 +566,10 @@ function rediscoverDocumentedProgram(task, language, output) {
   if (!recomposed) return reject("no_program_body");
   const call = best.node.parts.find((part) => part.kind === "output_operation").sourceText;
   const check = decomposeCodeExample(recomposed.source, language, [], best.capture.url).ok;
+  const slotAt = best.node.programBody.indexOf(CODE_EXAMPLE_LITERAL_SLOT);
+  const expectedSource = codeExampleEscapeForQuote(expected, best.node.programBody.charAt(slotAt - 1));
   const verified = Boolean(check) && check.parts.some((part) => part.kind === "output_operation" && part.sourceText === call)
-    && check.parts.some((part) => part.kind === "string_literal" && part.sourceText === expected);
+    && check.parts.some((part) => part.kind === "string_literal" && part.sourceText === expectedSource);
   if (!verified) return reject("verification");
   const languageInfo = typeof WRITE_PROGRAM_LANGUAGES === "object" ? WRITE_PROGRAM_LANGUAGES[language] : null;
   const contract = documentedRunContract(language, languageInfo || null, recomposed.source, captures);

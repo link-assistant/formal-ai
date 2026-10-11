@@ -149,7 +149,11 @@ export function classifyFailures(failures) {
   for (const failure of failures) {
     const numericMarker = /^\d{3}$/.test(failure.marker ?? '');
     const statusInDetail = /rejected status code/i.test(failure.detail ?? '');
-    if (numericMarker || statusInDetail) {
+    // RFC 9110 section 15.5.9 permits repeating HTTP 408. It is not accepted:
+    // only a later response in ACCEPTED_STATUS can recover the URL.
+    const status = numericMarker ? Number(failure.marker) :
+      Number(/rejected status code:\s*(\d{3})/iu.exec(failure.detail ?? '')?.[1]);
+    if ((numericMarker || statusInDetail) && status !== 408) {
       answered.push(failure);
     } else {
       unanswered.push(failure);
@@ -171,7 +175,7 @@ export function classifyFailures(failures) {
  *
  * @param {string} url
  * @param {{fetchImpl?: typeof fetch, timeoutMs?: number, accept?: {from: number, to: number}[]}} [options]
- * @returns {Promise<{outcome: 'alive'|'rejected'|'unreachable', detail: string}>}
+ * @returns {Promise<{outcome: 'alive'|'rejected'|'unreachable'|'retryable', detail: string}>}
  */
 export async function probe(url, options = {}) {
   const {
@@ -194,6 +198,9 @@ export async function probe(url, options = {}) {
     // being held open for the rest of the run.
     await response.body?.cancel?.().catch(() => {});
 
+    if (response.status === 408) {
+      return { outcome: 'retryable', detail: 'HTTP 408' };
+    }
     return isAccepted(response.status, accept)
       ? { outcome: 'alive', detail: `HTTP ${response.status}` }
       : { outcome: 'rejected', detail: `HTTP ${response.status}` };
@@ -271,7 +278,7 @@ export async function recheckAll(urls, options = {}) {
       record.attempts = round;
       log(`  attempt ${round}: ${url} -> ${result.outcome} (${result.detail})`);
 
-      if (result.outcome === 'unreachable') {
+      if (result.outcome === 'unreachable' || result.outcome === 'retryable') {
         stillPending.push(url);
       }
     }

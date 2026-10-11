@@ -40,6 +40,7 @@ use crate::seed::{LANGUAGES_LINO, localized_response, parse_lexicon_text};
 use crate::translation::http::HttpClient;
 
 mod cache_trim;
+mod notation;
 
 use cache_trim::{serialize_trimmed, trim_entity};
 
@@ -798,6 +799,7 @@ pub fn shard(accepted: &[GroundedLexeme]) -> Vec<Shard> {
             };
             let mut content = String::from(SHARD_HEADER);
             content.push_str(&body);
+            content = notation::project(&file_name, content);
             Shard { file_name, content }
         })
         .collect()

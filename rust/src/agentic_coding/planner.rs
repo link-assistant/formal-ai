@@ -450,7 +450,7 @@ pub(super) fn plan_settled_routes(
         return Some(plan_shell_step(
             messages,
             tool_names,
-            statement_audit::command_for(task),
+            &statement_audit::command_for(task),
             result,
         ));
     }

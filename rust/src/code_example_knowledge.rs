@@ -515,7 +515,7 @@ fn slot_output_literal(source: &str, call: &str, literal: &str) -> String {
 /// Escape a bound literal for the quote that opens its slot: the escape
 /// character and that quote are the only characters a literal cannot carry
 /// verbatim.
-fn escape_for_quote(literal: &str, quote: Option<char>) -> String {
+pub(crate) fn escape_for_quote(literal: &str, quote: Option<char>) -> String {
     let mut out = String::with_capacity(literal.len());
     for character in literal.chars() {
         if character == '\\' || Some(character) == quote {

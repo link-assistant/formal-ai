@@ -62,6 +62,25 @@ function renderCalculationReasoningStep(step, index) {
   return text.trimStart().startsWith("[") ? text : `Step ${index + 1}: ${text}`;
 }
 
+// Mirrors numeric_calculation_response in rust/src/solver_handlers/mod.rs.
+// A complete seeded terminal clause shapes a scalar value, not solver authority.
+function numericCalculationResponse(prompt, expression, formatted) {
+  if ([prompt, expression, formatted].some((value) => typeof value !== "string")) return null;
+  if (!/^-?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?$/u.test(formatted)) return null;
+  const request = String(prompt).trim();
+  const boundary = request.lastIndexOf(". ");
+  if (boundary < 0) return null;
+  const clause = request.slice(boundary + 2).replace(/\.$/u, "").trim().toLowerCase();
+  const clauses = meaningsWithRole("numeric_response_only_clause");
+  if (!clauses.some((meaning) => meaning.words.includes(clause))) return null;
+  const operand = expression.trim().toLowerCase();
+  const prefix = request.slice(0, boundary).trim().toLowerCase();
+  const cues = meaningsWithRole("calculation_request_cue").flatMap((meaning) => meaning.words);
+  const completeOperand = prefix === operand || cues.some((cue) =>
+    prefix.startsWith(cue + " ") && prefix.slice(cue.length + 1).trim() === operand);
+  return completeOperand ? formatted : null;
+}
+
 function tryArithmetic(prompt) {
   const extracted = extractArithmeticExpression(prompt);
   if (!extracted) return null;
@@ -118,11 +137,13 @@ function tryArithmetic(prompt) {
     if (resultLabel) {
       sections.push(`Therefore, there are ${formatted} ${resultLabel} in total.`);
     }
-    const content = sections.join("\n\n");
+    const numericResponse = numericCalculationResponse(prompt, expression, formatted);
+    const content = numericResponse ?? sections.join("\n\n");
     const evidence = [
       `calculation:${content}`,
       `calculation_backend:${backend}`,
     ];
+    if (numericResponse !== null) evidence.push(`calculation_derivation:${sections.join("\n\n")}`);
     if (reasoningSteps.length > 0) {
       evidence.push(`calculation_reasoning_steps:${reasoningSteps.length}`);
     }

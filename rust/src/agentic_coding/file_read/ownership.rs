@@ -229,6 +229,9 @@ fn negative_read_objects(prompt: &str) -> Vec<Option<String>> {
             {
                 continue;
             }
+            if covered(&sentence[action.end..], FUNCTION_ROLES, &[]) {
+                result.push(None);
+            }
             let mut objects = path_spans(&sentence)
                 .into_iter()
                 .map(|object| (object.span, Some(object.path)))
@@ -344,6 +347,7 @@ pub(in crate::agentic_coding) fn bound_read_paths(prompt: &str, role: &str) -> V
     let mut result = Vec::new();
     for sentence in instruction_sentence_texts(prompt) {
         let mut owned: Vec<OwnedSpan> = Vec::new();
+        let mut set_modified = false;
         for object in path_spans(&sentence) {
             for action in role_spans(&sentence, &[role]) {
                 let prefix_end = action.start.min(object.span.start);
@@ -393,6 +397,10 @@ pub(in crate::agentic_coding) fn bound_read_paths(prompt: &str, role: &str) -> V
                     let Ok(gap) = String::from_utf8(gap) else {
                         continue;
                     };
+                    if role == READ_ROLE && !role_spans(&gap, &[OBJECT_ROLE]).is_empty() {
+                        gap_roles.push("file-read-set-modifier");
+                        set_modified |= !role_spans(&gap, &["file-read-set-modifier"]).is_empty();
+                    }
                     if !covered(&gap, &gap_roles, &[]) {
                         continue;
                     }
@@ -427,6 +435,13 @@ pub(in crate::agentic_coding) fn bound_read_paths(prompt: &str, role: &str) -> V
                 }
                 break;
             }
+        }
+        if set_modified
+            && owned
+                .last()
+                .is_some_and(|last| !covered(&sentence[last.span.end..], FUNCTION_ROLES, &[]))
+        {
+            return Vec::new();
         }
         if !owned.is_empty() && owned.len() != path_spans(&sentence).len() {
             return Vec::new();

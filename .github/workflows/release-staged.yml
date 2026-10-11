@@ -794,8 +794,6 @@ jobs:
       version__already_released: ${{ steps.version.outputs.already_released }}
       version__new_version: ${{ steps.version.outputs.new_version }}
       active: ${{ steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true' }}
-      check__recovery_state: ${{ steps.check.outputs.recovery_state }}
-      check__recovery_missing_assets: ${{ steps.check.outputs.recovery_missing_assets }}
       source_sha: ${{ steps.capture-source.outputs.source_sha || steps.baseline-source.outputs.source_sha }}
       source_tree: ${{ steps.capture-source.outputs.source_tree || steps.baseline-source.outputs.source_tree }}
       version: ${{ steps.capture-source.outputs.version || steps.baseline-source.outputs.version }}

@@ -645,7 +645,11 @@ pub fn extract_fenced_block(text: &str, languages: &[&str]) -> Option<String> {
 /// [`ROLE_SCRIPT_OR_CODE_ARTIFACT`]: crate::seed::ROLE_SCRIPT_OR_CODE_ARTIFACT
 /// [`ROLE_PROGRAM_GENUS`]: crate::seed::ROLE_PROGRAM_GENUS
 /// [`ROLE_HELLO_WORLD_REFERENCE`]: crate::seed::ROLE_HELLO_WORLD_REFERENCE
-pub fn is_write_script_request(prompt: &str, normalized: &str) -> bool {
+pub fn is_write_script_request(prompt: &str, _normalized: &str) -> bool {
+    let view = crate::coding::operand_program::program_instruction_view(prompt);
+    let prompt = view.as_str();
+    let normalized_view = crate::engine::normalize_prompt(prompt);
+    let normalized = normalized_view.as_str();
     use crate::seed::{
         ROLE_HELLO_WORLD_REFERENCE, ROLE_PROGRAM_GENUS, ROLE_SCRIPT_AUTHORING_VERB,
         ROLE_SCRIPT_OR_CODE_ARTIFACT,

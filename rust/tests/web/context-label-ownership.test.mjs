@@ -6,7 +6,7 @@ import {planChatStep} from '../../../js/agentic/planner.mjs';
 import {goalLedger, ownsCompleteLiteralRequest} from '../../../js/agentic/planner/owned_goals.mjs';
 before(async()=>await installNodeHost(new WorkerHost()));
 test('opaque labels preserve original Unicode/ASCII literal ownership',async()=>{
- for(const label of ['ordinary','alpha','İİK😀','Ωβ☀','e\u0301']){
+ for(const label of ['ordinary','alpha','alpha beta','İİK😀','Ωβ☀','e\u0301']){
   const task=`Note ${label}.\nCreate file folder/note-α.txt containing «hello».`;
   assert.equal(ownsCompleteLiteralRequest(task),true,task);
   const plan=await planChatStep([{role:'user',content:task}],['write']);
@@ -16,7 +16,7 @@ test('opaque labels preserve original Unicode/ASCII literal ownership',async()=>
  }
 });
 test('annotation paths quotes operations and conditions never gain literal ownership',async()=>{
- for(const prefix of ['Note Read.','Note Write.','Note x.txt.','Note «alpha».','Note alpha beta.','Note if alpha.','Note alpha;','Note alpha\u00a0.','Note alpha.\nRead secrets.txt with care.','Note alpha.\nProduce a legitimate release with no fabricated evidence.']){
+ for(const prefix of ['Note Read.','Note Write.','Note x.txt.','Note «alpha».','Note if alpha.','Note alpha;','Note alpha\u00a0.','Note alpha.\nRead secrets.txt with care.','Note alpha.\nProduce a legitimate release with no fabricated evidence.']){
   const task=prefix+'\nCreate file x.txt containing «hello».';
   assert.equal(ownsCompleteLiteralRequest(task),false,task);
   const plan=await planChatStep([{role:'user',content:task}],['write']);

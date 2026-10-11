@@ -1,3 +1,5 @@
+// @worker-prerequisite js/seed_loader.js
+// @worker-prerequisite js/worker/formal_ai_worker_meta_reasoner.js
 // The meta reasoner's synthesis half (see formal_ai_worker_meta_reasoner.js):
 // typed program enumeration over the instruction set in
 // data/seed/meta-reasoning.lino, parameter and threshold inference from the
@@ -29,6 +31,11 @@ function metaApply(primitive, type) {
   if (primitive.from === "list_any" && type.startsWith("list_")) return primitive.to === "list_any" ? type : primitive.to;
   return null;
 }
+const metaMemoSourceFunctions = (() => {
+  const profile = formalAiWorkerPrimordials.ownDescriptor(globalThis, 'metaSeedIntrinsicProfile') === undefined && typeof metaSeedIntrinsicProfile === 'object' && metaSeedIntrinsicProfile !== null ? metaSeedIntrinsicProfile : null;
+  const helpers = {apply: metaApply, measures: metaMeasures, uses: metaStepUsesAny};
+  return profile !== null && profile.check() ? profile.freeze(helpers) : formalAiWorkerPrimordials.freeze(helpers);
+})();
 /**
  * A parameter as the JavaScript literal its code is given: a number as
  * written, a text or a list of values as JSON.
@@ -75,22 +82,89 @@ function metaCompile(primitive, parameter) {
  * @param {string} [type] the measure's result type, number by default
  * @returns {Array<object>}
  */
-function metaMeasures(element, type) {
+const metaMeasureProducer = (() => {
+  let issuing = false;
+  const earlyProfile = formalAiWorkerPrimordials.ownDescriptor(globalThis, 'metaSeedIntrinsicProfile') === undefined && typeof metaSeedIntrinsicProfile === 'object' && metaSeedIntrinsicProfile !== null ? metaSeedIntrinsicProfile : null;
+  if (earlyProfile === null || !earlyProfile.check()) return formalAiWorkerPrimordials.freeze({produce: produceMeasures, owns: () => false});
+  const apply = Reflect.apply, descriptor = Object.getOwnPropertyDescriptor;
+  const descriptors = Object.getOwnPropertyDescriptors, keys = Reflect.ownKeys;
+  const proto = Object.getPrototypeOf, equal = Object.is;
+  const setHas = Set.prototype.has, setAdd = Set.prototype.add;
+  const setValues = Set.prototype.values, mapEntries = Map.prototype.entries;
+  const weakHas = WeakSet.prototype.has, weakAdd = WeakSet.prototype.add;
+  const allocated = new WeakSet();
+  const parser = descriptor(globalThis, 'metaSeedProducer') === undefined
+    && typeof metaSeedProducer === 'object' ? metaSeedProducer : null;
+  const parserOwns = parser === null ? null : parser.owns;
+  const documentProducer = descriptor(globalThis, 'metaDocIndexProducer') === undefined
+    && typeof metaDocIndexProducer === 'object' && metaDocIndexProducer !== null ? metaDocIndexProducer : null;
+  const documentQuery = documentProducer === null ? null : descriptor(documentProducer, 'owns');
+  const documentOwns = documentQuery && descriptor(documentQuery, 'value') && documentQuery.writable === false && documentQuery.configurable === false && typeof documentQuery.value === 'function' ? documentQuery.value : null;
+  const globals = ['Object', 'Array', 'String', 'Map', 'Set', 'WeakSet', 'Reflect'];
+  const values = globals.map(name => descriptor(globalThis, name).value);
+  const owners = [Object, Array, String, Map, Set, WeakSet, Reflect, Function.prototype, Object.prototype, Array.prototype, String.prototype, Map.prototype, Set.prototype, WeakSet.prototype,
+    proto(apply(mapEntries, new Map(), [])), proto(apply(setValues, new Set(), [])), proto(apply(Array.prototype.values, [], [])), proto(proto(apply(Array.prototype.values, [], [])))];
+  const profiles = owners.map(owner => descriptors(owner));
+  const objectKeys = keys(Object.prototype);
+  const sourceSeed = formalAiWorkerPrimordials.ownDescriptor(globalThis, 'metaMemoSourceSeed') === undefined && typeof metaMemoSourceSeed === 'function' ? metaMemoSourceSeed : null;
+  const sourceHelpers = formalAiWorkerPrimordials.ownDescriptor(globalThis, 'metaMemoSourceFunctions') === undefined && typeof metaMemoSourceFunctions === 'object' && metaMemoSourceFunctions !== null ? metaMemoSourceFunctions : null;
+  const seedFactory = sourceSeed, applyPrimitive = sourceHelpers === null ? null : sourceHelpers.apply;
+  function own(value) {return apply(weakHas, allocated, [value]) || parserOwns !== null && parserOwns(value) || documentOwns !== null && documentOwns(value);}
+  function unchanged(owner, saved) {
+    const fields = descriptors(owner), names = keys(saved), current = keys(fields);
+    if (names.length !== current.length) return false;
+    for (let i = 0; i < names.length; i++) {
+      if (names[i] !== current[i]) return false;
+      const a = fields[names[i]], b = saved[names[i]], namesA = keys(a), namesB = keys(b);
+      if (namesA.length !== namesB.length) return false;
+      for (let j = 0; j < namesA.length; j++) if (namesA[j] !== namesB[j] || !equal(a[namesA[j]], b[namesB[j]])) return false;
+    }
+    return true;
+  }
+  function intact() {
+    if (!earlyProfile.check()) return false;
+    const now = keys(Object.prototype);
+    if (now.length !== objectKeys.length) return false;
+    for (let i = 0; i < now.length; i++) if (now[i] !== objectKeys[i]) return false;
+    for (let i = 0; i < globals.length; i++) {const field = descriptor(globalThis, globals[i]); if (!field || !descriptor(field, 'value') || field.value !== values[i]) return false;}
+    if (seedFactory === null || applyPrimitive === null || parser === null || documentOwns === null) return false;
+    const currentDocumentQuery = descriptor(documentProducer, 'owns');
+    if (!currentDocumentQuery || !descriptor(currentDocumentQuery, 'value') || currentDocumentQuery.value !== documentOwns || currentDocumentQuery.writable !== false || currentDocumentQuery.configurable !== false) return false;
+    for (let i = 0; i < owners.length; i++) if (!unchanged(owners[i], profiles[i])) return false;
+    const seedNow = descriptor(globalThis, 'metaSeed'), applyNow = descriptor(globalThis, 'metaApply');
+    if (!seedNow || !applyNow || !descriptor(seedNow, 'value') || !descriptor(applyNow, 'value') || seedNow.value !== seedFactory || applyNow.value !== applyPrimitive) return false;
+    return true;
+  }
+  function admitted(value, seen = new Set()) {
+    if (value === null || typeof value !== 'object') return typeof value !== 'function' && typeof value !== 'symbol';
+    if (!own(value)) return false;
+    if (apply(setHas, seen, [value])) return true;
+    apply(setAdd, seen, [value]);
+    const parent = proto(value);
+    if (parent !== Object.prototype && parent !== Array.prototype && parent !== Map.prototype && parent !== Set.prototype && parent !== null) return false;
+    const fields = descriptors(value);
+    for (const key of keys(fields)) {if (typeof key !== 'string' || !descriptor(fields[key], 'value') || !admitted(fields[key].value, seen)) return false;}
+    if (parent === Map.prototype) for (const pair of apply(mapEntries, value, [])) if (!admitted(pair[0], seen) || !admitted(pair[1], seen)) return false;
+    if (parent === Set.prototype) for (const member of apply(setValues, value, [])) if (!admitted(member, seen)) return false;
+    return true;
+  }
+  function allocation(value) {if (issuing) apply(weakAdd, allocated, [value]); return value;}
+  function produceMeasures(element, type) {
   const seed = metaSeed();
-  if (!seed.measureCache) seed.measureCache = new Map();
+  if (!seed.measureCache) seed.measureCache = allocation(new Map());
   const key = `${element} ${type || "number"}`;
   if (seed.measureCache.has(key)) return seed.measureCache.get(key);
-  const out = [];
+  const out = allocation([]);
   if (type === "text") {
-    if (element === "text") out.push({ id: "value", from: "text", to: "text", doc: "", code: "(input) => input", infer: "", environment: "", takes: [] });
+    if (element === "text") out.push(allocation({ id: "value", from: "text", to: "text", doc: "", code: "(input) => input", infer: "", environment: "", takes: allocation([]) }));
     for (const primitive of seed.primitives) {
       if (primitive.from !== element || primitive.to !== "text" || element === "text" || primitive.infer || primitive.effect || primitive.takes.length) continue;
-      out.push({ ...primitive, parts: [primitive.id] });
+      out.push(allocation({ ...primitive, parts: allocation([primitive.id]) }));
     }
     seed.measureCache.set(key, out);
     return out;
   }
-  if (element === "number") out.push({ id: "value", from: "number", to: "number", doc: "", code: "(input) => input", infer: "", environment: "", takes: [] });
+  if (element === "number") out.push(allocation({ id: "value", from: "number", to: "number", doc: "", code: "(input) => input", infer: "", environment: "", takes: allocation([]) }));
   // A measure is any short parameter-free program from the element to a
   // number ("the lines of a file": read the file, split its lines, count).
   let frontier = [{ ids: [], codes: [], type: element, environment: "" }];
@@ -102,14 +176,14 @@ function metaMeasures(element, type) {
         const type = metaApply(primitive, partial.type);
         if (!type) continue;
         const grown = {
-          ids: partial.ids.concat(primitive.id),
+          ids: allocation(partial.ids.concat(primitive.id)),
           codes: partial.codes.concat(primitive.code),
           type,
           environment: partial.environment || primitive.environment || "",
         };
         if (type === "number") {
           const code = `(input) => ${grown.codes.reduce((inner, step) => `(${step})(${inner})`, "input")}`;
-          out.push({ id: grown.ids.join("∘"), parts: grown.ids, from: element, to: "number", doc: "", code, infer: "", environment: grown.environment, takes: [] });
+          out.push(allocation({ id: grown.ids.join("∘"), parts: grown.ids, from: element, to: "number", doc: "", code, infer: "", environment: grown.environment, takes: allocation([]) }));
         } else {
           next.push(grown);
         }
@@ -120,6 +194,15 @@ function metaMeasures(element, type) {
   seed.measureCache.set(key, out);
   return out;
 }
+  function produce(element, type) {
+    const prior = issuing;
+    issuing = intact() && typeof element === 'string' && (type === undefined || typeof type === 'string') && admitted(seedFactory());
+    try {return produceMeasures(element, type);} finally {issuing = prior;}
+  }
+  return Object.freeze({produce, owns: value => apply(weakHas, allocated, [value])});
+})();
+function metaMeasures(element, type) {return metaMeasureProducer.produce(element, type);}
+
 /**
  * All typed programs from a type, shortest first, each step a primitive or a
  * primitive mapped over a list.
@@ -129,7 +212,8 @@ function metaMeasures(element, type) {
  *   of these operations (see `metaStepUsesAny`) are returned
  * @returns {Array<{steps: Array<object>, type: string}>}
  */
-function metaPrograms(fromType, length, mustUse = null) {
+function createMetaProgramMemo() {
+  const original = function originalMetaPrograms(fromType, length, mustUse = null) {
   // Call-local descriptors cannot retain a different request, seed or worker realm.
   const transitionsByType = new Map();
   const primitives = metaSeed().primitives;
@@ -193,7 +277,280 @@ function metaPrograms(fromType, length, mustUse = null) {
     frontier = next;
   }
   return out;
+};
+  const earlyProfile = formalAiWorkerPrimordials.ownDescriptor(globalThis, 'metaSeedIntrinsicProfile') === undefined && typeof metaSeedIntrinsicProfile === 'object' && metaSeedIntrinsicProfile !== null ? metaSeedIntrinsicProfile : null;
+  if (earlyProfile === null || !earlyProfile.check()) return {lookup: (fromType, length, mustUse) => ({done: true, result: original(fromType, length, mustUse)}), store() {}};
+  const sourceSeed = formalAiWorkerPrimordials.ownDescriptor(globalThis, 'metaMemoSourceSeed') === undefined && typeof metaMemoSourceSeed === 'function' ? metaMemoSourceSeed : null;
+  const sourceHelpers = formalAiWorkerPrimordials.ownDescriptor(globalThis, 'metaMemoSourceFunctions') === undefined && typeof metaMemoSourceFunctions === 'object' && metaMemoSourceFunctions !== null ? metaMemoSourceFunctions : null;
+  const seedFactory = sourceSeed;
+  // The producer is a genuine source-declared lexical constant, not a
+  // mutable global callback or caller-created property of the VM global.
+  const producer = formalAiWorkerPrimordials.ownDescriptor(globalThis, 'metaSeedProducer') === undefined
+    && typeof metaSeedProducer === 'object' && metaSeedProducer !== null ? metaSeedProducer : null;
+  const seedObjectOwnership = producer === null ? null : producer.owns;
+  const documentObjectOwnership = formalAiWorkerPrimordials.ownDescriptor(globalThis, 'metaDocIndexProducer') === undefined && typeof metaDocIndexProducer === 'object' && metaDocIndexProducer !== null ? metaDocIndexProducer.owns : null;
+  const measureProducer = formalAiWorkerPrimordials.ownDescriptor(globalThis, 'metaMeasureProducer') === undefined && typeof metaMeasureProducer === 'object' ? metaMeasureProducer : null;
+  const measureObjectOwnership = measureProducer === null ? null : measureProducer.owns;
+  const originalOwnershipQuery = producer === null ? null : formalAiWorkerPrimordials.ownDescriptor(globalThis, 'metaSeedOriginalOwnershipQuery') === undefined && typeof metaSeedOriginalOwnershipQuery === 'function' ? metaSeedOriginalOwnershipQuery : null;
+  const apply = sourceHelpers === null ? null : sourceHelpers.apply;
+  const measures = sourceHelpers === null ? null : sourceHelpers.measures;
+  const uses = sourceHelpers === null ? null : sourceHelpers.uses;
+  const nativeApply = Reflect.apply;
+  const descriptor = Object.getOwnPropertyDescriptor;
+  const descriptors = Object.getOwnPropertyDescriptors;
+  const prototype = Object.getPrototypeOf;
+  const keys = Reflect.ownKeys;
+  const mapEntries = Map.prototype.entries;
+  const setValues = Set.prototype.values;
+  const setHas = Set.prototype.has;
+  const operationBrandWitness = {};
+  const globalOwner = globalThis;
+  const constructorFields = ['Object', 'Array', 'Map', 'Set', 'String'];
+  const constructorValues = [Object, Array, Map, Set, String];
+  const intrinsicFields = [[Object, 'getOwnPropertyDescriptor', descriptor],
+    [Object, 'getOwnPropertyDescriptors', descriptors], [Object, 'getPrototypeOf', prototype],
+    [Reflect, 'ownKeys', keys], [Object, 'is', Object.is], [Array, 'from', Array.from],
+    [Array.prototype, Symbol.iterator, Array.prototype[Symbol.iterator]],
+    [globalOwner, 'metaSeed', seedFactory], [globalOwner, 'metaSeedOwnsObject', originalOwnershipQuery], [globalOwner, 'metaApply', apply],
+    [globalOwner, 'metaMeasures', measures], [globalOwner, 'metaStepUsesAny', uses]];
+  const equal = Object.is;
+  const prototypeOwners = [Object, Array, Map, Set, String, Object.prototype, Array.prototype, Map.prototype, Set.prototype,
+    String.prototype, Function.prototype, JSON, Reflect,
+    prototype(nativeApply(mapEntries, new Map(), [])), prototype(nativeApply(setValues, new Set(), [])),
+    prototype([][Symbol.iterator]()), prototype(prototype([][Symbol.iterator]()))];
+  const prototypeFields = prototypeOwners.map(owner => descriptors(owner));
+  const bounds = typeof META_BOUNDS === 'object' && META_BOUNDS !== null ? META_BOUNDS : null;
+  const boundsBinding = descriptor(globalOwner, 'META_BOUNDS');
+  const objectPrototype = Object.prototype;
+  const originalObjectKeys = keys(objectPrototype);
+  const initialBounds = bounds === null ? null : descriptors(bounds);
+  let latest = null;
+  function fieldsMatch(owner, expected) {
+    const actual = descriptors(owner);
+    const names = keys(expected), current = keys(actual);
+    if (names.length !== current.length) return false;
+    for (let i = 0; i < names.length; i += 1) {
+      if (names[i] !== current[i]) return false;
+      const a = actual[names[i]], b = expected[names[i]];
+      // Captured native reflection produces own data fields only. Compare
+      // exact own keys first so missing fields never read inherited accessors.
+      const attributes = keys(a), expectedAttributes = keys(b);
+      if (attributes.length !== expectedAttributes.length) return false;
+      for (let j = 0; j < attributes.length; j += 1) {
+        const name = attributes[j];
+        if (name !== expectedAttributes[j] || !equal(a[name], b[name])) return false;
+      }
+    }
+    return true;
+  }
+  function intact() {
+    if (seedFactory === null || apply === null || measures === null || uses === null || initialBounds === null) return false;
+    const currentObjectKeys = keys(objectPrototype);
+    if (currentObjectKeys.length !== originalObjectKeys.length) return false;
+    for (let i = 0; i < originalObjectKeys.length; i += 1) if (currentObjectKeys[i] !== originalObjectKeys[i]) return false;
+    for (let i = 0; i < prototypeOwners.length; i += 1) if (!fieldsMatch(prototypeOwners[i], prototypeFields[i])) return false;
+    if (boundsBinding !== undefined) {
+      const current = descriptor(globalOwner, 'META_BOUNDS');
+      const value = current === undefined ? undefined : descriptor(current, 'value');
+      if (value === undefined || value.value !== bounds) return false;
+    }
+    for (let i = 0; i < constructorFields.length; i += 1) {
+      const field = descriptor(globalOwner, constructorFields[i]);
+      const value = field === undefined ? undefined : descriptor(field, 'value');
+      if (value === undefined || value.value !== constructorValues[i]) return false;
+    }
+    for (let i = 0; i < intrinsicFields.length; i += 1) {
+      const owner = intrinsicFields[i][0], name = intrinsicFields[i][1], expected = intrinsicFields[i][2];
+      const field = descriptor(owner, name);
+      const value = field === undefined ? undefined : descriptor(field, 'value');
+      if (value === undefined || value.value !== expected) return false;
+    }
+    if (!fieldsMatch(bounds, initialBounds)) return false;
+
+    return true;
+  }
+  function snapshot(value) {
+    const out = [];
+    const visited = new Set();
+    function visit(item) {
+      if (item === null || typeof item !== 'object') {
+        if (typeof item === 'function' || typeof item === 'symbol') return false;
+        out.push(item); return true;
+      }
+      if (!(seedObjectOwnership !== null && seedObjectOwnership(item) || measureObjectOwnership !== null && measureObjectOwnership(item) || documentObjectOwnership !== null && documentObjectOwnership(item))) return false;
+      out.push(item);
+      if (visited.has(item)) return true;
+      visited.add(item);
+      const proto = prototype(item);
+      if (proto !== Object.prototype && proto !== Array.prototype && proto !== Map.prototype && proto !== Set.prototype && proto !== null) return false;
+      out.push(proto);
+      const fields = descriptors(item);
+      for (const key of keys(fields)) {
+        if (typeof key !== 'string') return false;
+        const field = fields[key];
+        const value = descriptor(field, 'value');
+        if (value === undefined) return false;
+        // A native data descriptor has these three own data attributes.
+        out.push(key, field.writable, field.enumerable, field.configurable);
+        if (!visit(value.value)) return false;
+      }
+      if (proto === Map.prototype) {
+        for (const pair of nativeApply(mapEntries, item, [])) if (!visit(pair[0]) || !visit(pair[1])) return false;
+      }
+      if (proto === Set.prototype) for (const member of nativeApply(setValues, item, [])) if (!visit(member)) return false;
+      out.push('end'); return true;
+    }
+    return visit(value) ? out : null;
+  }
+  function same(a, b) {
+    if (!a || !b || a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i += 1) if (!equal(a[i], b[i])) return false;
+    return true;
+  }
+  function copy(programs) {
+    const steps = new Map();
+    const out = [];
+    for (const program of programs) {
+      const next = {steps: [], type: program.type};
+      if ('uses' in program) next.uses = program.uses;
+      for (const step of program.steps) {
+        let fresh = steps.get(step);
+        if (fresh === undefined) {fresh = {...step}; steps.set(step, fresh);}
+        next.steps.push(fresh);
+      }
+      out.push(next);
+    }
+    return out;
+  }
+  return {
+    lookup(fromType, length, mustUse) {
+      const fallback = () => ({done: true, result: original(fromType, length, mustUse)});
+      if (!intact() || typeof metaSeedCache === 'undefined' || metaSeedCache === null) return fallback();
+      if (mustUse !== null) {
+        // Native Set brand validation invokes no user getters or Proxy traps.
+        try {nativeApply(setHas, mustUse, [operationBrandWitness]);} catch {return fallback();}
+        if (prototype(mustUse) !== Set.prototype || keys(descriptors(mustUse)).length !== 0) return fallback();
+      }
+      const required = mustUse === null ? null : Array.from(nativeApply(setValues, mustUse, []));
+      const before = snapshot(metaSeedCache);
+      if (!before || required !== null && required.some(value => typeof value !== 'string')) return fallback();
+      const knownTypes = new Set();
+      for (const primitive of metaSeedCache.primitives) {
+        for (const type of [primitive.from, primitive.to]) {
+          knownTypes.add(type);
+          if (typeof type === 'string' && !type.startsWith('list_')) knownTypes.add(`list_${type}`);
+        }
+      }
+      if (!knownTypes.has(fromType)) return fallback();
+      if (!(latest && latest.seed === metaSeedCache && latest.length === length
+        && (latest.required === null && required === null || same(latest.required, required))
+        && same(latest.snapshot, before))) {
+        latest = {seed: metaSeedCache, length, required, snapshot: before, programs: new Map()};
+      }
+      if (latest.programs.has(fromType)) return {done: true, result: copy(latest.programs.get(fromType))};
+      return {done: false, seed: metaSeedCache, type: fromType, length, required, group: latest};
+    },
+    store(state, programs) {
+      if (!intact() || state.seed !== metaSeedCache) {latest = null; return;}
+      const after = snapshot(metaSeedCache);
+      if (!after || state.group !== latest) {latest = null; return;}
+      if (!same(latest.snapshot, after)) latest.programs.clear();
+      latest.snapshot = after;
+      latest.programs.set(state.type, copy(programs));
+    },
+  };
 }
+const metaProgramMemo = createMetaProgramMemo();
+
+function metaPrograms(fromType, length, mustUse = null) {
+  const memo = metaProgramMemo.lookup(fromType, length, mustUse);
+  if (memo.done) return memo.result;
+  // Call-local descriptors cannot retain a different request, seed or worker realm.
+  const transitionsByType = new Map();
+  const primitives = metaSeed().primitives;
+  const transitionsFor = (type) => {
+    const existing = transitionsByType.get(type);
+    if (existing !== undefined) return existing;
+    const typedTransitions = [];
+    const recordTransition = (step, type) => typedTransitions.push({ step, type });
+
+    for (const primitive of primitives) {
+      const direct = metaApply(primitive, type);
+      if (direct) recordTransition({ primitive, mapped: false }, direct);
+      if (type.startsWith("list_")) {
+        const element = type.slice(5);
+        const mapped = metaApply(primitive, element);
+        if (mapped && !mapped.startsWith("list_")) recordTransition({ primitive, mapped: true }, `list_${mapped}`);
+      }
+    }
+    // A file is edited in place by any text transformation: read it,
+    // transform the text, write it back ("rewrite_file").
+    if (type === "path" || type === "list_path") {
+      for (const primitive of primitives) {
+        if (primitive.from !== "text" || primitive.to !== "text" || primitive.infer || primitive.takes.length) continue;
+        recordTransition({ primitive, mapped: type === "list_path", rewrite: true }, type);
+      }
+    }
+    if (type.startsWith("list_")) {
+      for (const measure of metaMeasures(type.slice(5))) {
+        for (const filter of metaSeed().filters) {
+          if (filter.measure === "number") recordTransition({ primitive: measure, mapped: false, filter }, type);
+        }
+      }
+      // A filter comparing the element's content with a value.
+      for (const filter of metaSeed().filters) {
+        if (filter.measure === "number") continue;
+        for (const measure of metaMeasures(type.slice(5), filter.measure)) recordTransition({ primitive: measure, mapped: false, filter }, type);
+      }
+      // A selector picks one element by its measure ("the longest word").
+      for (const measure of metaMeasures(type.slice(5))) {
+        for (const select of metaSeed().selectors) recordTransition({ primitive: measure, mapped: false, select }, type.slice(5));
+      }
+    }
+
+    transitionsByType.set(type, typedTransitions);
+    return typedTransitions;
+  };
+  const reachabilityByType = new Map();
+  const canUseWithin = (type, remaining) => {
+    if (remaining === 0) return false;
+    let depths = reachabilityByType.get(type);
+    if (depths === undefined) {
+      depths = new Map();
+      reachabilityByType.set(type, depths);
+    }
+    if (depths.has(remaining)) return depths.get(remaining);
+    const reachable = transitionsFor(type).some(transition =>
+      metaStepUsesAny(transition.step, mustUse)
+      || canUseWithin(transition.type, remaining - 1));
+    depths.set(remaining, reachable);
+    return reachable;
+  };
+  let frontier = [mustUse === null ? { steps: [], type: fromType } : { steps: [], type: fromType, uses: false }];
+  const out = [];
+  for (let size = 1; size <= length; size += 1) {
+    const next = [];
+    // A last-length program using none of `mustUse` is never built.
+    const extend = (program, step, type) => {
+      const uses = mustUse === null ? null : program.uses || metaStepUsesAny(step, mustUse);
+      if (mustUse !== null && size === length && !uses) return;
+      const grown = { steps: program.steps.concat(step), type };
+      if (mustUse !== null) grown.uses = uses;
+      next.push(grown);
+    };
+    for (const program of frontier) {
+      if (mustUse !== null && !program.uses
+        && !canUseWithin(program.type, length - size + 1)) continue;
+      const typedTransitions = transitionsFor(program.type);
+      for (const transition of typedTransitions) extend(program, { ...transition.step }, transition.type);
+    }
+    for (const program of next) if (mustUse === null || program.uses) out.push(program);
+    frontier = next;
+  }
+  metaProgramMemo.store(memo, out);
+  return out;
+}
+
 
 /**
  * A step's operations for evidence scoring.

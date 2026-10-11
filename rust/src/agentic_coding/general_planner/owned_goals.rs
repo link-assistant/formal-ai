@@ -651,6 +651,29 @@ fn source_context_atom(clause: &str) -> bool {
         })
 }
 
+/// Seeded condition/operator fragments match complete normalized word sequences.
+fn source_context_condition(label: &str) -> bool {
+    let normalized = crate::engine::normalize_prompt(label);
+    let parts = normalized.split_whitespace().collect::<Vec<_>>();
+    ["coding_recurrence_operator", "skill_when_then_pair"]
+        .iter()
+        .any(|role| {
+            crate::seed::lexicon()
+                .words_for_role(role)
+                .iter()
+                .any(|surface| {
+                    surface.split('…').any(|fragment| {
+                        let phrase = crate::engine::normalize_prompt(fragment);
+                        let words = phrase.split_whitespace().collect::<Vec<_>>();
+                        !words.is_empty()
+                            && parts
+                                .windows(words.len())
+                                .any(|window| window == words.as_slice())
+                    })
+                })
+        })
+}
+
 fn source_context_label(clause: &str) -> bool {
     if !source_context_whitespace_supported(clause) {
         return false;
@@ -661,12 +684,17 @@ fn source_context_label(clause: &str) -> bool {
         .map(|token| token.text.to_owned())
         .collect::<Vec<_>>()
         .join(" ");
+    if source_context_condition(&label) {
+        return false;
+    }
     if [
         "file_read_action_cue",
         "file_write_action_cue",
         "source_attribution_marker",
         "file_edit_joiner_cue",
         "file_leading_line_constraint_lead",
+        "file-read-independent-effect-operation",
+        "execute_url_request",
     ]
     .iter()
     .any(|role| {

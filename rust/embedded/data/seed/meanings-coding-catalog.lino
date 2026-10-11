@@ -1,4 +1,17 @@
 meanings
+  program_termination_clause
+    role program_termination_clause
+    defined-by program
+    defined-by print_stdout
+    precondition "a literal-print request ends with a non-mutating process completion clause"
+    effect "the documented print procedure already completes after emitting its operand"
+    unit "not applicable"
+    example "and then exits"
+    lexeme en "and then exits" "then exits" "and exits"
+    lexeme ru "и затем завершается" "затем завершается" "и завершается"
+    lexeme hi "और फिर समाप्त होता है" "फिर समाप्त होता है"
+    lexeme zh "然后退出" "并退出"
+    lexeme es "y luego termina" "luego termina" "y termina"
   program_language
     grounded-in Q9143
     defined-by software_language

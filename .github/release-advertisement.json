@@ -83,6 +83,9 @@
       "path": "scripts/qualified-data-artifact-profiles.mjs"
     },
     {
+      "path": "scripts/release-extension-dispatch.mjs"
+    },
+    {
       "path": "scripts/release-extension-github.mjs"
     },
     {
@@ -102,6 +105,9 @@
     },
     {
       "path": "scripts/release-native-publication.mjs"
+    },
+    {
+      "path": "scripts/release-producer-output-receipt.mjs"
     },
     {
       "path": "scripts/release-protocol.mjs"

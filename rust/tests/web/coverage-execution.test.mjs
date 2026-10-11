@@ -188,3 +188,21 @@ esac
     assert.match(mixed.stdout, /test unit_good \.\.\. ok/);
   } finally { rmSync(directory, { recursive: true, force: true }); }
 });
+
+test('batch priority conserves total case work across mixed batch sizes', () => {
+  const names = ['heavy', ...Array.from({ length: 64 }, (_, index) => 'tiny' + index)];
+  const entries = names.map(item);
+  const batches = executionBatches(entries, entries, new Map([['unit', 'fixture']]),
+    (entry) => entry.endsWith('heavy') ? 5 : 0.1);
+  assert.equal(batches[0].names.length, 64);
+  assert.equal(batches[0].seconds, 6.4);
+  assert.equal(batches[1].seconds, 5);
+  assert.deepEqual(batches.flatMap((batch) => batch.names).sort(), names.sort());
+  assert.ok(batches.every((batch) => batch.names.length <= 64));
+});
+
+test('aggregate coverage priority refuses finite individual weights that overflow', () => {
+  const entries = ['unit\ta', 'unit\tb'];
+  assert.throws(() => executionBatches(entries, entries, new Map([['unit', 'fixture']]),
+    () => Number.MAX_VALUE), /invalid aggregate coverage weight/);
+});

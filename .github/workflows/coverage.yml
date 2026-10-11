@@ -302,6 +302,7 @@ jobs:
       - name: Run the instrumented coverage shard
         env:
           TEST_BUDGET_SECONDS: 1200
+          COVERAGE_EXECUTION_RECEIPTS: coverage-execution-result.json.receipts
           TEST_WARN_RATIO_PERCENT: 70
           SHARD_JOB_INDEX: ${{ strategy.job-index }}
           SHARD_TOTAL: ${{ strategy.job-total }}
@@ -314,6 +315,60 @@ jobs:
             "$TEST_BUDGET_SECONDS" "Instrumented coverage shard" \
             bash scripts/run-coverage-shard.sh coverage-tests.tsv \
               --skip no_benchmark_prompt_reaches_the_unknown_opener
+
+      - name: Validate bounded coverage execution data
+        id: coverage_data_receipts
+        if: always()
+        timeout-minutes: 1
+        env:
+          COVERAGE_EXECUTION_RECEIPTS: coverage-execution-result.json.receipts
+        run: |
+          node --input-type=commonjs <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const root = path.resolve(process.env.COVERAGE_EXECUTION_RECEIPTS);
+          const available = fs.existsSync(root);
+          let files = 0;
+          let bytes = 0;
+          function visit(target) {
+            const stat = fs.lstatSync(target);
+            if (stat.isSymbolicLink()) throw Error('receipt symlink refused');
+            if (stat.isDirectory()) {
+              for (const name of fs.readdirSync(target)) visit(path.join(target, name));
+              return;
+            }
+            if (!stat.isFile() || !/\.(json|tsv|lino)$/.test(target)) {
+              throw Error('non-data receipt refused');
+            }
+            files += 1;
+            bytes += stat.size;
+            if (files > 512 || bytes > 8 * 1024 * 1024) {
+              throw Error('receipt data bound exceeded');
+            }
+            const content = new TextDecoder('utf-8', { fatal: true })
+              .decode(fs.readFileSync(target));
+            if (content.includes('\0')) throw Error('binary receipt refused');
+            if (path.extname(target) === '.json') JSON.parse(content);
+          }
+          if (available) {
+            visit(root);
+            if (!files) throw Error('empty receipt directory');
+          } else {
+            console.log('::notice::Coverage execution receipts are missing.');
+          }
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `available=${available}\n`);
+          console.log(JSON.stringify({ available, files, bytes }));
+          NODE
+
+      - name: Upload coverage execution data
+        if: always() && steps.coverage_data_receipts.outputs.available == 'true'
+        timeout-minutes: 1
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-execution-data-${{ matrix.shard }}-${{ github.run_attempt }}
+          path: coverage-execution-result.json.receipts/
+          if-no-files-found: error
+          retention-days: 1
 
       # `kill 0` means "every process in my own process group", so a `:-0`
       # default here would make this step kill its own shell whenever the

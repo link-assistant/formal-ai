@@ -20,3 +20,15 @@ statement_audit_registry
   requirement_forbidden "कभी नहीं"
   requirement_forbidden "永远不要"
   resolution_action "retract the lower-weight statement and append its replacement"
+  request-contract repository-audit
+    source "rust/src/cli_statement_audit.rs"
+    operation "statement-audit"
+    command-template "formal-ai statement-audit --root . --output {output}"
+    role audit
+      pattern "audit (?:all )?(?:statement-bearing repository prose, code comments, and structured facts|repository statements|repository requirements)"
+    role weigh
+      pattern "weigh (?:conflicting requirements and captured original-source evidence|requirements and evidence) with probabilities"
+    role persist
+      pattern "persist (?:findings and associations|audit findings and associations)"
+    role deliver
+      pattern "(?:and )?write ([A-Za-z0-9_./-]+[.]lino)"

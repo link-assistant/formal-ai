@@ -32,6 +32,15 @@ export function executionBatches(selected, listing, executables, secondsOf, maxi
       batches.push({ target: row.target, seconds: row.seconds, names: [row.name] });
     }
   }
+  // Dispatch accumulated work; retain each case weight for grouping above.
+  for (const batch of batches) {
+    batch.seconds *= batch.names.length;
+    if (!Number.isFinite(batch.seconds) || batch.seconds < 0)
+      throw new Error('invalid aggregate coverage weight');
+  }
+  batches.sort((a, b) => b.seconds - a.seconds
+    || a.target.localeCompare(b.target, 'en')
+    || a.names[0].localeCompare(b.names[0], 'en'));
   return batches;
 }
 
@@ -84,13 +93,15 @@ export async function executeBatches(batches, executables, options = {}) {
       const batch = batches[index];
       const executable = executables.get(batch.target);
       const collector = completionCollector(batch.names);
+      const args = ['--exact', '--color', 'never', '--test-threads', String(threads), ...(options.nocapture ? ['--nocapture'] : []), ...batch.names];
       const started = performance.now();
       launchOrder.push(index);
-      options.onStart?.({ index, target: batch.target, names: batch.names, weight: batch.seconds });
+      options.onStart?.({ index, target: batch.target, names: [...batch.names],
+        executable, argv: [...args], weight: batch.seconds });
       const outcome = await new Promise((resolve) => {
         let pending = '';
         const decoder = new StringDecoder('utf8');
-        const child = spawn(executable, ['--exact', '--color', 'never', '--test-threads', String(threads), ...(options.nocapture ? ['--nocapture'] : []), ...batch.names], {
+        const child = spawn(executable, args, {
           cwd: options.cwd, env: options.env ?? process.env, stdio: ['ignore', 'pipe', 'pipe'],
         });
         child.stdout.on('data', (chunk) => {
@@ -110,7 +121,8 @@ export async function executeBatches(batches, executables, options = {}) {
         });
       });
       const observed = collector.finish();
-      results[index] = { index, target: batch.target, selected: batch.names.length,
+      results[index] = { index, target: batch.target, names: [...batch.names],
+        executable, argv: [...args], selected: batch.names.length,
         elapsedSeconds: (performance.now() - started) / 1000, ...outcome, ...observed,
         succeeded: outcome.exitCode === 0 && !outcome.signal && !outcome.error
           && observed.problems.length === 0 && observed.summary?.failed === 0 };

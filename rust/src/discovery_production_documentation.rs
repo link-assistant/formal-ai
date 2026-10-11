@@ -274,6 +274,12 @@ pub fn rediscover_documented_program(
     let procedure = generalize_examples(std::slice::from_ref(&node));
     let recomposed = recompose_for_requirement(&procedure, &bindings, language)
         .map_err(|_| String::from("no_program_body"))?;
+    let quote = node
+        .program_body
+        .find(crate::code_example_knowledge::LITERAL_SLOT)
+        .and_then(|slot| node.program_body.get(..slot))
+        .and_then(|prefix| prefix.chars().next_back());
+    let expected_source = crate::code_example_knowledge::escape_for_quote(expected_output, quote);
     let verified = decompose_code_node_from(&recomposed.source, language, &[], &capture.url)
         .is_ok_and(|check| {
             check
@@ -281,7 +287,7 @@ pub fn rediscover_documented_program(
                 .iter()
                 .any(|part| part.kind == CodePartKind::OutputOperation && part.source_text == call)
                 && check.parts.iter().any(|part| {
-                    part.kind == CodePartKind::StringLiteral && part.source_text == expected_output
+                    part.kind == CodePartKind::StringLiteral && part.source_text == expected_source
                 })
         });
     if !verified {

@@ -87,7 +87,7 @@ test('both package workflows admit automated releases, check PRs, and deliver au
   for (const name of ['publish-engine', 'publish-vscode']) {
     const source = readFileSync(new URL('../../../.github/workflows/' + name + '.yml', import.meta.url), 'utf8');
     assert.match(source, /pull_request:/);
-    assert.match(source, /head_repository.full_name == github.repository/);
+    if (name === 'publish-engine') assert.match(source, /head_repository.full_name == github.repository/);
     assert.match(source, /git checkout --detach "refs\/tags\/\$PACKAGE_RELEASE_TAG"/);
     assert.doesNotMatch(source, /ref:.*workflow_run.head_sha/);
     if (name === 'publish-engine') {
@@ -96,9 +96,24 @@ test('both package workflows admit automated releases, check PRs, and deliver au
       assert.match(source, /if: needs.resolve.outputs.publish == 'true'[\s\S]+run: gh release upload/);
     } else {
       const workflow = YAML.parse(source);
-      assert.deepEqual(workflow.on.workflow_run.workflows, ['CI/CD Pipeline', 'Desktop Release']);
-      assert.deepEqual(workflow.on.workflow_run.types, ['completed']);
-      assert.deepEqual(workflow.on.workflow_run.branches, ['main']);
+      assert.equal(workflow.on.workflow_run, undefined, 'privileged publication has no workflow_run trigger');
+      assert.deepEqual(workflow.on.push.branches, ['main'], 'main changes preserve checks-only admission');
+      for (const input of ['producer-run', 'producer-attempt']) {
+        assert.equal(workflow.on.workflow_dispatch.inputs[input].type, 'string');
+        assert.equal(workflow.on.workflow_dispatch.inputs[input].default, '');
+      }
+      const desktop = YAML.parse(readFileSync(new URL('../../../.github/workflows/desktop-release.yml', import.meta.url), 'utf8'));
+      const dispatch = desktop.jobs.finalize.steps.at(-1);
+      assert.equal(desktop.jobs.finalize.permissions.actions, 'write');
+      assert.equal(dispatch.if, "github.event_name != 'pull_request'");
+      assert.equal(dispatch['timeout-minutes'], 1);
+      assert.match(dispatch.run, /gh workflow run publish-vscode.yml/);
+      assert.match(dispatch.run, /--ref main/);
+      const protocol = readFileSync(new URL('../../../scripts/release-extension-dispatch.mjs', import.meta.url), 'utf8');
+      assert.match(protocol, /run.repository.full_name, expected.repository/);
+      assert.match(protocol, /run.head_repository.full_name, expected.repository/);
+      assert.match(protocol, /run.head_branch, 'main'/);
+      assert.match(protocol, /run.path, '.github\/workflows\/desktop-release.yml'/);
       assert.equal(workflow.jobs.resolve.steps.find(step => step.id === 'release').run,
         'node scripts/release-extension-transfer.mjs resolve');
       assert.ok(workflow.jobs.publish.steps.some(step => step.name === 'Run existing extension checks'));

@@ -59,6 +59,8 @@ function tryExecutionFailure(prompt) {
  * @returns {string|null} the language slug
  */
 function writeScriptLanguage(prompt, normalized) {
+  prompt = programTaskInstruction(prompt);
+  normalized = normalizePrompt(prompt);
   if (lexiconMentionsRole("program_genus", normalized) || lexiconMentionsRole("hello_world_reference", normalized)) return null;
   if (!lexiconMentionsRole("script_authoring_verb", normalized) || !lexiconMentionsRole("script_or_code_artifact", normalized)) return null;
   if (looksLikePythonFunctionSynthesis(prompt, canonicalizedPrompt(normalized))) return null;
@@ -81,17 +83,26 @@ function writeScriptLanguage(prompt, normalized) {
 function tryWriteScript(prompt, responseLanguage) {
   const language = writeScriptLanguage(prompt, normalizePrompt(prompt));
   if (!language) return null;
-  const template = writeProgramTemplate("hello_world", language);
-  const languageInfo = writeProgramLanguageInfo("hello_world", language);
-  const taskInfo = WRITE_PROGRAM_TASKS.hello_world;
+  const operand = programTaskOperand(prompt);
+  if (operand === null && programTaskPrintClaim(prompt)) return null;
+  const task = operand === null ? "hello_world" : operandProgramTask(prompt);
+  const documented = operand === null ? null : operandProgram(task, language, operand);
+  if (operand !== null && !documented?.recipe) return null;
+  const template = documented ? documented.recipe.entry : writeProgramTemplate(task, language);
+  const languageInfo = writeProgramLanguageInfo(task, language, documented);
+  const taskInfo = WRITE_PROGRAM_TASKS[task];
   const i18n = writeProgramStrings(responseLanguage);
-  const output = writeProgramExpectedOutput("hello_world", languageInfo, taskInfo);
-  const execution = writeProgramExecutionLines(language, "hello_world", template, output, i18n, responseLanguage);
+  const output = operand === null ? writeProgramExpectedOutput(task, languageInfo, taskInfo) : operand;
+  const execution = writeProgramExecutionLines(language, task, template, output, i18n, responseLanguage);
   return {
     intent: `write_script_${language}`,
     content: [i18n.intro(languageInfo.name, taskInfo.label), "", "```" + languageInfo.fence, template, "```", "", ...execution].join("\n"),
     confidence: 1.0,
-    evidence: [`response:write_program:hello_world:${language}`, `program_parameter:language:${language}`],
+    evidence: [`response:write_program:${task}:${language}`, `program_parameter:language:${language}`],
+    programExecution: { language, task, responseLanguage, output,
+      rediscoveredFrom: documented ? documented.recipe.rediscovery_source : documentationRediscoveredPage(task, language),
+      runCommand: programRunCommandLine(task, languageInfo.runCommand),
+      checkCommand: languageInfo.checkCommand || null, block: execution.join("\n") },
   };
 }
 
