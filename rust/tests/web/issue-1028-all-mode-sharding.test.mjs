@@ -171,8 +171,8 @@ test('measured ladder retirement caps each wave and records the new static DAG',
   const policy=readFileSync(join(root,'data/meta/ci-speed.lino'),'utf8');
   assert.doesNotMatch(policy,/workflow "\.github\/workflows\/issue-1028-agent-ladder\.yml"/);
   const record=readFileSync(join(root,'data/meta/ci-wall-clock.lino'),'utf8');
-  assert.match(record,/measured_minutes 120/);assert.match(record,/ceiling_minutes 225/);
-  assert.match(record,/workflow "\.github\/workflows\/issue-1028-agent-ladder\.yml"/);
+  assert.match(record,/measured_minutes 115/);assert.match(record,/ceiling_minutes 225/);
+  assert.match(record,/workflow "\.github\/workflows\/release\.yml"/);
 });
 
 

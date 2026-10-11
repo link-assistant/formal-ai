@@ -54,7 +54,7 @@ fn solve_issue_request_reads_the_work_item_before_project_lookup() {
 #[test]
 fn fetched_issue_prose_does_not_pair_content_with_a_later_filename() {
     let task = format!("Solve {ISSUE_URL} in this checkout as one whole task.");
-    let tools = ["web_fetch", "write_file", "run_command"];
+    let tools = ["web_fetch", "write_file", "run_shell_command"];
     let mut workspace = observed_tool_workspace::ToolWorkspace::new(&task);
     let mut messages = vec![ChatMessage::user(task)];
 
@@ -91,7 +91,7 @@ fn fetched_issue_prose_does_not_pair_content_with_a_later_filename() {
         for (index, call) in pending.iter().enumerate() {
             let arguments: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
             let command = arguments["command"].as_str().expect("auxiliary command");
-            assert_eq!(call.tool, "run_command");
+            assert_eq!(call.tool, "run_shell_command");
             assert!(
                 command.starts_with("mkdir -p -- .formal-ai && (lock=")
                     || command == "cat .formal-ai/general-change-plan.lino"

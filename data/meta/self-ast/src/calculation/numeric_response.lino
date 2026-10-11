@@ -1,0 +1,11 @@
+self_ast_census
+  target src/calculation/numeric_response.rs
+  language rust
+  fidelity signature
+  byte_len 1348
+  line_count 40
+  content_id source_module_cd135a8a847ee2c9
+  symbol_count 2
+  symbols
+    function numeric_calculation_response 2 40
+    static NUMERIC 7 10

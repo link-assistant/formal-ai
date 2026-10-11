@@ -356,48 +356,56 @@ jobs:
         timeout-minutes: 5
         env:
           PORT: 8879
+          OUT: /tmp/formal-ai-issue-715-evidence
         run: experiments/agent_cli_e2e/run_issue_715_learning.sh
       - name: "Run agent CLI E2E — self-hosting auto-learning (issue #657)"
         if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8881
+          OUT: /tmp/formal-ai-issue-657-evidence
         run: experiments/agent_cli_e2e/run_issue_657_metric.sh
       - name: "Run agent CLI E2E — hardcoded-language auto-learning (issue #659)"
         if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8882
+          OUT: /tmp/formal-ai-issue-659-evidence
         run: experiments/agent_cli_e2e/run_issue_659_learning.sh
       - name: "Run agent CLI E2E — bulk-lexeme auto-learning (issue #660)"
         if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8883
+          OUT: /tmp/formal-ai-issue-660-evidence
         run: experiments/agent_cli_e2e/run_issue_660_learning.sh
       - name: "Run agent CLI E2E — handler-precedence auto-learning (issue #663)"
         if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8885
+          OUT: /tmp/formal-ai-issue-663-evidence
         run: experiments/agent_cli_e2e/run_issue_663_learning.sh
       - name: "Run agent CLI E2E — client-contract auto-learning (issue #671)"
         if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8886
+          OUT: /tmp/formal-ai-issue-671-evidence
         run: experiments/agent_cli_e2e/run_issue_671_contract_learning.sh
       - name: "Run agent CLI E2E — repository statement audit (issue #661)"
         if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8884
+          OUT: /tmp/formal-ai-issue-661-evidence
         run: experiments/agent_cli_e2e/run_issue_661_statement_audit.sh
       - name: "Run agent CLI E2E — relative and whole-document audit (issue #885)"
         if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env:
           PORT: 8895
+          OUT: /tmp/formal-ai-issue-885-evidence
         run: experiments/agent_cli_e2e/run_issue_885_statement_audit.sh
       - name: "Run agent CLI E2E — proof translation invariant (issue #890)"
         if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
@@ -440,6 +448,7 @@ jobs:
         timeout-minutes: 8
         env:
           PORT: 8774
+          OUT: /tmp/formal-ai-issue-655-evidence
           TEST_BUDGET_SECONDS: 300
         run: |
           scripts/run-with-budget-warning.sh \

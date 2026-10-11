@@ -400,7 +400,7 @@ fn assert_additive_read_write(prompt: &str, language: &str) {
     );
 }
 
-/// An unknown insertion position cannot authorize an overwrite or any tool effect.
+/// An unknown insertion position permits only the prerequisite Read, never an overwrite.
 fn assert_unspecified_addition_refuses(prompt: &str, language: &str) {
     use formal_ai::agentic_coding::AgenticPlan;
     let tools = [
@@ -410,12 +410,28 @@ fn assert_unspecified_addition_refuses(prompt: &str, language: &str) {
         "write_file",
         "exec_command",
     ];
-    let workspace = observed_plan_tools::ToolWorkspace::new(prompt);
+    let mut workspace = observed_plan_tools::ToolWorkspace::new(prompt);
     let prior = "prior bytes α\n";
     workspace
         .write_initial("note.txt", prior)
         .expect("physical prior content");
     let messages = vec![ChatMessage::user(prompt)];
+    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &tools) else {
+        panic!("existing destination must be observed before insertion: {prompt}");
+    };
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0].tool, "read_file");
+    let observation = workspace.execute("position-read", &calls[0]);
+    assert!(!observation.is_error);
+    let mut messages = messages;
+    messages.push(ChatMessage::assistant_tool_calls(vec![
+        formal_ai::protocol::ToolCall::function(
+            "position-read",
+            &calls[0].tool,
+            calls[0].arguments.clone(),
+        ),
+    ]));
+    messages.push(observation);
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
         panic!("unspecified addition position must refuse without a physical operation: {prompt}");
     };
@@ -582,14 +598,27 @@ fn explicit_content_and_file_object_route_write_variations() {
             if appended[locale].contains(action) {
                 assert_additive_read_write(&prompt, ["en", "ru", "hi", "zh", "es"][locale]);
             } else if unspecified[locale].contains(action) {
-                assert_unspecified_addition_refuses(
-                    &prompt,
-                    ["en", "ru", "hi", "zh", "es"][locale],
-                );
+                let frame =
+                    formal_ai::agentic_coding::general_planner::owned_declared_create_frame(
+                        &prompt,
+                    )
+                    .expect("noun-before-destination declares creation");
+                assert_eq!(frame, ("note.txt".to_owned(), "hello".to_owned()));
+                assert_eq!(call(&prompt).0, "write_file", "{prompt}");
             } else {
                 assert_eq!(call(&prompt).0, "write_file", "{prompt}");
             }
         }
+    }
+}
+
+#[test]
+fn destination_before_noun_retains_unknown_insertion_position() {
+    for prompt in [
+        "add to file note.txt containing hello",
+        "add to the file note.txt containing hello",
+    ] {
+        assert_unspecified_addition_refuses(prompt, "en");
     }
 }
 

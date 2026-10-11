@@ -1,5 +1,5 @@
 // Twin of numericCalculationResponse in the maintained worker arithmetic handler.
-pub(crate) fn numeric_calculation_response<'a>(
+pub fn numeric_calculation_response<'a>(
     prompt: &str,
     expression: &str,
     formatted: &'a str,

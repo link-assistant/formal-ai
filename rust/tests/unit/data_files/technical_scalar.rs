@@ -30,6 +30,9 @@ pub(super) fn is_regex_template(content: &str, index: usize, keyword: &str, valu
         parents.pop();
     }
     let parent = parents.last().map_or("", |(_, name)| *name);
+    if parent == "workspace-discovery-grammar" && (parents.len() != 1 || parents[0].0 != 0) {
+        return false;
+    }
     lino_pipe_value_is_technical_regex(keyword, value.trim(), parent)
 }
 
@@ -41,6 +44,34 @@ fn regex_scalar_context_uses_the_actual_parent_and_line() {
         2,
         "pattern",
         "\"^(?:Create|Write)$\""
+    ));
+    let grammar = include_str!("../../../../data/seed/workspace-discovery-grammar.lino");
+    let (line_index, line) = grammar
+        .lines()
+        .enumerate()
+        .find(|(_, line)| line.trim_start().starts_with("pattern "))
+        .expect("actual workspace matcher pattern");
+    let value = line.trim_start().strip_prefix("pattern ").unwrap();
+    assert!(is_regex_template(grammar, line_index, "pattern", value));
+    assert!(!is_regex_template(
+        &grammar.replace("workspace-discovery-grammar", "ordinary-values"),
+        line_index,
+        "pattern",
+        value,
+    ));
+    let nested_workspace = format!(
+        "ordinary-values\n{}",
+        grammar
+            .lines()
+            .map(|line| format!("  {line}"))
+            .collect::<Vec<_>>()
+            .join("\n")
+    );
+    assert!(!is_regex_template(
+        &nested_workspace,
+        line_index + 1,
+        "pattern",
+        value,
     ));
     let nested = "root\n  form 1\n    aliases\n      pattern \"^(?:Create|Write)$\"";
     assert!(!is_regex_template(
@@ -59,8 +90,14 @@ fn regex_scalar_context_uses_the_actual_parent_and_line() {
 
 fn lino_pipe_value_is_technical_regex(keyword: &str, value: &str, parent: &str) -> bool {
     // Matcher contracts consume pattern scalars under form/composition nodes.
+    // Workspace discovery consumes a start-anchored prefix regex at its grammar root.
     // Quoted ordinary fields remain multi-value candidates, never exemptions.
-    if keyword != "pattern" || !matches!(parent, "form" | "composition") {
+    if keyword != "pattern"
+        || !matches!(
+            parent,
+            "form" | "composition" | "workspace-discovery-grammar"
+        )
+    {
         return false;
     }
     if !value.starts_with('"') || !value.ends_with('"') {
@@ -74,7 +111,9 @@ fn lino_pipe_value_is_technical_regex(keyword: &str, value: &str, parent: &str) 
         return false;
     }
     let pattern = node.id.as_str();
-    if !pattern.starts_with('^') || !pattern.ends_with('$') {
+    if !pattern.starts_with('^')
+        || (parent != "workspace-discovery-grammar" && !pattern.ends_with('$'))
+    {
         return false;
     }
     let placeholders = Regex::new(r"\{[a-z]+(?:-[a-z]+)*\}").expect("fixed placeholder grammar");

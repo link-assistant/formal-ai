@@ -59,5 +59,6 @@ export function finalAnswer(document) {
 
 /** Mirrors `fn verification_command` in rust/src/agentic_coding/google_trends_catalog.rs. */
 export function verificationCommand() {
-  return `python3 -c p='${GOOGLE_TRENDS_CATALOG_PATH}';s=open(p).read().splitlines();print(len(s));print('\\n'.join(s[:12]))`;
+  const program = `p='${GOOGLE_TRENDS_CATALOG_PATH}';s=open(p).read().splitlines();print(len(s));print('\\n'.join(s[:12]))`;
+  return "python3 -c '" + program.replaceAll("'", String.fromCharCode(39, 92, 39, 39)) + "'";
 }

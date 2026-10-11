@@ -69,7 +69,8 @@ pub fn observed_target_write(
         messages.push(json!({"role": "assistant", "tool_calls": calls}));
         let read_observation = (tool == "read_file").then(|| {
             let success = files.contains_key(path);
-            json!({"path": path, "format": "raw", "success": success, "complete": success})
+            json!({"path": path, "format": "raw", "success": success, "complete": success,
+                "error_code": if success { Value::Null } else { json!("ENOENT") }})
         });
         messages.push(json!({
             "role": "tool", "tool_call_id": call["id"], "name": tool,

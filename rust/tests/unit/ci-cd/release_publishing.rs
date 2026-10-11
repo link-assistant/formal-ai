@@ -231,6 +231,8 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
     let app_js = read_web_app_source(manifest_dir);
     let seed_loader_js = fs::read_to_string(format!("{manifest_dir}/js/seed_loader.js")).unwrap();
     let worker_js = read_worker_source(manifest_dir);
+    let worker_prerequisites_js =
+        fs::read_to_string(format!("{manifest_dir}/js/worker-script-prerequisites.js")).unwrap();
     let stamp_script =
         fs::read_to_string(format!("{manifest_dir}/scripts/stamp-pages-artifact.sh")).unwrap();
     let wait_script = fs::read_to_string(format!(
@@ -281,9 +283,14 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
     }
     assert!(app_js.contains("withAssetVersion(\"worker/formal_ai_worker.js\")"));
     assert!(seed_loader_js.contains("fetchText(withAssetVersion(file))"));
-    assert!(worker_js.contains("importScripts(withAssetVersion(\"seed-files.js\"))"));
-    assert!(worker_js.contains("importScripts(withAssetVersion(\"seed_loader.js\"))"));
-    assert!(worker_js.contains("importScripts(withAssetVersion(modulePath))"));
+    assert!(worker_js.contains("createWorkerAssetLoader(importScripts, withAssetVersion)"));
+    assert!(worker_js.contains("loadWorkerAsset(\"seed-files.js\")"));
+    assert!(worker_js.contains("loadWorkerAsset(\"seed_loader.js\")"));
+    assert!(
+        worker_js.contains("loadWorkerModules(self.FORMAL_AI_WORKER_MODULES, loadWorkerAsset)")
+    );
+    assert!(worker_prerequisites_js.contains("nativeImport(withAssetVersion(asset))"));
+    assert!(worker_prerequisites_js.contains("loadWorkerAsset(modulePath)"));
     assert!(worker_js.contains("fetch(withAssetVersion(\"formal_ai_worker.wasm\"))"));
     for asset in [
         "connectivity.css?v=__FORMAL_AI_ASSET_VERSION__",

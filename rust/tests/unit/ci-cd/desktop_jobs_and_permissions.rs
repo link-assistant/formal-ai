@@ -42,7 +42,7 @@ fn every_desktop_job_has_a_bounded_runtime_and_least_privilege() {
     }
     let finalize = desktop.split("  finalize:\n").nth(1).expect("finalize job");
     assert!(finalize.contains("timeout-minutes:"));
-    assert!(finalize.contains("    permissions:\n      actions: read\n      contents: write"));
+    assert!(finalize.contains("    permissions:\n      actions: write\n      contents: write"));
 }
 
 #[test]

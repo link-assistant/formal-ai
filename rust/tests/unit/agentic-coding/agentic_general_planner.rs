@@ -211,10 +211,11 @@ fn agentic_general_planner_rejects_non_referential_payload() {
 #[test]
 fn general_plan_is_emitted_before_execution() {
     let messages = vec![ChatMessage::user(EN_TASK)];
-    let tools = ["write_file", "run_command"];
+    let tools = ["write_file", "run_shell_command"];
     let AgenticPlan::ToolCalls(calls) = plan_chat_step(&messages, &tools).expect("plan") else {
         panic!("tool call expected")
     };
+    assert_eq!(calls[0].tool, "run_shell_command");
     assert!(calls[0].arguments.contains(PLAN_PATH));
     assert!(calls[0].arguments.contains("general_change_plan"));
 }
@@ -582,7 +583,7 @@ fn command_capture_parent_file_is_a_real_failure_without_false_completion() {
     workspace
         .write_initial("reports", "existing file")
         .expect("real obstructing parent");
-    let tools = ["read", "write", "run_command"];
+    let tools = ["read", "write", "run_shell_command"];
     let mut messages = vec![ChatMessage::user(prompt)];
     for turn in 0..8 {
         match plan_chat_step(&messages, &tools).expect("planned output task") {

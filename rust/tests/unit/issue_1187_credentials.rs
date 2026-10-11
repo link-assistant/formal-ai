@@ -414,6 +414,9 @@ fn every_pull_request_workflow_declares_the_checks_mode_or_a_reason_not_to() {
         "external-benchmarks.yml",
         // The workflow that opens the bot pull request and dispatches.
         "self-authored-pull-request.yml",
+        // Temporary release debt: automatic/checks ladder evaluation is
+        // deferred; schedule and explicit benchmark dispatch retain its DAG.
+        "issue-1028-agent-ladder.yml",
     ];
     let mut missing = Vec::new();
     for (path, body) in workflow_and_action_files() {

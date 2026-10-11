@@ -513,7 +513,9 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // Commit c1832e130 then grounded `returning` as a complete authored meaning
     // with all five metadata fields and all five languages: tasks now has 35
     // records, so 33 + 10 + 35 + 38 = 116; the gap contract remains unchanged.
-    assert_eq!(coding_records, 116, "coding-path regression floor");
+    // The complete program-termination-clause adds role, precondition, effect,
+    // unit, example and all registered languages: 116 + 1 = 117.
+    assert_eq!(coding_records, 117, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the

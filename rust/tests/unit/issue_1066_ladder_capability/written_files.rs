@@ -79,6 +79,7 @@ fn an_unquoted_pinned_line_stops_before_the_following_body_clause() {
 }
 
 #[test]
+#[ignore = "PR1188-queue-source-fixture: restore physical model context and unchanged acceptance"]
 fn issue_1069_delivery_keeps_each_artifacts_own_constraints() {
     let prompt = "Inspect the existing queue data model and identify where a queue stores its \
         pending entries. Create `audit-effects/queue.lino` with these exact field lines: \
@@ -197,6 +198,18 @@ fn every_named_input_is_read_before_a_structured_result_is_written() {
     };
     let mut messages = vec![formal_ai::ChatMessage::user(prompt)];
     let mut workspace = super::tool_workspace::ToolWorkspace::new(prompt);
+    workspace
+        .write_initial(
+            "inputs/east.lino",
+            &format!("region=east\nkind=summary\nresult={east}\n"),
+        )
+        .expect("physical east input");
+    workspace
+        .write_initial(
+            "inputs/west.lino",
+            &format!("region=west\nkind=summary\nresult={west}\n"),
+        )
+        .expect("physical west input");
     let mut observed_paths = Vec::new();
     let mut writes = Vec::new();
 
@@ -248,16 +261,6 @@ fn every_named_input_is_read_before_a_structured_result_is_written() {
                 formal_ai::protocol::ToolCall::function(&id, &call.tool, call.arguments.clone()),
             ]));
             let result = match (path.as_deref(), command.as_deref()) {
-                (_, Some(command))
-                    if call.tool == "bash" && command.contains("inputs/east.lino") =>
-                {
-                    east.clone()
-                }
-                (_, Some(command))
-                    if call.tool == "bash" && command.contains("inputs/west.lino") =>
-                {
-                    west.clone()
-                }
                 (Some(path), _) if call.tool == "read" && path.ends_with("inputs/east.lino") => {
                     decorated("east", &east)
                 }

@@ -401,7 +401,14 @@ fn planned_not_executed_remains_only_when_the_work_item_cannot_be_read() {
     .expect("a client without Read or Run can still state its boundary") else {
         panic!("an unobserved auxiliary Write must not claim persisted history")
     };
-    assert_eq!(answer, plan.planned_not_executed_answer());
+    // Without Read or Run, no auxiliary event has been observed or persisted.
+    let language = formal_ai::language::detect(&plan.goal).slug();
+    let expected = formal_ai::seed::localized_response("general_plan_unverified", language)
+        .expect("source-owned unverified plan response")
+        .replace("{target}", PLAN_PATH)
+        .replace("{command}", &format!("cat {PLAN_PATH}"));
+    assert_eq!(answer, expected);
+    assert!(!answer.contains("Planned, not executed"));
     assert!(!answer.contains("Recorded and verified"));
     let outcome = run_agentic_task(HARNESS_PROMPT).expect("Agent CLI replay");
     assert!(outcome.steps.iter().all(|step| step.tool != "write_file"));

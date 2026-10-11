@@ -212,12 +212,73 @@ impl ToolWorkspace {
             ),
             _ => json!({"is_error": true, "error": "unsupported fixture tool"}),
         };
-        ChatMessage::tool_result(id, &call.tool, result.to_string())
+        let failed = result["is_error"].as_bool() == Some(true)
+            || result["timed_out"].as_bool() == Some(true)
+            || result
+                .get("exit_code")
+                .is_some_and(|status| status.as_i64() != Some(0));
+        if failed {
+            ChatMessage::tool_result_error(id, &call.tool, result.to_string())
+        } else {
+            ChatMessage::tool_result(id, &call.tool, result.to_string())
+        }
     }
 }
 
 impl Drop for ToolWorkspace {
     fn drop(&mut self) {
         let _ = std::fs::remove_dir_all(self.workspace.root());
+    }
+}
+
+#[cfg(test)]
+mod process_observation_tests {
+    use super::*;
+
+    #[test]
+    fn nonzero_exit_marks_failure_and_preserves_both_streams() {
+        let mut workspace = ToolWorkspace::new("observe a failing command");
+        let call = PlannedToolCall {
+            tool: "run_shell_command".to_owned(),
+            arguments:
+                json!({"command": "printf 'actual stdout'; printf 'actual stderr' >&2; exit 7"})
+                    .to_string(),
+        };
+        let observed = workspace.execute("failed-command", &call);
+        assert!(observed.is_error);
+        let receipt: Value = serde_json::from_str(&observed.content.plain_text()).unwrap();
+        assert_eq!(receipt["exit_code"], 7);
+        assert_eq!(receipt["stdout"], "actual stdout");
+        assert_eq!(receipt["stderr"], "actual stderr");
+        assert_eq!(receipt["timed_out"], false);
+        assert_eq!(receipt["complete"], true);
+    }
+
+    #[test]
+    fn successful_error_named_stdout_is_data_not_a_failure() {
+        let mut workspace = ToolWorkspace::new("observe successful authored text");
+        let call = PlannedToolCall {
+            tool: "run_shell_command".to_owned(),
+            arguments: json!({"command": "printf 'Error: authored text'"}).to_string(),
+        };
+        let observed = workspace.execute("successful-command", &call);
+        assert!(!observed.is_error);
+        let receipt: Value = serde_json::from_str(&observed.content.plain_text()).unwrap();
+        assert_eq!(receipt["exit_code"], 0);
+        assert_eq!(receipt["stdout"], "Error: authored text");
+        assert_eq!(receipt["stderr"], "");
+    }
+
+    #[test]
+    fn unsupported_tool_is_explicitly_a_failed_observation() {
+        let mut workspace = ToolWorkspace::new("observe an unsupported tool");
+        let call = PlannedToolCall {
+            tool: "unknown_fixture_provider".to_owned(),
+            arguments: "{}".to_owned(),
+        };
+        let observed = workspace.execute("unsupported-command", &call);
+        assert!(observed.is_error);
+        let receipt: Value = serde_json::from_str(&observed.content.plain_text()).unwrap();
+        assert_eq!(receipt["error"], "unsupported fixture tool");
     }
 }

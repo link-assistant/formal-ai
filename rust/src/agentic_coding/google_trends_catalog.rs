@@ -7,15 +7,14 @@
 
 use std::fmt::Write as _;
 
-use crate::google_trends_catalog::{google_trends_catalog, GoogleTrendsCatalog};
+use crate::google_trends_catalog::{GoogleTrendsCatalog, google_trends_catalog};
 
 /// The workspace path the planner writes, mirrored by the committed artifact under
 /// `data/meta/`.
 pub const GOOGLE_TRENDS_CATALOG_PATH: &str = "google-trends-catalog.lino";
 
 /// A differently worded task for the Google Trends catalog recipe.
-pub const GOOGLE_TRENDS_CATALOG_TASK: &str =
-    "Convert the Google Trends top 10 searches into multilingual Formal AI test prompts, \
+pub const GOOGLE_TRENDS_CATALOG_TASK: &str = "Convert the Google Trends top 10 searches into multilingual Formal AI test prompts, \
      include two request variations in every supported language, answer each request, \
      and record the Google Trends catalog in Links Notation.";
 
@@ -70,8 +69,12 @@ pub fn final_answer(document: &str) -> String {
 /// Shell command used by the agentic recipe to verify the written catalog exists.
 #[must_use]
 pub fn verification_command() -> String {
+    let program = format!(
+        "p='{GOOGLE_TRENDS_CATALOG_PATH}';s=open(p).read().splitlines();print(len(s));print('\\n'.join(s[:12]))"
+    );
     format!(
-        "python3 -c p='{GOOGLE_TRENDS_CATALOG_PATH}';s=open(p).read().splitlines();print(len(s));print('\\n'.join(s[:12]))"
+        "python3 -c {}",
+        super::general_planner::shell_quote(&program)
     )
 }
 

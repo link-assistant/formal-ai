@@ -74,5 +74,6 @@ export function finalAnswer(document) {
 
 /** Mirrors `fn verification_command` in rust/src/agentic_coding/google_trends_learning.rs. */
 export function verificationCommand() {
-  return `python3 -c p='${GOOGLE_TRENDS_LEARNING_PATH}';s=open(p).read().splitlines();print(len(s));print('\\n'.join(s[:14]))`;
+  const program = `p='${GOOGLE_TRENDS_LEARNING_PATH}';s=open(p).read().splitlines();print(len(s));print('\\n'.join(s[:14]))`;
+  return "python3 -c '" + program.replaceAll("'", String.fromCharCode(39, 92, 39, 39)) + "'";
 }
