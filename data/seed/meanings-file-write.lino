@@ -674,3 +674,11 @@ meanings
     lexeme hi "स्रोत फ़ाइल की सामग्री दिखाएं"
     lexeme zh "显示源文件中的内容"
     lexeme es "mostrar contenido dentro de un archivo fuente"
+  read-report
+    defined-by action
+    role file-read-mode-contract
+    precondition "a complete read-report form owns source operands, report artifact kind and output target; the read and write permissions remain separately required"
+    effect "binds the existing source-read followed by evidence-report write plan, without certifying source contents or execution"
+    unit "one source-bound report plan"
+    example "Read source.txt. Write a report to findings.md."
+    grounding "data/seed/meanings-file-write.lino; js/agentic/file_read/ownership.mjs"
