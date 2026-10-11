@@ -22,13 +22,13 @@ translation_blockers
   blockers_per_item 6 131
   blockers_per_item 7 107
   blockers_per_item 8 79
-  blockers_per_item 9 82
+  blockers_per_item 9 81
   blockers_per_item 10 55
   blockers_per_item 11 39
   blockers_per_item 12 30
   blockers_per_item 13 14
   blockers_per_item 14 26
-  blockers_per_item 15 18
+  blockers_per_item 15 19
   blockers_per_item 16 17
   blockers_per_item 17 10
   blockers_per_item 18 7
@@ -65,13 +65,13 @@ construct "arrow callback of .filter()" items 199 only 0
 construct "nullish coalescing" items 179 only 0
 construct "method call .join()" items 169 only 0
 construct "method call .some()" items 153 only 0
-construct "undefined" items 151 only 0
+construct "undefined" items 152 only 0
 construct "arrow callback of .some()" items 145 only 0
 construct "method call .split()" items 145 only 0
 construct "import from outside the module directory" items 144 only 144
 construct "arrow callback of .find()" items 141 only 0
 construct "method call .find()" items 136 only 0
-construct "assignment of a field or element" items 122 only 0
+construct "assignment of a field or element" items 123 only 0
 construct "destructuring" items 115 only 0
 construct "global call String()" items 108 only 0
 construct "method call .test()" items 106 only 0
@@ -82,18 +82,18 @@ construct "method call .sort()" items 86 only 0
 construct "imported value" items 82 only 2
 construct "method call .replace()" items 71 only 0
 construct "optional chaining" items 70 only 0
-construct "method call .get()" items 68 only 0
+construct "method call .get()" items 69 only 0
 construct "method call .indexOf()" items 66 only 0
 construct "arrow callback of .sort()" items 63 only 0
 construct "typeof operator" items 63 only 2
 construct "method call .every()" items 62 only 0
-construct "new Map" items 61 only 5
-construct "method call .set()" items 57 only 0
+construct "new Map" items 62 only 5
+construct "method call .set()" items 58 only 0
 construct "try statement" items 55 only 0
 construct "arrow callback of .every()" items 52 only 0
 construct "global value Boolean" items 42 only 0
+construct "object spread" items 42 only 0
 construct "method call .flatMap()" items 41 only 0
-construct "object spread" items 41 only 0
 construct "arrow callback of .reduce()" items 35 only 0
 construct "method call .reduce()" items 35 only 0
 construct "arrow callback of .flatMap()" items 33 only 0
