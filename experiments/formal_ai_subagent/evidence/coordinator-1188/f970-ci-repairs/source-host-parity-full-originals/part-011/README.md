@@ -1,0 +1,5 @@
+# Complete-consumption report repair and bounded source proof
+
+This eleventh finite part preserves the full frozen report source originals, previous unsafe-header and duplicate-read failures, independent physical controls and source audit, root source inverses/stock qualifications, and closed archive receipts. Existing exact gzip objects are verified and reused. The selected source/controller input remains within32MiB; native builds, executable downloads, whole checkout/runtime copies and broad temporary scans are excluded.
+
+The installed six effects qualify75 report controls,104 original Read controls and34 governed controls; all16 process checks pass and all221/961 complete specification objects remain exact. Independent27 physical controls and192 source checks pass. These are bounded source qualifications; final hosted/native/release acceptance remains Pending. The fresh465-file stock four-shard execution is still running and its mutable streams are outside this cut. Supplied guarded automation has zero autonomy/amplification/cost credit. The running archive receipt is excluded nonrecursively.

@@ -1,0 +1,42 @@
+{
+  "ok": true,
+  "part": 11,
+  "totalParts": 11,
+  "originalUnionIndexSHA256": null,
+  "originalLogicalMembersAcrossThisFiniteSelection": 280,
+  "logicalMembersThisPart": 280,
+  "currentControllerMembers": 2,
+  "selectedInputsThisPart": 273,
+  "sourceAndControllerInputBytes": 6742996,
+  "inputLimitBytes": 33554432,
+  "uniqueEncodedBlobs": 243,
+  "newEncodedBlobs": 215,
+  "reusedPreviousEncodedBlobs": 28,
+  "newCompressedBytes": 753409,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 282
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 243
+    }
+  ],
+  "selectionSHA256": "51b866d47fbbe0f799011ea40161156e7c86fe21962d40828b74da5ea465301f",
+  "allCurrentSourceGuardsExact": true,
+  "originalInputBytesPreserved": true,
+  "knownLosses": [],
+  "pending": [
+    "Own running archive receipt excluded nonrecursively; final hosted/runtime/native/release acceptance pending; fresh465 four-shard qualification is running and its evolving streams are excluded",
+    "Report source6 qualifies75report+104originalRead+34governed controls and16 maintained process gates, all221/961 complete inventory objects exact. Independent27 physical controls and192 source audit checks preserve authentic v2/v3 unsafe/duplicate-read failures and observer corrections. Installed stock original4 passes without loaders. Fresh465/old456 stock four shards are a separate still-running source guard window; no mixed old results promoted. Original policies/assertions/scanner/deadline caps unchanged. Native execution not performed locally. At least two dedicated FormalAI-only actors remain assigned; supplied source effects carry zero autonomy/amplification/cost credit."
+  ],
+  "ownRunningReceiptExcluded": true,
+  "autonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "actualCost": "Unknown",
+  "productionAcceptance": "Pending"
+}
