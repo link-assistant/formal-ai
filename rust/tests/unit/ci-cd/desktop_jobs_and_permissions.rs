@@ -120,10 +120,13 @@ fn reviewed_dependency_warnings_are_narrowly_classified() {
         desktop
             .matches("scripts/install-node-dependencies.sh")
             .count(),
-        // Two install steps, plus the pull_request path filter that makes a
-        // change to the script re-run the packaging dry run (issue #808).
-        3
+        // Two install steps, the pull_request path filter (issue #808),
+        // and the trusted installer capture before selected-source checkout.
+        4
     );
+    assert!(desktop.contains(r#"cp desktop/scripts/prefetch-windows-packaging.mjs desktop/scripts/prefetch-builder-toolsets.mjs scripts/install-node-dependencies.sh "$protocol_dir/""#));
+    assert!(desktop.contains(r#"INSTALL_NODE_DEPENDENCIES_MODE: "${{ matrix.label == 'windows-arm64' && 'ci' || 'install' }}""#));
+    assert!(desktop.contains(r#"run: if [ "${{ matrix.label }}" = windows-arm64 ]; then bash "$FORMAL_AI_NATIVE_PROTOCOL_DIR/install-node-dependencies.sh" "$GITHUB_WORKSPACE/desktop"; else scripts/install-node-dependencies.sh desktop; fi"#));
     assert!(desktop.contains("NODE_OPTIONS: --disable-warning=DEP0005"));
     assert!(
         desktop.contains("actions/download-artifact/issues/484")
