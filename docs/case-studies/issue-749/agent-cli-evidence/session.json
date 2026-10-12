@@ -8,7 +8,7 @@
       "arguments": {
         "command": "printf 'issue-749-driver=passed\\n'"
       },
-      "result": "issue-749-driver=passed\n",
+      "result": "{\"command\":\"printf 'issue-749-driver=passed\\\\n'\",\"complete\":true,\"exit_code\":0,\"schema\":\"command-execution-receipt/v1\",\"stderr\":\"\",\"stdout\":\"issue-749-driver=passed\\n\",\"timed_out\":false,\"truncated\":false}",
       "tool": "run_command"
     }
   ],

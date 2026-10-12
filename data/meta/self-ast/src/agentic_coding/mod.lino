@@ -11,7 +11,7 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 246
+    total_link_count 247
     named_node_count 64
     distinct_node_kinds 10
     node_kinds
