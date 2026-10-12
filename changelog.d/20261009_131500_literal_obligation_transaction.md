@@ -1,1 +1,0 @@
-Explicit literal requests with multiple declared artifacts now share the existing obligation transaction before semantic recipes inspect payloads. Completion requires independent successful readbacks for every artifact; unavailable tools and underivable mandatory clauses remain honest gaps. Both runtimes preserve single-file routing and public final projections.

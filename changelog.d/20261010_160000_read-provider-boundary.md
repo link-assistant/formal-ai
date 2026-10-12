@@ -1,1 +1,0 @@
-Bind actual complete filesystem Read observations and caught Read failures to outer provider metadata in the JavaScript dogfood driver and auxiliary event providers. Preserve the legacy execute text projection, raw source bytes, event history safeguards and unknown bare-source status.

@@ -1,1 +1,0 @@
-Scope authored artifact kinds to their action and destination header, excluding filename and content bytes. Preserve Unicode offsets and genuine callable guards. The original L21 task now writes its separate effect and proof records; independent record readback remains pending.

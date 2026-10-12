@@ -1,1 +1,0 @@
-Literal content, objective and pinned-line cues now map lowercase matches back to original UTF16/UTF8 character boundaries. Expanding or shrinking Unicode case mappings preserve exact payload bytes and circumfix closers; invalid interior boundaries refuse. Forty-four focused JavaScript controls pass; native execution remains for CI.
