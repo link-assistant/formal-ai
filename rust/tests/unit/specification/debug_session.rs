@@ -690,7 +690,7 @@ fn a_served_chat_turn_answers_only_after_its_last_stage() {
             })
             .to_string();
             std::thread::scope(|scope| {
-                let _release = ReleaseDebugSessionOnDrop(&session);
+                let _release = ReleaseDebugSessionOnDrop(session);
                 let answered = scope.spawn(|| {
                     with_connection_scope(
                         || true,
