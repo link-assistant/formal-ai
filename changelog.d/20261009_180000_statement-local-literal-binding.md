@@ -1,1 +1,0 @@
-Literal-write action binding now uses the target’s own prose statement and checked source ranges, preventing cross-statement native slicing panics. External regressions preserve multilingual, Unicode, declarative, postposed, read-scope and exact quoted-payload behavior.

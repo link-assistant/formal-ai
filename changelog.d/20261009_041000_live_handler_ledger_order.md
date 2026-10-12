@@ -1,1 +1,0 @@
-The migration ledger follows current production rank order with identical records and statuses. Native census pins now include the already-delivered seed rule requirement_listing:59 migrated,26 justified native,13 pending; debt ceilings stay unchanged. Historical shell replay uses its captured tool schema.
