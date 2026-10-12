@@ -6,6 +6,8 @@ PR #1188 merged at `1b4c92e01e74d6ded097005deae1e4bb4054a611`. Production run 38
 
 The temporary PR1196-only positive-authorship deferral is recorded in [release-readiness technical debt](release-readiness-technical-debt.md). Strict trailer validation, actual zero-authorship measurement and debt checks remain active; main retains its standing report. Supplied repair programs receive zero autonomy credit. The original thirty unfinished acceptances and original forty coding/self-coding acceptance zero remain unchanged.
 
+The SDK 1.0 migration adds one named temporary deferral, [PR1196-SDK1-native-JS-Rust-census-alignment](release-readiness-technical-debt.md#pr1196-sdk1-native-js-rust-census-alignment). The original shared-grammar test body is retained; a standalone active check preserves all three vendored artifact hashes and source records, and every other original census assertion stays active. Source-addressed historical census comparisons do not establish fresh SDK 1.0 native/JavaScript parser parity. That acceptance remains pending genuine source-bound native evidence and coengine validation.
+
 Release-first checkpoint 2026-10-12T03:17:12.197Z: Spanish coding ownership and the eight-call fixture are qualified privately; the package-permission assertion and full worker closure (one exact 38-line budget and its browser loader entry) are in the coordinated repair batch. Fresh hosted validation and native census for the next head remain pending; the original 30 requirements remain unfinished, with no autonomy credit from supplied repair programs. Intel PR cache warm time was 14m36s; cold main/tag behavior and publication remain unproved.
 
 ## Projection repair checkpoint — UTC 2026-10-12 02:11
