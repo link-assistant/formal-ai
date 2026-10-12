@@ -81,3 +81,9 @@ original commands and strict attribution unchanged; no trailer-only contribution
 backdated clock, ledger override, threshold reduction or broad continue-on-error
 may substitute for the original obligation. Source qualification of this policy
 change is not authorship, hosted CI success, native acceptance or publication.
+
+## PR1196-native-rust-grammar-generator
+
+The `meta-language` 1.0.0 dependency upgrade keeps a native Rust parser, but removes its `tree-sitter-rust` dependency. `scripts/generate-program-cst-grammars.rs` currently discovers grammar names only from Cargo package dependency declarations. The official published index therefore predicts 16 generated rows instead of the existing 17; five other native parser languages retain their tree-sitter oracle declarations as development dependencies. This is a maintenance generator limitation, with no CI gate or newly skipped test. Keep the current canonical 17 production grammar rows and original runtime assertions.
+
+Restore by deriving native grammar support from the actual resolved SDK package catalog and parser sources, combining it with the dependency-derived set, and verifying all 17 original rows through the generator and native runtime checks. Do not append an unverified Rust capability, drop a supported row, or count historical SDK parser evidence as fresh 1.0.0 validation.
