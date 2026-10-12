@@ -61,8 +61,8 @@ const GENERATOR = 'node experiments/formal_ai_subagent/apply-notation-rules.mjs 
 
 /** The roots whose code reads the notation. */
 const READER_ROOTS = ['js', 'scripts', 'rust/src', 'rust/tests', 'rust/examples', 'packages', 'desktop', 'experiments/js_dogfood', 'experiments/formal_ai_subagent'];
-/** Copies and generated output, never edited as readers. */
-const NOT_READER = /^(?:js\/seed|js\/vendor|rust\/embedded|ts)\/|\.bundle\.js$|(?:^|\/)node_modules\/|^experiments\/formal_ai_subagent\/sandboxes\//u;
+/** Copies, generated output and immutable evidence archives are not live readers. */
+const NOT_READER = /^(?:js\/seed|js\/vendor|rust\/embedded|ts)\/|\.bundle\.js$|(?:^|\/)node_modules\/|^experiments\/formal_ai_subagent\/(?:sandboxes|evidence)\//u;
 /** The `.lino` files that are history or copies, never notation to rename. */
 const NOT_NOTATION = /^(?:rust\/embedded|docs\/case-studies|dev|experiments)\/|\/sandboxes\//u;
 /**

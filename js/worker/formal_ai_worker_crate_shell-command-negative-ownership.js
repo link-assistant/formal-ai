@@ -9,7 +9,7 @@
 const { callerContextVocabulary } = crateRequire("crate/seed_caller_context.mjs");
 const { containsCjk, mentionsRole } = crateRequire("crate/seed_meanings.mjs");
 const { quotedSegmentSpans } = crateRequire("crate/normal_markov.mjs");
-const { rawLowercaseSpan } = crateRequire("write_request/lowercase_spans.mjs");
+const { rawLowercaseSpan } = crateRequire("write_request/raw_lowercase_span.mjs");
 const { isAlphanumeric } = crateRequire("crate/rust_str.mjs");
 
 function negatedCommandPolicy(sentence) {

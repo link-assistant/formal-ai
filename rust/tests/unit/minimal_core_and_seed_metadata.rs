@@ -593,8 +593,8 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // shape as every addition above it.
     // The last 24 are the sentences a change route says its change in, and they
     // are four intents plus one response id per registered language for each:
-    // `coding_member_inserted`, `coding_member_already_present`,
-    // `coding_text_replaced` and `coding_identifier_renamed`. A route that
+    // `coding-member-inserted`, `coding-member-already-present`,
+    // `coding-text-replaced` and `coding-identifier-renamed`. A route that
     // reported only `{path}` told a caller which file it had touched and never
     // what it had done to it, which is not a record of a change -- the issue
     // #1028 ladder asks each leaf's proof for "at least four words that state

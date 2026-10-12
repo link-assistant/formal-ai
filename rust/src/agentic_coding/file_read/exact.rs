@@ -155,7 +155,7 @@ pub(super) fn plan_direct_file_reads(
 
     let language = crate::language::detect(request);
     AgenticPlan::Final(
-        seed::localized_response("file_read_many_unavailable", language.slug()).unwrap_or_default(),
+        seed::localized_response("file-read-many-unavailable", language.slug()).unwrap_or_default(),
     )
 }
 

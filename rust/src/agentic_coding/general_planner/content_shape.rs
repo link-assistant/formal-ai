@@ -245,6 +245,15 @@ pub(in crate::agentic_coding) fn owned_semantic_authoring_lead(request: &str) ->
             &crate::engine::normalize_prompt(&view[..start]),
         )
     {
+        let normalized = crate::engine::normalize_prompt(&view);
+        if let (Some(task), Some(language)) = (
+            crate::coding::program_task_by_alias(&normalized),
+            crate::coding::program_language_by_alias(&normalized),
+        ) && !semantic_authoring_lead(&view)
+            && crate::coding::program_template(task.slug, language.slug).is_some()
+        {
+            return false;
+        }
         let atom_start = view[..start]
             .rfind(char::is_whitespace)
             .map_or(0, |at| at + view[at..].chars().next().unwrap().len_utf8());

@@ -53,7 +53,7 @@ export function planStructuredEditStep(rawTask, messages, toolNames) {
   // resumed after a client compaction answers at once instead of spending
   // another full-file observation that pushes it over the threshold again.
   if (!inserted.length && latestResult(currentTurn, Capability.Write) === null) {
-    const rendered = renderSeededChange('coding_member_already_present', task, edit.target, [['{members}', quotedList(edit.values)]]);
+    const rendered = renderSeededChange('coding-member-already-present', task, edit.target, [['{members}', quotedList(edit.values)]]);
     return rendered === null ? null : finalAnswer(rendered);
   }
   // Members the file already lists need no write: after a client compaction
@@ -65,8 +65,8 @@ export function planStructuredEditStep(rawTask, messages, toolNames) {
     return writeTool ? planOne(writeTool, writeArguments(edit.target, updated)) : null;
   }
   const [intent, members] = inserted.length
-    ? ['coding_member_inserted', quotedList(inserted)]
-    : ['coding_member_already_present', quotedList(edit.values)];
+    ? ['coding-member-inserted', quotedList(inserted)]
+    : ['coding-member-already-present', quotedList(edit.values)];
   return planWriteDigestVerification(task, currentTurn, toolNames, {
     target: edit.target, expected: updated, intent, slots: [['{members}', members]],
   });

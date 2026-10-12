@@ -533,13 +533,17 @@ pub(super) fn plan_settled_routes(
                 && compose_general_change_plan(task).is_none()
                 && super::general_planner::compose_edit_request(task).is_none())
             .then(|| {
-                record(
-                    AgenticPlan::Final(super::general_planner::missing_implementation_contract(
-                        task,
-                    )),
-                    FinalDisposition::Gap,
-                    "semantic-authoring-missing-contract",
-                    result,
+                conversation_recall::plan_verified_recipe_step(messages, tool_names).unwrap_or_else(
+                    || {
+                        record(
+                            AgenticPlan::Final(
+                                super::general_planner::missing_implementation_contract(task),
+                            ),
+                            FinalDisposition::Gap,
+                            "semantic-authoring-missing-contract",
+                            result,
+                        )
+                    },
                 )
             })
         })

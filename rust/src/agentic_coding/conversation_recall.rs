@@ -33,6 +33,22 @@ use super::planner::AgenticPlan;
 /// owns the whole verified write--check--run chain (issue #916) and the planner
 /// stops routing before any later arm can steal the prompt back. A client
 /// without those tools still receives the composed program as the answer.
+/// Only a genuine solver-issued program recipe can precede a missing implementation gap.
+pub(super) fn plan_verified_recipe_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    let (prompt, history) = chat_prompt_and_history(messages);
+    if prompt.trim().is_empty() {
+        return None;
+    }
+    let answer = solve_with_history(&prompt, &history);
+    if answer.intent != "write_program" {
+        return None;
+    }
+    command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
+}
+
 pub(super) enum SharedSolverStep {
     /// No family the planner delegated to the solver: keep routing.
     NotOurs,

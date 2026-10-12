@@ -608,7 +608,7 @@ fn combined_observation(values: &[String], request: &str) -> Option<String> {
             let values = many.join("; ");
             let language = crate::language::detect(request);
             crate::seed::render_response(
-                "evidence_exact_composition",
+                "evidence-exact-composition",
                 language.slug(),
                 &[("values", &values)],
             )

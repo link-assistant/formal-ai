@@ -8,7 +8,7 @@
 const { roleWordForms, mentionsRole } = crateRequire("write_lexicon.mjs");
 const { normalizePrompt } = crateRequire("crate/engine.mjs");
 const { quotedSegments } = crateRequire("crate/normal_markov.mjs");
-const { containsCjk } = crateRequire("crate/coding_catalog.mjs");
+const { containsCjk, programLanguageByAlias, programTaskByAlias, programTemplate } = crateRequire("crate/coding_catalog.mjs");
 const { literalInstructionView } = crateRequire("crate/literal_instruction_view.mjs");
 const { ownsLiteralBody } = crateRequire("crate/literal_body_ownership.mjs");
 const { operationOwner } = crateRequire("crate/operation_owner.mjs");
@@ -38,6 +38,8 @@ function ownedSemanticAuthoringLead(request, contract = null) {
   const owner = operationOwner(request, contract);
   if (owner?.role === 'coding_request_object' && leadingAuthoringAction(view) !== undefined
     && !mentionsRole('file_declared_noun', normalizePrompt(view.slice(0, owner.start)))) {
+    const normalized = normalizePrompt(view), task = programTaskByAlias(normalized), language = programLanguageByAlias(normalized);
+    if (!semanticAuthoringLead(view) && task !== null && language !== null && programTemplate(task.slug, language.slug) !== null) return false;
     let start = owner.start, end = owner.end; while (start > 0 && !/\s/u.test(view[start - 1])) start--; while (end < view.length && !/\s/u.test(view[end])) end++;
     const atom = view.slice(start, end).replace(/[.,;:!?]+$/u, ''); const contentLead = firstRawContentLeadEnd(view); if (!/[.\/\\]/u.test(atom) && (contentLead === null || contentLead[0] >= owner.start)) return true;
   }

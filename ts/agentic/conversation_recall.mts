@@ -11,6 +11,15 @@ import { trim } from './crate/rust_str.mjs';
 import { solve, readText } from './host.mjs';
 import { finalAnswer, plannedCall, toolCalls } from './plan.mjs';
 
+/** Consult the genuine current-goal solver; only its typed recipe can claim tools. */
+export async function planVerifiedRecipeStep(messages, toolNames) {
+  const [prompt, history] = chatPromptAndHistory(messages);
+  if (trim(prompt) === '') return null;
+  const answer = await solve(prompt, history);
+  return answer.intent === 'write_program'
+    ? planSymbolicCommandReroute(messages, toolNames, answer) : null;
+}
+
 /**
  * Mirrors `fn plan_shared_solver_step` in rust/src/agentic_coding/conversation_recall.rs
  * (async: it consults the solver). Resolves to `{kind: 'ready', plan}`,

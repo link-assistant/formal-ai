@@ -102,13 +102,40 @@ fn the_build_accepts_a_skipped_macos_job_but_not_a_failed_one() {
 #[test]
 fn the_linux_leg_is_not_guarded_by_the_switch() {
     let workflow = release_workflow();
+    let linux_rows: Vec<_> = workflow
+        .lines()
+        .map(str::trim)
+        .filter(|line| line.starts_with("- { os: ubuntu-latest, test-suite: full,"))
+        .collect();
+    let shards = linux_rows
+        .first()
+        .expect("the Linux leg must still run the full suite")
+        .split("shards: ")
+        .nth(1)
+        .and_then(|value| value.split_whitespace().next())
+        .and_then(|value| value.parse::<usize>().ok())
+        .expect("the Linux full suite must declare its shard count");
     assert!(
-        workflow
-            .matches("{ os: ubuntu-latest, test-suite: full,")
-            .count()
-            == 5,
+        shards >= 5,
+        "the Linux full suite must retain its original fanout"
+    );
+    assert_eq!(
+        linux_rows.len(),
+        shards,
         "the Linux leg must still run the full suite"
     );
+    for shard in 1..=shards {
+        let identity = if shard == 1 {
+            format!("- {{ os: ubuntu-latest, test-suite: full, shards: {shards} }}")
+        } else {
+            format!("- {{ os: ubuntu-latest, test-suite: full, shard: {shard}, shards: {shards} }}")
+        };
+        assert_eq!(
+            linux_rows.iter().filter(|line| **line == identity).count(),
+            1,
+            "every Linux full-suite shard must occur exactly once"
+        );
+    }
     let test_job = job_block(&workflow, "test");
     let guard = "!startsWith(matrix.os, 'ubuntu')";
     assert!(

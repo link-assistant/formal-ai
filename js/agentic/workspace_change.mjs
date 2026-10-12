@@ -41,7 +41,7 @@ const eqIgnoreAsciiCase = (left, right) => left.replace(/[A-Z]/g, (c) => c.toLow
 const finalOrNull = (text, disposition = FinalDisposition.Unknown, origin = null) =>
   (text === null ? null : resolvedFinalAnswer(text, disposition, origin));
 
-const statedIntent = (rewrite) => rewrite.intent ?? (rewrite.renaming ? 'coding_identifier_renamed' : 'coding_text_replaced');
+const statedIntent = (rewrite) => rewrite.intent ?? (rewrite.renaming ? 'coding-identifier-renamed' : 'coding-text-replaced');
 const statedSlots = (rewrite) => rewrite.slots ?? [['{old}', rewrite.pattern], ['{new}', rewrite.replacement]];
 
 /**
@@ -212,7 +212,7 @@ function planCompositeStep(task, currentTurn, toolNames, change) {
   const registered = `\`${trim(change.registration)}\``;
   const members = [['{members}', registered]];
   if (updated === current) {
-    return finalOrNull(renderSeededChange('coding_member_already_present', task, change.registration_path, members));
+    return finalOrNull(renderSeededChange('coding-member-already-present', task, change.registration_path, members));
   }
   const compact = compactRegistrationEdit(current, change.registration);
   const editTool = compact ? toolFor(toolNames, Capability.Edit) : null;
@@ -222,7 +222,7 @@ function planCompositeStep(task, currentTurn, toolNames, change) {
       return planOne(editTool, editArguments(change.registration_path, old, next));
     }
     return planDigestVerification(task, currentTurn, toolNames, {
-      target: change.registration_path, expected: updated, intent: 'coding_member_inserted', slots: members,
+      target: change.registration_path, expected: updated, intent: 'coding-member-inserted', slots: members,
     });
   }
   if (resultForPath(currentTurn, Capability.Write, change.registration_path, updated) === null) {
@@ -232,7 +232,7 @@ function planCompositeStep(task, currentTurn, toolNames, change) {
   const observed = resultForCommand(currentTurn, registrationCommand);
   if (observed === null) return planWithTool(toolNames, Capability.Run, jsonText({ command: registrationCommand }));
   if (!observedBytesMatch(observed, updated)) return failed(task, change.registration_path);
-  return finalOrNull(renderSeededChange('coding_member_inserted', task, change.registration_path, members));
+  return finalOrNull(renderSeededChange('coding-member-inserted', task, change.registration_path, members));
 }
 
 /**
@@ -918,7 +918,7 @@ function groundedLineReplacement(task) {
     target,
     compute: (source, missing) => (missing ? null : replacedLines(source, old, replacement(source), after)),
     edit: (source, updated) => contextLinesEdit(source, updated, after),
-    intent: 'coding_text_replaced',
+    intent: 'coding-text-replaced',
     // Listed lines are named one by one, not as one span holding line breaks.
     slots: [['{old}', quoted.includes(old) ? old : old.split('\n')], ['{new}', next]],
   };
@@ -972,7 +972,7 @@ function groundedTypoFix(task) {
       return execution.ok ? execution.ok.output : null;
     },
     edit: changedLinesEdit,
-    intent: 'coding_text_replaced',
+    intent: 'coding-text-replaced',
     slots: [['{old}', named.text], ['{new}', correction]],
   };
 }
@@ -1031,7 +1031,7 @@ export function planComputedChangeStep(task, currentTurn, toolNames, change) {
     // Text the change names that the file no longer holds is the answer (G87).
     const slot = (name) => (change.slots ?? []).find(([key]) => key === name)?.[1] ?? null;
     const old = slot('{old}');
-    const textual = change.intent === 'coding_text_replaced' || change.intent === 'coding_text_remove';
+    const textual = change.intent === 'coding-text-replaced' || change.intent === 'coding_text_remove';
     const absent = missing || old === null || !textual ? null : absentTextAnswer(task, target, source, old, slot('{new}'));
     return absent === null ? failed(task, target) : finalAnswer(absent);
   }

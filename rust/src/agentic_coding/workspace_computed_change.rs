@@ -122,7 +122,7 @@ fn grounded_typo_fix(task: &str) -> Option<ComputedChange> {
     let correction = super::spelling::corrected_spelling(&word)?;
     Some(ComputedChange {
         target,
-        intent: "coding_text_replaced",
+        intent: "coding-text-replaced",
         slots: vec![("{old}", word.clone()), ("{new}", correction.clone())],
         computation: Computation::TypoFix { word, correction },
     })
@@ -508,7 +508,7 @@ fn grounded_line_replacement(task: &str) -> Option<ComputedChange> {
     }
     Some(ComputedChange {
         target,
-        intent: "coding_text_replaced",
+        intent: "coding-text-replaced",
         // Listed lines are named one by one, not as one span holding line breaks.
         slots: vec![("{old}", original.clone()), ("{new}", replacement.clone())],
         computation: Computation::LineReplacement {
@@ -559,7 +559,7 @@ fn context_lines_edit(
 impl ComputedChange {
     /// The seeded answer when the text a replace or removal names is gone.
     fn absent_text_answer(&self, task: &str, source: &str) -> Option<String> {
-        if !matches!(self.intent, "coding_text_replaced" | "coding_text_remove") {
+        if !matches!(self.intent, "coding-text-replaced" | "coding_text_remove") {
             return None;
         }
         let slot = |name: &str| {

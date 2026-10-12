@@ -17,7 +17,7 @@ before(async () => {
   ({ observedBytesMatch } = await import('../../../js/agentic/tool_result.mjs'));
 });
 const task = 'In f.txt replace «old» with «new»';
-const change = { target: 'f.txt', expected: 'new', intent: 'coding_text_replaced', slots: [['{old}', 'old'], ['{new}', 'new']] };
+const change = { target: 'f.txt', expected: 'new', intent: 'coding-text-replaced', slots: [['{old}', 'old'], ['{new}', 'new']] };
 const tools = ['read', 'write', 'bash'];
 function append(messages, tool, argumentsValue, raw, is_error = false) {
   const identity = 'call-' + messages.length;

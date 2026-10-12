@@ -40,7 +40,7 @@ export async function proposeTrackedSourceEvidence(token, request, workspace) {
   const first = clause(contract, 'proof-first-line');
   if (rename.sourcePath.text !== observation.operand
       || fields.requiredIdentifier.text !== rename.replacement.text) throw Error('DifferentEvidenceSource');
-  const result = renderSeededChange('coding_identifier_renamed', request, observation.operand,
+  const result = renderSeededChange('coding-identifier-renamed', request, observation.operand,
     [['{old}', rename.previous.text], ['{new}', rename.replacement.text]]);
   const count = minimumWords(fields.minimumWords.text);
   if (!Number.isSafeInteger(count) || count < 0 || typeof result !== 'string'

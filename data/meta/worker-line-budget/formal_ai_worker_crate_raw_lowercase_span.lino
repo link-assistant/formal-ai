@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_raw_lowercase_span.js"
+  ceiling 33
+  rationale "Exact pure raw-casefold span projection extracted without changing parser bodies; no headroom beyond current faithful generated source."

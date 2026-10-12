@@ -74,6 +74,12 @@ const REQUIRED_KEYS = [
   'conversation.copyMarkdown',
   'conversation.copyMarkdownDone',
   'conversation.copyMarkdownTitle',
+  // ConversationSummaryDetails uses these five labels over recorded message rows.
+  'message.conversationSummary.title',
+  'message.conversationSummary.role',
+  'message.conversationSummary.intent',
+  'message.conversationSummary.content',
+  'message.conversationSummary.unrecorded',
   'message.author.user',
   'message.detectedFailureReport',
   'message.browserRuntime.title',

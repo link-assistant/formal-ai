@@ -67,8 +67,8 @@ impl GroundedRewrite {
     const fn stated_intent(&self) -> &'static str {
         match self.stated {
             Some((intent, _)) => intent,
-            None if self.renaming => "coding_identifier_renamed",
-            None => "coding_text_replaced",
+            None if self.renaming => "coding-identifier-renamed",
+            None => "coding-text-replaced",
         }
     }
 
@@ -433,7 +433,7 @@ fn plan_composite_step(
     if updated == current {
         return Some(record(
             AgenticPlan::Final(render_seeded_change(
-                "coding_member_already_present",
+                "coding-member-already-present",
                 task,
                 &change.registration_path,
                 &[("{members}", &registered)],
@@ -460,7 +460,7 @@ fn plan_composite_step(
             &VerifiedChange {
                 target: &change.registration_path,
                 expected: &updated,
-                intent: "coding_member_inserted",
+                intent: "coding-member-inserted",
                 slots: &[("{members}", &registered)],
                 list_slots: &[],
             },
@@ -501,7 +501,7 @@ fn plan_composite_step(
     }
     Some(record(
         AgenticPlan::Final(render_seeded_change(
-            "coding_member_inserted",
+            "coding-member-inserted",
             task,
             &change.registration_path,
             &[("{members}", &registered)],

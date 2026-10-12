@@ -74,7 +74,7 @@ pub(super) fn plan_structured_edit_step(
     // another full-file observation that pushes it over the threshold again.
     if inserted.is_empty() && latest_result(current_turn, Capability::Write).is_none() {
         return Some(AgenticPlan::Final(render_seeded_change(
-            "coding_member_already_present",
+            "coding-member-already-present",
             task,
             &edit.target,
             &[(MEMBERS_SLOT, &quoted_list(&edit.values))],
@@ -93,9 +93,9 @@ pub(super) fn plan_structured_edit_step(
         ));
     }
     let (intent, members) = if inserted.is_empty() {
-        ("coding_member_already_present", quoted_list(&edit.values))
+        ("coding-member-already-present", quoted_list(&edit.values))
     } else {
-        ("coding_member_inserted", quoted_list(&inserted))
+        ("coding-member-inserted", quoted_list(&inserted))
     };
     plan_write_digest_verification(
         task,

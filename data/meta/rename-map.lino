@@ -19,6 +19,8 @@ rename-map
   exclude "docs/changelog/"
   exclude "docs/architect-notes/"
   exclude "data/benchmarks/issue-requirements/"
+  # Byte mirrors retain the same immutable historical issue requests.
+  exclude "rust/embedded/data/benchmarks/issue-requirements/"
   exclude "data/cache/"
   exclude "experiments/formal_ai_subagent/archive/"
   exclude "experiments/formal_ai_subagent/evidence/"

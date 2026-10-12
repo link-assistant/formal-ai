@@ -13,7 +13,7 @@
 # the stale binary parsed the new seed into name-only rows, the browser worker
 # permutation assert threw at init, and every E2E spec gated on the wasm worker
 # status silently fell back (issue #1138).
-ci_gate check_wasm_worker_current
+ci_gate check-wasm-worker-current
   stage wasm
   description "The checked-in WASM worker binary matches a rebuild of its sources."
   run "git diff --exit-code -- js/formal_ai_worker.wasm"

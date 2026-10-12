@@ -2,7 +2,7 @@
 import { roleWordForms, mentionsRole } from '../write_lexicon.mjs';
 import { normalizePrompt } from './engine.mjs';
 import { quotedSegments } from './normal_markov.mjs';
-import { containsCjk } from './coding_catalog.mjs';
+import { containsCjk, programLanguageByAlias, programTaskByAlias, programTemplate } from './coding_catalog.mjs';
 import { literalInstructionView } from './literal_instruction_view.mjs';
 import { ownsLiteralBody } from './literal_body_ownership.mjs';
 import { operationOwner } from './operation_owner.mjs';
@@ -37,6 +37,8 @@ export function ownedSemanticAuthoringLead(request, contract = null) {
   const owner = operationOwner(request, contract);
   if (owner?.role === 'coding_request_object' && leadingAuthoringAction(view) !== undefined
     && !mentionsRole('file_declared_noun', normalizePrompt(view.slice(0, owner.start)))) {
+    const normalized = normalizePrompt(view), task = programTaskByAlias(normalized), language = programLanguageByAlias(normalized);
+    if (!semanticAuthoringLead(view) && task !== null && language !== null && programTemplate(task.slug, language.slug) !== null) return false;
     let start = owner.start, end = owner.end; while (start > 0 && !/\s/u.test(view[start - 1])) start--; while (end < view.length && !/\s/u.test(view[end])) end++;
     const atom = view.slice(start, end).replace(/[.,;:!?]+$/u, ''); const contentLead = firstRawContentLeadEnd(view); if (!/[.\/\\]/u.test(atom) && (contentLead === null || contentLead[0] >= owner.start)) return true;
   }

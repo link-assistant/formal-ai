@@ -58,6 +58,7 @@ self.FORMAL_AI_WORKER_MODULES = Object.freeze([
   "worker/formal_ai_worker_crate_operation_owner.js",
   "worker/formal_ai_worker_crate_page_formalization.js",
   "worker/formal_ai_worker_crate_plan.js",
+  "worker/formal_ai_worker_crate_raw_lowercase_span.js",
   "worker/formal_ai_worker_crate_requirement_extraction.js",
   "worker/formal_ai_worker_crate_round_trip_translation.js",
   "worker/formal_ai_worker_crate_rust_str.js",

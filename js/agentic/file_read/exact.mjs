@@ -83,7 +83,7 @@ export function planDirectFileReads(paths, mode, readTool, runTool, grepTool, re
       .map((path) => plannedCall(readTool, readArguments(path, mode))));
   }
   if (runTool !== null) return runCalls(runTool);
-  return finalAnswer(localizedResponse('file_read_many_unavailable', detect(request)) ?? '');
+  return finalAnswer(localizedResponse('file-read-many-unavailable', detect(request)) ?? '');
 }
 
 /**

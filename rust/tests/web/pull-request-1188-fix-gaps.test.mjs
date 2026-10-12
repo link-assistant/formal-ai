@@ -264,7 +264,7 @@ test('G109: move then a quoted edit runs in order', async () => {
 test('G108: scalar payload code spans keep comma-separated backticks whole', async () => {
   const { renderSeededChange } = await import('../../../js/agentic/code_task.mjs');
   const payload = 'values `left`, `right` remain scalar';
-  const answer = renderSeededChange('coding_text_replaced', 'Replace text in f.txt', 'f.txt', [['{old}', 'x'], ['{new}', payload]]);
+  const answer = renderSeededChange('coding-text-replaced', 'Replace text in f.txt', 'f.txt', [['{old}', 'x'], ['{new}', payload]]);
   assert.equal(answer, 'Replaced `x` with ``values `left`, `right` remain scalar`` in `f.txt` and observed the result.');
 });
 

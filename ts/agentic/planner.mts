@@ -334,7 +334,7 @@ export async function planSettledRoutes(task, messages, toolNames) {
   const report = learningReport.route(task);
   if (report !== null) return learningReport.planReportStep(report, messages, toolNames);
   const artifact = await codeArtifact.planCodeArtifactStep(task, messages, toolNames)
-    ?? missingSemanticImplementation(task);
+    ?? await missingSemanticImplementation(task, messages, toolNames);
   if (artifact !== null) return artifact;
   for (const [predicate, step] of [
     [selfHeal.isSelfHealTask, documentRecipe.planSelfHealStep],
@@ -497,9 +497,11 @@ export function planShellStep(messages, toolNames, command) {
   return finalAnswer(agenticMessage('shell_tool_missing', { command }));
 }
 
-function missingSemanticImplementation(task) {
+async function missingSemanticImplementation(task, messages, toolNames) {
   if (ownedSemanticAuthoringLead(task) && shellCommand.semanticShellCommandForTask(task) === null
     && composeGeneralChangePlan(task) === null && composeEditRequest(task) === null) {
+    const verifiedRecipe = await conversationRecall.planVerifiedRecipeStep(messages, toolNames);
+    if (verifiedRecipe !== null) return verifiedRecipe;
     const discovery = { reason: 'MissingContract', goal: task, authored: false, verified: false,
       missingContracts: ['source-bound-implementation-plan', 'independent-goal-validation'] };
     const plan = resolvedFinalAnswer(agenticMessage('callable-discovery-outcome', {

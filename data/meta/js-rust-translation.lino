@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 293
   workaround_items 33
   inferred_signatures 2
-  carried_items 2317
+  carried_items 2319
   translated_modules 98
   fully_translated_modules 1
   refused_modules 48
@@ -75,7 +75,7 @@ module js/agentic/crate/language.mjs translated 2 workaround 1 inferred 0 carrie
 module js/agentic/crate/least_action.mjs translated 1 workaround 0 inferred 0 carried 6
 module js/agentic/crate/links_format.mjs translated 0 workaround 3 inferred 0 carried 7
 module js/agentic/crate/links_substitution_query.mjs translated 0 workaround 0 inferred 0 carried 10
-module js/agentic/crate/literal_authoring_contract.mjs translated 0 workaround 0 inferred 0 carried 12
+module js/agentic/crate/literal_authoring_contract.mjs translated 0 workaround 0 inferred 0 carried 14
 module js/agentic/crate/literal_body_ownership.mjs translated 0 workaround 0 inferred 0 carried 4
 module js/agentic/crate/literal_content.mjs translated 0 workaround 0 inferred 0 carried 14
 module js/agentic/crate/literal_instruction_view.mjs translated 0 workaround 0 inferred 0 carried 1
@@ -175,7 +175,7 @@ module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 in
 refusal "import of names its module does not translate" 314
 refusal "JSDoc type {…}" 215
 refusal "null" 186
-refusal "import from '…'" 157
+refusal "import from '…'" 158
 refusal "arrow function" 117
 refusal "type: unknown name (a sibling item or an import)" 117
 refusal "function value …" 101
@@ -199,7 +199,7 @@ refusal "export …" 19
 refusal "syntax: malformed number" 19
 refusal "case test" 18
 refusal "try statement" 17
-refusal "undefined" 14
+refusal "undefined" 15
 refusal "method call .every()" 13
 refusal "typeof operator" 13
 refusal "syntax: @param needs a type and a name" 12

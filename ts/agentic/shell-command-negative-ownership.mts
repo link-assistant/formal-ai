@@ -2,7 +2,7 @@
 import { callerContextVocabulary } from './crate/seed_caller_context.mjs';
 import { containsCjk, mentionsRole } from './crate/seed_meanings.mjs';
 import { quotedSegmentSpans } from './crate/normal_markov.mjs';
-import { rawLowercaseSpan } from './write_request/lowercase_spans.mjs';
+import { rawLowercaseSpan } from './write_request/raw_lowercase_span.mjs';
 import { isAlphanumeric } from './crate/rust_str.mjs';
 
 export function negatedCommandPolicy(sentence) {

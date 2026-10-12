@@ -1,6 +1,9 @@
 use regex::Regex;
 
 pub(super) fn is_regex_template(content: &str, index: usize, keyword: &str, value: &str) -> bool {
+    if consumed_request_role_regex(content, index, keyword, value) {
+        return true;
+    }
     if declared_regex_pair(content, index, keyword, value) {
         return true;
     }
@@ -426,4 +429,165 @@ fn canonical_compound_prefix_patterns_keep_pipe_lists_and_spoofs_refused() {
         "pattern",
         "\"^a|b\""
     ));
+}
+
+/// A source-bound consumer treats each request role's one quoted pattern as regex,
+/// including unanchored expressions whose complete match is checked by the consumer.
+fn consumed_request_role_regex(content: &str, index: usize, keyword: &str, value: &str) -> bool {
+    if content != include_str!("../../../../data/seed/statement-audit-registry.lino")
+        || keyword != "pattern"
+        || links_notation::parse_lino(content.trim()).is_err()
+    {
+        return false;
+    }
+    let Some(line) = content.lines().nth(index) else {
+        return false;
+    };
+    let code = super::strip_lino_comment(line).trim();
+    if code.strip_prefix("pattern ") != Some(value.trim())
+        || !value.trim().starts_with('"')
+        || !value.trim().ends_with('"')
+    {
+        return false;
+    }
+    let Ok(selected) = formal_ai::seed::parse_lino_checked(code) else {
+        return false;
+    };
+    let [selected] = selected.children.as_slice() else {
+        return false;
+    };
+    if selected.name != "pattern" || !selected.children.is_empty() {
+        return false;
+    }
+    let mut ancestors: Vec<(usize, &str)> = Vec::new();
+    for source in content.lines().take(index) {
+        let code = super::strip_lino_comment(source).trim();
+        if code.is_empty() {
+            continue;
+        }
+        let indent = source
+            .chars()
+            .take_while(|character| *character == ' ')
+            .count();
+        while ancestors.last().is_some_and(|(level, _)| *level >= indent) {
+            ancestors.pop();
+        }
+        ancestors.push((indent, code));
+    }
+    let indent = line
+        .chars()
+        .take_while(|character| *character == ' ')
+        .count();
+    while ancestors.last().is_some_and(|(level, _)| *level >= indent) {
+        ancestors.pop();
+    }
+    if ancestors.len() != 3 || indent != 6 {
+        return false;
+    }
+    let Ok(document) = formal_ai::seed::parse_lino_checked(content) else {
+        return false;
+    };
+    let [registry] = document.children.as_slice() else {
+        return false;
+    };
+    if registry.name != "statement_audit_registry"
+        || ancestors[0] != (0, "statement_audit_registry")
+    {
+        return false;
+    }
+    let contracts = registry
+        .children
+        .iter()
+        .filter(|node| node.name == "request-contract")
+        .collect::<Vec<_>>();
+    let [contract] = contracts.as_slice() else {
+        return false;
+    };
+    if contract.id != "repository-audit" || ancestors[1] != (2, "request-contract repository-audit")
+    {
+        return false;
+    }
+    let Ok(role_header) = formal_ai::seed::parse_lino_checked(ancestors[2].1) else {
+        return false;
+    };
+    let [role_header] = role_header.children.as_slice() else {
+        return false;
+    };
+    if ancestors[2].0 != 4 || role_header.name != "role" {
+        return false;
+    }
+    let roles = contract
+        .children
+        .iter()
+        .filter(|node| node.name == "role" && node.id == role_header.id)
+        .collect::<Vec<_>>();
+    let [role] = roles.as_slice() else {
+        return false;
+    };
+    let patterns = role
+        .children
+        .iter()
+        .filter(|node| node.name == "pattern")
+        .collect::<Vec<_>>();
+    let [pattern] = patterns.as_slice() else {
+        return false;
+    };
+    pattern.children.is_empty()
+        && pattern.id == selected.id
+        && regex::RegexBuilder::new(&pattern.id)
+            .case_insensitive(true)
+            .build()
+            .is_ok()
+}
+
+#[test]
+fn consumed_request_regex_preserves_pipe_list_and_context_refusals() {
+    let registry = include_str!("../../../../data/seed/statement-audit-registry.lino");
+    let patterns = registry
+        .lines()
+        .enumerate()
+        .filter(|(_, line)| line.trim_start().starts_with("pattern "))
+        .collect::<Vec<_>>();
+    assert_eq!(patterns.len(), 4);
+    for (index, line) in patterns {
+        let value = line.trim().strip_prefix("pattern ").unwrap();
+        assert!(consumed_request_role_regex(
+            registry, index, "pattern", value
+        ));
+        assert!(!consumed_request_role_regex(
+            registry, index, "aliases", value
+        ));
+        assert!(!consumed_request_role_regex(
+            registry,
+            index + 1,
+            "pattern",
+            value
+        ));
+        assert!(!consumed_request_role_regex(
+            registry, index, "pattern", "\"a|b\""
+        ));
+        assert!(!consumed_request_role_regex(
+            registry, index, "pattern", "a|b"
+        ));
+        assert!(!consumed_request_role_regex(
+            registry,
+            index,
+            "pattern",
+            &format!("{value} \"extra\"")
+        ));
+        assert!(!consumed_request_role_regex(
+            &registry.replace(
+                "request-contract repository-audit",
+                "aliases repository-audit"
+            ),
+            index,
+            "pattern",
+            value
+        ));
+    }
+    for ordinary in ["aliases \"a|b\"", "tasks a|b", "pattern \"a|b\""] {
+        let source = format!("ordinary-values\n  {ordinary}\n");
+        let (keyword, value) = ordinary.split_once(' ').unwrap();
+        assert!(!is_regex_template(&source, 1, keyword, value));
+    }
 }

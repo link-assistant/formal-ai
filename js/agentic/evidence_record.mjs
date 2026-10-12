@@ -322,7 +322,7 @@ function combinedObservation(values, request) {
   if (!values.length) return null;
   if (values.length === 1) return values[0];
   const joined = values.join('; ');
-  return renderResponse('evidence_exact_composition', detect(request), [['values', joined]]) ?? joined;
+  return renderResponse('evidence-exact-composition', detect(request), [['values', joined]]) ?? joined;
 }
 
 function nonHollowResult(raw, task) {

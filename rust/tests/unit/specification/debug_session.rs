@@ -189,6 +189,17 @@ fn kinds(snapshot: &Value) -> Vec<String> {
         .collect()
 }
 
+/// Release held debug turns before a scoped-thread join during unwinding.
+struct ReleaseDebugSessionOnDrop<'a>(&'a DebugSession);
+
+impl Drop for ReleaseDebugSessionOnDrop<'_> {
+    fn drop(&mut self) {
+        if std::thread::panicking() {
+            self.0.release(None);
+        }
+    }
+}
+
 /// Poll until a turn is paused, and return the paused entry.
 fn paused_turn(session: &DebugSession) -> Value {
     for _ in 0..600 {
@@ -276,6 +287,7 @@ fn each_advance_reveals_exactly_one_stage_and_a_repeat_records_nothing() {
     session.pause();
     let stages = stages();
     std::thread::scope(|scope| {
+        let _release = ReleaseDebugSessionOnDrop(&session);
         let held = scope.spawn(|| session.gate(&stages, &mut || true));
         let paused = paused_turn(&session);
         assert_eq!(paused["turn"], "turn_1");
@@ -360,6 +372,7 @@ fn every_stage_carries_the_recipe_diagram_its_own_emitters_and_the_routed_method
     session.pause();
     let stages = routed();
     std::thread::scope(|scope| {
+        let _release = ReleaseDebugSessionOnDrop(&session);
         let held = scope.spawn(|| session.gate(&stages, &mut || true));
         paused_turn(&session);
         for stage in 0..3 {
@@ -496,6 +509,7 @@ fn a_turn_begun_before_its_solve_waits_at_its_first_stage_then_resumes() {
     );
     session.pause();
     std::thread::scope(|scope| {
+        let _release = ReleaseDebugSessionOnDrop(&session);
         let opening = scope.spawn(|| session.begin(&stages[0], &mut || true));
         let paused = paused_turn(&session);
         assert_eq!(
@@ -550,6 +564,7 @@ fn a_turn_begun_before_its_solve_waits_at_its_first_stage_then_resumes() {
     assert_eq!(snapshot["events"][6]["reason"], "completed");
     // A turn released while its solve runs is not held again.
     std::thread::scope(|scope| {
+        let _release = ReleaseDebugSessionOnDrop(&session);
         let opening = scope.spawn(|| session.begin(&stages[0], &mut || true));
         paused_turn(&session);
         assert!(session.advance("turn_2", Some(0)));
@@ -579,6 +594,7 @@ fn a_disconnect_or_a_release_frees_a_paused_turn() {
     assert_eq!(snapshot["events"][1]["kind"], "turn_released");
     assert_eq!(snapshot["events"][1]["reason"], "disconnected");
     std::thread::scope(|scope| {
+        let _release = ReleaseDebugSessionOnDrop(&session);
         let held = scope.spawn(|| session.gate(&stages, &mut || true));
         let paused = paused_turn(&session);
         assert_eq!(paused["turn"], "turn_2");
@@ -674,6 +690,7 @@ fn a_served_chat_turn_answers_only_after_its_last_stage() {
             })
             .to_string();
             std::thread::scope(|scope| {
+                let _release = ReleaseDebugSessionOnDrop(&session);
                 let answered = scope.spawn(|| {
                     with_connection_scope(
                         || true,
