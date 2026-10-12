@@ -235,3 +235,43 @@ coverage-test-weights
   # Uncompleted at exit124; original schema conservatively retains only the observed 60-second bound.
   test "agentic_coding::issue_1069_ladder_change_tasks::issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given"
     seconds 60
+
+# Additional complete singleton process measurements; aggregate batches are never divided.
+# Captured authenticated run/job metadata binds these scheduling observations;
+# executable-to-source authentication remains Unknown, as the original checkpoint states.
+  test "installation_conversion::extended::prose_rejection_holds_across_supported_languages"
+    seconds 33.678045936
+    observation-kind single-completed-case-process
+    source-head 1b4c92e01e74d6ded097005deae1e4bb4054a611
+    source-run 38225547164
+    source-job 114743887251
+    source-batch 16
+    source-receipt-sha256 a948a884eb91373491b07664f88c9f23c95ec527fc312c086194ac0e4d8c674c
+    execution-source-authentication Unknown
+  test "issue_1021_behaviour_range::a_prose_listing_request_routes_to_ls_in_any_word_order"
+    seconds 31.489140205
+    observation-kind single-completed-case-process
+    source-head 1b4c92e01e74d6ded097005deae1e4bb4054a611
+    source-run 38225547164
+    source-job 114743887251
+    source-batch 14
+    source-receipt-sha256 1f62cb371cfd35852c2ebb3f6a95ecb102b2dc81ffd516941dcafb03acaa762b
+    execution-source-authentication Unknown
+  test "issue_499_learn_from_source::the_reported_prompt_no_longer_returns_unknown"
+    seconds 395.483976731
+    observation-kind single-completed-case-process
+    source-head 1b4c92e01e74d6ded097005deae1e4bb4054a611
+    source-run 38225547164
+    source-job 114743887251
+    source-batch 9
+    source-receipt-sha256 f1b2699c804bb76924f0d69c3f75832b94fe5beffc1d074b2c684ff9e95decba
+    execution-source-authentication Unknown
+  test "specification::code_generation_blueprint::python_http_json_statistics_request_returns_blueprint_program"
+    seconds 23.472583485
+    observation-kind single-completed-case-process
+    source-head 1b4c92e01e74d6ded097005deae1e4bb4054a611
+    source-run 38225547164
+    source-job 114743887251
+    source-batch 15
+    source-receipt-sha256 d54426a6b0b7e29dff76ed7fa4be366554e769636ac3981fd5186f8895b82670
+    execution-source-authentication Unknown
