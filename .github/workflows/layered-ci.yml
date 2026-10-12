@@ -382,7 +382,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "js -> rust translation" \
-            node scripts/translate-js-rust.mjs --check --compile --meta-language .meta-language
+            node scripts/check-js-rust-translation.mjs
 
   ts:
     name: ts tier (js<->ts file-set parity)

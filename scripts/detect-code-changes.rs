@@ -292,6 +292,7 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
             // The js -> rust leg's translator driver, its pinned ledger and
             // the committed translation (R1000): the js-rust job checks them.
             || file == "scripts/translate-js-rust.mjs"
+            || file == "scripts/check-js-rust-translation.mjs"
             || file == "scripts/lib/rust-projection-presentation.mjs"
             || file == "scripts/self-translation/lexer.mjs"
             || file == "scripts/check-readable-code.mjs"
@@ -694,7 +695,11 @@ mod tests {
     /// rules can never go stale on a green branch.
     #[test]
     fn the_gating_files_rerun_the_tiers_they_gate() {
-        for path in [LAYERED_WORKFLOW, LAYER_CLASSIFIER] {
+        for path in [
+            LAYERED_WORKFLOW,
+            LAYER_CLASSIFIER,
+            "scripts/check-js-rust-translation.mjs",
+        ] {
             let flags = classify_changes(&[path.to_string()]);
             assert!(
                 flags.js_changed && flags.ts_changed && flags.rust_changed,
