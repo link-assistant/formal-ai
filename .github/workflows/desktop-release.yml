@@ -514,8 +514,19 @@ jobs:
         run: |
           echo "ELECTRON_CACHE=${{ runner.temp }}/formal-ai-electron-cache" >> "$GITHUB_ENV"
           echo "ELECTRON_BUILDER_CACHE=${{ runner.temp }}/formal-ai-electron-builder-cache" >> "$GITHUB_ENV"
+      - name: Authenticate Windows ARM packaging inputs before dependency installation
+        if: matrix.label == 'windows-arm64'
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/prefetch-windows-packaging.mjs" "$GITHUB_WORKSPACE/desktop" "$GITHUB_WORKSPACE/native-source/source-selection.json" --validate-only
       - name: Install desktop dependencies
         run: scripts/install-node-dependencies.sh desktop
+      - name: Prefetch electron-builder toolsets
+        working-directory: desktop
+        run: |
+          if [ "${{ matrix.label }}" = windows-arm64 ]; then
+            node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/prefetch-windows-packaging.mjs" "$GITHUB_WORKSPACE/desktop" "$GITHUB_WORKSPACE/native-source/source-selection.json"
+          else
+            node scripts/prefetch-builder-toolsets.mjs
+          fi
       - name: Test command-stream production adapter
         working-directory: desktop
         run: node --test scripts/command-runner.test.mjs
@@ -529,14 +540,6 @@ jobs:
         env:
           WASM_RECEIPT_SHA256: ${{ needs.native-source.outputs.wasm-receipt-sha256 }}
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/build-selected-wasm.mjs" verify "$GITHUB_WORKSPACE" desktop/dist-web "$WASM_RECEIPT_SHA256"
-      - name: Prefetch electron-builder toolsets
-        working-directory: desktop
-        run: |
-          if [ "${{ matrix.label }}" = windows-arm64 ]; then
-            node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/prefetch-windows-packaging.mjs" "$GITHUB_WORKSPACE/desktop" "$GITHUB_WORKSPACE/native-source/source-selection.json"
-          else
-            node scripts/prefetch-builder-toolsets.mjs
-          fi
       - name: Check macOS signing secrets
         if: matrix.ebflag == '--mac'
         id: mac_secrets
@@ -589,9 +592,6 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
           MACOS_ADHOC_SIGN: "1"
-          # skipped" whenever GITHUB_BASE_REF is set (builder-util
-          # `isPullRequest()`), so the pull-request dry run produced an unsigned
-          # .app with no CodeResources and the smoke test failed. The security
           # warning attached to this flag is about *secret* certificates leaking
           # to fork builds; this step only runs when no signing secrets exist and
           # signs ad-hoc with identity `-`, so there is nothing to leak.

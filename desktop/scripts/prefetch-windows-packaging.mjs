@@ -41,6 +41,7 @@ async function main() {
   const selectedDesktop = path.resolve(process.argv[2]);
   const source = JSON.parse(fs.readFileSync(process.argv[3], "utf8"));
   validateSelectedDesktop(selectedDesktop, source, path.dirname(fileURLToPath(import.meta.url)), process.env.FORMAL_AI_PACKAGING_PROTOCOL_COMMIT);
+  if (process.argv[4] === "--validate-only") return;
   const require = createRequire(path.join(selectedDesktop, "package.json"));
   const lock = JSON.parse(fs.readFileSync(path.join(selectedDesktop, "package-lock.json"), "utf8"));
   const installed = require("electron/package.json").version;
