@@ -390,15 +390,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Five parallel shards of the full lane, planned longest-first from
+          # Eight parallel shards of the full lane, planned longest-first from
           # data/meta/test-durations.lino (run 37802763478: 296-743s of tests
           # at four). The entry without `shard` is shard 1 (data + census
           # gates); default-feature doc tests run in their own prepared job.
-          - { os: ubuntu-latest, test-suite: full, shards: 5 }
-          - { os: ubuntu-latest, test-suite: full, shard: 2, shards: 5 }
-          - { os: ubuntu-latest, test-suite: full, shard: 3, shards: 5 }
-          - { os: ubuntu-latest, test-suite: full, shard: 4, shards: 5 }
-          - { os: ubuntu-latest, test-suite: full, shard: 5, shards: 5 }
+          - { os: ubuntu-latest, test-suite: full, shards: 8 }
+          - { os: ubuntu-latest, test-suite: full, shard: 2, shards: 8 }
+          - { os: ubuntu-latest, test-suite: full, shard: 3, shards: 8 }
+          - { os: ubuntu-latest, test-suite: full, shard: 4, shards: 8 }
+          - { os: ubuntu-latest, test-suite: full, shard: 5, shards: 8 }
+          - { os: ubuntu-latest, test-suite: full, shard: 6, shards: 8 }
+          - { os: ubuntu-latest, test-suite: full, shard: 7, shards: 8 }
+          - { os: ubuntu-latest, test-suite: full, shard: 8, shards: 8 }
           # The specification suite on Linux closes the blind spot of issue
           # #1107. PR #1188 runs it as four shards of the prebuilt unit
           # executable (its longest test took 520s; run 37802763478 ran three
@@ -498,9 +501,12 @@ jobs:
       - name: Run tests
         if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         env:
-          # PR #1188: five shards planned longest-first; run 37802763478 ran
+          # PR #1188: historical five-shard planning; run 37802763478 ran
           # four in 296-743s, so a fifth of the work is about 450s and 1080s
-          # holds it at about 42%. The benchmark corpus gate runs in its own
+          # held it at about 42%. Run 38187254541 shard 5/5 later exhausted
+          # the unchanged 1080s budget with 1379s predicted per shard; eight
+          # source-derived shards preserve the full compiled test inventory.
+          # The benchmark corpus gate runs in its own
           # workflow (benchmark-corpus-gate.yml), skipped by run-prebuilt-tests.sh.
           TEST_BUDGET_SECONDS: 1080
           TEST_SUITE: full
@@ -690,12 +696,8 @@ jobs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
       pages_version: ${{ steps.release_pages_ref.outputs.version }}
       container-tag: ${{ steps.create-release.outcome == 'success' && format('v{0}', steps.version.outputs.new_version || steps.current_version.outputs.version) || '' }}
-    env:
-      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard' }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-    permissions:
-      contents: write
-      packages: write
+    env: {"DOCKERHUB_USERNAME":"${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard' }}","DOCKERHUB_TOKEN":"${{ secrets.DOCKERHUB_TOKEN }}"}
+    permissions: {"contents":"write","packages":"write"}
     steps:
       # Version-and-commit pushes the version/tag on main, so issue #1079 retains persist-credentials only in this guarded publishing job.
       - uses: actions/checkout@v7
@@ -952,12 +954,8 @@ jobs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
       pages_version: ${{ steps.release_pages_ref.outputs.version }}
       container-tag: ${{ steps.create-release.outcome == 'success' && format('v{0}', steps.version.outputs.new_version) || '' }}
-    env:
-      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard' }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-    permissions:
-      contents: write
-      packages: write
+    env: {"DOCKERHUB_USERNAME":"${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard' }}","DOCKERHUB_TOKEN":"${{ secrets.DOCKERHUB_TOKEN }}"}
+    permissions: {"contents":"write","packages":"write"}
     steps:
       # Version-and-commit pushes the version/tag after workflow_dispatch, so issue #1079 retains persist-credentials in this publishing job.
       - uses: actions/checkout@v7

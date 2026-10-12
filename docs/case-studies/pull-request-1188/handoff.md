@@ -1,3 +1,9 @@
+## Projection repair checkpoint — UTC 2026-10-12 02:11
+
+The 24-file batch is pushed at 5c1eb16a159083e1d517f6283a0360a1b9efcfee, and the local original 500 five-locale probes passed; the three behavioral deferrals, 30 unfinished original acceptances and original 40 coding acceptance zero remain unchanged.
+Fresh CI exposed a stale checked staged-workflow projection: its generated repair preserves 52 operations, 104 bindings and the current production workflow, but T7300's failed 1506-line cap check is preserved and the 1498-line semantic-flow successor is still a draft awaiting qualification and a coherent push with hosted validation.
+Exact new-head compiled census/session evidence and green CI/release acceptance remain pending, with no future guarantee; include this checkpoint only with the critical projection repair, not a documentation-only push.
+
 ## Release-first source checkpoint — UTC 2026-10-12 01:40
 
 The pushed head remains c7ffbd8a0fc88fd0504823689e68a13c78317914. Root's T7283 twelve-source batch, T7285 maintained role/seed four-source update, and T7287 lexical three-source update now have successful local qualification and complete bookkeeping. These fixes still need the coordinated commit, push and fresh exact-head hosted validation; the coverage-parser repair remains pending. The batch retains the original native five-to-eight and JavaScript four-to-eight partition budgets, includes Intel dependency-cache work, records the metadata oracle reduction from 1076 to 1073, preserves strict canonical CLI oracles, and qualifies the canonical-source regex-scalar guard. None of these local source results establishes all-green native/release CI or guarantees future publication.
