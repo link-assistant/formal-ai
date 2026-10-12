@@ -78,7 +78,7 @@ function completedProducer(f) {
   const read = endpoint => {
     if (endpoint.endsWith('/actions/runs/21')) return run;
     if (endpoint.endsWith('/actions/workflows/release.yml')) return workflow;
-    if (endpoint.endsWith('/releases?per_page=30')) return [f.release];
+    if (endpoint.endsWith('/releases?per_page=5&page=1')) return [f.release];
     return f.read(endpoint);
   };
   return {environment, run, workflow, read};
@@ -100,7 +100,7 @@ test('authenticated completed producer binds run attempt workflow and actual pub
 
 test('successful completion without independently published stable release stays inactive', t => {
   const f = fixture(t); const producer = completedProducer(f);
-  const read = endpoint => endpoint.endsWith('/releases?per_page=30') ? [] : producer.read(endpoint);
+  const read = endpoint => endpoint.endsWith('/releases?per_page=5&page=1') ? [] : producer.read(endpoint);
   assert.deepEqual(resolveSelfAuthoredRelease(f.cwd, producer.environment, read), {active: false});
 });
 

@@ -21,7 +21,7 @@ function fixture() {
     [base + 'actions/runs/41', run],
     [base + 'actions/workflows/19', {id: 19, path: run.path}],
     [base + 'actions/runs/41/attempts/2/jobs?per_page=100&page=1', {total_count: 1, jobs: [publisher]}],
-    [base + 'releases?per_page=30', [{tag_name: 'v1.2.3', draft: false, prerelease: false}]],
+    [base + 'releases?per_page=5&page=1', [{tag_name: 'v1.2.3', draft: false, prerelease: false}]],
     [base + 'commits/v1.2.3', {sha: 'b'.repeat(40), parents: [{sha: head}]}],
   ]);
   for (const source of contract.sources) {

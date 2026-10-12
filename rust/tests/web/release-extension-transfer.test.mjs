@@ -989,7 +989,7 @@ test('connected readonly transfer writes exact producer bytes once and preserves
 
           path: '.github/workflows/release.yml'
         };
-        if (endpoint.endsWith('/releases?per_page=30')) return [state.release];
+        if (endpoint.endsWith('/releases?per_page=5&page=1')) return [state.release];
         if (endpoint.endsWith('/commits/v1.2.3')) return {
           ...evidence.tagCommit,
 

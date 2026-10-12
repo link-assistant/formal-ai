@@ -15,6 +15,16 @@ export function githubJson(endpoint) {
   }));
 }
 
+/** Search the original thirty-release window in bounded five-release pages. */
+export function* packageReleaseCandidates(repository, readGithub) {
+  for (let page = 1; page <= 6; page += 1) {
+    const releases = readGithub('repos/' + repository + '/releases?per_page=5&page=' + page);
+    if (!Array.isArray(releases) || releases.length > 5) throw new Error('Bounded release page required');
+    yield* releases;
+    if (releases.length < 5) return;
+  }
+}
+
 /** Resolve checks, an explicit publication, or the release made by a main run. */
 export function resolvePackageRelease(environment, readGithub = githubJson) {
   const event = environment.EVENT ?? '';
@@ -43,7 +53,7 @@ export function resolvePackageRelease(environment, readGithub = githubJson) {
     if (!RELEASE_TAG.test(requested)) throw new Error('Release tag must be v<major>.<minor>.<patch>');
     releases = [readGithub('repos/' + repository + '/releases/tags/' + requested)];
   } else {
-    releases = readGithub('repos/' + repository + '/releases?per_page=30');
+    releases = packageReleaseCandidates(repository, readGithub);
   }
   const head = environment.RUN_HEAD ?? '';
   if (event === 'workflow_run' && !COMMIT_IDENTIFIER.test(head)) {
@@ -123,7 +133,7 @@ export function productionPackageObserver(environment, readGithub = productionGi
       publishedRelease(result, requestedTag);
     }
     else if (endpoint.startsWith(prefix + 'releases?')) {
-      if (!Array.isArray(result) || result.length > 30) throw new Error('Bounded release list required');
+      if (!Array.isArray(result) || result.length > 5) throw new Error('Bounded release list required');
       for (const release of result) publishedRelease(release);
     }
     return result;
