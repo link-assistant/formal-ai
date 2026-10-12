@@ -27,7 +27,8 @@ test('the bounded compile retains instrumentation, every test target and upload 
   assert.doesNotMatch(producer.body, /cargo test[^\n]*(?:--test |--lib|--bins|--release)/u);
   assert.match(producer.body, /\.profile\.test == true and \.executable != null/u);
   assert.match(producer.body, /wc -l < coverage-tests\.tsv/u);
-  assert.match(producer.body, /tar -cf coverage-objects\.tar coverage-tests\.tsv -T coverage-objects\.txt/u);
+  assert.match(producer.body, /tar -cf - coverage-tests\.tsv -T coverage-objects\.txt \| zstd -T2 -6 -o coverage-objects\.tar\.zst/u);
+  assert.match(producer.body, /compression-level: 0/u);
   assert.match(producer.body, /name: coverage-objects\n/u);
   assert.match(producer.body, /if-no-files-found: error/u);
 });

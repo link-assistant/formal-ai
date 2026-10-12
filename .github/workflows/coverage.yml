@@ -197,14 +197,16 @@ jobs:
           find "$target/debug" \( -path "$target/debug/build" -o -path "$target/debug/incremental" \
             -o -path "$target/debug/.fingerprint" \) -prune -o -type f -perm -u+x \
             ! -name '*.d' ! -name '*.rlib' ! -name '*.rmeta' -print > coverage-objects.txt
-          tar -cf coverage-objects.tar coverage-tests.tsv -T coverage-objects.txt
-          du -h coverage-objects.tar
+          # Compress once with two workers; artifact upload stores the lossless frame.
+          tar -cf - coverage-tests.tsv -T coverage-objects.txt | zstd -T2 -6 -o coverage-objects.tar.zst
+          du -h coverage-objects.tar.zst
 
       - name: Upload the instrumented executables
         uses: actions/upload-artifact@v7
         with:
           name: coverage-objects
-          path: coverage-objects.tar
+          path: coverage-objects.tar.zst
+          compression-level: 0
           if-no-files-found: error
           retention-days: 1
 
@@ -268,7 +270,7 @@ jobs:
           path: coverage-objects
 
       - name: Unpack the instrumented executables
-        run: tar -xf coverage-objects/coverage-objects.tar
+        run: tar --zstd -xf coverage-objects/coverage-objects.tar.zst
 
       # Issue #1076. Both steps print nothing unless the job-level switch above
       # is on. Switched on, they record CPU steal, load, memory and disk once
@@ -498,7 +500,7 @@ jobs:
               exit 1
             }
           done
-          tar -xf coverage-objects/coverage-objects.tar
+          tar --zstd -xf coverage-objects/coverage-objects.tar.zst
           workspace=$(cargo metadata --manifest-path rust/Cargo.toml --format-version 1 --no-deps | jq -r .workspace_root)
           host=$(rustc -vV | sed -n 's/^host: //p')
           llvm_profdata="$(rustc --print sysroot)/lib/rustlib/$host/bin/llvm-profdata"
