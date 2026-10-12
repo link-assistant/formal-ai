@@ -21,9 +21,8 @@ fn assert_protocol_transition(legacy: &str, observed: &str) {
     let old_result = old_verification["result"]
         .as_str()
         .expect("historical result");
-    let expected_receipt = match serde_json::from_str::<serde_json::Value>(old_result) {
-        Ok(value) => Some(value),
-        Err(_) => {
+    let expected_receipt = serde_json::from_str::<serde_json::Value>(old_result).map_or_else(
+        |_| {
             assert!(
                 !(old_result.trim_start().starts_with('{')
                     && old_result.contains("\"schema\"")
@@ -31,8 +30,9 @@ fn assert_protocol_transition(legacy: &str, observed: &str) {
                 "malformed historical process receipt"
             );
             None
-        }
-    };
+        },
+        Some,
+    );
     if let Some(expected) = expected_receipt.filter(|value| {
         value["schema"]
             .as_str()
