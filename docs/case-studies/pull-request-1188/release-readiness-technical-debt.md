@@ -43,3 +43,41 @@ Restore only after independently bound, complete original east and west source b
 | Named debt | Current evidence | Restoration requirement |
 | --- | --- | --- |
 | PR1188-ladder-full-obligation-deadline | Only `issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given` is temporarily deferred. Authenticated coverage2 singleton batch6 did not complete before original 1200s job deadline; exact internal leaf/checkpoint remains Unknown. The full original 32 leaves, test body and assertions and 1200s deadline remain unchanged. Acceptance: ZERO; Deferred, not passed. Original failure: `/private/tmp/pr1188-3bd676a7-compressed-failures/objects/f846c12f882cf34f35e08a160efafe8a997275ca4185126257678158557a5404.gz`. This is separate from `issue_1069_delivery_keeps_each_artifacts_own_constraints`. | Remove only this ignore after unchanged 32-leaf full-obligation native acceptance passes within original 1200s coverage deadline. User-authorized release-first temporary deferral; no other test or requirement is waived. |
+
+## PR1196-release-recovery-authoring
+
+Under the user's explicit release-first authorization, only the positive authorship
+requirements for PR1196 are temporarily deferred. The exact scope is a pull_request
+event for link-assistant/formal-ai, with both head and base repositories matching,
+open PR1196, head branch fix/postmerge-release-ci-1188 and base main. Every other PR,
+branch, repository and event, including dispatch, main push and schedule, retains
+the original gates. The shared event predicate is not producer authentication.
+
+The result is DeferredForReleaseRecovery_PR1196, qualifyingAuthorship=0 and
+floorSatisfied=false. Supplied repair programs confer zero autonomy credit; no
+Formal-AI attribution trailers or session claims are fabricated. The ordinary
+strict trailer/session validation, actual share measurement, debt ratchet and
+failure/cancellation status gates still run. No main-branch standing floor,
+metric numerator/denominator, floor value, native/artifact smoke, production check
+or release completion requirement is weakened. The unchanged standing main/daily
+floor may remain red after this recovery merges.
+
+Original obligations remain scripts/check-formal-ai-contribution.rs --since
+the actual merge base --until HEAD, and scripts/check-self-development-release.rs.
+Authentic failed evidence job114753839453 in run38232112828 and floor
+job114753838021 in run38232112600 report
+0.00% (0/81 changed lines;0/1 commits) and no qualifying contribution. Their full
+raw failure hashes are143545ed437647b3b4b65f1260e0b4d2f5da995924e68c8af3adb9627eb18e9a
+and21e02c768e6d51ee7f20d7533c4320ad0e66246c045353c380178842537d547c.
+This deferral is distinct from the existing age-based relaxation and from the
+prospective floor satisfied by genuine session-backed authored work.
+
+Remove the two workflow admission conditions, the shared helper and its deferral
+tests after this recovery PR closes, or earlier when a genuine necessary Formal
+AI-authored behavioral contribution with valid committed evidence satisfies the
+ordinary gates. The event predicate stops matching a closed PR automatically.
+Retain this historical debt record and original failures. Restoration runs the
+original commands and strict attribution unchanged; no trailer-only contribution,
+backdated clock, ledger override, threshold reduction or broad continue-on-error
+may substitute for the original obligation. Source qualification of this policy
+change is not authorship, hosted CI success, native acceptance or publication.

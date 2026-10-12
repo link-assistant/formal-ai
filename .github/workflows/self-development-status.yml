@@ -113,7 +113,11 @@ jobs:
       # (docs/architect-notes/2026-09-11-do-not-obstruct-the-vision.md). Empty
       # on a push to `main`, where there is no pull request to age and the floor
       # stays a standing, unrelaxed report.
+      - name: Report the named PR1196 authoring deferral
+        id: release-recovery-authoring
+        run: node scripts/check-release-recovery-authoring-deferral.mjs
       - name: 'Self-development floor (issue #924, #1066, #1085)'
+        if: ${{ steps.release-recovery-authoring.outputs.defer != 'true' }}
         env:
           PULL_REQUEST_CREATED_AT: ${{ github.event.pull_request.created_at }}
         run: rust-script scripts/check-self-development-release.rs
