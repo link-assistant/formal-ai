@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["shell_command_policy.mjs"] = (crateRequire) => {
 // Sentence scoping and command-policy classification for shell routing: a
 // port of rust/src/agentic_coding/shell_command_policy.rs.
@@ -11,24 +10,20 @@
 // A `Sentence` is `{text, span: {start, end}}`; spans are UTF-16 code-unit
 // indices into the prompt (so `prompt.slice(start, end)` is the sentence with
 // its terminator), the JavaScript twin of the Rust byte range.
-
 const { carriesPolicyLead } = crateRequire("crate/seed_caller_context.mjs");
+const { negatedCommandPolicy } = crateRequire("shell-command-negative-ownership.mjs");
 const { terminalCommandVocabulary } = crateRequire("crate/seed_terminal_commands.mjs");
 const { isAlphanumeric, splitOnce, splitWhitespace, toAsciiLowercase, trim, trimMatches, trimStart } = crateRequire("crate/rust_str.mjs");
-
 const SHELL_ENDS = new Set(['.', '!', '?', ';', '\n', '。', '！', '？', '；', '।']);
 const PROSE_ENDS = new Set(['.', '!', '?', '\n', '。', '！', '？', '।']);
-
 /** Mirrors `fn sentences` (a semicolon ends a sentence). */
 function sentences(prompt) {
   return splitSentences(prompt, (character) => SHELL_ENDS.has(character));
 }
-
 /** Mirrors `fn prose_sentences` (a semicolon joins clauses). */
 function proseSentences(prompt) {
   return splitSentences(prompt, (character) => PROSE_ENDS.has(character));
 }
-
 /** Mirrors `fn split_sentences`. */
 function splitSentences(prompt, endsSentence) {
   const out = [];
@@ -55,20 +50,18 @@ function splitSentences(prompt, endsSentence) {
   if (tail) out.push({ text: tail, span: { start: spanStart, end: prompt.length } });
   return out;
 }
-
 /** Mirrors `fn sentence_spans`: each sentence's text. */
 function sentenceSpans(prompt) {
   return sentences(prompt).map((sentence) => sentence.text);
 }
-
 /** Mirrors `fn states_a_command_policy`. */
 function statesACommandPolicy(sentence) {
+  if (negatedCommandPolicy(sentence)) return true;
   const lower = sentence.toLowerCase();
   if (!carriesPolicyLead(lower)) return false;
   const split = splitOnce(lower, ',');
   return split === null || !ordersANamedCommand(split[1]);
 }
-
 /** Mirrors `fn orders_a_named_command`. */
 function ordersANamedCommand(clause) {
   const vocab = terminalCommandVocabulary();
@@ -76,13 +69,11 @@ function ordersANamedCommand(clause) {
   return words.some((word, index) => vocab.run_verbs.includes(normalizeCommandWord(word))
     && words[index + 1] !== undefined && vocab.shell_tokens.includes(normalizeCommandWord(words[index + 1])));
 }
-
 /** Mirrors `fn governs_commands_rather_than_requesting_one`. */
 function governsCommandsRatherThanRequestingOne(prompt) {
   const spans = sentenceSpans(prompt);
   return spans.length > 0 && spans.every(statesACommandPolicy);
 }
-
 /**
  * Mirrors `fn command_span`: the command text after a passthrough prefix
  * (`Run`), past an optional colon. A leading code span is the command and the
@@ -101,7 +92,6 @@ function commandSpan(remainder) {
   }
   return shellQuotesPaired(text) ? text : null;
 }
-
 /** Mirrors `fn named_shell_command_in_sentence`. */
 function namedShellCommandInSentence(prompt, vocab) {
   const lower = toAsciiLowercase(prompt);
@@ -129,7 +119,6 @@ function namedShellCommandInSentence(prompt, vocab) {
   }
   return null;
 }
-
 /** Mirrors `fn collect_command`. */
 function collectCommand(words) {
   const parts = [normalizeCommandWord(words[0])];
@@ -141,14 +130,12 @@ function collectCommand(words) {
   }
   return parts.join(' ');
 }
-
 /** Mirrors `fn normalize_command_word`. */
 function normalizeCommandWord(word) {
   const bare = trimMatches(word, (character) => character === '`');
   const head = /^[0-9A-Za-z_-]*/.exec(bare)[0];
   return toAsciiLowercase(head);
 }
-
 const PROSE_WORDS = new Set([
   'command', 'commands', 'to', 'in', 'into', 'on', 'the', 'a', 'an', 'and', 'then', 'please', 'for', 'of', 'that',
   'which', 'so', 'this', 'these', 'those', 'here', 'there', 'me', 'us', 'you', 'it', 'from', 'at', 'with', 'will',
@@ -156,13 +143,11 @@ const PROSE_WORDS = new Set([
   'content', 'directory', 'folder', 'folders', 'file', 'files', 'currently', 'again', 'also', 'just', 'now',
   'nothing', 'anything', 'everything', 'something', 'all', 'any', 'every', 'each', 'no',
 ]);
-
 /** Mirrors `fn is_prose_word`. */
 function isProseWord(word) {
   const normalized = toAsciiLowercase(trimMatches(word, (character) => !/^[0-9A-Za-z]$/.test(character)));
   return PROSE_WORDS.has(normalized);
 }
-
 /** Mirrors `fn shell_quotes_paired`; the shell remains the syntax authority. */
 function shellQuotesPaired(command) {
   let quote = null;
@@ -182,7 +167,6 @@ function shellQuotesPaired(command) {
   }
   return quote === null && !escaped;
 }
-
 return Object.freeze({
   sentences,
   proseSentences,

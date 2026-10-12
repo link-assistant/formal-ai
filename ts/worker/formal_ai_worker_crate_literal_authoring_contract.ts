@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/literal_authoring_contract.mjs"] = (crateRequire) => {
 // Shared semantic-versus-literal decision; callers supply their parsed prose view.
 const { roleWordForms, mentionsRole } = crateRequire("write_lexicon.mjs");
@@ -14,19 +13,16 @@ const { literalInstructionView } = crateRequire("crate/literal_instruction_view.
 const { ownsLiteralBody } = crateRequire("crate/literal_body_ownership.mjs");
 const { operationOwner } = crateRequire("crate/operation_owner.mjs");
 const { isAlphanumeric, trimStart } = crateRequire("write_str.mjs");
-
+const { firstRawContentLeadEnd } = crateRequire("write_request/lowercase_spans.mjs");
 /** Mirrors fn semantic_authoring_lead in general_planner/content_shape.rs. */
-function semanticAuthoringLead(request) {
-  const lowered = trimStart(request).toLowerCase();
-  const action = roleWordForms('software_authoring_action').filter((form) => form.slot === 'bare')
-    .map((form) => form.text.toLowerCase()).sort((left, right) => right.length - left.length)
-    .find((surface) => {
-      const next = Array.from(lowered.slice(surface.length))[0];
-      return lowered.startsWith(surface) && (next === undefined || !isAlphanumeric(next) && next !== '_' && next !== '-' || containsCjk(surface));
-    });
-  return action !== undefined && !mentionsRole('file_whole_write_action', normalizePrompt(action));
+function leadingAuthoringAction(request) {
+  const lowered = trimStart(request).toLowerCase(); const action = roleWordForms('software_authoring_action').filter((form) => form.slot === 'bare') .map((form) => form.text.toLowerCase()).sort((left, right) => right.length - left.length) .find((surface) => {
+      const next = Array.from(lowered.slice(surface.length))[0]; return lowered.startsWith(surface) && (next === undefined || !isAlphanumeric(next) && next !== '_' && next !== '-' || containsCjk(surface)); });
+  return action;
 }
-
+function semanticAuthoringLead(request) {
+  const action = leadingAuthoringAction(request); return action !== undefined && !mentionsRole('file_whole_write_action', normalizePrompt(action));
+}
 /** Mirrors fn describes_code_to_author; parsed prose is lexical context, never a goal certificate. */
 function describesCodeToAuthor(request, content, prose, contentLeadPresent) {
   if (content === '') return false;
@@ -36,15 +32,17 @@ function describesCodeToAuthor(request, content, prose, contentLeadPresent) {
   return (!contentLeadPresent && mentionsRole('coding_request_object', normalizePrompt(content)))
     || mentionsRole('coding_request_object', normalized) && mentionsRole('coding_request_verb', normalized);
 }
-
 /** Mirrors fn owned_semantic_authoring_lead: preserve unknown authoring while disambiguating observed operation objects. */
 function ownedSemanticAuthoringLead(request, contract = null) {
-  const view = literalInstructionView(request, contract?.payload ?? null);
-  if (view === null || !semanticAuthoringLead(view)) return false;
+  const view = literalInstructionView(request, contract?.payload ?? null); if (view === null) return false;
   const owner = operationOwner(request, contract);
-  return owner === null || owner.role !== 'capability_web_scope';
+  if (owner?.role === 'coding_request_object' && leadingAuthoringAction(view) !== undefined
+    && !mentionsRole('file_declared_noun', normalizePrompt(view.slice(0, owner.start)))) {
+    let start = owner.start, end = owner.end; while (start > 0 && !/\s/u.test(view[start - 1])) start--; while (end < view.length && !/\s/u.test(view[end])) end++;
+    const atom = view.slice(start, end).replace(/[.,;:!?]+$/u, ''); const contentLead = firstRawContentLeadEnd(view); if (!/[.\/\\]/u.test(atom) && (contentLead === null || contentLead[0] >= owner.start)) return true;
+  }
+  return semanticAuthoringLead(view) && (owner === null || owner.role !== 'capability_web_scope');
 }
-
 return Object.freeze({
   semanticAuthoringLead,
   describesCodeToAuthor,

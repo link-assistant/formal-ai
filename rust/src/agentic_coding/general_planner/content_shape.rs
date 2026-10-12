@@ -72,9 +72,9 @@ pub(in crate::agentic_coding) fn owns_literal_body(request: &str, content: &str)
 }
 
 /// A seeded leading semantic action without a whole-file write action.
-pub(in crate::agentic_coding) fn semantic_authoring_lead(request: &str) -> bool {
+fn leading_authoring_action(request: &str) -> Option<String> {
     let lowered = request.trim_start().to_lowercase();
-    let action = seed::lexicon()
+    seed::lexicon()
         .bare_literals_for_role(seed::ROLE_SOFTWARE_AUTHORING_ACTION)
         .into_iter()
         .map(str::to_lowercase)
@@ -85,8 +85,12 @@ pub(in crate::agentic_coding) fn semantic_authoring_lead(request: &str) -> bool 
                 }) || crate::coding::contains_cjk(surface)
             })
         })
-        .max_by_key(String::len);
-    action.is_some_and(|surface| {
+        .max_by_key(String::len)
+}
+
+/// A seeded semantic action without a whole-file write action.
+pub(in crate::agentic_coding) fn semantic_authoring_lead(request: &str) -> bool {
+    leading_authoring_action(request).is_some_and(|surface| {
         !seed::lexicon().mentions_role(
             "file_whole_write_action",
             &crate::engine::normalize_prompt(&surface),
@@ -208,7 +212,7 @@ fn operation_role_spans(request: &str, role: &'static str) -> Vec<(usize, usize,
     found
 }
 /// The earliest unquoted seeded operation object owns an ambiguous leading action.
-fn first_operation_owner(request: &str) -> Option<&'static str> {
+fn first_operation_owner(request: &str) -> Option<(usize, usize, &'static str)> {
     let mut view = request.to_owned();
     for span in crate::normal_markov::quoted_segment_spans(request) {
         view.get(span.start..span.end)?;
@@ -228,10 +232,35 @@ fn first_operation_owner(request: &str) -> Option<&'static str> {
     .filter(|(_, end, _)| *end <= sentence.span.end)
     .collect();
     found.sort_by_key(|(start, end, _)| (*start, std::cmp::Reverse(*end)));
-    found.first().map(|(_, _, role)| *role)
+    found.first().copied()
 }
 /// A known nonsoftware operation object prevents an ambiguous verb claiming authoring.
 pub(in crate::agentic_coding) fn owned_semantic_authoring_lead(request: &str) -> bool {
     let view = super::owned_goals::instruction_view_for_request(request);
-    semantic_authoring_lead(&view) && first_operation_owner(&view) != Some("capability_web_scope")
+    let owner = first_operation_owner(&view);
+    if let Some((start, end, "coding_request_object")) = owner
+        && leading_authoring_action(&view).is_some()
+        && !seed::lexicon().mentions_role(
+            "file_declared_noun",
+            &crate::engine::normalize_prompt(&view[..start]),
+        )
+    {
+        let atom_start = view[..start]
+            .rfind(char::is_whitespace)
+            .map_or(0, |at| at + view[at..].chars().next().unwrap().len_utf8());
+        let atom_end = view[end..]
+            .find(char::is_whitespace)
+            .map_or(view.len(), |at| end + at);
+        let atom = view[atom_start..atom_end].trim_end_matches(['.', ',', ';', ':', '!', '?']);
+        let content_lead = first_raw_prefix_lead_end(&view, "file_write_content_lead");
+        if !atom.contains('.')
+            && !atom.contains('/')
+            && !atom.contains(char::from(92))
+            && content_lead.is_none_or(|(lead, _)| lead >= start)
+        {
+            return true;
+        }
+    }
+    semantic_authoring_lead(&view)
+        && owner.is_none_or(|(_, _, role)| role != "capability_web_scope")
 }

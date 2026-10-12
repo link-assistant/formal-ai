@@ -1,3 +1,5 @@
+Release-first checkpoint 2026-10-12T03:17:12.197Z: Spanish coding ownership and the eight-call fixture are qualified privately; the package-permission assertion and full worker closure (one exact 38-line budget and its browser loader entry) are in the coordinated repair batch. Fresh hosted validation and native census for the next head remain pending; the original 30 requirements remain unfinished, with no autonomy credit from supplied repair programs. Intel PR cache warm time was 14m36s; cold main/tag behavior and publication remain unproved.
+
 ## Projection repair checkpoint — UTC 2026-10-12 02:11
 
 The 24-file batch is pushed at 5c1eb16a159083e1d517f6283a0360a1b9efcfee, and the local original 500 five-locale probes passed; the three behavioral deferrals, 30 unfinished original acceptances and original 40 coding acceptance zero remain unchanged.

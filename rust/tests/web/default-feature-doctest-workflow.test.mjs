@@ -38,9 +38,9 @@ test('documentation source is the actual PRhead freshly merged with the pinned b
  assert.equal((body.match(/simulate-fresh-merge\.sh/gu)??[]).length,1);
  assert.ok(body.indexOf('simulate-fresh-merge.sh')<body.indexOf('cargo test'));
 });
-test('five full native shards retain all their tests without compiling documentation again',()=>{
+test('eight full native shards retain all their tests without compiling documentation again',()=>{
  const body=job('test');
- assert.equal((body.match(/test-suite: full/gu)??[]).length,5);
+ assert.equal((body.match(/test-suite: full/gu)??[]).length,8);
  assert.match(body,/SHARD_RESERVED_SECONDS: 1=330\n/u);
  assert.doesNotMatch(body,/2=110|cargo test[^\n]*--doc/u);
  assert.match(body,/bash scripts\/run-prebuilt-tests\.sh/u);

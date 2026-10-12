@@ -69,6 +69,7 @@ self.FORMAL_AI_WORKER_MODULES = Object.freeze([
   "worker/formal_ai_worker_crate_seed_registry.js",
   "worker/formal_ai_worker_crate_seed_reports.js",
   "worker/formal_ai_worker_crate_seed_terminal_commands.js",
+  "worker/formal_ai_worker_crate_shell-command-negative-ownership.js",
   "worker/formal_ai_worker_crate_shell_command_policy.js",
   "worker/formal_ai_worker_crate_skill_compiler.js",
   "worker/formal_ai_worker_crate_skill_procedure.js",

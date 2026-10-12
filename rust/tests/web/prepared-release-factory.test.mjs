@@ -1,5 +1,6 @@
 import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-operation-view.mjs';
 import test from 'node:test';
+import YAML from 'yaml';
 import assert from 'node:assert/strict';
 import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync,existsSync} from 'node:fs';
 import {tmpdir} from 'node:os';
@@ -234,7 +235,7 @@ test('both guarded publication jobs bind the same producer, full factory, option
   assert.ok(body.indexOf('Publish and verify the slim GHCR sidecar')<body.indexOf('Create GitHub Release'));
  assert.match(body,/uses: \.\/\.github\/actions\/publish-slim-image/u);
   assert.match(body,/prepared-release-SHA256SUMS\.txt/u);
- assert.match(body,/packages: write/u);
+ assert.equal(YAML.parse(workflow).jobs[name].permissions.packages,'write');
  assert.doesNotMatch(body,/uses: docker\/build-push-action|uses: docker\/metadata-action/u);
  }
 });
